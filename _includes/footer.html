@@ -2,6 +2,17 @@
 
   <div class="wrapper">
 
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      (function() {
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//jiegec.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    
     <h2 class="footer-heading">{{ site.title }}</h2>
 
     <div class="footer-col-wrapper">
@@ -17,12 +28,6 @@
           {% if site.github_username %}
           <li>
             {% include icon-github.html username=site.github_username %}
-          </li>
-          {% endif %}
-
-          {% if site.twitter_username %}
-          <li>
-            {% include icon-twitter.html username=site.twitter_username %}
           </li>
           {% endif %}
         </ul>
