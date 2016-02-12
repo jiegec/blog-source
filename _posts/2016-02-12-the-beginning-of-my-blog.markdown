@@ -1,8 +1,6 @@
 ---
 layout: post
-title: "The beginning of my blog"
-date: 2016-02-12 10:07:33 +0800
-categories: blog
+tags: meta
 ---
 This is the first blog here.
 
