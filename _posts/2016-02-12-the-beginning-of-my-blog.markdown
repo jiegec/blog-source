@@ -1,5 +1,6 @@
 ---
 layout: post
+date: 2016-02-12 11:24:48 +0800
 tags: meta
 ---
 This is the first blog here.
