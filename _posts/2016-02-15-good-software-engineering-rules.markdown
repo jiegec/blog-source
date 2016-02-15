@@ -13,3 +13,5 @@ No code is easier to understand than no code.
 ```
 
 It comes from http://www.mikeperham.com/2016/02/09/kill-your-dependencies/.
+
+And i strongly recommends https://medium.com/@yelouafi/from-callback-to-future-functor-monad-6c86d9c16cb5 for a better understanding of monads.
