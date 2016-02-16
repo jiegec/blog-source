@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+bundle exec jekyll build
+cd ../jiegec.github.io/
+rm -rf *
+printf ".sass-cache\npublish\nGemfile*\n_site" > .gitignore
+touch .nojekyll
+cp -r ../blog-source/_site/* ./
+git add .
