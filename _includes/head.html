@@ -5,8 +5,8 @@
   <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
   <script type="text/javascript">
     var host = "jiegec.github.io";
-    if ((host == window.location.host) && (window.location.protocol != "https")
-      window.location.protocol = "https";
+    if ((host == window.location.host) && (window.location.protocol !== 'https:'))
+      window.location = 'https://' + window.location.hostname + window.location.pathname + window.location.hash;
   </script>
 
   <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}</title>
