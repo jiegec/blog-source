@@ -10,9 +10,7 @@ Here is the [link](https://pierrekim.github.io/blog/2016-02-16-why-i-stopped-usi
 
 And here comes the vim-tips:
 
-```
 You probably know that 'u' is undo. Do you know that Ctrl-R is redo?
-```
 
 It comes from [here](https://twitter.com/vimtips/status/699277152399835136).
 
