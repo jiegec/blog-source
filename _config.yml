@@ -11,7 +11,7 @@ email: jiegec@qq.com
 description: > # this means to ignore newlines until "baseurl:"
   This is the personal blog of Jiege Chen.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://jiegec.github.io" # the base hostname & protocol for your site
+url: "https://jiegec.github.io" # the base hostname & protocol for your site
 github_username:  jiegec
 
 # Build settings
