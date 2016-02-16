@@ -15,11 +15,7 @@ layout: default
       </span>
       {% endif %}
 
-      {% if page.tags %}
-      <span>
-        Tags: {{ page.tags | sort | join: ', '}}
-      </span>
-      {% endif %}
+      Tags: {{ page | tags}}
     </p>
   </header>
 

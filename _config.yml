@@ -16,3 +16,11 @@ github_username:  jiegec
 
 # Build settings
 markdown: kramdown
+
+tag_page_layout: tag_page
+tag_page_dir: tag
+tag_feed_layout: tag_feed
+tag_feed_dir: tag
+
+permalink: pretty
+tag_permalink_style: pretty

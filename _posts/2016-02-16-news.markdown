@@ -1,7 +1,8 @@
 ---
 layout: post
 date: 2016-02-16 15:11:42 +0800
-tag: security,CA,twitter,tips,vim
+tag: [security, CA, twitter, tips, vim]
+category: programming
 ---
 
 Oh StartSSL places its PKI in 360's server. You know, i hate 360. SO please beware if the website is using StartSSL.

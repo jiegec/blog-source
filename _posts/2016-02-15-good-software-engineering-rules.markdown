@@ -1,7 +1,8 @@
 ---
 layout: post
 date: 2016-02-15 20:17:59 +0800
-tag: coding,share
+tags: [coding, share]
+category: programming
 ---
 
 I saw a great saying:
