@@ -16,3 +16,4 @@ Ctrl+Above: Capture to clipboard.
 
 defaults write com.apple.screencapture location: Change the default location storing the images.
 
+Apps enhancing the snapshots: [Snappy](http://go-snappy.com/) and [Mapture](http://anatoo.jp/mapture/).
