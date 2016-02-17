@@ -10,7 +10,7 @@ How to screen capture:
 
 Shift+Command+3: Capture fullscreen.
 
-Shift+Command+4: Capture region. Press space to capture window.
+Shift+Command+4: Capture region. Press space to capture window. Hold option and drag you capture a region with its center in where you started dragging and one of its corners under your cursor.
 
 Ctrl+Above: Capture to clipboard.
 
