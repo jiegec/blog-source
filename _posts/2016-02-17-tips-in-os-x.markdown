@@ -2,6 +2,7 @@
 layout: post
 date: 2016-02-17 19:12:49 +0800
 tags: [tips, osx]
+category: osx
 ---
 
 I'm sure many people have already known this. But i haven't memorize it yet.

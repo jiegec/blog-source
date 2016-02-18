@@ -2,6 +2,7 @@
 layout: post
 date: 2016-02-18 12:04:50 +0800
 tags: [vpn,centos]
+category: vpn
 ---
 
 Today i'm going to introduce how to create a vpn.
