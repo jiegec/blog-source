@@ -9,7 +9,7 @@ First you need to install these packages:
 
 {% highlight shell %}
 sudo pacman -S git autoconf automake gtk3 webkitgtk
-git clone https://github.com/emacs-mirror/emacs.git (or git protocol if you like)
+git clone --depth 1 https://github.com/emacs-mirror/emacs.git (or git protocol if you like)
 cd emacs
 ./autogen.sh all
 ./configure --with-xwidgets --with-x --with-x-toolkit=gtk3 --with-modules
