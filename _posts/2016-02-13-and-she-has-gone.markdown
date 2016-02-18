@@ -5,6 +5,6 @@ tags: [death, thoughts]
 category: thoughts
 ---
 
-And eventually, she has gone at 20.
+And eventually, she has gone at 20 o'clock.
 
 Real RIP this time.

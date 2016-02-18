@@ -24,3 +24,5 @@ tag_feed_dir: tag
 
 permalink: pretty
 tag_permalink_style: pretty
+
+markdown: kramdown
