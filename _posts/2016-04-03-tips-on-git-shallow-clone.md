@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-04-03 14:38:09
+date: 2016-04-03 14:38:09 +0800
 tags: [git,clone,tips]
 category: programming
 ---
@@ -9,6 +9,7 @@ Just learned a new tip on git shallow clone. As you know, some repository are re
 
 
 From here: http://stackoverflow.com/a/27393574/2148614
+
 ```
 git remote set-branches origin '*'
 ```
