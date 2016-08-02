@@ -26,3 +26,7 @@ permalink: pretty
 tag_permalink_style: pretty
 
 markdown: kramdown
+highlighter: rouge
+
+kramdown:
+  input: GFM

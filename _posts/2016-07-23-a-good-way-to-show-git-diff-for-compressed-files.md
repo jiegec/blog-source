@@ -8,7 +8,7 @@ category: programming
 I have found a good way to track changes in .gz files:
 Add these to ~/.gitconfig:
 
-```
+```config
 [core]
   attributesFile = ~/.gitattributes
 [diff "zip"]
@@ -46,7 +46,7 @@ Add these to ~/.gitconfig:
 
 And these to ~/.gitattributes:
 
-```
+```config
 *.tar diff=tar
 *.tar.bz2 diff=tar-bz2
 *.tar.gz diff=tar-gz
@@ -63,6 +63,7 @@ And these to ~/.gitattributes:
 *.exe diff=bin
 *.png diff=bin
 *.jpg diff=bin
+
 ```
 
 And then you can `git diff` for .gz files.
