@@ -17,36 +17,36 @@ If I press <Enter>, then:
 
 By adding this code to ~/.config/karabiner/karabiner.json :
 ```
-            "complex_modifications": {
-                "rules": [
-                    {
-                        "manipulators": [
-                            {
-                                "description": "Change return_or_enter to left_control. (Post return_or_enter if pressed alone)",
-                                "from": {
-                                    "key_code": "return_or_enter",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_control"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "return_or_enter"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    }
-                ]
-            },
+"complex_modifications": {
+    "rules": [
+        {
+            "manipulators": [
+                {
+                    "description": "Change return_or_enter to left_control. (Post return_or_enter if pressed alone)",
+                    "from": {
+                        "key_code": "return_or_enter",
+                        "modifiers": {
+                            "optional": [
+                                "any"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "left_control"
+                        }
+                    ],
+                    "to_if_alone": [
+                        {
+                            "key_code": "return_or_enter"
+                        }
+                    ],
+                    "type": "basic"
+                }
+            ]
+        }
+    ]
+},
 ```
 in one of profiles.
 
