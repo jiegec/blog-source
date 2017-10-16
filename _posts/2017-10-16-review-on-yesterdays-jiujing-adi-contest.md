@@ -21,6 +21,6 @@ title: 回顾昨天的酒井知识竞赛
 	当时我没见过D，于是就选了。。。然后就挂了，Netware是Novell开发的系统，OS/2 warp当然是历史悠久的系统啦，而DOS=Disk Operating System所以没有“网络”二字。。。晕倒
 5. 以下是用作局域网的协议是？
 	A. TCP/IP B. IPX/SPX C. NetBEUI D. RS-232-C
-	TCP/IP当然不仅限于局域网，RS-232-C是网络接口，当时蒙了B结果就对了，白白拿了50分哈哈哈。IPX/SPX是Novell设计用在Netware系统上的局域网协议，NetBEUI则是NetBIOS的一个历史遗留的一个“别称”。
+	TCP/IP当然不仅限于局域网，RS-232-C是接口，当时蒙了B结果就对了，白白拿了50分哈哈哈。IPX/SPX是Novell设计用在Netware系统上的局域网协议，NetBEUI则是NetBIOS的一个历史遗留的一个“别称”。
 6. 姚期智的夫人给谁取了中文名？
 	当然是Donald Ervin Knuth啦！高德纳万岁！
