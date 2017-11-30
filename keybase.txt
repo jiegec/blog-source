@@ -1,0 +1,55 @@
+==================================================================
+https://keybase.io/jiegec
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://jiegec.github.io
+  * I am jiegec (https://keybase.io/jiegec) on keybase.
+  * I have a public key ASDSHq7bWCl7yCwLjKKga4dR-yY6o5G8pmINPXvRiBmQpgo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120d21eaedb58297bc82c0b8ca2a06b8751fb263aa391bca6620d3d7bd1881990a60a",
+      "host": "keybase.io",
+      "kid": "0120d21eaedb58297bc82c0b8ca2a06b8751fb263aa391bca6620d3d7bd1881990a60a",
+      "uid": "7b08993a3c6a048d3375038bee258d19",
+      "username": "jiegec"
+    },
+    "merkle_root": {
+      "ctime": 1512037245,
+      "hash": "efbdb83bcae251e4bbfae2abdf8269890d4058bf47df2455d38c363e53b3e51f533b7b180d606327bd7d1196ac80fd35d2147b55bf894c306effd8677b3a943d",
+      "hash_meta": "77a2f7833c6301204c19579a8b7d2ce74d3bfefad1c48c7f29b654bfa34e2a3d",
+      "seqno": 1764824
+    },
+    "service": {
+      "hostname": "jiegec.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "1.0.36"
+  },
+  "ctime": 1512037255,
+  "expire_in": 504576000,
+  "prev": "03a74fd23a6e76cfa9fbbbe341acf307b6df190902ffbf513bfde42db20554fb",
+  "seqno": 21,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEg0h6u21gpe8gsC4yioGuHUfsmOqORvKZiDT170YgZkKYKp3BheWxvYWTFA0d7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTIwZDIxZWFlZGI1ODI5N2JjODJjMGI4Y2EyYTA2Yjg3NTFmYjI2M2FhMzkxYmNhNjYyMGQzZDdiZDE4ODE5OTBhNjBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwZDIxZWFlZGI1ODI5N2JjODJjMGI4Y2EyYTA2Yjg3NTFmYjI2M2FhMzkxYmNhNjYyMGQzZDdiZDE4ODE5OTBhNjBhIiwidWlkIjoiN2IwODk5M2EzYzZhMDQ4ZDMzNzUwMzhiZWUyNThkMTkiLCJ1c2VybmFtZSI6ImppZWdlYyJ9LCJtZXJrbGVfcm9vdCI6eyJjdGltZSI6MTUxMjAzNzI0NSwiaGFzaCI6ImVmYmRiODNiY2FlMjUxZTRiYmZhZTJhYmRmODI2OTg5MGQ0MDU4YmY0N2RmMjQ1NWQzOGMzNjNlNTNiM2U1MWY1MzNiN2IxODBkNjA2MzI3YmQ3ZDExOTZhYzgwZmQzNWQyMTQ3YjU1YmY4OTRjMzA2ZWZmZDg2NzdiM2E5NDNkIiwiaGFzaF9tZXRhIjoiNzdhMmY3ODMzYzYzMDEyMDRjMTk1NzlhOGI3ZDJjZTc0ZDNiZmVmYWQxYzQ4YzdmMjliNjU0YmZhMzRlMmEzZCIsInNlcW5vIjoxNzY0ODI0fSwic2VydmljZSI6eyJob3N0bmFtZSI6ImppZWdlYy5naXRodWIuaW8iLCJwcm90b2NvbCI6Imh0dHBzOiJ9LCJ0eXBlIjoid2ViX3NlcnZpY2VfYmluZGluZyIsInZlcnNpb24iOjF9LCJjbGllbnQiOnsibmFtZSI6ImtleWJhc2UuaW8gZ28gY2xpZW50IiwidmVyc2lvbiI6IjEuMC4zNiJ9LCJjdGltZSI6MTUxMjAzNzI1NSwiZXhwaXJlX2luIjo1MDQ1NzYwMDAsInByZXYiOiIwM2E3NGZkMjNhNmU3NmNmYTlmYmJiZTM0MWFjZjMwN2I2ZGYxOTA5MDJmZmJmNTEzYmZkZTQyZGIyMDU1NGZiIiwic2Vxbm8iOjIxLCJ0YWciOiJzaWduYXR1cmUifaNzaWfEQIS0G1RKMCLUQRUE4PkaRrmJIWOo8sV4+AnbgoUqk5MuXK+6Tu+WyMpqrkuPbsclEF4eXuWI2DtnZC9D5eq1XgGoc2lnX3R5cGUgpGhhc2iCpHR5cGUIpXZhbHVlxCDNUDIz21gKsk2B2Y8S/nSN+6fyOiPbDEzk9CfGPzpZJ6N0YWfNAgKndmVyc2lvbgE=
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/jiegec
+
+==================================================================
