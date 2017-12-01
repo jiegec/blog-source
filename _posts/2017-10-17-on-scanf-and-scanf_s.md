@@ -27,6 +27,6 @@ scanf_s("%c",&a);
 1. 学习`scanf_s`和`scanf`的不同，把所有`scanf`换成`scanf_s`并做相应的修改。
    这样当然符合了语言进化的潮流，也会让vs闭嘴。但是，scanf_s只有在C11标准中有，而且，根据[cpprefrence.com上关于scanf的描述](http://en.cppreference.com/w/c/io/fscanf)，只有在`__STDC_LIB_EXT1__`被定义且在`#include<stdio.h>`之前`#define __STDC_WANT_LIB_EXT1__`才能确保使用`scanf_s`能使用，当然在vs较新版本中是默认可以使用的。但是，程设基础的作业是要丢到oj上的，而oj上的编译器不一定支持这些，所以这个选项不行。
 2. 坚持用`scanf`，自己按照题目要求保证缓冲区不溢出，同时让vs闭嘴。
-   网上已有[教程](https://www.cnblogs.com/wangduo/p/5554465.html)，已经讲的很全面了，大家可以根据这个教程把vs教训一顿。为了能在oj里跑，建议用里面的方法五到八。
+   网上已有[教程](https://www.cnblogs.com/wangduo/p/5554465.html)，已经讲的很全面了，大家可以根据这个教程把vs教训一顿。为了能在oj里跑，建议用里面的方法五到八。（个人最推荐在文件头添加`#define _CRT_SECURE_NO_WARNINGS`）
    
 以后再遇到这个问题，我就丢这个连接上来就好了咯。yeah！
