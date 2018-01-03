@@ -20,3 +20,5 @@ How to screen capture:
     defaults write com.apple.screencapture location: Change the default location storing the images.
 
 Apps enhancing the snapshots: [Snappy](http://go-snappy.com/) and [Mapture](http://anatoo.jp/mapture/).
+
+See more detailed [here](https://sspai.com/post/25978).
