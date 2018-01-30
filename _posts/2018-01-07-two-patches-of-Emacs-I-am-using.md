@@ -39,7 +39,7 @@ index d0138cd..de3c5ff 100644
 有了第一个，就可以正常显示 Emoji （对不起，RMS）；有了第二个，就解决了 `pyim` 和 `lsp-ui-peek` 用 `child-frame` 显示的一些问题了。
 
 另外还有一个我自己在用的 `recoll.rb` ：
-```patch
+```rb
 # Documentation: https://docs.brew.sh/Formula-Cookbook.html
 #                http://www.rubydoc.info/github/Homebrew/brew/master/Formula
 # PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
