@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2016-02-18 12:37:52 +0800
-tags: [emacs,git,archlinux]
+tags: [emacs,git,archlinux,xwidgets]
 category: programming
 ---
 
