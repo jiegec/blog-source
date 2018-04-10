@@ -6,7 +6,7 @@ category: programming
 title: 近来做 Stanford CS140e 的一些进展和思考（8）
 ---
 
-在[上一篇文章](/programming/2018/03/10/thoughts-on-stanford-cs140e-7/)之后，我其实还是很忙，但是一直心理惦记着这件事，毕竟只剩最后的一点点就可以做完了，不做完总是觉得心痒。
+在[上一篇文章](/programming/2018/04/07/thoughts-on-stanford-cs140e-7/)之后，我其实还是很忙，但是一直心理惦记着这件事，毕竟只剩最后的一点点就可以做完了，不做完总是觉得心痒。
 
 今天做的部分是调度。我们目前只在 EL0 运行了一个 shell ，每当触发 exception 时回到 kernel 进行处理，再回到原来的地方。但现在，我要实现一个 preemtive round-robin scheduler ，就需要管理当前的所有进程，并且维护当前的进程状态，当时钟中断到来的时候，决定下一个 time slice 要执行的进程，再切换过去。这个过程当然会遇到不少的坑。
 
