@@ -20,7 +20,7 @@ pacman -S samba
 
 然后配置 /etc/samba/smb.conf ，以下是一个例子。可以根据文档微调。
 
-```ini
+```
 [global]
         security = ads
         realm = YOUR-AD-HERE
@@ -39,7 +39,7 @@ pacman -S samba
 
 ```
 
-这样，域上的用户 user 会拿到 home 目录为 /home/YOUR-GROUP-HERE/user ，uid 在 10000-2000范围内的用户。在一会经过配置之后，可以通过 `getent passwd` 验证。
+这样，域上的用户 user 会拿到 home 目录为 /home/YOUR-DOMAIN-HERE/user ，uid 在 10000-2000范围内的用户。在一会经过配置之后，可以通过 `getent passwd` 验证。
 
 接下来，需要把本机的 samba 登入到域的管理员，并且启动服务。
 
@@ -52,7 +52,7 @@ systemctl enable --now winbind
 
 更改 /etc/nsswitch.conf ，在 passwd, shadow 和 group 都增添 winbind ：
 
-```ini
+```
 passwd: files mymachines systemd winbind
 group: files mymachines systemd winbind
 shadow: files winbind
@@ -82,7 +82,7 @@ net ads lookup
 
 第一部分： auth
 
-```ini
+```
 auth [success=1 default=ignore]         pam_localuser.so
 auth [success=2 default=die]            pam_winbind.so krb5_auth krb5_ccache_type=FILE cached_login try_first_pass
 auth [success=1 default=die]            pam_unix.so nullok_secure
@@ -95,7 +95,7 @@ auth required                           pam_env.so
 
 第二部分：account
 
-```ini
+```
 account required                        pam_unix.so
 account [success=1 default=ignore]      pam_localuser.so
 account required                        pam_winbind.so
@@ -107,7 +107,7 @@ account required                        pam_time.so
 
 第三部分：password
 
-```ini
+```
 password [success=1 default=ignore]     pam_localuser.so
 password [default=die]                  pam_echo.so file=/etc/pam.d/messages/ad_reject_change_passwd.txt
 password optional                       pam_echo.so file=/etc/pam.d/messages/local_user_passwd.txt
@@ -139,7 +139,7 @@ session   optional                      pam_permit.so
 
 然后修改 /etc/pam.d/passwd :
 
-```ini
+```
 password        required        pam_cracklib.so difok=2 minlen=8 dcredit=2 ocredit=2 retry=3
 password        include         system-auth
 #password       requisite       pam_deny.so
