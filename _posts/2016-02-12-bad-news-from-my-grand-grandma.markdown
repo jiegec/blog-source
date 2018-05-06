@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2016-02-12 21:19:21 +0800
-tags: [thoughts, death, RIP]
+tags: [thoughts, death, rip]
 category: thoughts
 ---
 

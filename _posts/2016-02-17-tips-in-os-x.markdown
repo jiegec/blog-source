@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2016-02-17 19:12:49 +0800
-tags: [tips, osx, macOS]
+tags: [tips, osx, macos]
 title: Screen Capturing Tips in macOS
 category: osx
 ---

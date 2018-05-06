@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2018-03-03 11:07:30 +0800
-tags: [Rust,OS,Stanford,CS140e,RPi3,FAT32,SD card,alignment]
+tags: [rust,os,stanford,cs140e,rpi3,fat32,sd card,alignment]
 category: programming
 title: 近来做 Stanford CS140e 的一些进展和思考（5）
 ---

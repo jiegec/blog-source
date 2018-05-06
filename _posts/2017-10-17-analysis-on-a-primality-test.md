@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2017-10-17 21:05:28 +0800
-tags: [CS,prime,algorithm]
+tags: [cs,prime,algorithm]
 category: programming
 title: 分析一个我第一次见的素数测试函数
 ---

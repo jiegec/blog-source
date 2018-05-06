@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2017-10-30 21:07:23 +0800
-tags: [Tyche,OJ,CPU,CPUID]
+tags: [tyche,oj,cpu,cpuid]
 category: OI
 title: 用CPUID获取评测机器的CPU
 ---

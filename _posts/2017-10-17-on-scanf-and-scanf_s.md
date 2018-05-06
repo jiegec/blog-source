@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2017-10-17 16:46:40 +0800
-tags: [VS,C,C++,CS]
+tags: [vs,c,c++,cs]
 category: programming
 title: 关于scanf和scanf_s的问题
 ---

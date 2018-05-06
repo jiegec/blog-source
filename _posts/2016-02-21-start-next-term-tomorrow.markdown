@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2016-02-21 18:30:15 +0800
-tags: [school,GDKOI,homework]
+tags: [school,gdkoi,homework]
 category: others
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2018-02-06 12:52:59 +0800
-tags: [Rust,OS,Stanford,CS140e,kernel,GPIO,hardware,RPi3,shell,bootloader,XMODEM,UART]
+tags: [rust,os,stanford,cs140e,kernel,gpio,hardware,rpi3,shell,bootloader,xmodem,uart]
 category: programming
 title: 近来做 Stanford CS140e 的一些进展和思考（2）
 ---

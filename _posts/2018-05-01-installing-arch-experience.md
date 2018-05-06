@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2018-05-01 16:46:00 +0800
-tags: [arch,boot,EFI,fat32]
+tags: [arch,boot,efi,fat32]
 category: system
 title: 在服务器上安装 Archlinux 记录
 ---
