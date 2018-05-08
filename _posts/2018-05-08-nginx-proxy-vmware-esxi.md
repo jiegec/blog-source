@@ -109,20 +109,20 @@ server {
                         add_header 'Content-Type' 'text/plain; charset=utf-8';
                         add_header 'Content-Length' 0;
                         return 204;
-				}
+                }
 
- 				add_header 'Access-Control-Allow-Origin' 'https://esxi.example.org' always;
- 				add_header 'Access-Control-Allow-Credentials' 'true' always;
+                add_header 'Access-Control-Allow-Origin' 'https://esxi.example.org' always;
+                add_header 'Access-Control-Allow-Credentials' 'true' always;
 
-				proxy_pass https://esxi_addr:443;
-				proxy_ssl_verify off;
-				proxy_ssl_session_reuse on;
-				proxy_set_header Host $http_host;
-				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-				proxy_set_header X-Forwarded-Proto $scheme;
-				proxy_set_header Upgrade $http_upgrade;
-				proxy_set_header Connection $connection_upgrade;
-	}
+                proxy_pass https://esxi_addr:443;
+                proxy_ssl_verify off;
+                proxy_ssl_session_reuse on;
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+        }
 }
 ```
 
