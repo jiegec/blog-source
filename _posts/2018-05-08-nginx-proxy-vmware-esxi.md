@@ -125,3 +125,8 @@ server {
 	}
 }
 ```
+
+20:29 更新：找到了 VMware Remote Console 的端口：902，用 iptables 进行 DNAT 即可：
+```shell
+iptables -A PREROUTING -i wan_interface -p tcp -m tcp --dport 902 -j DNAT --to-destination esxi_addr:902
+```
