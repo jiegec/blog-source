@@ -6,12 +6,12 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: Jiajie Chen's blog
+title: 杰哥的{运维,编程}小笔记
 email: jiegec@qq.com
 description: > # this means to ignore newlines until "baseurl:"
   This is the personal blog of Jiajie Chen, a NANO(uNix hAcker aNd lOver).
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://jiegec.github.io" # the base hostname & protocol for your site
+url: "https://jiegec.me" # the base hostname & protocol for your site
 github_username:  jiegec
 
 # Build settings
