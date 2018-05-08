@@ -19,6 +19,6 @@ title: 在服务器上安装 Archlinux 记录
 P.S. 我研究出了一个很好用的 mosh + tmux 的 fish function: (但是有时工作有时不工作，不明白什么回事)
 ``` 
 function tmosh
-    mosh $argv -- bash -c 'tmux new-session fish -C \'tmux set -g mouse on\' -C \'tmux setw -g mode-keys vi\''
+    mosh $argv -- tmux new-session bash -c 'tmux set -g mouse on; tmux setw -g mode-keys vi; fish'
 end
 ```
