@@ -130,3 +130,16 @@ server {
 ```shell
 iptables -A PREROUTING -i wan_interface -p tcp -m tcp --dport 902 -j DNAT --to-destination esxi_addr:902
 ```
+
+2018-05-09 08:07 更新：最后发现，还是直接隧道到内网访问 ESXi 最科学。或者，让 443 重定向到 8443 ：
+```
+server {
+        listen 443 ssl;
+        server_name esxi.example.org;
+        ssl_certificate /path/to/ssl/cert.pem;
+        ssl_certificate_key /path/to/ssl/key.pem;
+
+        return 301 https://$host:8443$request_uri;
+}
+```
+这样，前面也不用写那么多 CORS 的东西了。
