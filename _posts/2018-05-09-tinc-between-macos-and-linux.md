@@ -25,7 +25,6 @@ ConnectTo = linux
 ```
 #!/bin/sh
 ifconfig $INTERFACE 192.168.0.2 192.168.0.1 mtu 1500 netmask 255.255.255.255
-route add -net 192.168.0.2 192.168.0.1 255.255.255.0
 ```
 
 和 /usr/local/etc/tinc/example/tinc-down:
@@ -34,16 +33,32 @@ route add -net 192.168.0.2 192.168.0.1 255.255.255.0
 ifconfig $INTERFACE down
 ```
 
+还有 /usr/local/etc/tinc/example/subnet-up:
+```
+#!/bin/sh
+[ "$NAME" = "$NODE" ] && exit 0
+/usr/local/opt/iproute2mac/bin/ip route add $SUBNET dev $INTERFACE
+```
+
+以及 /usr/local/etc/tinc/example/subnet-down:
+```
+#!/bin/sh
+[ "$NAME" = "$NODE" ] && exit 0
+/usr/local/opt/iproute2mac/bin/ip route del $SUBNET dev $INTERFACE
+```
+
 然后将它们都设为可执行的：
 ```
 chmod +x tinc-up
 chmod +x tinc-down
+chmod +x subnet-down
+chmod +x subnet-down
 ```
 
 编辑 /usr/local/etc/tinc/example/macos:
 ```
 Port = 655
-Subnet = 192.168.0.2/32
+Subnet = 192.168.0.1/24
 ```
 
 执行 `tincd -n example -K` 生成密钥。
@@ -65,7 +80,7 @@ ip link set $INTERFACE down
 $ cat /etc/tinc/example/hosts/linux
 Address = linux_ip
 Port = 655
-Subnet = 192.168.0.1/32
+Subnet = 192.168.0.1/24
 $ tincd -n example -K
 ```
 
