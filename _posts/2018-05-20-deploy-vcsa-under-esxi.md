@@ -16,3 +16,5 @@ $ /mnt/vcsa-cli-installer/lin64/vcsa-deploy install /path/to/embedded_vCSA_on_ES
 
 一路输入密码，等待安装完毕即可。然后通过 443 端口进入 vSphere Client, 通过 5480 端口访问 vCSA 的管理页面。两个的密码可以不一样。
 
+
+2018-05-21 Update: 想要设置 VMKernel 的 IPv6 网关的话，ESXi 中没找到配置的地方，但是在 vSphere Client 中可以进行相关配置。
