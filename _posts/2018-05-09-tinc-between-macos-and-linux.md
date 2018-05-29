@@ -85,3 +85,32 @@ $ tincd -n example -K
 ```
 
 接着，把 linux 上 /etc/tinc/example/hosts/linux 拷贝到 macos 的 /usr/local/etc/tinc/example/hosts/linux ，然后把 macos 上 /usr/local/etc/tinc/example/hosts/macos 拷贝到 /etc/tinc/example/hosts/macos 。在两台机器上都 `tinc -n example -D -d3` 即可看到连接的建立，通过 ping 即可验证网络建立成功。
+
+2018-05-29 Update: Android 上，利用 Tinc GUI 也可以把 Tinc 运行起来，只是配置不大一样：
+
+```shell
+$ cat tinc.conf
+Name = example
+Device = /dev/tun
+Mode = switch
+ConnectTo = remote
+ScriptsInterpreter = /system/bin/sh
+$ cat tinc-up
+#!/bin/sh
+ip link set $INTERFACE up
+ip addr add local_ip/24 dev $INTERFACE
+$ cat tinc-down
+#!/bin/sh
+ip addr del local_ip/24 dev $INTERFACE
+ip link set $INTERFACE down
+$ cat subnet-up
+$!/bin/bash
+[ "$NAME" = "$NODE" ] && exit 0
+ip route add $SUBNET dev $INTERFACE metric $WEIGHT table local
+$ cat subnet-down
+#!/bin/bash
+[ "$NAME" = "$NODE" ] && exit 0
+ip route del $SUBNET dev $INTERFACE table local
+```
+
+注意 table local 的使用。需要 Root 。
