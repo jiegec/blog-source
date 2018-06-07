@@ -65,6 +65,8 @@ Address=192.168.1.1/24
 
 配置 dhcpd (isc-dhcp-server):
 ```
+$ cat /etc/default/isc-dhcp-server
+INTERFACESv4="eno1.3"
 $ cat /etc/dhcpd.conf
 option space Cisco_LWAPP_AP;
 option Cisco_LWAPP_AP.server-address code 241 = array of ip-address;
@@ -85,5 +87,6 @@ iptables-save > /etc/iptables/iptables.rules
 
 打开 ipv4 forwarding:
 ```
+echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 'net.ipv4.conf.all.forwarding=1' >> /etc/sysctl.d/99-ipv4-forwarding.conf
 ```
