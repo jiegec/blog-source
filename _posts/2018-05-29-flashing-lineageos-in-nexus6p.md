@@ -53,9 +53,8 @@ $ fastboot flash recovery twrp-3.2.1-0-angler.img
 经过一段时间的等待， LineageOS 就安装成功了。但是遇到了一些问题：
 
 1. 开机时提示 vendor image 版本与打包 LineagesOS 时采用的版本不同。
-
-于是我下载了官方的 [factory image](https://dl.google.com/dl/android/aosp/angler-opm2.171019.029.a1-factory-bf17e552.zip)，找到其中的 vendor.img ，用 TWRP 刷到了 vendor 分区中。并且执行了 flash-bash.sh 更新 bootloader 和 radio 。重启的时候这个错误就解决了。
-
+    于是我下载了官方的 [factory image](https://dl.google.com/dl/android/aosp/angler-opm2.171019.029.a1-factory-bf17e552.zip)，找到其中的 vendor.img ，用 TWRP 刷到了 vendor 分区中。并且执行了 flash-bash.sh 更新 bootloader 和 radio 。重启的时候这个错误就解决了。2018-06-12 更新 注意：不要下载 Driver Binaries 里面的 vendor, 刷上去系统还是提示版本 mismatch，建议还是下载完整的factory 镜像。
 2. 检测不到 SIM 卡。
+    回到 bootloader 看 Barcode, 是有 IMEI 等信息的，说明分区没有被写坏。在网上搜索一段时间以后，发现禁用登录密码重启一次后即可使用，之后把密码加回来即可。
 
-回到 bootloader 看 Barcode, 是有 IMEI 等信息的，说明分区没有被写坏。在网上搜索一段时间以后，发现禁用登录密码重启一次后即可使用，之后把密码加回来即可。
+
