@@ -21,7 +21,10 @@ title: 使用 iptables 和策略路由进行带源地址的 forwarding
 iptables -t nat -A PREROUTING -i external_interface -p tcp -m tcp --dport 2222 -j DNAT --to-destination internal_server_ip:22
 ```
 
-但是，从服务器回来的包到了 NAT Router 上后，由于路由表的配置问题，默认的路由并不能把包送达对方。所以，我们首先给包打上 mark：
+但是，从服务器回来的包到了 NAT Router 上后，由于路由表的配置问题，默认的路由并不能把包送达对方。
+
+方法1:
+我们首先给包打上 mark：
 
 ```shell
 iptables -t mangle -A PREROUTING -i internal_interface -p tcp -m tcp --sport 22 -j MARK --set-mark 0x2222
@@ -31,6 +34,16 @@ iptables -t mangle -A PREROUTING -i internal_interface -p tcp -m tcp --sport 22 
 
 ```shell
 ip rule add fwmark 0x2222 table 2222
+ip route add table 2222 default via gateway_address
+```
+
+方法2: (UPD 2018-07-07)
+利用 `ip rule` 直接达成同样的效果
+
+```shell
+ip rule add from internal_ip/prefix table 2222
+# or
+ip rule add iif internal_interface table 2222
 ip route add table 2222 default via gateway_address
 ```
 
