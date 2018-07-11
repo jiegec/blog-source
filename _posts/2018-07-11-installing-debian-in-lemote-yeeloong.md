@@ -8,11 +8,11 @@ title: 在 Lemote Yeeloong 上安装 Debian jessie
 
 参考网站：
 
-http://wiki.gnewsense.org/Projects/GNewSenseToMIPS
-https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/
-https://wiki.debian.org/DebianYeeloong
-https://wiki.debian.org/MIPSPort
-https://www.debian.org/ports/mips/
+[gNewSense To MIPS](http://wiki.gnewsense.org/Projects/GNewSenseToMIPS)
+[Run a TFTP server on macOS](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
+[Debian on Yeeloong](https://wiki.debian.org/DebianYeeloong)
+[Debian MIPS port wiki](https://wiki.debian.org/MIPSPort)
+[Debian MIPS port](https://www.debian.org/ports/mips/)
 
 首先，进入设备的 PMON：
 ```
