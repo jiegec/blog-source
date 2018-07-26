@@ -38,9 +38,12 @@ $ cd $GOPATH/src/github.com/z4yx/GoAuthing/cli
 $ env GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build main.go
 $ mipsel-linux-gnu-strip main
 $ scp main root@192.168.1.1:~/GoAuthing
+$ ssh root@192.168.1.1
+$ opkg install ca-certificates
+$ ./GoAuthing
 ```
 
-这里参考了[解决GO语言编译程序在openwrt(mipsle架构)上运行提示Illegal instruction问题](https://blog.csdn.net/QQ531456898/article/details/80095707)，配置了 GOMIPS 环境变量。有毒的是，这个环境变量，在 macOS 上不能正常工作，而在 Linux 机子上是没有问题的。
+这里参考了[解决GO语言编译程序在openwrt(mipsle架构)上运行提示Illegal instruction问题](https://blog.csdn.net/QQ531456898/article/details/80095707)，配置了 GOMIPS 环境变量。为了访问 HTTPS 网站，参考了[OpenWRT Wiki - SSL and Certificates in wget](https://wiki.openwrt.org/doc/howto/wget-ssl-certs)。有毒的是，这个环境变量，在 macOS 上不能正常工作，而在 Linux 机子上是没有问题的。
 
 然后就可以成功地跑起来 GoAuthing ，解决了上校园网认证的问题。
 
