@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2017-11-30 18:07:10 +0800
-tag: [jupyter, cling, C++]
+tag: [jupyter, cling, c++]
 category: programming
 ---
 
