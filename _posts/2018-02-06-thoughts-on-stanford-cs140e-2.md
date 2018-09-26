@@ -17,3 +17,5 @@ title: 近来做 Stanford CS140e 的一些进展和思考（2）
 最后，又实现了 `uptime` （输出设备启动到现在的时间）和 `exit` （跳转回 `bootloader` ，可以上传新的 `kernel` ）。并添加了 `TUNA` 作为 `shell` 启动时输出的 `BANNER` 。
 
 整个过程挺虐的，踩了很多的坑，由于很多东西都没有，输入输出目前也只有 `UART` ，写了 `UART` 后又遇到 `XMODEM` 难以调试的问题。十分感谢 `#tuna` 上的 @BenYip 及时地指出了代码的几处问题，节省了我许多时间。
+
+更新：[下一篇在这里](/2018/02/16/thoughts-on-stanford-cs140e-3/)。

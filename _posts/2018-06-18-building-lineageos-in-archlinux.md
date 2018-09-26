@@ -38,5 +38,5 @@ $ ./extract-files.sh
 $ cd ~/android/lineage
 $ croot
 $ brunch angler
-$ # Endless waiting...
+$ # Endless waiting... (for me, more than 2 hrs)
 ```
