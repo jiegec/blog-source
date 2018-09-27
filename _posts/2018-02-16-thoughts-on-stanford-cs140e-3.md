@@ -12,4 +12,4 @@ title: 近来做 Stanford CS140e 的一些进展和思考（3）
 
 之后还要在 `aarch64` 上用 `MMU` 实现虚拟内存，之前在 `MIT 6.828` 里被页表整得脑子眩晕，希望到时我还活着吧（逃
 
-更新：[下一篇在这里](/2018/02/27/thoughts-on-stanford-cs140e-4/)。
+更新：[下一篇在这里](/programming/2018/02/27/thoughts-on-stanford-cs140e-4/)。

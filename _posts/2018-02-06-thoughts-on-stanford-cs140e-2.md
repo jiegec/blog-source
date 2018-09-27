@@ -18,4 +18,4 @@ title: 近来做 Stanford CS140e 的一些进展和思考（2）
 
 整个过程挺虐的，踩了很多的坑，由于很多东西都没有，输入输出目前也只有 `UART` ，写了 `UART` 后又遇到 `XMODEM` 难以调试的问题。十分感谢 `#tuna` 上的 @BenYip 及时地指出了代码的几处问题，节省了我许多时间。
 
-更新：[下一篇在这里](/2018/02/16/thoughts-on-stanford-cs140e-3/)。
+更新：[下一篇在这里](/programming/2018/02/16/thoughts-on-stanford-cs140e-3/)。
