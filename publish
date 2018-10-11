@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 cd ../jiegec.github.io/
-jekyll build --source=../blog-source/ --destination=. --incremental
+rm -rf *
+jekyll build --source=../blog-source/ --destination=. 
 cd ../jiegec.github.io/
 git add .
