@@ -22,10 +22,10 @@ title: 绕过 GPGMail 的激活检测
 ```
 $ radiff2 -D
 --- 0x0000282f  410fbec7
-- movsx eax, r15b
-+++ 0x0000282f  4c89e090
-+ mov rax, r12
-+ nop
+- movsx eax, r15b
++++ 0x0000282f  4c89e090
++ mov rax, r12
++ nop
 ```
 
 当然了，还需要额外 `codesign --remove-signature` 一下。
