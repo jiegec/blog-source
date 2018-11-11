@@ -8,6 +8,8 @@ title: 在 macOS 和 Linux 之间搭建 tinc 网络
 
 一直听说 tinc 比较科学，所以尝试自己用 tinc 搭建一个网络。这里，macOS 这段没有固定 IP 地址，Linux 机器有固定 IP 地址 linux_ip 。假设网络名称为 example , macOS 端名为 macos 地址为 192.168.0.2, linux 端名为 linux 地址为 192.168.0.1。
 
+2018-11-11 注：本文用的 tinc 版本为 1.0.x ，而不是 1.1-pre ，两个分支命令不同，但协议可以兼容。
+
 在 macOS 上配置：
 ```shell
 brew install tinc
