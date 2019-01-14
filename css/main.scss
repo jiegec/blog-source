@@ -51,3 +51,14 @@ $on-laptop:        800px;
         "layout",
         "syntax-highlighting"
 ;
+
+#tag-cloud {
+    display: flex;
+    flex-direction:row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.set-1 {
+    margin: 0 20px;
+}
