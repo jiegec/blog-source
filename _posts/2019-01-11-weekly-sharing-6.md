@@ -3,7 +3,7 @@ layout: post
 date: 2019-01-11 17:41:00 +0800
 tags: [weeklysharing]
 category: misc
-title: 每周分享第 5 期
+title: 每周分享第 6 期
 ---
 
 今天刚迁移了域名到 jiege.ch ，原来的 jiegec.me 会自动跳转过来，链接什么的都不用变。
