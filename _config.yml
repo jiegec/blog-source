@@ -30,3 +30,7 @@ highlighter: rouge
 
 kramdown:
   input: GFM
+
+plugins:
+  - jekyll-mentions
+  - jekyll-sitemap
