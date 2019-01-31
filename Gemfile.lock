@@ -247,6 +247,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   jekyll-mentions
+  jekyll-sitemap
   jekyll-tagging
 
 BUNDLED WITH

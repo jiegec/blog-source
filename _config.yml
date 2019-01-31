@@ -9,7 +9,7 @@
 title: 杰哥的{运维,编程}小笔记
 email: noc@jiegec.ac.cn
 description: > # this means to ignore newlines until "baseurl:"
-  This is the personal blog of Jiajie Chen.
+    本人的博客
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jiege.ch" # the base hostname & protocol for your site
 github_username:  jiegec
@@ -34,3 +34,6 @@ kramdown:
 plugins:
   - jekyll-mentions
   - jekyll-sitemap
+  - jekyll-paginate
+
+paginate: 20
