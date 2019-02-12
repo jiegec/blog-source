@@ -37,3 +37,4 @@ plugins:
   - jekyll-paginate
 
 paginate: 20
+timezone: Asia/Shanghai

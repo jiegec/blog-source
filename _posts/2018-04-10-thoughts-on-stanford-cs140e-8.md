@@ -17,3 +17,5 @@ title: 近来做 Stanford CS140e 的一些进展和思考（8）
 我的代码实现在 [这里](https://github.com/jiegec/cs140e/commit/977f179a9b28e88e85f4ba9577a0682bf2b6c57b) 。下一步就要写 syscall 了。希望能在期中前抽时间赶紧把这个做完。
 
 18:54 PM Update: 刚实现完了 sleep 的 syscall 。比预想中要简单。果然找到了自己实现的调度器的 BUG 。此系列大概是完结了。
+
+2019-02-12 Update: [下一篇文章](/programming/2019/02/12/thoughts-on-stanford-cs140e-9/)。
