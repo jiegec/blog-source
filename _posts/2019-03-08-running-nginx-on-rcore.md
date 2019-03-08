@@ -23,3 +23,36 @@ title: 在 rCore 上运行 nginx
 ![](/assets/nginx.jpg)
 
 再往前的话，还有很多小的问题，例如网卡的中断启用了但没有改 mask ，所以啥也没收到，靠 QEMU Tracing 找到问题。还有一个很有意思的现象，就是如果 elf 的 program header 没有 phdr 这个项的时候，我们发现，可以通过第一个load（如果加载了完整的 elf 头的话），我们可以从这里推断出 phdr 的地址（load的虚拟地址加偏移），然后丢到 auxv 里去让 musl 配置 tls。总之这些都解决了。也不用去考虑兼容 litc 了，已经全部向 linux 靠拢了，稳。
+
+注：最简 nginx 编译参数：
+
+```
+./configure --with-cc=/usr/bin/musl-gcc --with-cc-opt=-static --with-ld-opt=-satic --without-pcre --without-http_rewrite_module --without-http_gzip_module --with-poll_module
+```
+
+这样编译出来是一个静态文件，并且在 strip 之后只有不到 1M 的大小。
+
+最简 nginx 配置：
+
+```
+daemon off;
+master_process off;
+
+events {
+    use poll;
+}
+
+http {
+    server {
+        listen 80;
+        server_name _;
+
+        root /;
+    }
+}
+```
+
+这样就免去了一些麻烦（多线程、多进程交互还是有很多问题），但确实可以跑起来了。
+
+另外，还需要写一份 /etc/passwd 和 /etc/group 用于 nobody 和 nogroup 。不需要其他额外的东西了。
+
