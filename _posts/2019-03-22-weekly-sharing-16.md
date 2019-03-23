@@ -9,7 +9,7 @@ title: 每周分享第 16 期
 继续沉迷写 OS +1
 
 1. C++ 的一个比较 fancy 的 format 库 https://github.com/fmtlib/fmt
-2. Rust 的 rsync 替代品 https://github.com/fmtlib/fmt
+2. Rust 的 rsync 替代品 https://github.com/wchang22/lumins
 3. VirtIO 1.1 要发布了 https://github.com/oasis-tcs/virtio-docs/commit/3b4130f3a8910dad89b8166e06e58806b9c60943
 4. 向二维码嵌入图片的工具 http://cgv.cs.nthu.edu.tw/Projects/Recreational_Graphics/Halftone_QRCodes/
 5. Google Chrome 发出奇怪的 DNS 请求的原因 https://unix.stackexchange.com/questions/363512/chrome-dns-requests-with-random-dns-names-malware
