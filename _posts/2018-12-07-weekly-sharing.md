@@ -12,7 +12,7 @@ title: 每周分享第 1 期
 2. Promise 真香，真好用
 3. 几天前惠老师还在说 "IE, The best Chrome Downloader Downloader, ever" 今天 EdgeHTML 就宣告死亡了
 4. WPF, Windows Forms 和 WinUI 开源了，mono 这是要凉？ [链接](https://blogs.windows.com/buildingapps/2018/12/04/announcing-open-source-of-wpf-windows-forms-and-winui-at-microsoft-connect-2018/)
-5. 有人逆向了 FGPA 的 bitstream 格式，希望 FPGA 有朝一日可以进入 开源时代？ [链接](https://github.com/mmicko/prjtang)
+5. 有人逆向了 FPGA 的 bitstream 格式，希望 FPGA 有朝一日可以进入 开源时代？ [链接](https://github.com/mmicko/prjtang)
 6. 造机的 baseline 就决定是 [它](https://github.com/Icenowy/ice-risc) 了
 7. 根据 AST 炼丹判相似度还行，好奇它跨语言的预测水准 [链接](https://code2vec.org/)
 8. 可视化 h264 nalu 的软件 [H264Naked](https://github.com/shi-yan/H264Naked) （做的好糙啊，想交 pr）
