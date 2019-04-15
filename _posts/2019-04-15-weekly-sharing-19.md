@@ -1,5 +1,5 @@
 ---
-Playout: post
+layout: post
 date: 2019-04-15 01:03:00 +0800
 tags: [weeklysharing]
 category: misc
