@@ -2,7 +2,7 @@
 layout: post
 date: 2017-12-27 20:25:23 +0800
 tags: [gentoo,gentoo-prefix,macos,package-manager]
-category: macOS
+category: devops
 title: 在 macOS 上试用 Gentoo/Prefix
 ---
 
