@@ -2,7 +2,7 @@
 layout: post
 date: 2017-10-30 21:07:23 +0800
 tags: [tyche,oj,cpu,cpuid]
-category: OI
+category: others
 title: 用CPUID获取评测机器的CPU
 ---
 

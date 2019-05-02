@@ -2,7 +2,7 @@
 layout: post
 date: 2018-05-29 07:18:00 +0800
 tags: [android,nexus6p,huawei,angler,lineageos]
-category: phone
+category: os
 title: 向 Nexus 6P 中刷入 LineageOS 实践
 ---
 
