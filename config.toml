@@ -1,0 +1,27 @@
+baseURL = "https://jiegec.ch"
+languageCode = "en-us"
+title = "杰哥的{运维,编程,调板子}小笔记"
+theme = "minos"
+publishDir = "../jiegec.github.io"
+pagniate = 10
+disqusShortname = "jiegec"
+
+[params]
+    smartToc = true
+
+[menu]
+
+  [[menu.main]]
+    identifier = "about"
+    name = "关于"
+    url = "/about/"
+
+  [[menu.main]]
+    identifier = "tags"
+    name = "标签"
+    url = "/tags/"
+
+  [[menu.main]]
+    identifier = "feed"
+    name = "订阅"
+    url = "/feed.xml"

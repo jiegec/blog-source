@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-cd ../jiegec.github.io/
-rm -rf *
-jekyll build --source=../blog-source/ --destination=. 
-cd ../jiegec.github.io/
-git add .
