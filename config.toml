@@ -48,3 +48,8 @@ disqusShortname = "jiegec"
     identifier = "feed"
     name = "订阅"
     url = "/feed.xml"
+
+[outputFormats]
+[outputFormats.RSS]
+mediatype = "application/rss"
+baseName = "feed"
