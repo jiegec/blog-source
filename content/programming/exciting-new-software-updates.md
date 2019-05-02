@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2016-05-22 07:47:16 +0800
-tag: [haskell, ghc, emacs, ghc]
+tags: [haskell, ghc, emacs, ghc]
 category: programming
 ---
 

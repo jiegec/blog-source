@@ -6,6 +6,17 @@ publishDir = "../jiegec.github.io"
 pagniate = 10
 disqusShortname = "jiegec"
 
+[taxonomies]
+    category = "category"
+	tags = "tags"
+
+[permalinks]
+  logo = "/:section/:year/:month/:day/:filename/"
+  misc = "/:section/:year/:month/:day/:filename/"
+  networking = "/:section/:year/:month/:day/:filename/"
+  os = "/:section/:year/:month/:day/:filename/"
+  programming = "/:section/:year/:month/:day/:filename/"
+
 [params]
     smartToc = true
 
@@ -20,6 +31,11 @@ disqusShortname = "jiegec"
     identifier = "tags"
     name = "标签"
     url = "/tags/"
+
+  [[menu.main]]
+    identifier = "category"
+    name = "分类"
+    url = "/category/"
 
   [[menu.main]]
     identifier = "feed"
