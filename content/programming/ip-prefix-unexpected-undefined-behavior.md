@@ -43,3 +43,78 @@ Returns the number of trailing 0-bits in x, starting at the least significant bi
 #define PREFIX_DEC2BIN(hex) (((uint64_t)0xFFFFFFFF << (32 - (hex))) & 0xFFFFFFFF)
 ```
 
+Quagga 的实现：
+
+```c
+/* Convert masklen into IP address's netmask (network byte order). */
+void
+masklen2ip (const int masklen, struct in_addr *netmask)
+{
+  assert (masklen >= 0 && masklen <= IPV4_MAX_BITLEN);
+
+  /* left shift is only defined for less than the size of the type.
+   * we unconditionally use long long in case the target platform
+   * has defined behaviour for << 32 (or has a 64-bit left shift) */
+
+  if (sizeof(unsigned long long) > 4)
+    netmask->s_addr = htonl(0xffffffffULL << (32 - masklen));
+  else
+    netmask->s_addr = htonl(masklen ? 0xffffffffU << (32 - masklen) : 0);
+}
+
+/* Convert IP address's netmask into integer. We assume netmask is
+   sequential one. Argument netmask should be network byte order. */
+u_char
+ip_masklen (struct in_addr netmask)
+{
+  uint32_t tmp = ~ntohl(netmask.s_addr);
+  if (tmp)
+    /* clz: count leading zeroes. sadly, the behaviour of this builtin
+     * is undefined for a 0 argument, even though most CPUs give 32 */
+    return __builtin_clz(tmp);
+  else
+    return 32;
+}
+```
+
+BIRD 的解决方法：
+
+```c
+/**
+ * u32_mkmask - create a bit mask
+ * @n: number of bits
+ *
+ * u32_mkmask() returns an unsigned 32-bit integer which binary
+ * representation consists of @n ones followed by zeroes.
+ */
+u32
+u32_mkmask(uint n)
+{
+  return n ? ~((1 << (32 - n)) - 1) : 0;
+}
+
+/**
+ * u32_masklen - calculate length of a bit mask
+ * @x: bit mask
+ *
+ * This function checks whether the given integer @x represents
+ * a valid bit mask (binary representation contains first ones, then
+ * zeroes) and returns the number of ones or 255 if the mask is invalid.
+ */
+uint
+u32_masklen(u32 x)
+{
+  int l = 0;
+  u32 n = ~x;
+
+  if (n & (n+1)) return 255;
+  if (x & 0x0000ffff) { x &= 0x0000ffff; l += 16; }
+  if (x & 0x00ff00ff) { x &= 0x00ff00ff; l += 8; }
+  if (x & 0x0f0f0f0f) { x &= 0x0f0f0f0f; l += 4; }
+  if (x & 0x33333333) { x &= 0x33333333; l += 2; }
+  if (x & 0x55555555) l++;
+  if (x & 0xaaaaaaaa) l++;
+  return l;
+}
+```
+
