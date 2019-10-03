@@ -1,0 +1,28 @@
+---
+layout: page
+date: 1970-01-01
+title: 工具
+permalink: /tools/
+---
+
+下面是我常用的一些在线工具：
+
+别人编写的：
+
+1. https://gchq.github.io/CyberChef/
+1. https://godbolt.org/
+1. https://hpd.gasmi.net/
+1. https://tcpdump101.com/
+1. https://regexper.com/
+1. https://crontab.guru/
+1. https://salmanarif.bitbucket.io/visual/index.html
+1. https://mathpix.com/
+1. https://www.falstad.com/circuit/circuitjs.html
+1. https://merricx.github.io/qrazybox/
+1. https://www.epochconverter.com/
+
+
+自己编写的：
+
+1. https://jiege.ch/sdes-visualization/
+1. https://jiege.ch/booth-visualization/
