@@ -40,6 +40,11 @@ disqusShortname = "jiegec"
     url = "/tools/"
 
   [[menu.main]]
+    identifier = "projects"
+    name = "项目"
+    url = "/projects/"
+
+  [[menu.main]]
     identifier = "tags"
     name = "标签"
     url = "/tags/"
