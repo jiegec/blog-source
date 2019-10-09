@@ -24,7 +24,8 @@ permalink: /tools/
 
 自己编写的：
 
-1. https://jiege.ch/sdes-visualization/
-1. https://jiege.ch/booth-visualization/
-1. https://jiege.ch/integer-divide-visualization/
-1. https://jiege.ch/online_tac_vm/
+1. S-DES 可视化 https://jiege.ch/sdes-visualization/
+1. Booth 乘法可视化 https://jiege.ch/booth-visualization/
+1. 整数除法可视化 https://jiege.ch/integer-divide-visualization/
+1. 在线运行 TAC 代码 https://jiege.ch/online_tac_vm/
+1. 在线编译 Decaf https://jiege.ch/online_decaf/
