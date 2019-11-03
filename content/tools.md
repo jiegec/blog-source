@@ -30,3 +30,4 @@ permalink: /tools/
 1. 整数除法可视化 https://jiege.ch/integer-divide-visualization/
 1. 在线运行 TAC 代码 https://jiege.ch/online_tac_vm/
 1. 在线编译 Decaf https://jiege.ch/online_decaf/
+1. 在线解码登机牌信息 BCBP https://jiege.ch/decode-bcbp/
