@@ -7,7 +7,7 @@ permalink: /privacy_policy_musicstat
 
 # MusicStat
 
-MusicStat is written by @jiegec.t
+MusicStat is written by @jiegec.
 
 ## Privacy Policy
 
