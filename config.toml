@@ -12,6 +12,9 @@ disqusShortname = "jiegec"
 
 [permalinks]
   ctf = "/:section/:year/:month/:day/:filename/"
+  devops = "/:section/:year/:month/:day/:filename/"
+  hardware = "/:section/:year/:month/:day/:filename/"
+  life = "/:section/:year/:month/:day/:filename/"
   logo = "/:section/:year/:month/:day/:filename/"
   meta = "/:section/:year/:month/:day/:filename/"
   misc = "/:section/:year/:month/:day/:filename/"
@@ -20,10 +23,10 @@ disqusShortname = "jiegec"
   os = "/:section/:year/:month/:day/:filename/"
   others = "/:section/:year/:month/:day/:filename/"
   programming = "/:section/:year/:month/:day/:filename/"
+  software = "/:section/:year/:month/:day/:filename/"
   speech = "/:section/:year/:month/:day/:filename/"
   system = "/:section/:year/:month/:day/:filename/"
   unboxing = "/:section/:year/:month/:day/:filename/"
-  software = "/:section/:year/:month/:day/:filename/"
 
 [params]
     smartToc = true
