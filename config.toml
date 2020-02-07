@@ -23,6 +23,7 @@ disqusShortname = "jiegec"
   speech = "/:section/:year/:month/:day/:filename/"
   system = "/:section/:year/:month/:day/:filename/"
   unboxing = "/:section/:year/:month/:day/:filename/"
+  software = "/:section/:year/:month/:day/:filename/"
 
 [params]
     smartToc = true
