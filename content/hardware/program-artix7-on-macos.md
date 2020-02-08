@@ -48,3 +48,8 @@ Info : Listening on port 4444 for telnet connections
 ```
 
 这时 FPGA 已经烧写成功。
+
+参考：
+
+1. https://pansila.github.io/posts/7db4884d
+2. https://numato.com/kb/programming-mimas-a7-using-openocd-and-xc3sprog/
