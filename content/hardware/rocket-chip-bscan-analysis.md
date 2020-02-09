@@ -64,17 +64,17 @@ end
 
 这里 `TDI_REG` 取的是第一个 bit 的反（也就是上面 IR 对应 0 ，DR 对应 1 的那一位），`shiftreg_cnf` 则是之后 7 个 bit，对应上面的 Tunneled IR/DR Width。那么，在选择 IR 时 TMS 的序列为：
 
-| 4 cycles      | 1 cycle        | 1 cycle        | 2 cycles             | shift_reg_cnt-1 cycles | 2 cycles            | rest cycles   |
-| ------------- | -------------- | -------------- | -------------------- | ---------------------- | ------------------- | ------------- |
-| 0             | 1              | 1              | 0                    | 0                      | 1                   | 0             |
-| Run-Test/Idle | Select-DR-Scan | Select-IR-Scan | Capture-IR, Shift-IR | Shift-IR               | Exit1-IR, Update-IR | Run-Test/Idle |
+| 4 cycles      | 1 cycle        | 1 cycle        | 2 cycles             | shiftreg_cnt-1 cycles | 2 cycles            | rest cycles   |
+| ------------- | -------------- | -------------- | -------------------- | --------------------- | ------------------- | ------------- |
+| 0             | 1              | 1              | 0                    | 0                     | 1                   | 0             |
+| Run-Test/Idle | Select-DR-Scan | Select-IR-Scan | Capture-IR, Shift-IR | Shift-IR              | Exit1-IR, Update-IR | Run-Test/Idle |
 
 类似地，如果是选择 DR：
 
-| 4 cycles      | 1 cycle       | 1 cycle        | 2 cycles             | shift_reg_cnt-1 cycles | 2 cycles            | rest cycles   |
-| ------------- | ------------- | -------------- | -------------------- | ---------------------- | ------------------- | ------------- |
-| 0             | 0             | 1              | 0                    | 0                      | 1                   | 0             |
-| Run-Test/Idle | Run-Test/Idle | Select-DR-Scan | Capture-DR, Shift-DR | Shift-DR               | Exit1-DR, Update-DR | Run-Test/Idle |
+| 4 cycles      | 1 cycle       | 1 cycle        | 2 cycles             | shiftreg_cnt-1 cycles | 2 cycles            | rest cycles   |
+| ------------- | ------------- | -------------- | -------------------- | --------------------- | ------------------- | ------------- |
+| 0             | 0             | 1              | 0                    | 0                     | 1                   | 0             |
+| Run-Test/Idle | Run-Test/Idle | Select-DR-Scan | Capture-DR, Shift-DR | Shift-DR              | Exit1-DR, Update-DR | Run-Test/Idle |
 
 这样，刚好在 Shift-IR/DR 状态下，Payload 会被写入 IR/DR，从而完成了期望的操作。通过规定一个特定格式的 Data Register，可以实现嵌套的 TAP 的 IR 和 DR 的操作。
 
