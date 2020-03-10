@@ -1,6 +1,6 @@
 ---
 layout: page
-date: 1970-01-01
+date: 2020-01-01
 title: JieLabs 是如何工作的
 permalink: /jielabs
 ---
@@ -13,7 +13,7 @@ JieLabs 是陈嘉杰、高一川、刘晓义（按姓氏拼音首字母排序）
 
 采用了如下的技术方案：
 
-前端：React 框架 + Redux 状态管理 + Monaco 编辑器 + WebAssembly 实时通信
+前端：React 框架 + Redux 状态管理 + Monaco 编辑器 + WebAssembly 实时通信 + SASS 样式
 
 后端：Actix-Web 框架 + Diesel/PostgreSQL 数据库 + Redis 消息队列 + Quartus 构建 + Kubernetes 构建容器编排
 
