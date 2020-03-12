@@ -25,7 +25,7 @@ JieLabs 是陈嘉杰、高一川、刘晓义（按姓氏拼音首字母排序）
 
 ## 第三方库
 
-整体上采用了时下比较流形的 React 框架，配合 Redux 进行状态管理，用 React Hooks 编写组件的逻辑。为了实现 VHDL/Verilog 代码的编辑，采用了来自 VSCode 的独立编辑器空间 Monaco，并自行编写了 VHDL 和 Verilog 语言的支持，一部分在 JS 实现，另一部分在 Rust 中实现，通过 wasm-pack 打包到 JS 中执行。另外为了实现 gzip 格式的解压缩也引入了 pako 库。
+整体上采用了时下比较流行的 React 框架，配合 Redux 进行状态管理，用 React Hooks 编写组件的逻辑。为了实现 VHDL/Verilog 代码的编辑，采用了来自 VSCode 的独立编辑器空间 Monaco，并自行编写了 VHDL 和 Verilog 语言的支持，一部分在 JS 实现，另一部分在 Rust 中实现，通过 wasm-pack 打包到 JS 中执行。另外为了实现 gzip 格式的解压缩也引入了 pako 库。
 
 在这些第三方库里，Monaco 的体积最大，后面我们针对 JS 体积做了许多优化，在下面会再提。
 
