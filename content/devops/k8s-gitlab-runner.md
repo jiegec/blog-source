@@ -26,3 +26,5 @@ $ helm install --namespace gitlab-runner gitlab-runner -f values.yaml gitlab/git
 ```
 
 然后去 Kubernetes Dashboard 就可以看到部署的情况，回到 GitLab 也可以看到出现了 “Runners activated for this project” ，表示配置成功。
+
+参考配置：https://docs.gitlab.com/runner/install/kubernetes.html
