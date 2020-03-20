@@ -41,4 +41,19 @@ $ kubectl edit clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard
 # use `kubectl get clusterrole.rbac.authorization.k8s.io/cluster-admin -o yaml` to see full permissions
 ```
 
-由于 k8s 版本是 1.16.x，所以就不用配 metrics-server 了。
+接下来配置 metrics-server 。下载 metrics-server 仓库，然后修改镜像地址：
+
+```bash
+$ wget https://github.com/kubernetes-sigs/metrics-server/archive/v0.3.6.zip
+$ unar v0.3.6.zip
+$ cd metrics-server-0.3.6/deploy/1.8+
+$ vim metrics-server-deployment
+# change: k8s.gcr.io/metrics-server-amd64:v0.3.6
+# to: registry.cn-hangzhou.aliyuncs.com/google_containers/metrics-server-amd64:v0.3.6
+# add line below image: args: ["--kubelet-insecure-tls"]
+$ kubectl apply -f .
+```
+
+等一段时间，就可以看到 metrics server 正常运行了。
+
+参考：https://tencentcloudcontainerteam.github.io/tke-handbook/
