@@ -5,4 +5,4 @@ title: 项目
 permalink: /projects/
 ---
 
-{{% content "UndergraduateProjects/README.md" %}}
+{{% readFile file="UndergraduateProjects/README.md" %}}
