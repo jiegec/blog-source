@@ -70,6 +70,8 @@ helm install --namespace drone drone-runner-kube drone/drone-runner-kube -f dron
 
 然后就可以去 drone 界面上操作了。
 
+需要注意的是，drone 需要 pv，所以我先在腾讯云里面配置了 CFS 的 storage class，然后它就会自动 provision 一个新的 pv 和 pvc 出来。
+
 接着尝试了一下在 drone 里面构建 docker 镜像并且 push 到 registry 上。以腾讯云为例：
 
 ```yml
