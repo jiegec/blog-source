@@ -70,6 +70,8 @@ Sector Trailer 的布局如下：
 
 ## MIFARE 命令
 
+为了向 MIFARE Classic 卡发送命令，首先需要一个 ISO 14443-3 Type A 的接口，Android 的 NfcA 或者 libnfc 都提供了接口。这里发送的命令实际上会再经过一层解析、用 CRYPTO1 算法加密（猜测是读卡器做的？不是很确定），不过对应用程序来说是透明的。可以参考 [MIFARE Classic EV1 1K](https://www.nxp.com/docs/en/data-sheet/MF1S50YYX_V1.pdf) 和 [A Practical Attack on the MIFARE Classic](https://link.springer.com/chapter/10.1007/978-3-540-85893-5_20) 中的描述。
+
 ### MIFARE Read
 
 读出一个 Block 的内容，每个 Block 有 16 字节。命令格式如下：
@@ -229,7 +231,7 @@ A0 0B D3 F7 D3 F7 D3 F7 7F 07 88 40 FF FF FF FF FF FF
 
 这样就完成了，再用 TagInfo 等软件，就可以读取出来 NDEF 信息了。此时 iOS 也可以读出来。
 
-上面这些过程，如果中间被打断了，每次需要重新认证一下。这里默认了一些卡的初始密钥，如果初始情况并不一致，可能并不会工作。
+上面这些过程，在实际情况下在不同 sector 的时候需要打断，每次重新认证一下。这里默认了一些卡的初始密钥，如果初始情况并不一致，可能并不会工作。
 
 # 踩的坑
 
