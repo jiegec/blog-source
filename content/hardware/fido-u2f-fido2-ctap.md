@@ -18,7 +18,7 @@ U2F 定义了它的[命令格式](https://fidoalliance.org/specs/fido-u2f-v1.2-p
 
 | CLA    | INS    | P1     | P2     | Lc        | data            | Le        |
 | ------ | ------ | ------ | ------ | --------- | --------------- | --------- |
-| 1 byte | 1 byte | 1 byte | 1 byte | 0-3 bytes | variable length | 0-3 bytes |
+| 1 byte | 1 byte | 1 byte | 1 byte | 0-1 bytes | variable length | 0-1 bytes |
 
 比如 U2F_VERSION 就是：
 
