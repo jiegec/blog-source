@@ -12,6 +12,7 @@ disqusShortname = "jiegec"
 
 [permalinks]
   ctf = "/:section/:year/:month/:day/:filename/"
+  crypto = "/:section/:year/:month/:day/:filename/"
   devops = "/:section/:year/:month/:day/:filename/"
   hardware = "/:section/:year/:month/:day/:filename/"
   life = "/:section/:year/:month/:day/:filename/"
