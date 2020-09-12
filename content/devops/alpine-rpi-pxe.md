@@ -3,7 +3,7 @@ layout: post
 date: 2020-09-11 23:42:00 +0800
 tags: [alpine,pxe,rpi,rpi4]
 category: devops
-title: 在 TKE 上配置不使用 LB 的 Nginx Ingress Controller
+title: 在 rpi4 上用 PXE 运行 Alpine Linux
 ---
 
 # 背景
@@ -19,7 +19,7 @@ title: 在 TKE 上配置不使用 LB 的 Nginx Ingress Controller
 > rpi-eeprom-config pieeprom-2020-04-16.bin > config.txt
 $ cat config.txt
 [all]
-BOOT_UART=0
+BOOT_UART=1
 WAKE_ON_GPIO=1
 POWER_OFF_ON_HALT=0
 DHCP_TIMEOUT=45000
@@ -27,7 +27,7 @@ DHCP_REQ_TIMEOUT=4000
 TFTP_FILE_TIMEOUT=30000
 TFTP_IP=
 TFTP_PREFIX=0
-BOOT_ORDER=0x1
+BOOT_ORDER=0x12
 SD_BOOT_MAX_RETRIES=3
 NET_BOOT_MAX_RETRIES=5
 [none]
@@ -38,7 +38,7 @@ FREEZE_VERSION=0
 > reboot
 ```
 
-重启以后，可以用 `vcgencmd bootloader_config` 查看当前的启动配置，看是否正确地更新了启动配置。
+重启以后，可以用 `vcgencmd bootloader_config` 查看当前的启动配置，看是否正确地更新了启动配置。比较重要的是 BOOT_ORDER，`0x21` 表示先尝试网络启动，再尝试 SD 卡启动。
 
 # 路由器配置
 
@@ -56,7 +56,17 @@ config dhcp 'lan'
 ...
 ```
 
-这样就配置完毕了。
+这样就配置完毕了。如果是 isc-dhcp-server ，修改 `/etc/dhcp/dhcpd.conf`：
+
+```
+subnet 10.0.1.0 netmask 255.255.255.0 {
+    range 10.0.1.100 10.0.1.199;
+    option routers 10.0.1.1;
+    option tftp-server-name "10.0.1.1";
+}
+```
+
+
 
 # TFTP 服务器配置
 
