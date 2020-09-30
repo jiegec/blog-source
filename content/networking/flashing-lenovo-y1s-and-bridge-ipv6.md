@@ -19,7 +19,7 @@ title: 向 Lenovo y1s 刷入 OpenWRT 17.01.5 固件，并把 IPv6 bridge 到内�
 
 接下来，我们为了使用学校的 SLAAC ，采用 ebtables 直接把学校的 IPv6 bridge 进来，而 IPv4 由于准入系统，需要 NAT 。
 
-参考[Bridge IPv6 connections to WAN](https://tmikey.tech/tech_daily/lede/2017/08/25/bridge_ipv6_lede.html)，下载[v6brouter_openwrt.sh](https://github.com/cvmiller/v6brouter/blob/master/v6brouter_openwrt.sh)到某个地方，然后修改一下里面的一些参数：
+参考 [Bridge IPv6 connections to WAN](https://tmikey.tech/tech_daily/lede/2017/08/25/bridge_ipv6_lede.html)，下载 [v6brouter_openwrt.sh](https://github.com/cvmiller/v6brouter/blob/master/v6brouter_openwrt.sh) 到某个地方，然后修改一下里面的一些参数：
 
 ```shell
 # For Lenovo y1s
@@ -48,3 +48,40 @@ $ ./GoAuthing
 然后就可以成功地跑起来 GoAuthing ，解决了上校园网认证的问题。
 
 感谢[宇翔](https://github.com/z4yx)编写的 GoAuthing 小工具。
+
+更新：简化了一下 v6brouter 脚本：
+
+```bash
+#!/bin/sh
+BRIDGE=br-lan
+WAN_DEV=$(/sbin/uci get network.wan.ifname)
+WHITELIST1="00:11:22:33:44:55"
+WHITELIST2="55:44:33:22:11:00"
+
+brctl addbr $BRIDGE 2> /dev/null
+brctl addif $BRIDGE $WAN_DEV
+ip link set $BRIDGE down
+ip link set $BRIDGE up
+brctl show
+
+ebtables -F
+ebtables -P FORWARD ACCEPT
+ebtables -L
+
+uci set dhcp.lan.ra='disabled'
+uci set dhcp.lan.dhcpv6='disabled'
+uci commit
+/etc/init.d/odhcpd restart
+
+echo 2 > /proc/sys/net/ipv6/conf/$BRIDGE/accept_ra
+ebtables -t broute -F
+ebtables -t broute -A BROUTING -i $WAN_DEV -p ! ipv6 -j DROP
+ebtables -t broute -A BROUTING -s $WHITELIST1 -p ipv6 -j ACCEPT
+ebtables -t broute -A BROUTING -d $WHITELIST1 -p ipv6 -j ACCEPT
+ebtables -t broute -A BROUTING -s $WHITELIST2 -p ipv6 -j ACCEPT
+ebtables -t broute -A BROUTING -d $WHITELIST2 -p ipv6 -j ACCEPT
+ebtables -t broute -A BROUTING -p ipv6 -j DROP
+ebtables -t broute -L
+```
+
+注意，这里添加了两个 WHITELIST 的 MAC 地址，表示只让这两个 MAC 地址的设备访问 v6。一般来说，外面网关的 MAC 地址也要放进来，不然可能接收不到 RA。如果不需要白名单的话，可以去掉 ebtables 的后几行规则。
