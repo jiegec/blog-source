@@ -3,8 +3,10 @@ layout: post
 date: 2020-10-18 00:08:00 +0800
 tags: [vmware,esxi,vcsa,baremetal,visualization]
 category: devops
-title: 在裸机上部署 ESXi 和 vCSA
+title: 在裸机上部署 ESXi 和 vCSA 7
 ---
+
+之前在另一篇文章里提到过 vCSA 的安装，这次又在另一台机器上重新做了一遍，特此记录一下。
 
 首先在官网上下载 [ESXi+VCSA 7.0](https://my.vmware.com/group/vmware/evalcenter?p=vsphere-eval-7) ，应该得到两个文件：
 
@@ -34,3 +36,5 @@ sudo mount /dev/sr0 /mnt
 ```
 
 慢慢等待它安装成功即可。
+
+安装完成后，进入 vCSA，新建一个 Datacenter，然后选择新建的 Datacenter，选择 Add host，输入 ESXi 的地址和用户密码信息即可。
