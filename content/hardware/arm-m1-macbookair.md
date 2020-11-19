@@ -74,6 +74,8 @@ x86_64
 
 目前 Homebrew 推荐的方法是，在老地方 `/usr/local/Homebrew` 下面放 Intel 的 Homebrew，在 `/opt/homebrew` 下面放 ARM 的 Homebrew。虽然还是有很多警告，但目前来看基本使用都没有什么问题。Homebrew cask 也正常，毕竟基本就是一个下载器。
 
+另外，试了一下用 ARM Homebrew 从源码编译 GCC，编译中途失败了。
+
 ## 其他软件
 
 换到 ARM 上自然会想到，之前的那些软件还能不能跑。答案是，大多都可以，只是很多还是 Intel 版走翻译而已。
