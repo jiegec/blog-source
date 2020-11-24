@@ -136,19 +136,32 @@ aes-256 cbc     121768.89k   125651.37k   126532.18k   126644.91k   126440.79k  
 sha256          147462.49k   381143.42k   782357.16k  1092831.23k  1236314.79k  1247537.83k
                   sign    verify    sign/s verify/s
 rsa 2048 bits 0.001097s 0.000033s    911.7  30344.2
-# Unknown AArch64 CPU OpenSSL
-OpenSSL 1.1.1  11 Sep 2018
-built on: Wed May 27 19:15:54 2020 UTC
-options:bn(64,64) rc4(char) des(int) aes(partial) blowfish(ptr)
-compiler: gcc -fPIC -pthread -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-BIWcqE/openssl-1.1.1=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DVPAES_ASM -DECP_NISTZ256_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
+# Intel Xeon E5-2680 v4 OpenSSL
+OpenSSL 1.0.2g  1 Mar 2016
+built on: reproducible build, date unspecified
+options:bn(64,64) rc4(16x,int) des(idx,cisc,16,int) aes(partial) blowfish(idx)
+compiler: cc -I. -I.. -I../include  -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -m64 -DL_ENDIAN -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wl,-Bsymbolic-functions -Wl,-z,relro -Wa,--noexecstack -Wall -DMD32_REG_T=int -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -DECP_NISTZ256_ASM
 The 'numbers' are in 1000s of bytes per second processed.
-type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
-des ede3         19844.30k    19976.34k    20028.84k    20047.53k    20089.51k    19999.40k
-aes-128 cbc     152856.79k   159065.22k   161614.43k   161498.45k   161994.07k   161404.25k
-aes-256 cbc     112858.95k   115874.43k   117368.83k   117177.00k   117481.47k   117964.80k
-sha256          189470.59k   519273.22k  1083395.50k  1472176.13k  1664633.51k  1679753.22k
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes
+des ede3         27937.45k    28254.25k    28298.84k    28288.68k    28270.59k
+aes-128 cbc     128697.71k   141368.87k   144291.16k   145353.73k   145782.10k
+aes-256 cbc      93993.22k   100904.09k   102572.29k   103140.01k   103230.12k
+sha256           70095.90k   164419.73k   308743.00k   388798.12k   420260.52k
                   sign    verify    sign/s verify/s
-rsa 2048 bits 0.001316s 0.000032s    760.1  31482.1
+rsa 2048 bits 0.000646s 0.000019s   1546.9  52719.7
+# IBM POWER8NVL OpenSSL
+OpenSSL 1.0.2g  1 Mar 2016
+built on: reproducible build, date unspecified
+options:bn(64,64) rc4(ptr,char) des(idx,risc1,16,long) aes(partial) blowfish(idx)
+compiler: cc -I. -I.. -I../include  -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -m64 -DL_ENDIAN -g -O3 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wl,-Bsymbolic-functions -Wl,-z,relro -Wa,--noexecstack -Wall -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DAES_ASM -DVPAES_ASM
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes
+des ede3         18783.27k    18991.25k    19043.67k    18974.04k    18972.67k
+aes-128 cbc     106504.73k   110757.33k   113190.23k   113867.43k   114065.41k
+aes-256 cbc      80060.80k    82383.13k    83770.20k    84134.57k    84243.80k
+sha256           59540.44k   150015.98k   284114.35k   369889.62k   405607.77k
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.003516s 0.000096s    284.4  10383.2
 ```
 
 ## 总结
