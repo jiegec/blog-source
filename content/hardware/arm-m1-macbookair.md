@@ -136,7 +136,7 @@ aes-256 cbc     121768.89k   125651.37k   126532.18k   126644.91k   126440.79k  
 sha256          147462.49k   381143.42k   782357.16k  1092831.23k  1236314.79k  1247537.83k
                   sign    verify    sign/s verify/s
 rsa 2048 bits 0.001097s 0.000033s    911.7  30344.2
-# Intel Xeon E5-2680 v4 OpenSSL
+# Intel Xeon E5-2680 v4 (Broadwell) OpenSSL
 OpenSSL 1.0.2g  1 Mar 2016
 built on: reproducible build, date unspecified
 options:bn(64,64) rc4(16x,int) des(idx,cisc,16,int) aes(partial) blowfish(idx)
@@ -149,6 +149,19 @@ aes-256 cbc      93993.22k   100904.09k   102572.29k   103140.01k   103230.12k
 sha256           70095.90k   164419.73k   308743.00k   388798.12k   420260.52k
                   sign    verify    sign/s verify/s
 rsa 2048 bits 0.000646s 0.000019s   1546.9  52719.7
+# Intel Xeon Gold 5218 (Cascade Lake) OpenSSL
+OpenSSL 1.1.1d  10 Sep 2019
+built on: Mon Apr 20 20:23:01 2020 UTC
+options:bn(64,64) rc4(16x,int) des(int) aes(partial) blowfish(ptr)
+compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-8Ocme2/openssl-1.1.1d=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+des ede3         31859.82k    32367.83k    32325.29k    32363.86k    32388.44k    32440.32k
+aes-128 cbc     248045.72k   257097.86k   257922.99k   261073.92k   260590.25k   260483.75k
+aes-256 cbc     189070.60k   193881.34k   194477.40k   195246.76k   195163.48k   195641.34k
+sha256           85306.65k   193124.61k   355518.55k   447338.15k   481337.34k   484294.66k
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.000544s 0.000016s   1839.6  62426.2
 # IBM POWER8NVL OpenSSL
 OpenSSL 1.0.2g  1 Mar 2016
 built on: reproducible build, date unspecified
