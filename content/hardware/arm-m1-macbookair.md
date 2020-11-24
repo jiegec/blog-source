@@ -104,6 +104,53 @@ x86_64
 
 续航方面目前来看也挺好的，捣鼓了一个下午，也没耗多少电。
 
+## 性能测试
+
+在不同平台上进行 OpenSSL 测试：
+
+```shell
+$ openssl speed aes-128-cbc aes-256-cbc des-ede3 rsa2048 sha256 
+# M1 MacBookAir OpenSSL w/ AArch64 ASM enabled
+OpenSSL 1.1.1h  22 Sep 2020
+built on: Tue Nov 24 01:17:25 2020 UTC
+options:bn(64,64) rc4(int) des(int) aes(partial) idea(int) blowfish(ptr)
+compiler: clang -fPIC -arch arm64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DVPAES_ASM -DECP_NISTZ256_ASM -DPOLY1305_ASM -D_REENTRANT -DNDEBUG
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+des ede3         30345.42k    30462.29k    30720.51k    30620.67k    30702.19k    30692.69k
+aes-128 cbc     304095.84k   318020.97k   318105.51k   315161.26k   317307.12k   317466.03k
+aes-256 cbc     231153.93k   237928.01k   232901.21k   236751.53k   238025.55k   237524.16k
+sha256          377327.95k  1101483.62k  1853731.02k  2272785.12k  2427495.08k  2442317.40k
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.000559s 0.000014s   1787.7  69910.5
+# AMD EPYC 7551 OpenSSL
+OpenSSL 1.1.1d  10 Sep 2019
+built on: Mon Apr 20 20:23:01 2020 UTC
+options:bn(64,64) rc4(8x,int) des(int) aes(partial) blowfish(ptr)
+compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-8Ocme2/openssl-1.1.1d=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+des ede3         20908.92k    21132.29k    21282.73k    21310.12k    21241.86k    21293.74k
+aes-128 cbc     160187.39k   166072.96k   167093.25k   168903.34k   168523.09k   168940.89k
+aes-256 cbc     121768.89k   125651.37k   126532.18k   126644.91k   126440.79k   127325.53k
+sha256          147462.49k   381143.42k   782357.16k  1092831.23k  1236314.79k  1247537.83k
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.001097s 0.000033s    911.7  30344.2
+# Unknown AArch64 CPU OpenSSL
+OpenSSL 1.1.1  11 Sep 2018
+built on: Wed May 27 19:15:54 2020 UTC
+options:bn(64,64) rc4(char) des(int) aes(partial) blowfish(ptr)
+compiler: gcc -fPIC -pthread -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-BIWcqE/openssl-1.1.1=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DVPAES_ASM -DECP_NISTZ256_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+des ede3         19844.30k    19976.34k    20028.84k    20047.53k    20089.51k    19999.40k
+aes-128 cbc     152856.79k   159065.22k   161614.43k   161498.45k   161994.07k   161404.25k
+aes-256 cbc     112858.95k   115874.43k   117368.83k   117177.00k   117481.47k   117964.80k
+sha256          189470.59k   519273.22k  1083395.50k  1472176.13k  1664633.51k  1679753.22k
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.001316s 0.000032s    760.1  31482.1
+```
+
 ## 总结
 
 总的来说，还是挺香的。不错的性能，没有风扇的喧闹，没有烫手的键盘。可能有少部分软件还不能正常运行，然后很多程序还需要 Rosetta 翻译，但目前来看兼容性还是挺不错的，并且这些应该明年就都适配地差不多了吧。
