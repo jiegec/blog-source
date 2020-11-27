@@ -22,6 +22,7 @@ permalink: /tools/
 1. https://www.epochconverter.com/
 1. https://www.vultr.com/resources/mac-converter/
 1. http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
+1. https://www.easyunitconverter.com/
 
 
 自己编写的：
