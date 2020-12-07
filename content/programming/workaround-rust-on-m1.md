@@ -33,3 +33,5 @@ target/debug/xxxx: Mach-O 64-bit executable arm64
 ```
 
 然后就可以了。等待上游添加 code signing 支持吧。
+
+2020-12-07 更新：找了找 cargo 的 issues，找到了[同样的问题](https://github.com/rust-lang/cargo/issues/8913)，看来并不是 code signing 支持的问题，而是在 Intel 的 Alacritty 下面，运行 Apple 的 rustc 工具链的时候，才会出现的 BUG。我也自己试了一下，在 Apple 的 Terminal 下跑编译就没有问题。
