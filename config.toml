@@ -5,6 +5,7 @@ theme = "minos"
 publishDir = "../jiegec.github.io"
 pagniate = 10
 disqusShortname = "jiegec"
+googleAnalytics = "UA-185962713-1"
 
 [taxonomies]
     category = "category"
