@@ -25,7 +25,10 @@ title: 以太网的物理接口
 
 - Fast Ethernet: 100Mbps
 - Gigabit Ethernet: 1Gbps
+- Multi Gigabit Ethernet: 2.5Gbps
 - Ten Gigabit Ethernet: 10Gbps
+- Forty Gigabit Ethernet: 40Gbps
+- Hundred Gigabit Ethernet: 100Gbps
 
 ## 常见的连接器
 
@@ -76,7 +79,7 @@ title: 以太网的物理接口
 - Standard MII：速率是 100Mbps（25MHz\*4）或者 10Mbps（2.5Mhz\*4），TX 7 根线，RX 7+2 根线，加上 MDIO 2 根线共 18 根线
 - RMII：速率是 100Mbps 或者 10Mbps，频率都是 50MHz，一共 10 根线，数据线是 TX 和 RX 各 2 根
 - GMII：速率是 1000Mbps（125MHz\*8），数据线是 TX 和 RX 各 8 根；也支持速率 100Mbps（25MHz）和 10Mbps（2.5MHz）
-- RGMII：速率是 100Mbps（125MHz\*4\*2，DDR），数据线是 TX 和 RX 各 4 根；也支持速率 100Mbps（25MHz\*4，SDR）和 10Mbps（2.5MHz\*4），一共是 5+5+2 根线
+- RGMII：速率是 100Mbps（125MHz\*4\*2，DDR），数据线是 TX 和 RX 各 4 根；也支持速率 100Mbps（25MHz\*4）和 10Mbps（2.5MHz\*4），一共是 5+5+2 根线
 - SGMII：速率是 1000Mbps（625MHz\*2\*8/10），采用 625MHz DDR 差分对 SerDes，采用 8b/10b 的编码
 
 有的时候，MAC 和 PHY 是独立的，比如很多常见的 FPGA 开发板，在使用千兆网的时候，在板子上是 PHY 芯片，从 FPGA 到 PHY 通过 RGMII 连接，然后 PHY 再连接到 8P8C（RJ45）的连接器上。一般还会把 MDIO 也接到 FPGA 上面。如果有多个 PHY，就会吧 MDIO 通过总线的方式合并起来，给每个 PHY 配置不同的地址（一般是在指定的 PIN 上设置上拉/下拉电阻实现），就可以保证不冲突的访问。
