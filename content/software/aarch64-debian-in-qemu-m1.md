@@ -12,6 +12,8 @@ title: 在 M1 上用 QEMU 运行 Debian 虚拟机
 
 参考：https://gist.github.com/niw/e4313b9c14e968764a52375da41b4278#file-readme-md
 
+大约需要 3G 的硬盘空间。
+
 ## 安装 QEMU w/ M1 patches
 
 目前上游的 QEMU 还不支持 M1 的 Hypervisor framework，需要打 patch：
@@ -69,7 +71,7 @@ $ $QEMU/qemu-system-aarch64 \
   -display default,show-cursor=on
 ```
 
-需要注意的是，如果用 `-cdrom` 选项，Debian 会无法识别，所以需要走 SCSI。安装完成后，第一次重启可能会显示失败，不用管。另外，安装界面只在串口处显示，但不会显示在 GUI 中，估计是缺少 virtio-gpu 的驱动。
+需要注意的是，如果用 `-cdrom` 选项，Debian 会无法识别，所以需要走 SCSI。安装完成后，第一次重启可能会显示失败，不用管。另外，安装界面只在串口处显示，但不会显示在 GUI 中，估计是因为 [BUG](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=977466)（感谢 @Harry-Chen 指出）。
 
 ## 启动系统
 
@@ -112,4 +114,3 @@ $ dhclient enp0s1
 ## 已知问题
 
 在虚拟机内重启以后，可能会启动失败。退出 QEMU 进程重新启动即可。
-
