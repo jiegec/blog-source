@@ -65,11 +65,12 @@ Password:
 
 如果 Bind 成功，则认为登录成功；否则就是登录失败。
 
-如果用户要修改密码，SSSD 默认用的是 [RFC3062 Password Modify Extended Operation](https://tools.ietf.org/html/rfc3062) 的方式；如果服务器不支持的话，可以按照 [文档](https://sssd.io/docs/design_pages/chpass_without_exop.html) 使用 ldap modify 方式来修改密码。
+如果用户要修改密码，SSSD 默认用的是 [RFC3062 LDAP Password Modify Extended Operation](https://tools.ietf.org/html/rfc3062) 的方式；如果服务器不支持的话，可以按照 [文档](https://sssd.io/docs/design_pages/chpass_without_exop.html) 使用 ldap modify 方式来修改密码。
 
 ## 相关 RFC
 
 - [RFC2307 An Approach for Using LDAP as a Network Information Service](https://tools.ietf.org/html/rfc2307)
+- [RFC3062 LDAP Password Modify Extended Operation](https://tools.ietf.org/html/rfc3062)
 - [RFC4511 Lightweight Directory Access Protocol (LDAP): The Protocol](https://tools.ietf.org/html/rfc4511)
 - [RFC4512 Lightweight Directory Access Protocol (LDAP): Directory Information Models](https://tools.ietf.org/html/rfc4512)
 - [RFC4513 Lightweight Directory Access Protocol (LDAP): Authentication Methods and Security Mechanisms](https://tools.ietf.org/html/rfc4513)
