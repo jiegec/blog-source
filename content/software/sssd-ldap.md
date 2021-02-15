@@ -64,3 +64,5 @@ Password:
 ```
 
 如果 Bind 成功，则认为登录成功；否则就是登录失败。
+
+如果用户要修改密码，SSSD 默认用的是 [RFC3062 Password Modify Extended Operation](https://tools.ietf.org/html/rfc3062) 的方式；如果服务器不支持的话，可以按照 [文档](https://sssd.io/docs/design_pages/chpass_without_exop.html) 使用 ldap modify 方式来修改密码。
