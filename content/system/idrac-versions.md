@@ -11,7 +11,7 @@ title: iDRAC 各版本
 目前接触到的 iDRAC 版本有：7 8 9 。一些常见的服务器型号和 iDRAC 版本对应关系：
 
 - 7: PowerEdge R320，PowerEdge R720
-- 8: PowerEdge R730xd，PowerEdge R630，PowerEdge R730，PowerEdge C4130
+- 8: [PowerEdge R730xd](https://www.dell.com/support/home/en-us/product-support/product/poweredge-r730xd/drivers)，PowerEdge R630，PowerEdge R730，PowerEdge C4130
 - 9: PowerEdge R7425
 
 基本上，如果是 PowerEdge R 什么的，就看第二位数字，就可以推断出版本号了。
@@ -30,7 +30,9 @@ title: iDRAC 各版本
 
 ## iDRAC 8
 
+- 2.10.10.10 [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=fm1pc)，2015 年 3 月版本。
 - 2.30.30.30: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=5gchc)，2016 年 2 月版本，添加了 HTML5 virtual console 支持。
+- 2.60.60.60: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=cx8n2)，2018 年 6 月版本，添加了 virtual media over HTTP 支持。
 - 2.70.70.70: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=dnh17)，2019 年 10 月版本。
 - 2.75.75.75: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=krcxx)，2020 年 6 月版本。
 - 2.75.100.75: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=dpv0r)，2021 年 1 月版本。
