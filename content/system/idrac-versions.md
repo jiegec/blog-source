@@ -12,7 +12,7 @@ title: iDRAC 各版本
 
 - 7: PowerEdge R320，PowerEdge R720
 - 8: [PowerEdge R730xd](https://www.dell.com/support/home/en-us/product-support/product/poweredge-r730xd/drivers)，PowerEdge R630，PowerEdge R730，PowerEdge C4130
-- 9: PowerEdge R7425
+- 9: [PowerEdge R7425](https://www.dell.com/support/home/en-us/product-support/product/poweredge-r7425/drivers)
 
 基本上，如果是 PowerEdge R 什么的，就看第二位数字，就可以推断出版本号了。
 
@@ -40,3 +40,4 @@ title: iDRAC 各版本
 ## iDRAC 9
 
 - 4.22.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=9f2tg)，2020 年 7 月版本。
+- 4.40.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=62gw1)，2020 年 12 月版本，下一代的 iDRAC virtual console 和 virtual media，支持 Infiniband。
