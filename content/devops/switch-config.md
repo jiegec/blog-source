@@ -106,3 +106,35 @@ console#show vlan
 ```
 console(config)#interface range Gi1/0/1-4
 ```
+
+# H3C
+
+## 进入配置模式
+
+```
+<switch>system-view
+System View: return to User View with Ctrl+Z.
+[switch]
+```
+
+## 查看当前配置
+
+```
+[switch]display current-configuration
+```
+
+## 查看 lldp 邻居
+
+```
+[switch]display lldp neighbor-information
+```
+
+## 保存配置
+
+```
+[switch]save
+The current configuration will be written to the device. Are you sure? [Y/N]:y
+Please input the file name(*.cfg)[flash:/startup.cfg]
+(To leave the existing filename unchanged, press the enter key):y
+The file name is invalid(does not end with .cfg).
+```
