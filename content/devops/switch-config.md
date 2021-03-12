@@ -10,11 +10,11 @@ title: 常用交换机命令
 
 最近接触了 Cisco，DELL，Huawei，H3C，Ruijie 的网络设备，发现配置方式各有不同，故记录一下各个厂家的命令。
 
-## Huawei
+# Huawei
 
 测试型号：S5320
 
-### 保存配置
+## 保存配置
 
 ```
 <HUAWEI>save
@@ -24,7 +24,7 @@ Now saving the current configuration to the slot 0....
 Save the configuration successfully.
 ```
 
-### 进入配置模式
+## 进入配置模式
 
 ```
 <HUAWEI> system-view
@@ -43,11 +43,11 @@ Save the configuration successfully.
 ```
 
 
-## DELL
+# DELL
 
 测试型号：N3048
 
-### 保存配置
+## 保存配置
 
 ```
 console#copy running-config startup-config
@@ -60,10 +60,11 @@ Are you sure you want to save? (y/n) y
 Configuration Saved!
 ```
 
-### 进入配置模式
+## 进入配置模式
 
 ```
 console>enable
+console# configure
 ```
 
 ## 查看当前配置
@@ -76,4 +77,32 @@ console# show running-config
 
 ```
 console#show lldp remote-device all
+```
+
+## VLAN Trunk 配置
+
+```
+console(config)#interface Gi1/0/1
+console(config-if-Gi1/0/1)#switchport mode trunk
+console(config-if-Gi1/0/1)#switchport trunk allowed vlan xxx,xxx-xxx
+```
+
+## VLAN Access 配置
+
+```
+console(config)#interface Gi1/0/1
+console(config-if-Gi1/0/1)#switchport mode access
+console(config-if-Gi1/0/1)#switchport access vlan xxx
+```
+
+## 查看 VLAN 配置
+
+```
+console#show vlan
+```
+
+## 批量配置 interface
+
+```
+console(config)#interface range Gi1/0/1-4
 ```
