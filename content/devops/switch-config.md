@@ -42,6 +42,24 @@ Save the configuration successfully.
 [HUAWEI]display lldp neighbor brief
 ```
 
+## 查看 CDP 邻居
+
+```
+[HUAWEI]display cdp neighbor brief
+```
+
+## 启用 LLDP
+
+```
+[HUAWEI]lldp enable
+```
+
+## 启用 CDP
+
+```
+[HUAWEI-XGigabitEthernet0/0/1]lldp compliance cdp txrx
+```
+
 
 # DELL
 
@@ -107,6 +125,20 @@ console#show vlan
 console(config)#interface range Gi1/0/1-4
 ```
 
+## 启用 SSH 服务器
+
+```
+console(config)#crypto key generate rsa
+console(config)#crypto key generate dsa
+console(config)#ip ssh server
+```
+
+## 启用 CDP(DELL 称之为 ISDP)
+
+```
+console(config)#isdp enable
+```
+
 # H3C
 
 ## 进入配置模式
@@ -137,4 +169,24 @@ The current configuration will be written to the device. Are you sure? [Y/N]:y
 Please input the file name(*.cfg)[flash:/startup.cfg]
 (To leave the existing filename unchanged, press the enter key):y
 The file name is invalid(does not end with .cfg).
+```
+
+## 批量配置 interface
+
+```
+[switch]interface range GigabitEthernet 1/0/1 to GigabitEtherent 1/0/24
+[switch-if-range]
+```
+
+## 查看 ARP 缓存
+
+```
+[switch]show mac-address
+```
+
+## 打开 LLDP 和 CDP
+
+```
+[switch]lldp gloabl enable
+[switch]lldp compliance cdp
 ```
