@@ -60,6 +60,25 @@ Save the configuration successfully.
 [HUAWEI-XGigabitEthernet0/0/1]lldp compliance cdp txrx
 ```
 
+## 启用只读 SNMPv1 community
+
+```
+[HUAWEI]snmp-agent sys-info version all
+Warning: This command may cause confliction in netconf status. Continue? [Y/N]:y
+Warning: SNMPv1/SNMPv2c is not secure, and it is recommended to use SNMPv3.
+[HUAWEI]snmp-agent community read [COMMUNITY NAME]
+Warning: This command may cause confliction in netconf status. Continue? [Y/N]:y
+```
+
+## 启用 SNMP iso view
+
+默认情况下 SNMP 会缺少一些标准的 MIB（比如 LLDP），可以打开 iso view：
+
+```
+[HUAWEI]snmp-agent mib-view included iso-view iso
+Warning: This command may cause confliction in netconf status. Continue? [Y/N]:y
+[HUAWEI]snmp-agent community read [COMMUNITY NAME] mib-view iso-view
+```
 
 # DELL
 
@@ -137,6 +156,12 @@ console(config)#ip ssh server
 
 ```
 console(config)#isdp enable
+```
+
+## 启用只读 SNMPv1 community
+
+```
+console(config)#snmp-server community [COMMUNITY NAME] ro
 ```
 
 # H3C
