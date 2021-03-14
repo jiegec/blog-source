@@ -34,7 +34,9 @@ title: Gnome 的 Fractional Scaling
 
 在 [xrandr 文档](https://www.x.org/releases/X11R7.5/doc/man/man1/xrandr.1.html) 中，写了：transform 是一个 3x3 矩阵，矩阵乘以输出的点的坐标得到图形缓存里面的坐标。
 
-由此可以猜想：fractional scaling 的工作方式是，把绘制的 buffer 调大，然后再用 transform 把最终输出分辨率调成 1920x1080 。可以看到，xrandr 显示的分辨率除以 transform 对应的值，就是 1920x1080。但这并不能解释 100% 和 200% 的区别，所以肯定还漏了什么信息。翻了翻 [mutter 实现 fractional scaling 的 pr](https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3/diffs#989734a4aea877b0c1d80fa73cbe2ee59de79fba_376_422)，怀疑是这段代码的作用：
+由此可以猜想：fractional scaling 的工作方式是，把绘制的 buffer 调大，然后再用 transform 把最终输出分辨率调成 1920x1080 。可以看到，xrandr 显示的分辨率除以 transform 对应的值，就是 1920x1080。但这并不能解释 100% 和 200% 的区别，所以肯定还漏了什么信息。
+
+翻了翻 [mutter 实现 fractional scaling 的 pr](https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3/diffs#989734a4aea877b0c1d80fa73cbe2ee59de79fba_376_422)，找到了实现 scale 的一部分：
 
 ```cpp
 if (clutter_actor_get_resource_scale (priv->actor, &resource_scale) &&
@@ -45,7 +47,18 @@ if (clutter_actor_get_resource_scale (priv->actor, &resource_scale) &&
   }
 ```
 
-在 `resource_scale` 不等于 1.0 的时候才生效，可能可以解释 100% 和 200% 的区别。
+然后找到了一段对 scale 做 ceiling 的[代码](https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3/diffs#989734a4aea877b0c1d80fa73cbe2ee59de79fba_238_265)：
+
+```cpp
+if (_clutter_actor_get_real_resource_scale (priv->actor, &resource_scale))
+  {
+    ceiled_resource_scale = ceilf (resource_scale);
+    stage_width *= ceiled_resource_scale;
+    stage_height *= ceiled_resource_scale;
+  }
+```
+
+这样，100% 和其他比例就区分开了。
 
 另外，也在[代码](https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3/diffs#d66a28cda989fbb17c8a7302b3f6360640c3c152_33_33) 中发现：
 
