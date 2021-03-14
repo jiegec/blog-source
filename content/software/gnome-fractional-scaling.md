@@ -111,3 +111,26 @@ mutter (3.38.1-1ubuntu1) groovy; urgency=medium
 ```
 
 也找到了对应的 [patch 文件](https://git.launchpad.net/ubuntu/+source/mutter/tree/debian/patches/x11-Add-support-for-fractional-scaling-using-Randr.patch?h=applied/ubuntu/groovy)。这也就解释了，为什么网上会说 GNOME over X11 支持 fractional scaling，并且需要用 gsettings 打开，而我在 Debian 和 Arch Linux 上设置这个选项也没有用了。原来是 Ubuntu 加的私货啊。
+
+在 patch 中，找到了这么一段配置的解释：
+
+```patch
++    <key name="fractional-scale-mode" enum="org.gnome.mutter.X11.scale-mode">
++      <default>"scale-ui-down"</default>
++      <description>
++        Choose the scaling mode to be used under X11 via Randr extension.
++
++        Supported methods are:
++
++        • “scale-up”     — Scale everything up to the requested scale, shrinking
++                           the UI. The applications will look blurry when scaling
++                           at higher values and the resolution will be lowered.
++        • “scale-ui-down — Scale up the UI toolkits to the closest integer
++                           scaling value upwards, while scale down the display
++                           to match the requested scaling level.
++                           It increases the resolution of the logical display.
++      </description>
++    </key>
+```
+
+这样就可以解释前面看到的现象了：默认是 `scale-ui-down`，也就是先放大到两倍（closest integer scaling value upwards），再缩小（scale down the display to match the requested scaling level）。
