@@ -30,7 +30,7 @@ Ceph 有这些组成部分：
 
 接着，运行下面的命令：
 
-```
+```shell
 sudo apt install -y lvm2
 # required
 kubectl apply -f rook/cluster/examples/kubernetes/ceph/crds.yaml

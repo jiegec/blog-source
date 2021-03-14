@@ -96,3 +96,18 @@ $ gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuf
 尝试了一下，在 GNOME over X11 上是找不到 fractional scaling 的（没有出现设置 scale 的选项）。找到一个实现这个功能的 fork：https://github.com/puxplaying/mutter-x11-scaling，不过没有尝试过。
 
 我也尝试在虚拟机中用 xrandr --scale，结果就是输出黑屏，需要重启 gdm 来恢复到登录界面。
+
+更新：由于物理机使用的是 Ubuntu，想到是不是 Ubuntu 采用了上面那个 fork 的 patch，然后就在 [changelog](https://changelogs.ubuntu.com/changelogs/pool/main/m/mutter/mutter_3.38.1-1ubuntu1/changelog) 中看到：
+
+```
+mutter (3.38.1-1ubuntu1) groovy; urgency=medium
+
+  * Merge with debian, including new upstream version, remaining changes:
+    - debian/gbp.conf: update upstream branch to point to ubuntu/master
+    - debian/patches/x11-Add-support-for-fractional-scaling-using-Randr.patch:
+      + X11: Add support for fractional scaling using Randr
+  * d/p/clutter-backend-x11-Don-t-set-the-font-dpi-computed-on-X1.patch:
+    - Dropped, applied upstream
+```
+
+也找到了对应的 [patch 文件](https://git.launchpad.net/ubuntu/+source/mutter/tree/debian/patches/x11-Add-support-for-fractional-scaling-using-Randr.patch?h=applied/ubuntu/groovy)。这也就解释了，为什么网上会说 GNOME over X11 支持 fractional scaling，并且需要用 gsettings 打开，而我在 Debian 和 Arch Linux 上设置这个选项也没有用了。原来是 Ubuntu 加的私货啊。
