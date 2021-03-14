@@ -91,8 +91,8 @@ $ gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuf
 | 175%     | 1464x915            |
 | 200%     | 1280x800            |
 
-在这个测试中，xrandr 显示的 transform 一直都是单位矩阵；还用了来自 [xyproto/wallutils](https://github.com/xyproto/wallutils) 的 `wayinfo` 命令查看输出的分辨率，一直是 2560x1600，DPI 一直是 96。用 wallutils 的 xinfo 看到的结果和 xrandr 一致（通过 XWayland）。
+在这个测试中，xrandr 显示的 transform 一直都是单位矩阵；还用了来自 [xyproto/wallutils](https://github.com/xyproto/wallutils) 的 `wayinfo` 命令查看输出的分辨率，一直是 2560x1600，DPI 一直是 96。用 wallutils 的 xinfo 看到的结果和 xrandr 一致（通过 XWayland）。但是和物理机有一点不同：物理机有一个选项问要不要打开 fractional scaling，下面还会提示性能下降的问题；但是虚拟机上并没有这个提示，而是直接给了一些 Scale 比例的选项。
 
-在 GNOME over X11 上是没有 fractional scaling 的。找到一个实现这个功能的 fork：https://github.com/puxplaying/mutter-x11-scaling，不过没有尝试过。
+尝试了一下，在 GNOME over X11 上是找不到 fractional scaling 的（没有出现设置 scale 的选项）。找到一个实现这个功能的 fork：https://github.com/puxplaying/mutter-x11-scaling，不过没有尝试过。
 
 我也尝试在虚拟机中用 xrandr --scale，结果就是输出黑屏，需要重启 gdm 来恢复到登录界面。
