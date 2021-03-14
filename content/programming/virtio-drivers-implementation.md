@@ -6,7 +6,7 @@ category: programming
 title: 使用 Rust 实现 VirtIO 驱动
 ---
 
-# 背景
+## 背景
 
 最近在给 rCore 添加驱动层的支持。一开始是想做网卡驱动，后来发现， `qemu-system-riscv32` 只支持如下的驱动：
 
@@ -43,7 +43,7 @@ name "virtio-rng-device", bus virtio-bus
 
 所以要实现网卡的话，只能实现这里的 `virtio-net-device` ，而 VirtIO 驱动之间有很多共通的地方，于是顺带把 `gpu` `mouse` 和 `blk` 实现了。
 
-# 第一个驱动 `virtio-net` 的实现
+## 第一个驱动 `virtio-net` 的实现
 
 首先想到并且实现了的是网卡驱动， `virtio-net` 。最开始的时候，为了简单，只开了一块缓冲区，每次同时只收/发一个包。首先拿了 [device_tree-rs](https://github.com/jiegec/device_tree-rs) 读取 bbl 传过来的 dtb 地址，找到各个 `virtio_mmio` 总线以后按照设备类型找到对应的设备。然后就是对着 virtio 的标准死磕，同时看 Linux 和 QEMU 的源代码辅助理解，最后终于是成功地把收/发的两个 virtqueue 配置好，并且在中断的时候处理收到的包。这个时候，可以成功地输出收到的包的内容，并且发出指定内容的包了。效果就是看到了这样的图片（图中网站是 [Hex Packet Decoder](https://hpd.gasmi.net/)）：
 
@@ -55,7 +55,7 @@ name "virtio-rng-device", bus virtio-bus
 
 ![](/ping.jpg)
 
-# 显卡驱动
+## 显卡驱动
 
 网卡可以用了，很自然地会想到做一些其他的 virtio 驱动，第一个下手的是显卡。显卡和网卡的主要区别是，网卡是两个 queue 异步作，而在显卡驱动上则是在一个 queue 上每次放一输入一输出的缓冲区来进行交互，具体步骤在 virtio 标准中也写得很清楚。在这个过程中， QEMU 的 Tracing 功能帮了很大的忙，在调试 desc 的结构上提供了很多帮助。
 
@@ -69,7 +69,7 @@ name "virtio-rng-device", bus virtio-bus
 
 这样就好看多了。
 
-# HTTP 服务器
+## HTTP 服务器
 
 在 @wangrunji0408 的提醒和建议下，我开始把一个 Rust 实现的网络栈 [smoltcp](https://github.com/m-labs/smoltcp) 集成到代码中来。这个库中，对底层 Interface 的要求如下：
 
@@ -97,7 +97,7 @@ if socket.can_send() {
 
 ![](/http.jpg)
 
-# 鼠标驱动和块设备驱动
+## 鼠标驱动和块设备驱动
 
 接着自然是往 QEMU 支持的剩下的 virtio 设备里下手。首先下手的是鼠标驱动。这次遇到了新的问题：
 
@@ -110,10 +110,10 @@ if socket.can_send() {
 
 有了块设备以后，就可以替换掉原来的内嵌 SFS 的方案，转为直接从块设备读 SFS 文件。这里我没想明白 lazy_static 和 ownership 的一些问题，最后也则是@wangrunji0408 的帮助我解决了。
 
-# 总结
+## 总结
 
 用 Rust 写出一个可以工作的驱动并不难，只要知道 unsafe 怎么用，但是一旦需要深入思考这里应该用什么安全的方法封装的时候，才发现是个很困难的事情。现在虽然工作了，但是很多地方线程并不安全，代码也不够简洁高效，以后还有很多需要改进的地方。
 
-# See also
+## See also
 
 1. [Virtio Spec](https://github.com/oasis-tcs/virtio-spec)

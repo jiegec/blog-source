@@ -6,11 +6,11 @@ category: software
 title: 在 sbt 中 fork 并且并行运行测试
 ---
 
-# 问题
+## 问题
 
 最近在 sbt 使用遇到一个问题，有两个测试，分别用 testOnly 测试的时候没有问题，如果同时测试就会出问题，应该是全局的状态上出现了冲突。一个自然的解决思路是 fork，但是 sbt 默认 fork 之后 test 是顺序执行的，这会很慢。所以搜索了一下，找到了 fork 并且并行测试的方法。
 
-# 解决方法
+## 解决方法
 
 解决方法在 sbt 文档中其实就有（[原文](https://www.scala-sbt.org/release/docs/Testing.html#Forking+testsl)）。简单来说就是：把每个 test 放到单独的 TestGroup 中，每个 TestGroup 分别用一个 forked JVM 去运行；然后让 sbt 的并行限制设高一些：
 

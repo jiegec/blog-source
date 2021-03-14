@@ -6,7 +6,7 @@ category: hardware
 title: 通过 BSCAN JTAG 对 Rocket Chip 进行调试
 ---
 
-# 前言
+## 前言
 
 在上一个 [post](https://jiege.ch/hardware/2020/02/09/rocket-chip-bscan-analysis/) 里研究了原理，今天也是成功在 Artix 7 上实现了调试。效果如下：
 
@@ -32,7 +32,7 @@ Remote debugging using localhost:3333
 
 这里用的 OpenOCD 和 GDB 都是 riscv 版本，上游的支持尚不完善。对于 Homebrew 用户，我在 [jiegec/homebrew-formulas](https://github.com/jiegec/homebrew-formulas) 维护了需要的 Formula。
 
-# 过程
+## 过程
 
 代码基本借鉴了 [sequencer/rocket-playground](https://github.com/sequencer/rocket-playground/tree/7fa3c51113be607add2034f3abe0ae973caac04a) 和 [KireinaHoro/rocket-zcu102](https://github.com/KireinaHoro/rocket-zcu102/tree/ab9112c951eeeb64482716394d926777862d9e86) 而来，代码方面主要是添加了 [BscanJTAG.scala](https://github.com/jiegec/rocket2thinpad/blob/ad1e86620c54bc0be29d08394d04f70031718b6d/src/main/scala/BscanJTAG.scala#L1)，然后在 Top 模块下把它连接到内部的 JTAG 中：
 

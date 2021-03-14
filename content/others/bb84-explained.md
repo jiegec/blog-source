@@ -6,11 +6,11 @@ category: others
 title: 解释 BB84 协议
 ---
 
-# 背景
+## 背景
 
 这周密码学课程，来自 BUPT 的高飞老师讲了一下 qkd 里的 BB84 协议，老师讲得很好，我也想记录一下这个协议的流程和方法。我不是这方面的专业人士，如果有什么问题请指出。
 
-# 背景知识
+## 背景知识
 
 QKD（Quantum Key Distribution）目的是让通信双方获得同一个密钥，它需要同时需要量子信道和经典信道。其中经典信道被认为是可信的，它可以被监听，但不能被中间人攻击。
 
@@ -32,7 +32,7 @@ QKD（Quantum Key Distribution）目的是让通信双方获得同一个密钥�
 
 这里的 `0/1` 表示有 50% 概率测得 0，有 50% 概率测得 1 。
 
-# 协议流程
+## 协议流程
 
 假如 Alice 要和 Bob 进行 BB84 协议。那么，Alice 首先随机生成一段二进制序列，并随机生成一个基的序列，以 Wikipedia 上的例子为例：
 
@@ -54,7 +54,7 @@ QKD（Quantum Key Distribution）目的是让通信双方获得同一个密钥�
 
 第四步，Alice 和 Bob 在最终使用的密钥中抽取若干位，然后对比，如果这些位都一致，则这个密码是有效的。如果错误率太高，那么很大概率是被攻击了。
 
-# 安全性
+## 安全性
 
 协议的安全性，主要是靠量子的特性：未知量子态不可克隆、对未知量子态的测量可能会改变量子态。
 
@@ -66,6 +66,6 @@ QKD（Quantum Key Distribution）目的是让通信双方获得同一个密钥�
 2. Alice 和 Bob 的随机数生成器需要足够安全
 3. 经典信道是可信的
 
-# 引用
+## 引用
 
 [Quantum key distribution - Wikipedia](https://en.wikipedia.org/wiki/Quantum_key_distribution#BB84_protocol:_Charles_H._Bennett_and_Gilles_Brassard_(1984))

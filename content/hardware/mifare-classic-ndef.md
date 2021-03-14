@@ -6,15 +6,15 @@ category: hardware
 title: MIFARE Classic 上配置 NDEF
 ---
 
-# 背景
+## 背景
 
 最近买了一堆 NFC 的智能卡拿来测试，其中一张 MIFARE Classic 的总是在 iOS 上读不出来，无论是以 Tag 模式还是 NDEF 模式。于是通过一系列的研究，终于知道上怎么一回事，然后成功地把一个 MIFARE Classic 卡配置成了 NDEF。
 
-# 背景知识
+## 背景知识
 
 NFC 有很多协议，其中 MIFARE Classic 基于 ISO 14443-3 Type A 标准，里面有一些 MIFARE 的命令。通过这些命令，就可以控制 MIFARE Classic 卡的内容。具体来说，以我使用的 [MIFARE Classic EV1 4K S70](https://www.nxp.com/docs/en/data-sheet/MF1S70YYX_V1.pdf) 为例，这篇文章会涉及到如下的背景知识：
 
-## MIFARE Classic 内存布局
+### MIFARE Classic 内存布局
 
 在 MIFARE Classic 中，有 Sector 和 Block 的概念，每个 Sector 有若干个 Block，其中最后一个 Block 是特殊的（称为 Sector Trailer），保存了这个 Sector 的一些信息：Key A、Access Bits、GPB 和 Key B。对于 Classic 4K，首先是 32 个有 4 blocks 的 sector，然后是 8 个 有 16 blocks 的 sector， 整体的内存布局大概是：
 
@@ -68,11 +68,11 @@ Sector Trailer 的布局如下：
 
 如果查看完整的表格就可以发现，Key B 的权限一般是比 Key A 大的，所以 Key B 一般是保密的，而 Key A 可以是公开的。
 
-## MIFARE 命令
+### MIFARE 命令
 
 为了向 MIFARE Classic 卡发送命令，首先需要一个 ISO 14443-3 Type A 的接口，Android 的 NfcA 或者 libnfc 都提供了接口。这里发送的命令实际上会再经过一层解析、用 CRYPTO1 算法加密（猜测是读卡器做的？不是很确定），不过对应用程序来说是透明的。可以参考 [MIFARE Classic EV1 1K](https://www.nxp.com/docs/en/data-sheet/MF1S50YYX_V1.pdf) 和 [A Practical Attack on the MIFARE Classic](https://link.springer.com/chapter/10.1007/978-3-540-85893-5_20) 中的描述。
 
-### MIFARE Read
+#### MIFARE Read
 
 读出一个 Block 的内容，每个 Block 有 16 字节。命令格式如下：
 
@@ -84,7 +84,7 @@ Sector Trailer 的布局如下：
 
 返回的数据里刚好是 16 个字节。
 
-### MIFARE Write
+#### MIFARE Write
 
 向一个 Block 写入数据，命令格式如下：
 
@@ -94,7 +94,7 @@ A0 XX YY YY YY YY YY YY YY YY YY YY YY YY YY YY YY YY
 
 这里的 XX 和上面一样，也是 Block 地址；之后是十六字节的数据。
 
-### MIFARE Authentiate with A/B
+#### MIFARE Authentiate with A/B
 
 注：这里和 S70 datasheet 里写的不完全一样。
 
@@ -110,7 +110,7 @@ A0 XX YY YY YY YY YY YY YY YY YY YY YY YY YY YY YY YY
 
 认证成功后，返回一个 0x00；如果认证失败，则会断开 NFC。
 
-## NDEF 是什么
+### NDEF 是什么
 
 NDEF 实际上是比较高层次的数据，就像 HTML ，表示了一个格式化的数组数据，数组的元素可能是文本、URI 等等。它是由若干个 Record 组成的。一个 Record 如下：
 
@@ -122,7 +122,7 @@ NDEF 实际上是比较高层次的数据，就像 HTML ，表示了一个格式
 
 很多个 record 连起来，最终一个 0xFE 表示结束，这就是完整的 NDEF 信息了。
 
-## 在 MIFARE Classic 上使用 NDEF
+### 在 MIFARE Classic 上使用 NDEF
 
 NDEF 只定义了数据格式，但为了实际使用，还得看具体情况。就好像文件内容保存在硬盘上的时候，并不是直接保存，而是通过文件系统，人为定义一个路径，这样大家才知道要从 /etc/shadow 文件去读 Linux 的用户密码信息，NDEF 也需要人为定义一些规则，再作为数据存放在智能卡里的某个地方，这样大家去读取 metadata ，发现上 NDEF Tag，然后才会去解析 NDEF 信息。
 
@@ -161,7 +161,7 @@ Sector 0 (0x00)
 2. D3 F7 D3 F7 D3 F7 ：NDEF 的 Key A
 3. FF FF FF FF FF FF ：出场默认的 Key A 和 Key B
 
-# 如何在 MIFARE Classic 上配置 NDEF
+## 如何在 MIFARE Classic 上配置 NDEF
 
 如果看了这么多背景知识，你还有心情看到这里，那要给个掌声。
 
@@ -233,7 +233,7 @@ A0 0B D3 F7 D3 F7 D3 F7 7F 07 88 40 FF FF FF FF FF FF
 
 上面这些过程，在实际情况下在不同 sector 的时候需要打断，每次重新认证一下。这里默认了一些卡的初始密钥，如果初始情况并不一致，可能并不会工作。
 
-# 踩的坑
+## 踩的坑
 
 在这个过程中踩过很多的坑：
 

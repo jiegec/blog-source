@@ -6,11 +6,11 @@ category: software
 title: USB/IP 模拟 USB 设备
 ---
 
-# 背景
+## 背景
 
 2018 年的时候发过一篇博客，讲如何用 USB/IP 协议在两台 Linux 电脑之间共享 USB 设备。最近刚好有一个需求，就是针对一个现成的 USB device 的代码，通过 USB/IP 模拟出一个 USB 设备，然后进行调试。
 
-# USB/IP 协议
+## USB/IP 协议
 
 USB/IP 只有一个简略的[文档](https://github.com/realthunder/usbip/blob/master/usbip_protocol.txt)，为数不多的使用 USB/IP 的代码，所以有一些细节没有说的很清楚，只能一点点去尝试。
 
@@ -33,7 +33,7 @@ USB/IP 只有一个简略的[文档](https://github.com/realthunder/usbip/blob/m
 
 其中前面四个比较简单清晰，所需要的字段也都是 Descriptor 中对应的字段。后面两个就相对复杂一些：URB data 的长度需要根据 endpoint 类型和 direction 共同决定。URB 实际上是 Linux 内核里的一个数据结构。
 
-# USB 协议
+## USB 协议
 
 那么，USB 协议的几种 transfer 怎么对应到 URB 的数据呢？首先看最常见的三种（[ref](https://www.beyondlogic.org/usbnutshell/usb4.shtml）：
 
@@ -48,6 +48,6 @@ USB/IP 只有一个简略的[文档](https://github.com/realthunder/usbip/blob/m
 
 可见，Interrupt 和 Bulk 是比较简单的，而 Control 和 Isochronous（没有提到）则比较复杂。
 
-# 回到 USB/IP 协议
+## 回到 USB/IP 协议
 
 其实补充了这些信息以后，就可以实现一个 USB/IP 协议的服务器了。

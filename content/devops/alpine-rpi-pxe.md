@@ -68,7 +68,7 @@ subnet 10.0.1.0 netmask 255.255.255.0 {
 
 
 
-# TFTP 服务器配置
+## TFTP 服务器配置
 
 下载 alpine linux 的 rpi boot，解压到指定目录：
 
@@ -91,7 +91,7 @@ enable_uart=1
 > sudo python3 -m py3tftp -p 69
 ```
 
-# 树莓派启动
+## 树莓派启动
 
 连接树莓派的串口，用 115200 Baudrate 打开，可以看到启动信息：
 

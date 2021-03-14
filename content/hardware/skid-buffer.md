@@ -6,7 +6,7 @@ category: hardware
 title: Skid Buffer
 ---
 
-# Skid buffer
+## Skid buffer
 
 Skid buffer 指的就是，对于 valid + ready 的握手信号，用空间（更多的逻辑）来换取时间（更好的时序）的一个硬件模块。
 
@@ -14,7 +14,7 @@ Skid buffer 指的就是，对于 valid + ready 的握手信号，用空间（�
 
 由于需求的不同，Skid buffer 也有不同的实现。目前，找到了四个实现，实现上有所不同，特性也不大一样。
 
-## 统一约定
+### 统一约定
 
 由于我在 SpinalHDL 语言中重新实现了下面的这些 Skid buffer，所以按照 SpinalHDL 的 Stream 定义接口：
 
@@ -33,7 +33,7 @@ class SkidBufferCommon[T <: Data](
 
 输出信号共有：`io.s.ready`、`io.m.valid` 和 `io.m.payload`。
 
-## ZipCPU 版本
+### ZipCPU 版本
 
 第一个版本来自 ZipCPU：
 
@@ -42,25 +42,25 @@ class SkidBufferCommon[T <: Data](
 
 它有两个参数，一个表示是否有额外的输出寄存器（outputReg），一个表示是否低功耗（lowPower）。
 
-## FPGACPU 版本
+### FPGACPU 版本
 
 第二个版本来自 FPGACPU：
 
 文章地址：[Pipeline Skid Buffer](http://fpgacpu.ca/fpga/Pipeline_Skid_Buffer.html)
 
-## SpinalHDL S2M 版本
+### SpinalHDL S2M 版本
 
 第三个版本来自 SpinalHDL Library 的 s2mPipe：
 
 代码地址：[Stream.scala L348](https://github.com/SpinalHDL/SpinalHDL/blob/f9eda46bb5968659fe4e97cad8b69c8c0cb2bf89/lib/src/main/scala/spinal/lib/Stream.scala#L348)
 
-## SpinalHDL M2S 版本
+### SpinalHDL M2S 版本
 
 第四个版本来自 SpinalHDL Library 的 m2sPipe：
 
 代码地址：[Stream.scala L327](https://github.com/SpinalHDL/SpinalHDL/blob/f9eda46bb5968659fe4e97cad8b69c8c0cb2bf89/lib/src/main/scala/spinal/lib/Stream.scala#L327)
 
-## 四个版本的对比
+### 四个版本的对比
 
 在研究了代码以后，可以看到这四个版本的区别：
 
@@ -79,7 +79,7 @@ class SkidBufferCommon[T <: Data](
 3. Buffer 表示缓冲的 payload 个数
 4. ZipCPU w/o outputReg 和 S2M 实现的逻辑是一样的
 
-## 形式化验证
+### 形式化验证
 
 为了确认上面这些类型的 Skid Buffer 都可以正常工作，按照 ZipCPU Skid Buffer 的文章，也照着写了几个 property：
 

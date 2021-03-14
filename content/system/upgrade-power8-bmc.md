@@ -6,11 +6,11 @@ category: system
 title: IBM Power S822LC(8335-GTB) BMC 升级
 ---
 
-# 背景
+## 背景
 
 最近拿到一台 IBM Power S822LC（8335-GTB） 机器的访问权限，这也是我第一次碰 ppc64le 指令集的服务器。然后发现，它的 BMC 版本比较老，我想连接 Remote Control 失败了，原因是 JViewer 不支持 macOS，我就想着能不能升级一下。
 
-# 升级过程
+## 升级过程
 
 首先，在网上找了一下文档，首先用 ipmitool 找一下机器型号：
 
@@ -92,7 +92,7 @@ BIOS Version: 1.17.19
 
 中途也遇到了几次奇怪的问题，多次通过 IPMI reset 之后就好了。
 
-# 远程访问
+## 远程访问
 
 但是，最新版的 BMC 固件中，JViewer 依然没有 macOS 支持。我也 SSH 进去确认了一下，确实没有对应的支持文件。只好在 Linux 机器上访问，安装 icedtea 以后，就可以打开 jnlp 文件，之后一切都很正常。
 

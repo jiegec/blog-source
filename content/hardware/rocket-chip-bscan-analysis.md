@@ -6,11 +6,11 @@ category: hardware
 title: 研究 Rocket Chip 的 BSCAN 调试原理
 ---
 
-# 前言
+## 前言
 
 最近 @jsteward 在研究如何通过 JTAG 对 FPGA 里的 Rocket Chip 进行调试。之前 @sequencer 已经做了一些实践，我们在重复他的工作，同时也研究了一下这是怎么工作的。
 
-# 原理
+## 原理
 
 我们从 @sequencer 得到了一份可用的 [Scala 代码](https://github.com/sequencer/rocket-playground/blob/7fa3c51113be607add2034f3abe0ae973caac04a/playground/src/FPGA.scala#L83) 和 [OpenOCD 配置](https://github.com/sequencer/rocket-playground/blob/7fa3c51113be607add2034f3abe0ae973caac04a/playground/debugger/openocd.cfg#L16)，并且了解到：
 
@@ -78,7 +78,7 @@ end
 
 这样，刚好在 Shift-IR/DR 状态下，Payload 会被写入 IR/DR，从而完成了期望的操作。通过规定一个特定格式的 Data Register，可以实现嵌套的 TAP 的 IR 和 DR 的操作。
 
-# 参考
+## 参考
 
 1. JTAG Standard
 2. [sequencer/rocket-playground](https://github.com/sequencer/rocket-playground)

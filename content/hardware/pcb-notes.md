@@ -8,7 +8,7 @@ title: PCB 笔记
 
 记录一下在学习画板子过程中学到的心得。
 
-# 工具
+## 工具
 
 目前使用过 [KiCad](https://kicad.org/) 和 [lceda](https://lceda.cn/)：
 
@@ -17,7 +17,7 @@ title: PCB 笔记
 
 项目 [jiegec/HT42B534USB2UART](https://github.com/jiegec/HT42B534USB2UART) 采用的是 KiCad 5 编写的。目前正在做的另一个项目采用 lceda
 
-# 流程
+## 流程
 
 1. 选择所需要使用的芯片，查找芯片的 datasheet。
 2. 寻找采用了芯片的一些设计，特别是看 schematic。
@@ -28,7 +28,7 @@ title: PCB 笔记
 7. 如果是自己焊接，则需要购买元件，比如从 lcsc 购买。
 8. 收到 PCB 和元件后，自己按照 BOM 和 schematic 焊接各个元件。
 
-# 笔记
+## 笔记
 
 1. 对于一些连接很多元件的信号，比如 GND，可以留作铺铜解决。也就是说，先不管 GND，把其他所有的信号都接好以后，再在顶层铺铜；如果还是有没有连接上的 GND，可以通过过孔（Via）走到底层，在底层再铺一层铜。
 2. 对于外部供电的 VCC 和 GND，在 KiCad 中需要用 PWR_FLAG 标记一下。
