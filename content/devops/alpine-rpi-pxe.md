@@ -6,11 +6,11 @@ category: devops
 title: 在 rpi4 上用 PXE 运行 Alpine Linux
 ---
 
-# 背景
+## 背景
 
 需要给 rpi 配置一个 pxe 的最小环境，然后看到 alpine 有 rpi 的支持，所以尝试给 rpi4 配置 alpine 。
 
-# PXE 设置
+## PXE 设置
 
 第一步是设置 rpi4 的启动模式，打开 BOOT UART 并且打开 网络启动：
 
@@ -40,7 +40,7 @@ FREEZE_VERSION=0
 
 重启以后，可以用 `vcgencmd bootloader_config` 查看当前的启动配置，看是否正确地更新了启动配置。比较重要的是 BOOT_ORDER，`0x21` 表示先尝试网络启动，再尝试 SD 卡启动。
 
-# 路由器配置
+## 路由器配置
 
 第二步，需要配置路由器，以 OpenWrt 为例：
 

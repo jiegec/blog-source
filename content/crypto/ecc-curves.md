@@ -6,7 +6,7 @@ category: crypto
 title: 各种 ecc 曲线
 ---
 
-# 背景知识
+## 背景知识
 
 椭圆曲线有如下的形式：
 
@@ -22,7 +22,7 @@ $E: y^2+xy=x^3+ax^2+1$
 
 称为 Kbolitz curve。不同的曲线有不同的参数 $(m,f(x),a,b,G,n,h)$ ，对应不同的 $GF(2^m)$ 域。
 
-# OpenSSL
+## OpenSSL
 
 看一下 openssl 支持的曲线参数（`openssl ecparam -list_curves`）：
 
@@ -123,7 +123,7 @@ $E: y^2+xy=x^3+ax^2+1$
 2. 位数：域有多少位
 3. 标准：NIST/SECG/WTLS/X9.62/RFC 5639/SM2/Oakley 表示的是不同的标准
 
-# NIST
+## NIST
 
 NIST 在 [FIPS 186-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf) 中定义了基于素数域的 Curve P-192, Curve P-224, Curve P-256, Curve P-384 和 Curve P-521 。在 [RFC5656](https://tools.ietf.org/html/rfc5656) 中，这几条曲线又名 nistp192 nistp224 nistp256 nistp384 和 nistp521 。
 
@@ -169,7 +169,7 @@ Degree 571 (K-571/B-571) :
 
 $p(t)=t^{571}+t^{10}+t^5+t^2+1$
 
-# SECG
+## SECG
 
 SECG 在 [SEC2](https://www.secg.org/sec2-v2.pdf) 中定义了若干的曲线，其中一部分和上面的 NIST 是同一个曲线。首先是基于素数域的：
 
@@ -214,7 +214,7 @@ iso(1) identified-organization(3) certicom(132) curve(0)
 iso(1) member-body(2) us(840) 10045 curves(3) prime(1)
 ```
 
-# ANSI
+## ANSI
 
 ANSI 也有 [X9.62 标准](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.202.2977&rep=rep1&type=pdf)，在附录里面也定义了若干个曲线。附录 `J.5.1` 里面有三个例子，就是 prime192v1 prime192v2 和 prime192v3，之后则是 prime239v1 prime239v2 prime239v3 和 prime256v1 。
 
@@ -228,7 +228,7 @@ ANSI 也有 [X9.62 标准](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.
 | prime239v3 |                    | 1.2.840.10045.3.1.6 |
 | prime256v1 | nistp256/secp256r1 | 1.2.840.10045.3.1.7 |
 
-# 总结
+## 总结
 
 对于同一个曲线，不同的组织给出了不同的名字，见下表：
 

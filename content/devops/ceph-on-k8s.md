@@ -6,7 +6,7 @@ category: devops
 title: 通过 rook 在 k8s 上部署 ceph 集群
 ---
 
-# 背景
+## 背景
 
 为了方便集群的使用，想在 k8s 集群里部署一个 ceph 集群。
 
@@ -20,7 +20,7 @@ Ceph 有这些组成部分：
 4. mds(optional)：用于 CephFS
 5. radosgw(optional：用于 Ceph Object Storage
 
-# 配置
+## 配置
 
 我们采用的是 [rook](rook.io) 来部署 ceph 集群。
 

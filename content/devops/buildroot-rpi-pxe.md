@@ -6,15 +6,15 @@ category: devops
 title: 在 Rpi4 上运行 buildroot
 ---
 
-# 背景
+## 背景
 
 需要给 rpi 配置一个 pxe 的最小环境，在上一篇博文了提到可以用 alpine，但发现有一些不好用的地方，所以试了试 buildroot。
 
-# PXE 设置和路由器设置
+## PXE 设置和路由器设置
 
 见 “在 Rpi4 上运行 Alpine Linux” 文章。
 
-# Buildroot 配置
+## Buildroot 配置
 
 下载 buildroot ：
 
@@ -53,7 +53,7 @@ bcm2711-rpi-4-b.dtb*  cmdline.txt  config.txt  fixup.dat  Image  overlays/  root
 > sudo python3 -m py3tftp -p 69
 ```
 
-# 树莓派启动
+## 树莓派启动
 
 连接树莓派的串口，用 115200 Baudrate 打开，可以看到启动信息：
 

@@ -6,11 +6,11 @@ category: devops
 title: 在 TKE 上配置不使用 LB 的 Nginx Ingress Controller
 ---
 
-# 背景
+## 背景
 
 想要在 k8s 里面 host 一个网站，但又不想额外花钱用 LB，想直接用节点的 IP。
 
-# 方法
+## 方法
 
 首先安装 nginx-ingress：
 

@@ -6,11 +6,11 @@ category: devops
 title: 用 Kubernetes 部署无状态服务
 ---
 
-# 背景
+## 背景
 
 最近需要部署一个用来跑编译的服务，服务从 MQ 取任务，编译完以后提交任务。最初的做法是包装成 docker，然后用 docker-compose 来 scale up。但既然有 k8s 这么好的工具，就试着学习了一下，踩了很多坑，总结了一些需要用到的命令。
 
-# 搭建 Docker Registry
+## 搭建 Docker Registry
 
 首先搭建一个本地的 Docker Repository，首先设置密码：
 
@@ -42,7 +42,7 @@ $ docker push localhost:5000/$image
 
 这样就可以了。
 
-# 搭建 k8s 环境
+## 搭建 k8s 环境
 
 考虑到只用了单个物理机，所以采用的是 minikube。首先下载 minikube，下载方法略去。
 
@@ -87,7 +87,7 @@ imagePullSecrets:
 
 然后部署即可。
 
-# 部署水平自动伸缩（HPA）
+## 部署水平自动伸缩（HPA）
 
 这一步配置的是自带的 HPA 功能，需要上述的 metrics-server 打开，并且在 Pod/Deployment 里面写明 resources.requests.cpu:
 

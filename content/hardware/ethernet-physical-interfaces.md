@@ -6,13 +6,13 @@ category: hardware
 title: 以太网的物理接口
 ---
 
-# 背景
+## 背景
 
 最近逐渐接触到了一些高速的以太网的接口，被一大堆的名字搞得有点懵，所以特意学习了一下并整理成这篇博客。
 
 更新：经 @z4yx 指出，还可以看[华为的介绍文档](https://support.huawei.com/hedex/hdx.do?docid=EDOC1100156553&id=ZH-CN_TOPIC_0250303640&lang=zh)
 
-## 几几 BASE 杠什么是什么意思
+### 几几 BASE 杠什么是什么意思
 
 在下文里，经常可以看到类似 100BASE-TX 这种写法，它表示的意思是：
 
@@ -23,7 +23,7 @@ title: 以太网的物理接口
 
 详见[Wikipedia - Ethernet Physical Layer # Naming Conventions](https://en.wikipedia.org/wiki/Ethernet_physical_layer#Naming_conventions)。
 
-## 各个速率对应的英文单词是什么
+### 各个速率对应的英文单词是什么
 
 - Fast Ethernet: 100Mbps
 - Gigabit Ethernet: 1Gbps
@@ -32,7 +32,7 @@ title: 以太网的物理接口
 - Forty Gigabit Ethernet: 40Gbps
 - Hundred Gigabit Ethernet: 100Gbps
 
-## 常见的连接器
+### 常见的连接器
 
 连接器（connector）一般来说指的就是线缆和网络设备之间的物理接口了。常见的有：
 
@@ -42,11 +42,11 @@ title: 以太网的物理接口
 
 对于光纤的接口，注意购买的时候要和光模块对应，不然可能插不进去。常见的有 LC-LC，SC-LC，SC-SC 等等，表示线的两端分别是什么接口。
 
-## MDI 和 MDI-X
+### MDI 和 MDI-X
 
 这其实就是大家常见的 RJ45 里面 8 根线对应的信号，在十兆和百兆的时候，需要区分 MDI 和 MDI-X，在同种类型的端口之间用交叉线，在不同类型的端口之间用直通线。在后来，有了 Auto MDI-X，也就是会按照实际情况自动检测并且匹配。从千兆开始，设备都支持 Auto MDI-X 了，所以线本身是交叉还是直通就无所谓了。
 
-## 各种 SFP
+### 各种 SFP
 
 [SFP](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver) 是很常见的，特别是在高速的网络之中。而它又分为几种，对应不同的速率：
 
@@ -74,7 +74,7 @@ title: 以太网的物理接口
 
 可以看到，收和发各有一个差分对共 4 条数据线。相对应的，QSFP 收和发各有四对差分对共 16 条数据线，一共 38 根线。并且有一些信号是复用了同样的 pin，这样的设计可以节省一些 pin，是很常见的。
 
-## MII
+### MII
 
 有时候，还会遇到各种 [MII](https://en.wikipedia.org/wiki/Media-independent_interface) 接口，也就是 MAC 和 PHY 之间的接口。有时候，还会伴随着 MDIO 接口，来进行控制信息的传输。它又分不同的类型：
 

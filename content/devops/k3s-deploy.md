@@ -6,11 +6,11 @@ category: devops
 title: 用 k3s 部署 k8s
 ---
 
-# 背景
+## 背景
 
 最近需要部署一个 k8s 集群，觉得之前配置 kubeadm 太繁琐了，想要找一个简单的。比较了一下 k0s 和 k3s，最后选择了 k3s。
 
-# 配置
+## 配置
 
 k3s 的好处就是配置十分简单：https://rancher.com/docs/k3s/latest/en/quick-start/。不需要装 docker，也不需要装 kubeadm。
 
