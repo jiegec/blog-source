@@ -109,72 +109,87 @@ x86_64
 在不同平台上进行 OpenSSL 测试：
 
 ```shell
-$ openssl speed aes-128-cbc aes-256-cbc des-ede3 rsa2048 sha256 
-# M1 MacBookAir OpenSSL w/ AArch64 ASM enabled
-OpenSSL 1.1.1h  22 Sep 2020
-built on: Tue Nov 24 01:17:25 2020 UTC
-options:bn(64,64) rc4(int) des(int) aes(partial) idea(int) blowfish(ptr)
+$ openssl speed -evp aes-128-cbc aes-256-cbc des-ede3 rsa2048 sha256
+# M1 MacBookAir
+OpenSSL 1.1.1j  16 Feb 2021
+built on: Wed Feb 17 12:34:00 2021 UTC
+options:bn(64,64) rc4(int) des(int) aes(partial) idea(int) blowfish(ptr) 
 compiler: clang -fPIC -arch arm64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DVPAES_ASM -DECP_NISTZ256_ASM -DPOLY1305_ASM -D_REENTRANT -DNDEBUG
 The 'numbers' are in 1000s of bytes per second processed.
 type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
-des ede3         30345.42k    30462.29k    30720.51k    30620.67k    30702.19k    30692.69k
-aes-128 cbc     304095.84k   318020.97k   318105.51k   315161.26k   317307.12k   317466.03k
-aes-256 cbc     231153.93k   237928.01k   232901.21k   236751.53k   238025.55k   237524.16k
-sha256          377327.95k  1101483.62k  1853731.02k  2272785.12k  2427495.08k  2442317.40k
+des ede3         30466.76k    30644.63k    30592.26k    30106.97k    29961.69k    29951.49k
+aes-256 cbc     229863.42k   238671.82k   232654.34k   237194.70k   238092.29k   237791.91k
+aes-128-cbc    1020384.58k  1427866.73k  1521123.84k  1558199.30k  1569978.99k  1566288.55k
+sha256          378646.12k  1140355.52k  1894169.69k  2287211.18k  2445602.42k  2453209.09k
                   sign    verify    sign/s verify/s
-rsa 2048 bits 0.000559s 0.000014s   1787.7  69910.5
-# AMD EPYC 7551 OpenSSL
+rsa 2048 bits 0.000561s 0.000014s   1782.0  69645.9
+# AMD EPYC 7742
+OpenSSL 1.1.1d  10 Sep 2019
+built on: Mon Dec  7 20:44:45 2020 UTC
+options:bn(64,64) rc4(8x,int) des(int) aes(partial) blowfish(ptr)
+compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-CKx7Fo/openssl-1.1.1d=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+des ede3         28734.07k    28942.08k    28982.78k    29217.91k    29136.21k    29103.45k
+aes-256 cbc     176843.84k   183040.83k   183156.82k   184132.61k   184464.73k   184642.22k
+aes-128-cbc     602680.15k  1178207.32k  1239931.82k  1251810.30k  1258359.47k  1261316.78k
+sha256          201482.20k   513504.00k  1075572.14k  1474850.82k  1648746.50k  1663030.61k
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.000620s 0.000018s   1613.7  54756.4
+# AMD EPYC 7282
 OpenSSL 1.1.1d  10 Sep 2019
 built on: Mon Apr 20 20:23:01 2020 UTC
 options:bn(64,64) rc4(8x,int) des(int) aes(partial) blowfish(ptr)
 compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-8Ocme2/openssl-1.1.1d=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
 The 'numbers' are in 1000s of bytes per second processed.
 type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
-des ede3         20908.92k    21132.29k    21282.73k    21310.12k    21241.86k    21293.74k
-aes-128 cbc     160187.39k   166072.96k   167093.25k   168903.34k   168523.09k   168940.89k
-aes-256 cbc     121768.89k   125651.37k   126532.18k   126644.91k   126440.79k   127325.53k
-sha256          147462.49k   381143.42k   782357.16k  1092831.23k  1236314.79k  1247537.83k
+des ede3         27052.31k    27392.85k    27455.57k    27569.49k    27503.27k    27514.20k
+aes-256 cbc     158578.10k   168502.21k   172365.91k   173904.90k   174391.30k   174429.53k
+aes-128-cbc     594506.35k  1111762.07k  1169014.02k  1184384.00k  1192793.56k  1189167.10k
+sha256          194382.61k   487875.93k  1017121.56k  1390122.33k  1558735.53k  1572274.18k
                   sign    verify    sign/s verify/s
-rsa 2048 bits 0.001097s 0.000033s    911.7  30344.2
-# Intel Xeon E5-2680 v4 (Broadwell) OpenSSL
-OpenSSL 1.0.2g  1 Mar 2016
-built on: reproducible build, date unspecified
-options:bn(64,64) rc4(16x,int) des(idx,cisc,16,int) aes(partial) blowfish(idx)
-compiler: cc -I. -I.. -I../include  -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -m64 -DL_ENDIAN -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wl,-Bsymbolic-functions -Wl,-z,relro -Wa,--noexecstack -Wall -DMD32_REG_T=int -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -DECP_NISTZ256_ASM
-The 'numbers' are in 1000s of bytes per second processed.
-type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes
-des ede3         27937.45k    28254.25k    28298.84k    28288.68k    28270.59k
-aes-128 cbc     128697.71k   141368.87k   144291.16k   145353.73k   145782.10k
-aes-256 cbc      93993.22k   100904.09k   102572.29k   103140.01k   103230.12k
-sha256           70095.90k   164419.73k   308743.00k   388798.12k   420260.52k
-                  sign    verify    sign/s verify/s
-rsa 2048 bits 0.000646s 0.000019s   1546.9  52719.7
-# Intel Xeon Gold 5218 (Cascade Lake) OpenSSL
+rsa 2048 bits 0.000655s 0.000019s   1526.8  52089.2
+# AMD EPYC 7551
 OpenSSL 1.1.1d  10 Sep 2019
-built on: Mon Apr 20 20:23:01 2020 UTC
-options:bn(64,64) rc4(16x,int) des(int) aes(partial) blowfish(ptr)
-compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-8Ocme2/openssl-1.1.1d=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
+built on: Tue Feb 16 22:08:43 2021 UTC
+options:bn(64,64) rc4(8x,int) des(int) aes(partial) blowfish(ptr)
+compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-m9Qnvk/openssl-1.1.1d=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
 The 'numbers' are in 1000s of bytes per second processed.
 type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
-des ede3         31859.82k    32367.83k    32325.29k    32363.86k    32388.44k    32440.32k
-aes-128 cbc     248045.72k   257097.86k   257922.99k   261073.92k   260590.25k   260483.75k
-aes-256 cbc     189070.60k   193881.34k   194477.40k   195246.76k   195163.48k   195641.34k
-sha256           85306.65k   193124.61k   355518.55k   447338.15k   481337.34k   484294.66k
+des ede3         20850.88k    21260.78k    21315.84k    21368.49k    21321.05k    21392.04k
+aes-256 cbc     122059.94k   125701.42k   126591.06k   126770.52k   127049.73k   126937.77k
+aes-128-cbc     441625.34k   883733.48k   928208.21k   941480.96k   944889.86k   945307.65k
+sha256          151161.13k   388304.60k   809272.15k  1106645.33k  1238966.27k  1249219.93k
                   sign    verify    sign/s verify/s
-rsa 2048 bits 0.000544s 0.000016s   1839.6  62426.2
-# IBM POWER8NVL OpenSSL
-OpenSSL 1.0.2g  1 Mar 2016
+rsa 2048 bits 0.001096s 0.000033s    912.8  30284.7
+# Intel Xeon E5-2699 v4 (Broadwell)
+OpenSSL 1.0.2u  20 Dec 2019
 built on: reproducible build, date unspecified
-options:bn(64,64) rc4(ptr,char) des(idx,risc1,16,long) aes(partial) blowfish(idx)
-compiler: cc -I. -I.. -I../include  -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -m64 -DL_ENDIAN -g -O3 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wl,-Bsymbolic-functions -Wl,-z,relro -Wa,--noexecstack -Wall -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DAES_ASM -DVPAES_ASM
+options:bn(64,64) rc4(16x,int) des(idx,cisc,16,int) aes(partial) idea(int) blowfish(idx)
+compiler: gcc -I. -I.. -I../include  -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DRC4_ASM -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -DECP_NISTZ256_ASM
 The 'numbers' are in 1000s of bytes per second processed.
 type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes
-des ede3         18783.27k    18991.25k    19043.67k    18974.04k    18972.67k
-aes-128 cbc     106504.73k   110757.33k   113190.23k   113867.43k   114065.41k
-aes-256 cbc      80060.80k    82383.13k    83770.20k    84134.57k    84243.80k
-sha256           59540.44k   150015.98k   284114.35k   369889.62k   405607.77k
+des ede3         29863.80k    30156.69k    30243.07k    30237.70k    30302.21k
+aes-256 cbc     103491.45k   110240.94k   112029.95k   112400.38k   112833.88k
+aes-128-cbc     734225.68k   788483.88k   802857.39k   805860.69k   807848.62k
+sha256           82720.89k   184528.45k   342888.28k   425826.30k   457149.10k
                   sign    verify    sign/s verify/s
-rsa 2048 bits 0.003516s 0.000096s    284.4  10383.2
+rsa 2048 bits 0.000573s 0.000017s   1745.5  60236.3
+# Intel Xeon E5-2680 v4 (Broadwell) TODO
+# Intel Xeon Gold 5218 (Cascade Lake) TODO
+# IBM POWER8NVL
+OpenSSL 1.1.1  11 Sep 2018
+built on: Wed Feb 17 12:35:54 2021 UTC
+options:bn(64,64) rc4(char) des(int) aes(partial) blowfish(ptr)
+compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O3 -fdebug-prefix-map=/build/openssl-avwOZX/openssl-1.1.1=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DAES_ASM -DVPAES_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+des ede3         25120.65k    25479.70k    25570.13k    25604.10k    25616.38k    25613.65k
+aes-256 cbc      79140.44k    82350.23k    83815.94k    84183.72k    84290.22k    84306.60k
+aes-128-cbc     310027.28k   647168.64k   890896.81k   984001.19k  1014827.69k  1017096.87k
+sha256           58347.98k   151006.68k   286465.28k   373490.69k   411044.52k   414012.76k
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.001442s 0.000040s    693.5  25212.7
 ```
 
 ## 总结
