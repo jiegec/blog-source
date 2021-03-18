@@ -60,7 +60,7 @@ $ opkg install luci
 
 由于目前 luci 不支持 802.11ax 的配置，可以直接修改 uci 配置来达到效果：
 
-```
+```shell
 root@OpenWrt:/# uci show wireless
 root@OpenWrt:/# uci set wireless.radio1.htmode='HE80'
 root@OpenWrt:/# /etc/init.d/network restart
@@ -69,4 +69,4 @@ root@OpenWrt:/# /etc/init.d/network restart
 
 注：实际上设置为 HE 开头的字符串即可，见 [mac80211.sh](https://github.com/openwrt/openwrt/blob/8019c54d8a191cfb90c3bf06ff367f601f872fd1/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh#L334)。
 
-再连接上 Wi-Fi 的时候就可以看到是 802.11ax 模式了。
+再连接上 Wi-Fi 的时候就可以看到是 802.11ax 模式了。也在 [OpenWRT 论坛](https://forum.openwrt.org/t/got-802-11ax-working-in-linksys-e8450/91533) 上分享了一下这个方案。
