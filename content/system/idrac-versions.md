@@ -39,5 +39,6 @@ title: iDRAC 各版本
 
 ## iDRAC 9
 
+- 4.00.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=4jcpk)，2019 年 12 月版本。LLDP 连接视图。
 - 4.22.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=9f2tg)，2020 年 7 月版本。
 - 4.40.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=62gw1)，2020 年 12 月版本，下一代的 iDRAC virtual console 和 virtual media，支持 Infiniband。
