@@ -80,6 +80,18 @@ Warning: This command may cause confliction in netconf status. Continue? [Y/N]:y
 [HUAWEI]snmp-agent community read [COMMUNITY NAME] mib-view iso-view
 ```
 
+### 查看 ARP 表
+
+```
+[HUAWEI]display arp
+```
+
+### ARPING
+
+```
+[HUAWEI]arp send-packet X.X.X.X ffff-ffff-ffff interface Vlanif VLAN
+```
+
 ## DELL
 
 测试型号：N3048
