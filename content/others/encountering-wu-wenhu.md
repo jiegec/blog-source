@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2018-03-08 17:47:50 +0800
-tags: [百团大战,吴文虎]
+tags: [wuwenhu]
 category: others
 title: 偶遇清华吴文虎教授
 ---
