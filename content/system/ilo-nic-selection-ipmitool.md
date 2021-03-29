@@ -70,3 +70,7 @@ $ ipmitool raw 0x0c 0x02 0x01 197 0x00 0x00
 - 0x02: Platform supports ALOM shared NIC
 
 如果想要的端口和默认选择不一样，可以写入 197 来更新。详见上面的文档链接。
+
+超微的机器也有类似的办法：https://www.supermicro.org.cn/support/faqs/faq.cfm?faq=15868
+
+Update：我给 IPMITOOL 提交了 [PR](https://github.com/ipmitool/ipmitool/pull/278)，来简化这个过程。
