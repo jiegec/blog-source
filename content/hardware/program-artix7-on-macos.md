@@ -72,3 +72,21 @@ init
 pld load 0 ./bitstream.bit
 shutdown
 ```
+
+成功输出：
+
+```shell
+$ openocd
+Open On-Chip Debugger 0.11.0
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : auto-selecting first available session transport "jtag". To override use 'transport select <transport>'.
+Info : ftdi: if you experience problems at higher adapter clocks, try the command "ftdi_tdo_sample_edge falling"
+Info : clock speed 25000 kHz
+Info : JTAG tap: xc7.tap tap/device found: 0x0362d093 (mfg: 0x049 (Xilinx), part: 0x362d, ver: 0x0)
+Warn : gdb services need one or more targets defined
+shutdown command invoked
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+```
