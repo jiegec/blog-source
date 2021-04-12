@@ -53,3 +53,22 @@ Info : Listening on port 4444 for telnet connections
 
 1. https://pansila.github.io/posts/7db4884d
 2. https://numato.com/kb/programming-mimas-a7-using-openocd-and-xc3sprog/
+
+更新：OpenOCD 已经更新到 0.11.0，对于 Arty A7，采用下面的脚本进行烧写：
+
+```
+# OpenOCD 0.11.0
+# Adapted from: interface/ftdi/digilent-hs1.cfg
+# See also: board/arty_s7.cfg
+adapter driver ftdi
+adapter speed 25000
+ftdi_vid_pid 0x0403 0x6010
+ftdi_channel 0
+ftdi_layout_init 0x0088 0x008b
+reset_config none
+
+source [find cpld/xilinx-xc7.cfg]
+init
+pld load 0 ./bitstream.bit
+shutdown
+```
