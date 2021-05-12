@@ -185,6 +185,6 @@ MegaCLI:
 
 PercCLI:
 
-- 007.1420.0000.0000 Dec 10, 2020 [PERCCLI_N65F1_7.1420.00_A10_Linux.tar.gz](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=n65f1)
+- 007.1420.0000.0000 Dec 10, 2020 [PERCCLI_N65F1_7.1420.00_A10_Linux.tar.gz](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=n65f1) [PERCCLI_5V7XX_7.1420.0_A10_VMware.tar.gz](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=5v7xx)
 - 007.1327.0000.0000 July 27, 2020 [PERCCLI_D6YWP_7.1327.00_A09_Linux.tar.gz](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=d6ywp)
 - 007.0127.0000.0000 July 13, 2017 [perccli_7.1-007.0127_linux.tar.gz](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=f48c2)
