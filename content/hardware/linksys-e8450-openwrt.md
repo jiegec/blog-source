@@ -70,3 +70,5 @@ root@OpenWrt:/# /etc/init.d/network restart
 注：实际上设置为 HE 开头的字符串即可，见 [mac80211.sh](https://github.com/openwrt/openwrt/blob/8019c54d8a191cfb90c3bf06ff367f601f872fd1/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh#L334)。
 
 再连接上 Wi-Fi 的时候就可以看到是 802.11ax 模式了。也在 [OpenWRT 论坛](https://forum.openwrt.org/t/got-802-11ax-working-in-linksys-e8450/91533) 上分享了一下这个方案。
+
+更新（2021-07-31）：目前最新的 luci 版本已经可以在网页上配置 802.11ax 模式了。
