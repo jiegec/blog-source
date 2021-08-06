@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-04-15 14:31:00 +0800
+date: 2021-04-15T14:31:00+08:00
 tags: [esxi,vmware,perc,perccli,raid,megaraid,lsi,avago]
 category: devops
 title: 在 ESXi 中用 PERCCli 换 RAID 中的盘

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-04-02 23:19:00 +0800
+date: 2021-04-02T23:19:00+08:00
 tags: [k8s,kubernetes,fluentd,logging]
 category: devops
 title: 用 fluentd 收集 k8s 中容器的日志

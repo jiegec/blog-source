@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-06-23 14:48:00 +0800
+date: 2021-06-23T14:48:00+08:00
 tags: [gcc,clang,c++,cpp,c++11,abi]
 category: programming
 title: C++ 11 的 ABI 问题

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-02-09 00:35:00 +0800
+date: 2020-02-09T00:35:00+08:00
 tags: [openocd,fpga,artix7,macos]
 category: hardware
 title: 在 macOS 烧写 Artix7 FPGA

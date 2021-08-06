@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-07-16 00:16:00 +0800
+date: 2021-07-16T00:16:00+08:00
 tags: [nginx,http,post,disk]
 category: software
 title: Nginx 处理 POST 请求出现 Internal Server Error 排查一则

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-07-24 20:42:00 +0800
+date: 2021-07-24T20:42:00+08:00
 tags: [homebridge,broadlink,rm]
 category: software
 title: 配置 homebridge-broadlink-rm-pro

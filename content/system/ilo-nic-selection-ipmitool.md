@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-03-29 08:30:00 +0800
+date: 2021-03-29T08:30:00+08:00
 tags: [hpe,ilo,ilo4,ipmi,ipmitool]
 category: system
 title: 通过 ipmitool 配置 iLO 4 管理端口
