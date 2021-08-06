@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-08-06 19:37:00 +0800
+date: 2021-08-06T19:37:00+08:00
 tags: [intel,intrinsics]
 category: misc
 title: 轶事一则
