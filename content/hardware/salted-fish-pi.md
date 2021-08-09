@@ -32,8 +32,8 @@ $ saveenv # optional
 $ boot
 ```
 
-这里一开始遇到了很多坑，比如一直看不到 console ，这个是找了 @Gaoyichuan 拿到的一份 Kernel Config 进行修改修好的。另一个是进去以后找不到 root ，我先是搞了一个有 busybox 的 initrd ，进去看发现是能找到 mmc 的，但是有延迟，那么添加上 rootwait 就好了。进去以后就差 rootfs 。由于我缺少一个写 ext4 的工具，又发现手上有一个 Raspbian 的镜像，它里面也正好是两个分区，而且架构也同样是 armv7l ，我就直接把它烧到 SD 卡中，把 U-Boot 写进去，然后往 boot 分区里写内核和 dtb ，然后就成功进去，并且跑起来了。最喜感的就是，进去以后是个 pi@raspberrypi ，实际上确是另一个东西。不过，只有当我 `apt update` 发现用了半小时的时候，我才想起来这其实是是一个嵌入式系统。。
+这里一开始遇到了很多坑，比如一直看不到 console ，这个是找了 [@gaoyichuan](https://github.com/gaoyichuan) 拿到的一份 Kernel Config 进行修改修好的。另一个是进去以后找不到 root ，我先是搞了一个有 busybox 的 initrd ，进去看发现是能找到 mmc 的，但是有延迟，那么添加上 rootwait 就好了。进去以后就差 rootfs 。由于我缺少一个写 ext4 的工具，又发现手上有一个 Raspbian 的镜像，它里面也正好是两个分区，而且架构也同样是 armv7l ，我就直接把它烧到 SD 卡中，把 U-Boot 写进去，然后往 boot 分区里写内核和 dtb ，然后就成功进去，并且跑起来了。最喜感的就是，进去以后是个 pi@raspberrypi ，实际上确是另一个东西。不过，只有当我 `apt update` 发现用了半小时的时候，我才想起来这其实是是一个嵌入式系统。。
 
-进去以后发现，没有识别到网卡驱动。网上找了 LicheePi Zero 的一个解决方案，但是并不能用，还出现了神奇的 Kernel Oops ，怀疑是内核版本太新的问题。我又找到 @Icenowy 的一个 [Patch](https://lore.kernel.org/patchwork/patch/884656/) ，它终于是解决了这个问题，成功地找到了网卡，并且愉快地 `ssh pi@raspberrypi.local` 。之后会在咸鱼派那边公布一下我们做的修改。
+进去以后发现，没有识别到网卡驱动。网上找了 LicheePi Zero 的一个解决方案，但是并不能用，还出现了神奇的 Kernel Oops ，怀疑是内核版本太新的问题。我又找到 [@icenowy](https://github.com/icenowy) 的一个 [Patch](https://lore.kernel.org/patchwork/patch/884656/) ，它终于是解决了这个问题，成功地找到了网卡，并且愉快地 `ssh pi@raspberrypi.local` 。之后会在咸鱼派那边公布一下我们做的修改。
 
 现在的想法是，把 HomeBridge 搭建到它上面，不过目前来看硬件资源有点紧张，放着会有点慢。可能还是用树莓派做这个事情比较合适。

@@ -8,7 +8,7 @@ title: 研究 Rocket Chip 的 BSCAN 调试原理
 
 ## 前言
 
-最近 @jsteward 在研究如何通过 JTAG 对 FPGA 里的 Rocket Chip 进行调试。之前 @sequencer 已经做了一些实践，我们在重复他的工作，同时也研究了一下这是怎么工作的。
+最近 [@jsteward](https://github.com/KireinaHoro) 在研究如何通过 JTAG 对 FPGA 里的 Rocket Chip 进行调试。之前 [@sequencer](https://github.com/sequencer) 已经做了一些实践，我们在重复他的工作，同时也研究了一下这是怎么工作的。
 
 ## 原理
 

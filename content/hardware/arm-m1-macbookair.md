@@ -20,7 +20,7 @@ title: ARM M1 MacBook Air 开箱
 
 进了系统才能看得出区别。预装的系统是 macOS Big Sur 11.0，之后手动更新到了目前最新的 11.0.1。
 
-顺带 @FactorialN 同学提醒我在这里提一句：包装里有电源适配器，不太环保。
+顺带 [@FactorialN](https://github.com/FactorialN) 同学提醒我在这里提一句：包装里有电源适配器，不太环保。
 
 ## 体验
 

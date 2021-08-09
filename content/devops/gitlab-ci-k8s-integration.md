@@ -78,7 +78,7 @@ build:
   script: ./build.sh
 ```
 
-这里有很多细节，包括 DinD 的访问方式，等待 client cert，设置 docker 的 insecure registry 和 login 等等。经过 @CircuitCoder 的不断摸索，终于写出了可以用的配置。
+这里有很多细节，包括 DinD 的访问方式，等待 client cert，设置 docker 的 insecure registry 和 login 等等。经过 [@CircuitCoder](https://github.com/CircuitCoder) 的不断摸索，终于写出了可以用的配置。
 
 如此配置以后，就可以在 gitlab ci 的构建脚本里用 docker 来 build 并且 push 到自己的 registry 了。为了防止泄露密钥，建议把这些变量放到 gitlab ci 设置的 secrets 中。
 
