@@ -12,13 +12,13 @@ title: Locale 影响排序的特殊副作用
 
 ```shell
 $ cat poc.txt | tr '\\n' ' '
-1 + - * / \ a A 一 二 测 试 α 
+1 + - * / \ a b A B 一 二 测 试 α
 $ LANG="" sort poc.txt | tr '\\n' ' '
-* + - / 1 A \ a α 一 二 测 试 
+* + - / 1 A B \ a b α 一 二 测 试
 $ LANG="zh_CN.UTF-8" sort poc.txt | tr '\\n' ' '
-* + - / \ 1 测 二 试 一 a A α 
+* + - / \ 1 测 二 试 一 a A b B α
 $ LANG="en_US.UTF-8" sort poc.txt | tr '\\n' ' '
-* + - / \ 1 a A α 一 二 测 试 
+* + - / \ 1 a A b B α 一 二 测 试
 ```
 
 注意 \ 1 a A 的顺序，在不同的 locale 下结果不同。
