@@ -77,3 +77,18 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 ## 例子分析
 
 [Alpha 21264](https://www.cis.upenn.edu/~milom/cis501-Fall09/papers/Alpha21264.pdf) 是一个采用了 Explicit Register Renaming 和 ReOrder Buffer（论文中叫 Inflight Window） 的一个处理器。可以看到，它把指令分为了两类，Integer 和 Floating Point。Issue Queue 大小分别为 20 和 15，而 Register File 大小分别为 80x2 和 72。ROB 大小为 80。
+
+## 精确异常 vs 非精确异常
+
+精确异常是指发生异常的指令之前的指令都完成，之后的没有执行。一般来说，实现方式是完成异常指令之前的所有指令，并撤销异常指令之后的指令的作用。非精确异常则是不保证这个性质，[网上资料](http://bwrcs.eecs.berkeley.edu/Classes/cs152/lectures/lec12-exceptions.pdf) 说，这种情况下硬件实现更简单，但是软件上处理比较困难。
+
+一个非精确异常的例子是 [Alpha](https://courses.cs.washington.edu/courses/cse548/99wi/other/alphahb2.pdf)，在章节 4.7.6.1 中提到，一些浮点计算异常可能是非精确的，并且说了一句：`In general, it is not feasible to fix up the result value or to continue from the trap.`。同时给出了一些条件，只有当指令序列满足这些条件的时候，异常才是可以恢复的。还有一段描述，摘录在这里：
+
+	Alpha lets the software implementor determine the precision of arithmetic traps.
+	With the Alpha architecture, arithmetic traps (such as overflow and underflow)
+	are imprecise—they can be delivered an arbitrary number of instructions after the
+	instruction that triggered the trap. Also, traps from many different instructions can
+	be reported at once. That makes implementations that use pipelining and multiple
+	issue substantially easier to build.
+	However, if precise arithmetic exceptions are desired, trap barrier instructions can
+	be explicitly inserted in the program to force traps to be delivered at specific points.
