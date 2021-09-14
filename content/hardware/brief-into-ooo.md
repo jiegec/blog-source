@@ -76,4 +76,4 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 ## 例子分析
 
-[Alpha 21264](https://www.cis.upenn.edu/~milom/cis501-Fall09/papers/Alpha21264.pdf) 是一个采用了 Explicit Register Renaming 的一个处理器。可以看到，它把指令分为了两类，Integer 和 Floating Point。Issue Queue 大小分别为 20 和 15，而 Register File 大小分别为 80x2 和 72。
+[Alpha 21264](https://www.cis.upenn.edu/~milom/cis501-Fall09/papers/Alpha21264.pdf) 是一个采用了 Explicit Register Renaming 和 ReOrder Buffer（论文中叫 Inflight Window） 的一个处理器。可以看到，它把指令分为了两类，Integer 和 Floating Point。Issue Queue 大小分别为 20 和 15，而 Register File 大小分别为 80x2 和 72。ROB 大小为 80。
