@@ -171,3 +171,8 @@ ARM 架构也有 imprecise asynchronous external abort：
 	Because imprecise asynchronous external aborts are normally fatal to the process that caused them, ARM recommends that implementations make external aborts precise wherever possible.
 
 不过这更多是因为内存的无法预知的错误，这种时候机器直接可以拿去维修了。
+
+[文章](https://community.arm.com/developer/ip-products/processors/f/cortex-a-forum/5056/can-anyone-provide-an-example-of-asynchronous-exceptions) 提到了两个 precise/imprecise async/sync的例子：
+
+1. 外部中断是异步的，同时也是 precise 的。
+2. 对于一个 Write-allocate 的缓存，如果程序写入一个不存在的物理地址，那么写入缓存的时候不会出现错误，但当这个 cache line 被写入到总线上的时候，就会触发异常，这个异常是异步并且非精确的，因为之前触发这个异常的指令可能已经完成很久了。这种时候这个进程也大概率没救了，直接 SIGBUS 退出。
