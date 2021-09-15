@@ -92,3 +92,75 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 	issue substantially easier to build.
 	However, if precise arithmetic exceptions are desired, trap barrier instructions can
 	be explicitly inserted in the program to force traps to be delivered at specific points.
+
+具体来说，在 [Reference Manual](http://www.bitsavers.org/pdf/dec/alpha/Sites_AlphaAXPArchitectureReferenceManual_2ed_1995.pdf) 中第 5.4.1 章节，可以看到当触发 Arithmetic Trap 的时候，会进入 Kernel 的 entArith 函数，并提供参数：a0 表示 exception summary，a1 表示 register write mask。exception summary 可以用来判断发生了什么类型的 exception，比如 integer overflow，inexact result 等等。一个比较特别的 exception 类型是 software completion。第二个参数表示的是触发异常的指令（一个或多个）会写入哪些寄存器（64位，低32位对应整数寄存器，高32位对应浮点寄存器），然后保存下来的 PC 值为最后一条执行的指令的下一个地址，从触发异常的第一条指令到最后一条指令就是 trap shadow，这部分指令可能执行了一部分，没有执行一部分，一部分执行结果是错误的。
+
+Linux 处理代码在 `arch/alpha/kernel/traps.c` 的 `do_entArith` 函数中。首先判断，如果是 software completion，那就要进行处理；否则直接 SIGFPE 让程序自己处理或者退出。如果是精确异常，那就对 PC-4 进行浮点模拟；如果是非精确异常，就从 trap shadow 的最后一条指令开始往前搜索，并同时记录遇到的指令写入的寄存器，如果发现指令的写入的寄存器已经覆盖了 register write mask，就说明找到了 trap shadow 的开头，则模拟这条指令，然后从下一条开始重新执行。具体代码如下：
+
+```cpp
+long
+alpha_fp_emul_imprecise (struct pt_regs *regs, unsigned long write_mask)
+{
+	unsigned long trigger_pc = regs->pc - 4;
+	unsigned long insn, opcode, rc, si_code = 0;
+
+	/*
+	 * Turn off the bits corresponding to registers that are the
+	 * target of instructions that set bits in the exception
+	 * summary register.  We have some slack doing this because a
+	 * register that is the target of a trapping instruction can
+	 * be written at most once in the trap shadow.
+	 *
+	 * Branches, jumps, TRAPBs, EXCBs and calls to PALcode all
+	 * bound the trap shadow, so we need not look any further than
+	 * up to the first occurrence of such an instruction.
+	 */
+	while (write_mask) {
+		get_user(insn, (__u32 __user *)(trigger_pc));
+		opcode = insn >> 26;
+		rc = insn & 0x1f;
+
+		switch (opcode) {
+		      case OPC_PAL:
+		      case OPC_JSR:
+		      case 0x30 ... 0x3f:	/* branches */
+			goto egress;
+
+		      case OPC_MISC:
+			switch (insn & 0xffff) {
+			      case MISC_TRAPB:
+			      case MISC_EXCB:
+				goto egress;
+
+			      default:
+				break;
+			}
+			break;
+
+		      case OPC_INTA:
+		      case OPC_INTL:
+		      case OPC_INTS:
+		      case OPC_INTM:
+			write_mask &= ~(1UL << rc);
+			break;
+
+		      case OPC_FLTC:
+		      case OPC_FLTV:
+		      case OPC_FLTI:
+		      case OPC_FLTL:
+			write_mask &= ~(1UL << (rc + 32));
+			break;
+		}
+		if (!write_mask) {
+			/* Re-execute insns in the trap-shadow.  */
+			regs->pc = trigger_pc + 4;
+			si_code = alpha_fp_emul(trigger_pc);
+			goto egress;
+		}
+		trigger_pc -= 4;
+	}
+
+egress:
+	return si_code;
+}
+```
