@@ -68,6 +68,7 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 	The active list contains the logical-destination register number and its old physical-register number for each instruction. An instruction's graduation commits its new mapping, so the old physical register can return to the free list for reuse. When an exception occurs, however, subsequent instructions never graduate. Instead, the processor restores old mappings from the active list. The R1OOOO unmaps four instructions per cycle--in reverse order, in case it renamed the same logical register twice. Although this is slower than restoring a branch, exceptions are much rarer than mispredicted branches. The processor returns new physical registers to the free lists by restoring their read pointers.
 
+和 @CircuitCoder 讨论并参考 [BOOM 文档](https://docs.boom-core.org/en/latest/sections/reorder-buffer.html#parameterization-rollback-versus-single-cycle-reset) 后发现，另一种办法是记录一个 Committed Map Table，也就是，只有当 ROB Head 的指令被 Commit 的时候，才更新 Committed Map Table，可以认为是顺序执行的寄存器映射表。当发生异常的时候，把 Committed Map Table 覆盖到 Register Map Table 上。这样需要的周期比较少，但是时序可能比较差。
 
 ## 其他优化的手段
 
