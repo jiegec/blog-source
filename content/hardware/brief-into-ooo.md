@@ -66,7 +66,16 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 还有一个问题，就是在遇到异常的时候，如何恢复在异常指令处的架构寄存器到物理寄存器的映射呢？一个办法是，利用我在 ROB 中记录的被覆盖的物理寄存器编号，从 ROB 队尾往前回滚，当发现一条指令覆盖了一个架构寄存器映射的时候，就恢复为覆盖之前的值。这样，当回滚到异常指令的时候，就会得到正确的映射。[MIPS R10K 的论文](https://ieeexplore.ieee.org/document/491460)中是这么描述的：
 
-	The active list contains the logical-destination register number and its old physical-register number for each instruction. An instruction's graduation commits its new mapping, so the old physical register can return to the free list for reuse. When an exception occurs, however, subsequent instructions never graduate. Instead, the processor restores old mappings from the active list. The R1OOOO unmaps four instructions per cycle--in reverse order, in case it renamed the same logical register twice. Although this is slower than restoring a branch, exceptions are much rarer than mispredicted branches. The processor returns new physical registers to the free lists by restoring their read pointers.
+	The active list contains the logical-destination register number and its
+	old physical-register number for each instruction. An instruction's
+	graduation commits its new mapping, so the old physical register can return
+	to the free list for reuse. When an exception occurs, however, subsequent
+	instructions never graduate. Instead, the processor restores old mappings
+	from the active list. The R1OOOO unmaps four instructions per cycle--in
+	reverse order, in case it renamed the same logical register twice. Although
+	this is slower than restoring a branch, exceptions are much rarer than
+	mispredicted branches. The processor returns new physical registers to the
+	free lists by restoring their read pointers.
 
 和 @CircuitCoder 讨论并参考 [BOOM 文档](https://docs.boom-core.org/en/latest/sections/reorder-buffer.html#parameterization-rollback-versus-single-cycle-reset) 后发现，另一种办法是记录一个 Committed Map Table，也就是，只有当 ROB Head 的指令被 Commit 的时候，才更新 Committed Map Table，可以认为是顺序执行的寄存器映射表。当发生异常的时候，把 Committed Map Table 覆盖到 Register Map Table 上。这样需要的周期比较少，但是时序可能比较差。
 
@@ -86,7 +95,17 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 其次是性能，我们希望 Load 指令可以尽快地完成，这样可以使得后续的计算指令可以尽快地开始进行。当 Load 指令的地址已经计算好的时候，就可以去取数据，这时候，首先要去 Store Queue 里面找，如果有 Store 指令要写入的地址等于 Load 的地址，说明后面的 Load 依赖于前面的 Store，如果 Store 的数据已经准备好了，就可以直接把数据转发过来，就不需要从 Cache 中获取，如果数据还没准备好，就需要等待这一条 Store 完成；如果没有找到匹配的 Store 指令，再从内存中取。不过，有一种情况就是，当 Store 指令的地址迟迟没有计算出来，而后面的 Load 已经提前从 Cache 中获取数据了，这时候就会出现错误，所以当 Store 计算出地址的时候，需要检查后面的 Load 指令是否出现地址重合，如果出现了，就要把这条 Load 以及依赖这条 Load 指令的其余指令重新执行。[POWER8 处理器微架构论文](http://ieeexplore.ieee.org/abstract/document/7029183/)中对此也有类似的表述：
 
-	The POWER8 IFU also implements mechanisms to mitigate performance degradation associated with pipeline hazards. A Store-Hit-Load (SHL) is an out-of-order pipeline hazard condition, where an older store executes after a younger overlapping load, thus signaling that the load received stale data. The POWER8 IFU has logic to detect when this condition exists and provide control to avoid the hazard by flushing the load instruction which received stale data (and any following instructions). When a load is flushed due to detection of a SHL, the fetch address of the load is saved and the load is marked on subsequent fetches allowing the downstream logic to prevent the hazard. When a marked load instruction is observed, the downstream logic introduces an explicit register dependency for the load to ensure that it is issued after the store operation.
+	The POWER8 IFU also implements mechanisms to mitigate performance degradation
+	associated with pipeline hazards. A Store-Hit-Load (SHL) is an out-of-order
+	pipeline hazard condition, where an older store executes after a younger
+	overlapping load, thus signaling that the load received stale data. The POWER8
+	IFU has logic to detect when this condition exists and provide control to avoid
+	the hazard by flushing the load instruction which received stale data (and any
+	following instructions). When a load is flushed due to detection of a SHL, the
+	fetch address of the load is saved and the load is marked on subsequent fetches
+	allowing the downstream logic to prevent the hazard. When a marked load instruction
+	is observed, the downstream logic introduces an explicit register dependency for
+	the load to ensure that it is issued after the store operation.
 
 
 ## 例子分析
