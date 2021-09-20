@@ -8,7 +8,7 @@ disqusShortname = "jiegec"
 googleAnalytics = "UA-185962713-1"
 
 [taxonomies]
-    category = "category"
+  category = "category"
 	tags = "tags"
 
 [permalinks]
@@ -31,7 +31,7 @@ googleAnalytics = "UA-185962713-1"
   unboxing = "/:section/:year/:month/:day/:filename/"
 
 [params]
-    smartToc = true
+  smartToc = true
 
 [menu]
 
