@@ -201,8 +201,13 @@ egress:
 
 ARM 架构也有 imprecise asynchronous external abort：
 
-	Normally, external aborts are rare. An imprecise asynchronous external abort is likely to be fatal to the process that is running. An example of an event that might cause an external abort is an uncorrectable parity or ECC failure on a Level 2 Memory structure.
-	Because imprecise asynchronous external aborts are normally fatal to the process that caused them, ARM recommends that implementations make external aborts precise wherever possible.
+	Normally, external aborts are rare. An imprecise asynchronous external
+	abort is likely to be fatal to the process that is running. An example
+	of an event that might cause an external abort is an uncorrectable parity
+	or ECC failure on a Level 2 Memory structure.
+	Because imprecise asynchronous external aborts are normally fatal to the
+	process that caused them, ARM recommends that implementations make external
+	aborts precise wherever possible.
 
 不过这更多是因为内存的无法预知的错误，这种时候机器直接可以拿去维修了。
 
