@@ -68,14 +68,15 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 	The active list contains the logical-destination register number and its
 	old physical-register number for each instruction. An instruction's
-	graduation commits its new mapping, so the old physical register can return
-	to the free list for reuse. When an exception occurs, however, subsequent
-	instructions never graduate. Instead, the processor restores old mappings
-	from the active list. The R1OOOO unmaps four instructions per cycle--in
-	reverse order, in case it renamed the same logical register twice. Although
-	this is slower than restoring a branch, exceptions are much rarer than
-	mispredicted branches. The processor returns new physical registers to the
-	free lists by restoring their read pointers.
+	graduation commits its new mapping, so the old physical register can
+	return to the free list for reuse. When an exception occurs, however,
+	subsequent instructions never graduate. Instead, the processor restores
+	old mappings from the active list. The R1OOOO unmaps four instructions
+	per cycle--in reverse order, in case it renamed the same logical
+	register twice. Although this is slower than restoring a branch,
+	exceptions are much rarer than mispredicted branches. The processor
+	returns new physical registers to the free lists by restoring their read
+	pointers.
 
 和 @CircuitCoder 讨论并参考 [BOOM 文档](https://docs.boom-core.org/en/latest/sections/reorder-buffer.html#parameterization-rollback-versus-single-cycle-reset) 后发现，另一种办法是记录一个 Committed Map Table，也就是，只有当 ROB Head 的指令被 Commit 的时候，才更新 Committed Map Table，可以认为是顺序执行的寄存器映射表。当发生异常的时候，把 Committed Map Table 覆盖到 Register Map Table 上。这样需要的周期比较少，但是时序可能比较差。
 
@@ -95,17 +96,19 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 其次是性能，我们希望 Load 指令可以尽快地完成，这样可以使得后续的计算指令可以尽快地开始进行。当 Load 指令的地址已经计算好的时候，就可以去取数据，这时候，首先要去 Store Queue 里面找，如果有 Store 指令要写入的地址等于 Load 的地址，说明后面的 Load 依赖于前面的 Store，如果 Store 的数据已经准备好了，就可以直接把数据转发过来，就不需要从 Cache 中获取，如果数据还没准备好，就需要等待这一条 Store 完成；如果没有找到匹配的 Store 指令，再从内存中取。不过，有一种情况就是，当 Store 指令的地址迟迟没有计算出来，而后面的 Load 已经提前从 Cache 中获取数据了，这时候就会出现错误，所以当 Store 计算出地址的时候，需要检查后面的 Load 指令是否出现地址重合，如果出现了，就要把这条 Load 以及依赖这条 Load 指令的其余指令重新执行。[POWER8 处理器微架构论文](http://ieeexplore.ieee.org/abstract/document/7029183/)中对此也有类似的表述：
 
-	The POWER8 IFU also implements mechanisms to mitigate performance degradation
-	associated with pipeline hazards. A Store-Hit-Load (SHL) is an out-of-order
-	pipeline hazard condition, where an older store executes after a younger
-	overlapping load, thus signaling that the load received stale data. The POWER8
-	IFU has logic to detect when this condition exists and provide control to avoid
-	the hazard by flushing the load instruction which received stale data (and any
-	following instructions). When a load is flushed due to detection of a SHL, the
-	fetch address of the load is saved and the load is marked on subsequent fetches
-	allowing the downstream logic to prevent the hazard. When a marked load instruction
-	is observed, the downstream logic introduces an explicit register dependency for
-	the load to ensure that it is issued after the store operation.
+	The POWER8 IFU also implements mechanisms to mitigate performance
+	degradation associated with pipeline hazards. A Store-Hit-Load (SHL) is
+	an out-of-order pipeline hazard condition, where an older store executes
+	after a younger overlapping load, thus signaling that the load received
+	stale data. The POWER8 IFU has logic to detect when this condition
+	exists and provide control to avoid the hazard by flushing the load
+	instruction which received stale data (and any following instructions).
+	When a load is flushed due to detection of a SHL, the fetch address of
+	the load is saved and the load is marked on subsequent fetches allowing
+	the downstream logic to prevent the hazard. When a marked load
+	instruction is observed, the downstream logic introduces an explicit
+	register dependency for the load to ensure that it is issued after the
+	store operation.
 
 
 ## 例子分析
@@ -118,14 +121,16 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 一个非精确异常的例子是 [Alpha](https://courses.cs.washington.edu/courses/cse548/99wi/other/alphahb2.pdf)，在章节 4.7.6.1 中提到，一些浮点计算异常可能是非精确的，并且说了一句：`In general, it is not feasible to fix up the result value or to continue from the trap.`。同时给出了一些条件，只有当指令序列满足这些条件的时候，异常才是可以恢复的。还有一段描述，摘录在这里：
 
-	Alpha lets the software implementor determine the precision of arithmetic traps.
-	With the Alpha architecture, arithmetic traps (such as overflow and underflow)
-	are imprecise—they can be delivered an arbitrary number of instructions after the
-	instruction that triggered the trap. Also, traps from many different instructions can
-	be reported at once. That makes implementations that use pipelining and multiple
-	issue substantially easier to build.
-	However, if precise arithmetic exceptions are desired, trap barrier instructions can
-	be explicitly inserted in the program to force traps to be delivered at specific points.
+	Alpha lets the software implementor determine the precision of
+	arithmetic traps.  With the Alpha architecture, arithmetic traps (such
+	as overflow and underflow) are imprecise—they can be delivered an
+	arbitrary number of instructions after the instruction that triggered
+	the trap. Also, traps from many different instructions can be reported
+	at once. That makes implementations that use pipelining and multiple
+	issue substantially easier to build.  However, if precise arithmetic
+	exceptions are desired, trap barrier instructions can be explicitly
+	inserted in the program to force traps to be delivered at specific
+	points.
 
 具体来说，在 [Reference Manual](http://www.bitsavers.org/pdf/dec/alpha/Sites_AlphaAXPArchitectureReferenceManual_2ed_1995.pdf) 中第 5.4.1 章节，可以看到当触发 Arithmetic Trap 的时候，会进入 Kernel 的 entArith 函数，并提供参数：a0 表示 exception summary，a1 表示 register write mask。exception summary 可以用来判断发生了什么类型的 exception，比如 integer overflow，inexact result 等等。一个比较特别的 exception 类型是 software completion。第二个参数表示的是触发异常的指令（一个或多个）会写入哪些寄存器（64位，低32位对应整数寄存器，高32位对应浮点寄存器），然后保存下来的 PC 值为最后一条执行的指令的下一个地址，从触发异常的第一条指令到最后一条指令就是 trap shadow，这部分指令可能执行了一部分，没有执行一部分，一部分执行结果是错误的。
 
@@ -203,11 +208,12 @@ ARM 架构也有 imprecise asynchronous external abort：
 
 	Normally, external aborts are rare. An imprecise asynchronous external
 	abort is likely to be fatal to the process that is running. An example
-	of an event that might cause an external abort is an uncorrectable parity
-	or ECC failure on a Level 2 Memory structure.
+	of an event that might cause an external abort is an uncorrectable
+	parity or ECC failure on a Level 2 Memory structure.
+	
 	Because imprecise asynchronous external aborts are normally fatal to the
-	process that caused them, ARM recommends that implementations make external
-	aborts precise wherever possible.
+	process that caused them, ARM recommends that implementations make
+	external aborts precise wherever possible.
 
 不过这更多是因为内存的无法预知的错误，这种时候机器直接可以拿去维修了。
 
