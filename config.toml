@@ -32,6 +32,7 @@ googleAnalytics = "UA-185962713-1"
 
 [params]
   smartToc = true
+  katex = true
 
 [menu]
 
