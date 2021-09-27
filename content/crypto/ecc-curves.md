@@ -12,15 +12,15 @@ title: 各种 ecc 曲线
 
 第一种：
 
-$E: y^2 \equiv x^3 + ax + b \mod{p}$
+$$E: y^2 \equiv x^3 + ax + b \mod{p}$$
 
-曲线的参数共有 $(p, a, b, G, n, h)$。$G$ 是一个点 $(G_x, G_y)$，$n$ 是 $G$ 的阶。
+曲线的参数共有 \\((p, a, b, G, n, h)\\)。\\(G\\) 是一个点 \\((G_x, G_y)\\)，\\(n\\) 是 \\(G\\) 的阶。
 
 第二种：
 
-$E: y^2+xy=x^3+ax^2+1$
+$$E: y^2+xy=x^3+ax^2+1$$
 
-称为 Kbolitz curve。不同的曲线有不同的参数 $(m,f(x),a,b,G,n,h)$ ，对应不同的 $GF(2^m)$ 域。
+称为 Kbolitz curve。不同的曲线有不同的参数 \\((m,f(x),a,b,G,n,h)\\)，对应不同的 \\(GF(2^m)\\) 域。
 
 ## OpenSSL
 
@@ -129,45 +129,45 @@ NIST 在 [FIPS 186-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf
 
 Curve P-192: 
 
-$p = 2^{192}-2^{64}-1$
+$$p = 2^{192}-2^{64}-1$$
 
 Curve P-224: 
 
-$p=2^{224}-2^{96}-1$
+$$p=2^{224}-2^{96}-1$$
 
 Curve P-256: 
 
-$p=2^{256}-2^{224}+2^{192}+2^{96}-1$
+$$p=2^{256}-2^{224}+2^{192}+2^{96}-1$$
 
 Curve P-384: 
 
-$p=2^{384}-2^{128}-2^{96}+2^{32}-1$
+$$p=2^{384}-2^{128}-2^{96}+2^{32}-1$$
 
 Curve P-521: 
 
-$p=2^{521}-1$
+$$p=2^{521}-1$$
 
-另一类是基于 Binary Field （$GF(2^m)$）的曲线，有 Curve K-163，Curve B-163，Curve K-233，Curve B-233，Curve K-283，Curve B-283，Curve K-409，Curve B-409，Curve K-571，Curve B-571。相应地，RFC 5656 里又名 nistk163，nistk233，nistb233，nistk283，nistk409，nistb409，nistt571（我觉得是 nistb571/nistk571 ，不知道是不是写错了）
+另一类是基于 Binary Field （\\(GF(2^m)\\)）的曲线，有 Curve K-163，Curve B-163，Curve K-233，Curve B-233，Curve K-283，Curve B-283，Curve K-409，Curve B-409，Curve K-571，Curve B-571。相应地，RFC 5656 里又名 nistk163，nistk233，nistb233，nistk283，nistk409，nistb409，nistt571（我觉得是 nistb571/nistk571 ，不知道是不是写错了）
 
 Degree 163 (K-163/B-163) :
 
-$p(t)=t^{163}+t^7+t^6+t^3+1$
+$$p(t)=t^{163}+t^7+t^6+t^3+1$$
 
 Degree 233 (K-233/B-233) :
 
-$p(t)=t^{233}+t^{74}+1$
+$$p(t)=t^{233}+t^{74}+1$$
 
 Degree 283 (K-283/B-283) :
 
-$p(t)=t^{283}+t^{12}+t^7+t^5+1$
+$$p(t)=t^{283}+t^{12}+t^7+t^5+1$$
 
 Degree 409 (K-409/B-409) :
 
-$p(t)=t^{409}+t^{87}+1$
+$$p(t)=t^{409}+t^{87}+1$$
 
 Degree 571 (K-571/B-571) :
 
-$p(t)=t^{571}+t^{10}+t^5+t^2+1$
+$$p(t)=t^{571}+t^{10}+t^5+t^2+1$$
 
 ## SECG
 
@@ -203,7 +203,7 @@ SECG 在 [SEC2](https://www.secg.org/sec2-v2.pdf) 中定义了若干的曲线，
 | nistk571 (RFC 5656写的是 nistt571) | sect571k1 | 1.3.132.0.38 |
 | nistb571                           | sect571r1 | 1.3.132.0.39 |
 
-sec 命名里，第四个字符里 $p$ 表示是素数域，$t$ 表示是 $GF(2^m)$ 域。 后面的字母表示的 $k$ 表示 Koblitz，$r$ 表示 random，是参数的选取方式。
+sec 命名里，第四个字符里 \\(p\\) 表示是素数域，\\(t\\) 表示是 \\(GF(2^m)\\) 域。 后面的字母表示的 \\(k\\) 表示 Koblitz，\\(r\\) 表示 random，是参数的选取方式。
 
 OID 有两种前缀：
 
