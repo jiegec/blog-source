@@ -16,9 +16,9 @@ AXI Quad SPI 是一个 SPI 的控制器，它支持 XIP（eXecute In Place）模
 
 特别地，一个常见的需求是希望访问 Cfg（Configuration） Flash，亦即用来保存 Bitstream 的 Flash。当 FPGA 上电的时候，如果启动模式设置为 SPI Flash，FPGA 就会向 Cfg Flash 读取 Bitstream，Cfg Flash 需要连接到 FPGA 的指定引脚上，当 FPGA 初始化的时候由内部逻辑驱动，初始化完成后又要转交给用户逻辑。转交的方式就是通过 STARTUP 系列的 primitive。
 
-通常，如果要连接外部的 SPI Flash，需要连接几条信号线到顶层，然后通过 xdc 把信号绑定到引脚上，然后引脚连接了一个外部的 SPI Flash。但由于 Cfg Flash 比较特殊，所以信号从 AXI Quad SPI 直接连到 STARTUP 系列的 primitive 上。
+通常，如果要连接外部的 SPI Flash，需要连接几条信号线到顶层，然后通过 xdc 把信号绑定到引脚上，然后引脚连接了一个外部的 SPI Flash。但由于 Cfg Flash 比较特殊，所以信号从 AXI Quad SPI 直接连到 STARTUP 系列的 primitive 上。如果是采用 STARTUPE2 原语的 7 系列的 FPGA，那么只有时钟会通过 STARTUPE2 pritimive 连接到 SPI Flash 上，其他数据信号还是正常通过顶层绑定；如果是采用 STARTUPE3 原语的 UltraScale 系列的 FPGA，那么时钟和数据都通过 STARTUPE3 primitive 连接到 SPI Flash。
 
-## 时序
+## Virtex UltraScale+ 时序
 
 把信号连好了只是第一步，因为外设对时序要求比较复杂，如果用一个比较高直接跑，很大可能就读取到错误的数据了。很贴心的是，AXI Quad SPI 已经在生成的文件里提供了一个样例的 xdc，在文档里也有体现。在这里，我使用的设备是 Virtex Ultrascale+ 的 FPGA，其他系列的 FPGA 会有所不一样。它内容如下：
 
@@ -144,3 +144,73 @@ set_output_delay -clock clk_sck -min [expr $tdata_trace_delay_min - $th - $tclk_
 ```
 
 这样就可以实现 FPGA 和 SPI Flash 之间的正常通讯了。我觉得，这里比较绕的就是时间轴的定义，和我们平常思考的是反过来的。而且，这里的 min 和 max 并不是指 [min, max]，而是 [-inf, min] 和 [max, inf]。
+
+## Artix 7 时序
+
+那么，更常见的 FPGA 是 7 系列的，比如 Artix 7，它采用的是 STARTUPE2 原语，只有时钟是通过 STARTUPE2 原语的 USRCCLKO 信号传递到 CCLK 引脚上的，其他数据信号都是需要在顶层信号绑定对应的引脚。在 AXI Quad SPI 文档中，描述了 STARTUPE2 所需要的时序约束，我们分段来分析一下。
+
+```xdc
+# You must provide all the delay numbers
+# CCLK delay is 0.5, 6.7 ns min/max for K7-2; refer Data sheet
+# Consider the max delay for worst case analysis
+set cclk_delay 6.7
+# Following are the SPI device parameters
+# Max Tco
+set tco_max 7
+# Min Tco
+set tco_min 1
+# Setup time requirement
+set tsu 2
+# Hold time requirement
+set th 3
+# Following are the board/trace delay numbers
+# Assumption is that all Data lines are matched
+set tdata_trace_delay_max 0.25
+set tdata_trace_delay_min 0.25
+set tclk_trace_delay_max 0.2
+set tclk_trace_delay_min 0.2
+### End of user provided delay numbers
+```
+
+可以看到，这一部分和上面 UltraScale+ 部分差不多，只是多一个 `cclk_delay` 变量，这是因为 Artix 7 中，时钟只能创建到 USRCCLKO 引脚上，但是实际 SPI Flash 接收到的时钟等于 USRCCLKO 到 CCLK 引脚，然后再通过 PCB 上的线传播到 SPI Flash，所以需要手动添加一个偏移，这个偏移就是 USRCCLKO 到 CCLK 的延迟，可以在 [Artix 7 Data Sheet](https://www.xilinx.com/support/documentation/data_sheets/ds181_Artix_7_Data_Sheet.pdf) 里面看到：对于 1.0V，-2 速度的 FPGA，这个延迟最小值为 0.50ns，最大值为 6.70ns，这里采用了最大值。
+
+所以，下面的约束，除了时钟部分以外，和上面分析的 UltraScale+ 时序约束计算方法是相同的。不同点在于，首先约束了从 AXI Quad SPI 到 STARTUPE2 的路由时延，从 0.1ns 到 1.5ns，然后又从 USRCCLKO 创建了一个分频+延迟 `cclk_delay` 纳秒的时钟，作为 SPI Flash 上 SCK 引脚的时钟。
+
+```xdc
+# this is to ensure min routing delay from SCK generation to STARTUP input
+# User should change this value based on the results
+# having more delay on this net reduces the Fmax
+set_max_delay 1.5 -from [get_pins -hier *SCK_O_reg_reg/C] -to [get_pins -hier
+*USRCCLKO] -datapath_only
+set_min_delay 0.1 -from [get_pins -hier *SCK_O_reg_reg/C] -to [get_pins -hier
+*USRCCLKO]
+# Following command creates a divide by 2 clock
+# It also takes into account the delay added by STARTUP block to route the CCLK
+create_generated_clock -name clk_sck -source [get_pins -hierarchical
+*axi_quad_spi_1/ext_spi_clk] [get_pins -hierarchical *USRCCLKO] -edges {3 5 7}
+-edge_shift [list $cclk_delay $cclk_delay $cclk_delay]
+# Data is captured into FPGA on the second rising edge of ext_spi_clk after the SCK
+falling edge
+
+# Data is driven by the FPGA on every alternate rising_edge of ext_spi_clk
+set_input_delay -clock clk_sck -max [expr $tco_max + $tdata_trace_delay_max +
+$tclk_trace_delay_max] [get_ports IO*_IO] -clock_fall;
+set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min +
+$tclk_trace_delay_min] [get_ports IO*_IO] -clock_fall;
+set_multicycle_path 2 -setup -from clk_sck -to [get_clocks -of_objects [get_pins
+-hierarchical */ext_spi_clk]]
+set_multicycle_path 1 -hold -end -from clk_sck -to [get_clocks -of_objects [get_pins
+-hierarchical */ext_spi_clk]]
+# Data is captured into SPI on the following rising edge of SCK
+# Data is driven by the IP on alternate rising_edge of the ext_spi_clk
+set_output_delay -clock clk_sck -max [expr $tsu + $tdata_trace_delay_max -
+$tclk_trace_delay_min] [get_ports IO*_IO];
+set_output_delay -clock clk_sck -min [expr $tdata_trace_delay_min - $th -
+$tclk_trace_delay_max] [get_ports IO*_IO];
+set_multicycle_path 2 -setup -start -from [get_clocks -of_objects [get_pins
+-hierarchical */ext_spi_clk]] -to clk_sck
+set_multicycle_path 1 -hold -from [get_clocks -of_objects [get_pins -hierarchical */
+ext_spi_clk]] -to clk_sck
+```
+
+一个 Artix 7 上配置 STARTUP SPI Flash 的例子 [io_timings.xdc](https://github.com/trivialmips/nontrivial-mips/blob/master/vivado/NonTrivialMIPS.srcs/constrs_1/new/io_timings.xdc) 可供参考。
