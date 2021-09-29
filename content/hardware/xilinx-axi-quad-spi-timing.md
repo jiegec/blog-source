@@ -98,7 +98,7 @@ Data in hold time Min 2ns
 
 所以 `tsu` 设为 2.5，`th` 设为 2。
 
-接下来则是 tdata 和 tclk 的 trace delay。这指的是从 FPGA 引脚到 SPI Flash 引脚的信号传输延迟。从严谨的角度来说，可以从板子的布线上测量长度来计算出来，不过这里就先用默认值了。
+接下来则是 tdata 和 tclk 的 trace delay。这指的是从 FPGA 引脚到 SPI Flash 引脚的信号传输延迟。从严谨的角度来说，可以从板子的布线上测量长度来计算出来，不过这里就先用默认值了。一个简单的估算方法：光速 \\(3*10^8 \text{m/s}\\)，考虑电信号传播速度是光速的一半，可以得到延迟和长度的比值： \\(0.06 \text{ns/cm} = 0.15 \text{ns/inch}\\)。
 
 那么，这些变量怎么参与到 input/output delay 的计算呢？
 
