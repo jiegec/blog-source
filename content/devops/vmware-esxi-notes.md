@@ -64,3 +64,10 @@ $ esxcli network firewall ruleset set --enabled=false --ruleset-id=sshClient
 6. 重启以后，就可以看到 vmnic0 网卡了
 
 参考：[Solution: ESXi Installation with USB NIC only fails at 81%](https://www.virten.net/2020/07/solution-esxi-installation-with-usb-nic-only-fails-at-81/)
+
+## 推荐博客
+
+发现以下博客有很多关于 ESXi 的内容：
+
+- https://williamlam.com/
+- https://www.virten.net/
