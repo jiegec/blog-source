@@ -24,7 +24,7 @@ vsish -e cat /hardware/cpu/cpuList/0 | grep -i -E 'family|model|stepping|microco
 $ esxcli software vib install -d $PWD/Net-Community-Driver_1.2.0.0-1vmw.700.1.0.15843807_18028830.zip
 ```
 
-## 升级方法
+## 离线升级方法
 
 1. 下载 Offline Bundle 文件
 2. 上传到 ESXi datastore 中
@@ -33,6 +33,18 @@ $ esxcli software vib install -d $PWD/Net-Community-Driver_1.2.0.0-1vmw.700.1.0.
 5. 更新到 profile `esxcli software profiel update -p <profile> -d <zip>`
 
 ref: [Upgrade or Update a Host with Image Profiles](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.upgrade.doc/GUID-E51C5DB6-F28E-42E8-ACA4-0EBDD11DF55D.html)
+
+## 在线升级方法
+
+```shell
+$ esxcli network firewall ruleset set -e true -r httpClient
+# find profile name
+$ esxcli software sources profile list -d https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml
+# upgrade to 7.0u3 for example
+$ esxcli software profile update -p ESXi-7.0U3-18644231-standard -d https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml
+```
+
+ref: [Update Standalone ESXi Host](https://docs.macstadium.com/docs/update-standalone-esxi-host-via-online-bundle)
 
 ## 防火墙
 
