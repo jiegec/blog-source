@@ -23,7 +23,14 @@ title: 以太网的物理接口
 
 详见 [Wikipedia - Ethernet Physical Layer # Naming Conventions](https://en.wikipedia.org/wiki/Ethernet_physical_layer#Naming_conventions) 和 IEEE 802.3 1.2.3 节 Physical Layer and media notation：
 
-	The data rate, if only a number, is in Mb/s, and if suffixed by a “G”, is in Gb/s. The modulation type (e.g., BASE) indicates how encoded data is transmitted on the medium. The additional distinction may identify characteristics of transmission or medium and, in some cases, the type of PCS encoding used (examples of additional distinctions are “T” for twisted pair, “B” for bidirectional optics, and “X” for a block PCS coding used for that speed of operation). Expansions for defined Physical Layer types are included in 1.4.
+	The data rate, if only a number, is in Mb/s, and if suffixed by a “G”, is in
+	Gb/s. The modulation type (e.g., BASE) indicates how encoded data is
+	transmitted on the medium. The additional distinction may identify
+	characteristics of transmission or medium and, in some cases, the type of PCS
+	encoding used (examples of additional distinctions are “T” for twisted pair,
+	“B” for bidirectional optics, and “X” for a block PCS coding used for that
+	speed of operation). Expansions for defined Physical Layer types are included
+	in 1.4.
 
 和 IEEE 802.3 1.4 节 Definitions 中的几个例子：
 
