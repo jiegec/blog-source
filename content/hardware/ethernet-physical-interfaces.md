@@ -98,6 +98,6 @@ title: 以太网的物理接口
 
 扩展阅读：[KXZ9031RNX Datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/00002117F.pdf)
 
-上面比较常见的是 GMII/RGMII/SGMII。其中比较特殊的是 SGMII，因为它采用了 8b/10b 的编码，所以本来要做 8b/10b 编码的 PCS 层从片外的 PHY 挪到了 FPGA 内的 IP，比如 `1G/2.5G PCS/PMA or SGMII` 这个 IP 就在 FPGA 内部实现了 PCS/PMA 层，然后通过 SGMII 连到 PHY 上。因此，这个 IP 本身也实现了一部分 PHY 的功能，在 MDIO 总线上会挂一个设备（地址在 IP 设置中设定），注意不要和外部的 PHY 地址冲突了。
+上面比较常见的是 GMII/RGMII/SGMII。其中比较特殊的是 [SGMII](https://archive.org/details/sgmii/mode/2up)，首先可以发现它信号很少，只有两对差分线 TX_P TX_N RX_P RX_N，其中时钟是可选的，因为可以从数据中恢复。你可能感到很奇怪，那么其他的信号，比如 DV/ER/CRS 等都去哪里了呢？其实是因为，SGMII 采用了 [8b/10b](https://zh.wikipedia.org/wiki/8b/10b) 的编码的同时，把这些控制信号通过一定的方式顺便编码进去了。具体来说，就是从 8 位的数据信号编码为 10 位的时候，有一些特殊的 10 位符号是没有对应 8 位的数据的，因此可以哟弄个这些特殊符号来表示一些信号，比如用 SPD（Start_of_Packet Delimiter）和 EPD（End_of_Packet Delimiter）表示传输数据的开始和结尾，对应 RX_DV 信号；用 Error_Propagation 表示错误，对应 RX_ER 信号等等。所以，SGMII 其实还是一个 GMII 的变种，只不过采用 SerDes 的方式减少了引脚，MAC 内部或者 PHY 内部也是经过一个 GMII-SGMII 的转换，而其余部分是一样的。
 
-仔细观察，还可以发现 `1G/2.5G PCS/PMA or SGMII` 这个 IP 有一个模式：`1000BASE-X`，这个模式下可以直接接到 SFP 接口上，此时整个 PHY 的功能都在 FPGA 内实现，不再需要外置的 PHY 芯片。它还支持动态切换：如果是 SGMII 模式，外接了一个 PHY，就可以实现 1000BASE-T，通过网线传输；如果是 1000BASE-X 模式，直接接到 SFP 口上，就可以实现 1000BASE-X，用光纤传输。
+比较特别的是，Xilinx 的 `1G/2.5G PCS/PMA or SGMII` 这个 IP 有一个模式：`1000BASE-X`，这个模式下可以直接接到 SFP 接口上，此时整个 PHY 的功能都在 FPGA 内实现，不再需要外置的 PHY 芯片。它还支持动态切换：如果是 SGMII 模式，外接了一个 PHY，就可以实现 1000BASE-T，通过网线传输；如果是 1000BASE-X 模式，直接接到 SFP 口上，就可以实现 1000BASE-X，用光纤传输。
