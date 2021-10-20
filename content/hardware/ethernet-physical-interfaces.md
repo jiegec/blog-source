@@ -21,7 +21,16 @@ title: 以太网的物理接口
 3. 之后可能还有别的字母，比如 X 表示 8b/10b 或者 4b/5b（FE） 的编码，R 表示 64b/66b 的编码
 4. 之后可能还有别的数字，如果是 LAN PHY 表示的是所使用的 lane 数量；如果是 WAN PHY 表示的是传输的公里数
 
-详见[Wikipedia - Ethernet Physical Layer # Naming Conventions](https://en.wikipedia.org/wiki/Ethernet_physical_layer#Naming_conventions)。
+详见 [Wikipedia - Ethernet Physical Layer # Naming Conventions](https://en.wikipedia.org/wiki/Ethernet_physical_layer#Naming_conventions) 和 IEEE 802.3 1.2.3 节 Physical Layer and media notation：
+
+	The data rate, if only a number, is in Mb/s, and if suffixed by a “G”, is in Gb/s. The modulation type (e.g., BASE) indicates how encoded data is transmitted on the medium. The additional distinction may identify characteristics of transmission or medium and, in some cases, the type of PCS encoding used (examples of additional distinctions are “T” for twisted pair, “B” for bidirectional optics, and “X” for a block PCS coding used for that speed of operation). Expansions for defined Physical Layer types are included in 1.4.
+
+和 IEEE 802.3 1.4 节 Definitions 中的几个例子：
+
+- 100BASE-T: IEEE 802.3 Physical Layer specification for a 100 Mb/s CSMA/CD local area network. (See IEEE Std 802.3, Clause 22 and Clause 28.)
+- 1000BASE-T: IEEE 802.3 Physical Layer specification for a 1000 Mb/s CSMA/CD LAN using four pairs of Category 5 balanced copper cabling. (See IEEE Std 802.3, Clause 40.)
+- 1000BASE-X: IEEE 802.3 Physical Layer specification for a 1000 Mb/s CSMA/CD LAN that uses a Physical Layer derived from ANSI X3.230-1994 (FC-PH) [B21]23. (See IEEE Std 802.3, Clause 36.)
+
 
 ### 各个速率对应的英文单词是什么
 
@@ -78,8 +87,8 @@ title: 以太网的物理接口
 
 有时候，还会遇到各种 [MII](https://en.wikipedia.org/wiki/Media-independent_interface) 接口，也就是 MAC 和 PHY 之间的接口。有时候，还会伴随着 MDIO 接口，来进行控制信息的传输。它又分不同的类型：
 
-- Standard MII：速率是 100Mbps（25MHz\*4）或者 10Mbps（2.5Mhz\*4），TX 7 根线，RX 7+2 根线，加上 MDIO 2 根线共 18 根线
-- RMII：速率是 100Mbps 或者 10Mbps，频率都是 50MHz，一共 10 根线，数据线是 TX 和 RX 各 2 根
+- Standard MII：速率是 100Mbps（25MHz\*4）或者 10Mbps（2.5Mhz\*4），TX 7 根线（4 DATA+CLK+EN+ER），RX 7+2 根线（4 DATA+CLK+DV+ER+CRS+COL），加上 MDIO 2 根线共 18 根线
+- RMII：速率是 100Mbps 或者 10Mbps，频率都是 50MHz，一共 10 根线（4 DATA+CLK+TX_EN+CRS_DV+RX_ER+MDIO+MDC），数据线是 TX 和 RX 各 2 根
 - GMII：速率是 1000Mbps（125MHz\*8），数据线是 TX 和 RX 各 8 根；也支持速率 100Mbps（25MHz）和 10Mbps（2.5MHz）
 - RGMII：速率是 1000Mbps（125MHz\*4\*2，DDR），数据线是 TX 和 RX 各 4 根；也支持速率 100Mbps（25MHz\*4）和 10Mbps（2.5MHz\*4），一共是 5+5+2 根线
 - SGMII：速率是 1000Mbps（625MHz\*2\*8/10），采用 625MHz DDR 差分对 SerDes，采用 8b/10b 的编码
@@ -87,3 +96,7 @@ title: 以太网的物理接口
 有的时候，MAC 和 PHY 是独立的，比如很多常见的 FPGA 开发板，在使用千兆网的时候，在板子上是 PHY 芯片，从 FPGA 到 PHY 通过 RGMII 连接，然后 PHY 再连接到 8P8C（RJ45）的连接器上。一般还会把 MDIO 也接到 FPGA 上面。如果有多个 PHY，就会吧 MDIO 通过总线的方式合并起来，给每个 PHY 配置不同的地址（一般是在指定的 PIN 上设置上拉/下拉电阻实现），就可以保证不冲突的访问。
 
 扩展阅读：[KXZ9031RNX Datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/00002117F.pdf)
+
+上面比较常见的是 GMII/RGMII/SGMII。其中比较特殊的是 SGMII，因为它采用了 8b/10b 的编码，所以本来要做 8b/10b 编码的 PCS 层从片外的 PHY 挪到了 FPGA 内的 IP，比如 `1G/2.5G PCS/PMA or SGMII` 这个 IP 就在 FPGA 内部实现了 PCS/PMA 层，然后通过 SGMII 连到 PHY 上。因此，这个 IP 本身也实现了一部分 PHY 的功能，在 MDIO 总线上会挂一个设备（地址在 IP 设置中设定），注意不要和外部的 PHY 地址冲突了。
+
+仔细观察，还可以发现 `1G/2.5G PCS/PMA or SGMII` 这个 IP 有一个模式：`1000BASE-X`，这个模式下可以直接接到 SFP 接口上，此时整个 PHY 的功能都在 FPGA 内实现，不再需要外置的 PHY 芯片。它还支持动态切换：如果是 SGMII 模式，外接了一个 PHY，就可以实现 1000BASE-T，通过网线传输；如果是 1000BASE-X 模式，直接接到 SFP 口上，就可以实现 1000BASE-X，用光纤传输。

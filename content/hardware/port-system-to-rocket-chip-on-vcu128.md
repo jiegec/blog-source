@@ -43,6 +43,8 @@ title: 移植系统到 Rocket Chip on VCU128
 
 一开始的时候，为了简单，直接在 M-mode 中运行 U-Boot，这样不需要 OpenSBI，同时 DTB 也是内置的。但后续为了运行 Linux，还是需要一个 SBI 实现：OpenSBI，然后在 S-mode 中运行 U-Boot，再引导到 Linux。
 
+此外还花了很多努力来缩小 binary 大小，首先可以用 `nm --size -r u-boot | head -20` 来找到比较大的一些符号，不考虑其中 BSS 的部分（type=b），主要看哪些代码/数据比较占空间。
+
 ## OpenSBI
 
 OpenSBI 移植比较简单，直接参考 template 修改即可，主要就是串口的配置，其他基本不用改。然后，我把 U-Boot 作为 OpenSBI 的 Payload 放到 OpenSBI 的后面，此时要把 U-Boot 配置为 S-mode 模式。接着，遇到了新的问题：`cflush.d.l1` 指令只能在 M-mode 用，因此我在 OpenSBI 代码中处理了 trap，转而在 M-mode 里面运行这条指令。这样，就可以在 S-mode 里刷新 Cache 了。
