@@ -98,6 +98,25 @@ title: 以太网的物理接口
 
 扩展阅读：[KXZ9031RNX Datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/00002117F.pdf)
 
-上面比较常见的是 GMII/RGMII/SGMII。其中比较特殊的是 [SGMII](https://archive.org/details/sgmii/mode/2up)，首先可以发现它信号很少，只有两对差分线 TX_P TX_N RX_P RX_N，其中时钟是可选的，因为可以从数据中恢复。你可能感到很奇怪，那么其他的信号，比如 DV/ER/CRS 等都去哪里了呢？其实是因为，SGMII 采用了 [8b/10b](https://zh.wikipedia.org/wiki/8b/10b) 的编码的同时，把这些控制信号通过一定的方式顺便编码进去了。具体来说，就是从 8 位的数据信号编码为 10 位的时候，有一些特殊的 10 位符号是没有对应 8 位的数据的，因此可以哟弄个这些特殊符号来表示一些信号，比如用 SPD（Start_of_Packet Delimiter）和 EPD（End_of_Packet Delimiter）表示传输数据的开始和结尾，对应 RX_DV 信号；用 Error_Propagation 表示错误，对应 RX_ER 信号等等。所以，SGMII 其实还是一个 GMII 的变种，只不过采用 SerDes 的方式减少了引脚，MAC 内部或者 PHY 内部也是经过一个 GMII-SGMII 的转换，而其余部分是一样的。
+上面比较常见的是 GMII/RGMII/SGMII。其中比较特殊的是 [SGMII](https://archive.org/details/sgmii/mode/2up)，首先可以发现它信号很少，只有两对差分线 TX_P TX_N RX_P RX_N，其中时钟是可选的，因为可以从数据中恢复。你可能感到很奇怪，那么其他的信号，比如 DV/ER/CRS 等都去哪里了呢？其实是因为，SGMII 采用了 [8b/10b](https://zh.wikipedia.org/wiki/8b/10b) 的编码的同时，把这些控制信号通过一定的方式顺便编码进去了。具体来说，就是从 8 位的数据信号编码为 10 位的时候，有一些特殊的 10 位符号是没有对应 8 位的数据的，因此可以用这些特殊符号来表示一些信号，比如用 SPD（Start_of_Packet Delimiter，对应 /S/）和 EPD（End_of_Packet Delimiter，对应 /T/R/ 等）表示传输数据的开始和结尾，对应 TX_EN/RX_DV 信号；用 Error_Propagation（/V/） 表示错误，对应 RX_ER 信号等等。所以，SGMII 其实还是一个 GMII 的变种，只不过采用 SerDes 的方式减少了引脚，MAC 内部或者 PHY 内部也是经过一个 GMII-SGMII 的转换，而其余部分是一样的。
+
+关于 8b/10b 的编码方式，可以阅读 IEEE 802.3 标准中的 `Table 36–1a—Valid data code-groups`，里面提到了两类的 Code Group：D 打头的，表示数据，有 256 种，从 8b 映射到 10b 的表达方式，并且为了保持直流平衡，有一种到两种表示方法。此外还有 12 个特殊的 Code Group：K 打头，它们的 10b 表达方式不会和数据冲突。表 `Table 36–3—Defined ordered sets` 中定义了 K 打头的 Code Group 含义：
+
+- /C/ Configuration:
+  - /C1/ Configuration 1: /K28.5/D21.5/Config_Reg
+  - /C2/ Configuration 2: /K28.5/D2.2/Config_Reg
+- /I/ IDLE:
+  - /I1/ IDLE 1: /K28.5/D5.6/
+  - /I2/ IDLE 2: /K28.5/D16.2/
+- Encapsulation:
+  - /R/ Carrier_Extend: /K23.7/
+  - /S/ Start_of_Packet: /K27.7/
+  - /T/ End_of_Packet: /K29.7/
+  - /V/ Error_Propagation: /K30.7/
+- /LI/ LPI (Low Power Idle):
+  - /LI1/ LPI 1: /K28.5/D6.5/
+  - /LI2/ LPI 2: /K28.5/D26.4/
+
+IEEE 802.3 Figure 36-4 中给了一个例子，就是在发送一段数据的时候，首先是 /I/，然后 /S/，接着一系列的 /D/，最后结束的时候 /T/R/I/。
 
 比较特别的是，Xilinx 的 `1G/2.5G PCS/PMA or SGMII` 这个 IP 有一个模式：`1000BASE-X`，这个模式下可以直接接到 SFP 接口上，此时整个 PHY 的功能都在 FPGA 内实现，不再需要外置的 PHY 芯片。它还支持动态切换：如果是 SGMII 模式，外接了一个 PHY，就可以实现 1000BASE-T，通过网线传输；如果是 1000BASE-X 模式，直接接到 SFP 口上，就可以实现 1000BASE-X，用光纤传输。
