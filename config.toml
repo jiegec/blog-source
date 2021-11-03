@@ -66,6 +66,11 @@ googleAnalytics = "UA-185962713-1"
     name = "订阅"
     url = "/feed.xml"
 
+  [[menu.main]]
+    identifier = "open-source-contributions"
+    name = "开源"
+    url = "/open-source-contributions/"
+
 [outputFormats]
 [outputFormats.RSS]
 mediatype = "application/rss"
