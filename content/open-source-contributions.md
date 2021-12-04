@@ -29,6 +29,7 @@ permalink: /open-source-contributions/
 
 - [two more bug fixes](https://gitlab.inria.fr/fdupont/flopoco/-/commit/4672586b731b22562d2ce6994c5c78e41846a452)
 - [Remove the duplicate code lines: R <= (bug reported by Jiajie Chen)](https://gitlab.inria.fr/fdupont/flopoco/-/commit/5ac83babf7d6a69cd3124a6127a98a0ac58c4508)
+- [Other commits by me](https://gitlab.inria.fr/fdupont/flopoco/-/commits/master?author=Jiajie%20Chen)
 
 ## KNEM
 
