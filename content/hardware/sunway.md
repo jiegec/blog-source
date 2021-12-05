@@ -16,6 +16,9 @@ title: Sunway 处理器架构分析
 - [Closing the “Quantum Supremacy” Gap: Achieving Real-Time Simulation of a Random Quantum Circuit Using a New Sunway Supercomputer](https://dl.acm.org/doi/pdf/10.1145/3458817.3487399)
 - [SW_Qsim: A Minimize-Memory Quantum Simulator with High-Performance on a New Sunway Supercomputer](https://dl.acm.org/doi/pdf/10.1145/3458817.3476161)
 - [18.9-Pflops Nonlinear Earthquake Simulation on Sunway TaihuLight: Enabling Depiction of 18-Hz and 8-Meter Scenarios](https://dl.acm.org/doi/pdf/10.1145/3126908.3126910)
+- [A FIRST PEEK AT CHINA’S SUNWAY EXASCALE SUPERCOMPUTER](https://www.nextplatform.com/2021/02/10/a-sneak-peek-at-chinas-sunway-exascale-supercomputer/)
+- [THE NITTY GRITTY OF THE SUNWAY EXASCALE SYSTEM NETWORK AND STORAGE](https://www.nextplatform.com/2021/03/10/the-nitty-gritty-of-the-sunway-exascale-system-network-and-storage/)
+- [Sunway supercomputer architecture towards exascale computing: analysis and practice](https://www.sciengine.com/publisher/scp/journal/SCIS/64/4/10.1007/s11432-020-3104-7?slug=fulltext)
 
 ## SW26010
 
@@ -51,3 +54,11 @@ SW26010P 是升级版 SW26010，目前信息还比较少，从上面的论文里
 2. 每个 MC 连接了 16 GB DDR4 内存，带宽是 `128 bit * 3200 MT/s = 51.2 GB/s`；单节点总内存 96 GB，总内存带宽 `51.2 * 6 = 307.2 GB/s`。
 3. 每个 CPE 的局部存储（LDM）从 64KB 升级到 256KB。
 4. CPE 之间的通信可以通过 RMA 进行，而之前的 SW26010 只能在同一行/列之间进行寄存器通信。
+
+## SW52020
+
+在新闻稿和 Sunway supercomputer architecture towards exascale computing: analysis and practice 文章中出现，没有在今年发出来的论文里实际采用，名称可能是新闻稿自己编的，我猜可能没有实际采用，而是做了 SW26010P。和 SW26010 区别：
+
+1. Core Group 从 4 个提升到了 8 个，所以每个 node 有 `8 * (8 * 8 + 1) = 520` 个核心。
+2. MPE 和 CPE 向量宽度从 256 位扩展到了 512 位。添加了 16 位半精度浮点支持。
+3. 每个 node 提供超过 12 TFlops 的双精度浮点性能。应该是靠两倍的 Core Group，乘上两倍的向量计算宽度，达到四倍的性能。
