@@ -84,7 +84,7 @@ title: 以太网的物理接口
 [SFP 标准](https://members.snia.org/document/dl/26184) 规定了 [20 根信号线](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver#Signals)，正反面各 10 根，重要的是下面的这些（括号里写得是 Pin 的编号）：
 
 1. Mod_ABS（6）：模块是否插入
-2. RD+（13）、RD-（12）：接受数据的差分对
+2. RD+（13）、RD-（12）：接收数据的差分对
 3. TD+（18）、TD-（19）：传输数据的差分对
 4. SDA（4）、SCL（5）：模块的 I2C
 5. Tx_Fault（2）、Tx_Disable（3）、Rx_LOS（8）：一些状态信号

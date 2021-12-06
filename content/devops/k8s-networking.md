@@ -107,7 +107,7 @@ $ ip a show flannel.1
        valid_lft forever preferred_lft forever
 ```
 
-当这个 interface 接受到一个 packet 的时候，会查询 fdb：
+当这个 interface 接收到一个 packet 的时候，会查询 fdb：
 
 ```shell
 $ bridge fdb show brport flannel.1

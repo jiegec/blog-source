@@ -12,7 +12,7 @@ title: AXI Quad SPI 时序理解
 
 ## AXI Quad SPI
 
-AXI Quad SPI 是一个 SPI 的控制器，它支持 XIP（eXecute In Place）模式，即可以暴露一个只读 AXI Slave 接口，当接受到读请求的时候，就按照标准的 SPI Flash 命令去对应的地址进行读取，然后返回结果。由于不同厂家的 SPI Flash 支持有所不同，所以 IP 上的设置可以看到厂家的选择。
+AXI Quad SPI 是一个 SPI 的控制器，它支持 XIP（eXecute In Place）模式，即可以暴露一个只读 AXI Slave 接口，当接收到读请求的时候，就按照标准的 SPI Flash 命令去对应的地址进行读取，然后返回结果。由于不同厂家的 SPI Flash 支持有所不同，所以 IP 上的设置可以看到厂家的选择。
 
 特别地，一个常见的需求是希望访问 Cfg（Configuration） Flash，亦即用来保存 Bitstream 的 Flash。当 FPGA 上电的时候，如果启动模式设置为 SPI Flash，FPGA 就会向 Cfg Flash 读取 Bitstream，Cfg Flash 需要连接到 FPGA 的指定引脚上，当 FPGA 初始化的时候由内部逻辑驱动，初始化完成后又要转交给用户逻辑。转交的方式就是通过 STARTUP 系列的 primitive。
 
