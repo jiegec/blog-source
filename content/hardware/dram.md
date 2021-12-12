@@ -109,3 +109,18 @@ DRAM 有很多参数，以服务器上的内存 [MTA36ASF2G72PZ-2G3A3](https://i
 DRAM 的一个特点是需要定期刷新。有一个参数 tREFI，表示刷新的时间周期。在刷新之前，所有的 bank 都需要 Precharge 完成并等待 RP 的时间，这时候所有的 Bank 都是空闲的，再执行 REF(Refresh) 命令。等待 tRFC(Refresh Cycle) 时间后，可以继续正常使用。
 
 为了更好的性能，DDR4 标准允许推迟一定次数的刷新，但是要在之后补充，保证平均下来依然满足每过 tREFI 时间至少一次刷新。
+
+## 地址映射
+
+如果研究 DRAM 内存控制器，比如 [FPGA 上的 MIG](https://www.xilinx.com/support/documentation/ip_documentation/ultrascale_memory_ip/v1_4/pg150-ultrascale-memory-ip.pdf)，可以发现它可以配置不同的地址映射方式，例如：
+
+- ROW_COLUMN_BANK
+- ROW_BANK_COLUMN
+- BANK_ROW_COLUMN
+- ROW_COLUMN_LRANK_BANK
+- ROW_LRANK_COLUMN_BANK
+- ROW_COLUMN_BANK_INTLV
+
+就是将地址的不同部分映射到 DRAM 的几个地址：Row，Column，Bank。可以想象，不同的地址映射方式针对不同的访存模式会有不同的性能。对于连续的内存访问，ROW_COLUMN_BANK 方式是比较适合的，因为连续的访问会分布到不同的 Bank 上，这样性能就会更好。
+
+此外，如果访问会连续命中同一个 Page，那么直接读写即可；反之如果每次读写几乎都不会命中同一个 Page，那么可以设置 Auto Precharge，即读写以后自动 Precharge，减少了下一次访问前因为 Row 不同导致的 PRE 命令。一个思路是在对每个 Page 的最后一次访问采用 Auto Precharge。
