@@ -54,7 +54,7 @@ DRAM 的访问模式决定了访问内存的实际带宽。对于每次访问，
 
 ## 参数
 
-DRAM 有很多参数，以 [MTA36ASF2G72PZ-2G3A3](https://in.micron.com/products/dram-modules/rdimm/part-catalog/mta36asf2g72pz-2g3) 为例子：
+DRAM 有很多参数，以服务器上的内存 [MTA36ASF2G72PZ-2G3A3](https://in.micron.com/products/dram-modules/rdimm/part-catalog/mta36asf2g72pz-2g3) 为例子：
 
 - 16GB 容量，DDR4 SDRAM RDIMM
 - PC4-2400
@@ -72,15 +72,32 @@ DRAM 有很多参数，以 [MTA36ASF2G72PZ-2G3A3](https://in.micron.com/products
 
 容量：每个 DRAM 颗粒 `64K*1K*4*4*4=4Gb`，不考虑 ECC，一共有 `16*2=32` 个这样的颗粒，实际容量是 16 GB。32 个颗粒分为两组，每组 16 个颗粒，两组之间通过 CS_n 片选信号区分。每组 16 个颗粒，每个颗粒 4 位 DQ 数据信号，合并起来就是 64 位，如果考虑 ECC 就是 72 位。
 
+再举一个 FPGA 开发板上内存的例子：[MT40A512M16LY-075E](https://www.micron.com/products/dram/ddr4-sdram/part-catalog/mt40a512m16ly-075)，参数如下：
+
+1. Data Rate: 2666 MT/s, Clock Frequency: 1333 MHz, tCK=0.750ns=750ps
+2. Target CL-nRCD-nRP: 18-18-18
+3. tAA(Internal READ command to first data)=`13.50ns(=18*0.750)`
+4. tRCD(ACTIVATE to internal READ or WRITE delay time)=`13.50ns(=18*0.750)`
+5. tRP(PRECHARGE command period)=`13.50ns(=18*0.750)`
+6. tRAS(ACTIVATE-to-PRECHARGE command period)=32ns
+7. 512 Meg x 16
+8. Number of bank groups: 2
+9. Bank count per group: 4
+10. Row addressing: 64K
+11. Column addressing: 1K
+12. Page size: 2KB=2K*16b
+
+总大小：`2*4*64K*1K*16=1GB`。这个开发板用了 5 个 DRAM 芯片，只采用了其中的 4.5 个芯片：最后一个芯片只用了 8 位数据，这样就是 `4.5*16=72` 位的数据线，对应 64 位+ECC。
+
 ## 时序
 
 可以看到，上面的 DRAM Datasheet 里提到了三个时序参数：
 
 1. CL=17: CAS Latency，从发送读请求到第一个数据的延迟周期数
-2. RCD=17: RAS Latency，ACT to internal read or write delay time，表示从 ACT 到读/写需要的延迟周期数
+2. RCD=17: ACT to internal read or write delay time，表示从 ACT 到读/写需要的延迟周期数
 3. RP=17: Row Precharge Time，表示 Precharge 后需要延迟周期数
 
-如果第一次访问一个 Row 中的数据，并且之前没有已经打开的 Row，那么要执行命令 ACT 和 RD，需要的周期数是 RCD+CL；如果之前已经有打开了的 Row，那么要执行命令 PRE，ACT 和 RD，需要的周期数是 RP+RCD+CL。但如果是连续访问，虽然还需要 CL 的延迟，但是可以流水线起来，充分利用 DDR 的带宽。
+如果第一次访问一个 Row 中的数据，并且之前没有已经打开的 Row，那么要执行 ACT 和 RD 命令，需要的周期数是 RCD+CL；如果之前已经有打开了的 Row，那么要执行 PRE，ACT 和 RD 命令，需要的周期数是 RP+RCD+CL。但如果是连续访问，虽然还需要 CL 的延迟，但是可以流水线起来，充分利用 DDR 的带宽。
 
 如果把这个换算到 CPU 角度的内存访问延迟的话，如果每次访问都是最坏情况，那么需要 17+17+17=51 个 DRAM 时钟周期，考虑 DRAM 时钟是 1200MHz，那就是 42.5ns，这个相当于是 DRAM 内部的延迟，实际上测得的是 100ns 左右。
 
