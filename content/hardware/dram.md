@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-12-04 15:06:00 +0800
+date: 2021-12-12 15:06:00 +0800
 tags: [dram,ddr]
 category: hardware
 title: DRAM 分析
