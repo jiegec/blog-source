@@ -81,3 +81,5 @@ DRAM 有很多参数，以 [MTA36ASF2G72PZ-2G3A3](https://in.micron.com/products
 3. RP=17: Row Precharge Time，表示 Precharge 后需要延迟周期数
 
 如果第一次访问一个 Row 中的数据，并且之前没有已经打开的 Row，那么要执行命令 ACT 和 RD，需要的周期数是 RCD+CL；如果之前已经有打开了的 Row，那么要执行命令 PRE，ACT 和 RD，需要的周期数是 RP+RCD+CL。但如果是连续访问，虽然还需要 CL 的延迟，但是可以流水线起来，充分利用 DDR 的带宽。
+
+如果把这个换算到 CPU 角度的内存访问延迟的话，如果每次访问都是最坏情况，那么需要 17+17+17=51 个 DRAM 时钟周期，考虑 DRAM 时钟是 1200MHz，那就是 42.5ns，这个相当于是 DRAM 内部的延迟，实际上测得的是 100ns 左右。

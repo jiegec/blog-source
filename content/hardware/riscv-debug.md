@@ -91,7 +91,7 @@ title: RISC-V Debug 分析
 7. progbuf0 0x20: Program Buffer 0
 8. sbcs 0x38: System Bus Access Control and Status
 9. sbaddress0 0x39: System Bus Address 31:0
-10 sbdata0 0x3c: System Bus Data 31:0
+10. sbdata0 0x3c: System Bus Data 31:0
 
 OpenOCD 的 `examine` 函数对 DMI 初始化并进行一些参数的获取。它的操作如下：
 
