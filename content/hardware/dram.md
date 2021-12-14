@@ -113,7 +113,7 @@ DRAM 有很多参数，以服务器上的内存 [MTA36ASF2G72PZ-2G3A3](https://i
 
 ## 刷新
 
-DRAM 的一个特点是需要定期刷新。有一个参数 tREFI，表示刷新的时间周期。在刷新之前，所有的 bank 都需要 Precharge 完成并等待 RP 的时间，这时候所有的 Bank 都是空闲的，再执行 REF(Refresh) 命令。等待 tRFC(Refresh Cycle) 时间后，可以继续正常使用。
+DRAM 的一个特点是需要定期刷新。有一个参数 tREFI，表示刷新的时间周期，这个值通常是 7.8us，在温度大于 85 摄氏度时是 3.9 us（见 JESD79-4B Table 131）。在刷新之前，所有的 bank 都需要 Precharge 完成并等待 RP 的时间，这时候所有的 Bank 都是空闲的，再执行 REF(Refresh) 命令。等待 tRFC(Refresh Cycle) 时间后，可以继续正常使用。
 
 为了更好的性能，DDR4 标准允许推迟一定次数的刷新，但是要在之后补充，保证平均下来依然满足每过 tREFI 时间至少一次刷新。
 
