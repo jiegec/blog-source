@@ -11,6 +11,8 @@ title: 缓存一致性协议分析
 - [Cache coherence](https://en.wikipedia.org/wiki/Cache_coherence)
 - [MSI protocol](https://en.wikipedia.org/wiki/MSI_protocol)
 - [Write-once (cache coherence)](https://en.wikipedia.org/wiki/Write-once_(cache_coherence))
+- [MESI protocol](https://en.wikipedia.org/wiki/MESI_protocol)
+- [MOESI protocol](https://en.wikipedia.org/wiki/MOESI_protocol)
 
 ## Write-invalidate 和 Write-update
 
@@ -67,3 +69,20 @@ MSI 协议比较简单，它定义了三个状态：
 当 Write miss 的时候，如果有其他缓存处于 Modified/Shared 状态，那就从其他缓存处读取数据，并让其他缓存进入 Invalid 状态，然后修改本地数据，进入 Modified 状态。如果所有缓存都是 Invalid 状态，那就从内存读入，然后修改缓存数据，进入 Modified 状态。
 
 ## MESI 协议
+
+MESI 协议定义了四种状态：
+
+1. Modified：数据与内存不一致，并且只有一个缓存有数据
+2. Exclusive：数据与内存一致，并且只有一个缓存有数据
+3. Shared：数据与内存一致，可以有多个缓存同时有数据
+4. Invalid：不在缓存中
+
+当 Read hit 的时候，状态不变。
+
+当 Read miss 的时候，首先会检查其他缓存的状态，如果有数据，就从其他缓存读取数据，并且都进入 Shared 状态，如果其他缓存处于 Modified 状态，还需要把数据写入内存；如果其他缓存都没有数据，就从内存里读取，然后进入 Exclusive 状态。
+
+当 Write hit 的时候，进入 Modified 状态，同时让其他缓存进入 Invalid 状态。
+
+当 Write miss 的时候，检查其他缓存的状态，如果有数据，就从其他缓存读取，否则从内存读取。然后，其他缓存都进入 Invalid 状态，本地缓存更新数据，进入 Modified 状态。
+
+值得一提的是，Shared 状态不一定表示只有一个缓存有数据：比如本来有两个缓存都是 Shared 状态，然后其中一个因为缓存替换变成了 Invalid，那么另一个是不会受到通知变成 Exclusive 的。Exclusive 的设置是为了减少一些总线请求，比如当数据只有一个核心访问的时候，只有第一次 Read miss 会发送总线请求，之后一直在 Exclusive/Modified 状态中，不需要发送总线请求。
