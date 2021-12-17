@@ -13,6 +13,7 @@ title: 缓存一致性协议分析
 - [Write-once (cache coherence)](https://en.wikipedia.org/wiki/Write-once_(cache_coherence))
 - [MESI protocol](https://en.wikipedia.org/wiki/MESI_protocol)
 - [MOESI protocol](https://en.wikipedia.org/wiki/MOESI_protocol)
+- [A Strategy to Verify an AXI/ACE Compliant Interconnect (2 of 4)](https://blogs.synopsys.com/vip-central/2014/12/23/a-strategy-to-verify-an-axi-ace-compliant-interconnect-part-2-of-4/)
 
 ## Write-invalidate 和 Write-update
 
@@ -110,3 +111,24 @@ AMD64 文档里采用的就是 MOESI 协议。AMBA ACE 协议其实也是 MOESI 
 5. Invalid: Invalid
 
 需要注意的是，SharedClean 并不代表它的数据和内存一致，比如说和 SharedDirty 缓存一致，它只是说缓存替换的时候，不需要写回内存。
+
+## ACE 协议
+
+ACE 协议在 AXI 的基础上，添加了三个 channel：
+
+1. AC：Coherent address channel，Input to master：ACADDR，ACSNOOP，ACPROT
+2. CR：Coherent response channel，Output from master：CRRESP
+3. CD：Coherent data channel，Output from master：CDDATA，CDLAST
+
+此外，已有的 Channel 也添加了信号：
+
+1. ARSNOOP[3:0]/ARBAR[1:0]/ARDOMAIN[1:0]
+2. AWSNOOP[3:0]/AWBAR[1:0]/AWDOMAIN[1:0]/AWUNIQUE
+3. RRESP[3:2]
+4. RACK/WACK
+
+ACE-lite 只在已有 Channel 上添加了新信号，没有添加新的 Channel。因此它内部不能有 Cache，但是可以访问一致的缓存内容。
+
+当 Read miss 的时候，首先 AXI master 发送 read transaction 给 Interconnect，Interconnect 向保存了这个缓存行的缓存发送 AC 请求，如果有其他 master 提供了数据，就向请求的 master 返回数据；如果没有其他 master 提供数据，则向内存发起读请求，并把结果返回给 master，最后 master 提供 RACK 信号。
+
+当 Write miss 的时候，也是类似地，AXI master 发送 MakeUnique 请求给 Interconnect，Interconnect 向保存了该缓存行的缓存发送请求，要求其他 master 状态改为 Invalid；当所有 master 都已经 invalidate 成功，就向原 AXI master 返回结果。
