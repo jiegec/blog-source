@@ -9,6 +9,8 @@ title: 缓存一致性协议分析
 ## 参考文档
 
 - [Cache coherence](https://en.wikipedia.org/wiki/Cache_coherence)
+- [MSI protocol](https://en.wikipedia.org/wiki/MSI_protocol)
+- [Write-once (cache coherence)](https://en.wikipedia.org/wiki/Write-once_(cache_coherence))
 
 ## Write-invalidate 和 Write-update
 
@@ -17,7 +19,7 @@ title: 缓存一致性协议分析
 1. Write-invalidate：写入数据的时候，将其他 Cache 中这条 Cache Line 设为 Invalid
 2. Write-update：写入数据的时候，把新的结果写入到有这条 Cache Line 的其他 Cache
 
-## Write-once
+## Write-once 协议
 
 Write-once 协议定义了四个状态：
 
@@ -47,3 +49,21 @@ Write-once 协议的特点是，第一次写的时候，会写入到内存（类
 	Write miss: A partial cache line write is handled as a read miss (if necessary to fetch the unwritten portion of the cache line) followed by a write hit. This leaves all other caches in the Invalid state, and the current cache in the Reserved state.
 
 教材上则是 Write miss 的时候按照 Write-back 处理。如果其他缓存都是 Invalid 时，从内存里读取数据，然后写入到缓存中，进入 Dirty 状态。如果其他缓存是 Valid/Reserved/Dirty 状态，就从其他缓存里读取数据，让其他缓存都进入 Invalid 状态，然后更新自己的数据，进入 Dirty 状态。
+
+## MSI 协议
+
+MSI 协议比较简单，它定义了三个状态：
+
+1. Modified：表示数据已经修改，和内存里不一致
+2. Shared：数据和内存一致，可以有一到多个缓存同时处在 Shared 状态
+3. Invalid：不在缓存中
+
+当 Read hit 的时候，状态不变。
+
+当 Read miss 的时候，检查其他缓存的状态，如果都是 Invalid，就从内存里读取，然后进入 Shared 状态。如果有 Shared，就从其他缓存处读取。如果有 Dirty，那就要把其他缓存的数据写入内存和本地缓存，然后进入 Shared 状态。
+
+当 Write hit 的时候，如果现在是 Shared 状态，则要让其他的 Shared 缓存进入 Invalid 状态，然后更新数据，进入 Modified 状态。如果是 Modified 状态，那就修改数据，状态保持不变。
+
+当 Write miss 的时候，如果有其他缓存处于 Modified/Shared 状态，那就从其他缓存处读取数据，并让其他缓存进入 Invalid 状态，然后修改本地数据，进入 Modified 状态。如果所有缓存都是 Invalid 状态，那就从内存读入，然后修改缓存数据，进入 Modified 状态。
+
+## MESI 协议
