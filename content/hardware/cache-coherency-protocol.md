@@ -86,3 +86,27 @@ MESI 协议定义了四种状态：
 当 Write miss 的时候，检查其他缓存的状态，如果有数据，就从其他缓存读取，否则从内存读取。然后，其他缓存都进入 Invalid 状态，本地缓存更新数据，进入 Modified 状态。
 
 值得一提的是，Shared 状态不一定表示只有一个缓存有数据：比如本来有两个缓存都是 Shared 状态，然后其中一个因为缓存替换变成了 Invalid，那么另一个是不会受到通知变成 Exclusive 的。Exclusive 的设置是为了减少一些总线请求，比如当数据只有一个核心访问的时候，只有第一次 Read miss 会发送总线请求，之后一直在 Exclusive/Modified 状态中，不需要发送总线请求。
+
+## MOESI 协议
+
+MOESI 定义了五个状态：
+
+1. Modified：数据经过修改，并且只有一个缓存有这个数据
+2. Owned：同时有多个缓存有这个数据，但是只有这个缓存可以修改数据
+3. Exclusive：数据没有修改，并且只有一个缓存有这个数据
+4. Shared：同时有多个缓存有这个数据，但是不能修改数据
+5. Invalid：不在缓存中
+
+状态中，M 和 E 是独占的，所有缓存里只能有一个。此外，可以同时有多个 S，或者多个 S 加一个 O，但是不能同时有多个 O。
+
+它的状态转移与 MESI 类似，区别在于：当核心写入 Owned 状态的缓存时，有两种方式：1）通知其他 Shared 的缓存更新数据；2）把其他 Shared 缓存设为 Invalid，然后本地缓存进入 Modified 状态。在 Read miss 的时候，则可以从 Owned 缓存读取数据，进入 Shared 状态，而不用写入内存。它相比 MESI 的好处是，减少了写回内存的次数。
+
+AMD64 文档里采用的就是 MOESI 协议。AMBA ACE 协议其实也是 MOESI 协议，只不过换了一些名称，表示可以兼容 MEI/MESI/MOESI 中的一个协议。ACE 对应关系如下：
+
+1. UniqueDirty: Modified
+2. SharedDirty: Owned
+3. UniqueClean: Exclusive
+4. SharedClean: Shared
+5. Invalid: Invalid
+
+需要注意的是，SharedClean 并不代表它的数据和内存一致，比如说和 SharedDirty 缓存一致，它只是说缓存替换的时候，不需要写回内存。
