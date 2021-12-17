@@ -14,6 +14,7 @@ title: 缓存一致性协议分析
 - [MESI protocol](https://en.wikipedia.org/wiki/MESI_protocol)
 - [MOESI protocol](https://en.wikipedia.org/wiki/MOESI_protocol)
 - [A Strategy to Verify an AXI/ACE Compliant Interconnect (2 of 4)](https://blogs.synopsys.com/vip-central/2014/12/23/a-strategy-to-verify-an-axi-ace-compliant-interconnect-part-2-of-4/)
+- [Directory-based cache coherence](https://en.wikipedia.org/wiki/Directory-based_cache_coherence)
 
 ## Write-invalidate 和 Write-update
 
@@ -132,3 +133,13 @@ ACE-lite 只在已有 Channel 上添加了新信号，没有添加新的 Channel
 当 Read miss 的时候，首先 AXI master 发送 read transaction 给 Interconnect，Interconnect 向保存了这个缓存行的缓存发送 AC 请求，如果有其他 master 提供了数据，就向请求的 master 返回数据；如果没有其他 master 提供数据，则向内存发起读请求，并把结果返回给 master，最后 master 提供 RACK 信号。
 
 当 Write miss 的时候，也是类似地，AXI master 发送 MakeUnique 请求给 Interconnect，Interconnect 向保存了该缓存行的缓存发送请求，要求其他 master 状态改为 Invalid；当所有 master 都已经 invalidate 成功，就向原 AXI master 返回结果。
+
+## 基于目录的缓存一致性
+
+上面的缓存一致性协议中，经常有这么一个操作：向所有有这个缓存行的缓存发送/接受消息。简单的方法是直接广播，然后接受端自己判断是否处理。但是这个方法在核心很多的时候会导致广播流量太大，因此需要先保存下来哪些缓存会有这个缓存的信息，然后对这些缓存点对点地发送。这样就可以节省一些网络流量。
+
+那么，怎么记录这个信息呢？一个简单的办法（Full bit vector format）是，有一个全局的表，对每个缓存行，都记录一个大小为 N（N 为核心数）的位向量，1 表示对应的核心中有这个缓存行。但这个方法保存数据量太大：缓存行数正比于 N，还要再乘以一次 N，总容量是 O(N^2) 的。
+
+一个稍微好一些的方法（Coarse bit vector format）是，我把核心分组，比如按照 NUMA 节点进行划分，此时每个缓存行都保存一个大小为 M（M 为 NUMA 数量）的位向量，只要这个 NUMA 节点里有这个缓存行，对应位就取 1。这样相当于是以牺牲一部分流量为代价（NUMA 节点内部广播），来节省一些目录的存储空间。
+
+但实际上，通常情况下，一个缓存行通常只会在很少的核心中保存，所以这里有很大的优化空间。TODO
