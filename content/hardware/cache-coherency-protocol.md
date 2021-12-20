@@ -13,6 +13,7 @@ title: 缓存一致性协议分析
 - [Write-once (cache coherence)](https://en.wikipedia.org/wiki/Write-once_(cache_coherence))
 - [MESI protocol](https://en.wikipedia.org/wiki/MESI_protocol)
 - [MOESI protocol](https://en.wikipedia.org/wiki/MOESI_protocol)
+- [Dragon protocol](https://en.wikipedia.org/wiki/Dragon_protocol)
 - [A Strategy to Verify an AXI/ACE Compliant Interconnect (2 of 4)](https://blogs.synopsys.com/vip-central/2014/12/23/a-strategy-to-verify-an-axi-ace-compliant-interconnect-part-2-of-4/)
 - [Directory-based cache coherence](https://en.wikipedia.org/wiki/Directory-based_cache_coherence)
 
@@ -112,6 +113,25 @@ AMD64 文档里采用的就是 MOESI 协议。AMBA ACE 协议其实也是 MOESI 
 5. Invalid: Invalid
 
 需要注意的是，SharedClean 并不代表它的数据和内存一致，比如说和 SharedDirty 缓存一致，它只是说缓存替换的时候，不需要写回内存。
+
+## Dragon 协议
+
+Dragon 协议是一个基于更新的协议，意味着写入缓存的时候，会把更新的数据同步到拥有这个缓存行的其他核心。它定义了四个状态：
+
+1. Exclusive clean(E)：独占，并且数据和内存一致
+2. Shared clean(Sc)：数据同时存在多个缓存中，并且自己不是最后一个写入该缓存数据的
+3. Shared modified(Sm)：数据同时存在多个缓存中，并且自己设最后一个写入该缓存数据的，类似于前面 MOESI 协议的 Owner 状态
+4. Modify(M)：独占，并且数据和内存不一致
+
+可以看到，E 和 M 都是独占的，如果出现了多个缓存有同一个缓存行，那就是若干个 Sc 和一个 Sm。
+
+当 Read miss 的时候，在总线上检查是否有缓存已经有这个缓存行的数据，如果没有，则从内存读取并转到 Exclusive clean 状态；如果已经在其他缓存中，则从其他缓存读取，将其他缓存转移到 Shared clean/Shared modified 状态，然后该缓存转移到 Shared clean 状态。
+
+当 Write miss 的时候，同样检查其他缓存的状态，如果是第一个访问的，就从内存读取，更新数据，然后转到 Modify 状态；如果不是第一个访问的，就进入 Shared modified 状态，并且让原来 Shared modified 的缓存进入 Shared clean 状态。
+
+当 Write hit 的时候，如果状态是 Shared modified，这时候需要通知其他缓存更新数据；如果状态是 Shared clean，则要通知其他缓存更新数据的同时，让原来 Shared modified 的缓存进入 Shared clean 状态；如果状态是 Exclusive clean，则进入 Modify 状态。
+
+在这里，Shared modified 的缓存负责在换出的时候，写入数据到内存中。
 
 ## ACE 协议
 
