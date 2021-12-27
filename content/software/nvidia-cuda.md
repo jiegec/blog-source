@@ -10,6 +10,12 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 之前和 NVIDIA 驱动和 CUDA 搏斗比较多，因此记录一下一些常用信息，方便查询。
 
+## 常用地址
+
+- [CUDA Toolkit Downloads](https://developer.nvidia.com/cuda-downloads?target_os=Linux)
+- [NVIDIA Driver Installation Quickstart Guide](https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html)
+- [NVIDIA Driver Downloads](https://www.nvidia.com/Download/index.aspx)
+
 ## CUDA 版本与 NVIDIA 驱动兼容性
 
 可以通过 apt show cuda-runtime-x-x 找到：
@@ -47,7 +53,7 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 可以在 nvcc --help 搜索 gpu-architecture 找到：
 
-- cuda 11.5 sm_35 to sm_87
+- cuda 11.4 sm_35 to sm_87
 - cuda 11.3 sm_35 to sm_86
 - cuda 11.0 sm_35 to sm_80
 - cuda 10.0 sm_30 to sm_75
