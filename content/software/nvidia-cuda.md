@@ -15,6 +15,7 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 - [CUDA Toolkit Downloads](https://developer.nvidia.com/cuda-downloads?target_os=Linux)
 - [NVIDIA Driver Installation Quickstart Guide](https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html)
 - [NVIDIA Driver Downloads](https://www.nvidia.com/Download/index.aspx)
+- [NVIDIA Docker Installation Guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 
 ## CUDA 版本与 NVIDIA 驱动兼容性
 
@@ -65,3 +66,18 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 - A100: 80
 - V100: 70
 - P100: 60
+
+## 升级 NVIDIA 驱动
+
+升级后，需要 rmmod 已有的，再 modprobe 新的：
+
+```bash
+sudo rmmod nvidia_uvm nvidia_drm nvidia_modeset nvidia && sudo modprobe nvidia
+```
+
+如果发现 rmmod 失败，可以 `lsof /dev/nvidiactl` 查看谁在占用。DGX 上需要停止：
+
+```bash
+sudo systemctl stop nvsm.service
+sudo systemctl stop nvidia-dcgm.service 
+```
