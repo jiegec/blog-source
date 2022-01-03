@@ -2,5 +2,5 @@
 	path = themes/minos
 	url = https://github.com/carsonip/hugo-theme-minos.git
 [submodule "content/UndergraduateProjects"]
-	path = content/UndergraduateProjects
+	path = content/projects
 	url = git@github.com:jiegec/UndergraduateProjects.git
