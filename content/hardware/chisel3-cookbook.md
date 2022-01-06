@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-01-03 22:19:00 +0800
+date: 2022-01-03 22:19:00 +0800
 tags: [chisel,verilog,hdl,cookbook]
 category: hardware
 title: Chisel3 Cookbook

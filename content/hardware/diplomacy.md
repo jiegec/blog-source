@@ -1,9 +1,9 @@
 ---
 layout: post
-date: 2021-01-05 00:29:00 +0800
+date: 2022-01-05 00:29:00 +0800
 tags: [chisel,rocketchip,diplomacy]
 category: hardware
-title: 分析 Rocket Chip 中 Diplomacy
+title: 分析 Rocket Chip 中 Diplomacy 系统
 ---
 
 ## 概念

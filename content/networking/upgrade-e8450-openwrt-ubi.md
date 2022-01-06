@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-01-03 13:57:00 +0800
+date: 2022-01-03 13:57:00 +0800
 tags: [openwrt,linksys,e8450,ubi,flash,router]
 category: networking
 title: 升级 Linksys E8450 的 OpenWRT 系统到 UBI
