@@ -17,5 +17,5 @@ title: 每周分享第 45 期
 9. 椭圆曲线加密算法 https://fangpenlin.com/posts/2019/10/07/elliptic-curve-cryptography-explained/
 10. Travis CI 添加 ARM 支持 https://blog.travis-ci.com/2019-10-07-multi-cpu-architecture-support
 11. CD 上的结构 https://readhacker.news/s/4aDHB
-12. 在线 TAC 的虚拟机 https://jiege.ch/online_tac_vm/
-13. 在线 Decaf 编译和运行 https://jiege.ch/online_decaf/
+12. 在线 TAC 的虚拟机 https://jia.je/online_tac_vm/
+13. 在线 Decaf 编译和运行 https://jia.je/online_decaf/
