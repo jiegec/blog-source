@@ -49,7 +49,7 @@ googleAnalytics = "UA-185962713-1"
   [[menu.main]]
     identifier = "projects"
     name = "项目"
-    url = "/projects/"
+    url = "/projects/readme/"
 
   [[menu.main]]
     identifier = "tags"
