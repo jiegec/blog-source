@@ -35,3 +35,11 @@ guestOS = "arm-windows11-64"
 这样声音就可以正常播放了。
 
 分辨率的问题，可以用 RDP 来解决：首先在虚拟机里打开 Remote Desktop，然后用 macOS 的 Microsoft Remote Desktop Beta 访问即可。
+
+系统里没有 Microsoft Store，要安装的话，用命令行的 Powershell 执行下面的命令：
+
+```
+wsreset.exe -i
+```
+
+这个方法见 [Parallels Desktop KB128520](https://kb.parallels.com/128520)。
