@@ -5,6 +5,6 @@ title: 关于
 permalink: /about/
 ---
 
-I'm an undergraduate student in Tsinghua University in China. Please inform me if I have made any mistakes by commenting below or make a issue on [my Github repo of this blog](https://github.com/jiegec/jiegec.github.io/issues).
+我是清华大学计算机系的一名在读博士生。
 
-Find me by my email c at jia.je. My Github user name is [@jiegec](https://github.com/jiegec).
+我的邮件是 c at jia.je。我的 GitHub 用户名是 [@jiegec](https://github.com/jiegec)。
