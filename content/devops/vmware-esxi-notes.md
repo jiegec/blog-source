@@ -83,3 +83,22 @@ $ esxcli network firewall ruleset set --enabled=false --ruleset-id=sshClient
 
 - https://williamlam.com/
 - https://www.virten.net/
+
+## 重要版本更新
+
+参考 ESXi/vCSA Release Notes：
+
+- Performance improvements for AMD Zen CPUs: With ESXi 7.0 Update 2, out-of-the-box optimizations can increase AMD Zen CPU performance by up to 30% in various benchmarks. The updated ESXi scheduler takes full advantage of the AMD NUMA architecture to make the most appropriate placement decisions for virtual machines and containers. AMD Zen CPU optimizations allow a higher number of VMs or container deployments with better performance.
+- Reduced compute and I/O latency, and jitter for latency sensitive workloads: Latency sensitive workloads, such as in financial and telecom applications, can see significant performance benefit from I/O latency and jitter optimizations in ESXi 7.0 Update 2. The optimizations reduce interference and jitter sources to provide a consistent runtime environment. With ESXi 7.0 Update 2, you can also see higher speed in interrupt delivery for passthrough devices.
+- vSphere Lifecycle Manager fast upgrades: Starting with vSphere 7.0 Update 2, you can configure vSphere Lifecycle Manager to suspend virtual machines to memory instead of migrating them, powering them off, or suspending them to disk. For more information, see Configuring vSphere Lifecycle Manager for Fast Upgrades.
+- Zero downtime, zero data loss for mission critical VMs in case of Machine Check Exception (MCE) hardware failure: With vSphere 7.0 Update 3, mission critical VMs protected by VMware vSphere Fault Tolerance can achieve zero downtime, zero data loss in case of Machine Check Exception (MCE) hardware failure, because VMs fallback to the secondary VM, instead of failing. For more information, see How Fault Tolerance Works.
+
+## vCSA 相关常见错误
+
+- https://kb.vmware.com/s/article/85468 vCSA 日志分区 `/storage/log` 满，原因是访问 vmware 网站失败打印的日志太大：`/storage/log/vmware/analytics/analytics-runtime.log*`；解决方法：`vmon-cli -r analytics` 重启服务，然后删掉旧的日志。
+- https://kb.vmware.com/s/article/83070 vCSA 日志分区 `/storage/log` 满，原因是 tomcat 日志太大。
+- `XXX Service Health Alarm`：尝试重启对应服务，比如 `vmon-cli -r perfcharts` 对应 `Performance Charts`，`vmon-cli -r vapi-endpoint` 对应 `VMWare vAPI Endpoint`
+
+查看更新状态：`cat /storage/core/software-update/stage_operation`；更新文件下载路径：`/storage/updatemgr/software-update*/stage`。有一个包特别大：`wcpovf` 需要两个多 G。
+
+CLI 更新方法： https://earlruby.org/2021/01/upgrading-vcenter-7-via-the-command-line/
