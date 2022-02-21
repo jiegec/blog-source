@@ -22,6 +22,8 @@ title: 在 ESXi 中用 PERCCli 换 RAID 中的盘
 esxcli software vib install -v /vmware-perccli-007.1420.vib
 ```
 
+如果要升级系统，需要先卸载 vib：`esxcli software vib remove -n vmware-perccli`，因为升级的时候会发现缺少新版系统的 perccli，建议先卸载，升级后再安装新的。
+
 需要注意的是，如果复制上去 Linux 版本的 PERCCli，虽然也可以运行，但是找不到控制器。安装好以后，就可以运行 `/opt/lsi/perccli/perccli` 。接着，运行 `perccli show all`，可以看到类似下面的信息：
 
 ```shell

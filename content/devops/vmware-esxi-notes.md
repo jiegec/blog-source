@@ -30,9 +30,11 @@ $ esxcli software vib install -d $PWD/Net-Community-Driver_1.2.0.0-1vmw.700.1.0.
 2. 上传到 ESXi datastore 中
 3. 在 `/vmfs/volumes/` 里找到更新文件
 4. 查询 profile 列表 `esxcli software sources profile list -d <zip>`
-5. 更新到 profile `esxcli software profiel update -p <profile> -d <zip>`
+5. 更新到 profile `esxcli software profile update -p <profile> -d <zip>`
 
 ref: [Upgrade or Update a Host with Image Profiles](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.upgrade.doc/GUID-E51C5DB6-F28E-42E8-ACA4-0EBDD11DF55D.html)
+
+如果 CPU 比较旧，可能会有警告：[Updated Plan for CPU Support Discontinuation In Future Major vSphere Releases](https://kb.vmware.com/s/article/82794)，按照信息添加参数忽略即可，ESXi 7.0 系列都是支持的，如果之后出了新的版本可能不支持。
 
 ## 在线升级方法
 
