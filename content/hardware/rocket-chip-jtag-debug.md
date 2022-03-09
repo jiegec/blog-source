@@ -183,7 +183,7 @@ Remote debugging using localhost:3333
 
 1. 调试模块的 reset 信号需要是异步的，这个是通过仿真（Remote Bitbang 连接 OpenOCD）调试出来的
 2. 看 schematic 的时候 rxd/txd 搞反了，后来仔细对比才找到了正确的对应关系
-3. OpenOCD 配置的 irlen 一开始写的不对，dmcontrol 读出来是 0，一直以为是有别的问题，结果改了 irlen 后立马就成功了
+3. OpenOCD 配置的 irlen 一开始写的不对，dmcontrol 读出来是 0，一直以为是有别的问题，结果改了 irlen 后立马就成功了，这个问题可以让 OpenOCD 自动推断 irlen 来发现
 
 ## 参考
 
