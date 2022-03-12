@@ -133,8 +133,22 @@ OpenOCD 的 `examine` 函数对 DMI 初始化并进行一些参数的获取。�
 
 硬件方面的实现方法就是，在遇到 ebreak 的时候，判断一下当前的特权集，结合 ebreakm/s/u 判断跳转到什么状态。此外，由于它会写入指令到内存，所以还需要执行 fence.i 指令，而 OpenOCD 需要依赖 progbuf 来执行 fence.i 指令，所以为了让这个方案工作，还得实现 Program Buffer。
 
+当然了，软件断点也有局限性，比如内存不可写，比如 ROM，不能覆盖里面的指令，这样就有可能出问题。而且硬件断点性能也更好，不需要来回这样写指令。
+
 ## Semihosting
 
 ARM 有一种 semihosting 机制，就是处理器执行一种特定的指令序列，然后调试器看到整个序列的时候，不是进入 GDB 调试状态，而是去进行一些操作，比如输出信息，读写文件等等，然后结果通过 JTAG 写回去。OpenOCD 给 RISC-V 也做了类似的 semihosting 机制，只不过触发的指令序列不大一样，但是机制是类似的。
 
 如果用过 Rocket Chip 仿真的或者以前的 ucb-bar/fpga-zynq 项目的话，会知道还有一个目的有些类似的东西：HTIF + fesvr，它是通过 fromhost/tohost 两组地址来进行通信，但是这个方法缺点是需要 poll tohost/fromhost 地址的内容，相对来说比较麻烦。
+
+## Program Buffer
+
+此外，debug spec 还有一个可选的功能，就是 Program Buffer，调试器可以往里面插入自定义的指令，然后结合 abstract command 进行操作。这样就可以做一些比较高效的操作，比如 OpenOCD 实现的批量写入内存：
+
+```asm
+sw s1, 0(a0)
+addi a0, a0, 4
+ebreak
+```
+
+并且设置 abstractauto，然后重复的操作是往 s1 里面写入新的数据，然后跳转到 program buffer，进行上面的 sw 操作，这样就可以一次 dmi 请求完成一次内存的写入，比较高效。
