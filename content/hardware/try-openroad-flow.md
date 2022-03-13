@@ -90,6 +90,20 @@ endmodule
 
 ![](/gcd_gds.png)
 
+日志里可以看到，预测的总功耗是 1.71 mW，面积占用是 703 um^2。
+
+还跑了一下其他样例设计的 gds，比如 ibex：
+
+![](/ibex_gds.png)
+
+日志里可以看到，预测的总功耗是 10.1 mW，面积占用是 32176 um^2。
+
+还有 tiny rocket：
+
+![](/tiny_rocket_gds.png)
+
+日志里可以看到，预测的总功耗是 36.8 mW，面积占用是 52786 um^2。
+
 ## 参考文档
 
 - [GETTING STARTED WITH OPENROAD APP – PART 1](https://theopenroadproject.org/2019/12/11/getting-started-with-openroad-app-part-1/)
