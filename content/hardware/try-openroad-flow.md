@@ -104,6 +104,11 @@ endmodule
 
 日志里可以看到，预测的总功耗是 36.8 mW，面积占用是 52786 um^2。
 
+## 工艺库常见术语：
+
+- slvt/lvt/rvt/hvt: super-low/low/regular/high V threshold 前者速度快：阈值电压低，同时漏电流大
+- ss/tt/ff: slow-slow/typical-typical/fast-fast 后者速度快：电压高，温度低，比如 SS（0.99V 125C）TT（1.10V 25C） FF（1.21V -40C）
+
 ## 参考文档
 
 - [GETTING STARTED WITH OPENROAD APP – PART 1](https://theopenroadproject.org/2019/12/11/getting-started-with-openroad-app-part-1/)
