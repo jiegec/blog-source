@@ -266,8 +266,10 @@ create_clock clock -period 1.0000 # 1GHz for example
 # step 3: synthesis
 link
 uniquify
-ungroup -flatten -all
-set_optimize_registers
+# use this if you want to ungroup all hierarchy
+# ungroup -flatten -all
+# use this to retime design
+# set_optimize_registers
 compile_ultra
 
 # step 4: check & report
