@@ -253,6 +253,31 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 修复 Load Store 指令相关性问题，一个方法是当一个 Store 提交的时候，检查是否有地址冲突的 Load 指令（那么 Load Queue 也要做成相连搜索的），是否转发了错误的 Store 数据，这也是 [Boom LSU](https://docs.boom-core.org/en/latest/sections/load-store-unit.html#memory-ordering-failures) 采用的方法。另一个办法是 Commit 的时候（或者按顺序）重新执行 Load 指令，如果 Load 结果和之前不同，要把后面依赖的刷新掉，这种方式的缺点是每条 Load 指令都要至少访问两次 Cache。[Store Vulnerability Window (SVW): Re-Execution Filtering for Enhanced Load Optimization](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1228&context=cis_papers) 属于重新执行 Load 指令的方法，通过 Bloom filter 来减少一些没有必要重复执行的 Load。还有一种办法，就是预测 Load 指令和哪一条 Store 指令有依赖关系，然后直接去访问那一项，如果不匹配，就认为没有依赖。[Scalable Store-Load Forwarding via Store Queue Index Prediction](https://ieeexplore.ieee.org/document/1540957) 把 Load 指令分为三类，一类是不确定依赖哪条 Store 指令（Difficult Loads），一类是基本确定依赖哪一条 Store 指令，一类是不依赖 Store 指令。这个有点像 Cache 里面的 Way Prediction 机制。
 
+分析完了上述一些优化方法，我们也来看一些 CPU 设计采用了哪种方案。首先来分析一下 [IBM POWER8](https://ieeexplore.ieee.org/abstract/document/7029183) 的 LSU，首先，可以看到它设计了比较多项目的 virtual STAG/LTAG，然后再转换成比较少项目的 physical STAG/LTAG，这样 LSQ 可以做的比较小，原文：
+
+	A virtual STAG/LTAG scheme is used to minimize dispatch holds due to
+	running out of physical SRQ/LRQ entries. When a physical entry in the
+	LRQ is freed up, a virtual LTAG will be converted to a real LTAG. When a
+	physical entry in the SRQ is freed up, a virtual STAG will be converted
+	to a real STAG. Virtual STAG/LTAGs are not issued to the LSU until they
+	are subsequently marked as being real in the UniQueue. The ISU can
+	assign up to 128 virtual LTAGs and 128 virtual STAGs to each thread.
+
+这个思路在 2007 年的论文 [Late-Binding: Enabling Unordered Load-Store Queues](https://people.csail.mit.edu/emer/papers/2007.06.isca.late_binding.pdf) 里也可以看到，也许 POWER8 参考了这篇论文的设计。可以看到，POWER8 没有采用那些免除 CAM 的方案：
+
+	The SRQ is a 40-entry, real address based CAM structure. Similar to the
+	SRQ, the LRQ is a 44-entry, real address based, CAM structure. The LRQ
+	keeps track of out-of-order loads, watching for hazards. Hazards
+	generally exist when a younger load instruction executes out-of-order
+	before an older load or store instruction to the same address (in part
+	or in whole). When such a hazard is detected, the LRQ initiates a flush
+	of the younger load instruction and all its subsequent instructions from
+	the thread, without impacting the instructions from other threads. The
+	load is then re-fetched from the I-cache and re-executed, ensuring
+	proper load/store ordering.
+
+而是在传统的两个 CAM 设计的基础上，做了减少物理 LSQ 项目的优化。
+
 ## 处理器/内存仿真模型
 
 - gem5: [论文](https://arxiv.org/abs/2007.03152) [代码](https://gem5.googlesource.com/public/gem5)
