@@ -91,3 +91,5 @@ $ miktex-fc-list | grep Kaiti
 ```
 
 这样就搞定了，用 LaTeX 找字体的时候也没有出现问题了。
+
+如果你用的是 TeX Live，那么直接把上面的 Kaiti.ttc 路径复制到 `~/Library/Fonts` 下即可。
