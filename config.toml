@@ -42,11 +42,6 @@ googleAnalytics = "UA-185962713-1"
     url = "/about/"
 
   [[menu.main]]
-    identifier = "tools"
-    name = "工具"
-    url = "/tools/"
-
-  [[menu.main]]
     identifier = "projects"
     name = "项目"
     url = "/projects/readme/"
@@ -70,6 +65,11 @@ googleAnalytics = "UA-185962713-1"
     identifier = "open-source-contributions"
     name = "开源"
     url = "/open-source-contributions/"
+  
+  [[menu.main]]
+    identifier = "series"
+    name = "系列"
+    url = "/series/"
 
 [outputFormats]
 [outputFormats.RSS]

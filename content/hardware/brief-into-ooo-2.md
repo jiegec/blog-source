@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2022-03-31 01:18:00 +0800
-tags: [ooo,cpu,tomasulo,outoforder,renaming]
+tags: [ooo,cpu,tomasulo,outoforder,renaming,brief-into-ooo]
 category: hardware
 title: 浅谈乱序执行 CPU （二）
 ---
@@ -191,6 +191,8 @@ ARM 架构也有 imprecise asynchronous external abort：
 比较容易做预测更新和恢复的是全局分支历史，可以维护两个 GHR（Global History Register），一个是目前取指令最新的，一个是提交的最新的。在预测的时候，用 GHR 去找对应的 2-bit 状态，然后把预测结果更新到 GHR 上。在预测失败的时候，把 GHR 恢复为提交的状态。如果要支持一个 Fetch Packet 中有多个分支，可以让 GHR 对应若干个 2-bit 状态，分别对应相应位置上的分支的状态，当然这样面积也会增加很多。
 
 ## 处理器/内存仿真模型
+
+最后列举一下科研里常用的一些处理器/内存仿真模型：
 
 - gem5: [论文](https://arxiv.org/abs/2007.03152) [代码](https://gem5.googlesource.com/public/gem5)
 - Multi2Sim: [论文](https://ieeexplore.ieee.org/document/7842946) [代码](https://github.com/Multi2Sim/multi2sim)
