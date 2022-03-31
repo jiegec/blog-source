@@ -82,6 +82,13 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 这里又是一个精确度和时序上的一个 tradeoff。
 
+具体到 Load/Store Queue 的大小，其实都不大：
+
+1. [Zen 2](https://ieeexplore.ieee.org/document/9000513) Store Queue 48
+2. [Intel Skylake](https://en.wikichip.org/wiki/intel/microarchitectures/skylake_(client)#Memory_subsystem) Store Buffer 56 Load Buffer 72
+3. [POWER 8](https://ieeexplore.ieee.org/document/7029183?arnumber=7029183) Store Queue 40 Load Queue 44 (Virtual 128+128)
+4. [Alpha 21264](http://ieeexplore.ieee.org/document/755465/) Store Queue 32 Load Queue 32
+
 ## 精确异常 vs 非精确异常
 
 精确异常是指发生异常的指令之前的指令都完成，之后的没有执行。一般来说，实现方式是完成异常指令之前的所有指令，并撤销异常指令之后的指令的作用。非精确异常则是不保证这个性质，[网上资料](http://bwrcs.eecs.berkeley.edu/Classes/cs152/lectures/lec12-exceptions.pdf) 说，这种情况下硬件实现更简单，但是软件上处理比较困难。
