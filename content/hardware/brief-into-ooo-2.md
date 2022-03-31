@@ -69,7 +69,18 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 	load is then re-fetched from the I-cache and re-executed, ensuring
 	proper load/store ordering.
 
-而是在传统的两个 CAM 设计的基础上，做了减少物理 LSQ 项目的优化。
+而是在传统的两个 CAM 设计的基础上，做了减少物理 LSQ 项目的优化。比较有意思的是，POWER7 和 POWER8 的 L1 Cache 都是 8 路组相连，并且采用了 set-prediction 的方式（应该是通常说的 way-prediction）。
+
+此外还有一个实现上的小细节，就是在判断 Load 和 Store 指令是否有相关性的时候，由于地址位数比较多，完整比较的延迟比较大，可以牺牲精度的前提下，选取地址的一部分进行比较。[POWER9 论文](https://ieeexplore.ieee.org/document/8409955) 提到了这一点：
+
+	POWER8 and prior designs matched the effective address (EA) bits 48:63
+	between the younger load and the older store queue entry. In POWER9,
+	through a combination of outright matches for EA bits 32:63 and hashed
+	EA matches for bits 0:31, false positive avoidance is greatly improved.
+	This reduces the number of flushes, which are compulsory for false
+	positives.
+
+这里又是一个精确度和时序上的一个 tradeoff。
 
 ## 精确异常 vs 非精确异常
 
