@@ -261,3 +261,5 @@ RUNTEST 5 TCK;
 ```
 
 这段操作是进行 Status Register Readback，见 UG570 的 Table 10-4。MASK 设为 `08000000` 应该是判断它的第 4 位：END_OF_STARTUP_STATUS（Table 9-25）。
+
+如果是 Quartus 用户，也可以 [生成 SVF](https://www.intel.com/content/www/us/en/support/programmable/articles/000085709.html)。
