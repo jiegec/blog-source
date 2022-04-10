@@ -88,7 +88,28 @@ SIR ISC_ENABLE
 SIR ISC_PROGRAM
 ```
 
-之后就是 bitstream 的内容了。有了 SVF 以后，就可以用其他的一些支持 SVF 语法的工具来烧写 FPGA，而不需要 Vivado。
+之后就是 bitstream 的内容了。有了 SVF 以后，就可以用其他的一些支持 SVF 语法的工具来烧写 FPGA，而不需要 Vivado。比如 OpenOCD 配置：
+
+```tcl
+# openocd config
+# use ftdi channel 0
+adapter speed 100000
+adapter driver ftdi
+transport select jtag
+ftdi_vid_pid 0x0403 0x6011
+ftdi_layout_init 0x0008 0x000b
+ftdi_tdo_sample_edge falling
+ftdi_channel 0
+reset_config none
+
+jtag newtap xcvu37p tap -irlen 18 -expected-id 0x14b79093
+
+init
+
+svf -tap xcvu37p.tap /path/to/program.svf progress
+
+exit
+```
 
 ### 从 Vivado 中导出 SVF
 
