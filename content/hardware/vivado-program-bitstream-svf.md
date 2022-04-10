@@ -8,7 +8,7 @@ title: 导出 Vivado 下载 Bitstream 的 SVF 文件
 
 ## 背景
 
-最近在研究如何实现一个远程 JTAG 的功能，目前实现在 [jiegec/jtag-remote-server](https://github.com/jiegec/jtag-remote-server)，实现了简单的 XVC 协议，底层用的是 libftdi 的 MPSSE 协议来操作 JTAG。但是，在用 Vivado 尝试的时候，SysMon 可以正常使用，但是下载 Bitstream 会失败，所以要研究一下 Vivado 都做了什么。
+最近在研究如何实现一个远程 JTAG 的功能，目前实现在 [jiegec/jtag-remote-server](https://github.com/jiegec/jtag-remote-server)，实现了简单的 XVC 协议，底层用的是 libftdi 的 MPSSE 协议来操作 JTAG。但是，在用 Vivado 尝试的时候，SysMon 可以正常使用，但是下载 Bitstream 会失败，所以要研究一下 Vivado 都做了什么（目前已经修好，是最后一个字节的部分位读取的处理问题）。
 
 ## SVF
 
