@@ -88,7 +88,11 @@ SIR ISC_ENABLE
 SIR ISC_PROGRAM
 ```
 
-之后就是 bitstream 的内容了。有了 SVF 以后，就可以用其他的一些支持 SVF 语法的工具来烧写 FPGA，而不需要 Vivado。比如 OpenOCD 配置：
+之后就是 bitstream 的内容了。
+
+### OpenOCD 烧写 SVF
+
+有了 SVF 以后，就可以用其他的一些支持 SVF 语法的工具来烧写 FPGA，而不需要 Vivado。比如采用如下的 OpenOCD 配置：
 
 ```tcl
 # openocd config
