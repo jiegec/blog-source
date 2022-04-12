@@ -8,6 +8,8 @@ title: RISC-V Vector 1.0 工具链构建
 
 不久前 RVV 1.0 标准终于是出来了，但是工具链的支持目前基本还处于刚 upstream 还没有 release 的状态。而目前 RVV 1.0 的支持主要在 LLVM 上比较活跃，因此也是采用 LLVM Clang + GCC Newlib Toolchain 的方式进行配合，前者做 RVV 1.0 的编译，后者提供 libc 等基础库。
 
+UPDATE: LLVM 14 已经发布，这个版本已经支持 RVV 1.0，直接从 https://apt.llvm.org 等地安装 LLVM 14 即可。
+
 LLVM Clang 直接采用 upstream 即可。编译选项：
 
 ```shell
