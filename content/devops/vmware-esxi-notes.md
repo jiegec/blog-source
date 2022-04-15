@@ -104,3 +104,21 @@ $ esxcli network firewall ruleset set --enabled=false --ruleset-id=sshClient
 查看更新状态：`cat /storage/core/software-update/stage_operation`；更新文件下载路径：`/storage/updatemgr/software-update*/stage`。有一个包特别大：`wcpovf` 需要两个多 G。
 
 CLI 更新方法： https://earlruby.org/2021/01/upgrading-vcenter-7-via-the-command-line/
+
+## 迁移虚拟机到不同 VM
+
+首先，unregister 原来的 VM，然后把文件移动到新的路径下。对于 Thin Provisioned Disk，需要特殊处理，否则直接复制的话，会变成 Thick Provisioned Disk，正确方法是采用 `vmkfstool`：
+
+```shell
+vmkfstool -i "old.vmdk" -d thin "new.vmdk"
+```
+
+需要注意的是，这里的路径用的是不带 `-flat` 的 vmdk，因为这个文件记录了 metadata，而 `-flat.vmdk` 保存了实际的数据。可以用 `du` 命令看实际的硬盘占用，从而确认它确实是 Thin Provisioned。
+
+如果已经在 Web UI 上复制了，你会发现无法停止复制，解决办法是：
+
+```shell
+/etc/init.d/hostd restart
+```
+
+这样就会重启 Web UI，不过等它恢复需要很长的时间，还要删掉 cookie。
