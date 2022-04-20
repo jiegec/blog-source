@@ -35,6 +35,8 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 但是如果编译 C++ 程序，链接的时候就会报错：`prefixed ISA extension must separate with _`，这是因为 riscv-gnu-toolchain 仓库的 binutils 版本不够新，在 upstream 的 binutils 里面已经修复了这个问题。所以 clone 下来，然后编译，覆盖掉 riscv-gnu-toolchain 里面的 binutils：
 
+UPDATE: binutils 2.38 已经发布，用这个版本即可。
+
 ```shell
 $ ../configure --target=riscv64-unknown-elf --prefix=$HOME/riscv --disable-gdb --disable-sim --disable-libdecnumber --disable-readline
 $ make
