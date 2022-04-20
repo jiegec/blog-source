@@ -1,0 +1,147 @@
+---
+layout: post
+date: 2022-04-19 22:53:00 +0800
+tags: [wch,ch32,ch32v307,riscv,eval]
+category: hardware
+title: 试用沁恒 CH32V307 评估板
+---
+
+## 背景
+
+之前有一天看到朋友在捣鼓 CH32V307，因此自己也萌生了试用 CH32V307 评估板的兴趣，于是在[沁恒官网申请样品](http://www.wch.cn/services/request_sample.html)，很快就接到电话了解情况，几天后就顺丰送到了，不过因为疫情原因直到现在才拿到手上，只能说疫情期间说不定货比人还快。
+
+## 开箱
+
+收到的盒子里有一个 [CH32V307 评估板](http://special.wch.cn/zh_cn/RISCV_MCU_Index/)，和一个 [WCH-Link](http://www.wch.cn/products/WCH-Link.html)，相关资料可以在 [官网](http://www.wch.cn/products/CH32V307.html) 或者 [openwch/ch32v307](https://github.com/openwch/ch32v307) 下载。在说明书中有如下的图示：
+
+![](/ch32v307.png)
+
+## WCH-Link
+
+可以看到评估板自带了一个 WCH-Link，所以不需要附赠的那一个，直接把 11 号 Type-C 连接到电脑上即可。这里还遇到一个小插曲，用 Type-C to Type-C 的线连电脑上不工作，连 PWR LED 都点不亮，换一根 Type-A to Type-C 的就可以，没有继续研究是什么原因。电脑上可以看到 WCH-Link 的设备：VID=1a86, PID=8010。比较有意思的是，在 RISC-V 模式（CON 灯不亮）的时候 PID 是 8010，ARM 模式（CON 灯亮）的时候 PID 是 8011，从 RISC-V 模式切换到 ARM 模式的方法是连接 TX 和 GND 后上电，反过来要用 MounRiver，详见 WCH-Link 使用说明 [V1.0](http://www.wch.cn/uploads/file/20210707/1625645582172366.pdf) [V1.3](http://www.wch.cn/uploads/file/20210906/1630922260396691.pdf) 和原理图 [V1.1](http://www.wch.cn/uploads/file/20210104/1609725144187113.pdf)。
+
+给沁恒开源 WCH-Link 原理图并开放固件点个赞，在淘宝上也可以看到不少 WCH-Link 的仿真器，挺有意思的。
+
+在 ARM 模式下，它实现了类似 [CMSIS-DAP](https://www.keil.com/support/man/docs/dapdebug/dapdebug_introduction.htm) 的协议，可以用 OpenOCD 调试：
+
+```tcl
+source [find interface/cmsis-dap.cfg]
+adapter speed 1000
+cmsis_dap_vid_pid 0x1a86 0x8011
+transport select swd
+init
+```
+
+```shell
+$ openocd -f openocd.cfg
+Open On-Chip Debugger 0.11.0
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : CMSIS-DAP: SWD  Supported
+Info : CMSIS-DAP: FW Version = 2.0.0
+Info : CMSIS-DAP: Interface Initialised (SWD)
+Info : SWCLK/TCK = 1 SWDIO/TMS = 1 TDI = 0 TDO = 0 nTRST = 0 nRESET = 1
+Info : CMSIS-DAP: Interface ready
+Info : clock speed 1000 kHz
+Warn : gdb services need one or more targets defined
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+```
+
+不过这里我们要用的是 RISC-V 处理器 CH32V307，上面的就当是 WCH-LINK 使用的小贴士。
+
+给评估板插上 USB Type-C 以后，首先上面的 WCH-Link 部分中红色的 PWR 和绿色的 RUN 亮，CON 不亮，说明 WCH-LINK 的 CH549 已经启动，并且处在 RISC-V 模式（CON 不亮）。CH549 是一个 8051 指令集的处理器，上面的跑的 WCH-LINK 固件在网上可以找到，在下面提到的 MounRiver Studio 目录中也有一份。
+
+## OpenOCD
+
+目前开源工具上游还不支持 CH32V307 的开发，需要用 [MounRiver](http://www.mounriver.com/download)，支持 Windows 和 Linux，有两部分：
+
+- [MRS_Toolchain_Linux_x64_V1.40.tar.xz](http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.40.tar.xz): RISC-V GNU Toolchain 和 OpenOCD
+- [MounRiver_Studio_Community_Linux_V110](http://file.mounriver.com/upgrade/MounRiver_Studio_Community_Linux_x64_V110.tar.xz)：基于 Eclipse 做的 IDE
+
+解压缩后，可以看到它的 OpenOCD 配置：
+
+```tcl
+## wch-arm.cfg
+adapter driver cmsis-dap
+transport select swd
+source [find ../share/openocd/scripts/target/ch32f1x.cfg]
+## wch-riscv.cfg
+#interface wlink
+adapter driver wlink
+wlink_set
+set _CHIPNAME riscv
+jtag newtap $_CHIPNAME cpu -irlen 5 -expected-id 0x00001
+
+set _TARGETNAME $_CHIPNAME.cpu
+
+target create $_TARGETNAME.0 riscv -chain-position $_TARGETNAME
+$_TARGETNAME.0 configure  -work-area-phys 0x80000000 -work-area-size 10000 -work-area-backup 1
+set _FLASHNAME $_CHIPNAME.flash
+
+flash bank $_FLASHNAME wch_riscv 0x00000000 0 0 0 $_TARGETNAME.0
+
+echo "Ready for Remote Connections"
+```
+
+其中 ch32f1x.cfg 就是 stm32f1x.cfg 改了一下名字，可以看到 WCH OpenOCD 把它的 RISC-V 调试协议称为 wlink，估计是取 wch-link 的简称吧。除了 wlink 部分，其他就是正常的 RISC-V CPU 调试的 OpenOCD 配置，比较有意思的就是 IDCODE 设为了 0x00001，比较有个性。
+
+在网上一番搜索，找到了 WCH OpenOCD 的源码 [Embedded_Projects/riscv-openocd-wch](https://git.minori.work/Embedded_Projects/riscv-openocd-wch)，是网友向沁恒获取的源代码，毕竟 OpenOCD 是 GPL 软件。简单看了一下代码，是直接把 RISC-V Debug 中的 DMI 操作封装了一下，然后通过 USB Bulk 和 WCH-Link 通信。我从 riscv-openocd 找到了一个比较接近的 [commit](https://github.com/jiegec/riscv-openocd/commit/cc0ecfb6d5b939bd109ea84b07b5eab3cdf80316)，然后把 WCH 的代码提交上去，得到了 [diff](https://github.com/jiegec/riscv-openocd/commit/bfa3bc7f98d22fa60ef6d3b2f5d98859fa963f85)，有兴趣的可以看看具体实现，甚至把这个支持提交到上游。
+
+有源码以后，就可以在 macOS 上编译了（需要修复三处 clang 报告的编译错误，[最终代码](https://github.com/jiegec/riscv-openocd/tree/wch)）：
+
+```shell
+$ ./bootstrap
+$ ./configure --prefix=/path/to/prefix/openocd --enable-wlink --disable-werror CAPSTONE_CFLAGS=-I/opt/homebrew/opt/capstone/include/
+$ make -j4 install
+```
+
+如果遇到 makeinfo 报错，把 homebrew 的 texinfo 加到 PATH 即可。
+
+编译完成后，就可以用前面提到的 wch-riscv.cfg 进行调试了：
+
+```shell
+$ /path/to/prefix/openocd -f wch-riscv.cfg
+Open On-Chip Debugger 0.11.0+dev-01623-gbfa3bc7f9 (2022-04-20-09:55)
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : only one transport option; autoselect 'jtag'
+Ready for Remote Connections
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : WCH-Link version 2.3 
+Info : wlink_init ok
+Info : This adapter doesn't support configurable speed
+Info : JTAG tap: riscv.cpu tap/device found: 0x00000001 (mfg: 0x000 (<invalid>), part: 0x0000, ver: 0x0)
+Warn : Bypassing JTAG setup events due to errors
+Info : [riscv.cpu.0] datacount=2 progbufsize=8
+Info : Examined RISC-V core; found 1 harts
+Info :  hart 0: XLEN=32, misa=0x40901125
+[riscv.cpu.0] Target successfully examined.
+Info : starting gdb server for riscv.cpu.0 on 3333
+Info : Listening on port 3333 for gdb connections
+```
+
+这也验证了上面的发现：因为绕过了 jtag，直接发送 dmi，所以 idcode 是假的：
+
+```cpp
+if(wchwlink){
+        buf_set_u32(idcode_buffer, 0, 32, 0x00001);  //Default value,for reuse risc-v jtag debug
+}
+```
+
+接下来就可以用 GDB 调试了。里面跑了一个样例的程序，就是向串口打印：
+
+```shell
+$ screen /dev/tty.usbmodem* 115200
+SystemClk:72000000
+111
+   111
+      111
+         111
+            111
+```
+
+之后则是针对各个外设，基于沁恒提供的示例代码进行相应的开发了。
