@@ -245,6 +245,40 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
 然后交叉编译就可以了。比较有意思的是，代码中对 `_fstat` 进行了覆盖，如果不这么做，它会进行 syscall(ecall)，但是 ecall 的处理是死循环。
 
+如果不想用 CMake，也可以用下面的精简版 Makefile：
+
+```make
+USER := User/main.c User/ch32v30x_it.c User/system_ch32v30x.c
+LIBRARY := ../../SRC/Peripheral/src/ch32v30x_misc.c \
+	../../SRC/Peripheral/src/ch32v30x_usart.c \
+	../../SRC/Peripheral/src/ch32v30x_gpio.c \
+	../../SRC/Peripheral/src/ch32v30x_rcc.c \
+	../../SRC/Debug/debug.c \
+	../../SRC/Startup/startup_ch32v30x_D8C.S
+LDSCRIPT = ../../SRC/Ld/Link.ld
+CFLAGS := -march=rv32imafc -mabi=ilp32f \
+	-T $(LDSCRIPT) \
+	-I../../SRC/Debug \
+	-I../../SRC/Core \
+	-I../../SRC/Peripheral/inc \
+	-I./User \
+	-lc -lm -lnosys -nostartfiles \
+	-O2 \
+	-Wl,--print-memory-usage
+PREFIX := riscv64-unknown-elf-
+
+all: obj/build.bin
+
+obj/build.bin: obj/build.elf
+	$(PREFIX)objcopy -O binary $^ $@
+
+obj/build.elf: $(USER) $(LIBRARY)
+	$(PREFIX)gcc $(CFLAGS) $^ -o $@
+
+clean:
+	rm -rf obj/*
+```
+
 ## 烧写 Flash
 
 编译好以后，根据 WCH OpenOCD 的文档，可以用下面的配置来进行烧写：
