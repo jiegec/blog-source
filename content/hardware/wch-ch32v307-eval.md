@@ -16,6 +16,8 @@ title: 试用沁恒 CH32V307 评估板
 
 ![](/ch32v307.png)
 
+板子自带的跳线帽不是很多，建议自备一些，或者用杜邦线替代。比较重要的是 WCH-Link 子板上 CH549 和 CH2V307 连接的几个信号，和下面 BOOT0/1 的选择。
+
 ## WCH-Link
 
 可以看到评估板自带了一个 WCH-Link，所以不需要附赠的那一个，直接把 11 号 Type-C 连接到电脑上即可。这里还遇到一个小插曲，用 Type-C to Type-C 的线连电脑上不工作，连 PWR LED 都点不亮，换一根 Type-A to Type-C 的就可以，没有继续研究是什么原因。电脑上可以看到 WCH-Link 的设备：VID=1a86, PID=8010。比较有意思的是，在 RISC-V 模式（CON 灯不亮）的时候 PID 是 8010，ARM 模式（CON 灯亮）的时候 PID 是 8011，从 RISC-V 模式切换到 ARM 模式的方法是连接 TX 和 GND 后上电，反过来要用 MounRiver，详见 WCH-Link 使用说明 [V1.0](http://www.wch.cn/uploads/file/20210707/1625645582172366.pdf) [V1.3](http://www.wch.cn/uploads/file/20210906/1630922260396691.pdf) 和原理图 [V1.1](http://www.wch.cn/uploads/file/20210104/1609725144187113.pdf)。
@@ -228,3 +230,78 @@ handle_reset:
 ```
 
 这里有一些自定义的 csr，比如 corecfgr(0xbc0)，intsyscr(0x804，设置了 HWSTKEN=1, INESTEN=1, PMTCFG=0b11, HWSTKOVEN=1)，具体参考 [QingKeV4_Processor_Manual](http://www.wch.cn/downloads/QingKeV4_Processor_Manual_PDF.html)。接着代码往 0x1ffff1b0 写入 0x300，然后不断读取 FLASH Interface (0x40022000) 的 STATR 字段，没有找到代码中相关的定义，简单猜测与 Flash 的零等待/非零等待区有关，因为后续代码要提高频率，因此 Flash 控制器需要增加 wait state。
+
+## 编译
+
+可以用 MounRiver 编译，也可以用 SiFive 的 riscv64-unknown-elf 工具链进行编译，参考 [Embedded_Projects/CH32V307_Template](https://git.minori.work/Embedded_Projects/CH32V307_Template) 项目中的编译方式，修改 `riscv64-elf.cmake` 为：
+
+```cmake
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_C_COMPILER riscv64-unknown-elf-gcc)
+set(CMAKE_CXX_COMPILER riscv64-unknown-elf-g++)
+# Make CMake happy about those compilers
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+```
+
+然后交叉编译就可以了。比较有意思的是，代码中对 `_fstat` 进行了覆盖，如果不这么做，它会进行 syscall(ecall)，但是 ecall 的处理是死循环。
+
+## 烧写 Flash
+
+编译好以后，根据 WCH OpenOCD 的文档，可以用下面的配置来进行烧写：
+
+```tcl
+#interface wlink
+adapter driver wlink
+wlink_set
+set _CHIPNAME riscv
+jtag newtap $_CHIPNAME cpu -irlen 5 -expected-id 0x00001
+
+set _TARGETNAME $_CHIPNAME.cpu
+
+target create $_TARGETNAME.0 riscv -chain-position $_TARGETNAME
+$_TARGETNAME.0 configure  -work-area-phys 0x80000000 -work-area-size 10000 -work-area-backup 1
+set _FLASHNAME $_CHIPNAME.flash
+
+flash bank $_FLASHNAME wch_riscv 0x00000000 0 0 0 $_TARGETNAME.0
+
+init
+halt
+
+flash erase_sector wch_riscv 0 last
+program /path/to/firmware
+verify_image /path/to/firmware
+wlink_reset_resume
+exit
+```
+
+输出：
+
+```shell
+$ openocd -f program.cfg
+Open On-Chip Debugger 0.11.0+dev-01623-gbfa3bc7f9 (2022-04-20-09:55)
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : only one transport option; autoselect 'jtag'
+Ready for Remote Connections
+Info : WCH-Link version 2.3
+Info : wlink_init ok
+Info : This adapter doesn't support configurable speed
+Info : JTAG tap: riscv.cpu tap/device found: 0x00000001 (mfg: 0x000 (<invalid>), part: 0x0000, ver: 0x0)
+Warn : Bypassing JTAG setup events due to errors
+Info : [riscv.cpu.0] datacount=2 progbufsize=8
+Info : Examined RISC-V core; found 1 harts
+Info :  hart 0: XLEN=32, misa=0x40901125
+[riscv.cpu.0] Target successfully examined.
+Info : starting gdb server for riscv.cpu.0 on 3333
+Info : Listening on port 3333 for gdb connections
+Info : device id = REDACTED
+Info : flash size = 256kbytes
+Info : JTAG tap: riscv.cpu tap/device found: 0x00000001 (mfg: 0x000 (<invalid>), part: 0x0000, ver: 0x0)
+Warn : Bypassing JTAG setup events due to errors
+** Programming Started **
+** Programming Finished **
+Info : Verify Success
+```
+
+访问串口 `screen /dev/tty.usbmodem* 115200`，可以看到正确地输出了内容。
