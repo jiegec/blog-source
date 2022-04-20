@@ -145,3 +145,86 @@ SystemClk:72000000
 ```
 
 之后则是针对各个外设，基于沁恒提供的示例代码进行相应的开发了。
+
+## Baremetal 代码
+
+接下来看看沁恒提供的代码是如何配置的。在 EVT/EXAM/SRC/Startup/startup_ch32v30x_D8C.S 可以看到初始化的汇编代码。比较有意思的是，这个核心扩展了 mtvec，支持 ARM 的 vector table 模式，即放一个指针数组，而不是指令：
+
+```asm
+    .section    .vector,"ax",@progbits
+    .align  1
+_vector_base:
+    .option norvc;
+    .word   _start
+    .word   0
+    .word   NMI_Handler                /* NMI */
+    .word   HardFault_Handler          /* Hard Fault */
+```
+
+这些名字如此熟悉，只能说这是 ARVM 了（ARM + RV）。后面的部分比较常规，把 data 段复制到 sram，然后清空 bss：
+
+```asm
+handle_reset:
+.option push 
+.option	norelax 
+        la gp, __global_pointer$
+.option	pop 
+1:
+        la sp, _eusrstack 
+2:
+        /* Load data section from flash to RAM */
+        la a0, _data_lma
+        la a1, _data_vma
+        la a2, _edata
+        bgeu a1, a2, 2f
+1:
+        lw t0, (a0)
+        sw t0, (a1)
+        addi a0, a0, 4
+        addi a1, a1, 4
+        bltu a1, a2, 1b
+2:
+        /* Clear bss section */
+        la a0, _sbss
+        la a1, _ebss
+        bgeu a0, a1, 2f
+1:
+        sw zero, (a0)
+        addi a0, a0, 4
+        bltu a0, a1, 1b
+2:
+```
+
+最后是进行一些 csr 的配置，然后进入 C 代码：
+
+```asm
+    li t0, 0x1f
+    csrw 0xbc0, t0
+
+    /* Enable nested and hardware stack */
+    li t0, 0x1f
+    csrw 0x804, t0
+
+    /* Enable floating point and interrupt */
+    li t0, 0x6088           
+    csrs mstatus, t0
+
+    la t0, _vector_base
+    ori t0, t0, 3           
+    csrw mtvec, t0
+
+    lui a0, 0x1ffff
+    li a1, 0x300
+    sh a1, 0x1b0(a0)
+1:  lui s2, 0x40022
+    lw a0, 0xc(s2)
+    andi a0, a0, 1
+    bnez a0, 1b
+
+    jal  SystemInit
+    la t0, main
+    csrw mepc, t0
+    mret
+```
+
+这里有一些自定义的 csr，比如 corecfgr(0xbc0)，intsyscr(0x804，设置了 HWSTKEN=1, INESTEN=1, PMTCFG=0b11, HWSTKOVEN=1)，具体参考 [QingKeV4_Processor_Manual](http://www.wch.cn/downloads/QingKeV4_Processor_Manual_PDF.html)。接着代码往 0x1ffff1b0 写入 0x300，然后不断读取 FLASH Interface (0x40022000) 的 STATR 字段，没有找到代码中相关的定义，简单猜测与 Flash 的零等待/非零等待区有关，因为后续代码要提高频率，因此 Flash 控制器需要增加 wait state。
