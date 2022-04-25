@@ -104,12 +104,25 @@ endmodule
 
 日志里可以看到，预测的总功耗是 36.8 mW，面积占用是 52786 um^2。
 
-## 工艺库常见术语：
+## 工艺库常见术语
 
 - slvt/lvt/rvt/hvt: super-low/low/regular/high V threshold 前者速度快：阈值电压低，同时漏电流大
-- ss/tt/ff: slow-slow/typical-typical/fast-fast 后者速度快：电压高，温度低，比如 SS（0.99V 125C）TT（1.10V 25C） FF（1.21V -40C）
+- ss/tt/ff: slow-slow/typical-typical/fast-fast 后者速度快：电压高，温度低，比如 SS（0.99V 125C）TT（1.10V 25C）FF（1.21V -40C）；有时候还会看到 ssg，可以理解为 ss 的比较精确的版本，因此没有那么悲观，延迟比 SS 低一些，详见 [STA | ssg 跟ss corner 的区别——谬误更正版](https://cloud.tencent.com/developer/article/1598417)
+- c+数字：表示的是 channel length，c40 表示 40nm，数字越大速度越慢，能耗越低
+- 数字+track：表示的是 track height，sc12 表示 12-track，数字越大速度越快
+
+ARM 的文档 [Choosing the physical IP libraries](https://developer.arm.com/documentation/102738/0100/Choosing-the-physical-IP-libraries) 描述了 Channel length, Track height, Voltage threshold 等不同的选择。
+
+综合来说，如果要更低的延迟，选择低 vt，小 c 和大 track，反之如果要更低的能耗，选择高 vt，大 c 和 小 track。
+
+## CCS v.s. NLDM
+
+由于物理的特性比较复杂，工艺库里描述的也只是一个大致的模型，刻画了这些 cell 的特性，那么自然可以选取不同的模型。NLDM（上面举的例子就是 NLDM），CCS 就是常见的两个模型，相比之下，CCS 更精确，同时参数更多。更精确的还有直接用 SPICE 描述的电路。详细的对比可以看下面的参考文档。
 
 ## 参考文档
 
 - [GETTING STARTED WITH OPENROAD APP – PART 1](https://theopenroadproject.org/2019/12/11/getting-started-with-openroad-app-part-1/)
 - [Advanced ASIC Chip Synthesis Using Synopsys® Design Compiler™ Physical Compiler™ and PrimeTime®](https://link.springer.com/book/10.1007/b117024)
+- [Comparing NLDM And CCS delay models](https://www.paripath.com/blog/characterization-blog/comparing-nldm-and-ccs-delay-models)
+- [Introduction to Liberty : CCS, ECSM and NDLM](https://chitlesh.ch/wordpress/liberty-ccs-ecsm-or-ndlm/)
+- [STA概念：一文了解NLDM与CCS](https://blog.csdn.net/graymount/article/details/106010388)
