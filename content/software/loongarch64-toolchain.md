@@ -38,6 +38,8 @@ There is NO WARRANTY, to the extent permitted by law.
 
 之后有时间的话，再把 qemu 和系统搞起来跑跑。
 
+UPDATE: GCC 12.1 发布了，试了一下这个正式版本可以正确地编译。目前还需要使用 HEAD 版本的 binutils 和龙芯的 glibc 和 linux。
+
 参考文档：
 
 - [手把手教你构建基于LoongArch64架构的Linux系统](https://github.com/sunhaiyong1978/CLFS-for-LoongArch/blob/main/CLFS_For_LoongArch64-20220108.md)
