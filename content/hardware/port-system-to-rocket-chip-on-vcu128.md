@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2021-10-18 08:35:00 +0800
-tags: [u-boot,linux,riscv,rocket-chip,vcu128,fpga,serial]
+tags: [uboot,linux,riscv,rocketchip,vcu128,fpga,serial]
 category: hardware
 title: 移植系统到 Rocket Chip on VCU128
 ---
