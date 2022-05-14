@@ -43,6 +43,8 @@ class TestTop(implicit p:Parameters)
 
 首先是用 `chisel3.util.experimental.loadMemoryFromFile` 函数（文档在 https://github.com/freechipsproject/chisel3/wiki/Chisel-Memories）：
 
+UPDATE：现在的文档在 [Loading Memories for simulation or FPGA initialization](https://www.chisel-lang.org/chisel3/docs/appendix/experimental-features#loading-memories-for-simulation-or-fpga-initialization-) 处，并且可以用 loadMemoryFromFileInline。
+
 ```scala
 class TestTopImp(outer: TestTop)
 	extends RocketSubsystemModuleImp(outer)
