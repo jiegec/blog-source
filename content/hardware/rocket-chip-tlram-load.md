@@ -35,7 +35,7 @@ class TestTop(implicit p:Parameters)
 	with HasTestRAM
 	//...
 	{
-	overide lazy ...    
+	override lazy ...    
 }
 ```
 
@@ -59,6 +59,8 @@ class TestTopImp(outer: TestTop)
 ```bash
 $ runMain firrtl.stage.Main -i xxx -o xxx -X verilog -faf /path/to/xxx.anno.json -fct chisel3.util.experimental.LoadMemoryTransform
 ```
+
+UPDATE: 现在不需要 `-fct chisel3.util.experimental.LoadMemoryTransform` 参数。
 
 这里的 chisel3.util.experimental.LoadMemoryTransform 会找到 anno.json 里面对应的 Annotation，然后生成类似下面这样的 verilog 代码：
 
