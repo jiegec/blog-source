@@ -60,7 +60,7 @@ class TestTopImp(outer: TestTop)
 $ runMain firrtl.stage.Main -i xxx -o xxx -X verilog -faf /path/to/xxx.anno.json -fct chisel3.util.experimental.LoadMemoryTransform
 ```
 
-UPDATE: 现在不需要 `-fct chisel3.util.experimental.LoadMemoryTransform` 参数。
+UPDATE: 现在不需要 `-fct chisel3.util.experimental.LoadMemoryTransform` 参数。目前这个功能和生成 blackbox memory 有冲突，不能同时使用，需要等 chisel3 后续修复。
 
 这里的 chisel3.util.experimental.LoadMemoryTransform 会找到 anno.json 里面对应的 Annotation，然后生成类似下面这样的 verilog 代码：
 

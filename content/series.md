@@ -22,3 +22,7 @@ permalink: /series/
 ## 浅谈乱序执行 CPU
 
 [#brief-into-ooo](/tags/brief-into-ooo/)
+
+## 缓存一致性协议分析
+
+[#coherence](/tags/coherence/)
