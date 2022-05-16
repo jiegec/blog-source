@@ -86,6 +86,14 @@ Cache 在 AC channel 收到这些请求的时候，可以做相应的动作。�
 
 到这里就暂时不继续分析了，其他的很多请求类型是服务于更多场景，比如一次写整个 Cache Line 的话，就不需要读取已有的数据了；或者一次性读取完就不管了，或者这是一个不带缓存的加速器，DMA 等，有一些针对性的优化或者简化的处理，比如对于不带缓存的 master，可以简化为 ACE-Lite，比如 ARM 的 CCI-400 支持两个 ACE master 和 三个 ACE-Lite Master，这些 Master 可以用来接 GPU 等外设。再简化一下 ACE-Lite，就得到了 ACP（Accelerator Coherency Port）。
 
+最后我们再把文章开头的五件事对应到 ACE 上，作为一个前后的呼应：
+
+1. 读或写 miss 的时候，需要请求这个缓存行的数据（AR 上发送 ReadShared/ReadUnique），并且更新自己的状态，比如读取到 Shared，写入到 Modified 等。
+2. 写入一个 valid && !dirty 的缓存行的时候，需要升级自己的状态（AR 上发送 CleanUnique），比如从 Shared 到 Modified。
+3. 需要 evict 一个 valid && dirty 的缓存行的时候，需要把 dirty 数据写回（AW 上发送 WriteBack），并且降级自己的状态，比如 Modified -> Shared/Invalid。如果需要 evict 一个 valid && !dirty 的缓存行，可以选择通知（AW 上发送 Evict），也可以选择不通知下一级。
+4. 收到 snoop 请求的时候（AC 上收到 snoop 请求），需要返回当前的缓存数据（通过 CR 和 CD），并且更新状态。
+5. 需要一个方法（读 RACK 写 WACK）来通知下一级 Cache/Interconnect，告诉它第一和第二步完成了。
+
 ## 参考文献
 
 - [IHI0022E-AMBA AXI and ACE](https://developer.arm.com/documentation/ihi0022/e/)
