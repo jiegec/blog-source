@@ -50,7 +50,7 @@ title: 内存认证算法分析
 
 最后引用文章里的一个对比：
 
-![](/integrity.png)
+![](/images/memory_integrity.png)
 
 可以看到，后两种算法可以并行地更新树的节点，同时也需要保存更多的数据。
 
@@ -72,7 +72,7 @@ title: 内存认证算法分析
 
 再来看一下 [Scalable Memory Protection in the Penglai Enclave](https://www.usenix.org/system/files/osdi21-feng.pdf) 中提到的 Mountable Merkle Tree 设计。它主要考虑的是动态可变的保护内存区域，比如提到的微服务场景，并且被保护内存区域的访问有时间局部性，因此它的思路是，不去构造一个对应完整内存的 Merkle Tree，而是允许一些子树不存在。具体来说，它设计了一个 Sub-root nodes 的概念，对应了 Merkle Tree 中间的一层。这一层往上是预先分配好的，并且大部分保存在内存中，根结点保存在片内，这一层往下是动态分配的。比如应用创建了一个新的 enclave，需要新的一个被保护的内存区域，再动态分配若干个 Merkle Tree，接到 Sub-root nodes 层，成为新的子树。
 
-![](/mountable_merkle_tree.png)
+![](/images/mountable_merkle_tree.png)
 
 由于片内空间是有限的，所以这里采取了缓存的方式，只把一部分常用的树结点保存在片内；如果某一个子树一直没有被访问，就可以换出到内存里。如果删除了一个已有的 enclave，那么相应的子树就可以删掉，减少内存空间的占用。
 

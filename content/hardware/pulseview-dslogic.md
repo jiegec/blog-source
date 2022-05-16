@@ -12,7 +12,7 @@ title: 用 PulseView 配合 DSLogic 调试 SPI Flash
 
 进到 PulseView 以后，把 SPI 的四路信号接上，然后抓了一段信号，解析：
 
-![](/pulseview.png)
+![](/images/pulseview.png)
 
 可以看到它正确地解析出来了 Fast Read 命令。由于 DSView 它 fork 自一个比较老的版本，所以它并不能正确解析出来。
 

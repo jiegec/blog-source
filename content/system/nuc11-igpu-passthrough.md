@@ -31,7 +31,7 @@ Failed to register the device pciPassthru0
 
 第三步，进入 Windows，这时候就可以看到有一个新的未知设备了，VID=8086，PID=9a49；等待一段时间，Windows 自动安装好了驱动，就可以正常识别了。GPU-Z 中可以看到效果如下：
 
-![](/igpu.png)
+![](/images/igpu-passthrough.png)
 
 不过关机重启的时候会蓝屏，可能还有一些问题，有人在[论坛](https://community.intel.com/t5/Graphics/SR-IOV-support-for-intel-Iris-Xe-Graphics-on-i7-1165G7/td-p/1293264)上也说 passthrough 之后会蓝屏。这个问题一直没有解决。
 
