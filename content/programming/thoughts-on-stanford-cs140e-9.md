@@ -6,7 +6,7 @@ category: programming
 title: 近来做 Stanford CS140e 的一些进展和思考（9）
 ---
 
-距离[上一篇 CS140e 系列文章](/programming/2018/04/10/thoughts-on-stanford-cs140e-8/)已经过去了很久，距离第一篇文章过了一年零几天。在后来这一段时间内，CS140e 结束了课程，又开始了新一年的 winter 2019 课程，迎来的却是 C 版本的 CS140e ，不禁让人感到失望。还好，Sergio Benitez 放出了原来的 CS140e 的[镜像](https://cs140e.sergio.bz)，如果大家仍然想回去查看原版优质的 CS140e ，可以点进去参考。
+距离[上一篇 CS140e 系列文章]({{< relref "thoughts-on-stanford-cs140e-8.md" >}})已经过去了很久，距离第一篇文章过了一年零几天。在后来这一段时间内，CS140e 结束了课程，又开始了新一年的 winter 2019 课程，迎来的却是 C 版本的 CS140e ，不禁让人感到失望。还好，Sergio Benitez 放出了原来的 CS140e 的[镜像](https://cs140e.sergio.bz)，如果大家仍然想回去查看原版优质的 CS140e ，可以点进去参考。
 
 后来因为机缘巧合参与到了清华的 Rust OS 课程，又想到回来把原来的 CS140e 进行更新，于是顺带把跑在 QEMU 下的一些需要的工作给做了，另外把 Rust nightly 版本更新了（一年前的 nightly 还能叫 nightly ？），才发现标准库变化还是蛮大的，由于 nightly 版本变了，而且原来是内嵌了一个阉割过的 std ，所以主要是从新的 std 里抄代码到内嵌的 std 中。另外，原来的 xargo 也不再维护了，转而使用 rust-xbuild 进行交叉编译。
 
