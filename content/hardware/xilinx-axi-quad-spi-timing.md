@@ -104,9 +104,24 @@ Data in hold time Min 2ns
 
 首先考虑 input delay。它指的是，从 SPI Flash 到 FPGA 的数据，相对于时钟的延迟。这个延迟由三部分组成：
 
-1. 从 FPGA 输出的时钟 CCLK 到 SPI Flash 的时钟有延迟 \\(t_{clk}\\)
-2. 从 SPI Flash 的时钟到数据输出有延迟 \\(t_{co}\\)
-3. 从 SPI Flash 的数据到 FPGA 的数据输入有延迟 \\(t_{data}\\)
+1. 从 FPGA 输出的时钟 CCLK 到 SPI Flash 的时钟有延迟 \\(t_{clk}\\)，下图 `a -> b`
+2. 从 SPI Flash 的时钟到数据输出有延迟 \\(t_{co}\\)，下图 `b -> c`
+3. 从 SPI Flash 的数据到 FPGA 的数据输入有延迟 \\(t_{data}\\)，下图 `c -> d`
+
+![](/images/input_delay.png)
+
+<!--
+{
+  signal:
+    [
+      { name: "clk_fpga", wave: "p..", node: ".a" },
+      { name: "clk_flash", wave: "p...", node: "..b", phase: 2.8 },
+      { name: "data_flash", wave: "3456", node: "..c", phase: 2.8 },
+      { name: "data_fpga", wave: "3456", node: "..d", phase: 2.7 },
+    ],
+  config: { hscale: 3 },
+}
+-->
 
 因此总延迟就是 \\(t_{clk}+t_{co}+t_{data}\\)，就可以得到对应的设置：
 
@@ -119,11 +134,28 @@ set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min + $t
 
 首先是 max，它对应的是 setup time。如果定义时间 0 为时钟的上升沿，沿更早的时间为正的时间轴，沿更晚的时间为负的时间轴。那么，我们希望的是，数据到达寄存器输入的时间大于 setup time，此时可以满足 setup 条件。那么，具体怎么算呢？注意，我们要考虑的是从 FPGA 数据输出到 SPI Flash 上时钟的延迟。
 
-假设 FPGA CCLK 时钟上升沿在 \\(0\\) 时刻，那么 SPI Flash 时钟上升沿在 \\(-t_{clk}\\) 时刻。假设 FPGA 数据输出时刻为 \\(t_0\\)，那么 FPGA 数据输出到达 SPI Flash 在 \\(t_0-t_{data}\\) 时刻，我们期望 \\(t_0-t_{data}\\) 在 \\(-t_{clk}\\) 时刻之前至少 \\(t_{su}\\) 时间到达，可以得到表达式：
+假设 FPGA CCLK 时钟上升沿在 \\(0\\) 时刻（下图的 `a`），那么 SPI Flash 时钟上升沿在 \\(-t_{clk}\\) 时刻（下图的 `b`）。假设 FPGA 数据输出时刻为 \\(t_0\\)（通常为正，下图的 `c`），那么 FPGA 数据输出到达 SPI Flash 在 \\(t_0-t_{data}\\) 时刻（下图的 `d`），我们期望 \\(t_0-t_{data}\\) 在 \\(-t_{clk}\\) 时刻之前（下图的 `d -> b`）至少 \\(t_{su}\\) 时间到达，可以得到表达式：
+
+![](/images/output_delay_max.png)
+
+<!--
+{
+  signal:
+    [
+      { name: "clk_fpga", wave: "p..", node: ".a" },
+      { name: "clk_flash", wave: "p...", node: "..b", phase: 2.7 },
+      { name: "data_fpga", wave: "3456", node: "..c", phase: 3.6 },
+      { name: "data_flash", wave: "3456", node: "..d", phase: 3.4 }
+    ],
+  config: { hscale: 3 },
+}
+-->
+
 
 $$
 t_0 - t_{data} > -t_{clk} + t_{su}
 $$
+
 
 化简一下，就可以得到 \\(t_0 > t_{data} + t_{su} - t_{clk}\\)，如果考虑极端情况，右侧 \\(t_{data}\\) 取最大值，\\(t_{clk}\\) 取最小值，我们就可以得到约束：
 
@@ -131,11 +163,26 @@ $$
 set_output_delay -clock clk_sck -max [expr $tsu + $tdata_trace_delay_max - $tclk_trace_delay_min] [get_pins -hierarchical *STARTUP*/DATA_OUT[*]];
 ```
 
-接下来考虑 output delay 的 min，这对应的是 hold time。我们希望数据到达 SPI Flash 寄存器的时候，距离上升沿时间超过了 \\(t_h\\)。还是一样的假设，如果 FPGA CCLK 时钟上升沿在 0 时刻，那么 SPI Flash 时钟上升沿在 \\(-t_{clk}\\) 时刻。假设 FPGA 数据输出时刻为 \\(t_0\\)，那么 FPGA 数据输出到达 SPI Flash 在 \\(t_0-t_{data}\\) 时刻，要求满足 hold 条件，可以得到：
+接下来考虑 output delay 的 min，这对应的是 hold time。我们希望数据到达 SPI Flash 寄存器的时候，距离上升沿时间超过了 \\(t_h\\)。还是一样的假设，如果 FPGA CCLK 时钟上升沿在 0 时刻（下图的 `a`），那么 SPI Flash 时钟上升沿在 \\(-t_{clk}\\) 时刻（下图的 `b`）。假设 FPGA 数据输出时刻为 \\(t_0\\)（下图的 `c`），那么 FPGA 数据输出到达 SPI Flash 在 \\(t_0-t_{data}\\) 时刻（下图的 `d`），要求满足 hold 条件，可以得到：
+
+![](/images/output_delay_min.png)
 
 $$
 t_0 - t_{data} < -t_{clk} - t_h
 $$
+
+<!--
+{
+  signal:
+    [
+      { name: "clk_fpga", wave: "p..", node: ".a" },
+      { name: "data_fpga", wave: "3456", node: "..c", phase: 2.6 },
+      { name: "clk_flash", wave: "p...", node: "..b", phase: 2.3 },
+      { name: "data_flash", wave: "3456", node: "..d", phase: 2.2 },
+    ],
+  config: { hscale: 3 },
+}
+-->
 
 化简以后，可以得到 \\(t_0 < t_{data} - t_{clk} - t_h\\)，按照极限来取，\\(t_{data}\\) 取最小值，$t_{clk}$ 取最大值，可以得到最终的时序约束：
 
@@ -143,7 +190,7 @@ $$
 set_output_delay -clock clk_sck -min [expr $tdata_trace_delay_min - $th - $tclk_trace_delay_max] [get_pins -hierarchical *STARTUP*/DATA_OUT[*]];
 ```
 
-这样就可以实现 FPGA 和 SPI Flash 之间的正常通讯了。我觉得，这里比较绕的就是时间轴的定义，和我们平常思考的是反过来的。而且，这里的 min 和 max 并不是指 [min, max]，而是 [-inf, min] 和 [max, inf]。
+这样就可以实现 FPGA 和 SPI Flash 之间的正常通讯了。我觉得，这里比较绕的就是时间轴的定义，和我们平常思考的是反过来的。而且，这里的 min 和 max 并不是指 \\([\min, \max]\\)，而是 \\((-\inf, \min] \cup [\max, \inf)\\)。代入上面的数据，可以得到 \\(\max=2.05, \min=-2.95, t_0 \in (\inf, -2.95] \cup [2.05, \inf)\\)。如果变化的时间距离时钟上升沿太接近，就会导致在 SPI Flash 侧出现不满足 setup 或者 hold 约束的情况。
 
 ## Artix 7 时序
 
