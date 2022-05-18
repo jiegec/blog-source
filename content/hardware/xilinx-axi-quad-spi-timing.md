@@ -113,9 +113,9 @@ Data in hold time Min 2ns
   signal:
     [
       { name: "clk_fpga", wave: "p..", node: ".a" },
-      { name: "clk_flash", wave: "p...", node: "..b", phase: 2.8 },
-      { name: "data_flash", wave: "3456", node: "..c", phase: 2.8 },
-      { name: "data_fpga", wave: "3456", node: "..d", phase: 2.7 },
+      { name: "clk_flash", wave: "p...", node: "..b", phase: 2.7 },
+      { name: "data_flash", wave: "3456", node: "..c", phase: 2.5 },
+      { name: "data_fpga", wave: "3456", node: "..d", phase: 2.3 },
     ],
   config: { hscale: 3 },
 }
@@ -184,7 +184,7 @@ $$
 set_output_delay -clock clk_sck -min [expr $tdata_trace_delay_min - $th - $tclk_trace_delay_max] [get_pins -hierarchical *STARTUP*/DATA_OUT[*]];
 ```
 
-这样就可以实现 FPGA 和 SPI Flash 之间的正常通讯了。我觉得，这里比较绕的就是时间轴的定义，和我们平常思考的是反过来的。而且，这里的 min 和 max 并不是指 \\([\min, \max]\\)，而是 \\((-\inf, \min] \cup [\max, \inf)\\)。代入上面的数据，可以得到 \\(\max=2.05, \min=-2.95, t_0 \in (\inf, -2.95] \cup [2.05, \inf)\\)。如果变化的时间距离时钟上升沿太接近，就会导致在 SPI Flash 侧出现不满足 setup 或者 hold 约束的情况。
+这样就可以实现 FPGA 和 SPI Flash 之间的正常通讯了。我觉得，这里比较绕的就是时间轴的定义，和我们平常思考的是反过来的。而且，这里的 min 和 max 并不是指 \\([\min, \max]\\)，而是 \\((-\inf, \min] \cup [\max, \inf)\\)。代入上面的数据，可以得到 \\(\max=2.05, \min=-2.95, t_0 \in (\inf, -2.95] \cup [2.05, \inf)\\)。如果变化的时刻距离时钟上升沿太接近，就会导致在 SPI Flash 侧出现不满足 setup 或者 hold 约束的情况。
 
 ## Artix 7 时序
 
