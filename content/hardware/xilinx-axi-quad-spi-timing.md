@@ -108,9 +108,7 @@ Data in hold time Min 2ns
 2. 从 SPI Flash 的时钟到数据输出有延迟 \\(t_{co}\\)，下图 `b -> c`
 3. 从 SPI Flash 的数据到 FPGA 的数据输入有延迟 \\(t_{data}\\)，下图 `c -> d`
 
-![](/images/input_delay.png)
-
-<!--
+<script type="WaveDrom">
 {
   signal:
     [
@@ -121,7 +119,7 @@ Data in hold time Min 2ns
     ],
   config: { hscale: 3 },
 }
--->
+</script>
 
 因此总延迟就是 \\(t_{clk}+t_{co}+t_{data}\\)，就可以得到对应的设置：
 
@@ -136,9 +134,7 @@ set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min + $t
 
 假设 FPGA CCLK 时钟上升沿在 \\(0\\) 时刻（下图的 `a`），那么 SPI Flash 时钟上升沿在 \\(-t_{clk}\\) 时刻（下图的 `b`）。假设 FPGA 数据输出时刻为 \\(t_0\\)（通常为正，下图的 `c`），那么 FPGA 数据输出到达 SPI Flash 在 \\(t_0-t_{data}\\) 时刻（下图的 `d`），我们期望 \\(t_0-t_{data}\\) 在 \\(-t_{clk}\\) 时刻之前（下图的 `d -> b`）至少 \\(t_{su}\\) 时间到达，可以得到表达式：
 
-![](/images/output_delay_max.png)
-
-<!--
+<script type="WaveDrom">
 {
   signal:
     [
@@ -149,8 +145,7 @@ set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min + $t
     ],
   config: { hscale: 3 },
 }
--->
-
+</script>
 
 $$
 t_0 - t_{data} > -t_{clk} + t_{su}
@@ -165,13 +160,7 @@ set_output_delay -clock clk_sck -max [expr $tsu + $tdata_trace_delay_max - $tclk
 
 接下来考虑 output delay 的 min，这对应的是 hold time。我们希望数据到达 SPI Flash 寄存器的时候，距离上升沿时间超过了 \\(t_h\\)。还是一样的假设，如果 FPGA CCLK 时钟上升沿在 0 时刻（下图的 `a`），那么 SPI Flash 时钟上升沿在 \\(-t_{clk}\\) 时刻（下图的 `b`）。假设 FPGA 数据输出时刻为 \\(t_0\\)（下图的 `c`），那么 FPGA 数据输出到达 SPI Flash 在 \\(t_0-t_{data}\\) 时刻（下图的 `d`），要求满足 hold 条件，可以得到：
 
-![](/images/output_delay_min.png)
-
-$$
-t_0 - t_{data} < -t_{clk} - t_h
-$$
-
-<!--
+<script type="WaveDrom">
 {
   signal:
     [
@@ -182,7 +171,12 @@ $$
     ],
   config: { hscale: 3 },
 }
--->
+</script>
+
+$$
+t_0 - t_{data} < -t_{clk} - t_h
+$$
+
 
 化简以后，可以得到 \\(t_0 < t_{data} - t_{clk} - t_h\\)，按照极限来取，\\(t_{data}\\) 取最小值，$t_{clk}$ 取最大值，可以得到最终的时序约束：
 

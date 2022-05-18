@@ -71,6 +71,12 @@ googleAnalytics = "UA-185962713-1"
     name = "系列"
     url = "/series/"
 
+# allow raw html e.g. WaveDrom
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
 [outputFormats]
 [outputFormats.RSS]
 mediatype = "application/rss"
