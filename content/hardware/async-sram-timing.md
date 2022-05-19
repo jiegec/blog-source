@@ -1,0 +1,151 @@
+---
+layout: post
+date: 2022-05-19 08:40:00 +0800
+tags: [sram,timing]
+category: hardware
+title: 异步 SRAM 时序分析
+---
+
+## 背景
+
+在一些场合里，我们会使用异步的外部 SRAM 来存储数据，而我们经常使用的很多外部接口都是同步接口，比如 SPI 和 I2C 等等，UART 虽然是异步，但是它速度很低，不怎么需要考虑时序的问题。所以在 FPGA 上编写一个正确的异步 SRAM 控制器是具有一定的挑战的。
+
+## 接口
+
+首先我们来看看异步 SRAM 的接口。下文中，采用 [IS61WV102416BLL-10TLI](https://www.issi.com/WW/pdf/61WV102416ALL.pdf) 作为例子：
+
+![](/images/sram.png)
+
+可以看到，它有 20 位的地址，16 位的 数据，若干个控制信号，同时只能进行读或者写（简称 `1RW`）。它没有时钟信号，所以是异步 SRAM，同理也有同步 SRAM。
+
+## 时序
+
+对于一个同步接口，我们通常只需要给一个满足时钟周期的时钟，然后通过约束文件保证 setup 和 hold 条件满足即可。但是对于异步接口，由于输出的时候没有时钟，我们需要更小心地完成这件事情。
+
+### 读时序
+
+首先来看一下比较简单的读时序：
+
+![](/images/sram_read.png)
+
+可以看到地址和数据的关系：首先是地址需要稳定 \\(t_{RC}\\) 的时间，那么数据合法的范围是地址稳定的初始时刻加上 \\(t_{AA}\\)，到地址稳定的结束时刻加上 \\(t_{OH}\\)。我们再来看一下这几个时间的范围：
+
+![](/images/sram_read_param.png)
+
+首先可以看到读周期时间 \\(t_{RC}\\) 至少是 10ns，这对应了型号中最后的数字，这表示了这个 SRAM 最快的读写速度。比较有意思的是 \\(t_{AA}\\) 最多是 10ns，刚好和 \\(t_{RC}\\) 的最小值相等。
+
+接下来我们考虑一下如何为 SRAM 控制器时序读取的功能。看到上面的波形图，大概可以想到几条设计思路：
+
+1. 首先输出要读取的地址，为了让它稳定（\\(t_{RC}\\) 的时间内不能变化），要直接从 FPGA 内部寄存器的输出端口输出
+2. 等待若干个周期，确保数据已经稳定，满足 FPGA 内部寄存器的 setup 和 hold 约束的时候，把结果保存在内部寄存器中。
+
+简单起见，先设置一个非常快的 SRAM 控制器频率：500MHz，每个周期 2ns，假如在 `a` 时刻地址寄存器输出了当前要读取的地址，那么数据会在一段时间后变为合法。这里 `a->b` 是读取周期时间 \\(t_{RC}\\)，`a->c` 是地址到数据的延迟 \\(t_{AA}\\)，`b->d` 是地址改变后数据的保持时间 \\(t_{OH}\\)。
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "clk", wave: "p........", node: "......e"},
+      { name: "addr", wave: "x3....xxx", node: ".a....b"},
+      { name: "data", wave: "xxx4....x", node: "...c....d"},
+    ]
+}
+</script>
+
+那么根据这个图，很自然的想法是，我先给出地址，然后数周期，数了五个周期后，此时 \\(t_{RC}=10\mathrm{ns}\\)，然后我就在 `e` 的上升沿上把输入数据锁存到寄存器中，例如下面的波形：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "clk", wave: "p........", node: "......e"},
+      { name: "addr", wave: "x3....xxx", node: ".a....b"},
+      { name: "data", wave: "xxx4....x", node: "...c....d"},
+      { name: "data_reg", wave: "x.....4..", node: "......f"},
+    ]
+}
+</script>
+
+这个时候 `data_reg` 的 setup 时间是 `c->e`，hold 时间是 `e->d`。从图中看起来还有很多的余量，但如果考虑最坏情况，\\(t_{AA}=10\mathrm{ns}\\)，就会变成下面的波形：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "clk", wave: "p........", node: "......e"},
+      { name: "addr", wave: "x3....xxx", node: ".a....b"},
+      { name: "data", wave: "x.....4.x", node: "......c.d"},
+      { name: "data_reg", wave: "x.....x4.", node: "......."},
+    ]
+}
+</script>
+
+这个时候在 `e` 时刻不再满足 setup 约束。这个问题在仿真中，可能会“极限操作”表现为没有问题，但实际上，我们忽略了几个延迟：
+
+1. 地址寄存器从时钟上升沿到输出变化的延迟：\\(T_{CKO}=0.40\mathrm{ns}\\)
+2. 寄存器输出到 FPGA 输出引脚的延迟：\\(T_{IOOP}\\)
+3. FPGA 输出的地址信号通过信号线到 SRAM 的延迟：\\(T_{PD}\\)
+4. SRAM 数据信号通过信号线到 FPGA 的延迟：\\(T_{PD}\\)
+5. FPGA 的输入引脚到内部寄存器输入端的延迟：\\(T_{IOPI}\\)
+6. FPGA 内部寄存器的 setup 时间：\\(T_{AS}=0.07\mathrm{ns}\\)
+
+上面的一些数据是从 [Artix-7 Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据。
+
+其中寄存器到 FPGA 输入输出引脚的延迟，可以通过把寄存器放到 IOB 中来减少：[Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)，这也进一步说明，我们需要用地址寄存器的输出作为地址输出。具体的延迟比较难以计算，首先 IOSTANDARD 是 LVCMOS33（因为 SRAM 是 3.3V 的），然后 SLEW 有 Fast/Slow 两种选项，Strength 有 4/8/12/16 四种选项，对应了 Datasheet 里面的 LVCMOS33_S4(Slow 4) 到 LVCMOS33_F16(Fast 16) 八种 IO 标准，可以得到大概的范围是 \\(T_{IOPI}=1.26 \mathrm{ns}, T_{IOOP} \in (2.56, 3.80) \mathrm{ns}\\)。把上面一串加起来，已经有大概 4 到 5ns 了。考虑了延迟以后，上面的图可能实际上是这个样子：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "clk_fpga", wave: "p.........."},
+      { name: "addr_fpga", wave: "x3....x...."},
+      { name: "addr_sram", wave: "x.3....x....", phase: 0.3},
+      { name: "data_sram", wave: "x......4.x..", phase: 0.3},
+      { name: "data_fpga", wave: "x.......4.x"},
+    ]
+}
+</script>
+
+考虑了这么多实际的延迟因素以后，会发现这个事情并不简单，需要预先估计出数据在大概什么时候稳定，这时候才能保证数据寄存器上保存的数据是正确的。
+
+转念一想，我们的 SRAM Controller 肯定不会跑在 500MHz 这么高的频率下。假如采用 100MHz，可以每两个周期进行一次读操作：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "clk_fpga", wave: "p...", period: 5, phase: 4.0, node: "..ab"},
+      { name: "addr_fpga", wave: "x3.........5...."},
+      { name: "addr_sram", wave: "x.3.........5...", phase: 0.3},
+      { name: "data_sram", wave: "x......4.....x..", phase: 0.3},
+      { name: "data_fpga", wave: "x.......4.....x."},
+    ]
+}
+</script>
+
+此时在 `b` 时钟上边沿对 `data_fpga` 采样就可以保证满足时序的要求。注意这里第二个周期（上图的 `a`）不能给出第二次读取的地址，否则稳定时间太短，不满足 hold 约束。
+
+如果频率继续降低，使得一个时钟周期大于 \\(t_{AA}\\) 加上各种延迟和 setup 时间，那就可以每个周期进行一次读操作：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "clk_fpga", wave: "p...", period: 8, phase: 7.0, node: "..b."},
+      { name: "addr_fpga", wave: "x3.......5.......7..."},
+      { name: "addr_sram", wave: "x.3.......5.......7..", phase: 0.3},
+      { name: "data_sram", wave: "x......4....x..6...x.", phase: 0.3},
+      { name: "data_fpga", wave: "x.......4....x..6...x"},
+    ]
+}
+</script>
+
+此时在 `b` 时钟上升沿上，对 `data_fpga` 进行采样，并且输出下一次读请求的地址。
+
+## 参考文档
+
+- [1M x 16 HIGH-SPEED ASYNCHRONOUS CMOS STATIC RAM WITH 3.3V SUPPLY](https://www.issi.com/WW/pdf/61WV102416ALL.pdf)
+- [Artix-7 FPGAs Data Sheet: DC and AC Switching Characteristics](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet)
+- [Timing constraints for an Asynchronous SRAM interface](https://support.xilinx.com/s/question/0D52E00006iHkeRSAS/timing-constraints-for-an-asynchronous-sram-interface?language=en_US)
+- [Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)
+- [How to verify whether an I/O register is packed into IOB](https://support.xilinx.com/s/article/62661?language=en_US)
