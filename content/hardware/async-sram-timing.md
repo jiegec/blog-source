@@ -111,7 +111,7 @@ title: 异步 SRAM 时序分析
 
 ![](/images/sram_read_diagram.drawio.png)
 
-上面的一些数据可以从 [Artix-7 FPGA Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据，IO 标准是 `LVCMOS33`。其中寄存器到 FPGA 输入输出引脚的延迟，实际上由两部分组成：从寄存器到 IOB（IO Buffer） 的延迟，以及 IOB 到 FPGA 输入输出引脚的延迟。我们把地址寄存器的输出作为地址输出，这样 Vivado 就会把寄存器放到 IOB，于是可以忽略寄存器到 IOB 的延迟，详情可以阅读文档 [Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)。
+上面的一些数据可以从 [Artix-7 FPGA Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据，IO 标准是 `LVCMOS33`。其中寄存器到 FPGA 输入输出引脚的延迟，实际上由两部分组成：从寄存器到 IOB（IO Block） 的延迟，以及 IOB 到 FPGA 输入输出引脚的延迟。我们把地址寄存器的输出作为地址输出，这样 Vivado 就会把寄存器放到 IOB，于是可以忽略寄存器到 IOB 的延迟，详情可以阅读文档 [Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)。
 
 把上面一串加起来，已经有大概 4 到 5ns 了。考虑了延迟以后，上面的图可能实际上是这个样子：
 
@@ -222,7 +222,7 @@ title: 异步 SRAM 时序分析
 }
 </script>
 
-如果觉得这样做太过保守，想要提升性能，一个可能的思路是让 `we_n=0` 在时钟下降沿输出，但是编写的时候需要比较谨慎，比如先设置一个上升沿触发的寄存器，然后用另一个寄存器在下降沿对这个寄存器进行采样，再输出。或者用一个更高频率的时钟驱动 `we_n` 的寄存器。或者可以用 FPGA 提供的自定义输出延迟原语（ODELAY），设置一个固定的输出延迟，比如 1ns。最优的情况下，下面是可能达到的效果：
+如果觉得这样做太过保守，想要提升性能，一个可能的思路是让 `we_n=0` 在时钟下降沿输出，但是编写的时候需要比较谨慎，比如先设置一个上升沿触发的寄存器，然后用另一个寄存器在下降沿对这个寄存器进行采样，再输出。或者用一个更高频率的时钟驱动 `we_n` 的寄存器。或者可以用 FPGA 提供的自定义输出延迟原语（ODELAY），设置一个固定的输出延迟，比如 1ns。或者用 `ODDR` 原语，人为地添加一个大约 0.50ns 的延迟。最优的情况下，下面是可能达到的效果：
 
 <script type="WaveDrom">
 {
