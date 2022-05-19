@@ -8,7 +8,24 @@ title: 异步 SRAM 时序分析
 
 ## 背景
 
-在一些场合里，我们会使用异步的外部 SRAM 来存储数据，而我们经常使用的很多外部接口都是同步接口，比如 SPI 和 I2C 等等，UART 虽然是异步，但是它速度很低，不怎么需要考虑时序的问题。所以在 FPGA 上编写一个正确的异步 SRAM 控制器是具有一定的挑战的。
+在一些场合里，我们会使用异步的（即没有时钟信号的）外部 SRAM 来存储数据，而我们经常使用的很多外部接口都是同步接口（即有时钟信号的接口），比如 SPI 和 I2C 等等，UART 虽然是异步，但是它速度很低，不怎么需要考虑时序的问题。所以在 FPGA 上编写一个正确的异步 SRAM 控制器是具有一定的挑战的。
+
+## 寄存器时序
+
+考虑到读者可能已经不记得寄存器的时序了，这里首先来复习一下 setup 和 hold 的概念。如果你已经比较熟悉了，可以直接阅读下一节。
+
+寄存器在时钟的上升沿（下图的 `a`）进行采样，为了保证采样的稳定性，输入引脚 `D` 需要在时钟上升沿之前 \\(t_{su}\\) 的时刻（下图的 `b`）到时钟上升沿之后 \\(t_h\\) 的时刻（下图的 `c`）保持稳定，输出引脚 `Q` 会在时钟上升沿之后 \\(t_{cko}\\) 的时刻（下图的 `d`）变化：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "C", wave: "p.", period: 4, node: ".a"},
+      { name: "D", wave: "x..3.x", phase: 0.2, node: "...b.c"},
+      { name: "Q", wave: "x...3.", node: "....d"}
+    ]
+}
+</script>
 
 ## 接口
 
@@ -16,7 +33,7 @@ title: 异步 SRAM 时序分析
 
 ![](/images/sram.png)
 
-可以看到，它有 20 位的地址，16 位的 数据，若干个控制信号，同时只能进行读或者写（简称 `1RW`）。它没有时钟信号，所以是异步 SRAM，同理也有同步 SRAM。
+可以看到，它有 20 位的地址，16 位的数据，若干个控制信号，同时只能进行读或者写（简称 `1RW`）。它没有时钟信号，所以是异步 SRAM。
 
 ## 时序
 
@@ -37,7 +54,7 @@ title: 异步 SRAM 时序分析
 接下来我们考虑一下如何为 SRAM 控制器时序读取的功能。看到上面的波形图，大概可以想到几条设计思路：
 
 1. 首先输出要读取的地址，为了让它稳定（\\(t_{RC}\\) 的时间内不能变化），要直接从 FPGA 内部寄存器的输出端口输出
-2. 等待若干个周期，确保数据已经稳定，满足 FPGA 内部寄存器的 setup 和 hold 约束的时候，把结果保存在内部寄存器中。
+2. 等待若干个周期，确保数据已经稳定，在满足 FPGA 内部寄存器的 setup 和 hold 约束的情况下，把结果保存在内部寄存器中。
 
 简单起见，先设置一个非常快的 SRAM 控制器频率：500MHz，每个周期 2ns，假如在 `a` 时刻地址寄存器输出了当前要读取的地址，那么数据会在一段时间后变为合法。这里 `a->b` 是读取周期时间 \\(t_{RC}\\)，`a->c` 是地址到数据的延迟 \\(t_{AA}\\)，`b->d` 是地址改变后数据的保持时间 \\(t_{OH}\\)。
 
@@ -83,20 +100,20 @@ title: 异步 SRAM 时序分析
 这个时候在 `e` 时刻不再满足 setup 约束。这个问题在仿真中，可能会“极限操作”表现为没有问题，但实际上，地址从 FPGA 到 SRAM 的延迟有：
 
 1. 地址寄存器从时钟上升沿到输出变化的延迟：\\(T_{CKO}=0.40\mathrm{ns}\\)
-2. 寄存器输出到 FPGA 输出引脚的延迟：\\(T_{IOOP}\\)
+2. 寄存器输出到 FPGA 输出引脚的延迟：\\(T_{IOOP} \in (2.56, 3.80)\mathrm{ns}\\)
 3. FPGA 输出的地址信号通过信号线到 SRAM 的延迟：\\(T_{PD}\\)
 
 数据从 SRAM 到 FPGA 的延迟有：
 
 4. SRAM 数据信号通过信号线到 FPGA 的延迟：\\(T_{PD}\\)
-5. FPGA 的输入引脚到内部寄存器输入端的延迟：\\(T_{IOPI}\\)
+5. FPGA 的输入引脚到内部寄存器输入端的延迟：\\(T_{IOPI}=1.26ns\\)
 6. FPGA 内部寄存器的 setup 时间：\\(T_{AS}=0.07\mathrm{ns}\\)
 
 ![](/images/sram_read_diagram.drawio.png)
 
-上面的一些数据可以从 [Artix-7 Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据。
+上面的一些数据可以从 [Artix-7 FPGA Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据，IO 标准是 `LVCMOS33`。其中寄存器到 FPGA 输入输出引脚的延迟，实际上由两部分组成：从寄存器到 IOB（IO Buffer） 的延迟，以及 IOB 到 FPGA 输入输出引脚的延迟。我们把地址寄存器的输出作为地址输出，这样 Vivado 就会把寄存器放到 IOB，于是可以忽略寄存器到 IOB 的延迟，详情可以阅读文档 [Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)。
 
-其中寄存器到 FPGA 输入输出引脚的延迟，可以通过把寄存器放到 IOB 中来减少：[Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)，这也进一步说明，我们需要用地址寄存器的输出作为地址输出。具体的延迟比较难以计算，首先 IOSTANDARD 是 LVCMOS33（因为 SRAM 是 3.3V 的），然后 SLEW 有 Fast/Slow 两种选项，Strength 有 4/8/12/16 四种选项，对应了 Datasheet 里面的 LVCMOS33_S4(Slow 4) 到 LVCMOS33_F16(Fast 16) 八种 IO 标准，可以得到大概的范围是 \\(T_{IOPI}=1.26 \mathrm{ns}, T_{IOOP} \in (2.56, 3.80) \mathrm{ns}\\)。把上面一串加起来，已经有大概 4 到 5ns 了。考虑了延迟以后，上面的图可能实际上是这个样子：
+把上面一串加起来，已经有大概 4 到 5ns 了。考虑了延迟以后，上面的图可能实际上是这个样子：
 
 <script type="WaveDrom">
 {
