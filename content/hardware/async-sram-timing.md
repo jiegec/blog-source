@@ -80,18 +80,21 @@ title: 异步 SRAM 时序分析
 }
 </script>
 
-这个时候在 `e` 时刻不再满足 setup 约束。这个问题在仿真中，可能会“极限操作”表现为没有问题，但实际上，我们忽略了几个延迟：
+这个时候在 `e` 时刻不再满足 setup 约束。这个问题在仿真中，可能会“极限操作”表现为没有问题，但实际上，地址从 FPGA 到 SRAM 的延迟有：
 
 1. 地址寄存器从时钟上升沿到输出变化的延迟：\\(T_{CKO}=0.40\mathrm{ns}\\)
 2. 寄存器输出到 FPGA 输出引脚的延迟：\\(T_{IOOP}\\)
 3. FPGA 输出的地址信号通过信号线到 SRAM 的延迟：\\(T_{PD}\\)
+
+数据从 SRAM 到 FPGA 的延迟有：
+
 4. SRAM 数据信号通过信号线到 FPGA 的延迟：\\(T_{PD}\\)
 5. FPGA 的输入引脚到内部寄存器输入端的延迟：\\(T_{IOPI}\\)
 6. FPGA 内部寄存器的 setup 时间：\\(T_{AS}=0.07\mathrm{ns}\\)
 
 ![](/images/sram_read_diagram.drawio.png)
 
-上面的一些数据是从 [Artix-7 Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据。
+上面的一些数据可以从 [Artix-7 Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据。
 
 其中寄存器到 FPGA 输入输出引脚的延迟，可以通过把寄存器放到 IOB 中来减少：[Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)，这也进一步说明，我们需要用地址寄存器的输出作为地址输出。具体的延迟比较难以计算，首先 IOSTANDARD 是 LVCMOS33（因为 SRAM 是 3.3V 的），然后 SLEW 有 Fast/Slow 两种选项，Strength 有 4/8/12/16 四种选项，对应了 Datasheet 里面的 LVCMOS33_S4(Slow 4) 到 LVCMOS33_F16(Fast 16) 八种 IO 标准，可以得到大概的范围是 \\(T_{IOPI}=1.26 \mathrm{ns}, T_{IOOP} \in (2.56, 3.80) \mathrm{ns}\\)。把上面一串加起来，已经有大概 4 到 5ns 了。考虑了延迟以后，上面的图可能实际上是这个样子：
 
