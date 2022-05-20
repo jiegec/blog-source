@@ -238,6 +238,29 @@ title: 异步 SRAM 时序分析
 }
 </script>
 
+## PL241 SRAM 控制器
+
+刚刚我们已经设计好了我们的 SRAM 控制器，再让我们来看看 ARM 提供的 SRAM 控制器时序是怎么样的：ARM 文档提供了 [PrimeCell AHB SRAM/NOR Memory Controller (PL241)](https://developer.arm.com/documentation/ddi0389/b/functional-overview/smc-functional-operation/memory-interface-operation?lang=en) 的时序图。
+
+读时序：
+
+![](https://documentation-service.arm.com/static/5e8e2bb388295d1e18d3856c?token=)
+
+它第一个周期设置了 `ce_n=0` 和 `addr`，等待一个周期后，设置 `oe_n=0`，再等待两个周期，得到数据。
+
+写时序：
+
+![](https://documentation-service.arm.com/static/5e8e2bb388295d1e18d3858d?token=)
+
+它第一个周期设置了 `ce_n=0` `addr` 和 `data`，等待一个周期后，设置 `we_n=0`，等待两个周期，再设置 `we_n=1`，这样就完成了写入。这和我们的实现是类似的：等待一个额外的周期，保证满足 `we_n` 下降时地址已经是稳定的。ARM 的文档里也写了如下的备注：
+
+    The timing parameter tWC is controlling the deassertion of smc_we_n_0. You can
+    use it to vary the hold time of smc_cs_n_0[3:0], smc_add_0[31:0] and
+    smc_data_out_0[31:0]. This differs from the read case where the timing
+    parameter tCEOE controls the delay in the assertion of smc_oe_n_0.
+    Additionally, smc_we_n_0 is always asserted one cycle after smc_cs_n_0[3:0] to
+    ensure the address bus is valid.
+
 ## 参考文档
 
 - [1M x 16 HIGH-SPEED ASYNCHRONOUS CMOS STATIC RAM WITH 3.3V SUPPLY](https://www.issi.com/WW/pdf/61WV102416ALL.pdf)
@@ -245,3 +268,4 @@ title: 异步 SRAM 时序分析
 - [Timing constraints for an Asynchronous SRAM interface](https://support.xilinx.com/s/question/0D52E00006iHkeRSAS/timing-constraints-for-an-asynchronous-sram-interface?language=en_US)
 - [Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)
 - [How to verify whether an I/O register is packed into IOB](https://support.xilinx.com/s/article/62661?language=en_US)
+- [PrimeCell AHB SRAM/NOR Memory Controller (PL241) - Memory interface operation](https://developer.arm.com/documentation/ddi0389/b/functional-overview/smc-functional-operation/memory-interface-operation?lang=en)
