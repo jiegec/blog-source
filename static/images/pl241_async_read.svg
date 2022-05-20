@@ -1,0 +1,275 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="374.84" height="159.407" xml:space="preserve" color-interpolation-filters="sRGB" class="st12" version="1.1"> 
+ <style type="text/css"><![CDATA[
+	
+		.st1 {fill:#c0c0c0;stroke:none;stroke-linecap:butt;stroke-width:0.5px}
+		.st2 {stroke:#000000;stroke-linecap:butt;stroke-width:0.5px}
+		.st3 {fill:#000000;font-family:Arial,Helvetica,sans-serif;font-size:0.666664em}
+		.st4 {fill:none;stroke:#000000;stroke-linecap:butt;stroke-width:0.5px}
+		.st5 {stroke:#000000;stroke-dasharray:0.25,1;stroke-linecap:butt;stroke-width:0.25px}
+		.st6 {marker-end:url(#mrkr4-66);marker-start:url(#mrkr4-64);stroke:#000000;stroke-linecap:butt;stroke-width:0.5px}
+		.st7 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.21739130434783px}
+		.st8 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:7.2px}
+		.st9 {baseline-shift:-32.4939%;font-size:0.649878em}
+		.st10 {font-size:1em}
+		.st11 {marker-end:url(#mrkr4-93);stroke:#000000;stroke-linecap:butt;stroke-width:0.5px}
+		.st12 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	
+	]]></style> 
+ <defs id="Markers"> 
+  <g id="lend4"> 
+   <path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none" /> 
+  </g> 
+  <marker id="mrkr4-64" class="st7" orient="auto" overflow="visible"> 
+   <use xlink:href="#lend4" transform="scale(4.6) " /> 
+  </marker> 
+  <marker id="mrkr4-66" class="st7" orient="auto" overflow="visible"> 
+   <use xlink:href="#lend4" transform="scale(-4.6,-4.6) " /> 
+  </marker> 
+  <marker id="mrkr4-93" class="st7" orient="auto" overflow="visible"> 
+   <use xlink:href="#lend4" transform="scale(-4.6,-4.6) " /> 
+  </marker> 
+ </defs> 
+ <g> 
+  <title>Page-1</title> 
+  <g id="group41-1" transform="translate(238.11,-37.1004)"> 
+   <title>Undef bus end 1 right.41</title> 
+   <g id="shape42-2"> 
+    <title>Sheet.42</title> 
+    <path d="M42.52 108.22 L1.42 108.22 L0 113.89 L1.42 119.56 L42.52 119.56 L42.52 108.22 Z" class="st1" /> 
+   </g> 
+   <g id="shape43-4"> 
+    <title>Sheet.43</title> 
+    <path d="M42.52 108.22 L1.42 108.22 L0 113.89 L1.42 119.56 L42.52 119.56" class="st2" /> 
+   </g> 
+  </g> 
+  <g id="group17-7" transform="translate(76.5354,-3.08465)"> 
+   <title>Undef bus end 1 left.17</title> 
+   <g id="shape25-8"> 
+    <title>Sheet.25</title> 
+    <path d="M0 108.22 L162.99 108.22 L164.41 113.89 L162.99 119.56 L0 119.56 L0 108.22 Z" class="st1" /> 
+   </g> 
+   <g id="shape40-10"> 
+    <title>Sheet.40</title> 
+    <path d="M0 108.22 L162.99 108.22 L164.41 113.89 L162.99 119.56 L0 119.56" class="st2" /> 
+   </g> 
+  </g> 
+  <g id="group7-13" transform="translate(76.5354,-20.0925)"> 
+   <title>Undef bus end 1 left</title> 
+   <g id="shape8-14"> 
+    <title>Sheet.8</title> 
+    <path d="M0 108.22 L140.31 108.22 L141.73 113.89 L140.31 119.56 L0 119.56 L0 108.22 Z" class="st1" /> 
+   </g> 
+   <g id="shape11-16"> 
+    <title>Sheet.11</title> 
+    <path d="M0 108.22 L140.31 108.22 L141.73 113.89 L140.31 119.56 L0 119.56" class="st2" /> 
+   </g> 
+  </g> 
+  <g id="shape1-19" transform="translate(31.1811,-105.132)"> 
+   <title>Sheet.1</title> 
+   <desc>
+    smc_mclk0
+   </desc> 
+   <text x="5.35" y="116.29" class="st3">
+    smc_mclk0
+   </text> 
+  </g> 
+  <g id="shape2-21" transform="translate(11.3386,-79.6201)"> 
+   <title>Sheet.2</title> 
+   <desc>
+    smc_cs_n_0[3:0]
+   </desc> 
+   <text x="4.72" y="116.29" class="st3">
+    smc_cs_n_0[3:0]
+   </text> 
+  </g> 
+  <g id="shape3-23" transform="translate(25.5118,-62.6122)"> 
+   <title>Sheet.3</title> 
+   <desc>
+    smc_oe_n_0
+   </desc> 
+   <text x="5.19" y="116.29" class="st3">
+    smc_oe_n_0
+   </text> 
+  </g> 
+  <g id="shape4-25" transform="translate(14.1732,-37.1004)"> 
+   <title>Sheet.4</title> 
+   <desc>
+    smc_add_0[31:0]
+   </desc> 
+   <text x="0.98" y="116.29" class="st3">
+    smc_add_0[31:0]
+   </text> 
+  </g> 
+  <g id="shape5-27" transform="translate(7.99361E-015,-20.0925)"> 
+   <title>Sheet.5</title> 
+   <desc>
+    smc_data_in_0[31:0]
+   </desc> 
+   <text x="2.13" y="116.29" class="st3">
+    smc_data_in_0[31:0]
+   </text> 
+  </g> 
+  <g id="shape6-29" transform="translate(39.685,-3.08465)"> 
+   <title>Sheet.6</title> 
+   <desc>
+    read_data
+   </desc> 
+   <text x="0.82" y="116.29" class="st3">
+    read_data
+   </text> 
+  </g> 
+  <g id="shape10-31" transform="translate(99.2126,-79.6201)"> 
+   <title>Sheet.10</title> 
+   <path d="M0 119.56 L136.06 119.56" class="st2" /> 
+  </g> 
+  <g id="shape14-34" transform="translate(147.402,-62.6122)"> 
+   <title>Sheet.14</title> 
+   <path d="M0 119.56 L87.87 119.56" class="st2" /> 
+  </g> 
+  <g id="shape18-37" transform="translate(101.995,-37.055)"> 
+   <title>Bus-Text.3</title> 
+   <desc>
+    A
+   </desc> 
+   <path d="M134.36 108.22 L1.42 108.22 L0 113.89 L1.42 119.56 L134.36 119.56 L135.78 113.89 L134.36 108.22 Z" class="st4" /> 
+   <text x="65.23" y="116.29" class="st3">
+    A
+   </text> 
+  </g> 
+  <g id="shape21-40" transform="translate(218.268,-20.0925)"> 
+   <title>Bus-Text.22</title> 
+   <desc>
+    D
+   </desc> 
+   <path d="M43.94 108.22 L1.42 108.22 L0 113.89 L1.42 119.56 L43.94 119.56 L45.35 113.89 L43.94 108.22 Z" class="st4" /> 
+   <text x="19.79" y="116.29" class="st3">
+    D
+   </text> 
+  </g> 
+  <g id="shape28-43" transform="translate(241.445,0.25) rotate(90)"> 
+   <title>Time division.27</title> 
+   <path d="M0 119.56 L119.06 119.56" class="st5" /> 
+  </g> 
+  <g id="shape29-46" transform="translate(286.799,0.25) rotate(90)"> 
+   <title>Time division.29</title> 
+   <path d="M0 119.56 L119.06 119.56" class="st5" /> 
+  </g> 
+  <g id="shape30-49" transform="translate(332.154,0.25) rotate(90)"> 
+   <title>Time division.30</title> 
+   <path d="M0 119.56 L119.06 119.56" class="st5" /> 
+  </g> 
+  <g id="shape31-52" transform="translate(377.519,0.25) rotate(90)"> 
+   <title>Time division.23</title> 
+   <path d="M0 119.56 L119.06 119.56" class="st5" /> 
+  </g> 
+  <g id="shape32-55" transform="translate(76.5354,-105.132)"> 
+   <title>Clock 1</title> 
+   <path d="M0 113.89 L0 108.22 L22.68 108.22 L22.68 119.56 L45.35 119.56 L45.35 113.89" class="st2" /> 
+  </g> 
+  <g id="shape37-58" transform="translate(100.642,-96.628)"> 
+   <title>Signal &amp; Text.89</title> 
+   <desc>
+    tRC=3
+   </desc> 
+   <path d="M4.24 119.56 L4.6 119.56 L130.9 119.56" class="st6" /> 
+   <rect x="57.9488" y="114.755" width="18.8528" height="10.0769" class="st8" /> 
+   <text x="58.32" y="121.96" class="st3">
+    t
+    <tspan dy="-2.296" class="st9">
+     RC
+    </tspan>
+    <tspan dy="1.487994048" class="st10">
+     =
+    </tspan>3
+   </text> 
+  </g> 
+  <g id="shape38-71" transform="translate(100.642,-57.1454)"> 
+   <title>Signal &amp; Text.3</title> 
+   <desc>
+    tCEOE=1
+   </desc> 
+   <path d="M4.24 119.56 L4.6 119.56 L42.46 119.56" class="st6" /> 
+   <rect x="10.1113" y="114.755" width="26.0774" height="10.0769" class="st8" /> 
+   <text x="10.49" y="121.96" class="st3">
+    t
+    <tspan dy="-2.296" class="st9">
+     CEOE
+    </tspan>
+    <tspan dy="1.487994048" class="st10">
+     =
+    </tspan>1
+   </text> 
+  </g> 
+  <g id="group12-82" transform="translate(76.5354,-37.1004)"> 
+   <title>Undef bus end 1 left.12</title> 
+   <g id="shape20-83"> 
+    <title>Sheet.20</title> 
+    <path d="M0 108.22 L24.09 108.22 L25.51 113.89 L24.09 119.56 L0 119.56 L0 108.22 Z" class="st1" /> 
+   </g> 
+   <g id="shape27-85"> 
+    <title>Sheet.27</title> 
+    <path d="M0 108.22 L24.09 108.22 L25.51 113.89 L24.09 119.56 L0 119.56" class="st2" /> 
+   </g> 
+  </g> 
+  <g id="shape39-88" transform="translate(354.647,2.12221) rotate(86.8202)"> 
+   <title>Bezier line.92</title> 
+   <path d="M0 119.56 L0.97 118.66 L1.94 117.81 L2.91 117.01 L3.88 116.24 L4.85 115.52 L5.82 114.84 L6.8 114.2 L7.78 113.6        L8.75 113.05 L9.73 112.54 L10.71 112.07 L11.7 111.65 L12.68 111.27 L13.66 110.92 L14.65 110.63 L15.63 110.37        L16.62 110.16 L17.61 109.99 L18.6 109.86 L19.59 109.77 L20.59 109.73 L21.58 109.73 L22.58 109.77 L23.57        109.85 L24.57 109.98 L25.57 110.15 L26.57 110.36 L27.58 110.61 L28.58 110.91 L29.58 111.25 L30.59 111.63        L31.6 112.05 L32.61 112.52 L33.62 113.03 L34.63 113.58 L35.64 114.17 L36.65 114.81 L37.67 115.48 L38.68        116.2 L39.7 116.97 L40.72 117.77 L41.74 118.62 L42.76 119.51 L43.78 120.44 L45.78 122.34 L46.76 123.22 L47.75        124.05 L48.76 124.85 L49.77 125.61 L50.79 126.32 L51.82 127 L52.86 127.63 L53.91 128.22 L54.98 128.77 L56.05        129.28 L57.13 129.75 L58.22 130.17 L59.32 130.56 L60.43 130.9 L61.55 131.21 L62.68 131.47 L63.83 131.69        L64.98 131.87 L66.14 132.01 L67.31 132.11 L68.49 132.16 L69.68 132.18 L70.88 132.15 L72.09 132.09 L73.31        131.98 L74.54 131.83 L75.78 131.64 L77.03 131.41 L78.29 131.14 L79.56 130.83 L80.84 130.47 L82.13 130.08        L83.43 129.64 L84.74 129.16 L86.06 128.65 L87.39 128.09 L88.73 127.48 L90.08 126.84 L91.44 126.16 L92.81        125.44 L94.19 124.67 L95.58 123.86 L96.98 123.02 L98.39 122.13 L98.69 121.93" class="st11" /> 
+  </g> 
+  <g id="group19-94" transform="translate(280.63,-3.08465) scale(-1,1)"> 
+   <title>Undef bus end 3 right</title> 
+   <g id="shape44-95"> 
+    <title>Sheet.44</title> 
+    <desc>
+     D
+    </desc> 
+    <path d="M0 108.22 L38.27 108.22 L39.69 113.89 L38.27 119.56 L0 119.56" class="st2" /> 
+    <text x="-22.72" y="116.29" transform="scale(-1,1)" class="st3">
+     D
+    </text> 
+   </g> 
+  </g> 
+  <g id="shape33-99" transform="translate(121.89,-105.132)"> 
+   <title>Clock 1.33</title> 
+   <path d="M0 113.89 L0 108.22 L22.68 108.22 L22.68 119.56 L45.35 119.56 L45.35 113.89" class="st2" /> 
+  </g> 
+  <g id="shape34-102" transform="translate(167.244,-105.132)"> 
+   <title>Clock 1.34</title> 
+   <path d="M0 113.89 L0 108.22 L22.68 108.22 L22.68 119.56 L45.35 119.56 L45.35 113.89" class="st2" /> 
+  </g> 
+  <g id="shape35-105" transform="translate(212.598,-105.132)"> 
+   <title>Clock 1.35</title> 
+   <path d="M0 113.89 L0 108.22 L22.68 108.22 L22.68 119.56 L45.35 119.56 L45.35 113.89" class="st2" /> 
+  </g> 
+  <g id="shape36-108" transform="translate(99.2126,148.152) rotate(180)"> 
+   <title>0 to 1 - No Glitch</title> 
+   <path d="M0 108.22 L2.83 119.56 L22.68 119.56" class="st2" /> 
+  </g> 
+  <g id="shape9-111" transform="translate(257.953,-105.132)"> 
+   <title>Sheet.9</title> 
+   <path d="M0 113.89 L0.01 108.22 L22.68 108.22 L22.68 119.56" class="st2" /> 
+  </g> 
+  <g id="shape26-114" transform="translate(235.276,148.152) scale(1,-1)"> 
+   <title>0 to 1 - No Glitch.26</title> 
+   <path d="M0 108.22 L2.83 119.56 L45.35 119.56" class="st2" /> 
+  </g> 
+  <g id="shape13-117" transform="translate(147.402,165.159) rotate(180)"> 
+   <title>0 to 1 - No Glitch.13</title> 
+   <path d="M0 108.22 L2.83 119.56 L70.87 119.56" class="st2" /> 
+  </g> 
+  <g id="shape15-120" transform="translate(235.276,165.159) scale(1,-1)"> 
+   <title>0 to 1 - No Glitch.15</title> 
+   <path d="M0 108.22 L2.83 119.56 L45.35 119.56" class="st2" /> 
+  </g> 
+  <g id="group16-123" transform="translate(263.622,-20.0925)"> 
+   <title>Undef bus end 1 right.16</title> 
+   <g id="shape45-124"> 
+    <title>Sheet.45</title> 
+    <path d="M17.01 108.22 L1.42 108.22 L0 113.89 L1.42 119.56 L17.01 119.56 L17.01 108.22 Z" class="st1" /> 
+   </g> 
+   <g id="shape46-126"> 
+    <title>Sheet.46</title> 
+    <path d="M17.01 108.22 L1.42 108.22 L0 113.89 L1.42 119.56 L17.01 119.56" class="st2" /> 
+   </g> 
+  </g> 
+ </g> 
+</svg>
