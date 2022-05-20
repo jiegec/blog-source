@@ -14,11 +14,11 @@ title: 在 FPGA 上实现路由器（2）
 
 TCP 测速：
 
-![](/router_tcp.jpg)
+![](/images/router_tcp.jpg)
 
 UDP 测速：
 
-![](/router_udp.jpg)
+![](/images/router_udp.jpg)
 
 测试环境是 macOS 虚拟机外打虚拟机内，走网桥把虚拟机和一个 USB 网卡接起来，然后从另一个 USB 网卡打到路由器。
 

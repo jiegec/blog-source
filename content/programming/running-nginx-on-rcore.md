@@ -20,7 +20,7 @@ title: 在 rCore 上运行 nginx
 
 截图留念：
 
-![](/nginx.jpg)
+![](/images/nginx.jpg)
 
 再往前的话，还有很多小的问题，例如网卡的中断启用了但没有改 mask ，所以啥也没收到，靠 QEMU Tracing 找到问题。还有一个很有意思的现象，就是如果 elf 的 program header 没有 phdr 这个项的时候，我们发现，可以通过第一个load（如果加载了完整的 elf 头的话），我们可以从这里推断出 phdr 的地址（load的虚拟地址加偏移），然后丢到 auxv 里去让 musl 配置 tls。总之这些都解决了。也不用去考虑兼容 litc 了，已经全部向 linux 靠拢了，稳。
 

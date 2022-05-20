@@ -47,25 +47,25 @@ name "virtio-rng-device", bus virtio-bus
 
 首先想到并且实现了的是网卡驱动， `virtio-net` 。最开始的时候，为了简单，只开了一块缓冲区，每次同时只收/发一个包。首先拿了 [device_tree-rs](https://github.com/jiegec/device_tree-rs) 读取 bbl 传过来的 dtb 地址，找到各个 `virtio_mmio` 总线以后按照设备类型找到对应的设备。然后就是对着 virtio 的标准死磕，同时看 Linux 和 QEMU 的源代码辅助理解，最后终于是成功地把收/发的两个 virtqueue 配置好，并且在中断的时候处理收到的包。这个时候，可以成功地输出收到的包的内容，并且发出指定内容的包了。效果就是看到了这样的图片（图中网站是 [Hex Packet Decoder](https://hpd.gasmi.net/)）：
 
-![](/arp_packet.jpg)
+![](/images/arp_packet.jpg)
 
 基于此，写了一个简单的以太网帧的解析，ARP 的回复和 ping 的回复（直接修改 `ECHO_REQUEST` 为 `ECHO_REPLY` 然后更新 CHECKSUM），实现了最基本的 ping ：
 
-![](/arping.png)
+![](/images/arping.png)
 
-![](/ping.jpg)
+![](/images/ping.jpg)
 
 ## 显卡驱动
 
 网卡可以用了，很自然地会想到做一些其他的 virtio 驱动，第一个下手的是显卡。显卡和网卡的主要区别是，网卡是两个 queue 异步作，而在显卡驱动上则是在一个 queue 上每次放一输入一输出的缓冲区来进行交互，具体步骤在 virtio 标准中也写得很清楚。在这个过程中， QEMU 的 Tracing 功能帮了很大的忙，在调试 desc 的结构上提供了很多帮助。
 
-然后就在 framebuffer 上花了一个 mandelbrot ：
+然后就在 framebuffer 上画了一个 mandelbrot ：
 
-![](/mandelbrot.jpg)
+![](/images/mandelbrot.jpg)
 
 在 @shankerwangmiao 的建议下，调了一下颜色：
 
-![](/mandelbrot2.jpg)
+![](/images/mandelbrot2.jpg)
 
 这样就好看多了。
 
@@ -95,7 +95,7 @@ if socket.can_send() {
 
 虽然很粗暴，但是 work 了：
 
-![](/http.jpg)
+![](/images/http.jpg)
 
 ## 鼠标驱动和块设备驱动
 
