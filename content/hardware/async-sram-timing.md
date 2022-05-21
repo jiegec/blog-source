@@ -217,7 +217,7 @@ title: 异步 SRAM 时序分析
       { name: "data", wave: "x4..............6"},
       { name: "we_n", wave: "1.....0....1....."},
       { name: "oe_n", wave: "x1..............."},
-      { name: "ce_n", wave: "x1..............."},
+      { name: "ce_n", wave: "x0..............."},
     ]
 }
 </script>
@@ -241,9 +241,9 @@ title: 异步 SRAM 时序分析
       { name: "clock", wave: "p...", period: 5, phase: 4.0},
       { name: "addr", wave: "x3....5....7...."},
       { name: "data", wave: "x4....6....8...."},
-      { name: "we_n", wave: "1.0...10...10...", phase: 0.8},
+      { name: "we_n", wave: "1.0...10...10....", phase: 0.8},
       { name: "oe_n", wave: "x1.............."},
-      { name: "ce_n", wave: "x1.............."},
+      { name: "ce_n", wave: "x0.............."},
     ]
 }
 </script>
@@ -257,9 +257,9 @@ title: 异步 SRAM 时序分析
       { name: "clock", wave: "p...", period: 5.0, phase: 4.0},
       { name: "addr", wave: "x3.........5...."},
       { name: "data", wave: "x4.........6...."},
-      { name: "we_n", wave: "1.0....1....0...", phase: 0.8},
+      { name: "we_n", wave: "1.0....1....0....", phase: 0.8},
       { name: "oe_n", wave: "x1.............."},
-      { name: "ce_n", wave: "x1.............."},
+      { name: "ce_n", wave: "x0.............."},
     ]
 }
 </script>
