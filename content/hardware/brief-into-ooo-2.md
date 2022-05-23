@@ -212,8 +212,11 @@ ARM 架构也有 imprecise asynchronous external abort：
 
 最后列举一下科研里常用的一些处理器/内存仿真模型：
 
-- gem5: [论文](https://arxiv.org/abs/2007.03152) [代码](https://gem5.googlesource.com/public/gem5)
-- Multi2Sim: [论文](https://ieeexplore.ieee.org/document/7842946) [代码](https://github.com/Multi2Sim/multi2sim)
-- Ramulator: [论文](https://users.ece.cmu.edu/~omutlu/pub/ramulator_dram_simulator-ieee-cal15.pdf) [代码](https://github.com/CMU-SAFARI/ramulator)
-- McPAT: [论文](https://ieeexplore.ieee.org/document/5375438) [代码](https://github.com/HewlettPackard/mcpat)
-- CACTI: [论文](https://www.hpl.hp.com/research/cacti/cacti2.pdf) [代码](https://github.com/HewlettPackard/cacti)
+- gem5: [论文 The gem5 Simulator: Version 20.0+](https://arxiv.org/abs/2007.03152) [代码](https://gem5.googlesource.com/public/gem5)
+- DRAMSim2: [论文 DRAMSim2: A Cycle Accurate Memory System Simulator](https://user.eng.umd.edu/~blj/papers/cal10-1.pdf) [代码](https://github.com/umd-memsys/DRAMSim2)
+- CACTI: [论文 CACTI 2.0: An Integrated Cache Timing and Power Model](https://www.hpl.hp.com/research/cacti/cacti2.pdf) [代码](https://github.com/HewlettPackard/cacti)
+- McPAT: [论文 McPAT: An integrated power, area, and timing modeling framework for multicore and manycore architectures](https://ieeexplore.ieee.org/document/5375438) [代码](https://github.com/HewlettPackard/mcpat)
+- Multi2Sim: [论文 Multi2Sim: A simulation framework for CPU-GPU computing](https://ieeexplore.ieee.org/document/7842946) [代码](https://github.com/Multi2Sim/multi2sim)
+- Ramulator: [论文 Ramulator: A Fast and Extensible DRAM Simulator](https://users.ece.cmu.edu/~omutlu/pub/ramulator_dram_simulator-ieee-cal15.pdf) [代码](https://github.com/CMU-SAFARI/ramulator)
+- Scarab: [代码](https://github.com/hpsresearchgroup/scarab)
+- Sniper: [论文 Sniper: exploring the level of abstraction for scalable and accurate parallel multi-core simulation](https://dl.acm.org/doi/abs/10.1145/2063384.2063454) [官网](https://snipersim.org/w/The_Sniper_Multi-Core_Simulator)
