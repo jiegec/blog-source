@@ -60,11 +60,9 @@ title: 内存认证算法分析
 
 ## The Bonsai Merkle Tree
 
-为了进一步减少空间的占用，Bonsai Merkle Tree（MKT）的思路是，不再对每个内存块做加密，而是连续的 C 个内存块做一次 MAC 计算，并且额外添加一个 counter，计算 MAC 的输入是数据，地址和 counter。这时候 counter 充当了原来的 nonce 的作用，所以类似地，此时的 Merkle Tree 保护的是这些 counter，由于 counter 位数比较少，就可以进一步地减少空间的开销，而且树的层数也更少了。
+为了进一步减少空间的占用，Bonsai Merkle Tree（BMT）的思路是，既然对每个内存块都生成一个比较长的（比如 64 位）的 nonce 比较耗费空间，那是否可以减少一下 nonce 的位数，当 nonce 出现重复的时候，换一个密钥重新加密呢？具体的做法是，每个内存块做一次 MAC 计算，输入是数据，地址和 counter：`M=MAC(C, addr, ctr)`。此时，地址和 `ctr` 充当了原来的 nonce 的作用，所以类似地，此时的 Merkle Tree 保护的是这些 counter，由于 counter 位数比较少，就可以进一步地减少空间的开销，而且树的层数也更少了。缺点是既然位数少了，如果 counter 出现了重复，就需要更换密钥，重新进行一次加密，这个比较耗费时间，所以还要尽量减少重新加密的次数。
 
-具体来说，为了避免重放攻击，每次更新数据的时候，就让 counter 加一，这和原来采用一个足够长（比如 64-bit）的随机 nonce 是类似的。但是，counter 的位数有限，如果溢出绕回了，又给了攻击者进行重放攻击的机会，所以要更换一次密钥，重新加密。
-
-重新加密是很耗费时间的，所以又设计了一个两层的 counter：7-bit 的 local counter，每次更新数据加一；64-bit 的 global counter，当某一个 local counter 溢出的时候加一。这时候实际传入 MAC 计算的 counter 则是 global counter 拼接上 local counter。这样相当于是做了一个 counter 的共同前缀，在内存访问比较均匀的时候，比如每个 local counter 轮流加一，那么每次只需要重新加密一个小范围的内存，减少了开销。
+具体来说，为了避免重放攻击，每次更新数据的时候，就让 counter 加一，这和原来采用一个足够长（比如 64-bit）的随机 nonce 是类似的。重新加密是很耗费时间的，因此为了把重新加密的范围局限到一个小的局部，又设计了一个两级的 counter：7-bit 的 local counter，每次更新数据加一；64-bit 的 global counter，当某一个 local counter 溢出的时候加一。这时候实际传入 MAC 计算的 counter 则是 global counter 拼接上 local counter。这样相当于是做了一个 counter 的共同前缀，在内存访问比较均匀的时候，比如每个 local counter 轮流加一，那么每次 local counter 溢出只需要重新加密一个小范围的内存，减少了开销。
 
 文章后续还提到了一些相关的算法，这里就不继续翻译和总结了。
 
