@@ -266,4 +266,10 @@ RUNTEST 5 TCK;
 
 这段操作是进行 Status Register Readback，见 UG570 的 Table 10-4。MASK 设为 `08000000` 应该是判断它的第 4 位：END_OF_STARTUP_STATUS（Table 9-25）。
 
-如果是 Quartus 用户，也可以 [生成 SVF](https://www.intel.com/content/www/us/en/support/programmable/articles/000085709.html)。
+如果是 Quartus 用户，也可以 [生成 SVF](https://www.intel.com/content/www/us/en/support/programmable/articles/000085709.html)，具体操作是：在 Programmer 中，点击 `File->Create JAM, JBC, SVF or ISC file`，然后在弹出的窗口中选择 svf 格式，导出即可。得到的 svf 文件一样可以用 openocd 来下载。
+
+也可以[用 `quartus_cpf` 在命令行](https://www.intel.com/content/www/us/en/support/programmable/articles/000074062.html)中进行转换：
+
+```shell
+quartus_cpf -q 18MHz -g 3.3 -c -n p input.sof/pof output.svf
+```
