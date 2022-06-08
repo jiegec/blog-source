@@ -84,6 +84,27 @@ services.udev.packages = with pkgs; [
 ];
 ```
 
+### VSCode Remote
+
+VSCode Remote 会在远程的机器上运行一个预编译的 nodejs，运行的时候会因为路径问题无法执行。
+
+解决方法在 [NixOS Wiki](https://nixos.wiki/wiki/Visual_Studio_Code#Remote_SSH) 上有，具体来说，首先，需要安装 `nodejs`：
+
+```nix
+environment.systemPackages = with pkgs; [
+  nodejs-16_x # vscode remote
+];
+```
+
+然后，用软链接来覆盖 nodejs：
+
+```shell
+cd ~/.vscode-server/bin/HASH
+ln -sf /run/current-system/sw/bin/node
+```
+
+这样就可以正常使用 VSCode Remote 了。
+
 ## Home Manager
 
 [Home Manager](https://github.com/nix-community/home-manager) 描述用户默认看到的程序，而 NixOS 的配置是所有用户的。
