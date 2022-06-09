@@ -35,6 +35,15 @@ permalink: /open-source-contributions/
 
 - [Fixed compilation error: std::string and int64_t undefined](https://github.com/openhwgroup/force-riscv/pull/54)
 
+## gpaw
+
+- [Fix issue #269 to add additional broadcast in some cases](https://gitlab.com/gpaw/gpaw/-/merge_requests/863)
+- [Capture and ignore AttributeError thrown in getpreferredencoding() in newer Python versions](https://gitlab.com/gpaw/gpaw/-/merge_requests/858)
+
+## KiCad
+
+- [libcontext: Initial support for Apple Silicon](https://gitlab.com/kicad/code/kicad/-/merge_requests/602)
+
 ## KNEM
 
 - [driver/linux: use the pin API added in Linux 5.6](https://gitlab.inria.fr/knem/knem/-/commit/fa80cec4970514a6388fe165cc0c4167fd813228)
