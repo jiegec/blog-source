@@ -154,6 +154,37 @@ home.packages =
 
 具体的参数命名要看 nixpkgs 上对应的包的开头。
 
+### 配置 direnv
+
+direnv 是一个 shell 插件，它的用途是进入目录的时候，会根据 .envrc 来执行命令，比如自动进入 nix-shell 等。配置：
+
+```nix
+programs.direnv.enable = true;
+```
+
+然后在工程路径下，编写 `.envrc`：
+
+```
+use_nix
+```
+
+那么，在 shell 进入目录的时候，就会自动获得 nix-shell 的环境变量。
+
+### 配置 fish
+
+可以在 home manager 配置中编写 fish 配置，这样它会自动生成 `~/.config/fish/config.fish` 文件：
+
+```nix
+programs.fish.enable = true;
+programs.fish.shellAliases = {
+  a = "b";
+};
+programs.fish.shellInit = ''
+  # Rust
+  set -x PATH ~/.cargo/bin $PATH
+'';
+```
+
 ## 实用工具
 
 ### nixpkgs-fmt
