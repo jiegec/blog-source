@@ -31,6 +31,10 @@ permalink: /open-source-contributions/
 - [Remove the duplicate code lines: R <= (bug reported by Jiajie Chen)](https://gitlab.com/flopoco/flopoco/-/commit/5ac83babf7d6a69cd3124a6127a98a0ac58c4508)
 - [Commits by me](https://gitlab.com/flopoco/flopoco/-/commits/master?author=Jiajie%20Chen)
 
+## force-riscv
+
+- [Fixed compilation error: std::string and int64_t undefined](https://github.com/openhwgroup/force-riscv/pull/54)
+
 ## KNEM
 
 - [driver/linux: use the pin API added in Linux 5.6](https://gitlab.inria.fr/knem/knem/-/commit/fa80cec4970514a6388fe165cc0c4167fd813228)
@@ -44,12 +48,17 @@ permalink: /open-source-contributions/
 - [Fix weight type in brain2 backend for issue 711](https://github.com/NeuralEnsemble/PyNN/pull/723)
 - [add missing __new__ for neuron 8.0.0, fixing issue #722](https://github.com/NeuralEnsemble/PyNN/pull/727)
 
+## rocket-chip
+
+- [Doc fixes and add comments to axi4 bundles](https://github.com/chipsalliance/rocket-chip/pull/2925)
+
 ## SpinalCrypto
 
 - [Add cross scala version support, upgrade scalatest and fix scala 2.13 incompat code](https://github.com/SpinalHDL/SpinalCrypto/pull/13)
 
 ## SpinalHDL
 
+- [Use scalafmt to format code](https://github.com/SpinalHDL/SpinalHDL/pull/539)
 - [Add support for write byte enable in BusSlaveFactory.writeMemWordAligned](https://github.com/SpinalHDL/SpinalHDL/pull/533)
 - [Fix typos and improve error messages](https://github.com/SpinalHDL/SpinalHDL/pull/524)
 - [Add option to enable logging of ghdl/iverlog backend](https://github.com/SpinalHDL/SpinalHDL/pull/506)
