@@ -185,6 +185,30 @@ programs.fish.shellInit = ''
 '';
 ```
 
+## 配置 git
+
+同理，也可以在 home manager 中配置 git：
+
+```nix
+programs.git.enable = true;
+programs.git.lfs.enable = true;
+programs.git.userName = "Someone";
+programs.git.userEmail = "mail@example.com";
+programs.git.extraConfig = {
+  core = {
+    quotepath = false;
+  };
+  pull = {
+    rebase = false;
+  };
+};
+programs.git.ignores = [
+  ".DS_Store"
+];
+```
+
+生成的 `git` 配置在 `~/.config/git/config` 和 `~/.config/git/ignore`。
+
 ## 实用工具
 
 ### nixpkgs-fmt
