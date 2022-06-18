@@ -40,6 +40,8 @@ $ lspci -vv
 
 ![SATA Power](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/SATA_power_cable.jpg/400px-SATA_power_cable.jpg)
 
+常见的 SATA 盘有 2.5 英寸（small form factor, SFF）和 3.5 英寸（large form factor，LFF）两种规格。
+
 ## M.2
 
 [M.2](https://en.wikipedia.org/wiki/M.2) 又称 NGFF，有不同的 key 类型。常见的是 B 和 M：

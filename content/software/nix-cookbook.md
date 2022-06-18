@@ -185,6 +185,51 @@ programs.fish.shellInit = ''
 '';
 ```
 
+## Flakes
+
+Flakes 可以用来把多个系统的 nix 配置写在一个项目中。例如：
+
+```nix
+{
+  description = "Nix configuration";
+
+  inputs = {
+    home-manager.url = "github:nix-community/home-manager/release-22.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.05";
+  };
+
+  outputs = { self, nixpkgs, home-manager }:
+    {
+      nixosConfigurations.xxxx = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./nixos/xxxx/configuration.nix
+          home-manager.nixosModules.home-manager
+          ./nixos/xxxx/home.nix
+        ];
+      };
+      homeConfigurations.yyyy = home-manager.lib.homeManagerConfiguration {
+        configuration = import ./home-manager/yyyy/home.nix;
+        system = "aarch64-darwin";
+        homeDirectory = "/Users/yyyy";
+        username = "yyyy";
+        stateVersion = "22.05";
+      };
+    };
+}
+```
+
+然后，要应用上面的配置，运行：
+
+```bash
+# NixOS
+nixos-rebuild switch --flake .
+# Home manager
+home-manager switch --flake .
+```
+
+这样就可以把若干个系统上的 nix 配置管理在一个仓库中了。
+
 ## 配置 git
 
 同理，也可以在 home manager 中配置 git：
