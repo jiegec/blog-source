@@ -1,9 +1,9 @@
 ---
 layout: post
 date: 2021-09-27 22:22:00 +0800
-tags: [xilinx,vivado,fpga,spi,timing]
+tags: [xilinx,vivado,fpga,spi,timing,teaching]
 category: hardware
-title: AXI Quad SPI 时序理解
+title: 「教学」AXI Quad SPI 时序分析
 ---
 
 ## 背景

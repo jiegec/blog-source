@@ -1,16 +1,11 @@
 ---
 layout: post
 date: 2021-12-12 14:01:00 +0800
-tags: [riscv,cpu,debug,jtag]
+tags: [riscv,cpu,debug,jtag,teaching]
 category: hardware
-title: RISC-V Debug 分析
+title: 「教学」RISC-V Debug 协议
 ---
 
-## 参考文档
-
-1. RISC-V Debug Spec 0.13
-2. IEEE Standard for JTAG 1149.1-2013
-3. OpenOCD 相关代码
 
 ## 背景
 
@@ -152,3 +147,9 @@ ebreak
 ```
 
 并且设置 abstractauto，然后重复的操作是往 s1 里面写入新的数据，然后跳转到 program buffer，进行上面的 sw 操作，这样就可以一次 dmi 请求完成一次内存的写入，比较高效。
+
+## 参考文档
+
+1. RISC-V Debug Spec 0.13
+2. IEEE Standard for JTAG 1149.1-2013
+3. OpenOCD 相关代码

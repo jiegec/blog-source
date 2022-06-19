@@ -1,21 +1,14 @@
 ---
 layout: post
 date: 2021-12-17 07:39:00 +0800
-tags: [cpu,cache,coherence,msi,mesi,moesi]
+tags: [cpu,cache,coherence,msi,mesi,moesi,teaching]
 category: hardware
-title: 缓存一致性协议分析
+title: 「教学」缓存一致性协议分析
 ---
 
-## 参考文档
+## 背景
 
-- [Cache coherence](https://en.wikipedia.org/wiki/Cache_coherence)
-- [MSI protocol](https://en.wikipedia.org/wiki/MSI_protocol)
-- [Write-once (cache coherence)](https://en.wikipedia.org/wiki/Write-once_(cache_coherence))
-- [MESI protocol](https://en.wikipedia.org/wiki/MESI_protocol)
-- [MOESI protocol](https://en.wikipedia.org/wiki/MOESI_protocol)
-- [Dragon protocol](https://en.wikipedia.org/wiki/Dragon_protocol)
-- [A Strategy to Verify an AXI/ACE Compliant Interconnect (2 of 4)](https://blogs.synopsys.com/vip-central/2014/12/23/a-strategy-to-verify-an-axi-ace-compliant-interconnect-part-2-of-4/)
-- [Directory-based cache coherence](https://en.wikipedia.org/wiki/Directory-based_cache_coherence)
+最近在《高等计算机系统结构》课程中学习缓存一致性协议算法，这里用自己的语言来组织一下相关知识的讲解。
 
 ## Write-invalidate 和 Write-update
 
@@ -165,3 +158,14 @@ ACE-lite 只在已有 Channel 上添加了新信号，没有添加新的 Channel
 但实际上，通常情况下，一个缓存行通常只会在很少的核心中保存，所以这里有很大的优化空间。比如说，可以设置一个缓存行同时出现的缓存数量上限(Limited pointer format)，然后保存核心的下标而不是位向量，这样的存储空间就是 O(Nlog2N)。但是呢，这样限制了缓存行同时出现的次数，如果超过了上限，需要替换掉已有的缓存，可能在一些场景下性能会降低。
 
 还有一种方式，就是链表(Chained directory format)。目录中保存最后一次访问的核心编号，然后每个核心的缓存里，保存了下一个保存了这个缓存行的核心编号，或者表示链表终止。这样存储空间也是 O(Nlog2N)，不过发送消息的延迟更长，因为要串行遍历一遍，而不能同时发送。类似地，可以用二叉树(Number-balanced binary tree format)来组织：每个缓存保存两个指针，指向左子树和右子树，然后分别遍历，目的还是加快遍历的速度，可以同时发送消息给多个核心。
+
+## 参考文档
+
+- [Cache coherence](https://en.wikipedia.org/wiki/Cache_coherence)
+- [MSI protocol](https://en.wikipedia.org/wiki/MSI_protocol)
+- [Write-once (cache coherence)](https://en.wikipedia.org/wiki/Write-once_(cache_coherence))
+- [MESI protocol](https://en.wikipedia.org/wiki/MESI_protocol)
+- [MOESI protocol](https://en.wikipedia.org/wiki/MOESI_protocol)
+- [Dragon protocol](https://en.wikipedia.org/wiki/Dragon_protocol)
+- [A Strategy to Verify an AXI/ACE Compliant Interconnect (2 of 4)](https://blogs.synopsys.com/vip-central/2014/12/23/a-strategy-to-verify-an-axi-ace-compliant-interconnect-part-2-of-4/)
+- [Directory-based cache coherence](https://en.wikipedia.org/wiki/Directory-based_cache_coherence)

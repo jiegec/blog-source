@@ -7,6 +7,10 @@ permalink: /series/
 
 下面列举了我的博客里的一些系列文章。
 
+## 教学系列
+
+[#teaching](/tags/teaching)
+
 ## 近来做 Stanford CS140e 的一些进展和思考
 
 [#cs140e](/tags/cs140e/)

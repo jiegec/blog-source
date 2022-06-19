@@ -1,19 +1,10 @@
 ---
 layout: post
 date: 2021-12-12 15:06:00 +0800
-tags: [dram,ddr]
+tags: [dram,ddr,teaching]
 category: hardware
-title: DRAM 分析
+title: 「教学」DRAM 结构和特性
 ---
-
-## 参考文档
-
-- Memory systems: Cache, DRAM & Disk
-- [译文： DDR4 SDRAM - Understanding the Basics（上）](https://zhuanlan.zhihu.com/p/262052220)
-- [译文： DDR4 SDRAM - Understanding the Basics（下）](https://zhuanlan.zhihu.com/p/263080272)
-- [JEDEC STANDARD DDR5 SDRAM JESD79-5](https://github.com/RAMGuide/TheRamGuide-WIP-/raw/main/DDR5%20Spec%20JESD79-5.pdf)
-- [JEDEC STANDARD DDR4 SDRAM JESD79-4B](http://www.softnology.biz/pdf/JESD79-4B.pdf)
-- [JEDEC STANDARD DDR3 SDRAM JESD79-3E](https://documents.pub/document/jesd79-3e-ddr3-sdram-specification.html)
 
 ## DRAM 是如何组织的
 
@@ -133,3 +124,12 @@ DRAM 的一个特点是需要定期刷新。有一个参数 tREFI，表示刷新
 就是将地址的不同部分映射到 DRAM 的几个地址：Row，Column，Bank。可以想象，不同的地址映射方式针对不同的访存模式会有不同的性能。对于连续的内存访问，ROW_COLUMN_BANK 方式是比较适合的，因为连续的访问会分布到不同的 Bank 上，这样性能就会更好。
 
 此外，如果访问会连续命中同一个 Page，那么直接读写即可；反之如果每次读写几乎都不会命中同一个 Page，那么可以设置 Auto Precharge，即读写以后自动 Precharge，减少了下一次访问前因为 Row 不同导致的 PRE 命令。一个思路是在对每个 Page 的最后一次访问采用 Auto Precharge。
+
+## 参考文档
+
+- Memory systems: Cache, DRAM & Disk
+- [译文： DDR4 SDRAM - Understanding the Basics（上）](https://zhuanlan.zhihu.com/p/262052220)
+- [译文： DDR4 SDRAM - Understanding the Basics（下）](https://zhuanlan.zhihu.com/p/263080272)
+- [JEDEC STANDARD DDR5 SDRAM JESD79-5](https://github.com/RAMGuide/TheRamGuide-WIP-/raw/main/DDR5%20Spec%20JESD79-5.pdf)
+- [JEDEC STANDARD DDR4 SDRAM JESD79-4B](http://www.softnology.biz/pdf/JESD79-4B.pdf)
+- [JEDEC STANDARD DDR3 SDRAM JESD79-3E](https://documents.pub/document/jesd79-3e-ddr3-sdram-specification.html)
