@@ -98,6 +98,85 @@ title: Wishbone 总线协议
 1. 占用 slave 的总线接口，不允许其他 master 访问
 2. 简化 interconnect 的实现
 
+把上面自研总线的波形图改成 Wishbone Classic Standard，就可以得到：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "CLK_I", wave: "p.........", node: ".abcdefgh"},
+      { name: "CYC_O", wave: "0101.01..0"},
+      { name: "STB_O", wave: "0101.01..0"},
+      { name: "ACK_I", wave: "010.101..0"},
+      { name: "ADR_O", wave: "x=x=.x===x", data: ["0x01", "0x02", "0x03", "0x01", "0x02"]},
+      { name: "WE_O", wave: "x1x0.x101x"},
+      { name: "DAT_O", wave: "x=xxxx=x=x", data: ["0x12", "0x56", "0x9a"]},
+      { name: "SEL_O", wave: "x=x=.x=x=x", data: ["0x1", "0x1", "0x1", "0x1"]},
+      { name: "DAT_I", wave: "xxxx=xx=xx", data: ["0x34", "0x12"]},
+    ]
+}
+</script>
+
+## Wishbone Classic Pipelined
+
+上面的 Wishbone Classic Standard 协议非常简单，但是会遇到一个问题：假设实现的是一个 SRAM 控制器，它的读操作有一个周期的延迟，也就是说，在这个周期给出地址，需要在下一个周期才可以得到结果。在 Wishbone Classic Standard 中，就会出现下面的波形：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "CLK_I", wave: "p.....", node: ".abcd"},
+      { name: "CYC_O", wave: "01...0"},
+      { name: "STB_O", wave: "01...0"},
+      { name: "ACK_I", wave: "0.1010"},
+      { name: "ADR_O", wave: "x=.=.x", data: ["0x01", "0x02"]},
+      { name: "WE_O", wave: "x0...x"},
+      { name: "DAT_O", wave: "xxxxxx"},
+      { name: "SEL_O", wave: "x=...x", data: ["0x1"]},
+      { name: "DAT_I", wave: "xx=x=x", data: ["0x12", "0x34"]},
+    ]
+}
+</script>
+
+- `a` 周期：master 给出读地址 0x01，此时 SRAM 控制器开始读取，但是此时数据还没有读取回来，所以 `ACK_I=0`
+- `b` 周期：此时 SRAM 完成了读取，把读取的数据 0x12 放在 `DAT_I` 并设置 `ACK_I=1`
+- `c` 周期：master 给出下一个读地址 0x02，SRAM 要重新开始读取
+- `d` 周期：此时 SRAM 完成了第二次读取，把读取的数据 0x34 放在 `DAT_I` 并设置 `ACK_I=1`
+
+从波形来看，功能没有问题，但是每两个周期才能进行一次读操作，发挥不了最高的性能。那么怎么解决这个问题呢？我们在 `a` 周期给出第一个地址，在 `b` 周期得到第一个数据，那么如果能在 `b` 周期的时候给出第二个地址，就可以在 `c` 周期得到第二个数据。这样，就可以实现流水线式的每个周期进行一次读操作。但是，Wishbone Classic Standard 要求 `b` 周期时第一次请求还没有结束，因此我们需要修改协议，来实现流水线式的请求。
+
+实现思路也很简单：既然 Wishbone Classic Standard 认为 `b` 周期时，第一次请求还没有结束，那就让第一次请求提前在 `a` 周期完成，只不过它的数据要等到 `b` 周期才能给出。实际上，这个时候的一次读操作，可以认为分成了两部分：首先是 master 向 slave 发送读请求，这个请求在 `a` 周期完成；然后是 slave 向 master 发送读的结果，这个结果在 `b` 周期完成。为了实现这个功能，我们进行如下修改：
+
+- 添加 `STALL_I` 信号：`CYC_O=1 && STB_O=1 && STALL_I=0` 表示进行一次读请求
+- 修改 `ACK_I` 信号含义：`CYC_O=1 && STB_O=1 && ACK_I=1` 表示一次读响应
+
+进行如上修改以后，我们就得到了 Wishbone Classic Pipelined 总线协议。上面的两次连续读操作波形如下：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "CLK_I", wave: "p....", node: ".abcd"},
+      { name: "CYC_O", wave: "01..0"},
+      { name: "STB_O", wave: "01.0."},
+      { name: "STALL_O", wave: "0...."},
+      { name: "ACK_I", wave: "0.1.0"},
+      { name: "ADR_O", wave: "x==xx", data: ["0x01", "0x02"]},
+      { name: "WE_O", wave: "x0.xx"},
+      { name: "DAT_O", wave: "xxxxx"},
+      { name: "SEL_O", wave: "x=.xx", data: ["0x1"]},
+      { name: "DAT_I", wave: "xx==x", data: ["0x12", "0x34"]},
+    ]
+}
+</script>
+
+- `a` 周期：master 请求读地址 0x01，slave 接收读请求（`STALL_O=0`）
+- `b` 周期：slave 返回读请求结果 0x12，并设置 `ACK_I=1`；同时 master 请求读地址 0x02，slave 接收读请求（`STALL_O=0`）
+- `c` 周期：slave 返回读请求结果 0x34，并设置 `ACK_I=1`；master 不再发起请求，设置 `STB_O=0`
+- `d` 周期：所有请求完成，master 设置 `CYC_O=0`
+
+这样我们就实现了一个每周期进行一次读操作的 slave。
+
 ## 参考文档
 
 - [Wishbone Spec B4](https://cdn.opencores.org/downloads/wbspec_b4.pdf)
