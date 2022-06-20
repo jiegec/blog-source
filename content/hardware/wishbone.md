@@ -159,7 +159,7 @@ title: 「教学」Wishbone 总线协议
       { name: "CLK_I", wave: "p....", node: ".abcd"},
       { name: "CYC_O", wave: "01..0"},
       { name: "STB_O", wave: "01.0."},
-      { name: "STALL_O", wave: "0...."},
+      { name: "STALL_I", wave: "0...."},
       { name: "ACK_I", wave: "0.1.0"},
       { name: "ADR_O", wave: "x==xx", data: ["0x01", "0x02"]},
       { name: "WE_O", wave: "x0.xx"},
