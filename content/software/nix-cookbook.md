@@ -126,11 +126,40 @@ home-manager switch
 ```nix
 # Allow unfree
 nixpkgs.config.allowUnfree = true;
+nixpkgs.config.allowUnfreePredicate = (pkg: true);
 
 # User wide packages
 home.packages = with pkgs; [
   xxx
 ];
+```
+
+生成 Nix 配置 `~/.config/nix/nix.conf`：
+
+```nix
+# Enable flakes & setup TUNA mirror
+nix.package = pkgs.nix;
+nix.settings = {
+  experimental-features = [ "nix-command" "flakes" ];
+  substituters = [ "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" "https://cache.nixos.org/"];
+};
+```
+
+Shell 环境变量和 PATH：
+
+```nix
+home.sessionVariables = {
+  A = "B";
+};
+home.sessionPath = [
+  "$HOME/.local/bin"
+];
+```
+
+离线 Home Manager 文档（用 `home-manager-help` 命令打开）：
+
+```nix
+manual.html.enable = true;
 ```
 
 ### 覆盖依赖版本
@@ -185,6 +214,31 @@ programs.fish.shellInit = ''
 '';
 ```
 
+### 配置 git
+
+同理，也可以在 home manager 中配置 git：
+
+```nix
+programs.git.enable = true;
+programs.git.lfs.enable = true;
+programs.git.userName = "Someone";
+programs.git.userEmail = "mail@example.com";
+programs.git.extraConfig = {
+  core = {
+    quotepath = false;
+  };
+  pull = {
+    rebase = false;
+  };
+};
+programs.git.ignores = [
+  ".DS_Store"
+];
+```
+
+生成的 `git` 配置在 `~/.config/git/config` 和 `~/.config/git/ignore`。
+
+
 ## Flakes
 
 Flakes 可以用来把多个系统的 nix 配置写在一个项目中。例如：
@@ -229,30 +283,6 @@ home-manager switch --flake .
 ```
 
 这样就可以把若干个系统上的 nix 配置管理在一个仓库中了。
-
-## 配置 git
-
-同理，也可以在 home manager 中配置 git：
-
-```nix
-programs.git.enable = true;
-programs.git.lfs.enable = true;
-programs.git.userName = "Someone";
-programs.git.userEmail = "mail@example.com";
-programs.git.extraConfig = {
-  core = {
-    quotepath = false;
-  };
-  pull = {
-    rebase = false;
-  };
-};
-programs.git.ignores = [
-  ".DS_Store"
-];
-```
-
-生成的 `git` 配置在 `~/.config/git/config` 和 `~/.config/git/ignore`。
 
 ## 实用工具
 
@@ -358,3 +388,12 @@ pkgs.mkShell {
 ```
 
 然后可以用 `nix-shell` 来进入开发环境。如果不希望外面的环境变量传递进去，可以用 `nix-shell --pure`。
+
+## 搜索
+
+按名字搜索一个包：
+
+```bash
+nix search nixpkgs xxx
+nix-env -qaP yyy
+```
