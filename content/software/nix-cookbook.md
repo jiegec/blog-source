@@ -24,6 +24,20 @@ nixos-rebuild switch
 nixos-rebuild switch --upgrade
 ```
 
+应用 Flakes 配置文件并显示变化：
+
+```python
+#!/usr/bin/env python3
+import os
+
+user = os.getenv("USER")
+home = f"/nix/var/nix/profiles/"
+old = home + os.readlink(f"{home}system")
+os.system("sudo nixos-rebuild switch --flake .")
+new = home + os.readlink(f"{home}system")
+os.system(f"nix store diff-closures {old} {new}")
+```
+
 ### 更新大版本
 
 如果要更新 NixOS 21.11 到 22.05:
@@ -117,6 +131,20 @@ ln -sf /run/current-system/sw/bin/node
 
 ```shell
 home-manager switch
+```
+
+应用 Flakes 配置文件并显示变化：
+
+```python
+#!/usr/bin/env python3
+import os
+
+user = os.getenv("USER")
+home = f"/nix/var/nix/profiles/per-user/{user}/"
+old = home + os.readlink(f"{home}profile")
+os.system("home-manager switch --flake .")
+new = home + os.readlink(f"{home}profile")
+os.system(f"nix store diff-closures {old} {new}")
 ```
 
 ### 常用配置
