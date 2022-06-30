@@ -215,7 +215,7 @@ The file name is invalid(does not end with .cfg).
 [switch-if-range]
 ```
 
-### 查看 ARP 缓存
+### 查看 MAC 地址表
 
 ```
 [switch]show mac-address
@@ -226,4 +226,45 @@ The file name is invalid(does not end with .cfg).
 ```
 [switch]lldp gloabl enable
 [switch]lldp compliance cdp
+```
+
+## Mellanox
+
+### 进入配置模式
+
+```
+switch > enable
+switch # configure terminal
+switch (config) #
+```
+
+### 查看当前配置
+
+```
+switch (config) # show running-config
+```
+
+### 查看 lldp 邻居
+
+```
+switch (config) # show lldp remote
+```
+
+### 保存配置
+
+```
+switch (config) # configuration write
+```
+
+### 批量配置 interface
+
+```
+switch (config) # interface ethernet 1/1/1-1/1/4
+switch (config interface ethernet 1/1/1-1/1/4) #
+```
+
+### 查看 MAC 地址表
+
+```
+switch (config) # show mac-address-table
 ```
