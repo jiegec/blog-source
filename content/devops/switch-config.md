@@ -211,7 +211,7 @@ The file name is invalid(does not end with .cfg).
 ### 批量配置 interface
 
 ```
-[switch]interface range GigabitEthernet 1/0/1 to GigabitEtherent 1/0/24
+[switch]interface range GigabitEthernet 1/0/1 to GigabitEthernet 1/0/24
 [switch-if-range]
 ```
 
@@ -224,7 +224,7 @@ The file name is invalid(does not end with .cfg).
 ### 打开 LLDP 和 CDP
 
 ```
-[switch]lldp gloabl enable
+[switch]lldp global enable
 [switch]lldp compliance cdp
 ```
 
