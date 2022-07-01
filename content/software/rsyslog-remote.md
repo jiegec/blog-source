@@ -56,6 +56,12 @@ systemctl enable --now rsyslog-remote
 
 这样就实现了远程日志的收集。
 
+## logrotate 设置
+
+为了防止日志太多，还需要配置 logrotate。
+
+复制 `/etc/logrotate.d/rsyslog` 到 `/etc/logrotate.d/rsyslog-remote`，然后修改开头为 `/var/log/rsyslog-remote/*.log` 即可，路径和上面对应。
+
 ## 参考文档
 
 - [How to Set Up Remote Logging on Linux Using rsyslog](https://www.makeuseof.com/set-up-linux-remote-logging-using-rsyslog/)
