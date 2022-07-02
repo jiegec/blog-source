@@ -425,3 +425,19 @@ pkgs.mkShell {
 nix search nixpkgs xxx
 nix-env -qaP yyy
 ```
+
+## Nixpkgs
+
+可以从 TUNA 镜像上先 clone 一份到本地，然后再添加 github 上游作为 remote。
+
+从本地 nixpkgs 安装：
+
+```shell
+nix-env -f $PWD -iA xxx
+```
+
+从本地 nixpkgs 开一个 shell：
+
+```shell
+nix-shell -I nixpkgs=$PWD -p xxx
+```
