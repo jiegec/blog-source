@@ -94,3 +94,5 @@ Configurations:                              Next Boot       New
 Applying... Done!
 -I- Please reboot machine to load new configurations.
 ```
+
+整个安装流程在仓库 <https://github.com/jiegec/mft-debian-bookworm> 中用脚本实现。
