@@ -62,7 +62,9 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 - cuda 11.4 sm_35 to sm_87
 - cuda 11.3 sm_35 to sm_86
+- cuda 11.1 sm_35 to sm_86
 - cuda 11.0 sm_35 to sm_80
+- cuda 10.2 sm_30 to sm_75
 - cuda 10.0 sm_30 to sm_75
 - cuda 9.1 sm_30 to sm_72
 - cuda 9.0 sm_30 to sm_70
