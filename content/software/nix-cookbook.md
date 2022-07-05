@@ -436,6 +436,12 @@ nix-env -qaP yyy
 nix-env -f $PWD -iA xxx
 ```
 
+从本地 nixpkgs 编译:
+
+```shell
+nix-build $PWD -A xxx
+```
+
 从本地 nixpkgs 开一个 shell：
 
 ```shell

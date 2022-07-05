@@ -21,6 +21,8 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 可以通过 apt show cuda-runtime-x-x 找到：
 
+- cuda 11.7 >= 515
+- cuda 11.6 >= 510
 - cuda 11.5 >= 495
 - cuda 11.4 >= 470
 - cuda 11.3 >= 465
@@ -34,19 +36,21 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 - cuda 9.1 >= 387
 - cuda 9.0 >= 384
 
-使用 nvidia-smi 看到的 CUDA 版本通常就是这个驱动对应的 CUDA 版本。
+使用 nvidia-smi 看到的 CUDA 版本，通常就是这个驱动在上表里对应的 CUDA 版本，例如内核驱动版本是 470 的话，看到的 CUDA 版本就是 11.4。
 
 不过，实际上兼容的版本会更多一些：[官方文档](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html) 里面写了 CUDA 11.x 可以兼容 NVIDIA >= 450。
 
-## CUDA 版本和 GCC 版本兼容性
+## CUDA 版本和 GCC/Clang 版本兼容性
 
 可以在 cuda/include/crt/host_config.h 文件里找到：
 
 - cuda 11.5: gcc <= 11
 - cuda 11.4: gcc <= 10
-- cuda 11.0: gcc <= 9
-- cuda 10.2: gcc <= 8
-- cuda 10.1: gcc <= 8
+- cuda 11.3: gcc <= 10, 3.2 < clang < 12
+- cuda 11.1: gcc <= 10, 3.2 < clang < 11
+- cuda 11.0: gcc <= 9, 3.2 < clang < 10
+- cuda 10.2: gcc <= 8, 3.2 < clang < 9
+- cuda 10.1: gcc <= 8, 3.2 < clang < 9
 - cuda 10.0: gcc <= 7
 - cuda 9.1: gcc <= 6
 
