@@ -23,7 +23,6 @@ Ubuntu 源有自带的 NVIDIA 驱动版本，但这里我们要使用 NVIDIA 的
 此时，下面就会显示一些命令，复制下来执行：
 
 ```shell
-
 wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
 sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
 sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub
