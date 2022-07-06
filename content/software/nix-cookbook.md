@@ -447,3 +447,7 @@ nix-build $PWD -A xxx
 ```shell
 nix-shell -I nixpkgs=$PWD -p xxx
 ```
+
+## VSCode
+
+可以安装 <https://github.com/nix-community/vscode-nix-ide/> 插件，配合 `rnix-lsp` 来使用。
