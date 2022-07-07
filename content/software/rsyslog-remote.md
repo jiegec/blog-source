@@ -60,7 +60,7 @@ systemctl enable --now rsyslog-remote
 
 为了防止日志太多，还需要配置 logrotate。
 
-复制 `/etc/logrotate.d/rsyslog` 到 `/etc/logrotate.d/rsyslog-remote`，然后修改开头为 `/var/log/rsyslog-remote/*.log` 即可，路径和上面对应。
+复制 `/etc/logrotate.d/rsyslog` 到 `/etc/logrotate.d/rsyslog-remote`，然后修改开头为 `/var/log/rsyslog-remote/*.log` 即可，路径和上面对应。注意脚本 `/usr/lib/rsyslog/rsyslog-remote` 也需要复制一份，然后修改一下 systemd service 名字。
 
 ## 参考文档
 
