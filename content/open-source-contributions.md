@@ -40,6 +40,10 @@ permalink: /open-source-contributions/
 - [Fix issue #269 to add additional broadcast in some cases](https://gitlab.com/gpaw/gpaw/-/merge_requests/863)
 - [Capture and ignore AttributeError thrown in getpreferredencoding() in newer Python versions](https://gitlab.com/gpaw/gpaw/-/merge_requests/858)
 
+## gtkwave
+
+- [Fix compilation under macOS for Nix](https://github.com/gtkwave/gtkwave/pull/136)
+
 ## KiCad
 
 - [libcontext: Initial support for Apple Silicon](https://gitlab.com/kicad/code/kicad/-/merge_requests/602)
@@ -51,6 +55,16 @@ permalink: /open-source-contributions/
 ## MiKTeX
 
 - [Initial support for native Apple Silicon target](https://github.com/MiKTeX/miktex/pull/710)
+
+## Nixpkgs
+
+- [musescore: 2.1 -> 3.6.2.548020600 on darwin](https://github.com/NixOS/nixpkgs/pull/179977)
+- [openconnect: 8.20 -> 9.01](https://github.com/NixOS/nixpkgs/pull/179859)
+- [python310Packages.cocotb: unbreak on Darwin](https://github.com/NixOS/nixpkgs/pull/178918)
+- [darwin.iproute2mac: 1.2.1 -> 1.4.0](https://github.com/NixOS/nixpkgs/pull/178822)
+- [radare2: unbreak on Darwin](https://github.com/NixOS/nixpkgs/pull/178662)
+- [radare2: 5.6.8 -> 5.7.2](https://github.com/NixOS/nixpkgs/pull/178659)
+- [gtkwave: support darwin build](https://github.com/NixOS/nixpkgs/pull/178552)
 
 ## PyNN
 
