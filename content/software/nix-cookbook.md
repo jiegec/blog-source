@@ -448,6 +448,24 @@ nix-build $PWD -A xxx
 nix-shell -I nixpkgs=$PWD -p xxx
 ```
 
+### Nixpkgs 的分支
+
+Nixpkgs 开发分支主要有三个：
+
+1. master
+2. staging-next
+3. staging
+
+发 PR 的时候，如果需要重新编译的包比较多，就要往 staging 提交；比较少，就往 staging-next 提交。
+
+CI 会自动把 master 合并到 staging-next，也会把 staging-next 合并到 staging。这样 master 上的改动也会同步到 staging 上。
+
+维护者会定义把 staging 手动合并到 staging-next，然后手动合并 staging-next 到 staging。这个的周期一般是一周多，可以在 pr 里搜索 staging-next。
+
+Hydra 会编译 master 分支和 staging-next 分支上的包，不会编译 staging 分支上的包。同理，binary cache 上前两个分支上有的，而 staging 上没有的。
+
+参考：<https://nixos.org/manual/nixpkgs/stable/#submitting-changes-commit-policy>
+
 ## VSCode
 
 可以安装 <https://github.com/nix-community/vscode-nix-ide/> 插件，配合 `rnix-lsp` 来使用。
