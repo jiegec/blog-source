@@ -7,6 +7,15 @@ permalink: /open-source-contributions/
 
 记录我对开源软件的一些微小的贡献，以勉励自己，督促自己不忘为社区做贡献。
 
+## Maintenance
+
+我主要参与如下开源项目的维护：
+
+- [canokeys](https://github.com/canokeys)
+- [lsof-org/lsof](https://github.com/lsof-org/lsof)
+- [nfcim](https://github.com/nfcim)
+- [NixOS/nixpkgs](https://github.com/nixos/nixpkgs)
+
 ## aws-cdk
 
 - [feat(cloudfront): support Behavior-specific viewer protocol policy for CloudFrontWebDistribution](https://github.com/aws/aws-cdk/pull/16389)
