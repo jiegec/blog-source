@@ -58,7 +58,17 @@ permalink: /open-source-contributions/
 
 ## Nixpkgs
 
+- [lsof: fix -fno-common builds on darwin](https://github.com/NixOS/nixpkgs/pull/181553)
+- [libressl: fix build on aarch64-darwin](https://github.com/NixOS/nixpkgs/pull/181239)
+- [glances: fix tests on darwin](https://github.com/NixOS/nixpkgs/pull/181073)
+- [mono: 6.12.0.122 -> 6.12.0.182](https://github.com/NixOS/nixpkgs/pull/181051)
+- [wkhtmltopdf: unbreak on darwin](https://github.com/NixOS/nixpkgs/pull/180669)
+- [Add darwin support for hdfview](https://github.com/NixOS/nixpkgs/pull/180225)
+- [hdf5_1_10: 1.10.6 -> 1.10.9](https://github.com/NixOS/nixpkgs/pull/180085)
+- [hdf5: 1.12.1 -> 1.12.2](https://github.com/NixOS/nixpkgs/pull/180083)
+- [hdf4: simplify javaSupport](https://github.com/NixOS/nixpkgs/pull/180081)
 - [musescore: 2.1 -> 3.6.2.548020600 on darwin](https://github.com/NixOS/nixpkgs/pull/179977)
+- [darwin.xnu: fix build on aarch64-darwin](https://github.com/NixOS/nixpkgs/pull/179921)
 - [openconnect: 8.20 -> 9.01](https://github.com/NixOS/nixpkgs/pull/179859)
 - [python310Packages.cocotb: unbreak on Darwin](https://github.com/NixOS/nixpkgs/pull/178918)
 - [darwin.iproute2mac: 1.2.1 -> 1.4.0](https://github.com/NixOS/nixpkgs/pull/178822)
