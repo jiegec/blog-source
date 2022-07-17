@@ -62,3 +62,14 @@ $ cephadm adopt --style legacy --name osd.ID
 ```
 
 这样就可以用 cephadm 管理了。
+
+## 配置 k8s
+
+配置好外部 ceph 集群后，还需要配置 k8s rook。
+
+参考 <https://rook.github.io/docs/rook/v1.8/ceph-cluster-crd.html#external-cluster>，大概有这么几步：
+
+1. 在 ceph 集群上运行 create-external-cluster-resources.sh，创建用户，并且导出 key
+2. 在 k8s 集群上应用第一步生成的环境变量，然后运行 import-external-cluster.sh
+3. 复制一份 cluster-external.yaml 然后应用
+4. 复制 storageclass.yaml，把里面的 namespace 改成 rook-ceph-external
