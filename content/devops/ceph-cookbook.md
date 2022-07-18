@@ -391,6 +391,20 @@ placement:
   host_pattern: 'xxx'
 ```
 
+### 配置监控
+
+添加监控相关的服务：
+
+```shell
+ceph orch apply node-exporter
+ceph orch apply alertmanager
+ceph orch apply prometheus
+ceph orch apply grafana
+ceph orch ps
+```
+
+然后就可以访问 Grafana 看到集群的状态。
+
 ## 更新
 
 使用容器编排器来升级：
