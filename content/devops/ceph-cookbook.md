@@ -364,6 +364,33 @@ ceph orch ps
 ceph orch host ls
 ```
 
+### 添加新机器
+
+首先，复制 `/etc/ceph/ceph.pub` 到新机器的 `/root/.ssh/authorized_keys` 中
+
+接着，添加机器到编排器中：
+
+```shell
+ceph orch host add xxxx y.y.y.y
+```
+
+导出编排器配置：
+
+```shell
+ceph orch ls --export > cephadm.yaml
+```
+
+如果想让一些 daemon 只运行在部分主机上，可以修改：
+
+```yaml
+# change
+placement:
+  host_pattern: '*'
+# to
+placement:
+  host_pattern: 'xxx'
+```
+
 ## 更新
 
 使用容器编排器来升级：
