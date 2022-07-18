@@ -286,6 +286,45 @@ getfattr -n ceph.quota.max_files PATH
 
 限制目录大小和文件数量。LIMIT 是 0 的时候表示没有限制。
 
+### NFS
+
+可以把 CephFS 或者 RGW 通过 NFS 的方式共享出去。
+
+启动 NFS 服务：
+
+```shell
+ceph nfs cluster create xxx
+ceph nfs cluster create xxx "host1,host2"
+```
+
+在主机上运行 NFS 服务器，NFS 集群的名字叫做 xxx。
+
+查看 NFS 集群信息：
+
+```shell
+ceph nfs cluster info xxx
+```
+
+列举所有 NFS 集群：
+
+```shell
+ceph nfs cluster ls
+```
+
+NFS 导出 CephFS：
+
+```shell
+ceph nfs export create cephfs --cluster-id xxx --pseudo-path /a/b/c --fsname some-cephfs-name [--path=/d/e/f] [--client_addr y.y.y.y]
+```
+
+这样就导出了 CephFS 内的一个目录，客户端可以通过 NFS 挂载 /a/b/c 路径（pseudo path）来访问。可以设置客户端的 IP 访问权限。
+
+这样在客户端就可以 mount：
+
+```shell
+mount -t nfs x.x.x.x:/a/b/c /mnt
+```
+
 ## RadosGW
 
 RGW 提供了 S3 或者 OpenStack Swift 兼容的对象存储 API。
@@ -358,5 +397,6 @@ ceph -W cephadm
 - [Ceph CephFS Quota](https://docs.ceph.com/en/latest/cephfs/quota/)
 - [Ceph Basic Block Device Commands](https://docs.ceph.com/en/latest/rbd/rados-rbd-cmds/)
 - [Ceph Upgrade](https://docs.ceph.com/en/quincy/cephadm/upgrade/)
+- [Ceph CephFS & RGW Exports Over NFS](https://docs.ceph.com/en/latest/mgr/nfs/)
 - [ceph 架构和概念](https://llussy.github.io/2019/08/17/ceph-architecture/)
 - [RedHat Object Gateway Guide](https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/5/html/object_gateway_guide/the-ceph-object-gateway_rgw)
