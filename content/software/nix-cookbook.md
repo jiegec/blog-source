@@ -466,6 +466,23 @@ Hydra 会编译 master 分支和 staging-next 分支上的包，不会编译 sta
 
 参考：<https://nixos.org/manual/nixpkgs/stable/#submitting-changes-commit-policy>
 
+### 提交贡献
+
+注意事项：
+
+1. 升级一些比较老的写法，例如 mkDerivation -> stdenv.mkDerivation，Qt 的 hook
+2. 引入 patch 的时候，建议先向上游提 PR，如果合并了，就直接用上游的 commit；如果没有合并，退而求其次可以用 pr 的 patch；如果没有提 PR 的渠道，或者上游的 commit 无法应用到当前的版本，或者这个 patch 没有普适性，再写本地的 patch；注释里要写打 patch 的原因和相关的 issue 链接，什么时候不再需要这个 patch，并且起个名字
+3. 不知道 SHA256 的时候，可以注释掉或者随便写一个，这样 nix build 的时候会重新下载，然后把正确的显示出来
+4. 对于有命令的包，可以添加 testVersion 测试
+5. 长时间没有 review 的 pr，可以在 discourse 上回复帖子。
+6. 更新之前，可以搜索一下，有没有相关的 issue 或者 pr；如果有 issue，新建 pr 的时候要提一下
+
+一些常见的问题：
+
+1. 编译器打开 `-fno-common`
+2. Darwin 上的 clang 没有打开 LTO
+3. AArch64 Darwin 上的 gfortran 的 stack protector 不工作
+
 ## VSCode
 
 可以安装 <https://github.com/nix-community/vscode-nix-ide/> 插件，配合 `rnix-lsp` 来使用。
