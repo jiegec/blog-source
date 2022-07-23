@@ -483,6 +483,12 @@ Hydra 会编译 master 分支和 staging-next 分支上的包，不会编译 sta
 2. Darwin 上的 clang 没有打开 LTO
 3. AArch64 Darwin 上的 gfortran 的 stack protector 不工作
 
+阅读文档：<https://github.com/NixOS/nixpkgs/blob/master/doc/contributing/quick-start.chapter.md> 和 <https://github.com/NixOS/nixpkgs/blob/master/doc/contributing/coding-conventions.chapter.md>
+
 ## VSCode
 
 可以安装 <https://github.com/nix-community/vscode-nix-ide/> 插件，配合 `rnix-lsp` 来使用。
+
+## 杂项
+
+可以用 `nix copy` 命令在不同机器的 store 之间复制文件，见 [nix copy - copy paths between Nix stores](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-copy.html)。
