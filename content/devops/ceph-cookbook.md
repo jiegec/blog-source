@@ -391,6 +391,12 @@ placement:
   host_pattern: 'xxx'
 ```
 
+然后应用：
+
+```shell
+ceph orch apply -i cephadm.yaml
+```
+
 ### 配置监控
 
 添加监控相关的服务：

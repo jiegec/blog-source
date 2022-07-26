@@ -479,9 +479,10 @@ Hydra 会编译 master 分支和 staging-next 分支上的包，不会编译 sta
 
 一些常见的问题：
 
-1. 编译器打开 `-fno-common`
-2. Darwin 上的 clang 没有打开 LTO
-3. AArch64 Darwin 上的 gfortran 的 stack protector 不工作
+1. 编译器打开 `-fno-common` 后，可能会导致一些链接问题
+2. Darwin 上的 clang 没有打开 LTO，也没有打开 Universal 支持
+3. AArch64 Darwin 上的 gfortran 的 stack protector 不工作，需要把 hardening 关掉
+4. 当编译报错是 `-Werror` 导致的时候，按照 warning 类型在 NIX_CFLAGS_COMPILE 中添加 `-Wno-error=warning-type`
 
 阅读文档：<https://github.com/NixOS/nixpkgs/blob/master/doc/contributing/quick-start.chapter.md> 和 <https://github.com/NixOS/nixpkgs/blob/master/doc/contributing/coding-conventions.chapter.md>
 
