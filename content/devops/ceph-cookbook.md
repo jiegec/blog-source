@@ -86,6 +86,103 @@ ceph osd tree
 
 显示了存储的层级，其中 ID 非负数是实际的 OSD，负数是其他层级，例如存储池，机柜，主机等等。
 
+## CRUSH
+
+CRUSH 是一个算法，指定了如何分配 OSD，到什么类型的设备，还有它的 failure domain 等等。例如，如果指定 failure domain 为 host，那么它就会分配到不同 host 上的 osd，这样一个 host 挂了不至于全军覆没。类似地，还可以设定更多级别的 failure domain，例如 row，rack，chassis 等等。
+
+OSD 可以设置它的 CRUSH Location，在 ceph.conf 中定义。
+
+为了配置数据置放的规则，需要设置 CRUSH Rule。
+
+列举 CRUSH Rule：
+
+```shell
+ceph osd crush rule ls
+ceph osd crush rule dump
+```
+
+查看 CRUSH 层级：
+
+```shell
+ceph osd crush tree --show-shadow
+```
+
+在里面可能会看到 `default~ssd`，它指的意思就是只保留 default 下面的 ssd 设备。
+
+文本形式导出 CRUSH 配置：
+
+```shell
+ceph osd getcrushmap | crushtool -d - -o crushmap
+cat crushmap
+```
+
+可以看到 Rule 的定义，如：
+
+```
+rule replicated_rule {
+        id 0
+        # a replicated rule
+        type replicated
+        # iterate all devices of "default"
+        step take default
+        # select n osd with failure domain "osd"
+        # firstn: continuous
+        step chooseleaf firstn 0 type osd
+        step emit
+}
+
+
+rule erasure-hdd {
+        id 4
+        # an erasure rule
+        type erasure
+        # try more times to find a good mapping
+        step set_chooseleaf_tries 5
+        step set_choose_tries 100
+        # iterate hdd devices of "default", i.e. "default~hdd"
+        step take default class hdd
+        # select n osd with failure domain "osd"
+        # indep: replace failed osd with another
+        step choose indep 0 type osd
+        step emit
+}
+
+rule replicated-hdd-osd {
+        id 5
+        # a replicated rule
+        type replicated
+        # iterate hdd devices of "default", i.e. "default~hdd"
+        step take default class hdd
+        # select n osd with failure domain "osd"
+        # firstn: continuous
+        step choose firstn 0 type osd
+        step emit
+}
+
+rule replicated-host {
+        id 6
+        # a replicated rule
+        type replicated
+        # iterate all devices of "default"
+        step take default
+        # select n osd with failure domain "host"
+        # firstn: continuous
+        step chooseleaf firstn 0 type host
+        step emit
+}
+```
+
+新建一个 Replicated CRUSH Rule：
+
+```shell
+# root=default, failure domain=osd
+ceph osd crush rule create-replicated xxx default osd
+# root=default, failure domain=host, class=ssd
+ceph osd crush rule create-replicated yyy default host ssd
+```
+
+如果指定了 device class，它只会在对应类型的设备上存储。
+
 ## Pool
 
 Pool 是存储池，后续的 RBD/CephFS 功能都需要指定存储池来工作。
@@ -99,7 +196,7 @@ ceph osd pool create PG_NUM
 
 为了性能考虑，可以设置 PG（Placement Group）数量。默认情况下，会创建 replicated 类型的存储池，也就是会存多份，类似 RAID1。也可以设置成 erasure 类型的存储池，类似 RAID5。
 
-每个 Placement Group 里的数据会保存在同一组 OSD 中。数据通过 hash ，会分布在不同的 PG 里。
+每个 Placement Group 里的数据会保存在同一组 OSD 中。数据通过 hash，会分布在不同的 PG 里。
 
 列举所有的存储池：
 
@@ -124,6 +221,49 @@ ceph osd pool stats
 ```shell
 ceph osd mksnap xxx snap-xxx-123
 ```
+
+### PG
+
+PG 是数据存放的组，每个对象都会放到一个 PG 里面，而 PG 会决定它属于哪些 OSD。PG 数量只有一个的话，那么一个 pool 的所有数据都会存放在某几个 OSD 中，一旦这几个 OSD 都不工作了，那么整个 pool 的数据都不能访问了。PG 增多了以后，就会分布到不同的 OSD 上，并且各个 OSD 的占用也会比较均匀。
+
+查看 PG 状态：
+
+```shell
+ceph pg dump
+```
+
+#### Auto Scale
+
+PG 数量可以让集群自动调整：
+
+```shell
+ceph osd pool set xxx pg_autoscale_mode on
+```
+
+设置 autoscale 目标为每个 OSD 平均 100 个 PG：
+
+```shell
+ceph config set global mon_target_pg_per_osd 100
+```
+
+全局 autoscale 开关：
+
+```shell
+# Enable
+ceph osd pool unset noautoscale
+# Disable
+ceph osd pool set unautoscale
+# Read
+ceph osd pool get noautoscale
+```
+
+查看 autoscale 状态：
+
+```shell
+ceph osd pool autoscale-status
+```
+
+如果没有显示，说明 autoscale 没有工作，可能的原因是，部分 pool 采用了指定 osd class 的 crush rule，例如指定了 hdd 盘，但是也有部分 pool 没有指定盘的类型，例如默认的 replicated_rule。这时候，把这些盘也设置成一个指定 osd class 的 crush rule 即可。
 
 ## RBD
 
@@ -445,5 +585,7 @@ ceph -W cephadm
 - [Ceph Basic Block Device Commands](https://docs.ceph.com/en/latest/rbd/rados-rbd-cmds/)
 - [Ceph Upgrade](https://docs.ceph.com/en/quincy/cephadm/upgrade/)
 - [Ceph CephFS & RGW Exports Over NFS](https://docs.ceph.com/en/latest/mgr/nfs/)
+- [CRUSH Maps](https://docs.ceph.com/en/quincy/rados/operations/crush-map/)
+- [CRUSH Map Edits](https://docs.ceph.com/en/latest/rados/operations/crush-map-edits/)
 - [ceph 架构和概念](https://llussy.github.io/2019/08/17/ceph-architecture/)
 - [RedHat Object Gateway Guide](https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/5/html/object_gateway_guide/the-ceph-object-gateway_rgw)
