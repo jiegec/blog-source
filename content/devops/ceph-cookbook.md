@@ -88,7 +88,7 @@ ceph osd tree
 
 ## CRUSH
 
-CRUSH 是一个算法，指定了如何分配 OSD，到什么类型的设备，还有它的 failure domain 等等。例如，如果指定 failure domain 为 host，那么它就会分配到不同 host 上的 osd，这样一个 host 挂了不至于全军覆没。类似地，还可以设定更多级别的 failure domain，例如 row，rack，chassis 等等。
+CRUSH 是一个算法，指定了如何给 PG 分配 OSD，到什么类型的设备，确定它的 failure domain 等等。例如，如果指定 failure domain 为 host，那么它就会分配到不同 host 上的 osd，这样一个 host 挂了不至于全军覆没。类似地，还可以设定更多级别的 failure domain，例如 row，rack，chassis 等等。
 
 OSD 可以设置它的 CRUSH Location，在 ceph.conf 中定义。
 
@@ -172,6 +172,10 @@ rule replicated-host {
 }
 ```
 
+choose 和 chooseleaf 的区别是，前者可以 choose 到中间层级，例如先选择 host，再在 host 里面选 osd；而 chooseleaf 是直接找到 osd。所以 `choose type osd` 和 `chooseleaf type osd` 是等价的。
+
+如果这个搜索条件比较复杂，例如找到了某一个 host，里面的 osd 个数不够，就需要重新搜。
+
 新建一个 Replicated CRUSH Rule：
 
 ```shell
@@ -224,7 +228,7 @@ ceph osd mksnap xxx snap-xxx-123
 
 ### PG
 
-PG 是数据存放的组，每个对象都会放到一个 PG 里面，而 PG 会决定它属于哪些 OSD。PG 数量只有一个的话，那么一个 pool 的所有数据都会存放在某几个 OSD 中，一旦这几个 OSD 都不工作了，那么整个 pool 的数据都不能访问了。PG 增多了以后，就会分布到不同的 OSD 上，并且各个 OSD 的占用也会比较均匀。
+PG 是数据存放的组，每个对象都会放到一个 PG 里面，而 PG 会决定它保存到哪些 OSD 上（具体哪些 OSD 是由 CRUSH 决定的）。PG 数量只有一个的话，那么一个 pool 的所有数据都会存放在某几个 OSD 中，一旦这几个 OSD 都不工作了，那么整个 pool 的数据都不能访问了。PG 增多了以后，就会分布到不同的 OSD 上，并且各个 OSD 的占用也会比较均匀。
 
 查看 PG 状态：
 
