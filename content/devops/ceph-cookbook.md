@@ -119,6 +119,7 @@ cat crushmap
 可以看到 Rule 的定义，如：
 
 ```
+# simple replicated
 rule replicated_rule {
         id 0
         # a replicated rule
@@ -131,7 +132,7 @@ rule replicated_rule {
         step emit
 }
 
-
+# erasure on hdd
 rule erasure-hdd {
         id 4
         # an erasure rule
@@ -147,6 +148,7 @@ rule erasure-hdd {
         step emit
 }
 
+# replicated on hdd
 rule replicated-hdd-osd {
         id 5
         # a replicated rule
@@ -159,6 +161,7 @@ rule replicated-hdd-osd {
         step emit
 }
 
+# replicated on different hosts
 rule replicated-host {
         id 6
         # a replicated rule
@@ -168,6 +171,23 @@ rule replicated-host {
         # select n osd with failure domain "host"
         # firstn: continuous
         step chooseleaf firstn 0 type host
+        step emit
+}
+
+# replicate one on ssd, two on hdd
+rule replicated-ssd-primary {
+        id 7
+        # a replicated rule
+        type replicated
+
+        # iterate ssd devices of "default"
+        step take default class ssd
+        step chooseleaf firstn 1 type host
+        step emit
+
+        # iterate hdd devices of "default"
+        step take default class hdd
+        step chooseleaf firstn 2 type host
         step emit
 }
 ```
