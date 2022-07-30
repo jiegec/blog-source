@@ -43,3 +43,25 @@ wsreset.exe -i
 ```
 
 这个方法见 [Parallels Desktop KB128520](https://kb.parallels.com/128520)。
+
+UPDATE:
+
+VMware Fusion 发布了新版本 [22H2](https://blogs.vmware.com/teamfusion/2022/07/just-released-vmware-fusion-22h2-tech-preview.html)，有官方的 Windows 11 on ARM 支持了：
+
+- Windows 11 on Intel and Apple Silicon with 2D GFX and Networking
+- VMtools installation for Windows 11 GOS on M1
+- Improved Linux support on M1
+- 3D Graphics HW Acceleration and OpenGL 4.3 in Linux VMs* (Requires Linux 5.19+ & Mesa 22.1.3+)
+- Virtual TPM Device
+- Fast Encryption
+- Universal Binary
+
+并且不需要上面写的网卡的 workaround 了：
+
+	vmxnet3 Networking Drivers for Windows on ARM
+	
+	While Windows does not yet ship with our vmxnet3 networking driver for
+	Windows on ARM as it now does for Intel, the VMware Tools ISO on ARM
+	contains the 2 currently supported drivers for graphics and networking.
+
+实测安装 VMware Tools 以后，就可以成功用 vmxnet3 网卡上网了，不需要之前的 bcdedit 方案。
