@@ -23,6 +23,14 @@ Rust 项目一般是用 Cargo 管理，但是它的缺点是每个项目都要�
 
 ## cargo2nix
 
+### 卖点
+
+cargo2nix 的 README 提到了它的卖点：
+
+- Development Shell - knowing all the dependencies means easy creation of complete shells. Run nix develop or direnv allow in this repo and see!
+- Caching - CI & CD pipelines move faster when purity guarantees allow skipping more work!
+- Reproducibility - Pure builds. Access to all of nixpkgs for repeatable environment setup across multiple distributions and platforms
+
 ### 安装
 
 cargo2nix 提供了 flakes 支持，不需要单独安装。
@@ -82,6 +90,14 @@ webhookd 0.2.1
 cargo2nix 解析了 Cargo.lock，生成 Cargo.nix 文件，最后包装成 flake.nix。
 
 ## crane
+
+### 卖点
+
+crane 的 README 提到了它的卖点：
+
+- Source fetching: automatically done using a Cargo.lock file
+- Incremental: build your workspace dependencies just once, then quickly lint, build, and test changes to your project without slowing down
+- Composable: split builds and tests into granular steps. Gate CI without burdening downstream consumers building from source.
 
 ### 安装
 
@@ -155,6 +171,16 @@ webhookd 0.2.1
 crane 会把所有的依赖打包起来进行一次构建，然后再加上项目的源代码再构建一次，这样来实现 incremental compilation。它还提供了一些 check lint 等实用的命令。但是，它的目的和其他项目不大一样，它并不考虑跨项目的依赖缓存。
 
 ## crate2nix
+
+### 卖点
+
+crate2nix 在 README 中写的卖点：
+
+- Same dependency tree as cargo: It uses cargo_metadata to obtain the dependency tree from cargo. Therefore, it will use the exact same library versions as cargo and respect any locked down version in Cargo.lock.
+- Smart caching: It uses smart crate by crate caching so that nix rebuilds exactly the crates that need to be rebuilt. Compare that to docker layers...
+- Nix ecosystem goodness: You can use all things that make the nix/NixOS ecosystem great, e.g. distributed/remote builds, build minimal docker images, deploy your binary as a service to the cloud with NixOps, ...
+- Out of the box support for libraries with non-rust dependencies: It builds on top of the buildRustCrate function from NixOS so that native dependencies of many rust libraries are already correctly fetched when needed. If your library with native dependencies is not yet supported, you can customize defaultCrateOverrides / crateOverrides, see below.
+- Easy to understand nix template: The actual nix code is generated via templates/build.nix.tera so you can fix/improve the nix code without knowing rust if all the data is already there.
 
 ### 安装
 
