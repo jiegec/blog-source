@@ -300,3 +300,131 @@ webhookd 0.2.1
 ### 原理
 
 naersk 的原理和 crane 是类似的：把所有依赖下载下来，创建一个只有依赖的项目，然后用 cargo 预编译，编译完得到的 target 目录打成 `target.tar.zst`；然后基于预编译的结果再编译整个项目。
+
+## nocargo
+
+### 卖点
+
+nocargo 的 README 提到了以下卖点：
+
+- No IFDs (import-from-derivation). See meme.
+- No cargo dependency during building. Only rustc.
+- No need for hash prefetching or code generation1.
+- Crate level caching, globally shared.
+- nixpkgs integration for non-Rust dependencies.
+
+README 也提到了 nocargo, cargo2nix, naersk 和 buildRustPackage 的对比。
+
+### 使用
+
+nocargo 目前[仅支持 x86_64-linux 平台](https://github.com/oxalica/nocargo/blob/90a6d0e8dcfc2205fa69423d42bff6fd1b997121/flake.nix#L13)。
+
+在一个 Cargo 项目中，运行：
+
+```shell
+nix run github:oxalica/nocargo init
+```
+
+它会生成 `flake.nix` 文件如下：
+
+```nix
+# See more usages of nocargo at https://github.com/oxalica/nocargo#readme
+{
+  description = "Rust package webhookd";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs";
+    flake-utils.url = "github:numtide/flake-utils";
+    nocargo = {
+      url = "github:oxalica/nocargo";
+      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.registry-crates-io.follows = "registry-crates-io";
+    };
+    # Optionally, you can override crates.io index to get cutting-edge packages.
+    # registry-crates-io = { url = "github:rust-lang/crates.io-index"; flake = false; };
+  };
+
+  outputs = { nixpkgs, flake-utils, nocargo, ... }@inputs:
+    flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
+      let
+        ws = nocargo.lib.${system}.mkRustPackageOrWorkspace {
+          src = ./.;
+        };
+      in rec {
+        packages = {
+          default = packages.webhookd;
+          webhookd = ws.release.webhookd.bin;
+          webhookd-dev = ws.dev.webhookd.bin;
+        };
+      });
+}
+```
+
+构建：
+
+```shell
+$ git add .
+$ nix build
+```
+
+出现了编译错误，说明 crates.io index 版本不是最新的：
+
+```
+error: Package bytes doesn't have version 1.2.0 in index. Available versions: 0.0.1 0.1.0 0.1.1 0.1.2 0.2.0 0.2.1 0.2.10 0.2.11 0.2.2 0.2.3 0.2.4 0.2.5 0.2.6 0.2.7 0.2.8 0.2.9 0.3.0 0.4.0 0.4.1 0.4.10 0.4.11 0.4.12 0.4.2 0.4.3 0.4.4 0.4.5 0.4.6 0.4.7 0.4.8 0.4.9 0.5.0 0.5.1 0.5.2 0.5.3 0.5.4 0.5.5 0.5.6 0.6.0 1.0.0 1.0.1 1.1.0
+(use '--show-trace' to show detailed location information)
+```
+
+按照 `flake.nix` 中的提示，使用最新的 crates.io index：
+
+```nix
+# See more usages of nocargo at https://github.com/oxalica/nocargo#readme
+{
+  description = "Rust package webhookd";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs";
+    flake-utils.url = "github:numtide/flake-utils";
+    nocargo = {
+      url = "github:oxalica/nocargo";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.registry-crates-io.follows = "registry-crates-io";
+    };
+    # Optionally, you can override crates.io index to get cutting-edge packages.
+    registry-crates-io = { url = "github:rust-lang/crates.io-index"; flake = false; };
+  };
+
+  outputs = { nixpkgs, flake-utils, nocargo, ... }@inputs:
+    flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
+      let
+        ws = nocargo.lib.${system}.mkRustPackageOrWorkspace {
+          src = ./.;
+        };
+      in rec {
+        packages = {
+          default = packages.webhookd;
+          webhookd = ws.release.webhookd.bin;
+          webhookd-dev = ws.dev.webhookd.bin;
+        };
+      });
+}
+```
+
+继续构建就成功了：
+
+```shell
+$ nix build
+• Updated input 'nocargo/registry-crates-io':
+    'github:rust-lang/crates.io-index/1ce12a7e3367a2a673f91f07ab7cc505a0b8f069' (2022-07-17)
+  → follows 'registry-crates-io'
+• Added input 'registry-crates-io':
+    'github:rust-lang/crates.io-index/627caba32f416e706bf3f2ceac55230ec79710c5' (2022-08-02)
+$ ./result/bin/webhookd --version
+webhookd 0.2.1
+```
+
+## 总结
+
+可以看到，上面的不同工具采用了不同的方法，如果要比较的话：
+
+- Nix drv 粒度：每个依赖（cargo2nix，crate2nix，nocargo）、所有依赖（crane，naersk）。前者的好处是会跨项目共享依赖，进一步可以传到 binary cache。
+- 是否生成包括完整依赖信息的 nix 文件：是（cargo2nix，crate2nix）、否（crane，naersk，nocargo）。生成的话，仓库里的 Cargo.lock 和 Cargo.nix 的信息是重复的，如果修改了 Cargo.lock，需要重新同步 Cargo.nix。
