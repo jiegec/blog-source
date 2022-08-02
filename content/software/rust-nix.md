@@ -168,7 +168,7 @@ webhookd 0.2.1
 
 ### 原理
 
-crane 会把所有的依赖打包起来进行一次构建，然后再加上项目的源代码再构建一次，这样来实现 incremental compilation。它还提供了一些 check lint 等实用的命令。但是，它的目的和其他项目不大一样，它并不考虑跨项目的依赖缓存。
+crane 会把所有的依赖下载起来用 cargo 进行一次构建，把生成的 target 目录打成 `target.tar.zst`，然后再加上项目的源代码再构建一次，这样来实现 incremental compilation。它还提供了一些 check lint 等实用的命令。但是，它的目的和其他项目不大一样，它并不考虑跨项目的依赖缓存。
 
 ## crate2nix
 
@@ -258,3 +258,45 @@ webhookd 0.2.1
 ### 原理
 
 它的原理是使用 `cargo_metadata` 库从 Cargo.lock 中获取各个 crate 的信息，然后翻译成 `Cargo.nix`，之后就是由 nix 来编译各个 crate 的内容。所以一开始还是需要先用 Cargo 创建项目，添加依赖，生成 `Cargo.lock`；之后再用 `crate2nix generate` 同步依赖信息到 `Cargo.nix` 文件，构建的时候就不需要 Cargo 参与了，直接 rustc。
+
+## naersk
+
+### 安装
+
+需要安装 [niv](https://github.com/nmattia/niv):
+
+```shell
+nix-env -iA nixpkgs.niv
+```
+
+### 使用
+
+在项目目录下，首先用 `niv` 导入 naersk：
+
+```shell
+niv init
+niv add nix-community/naersk
+```
+
+然后编写一个 `default.nix`：
+
+```nix
+let
+  pkgs = import <nixpkgs> { };
+  sources = import ./nix/sources.nix;
+  naersk = pkgs.callPackage sources.naersk { };
+in
+naersk.buildPackage ./.
+```
+
+构建：
+
+```shell
+$ nix build -f default.nix
+$ ./result/bin/webhookd --version
+webhookd 0.2.1
+```
+
+### 原理
+
+naersk 的原理和 crane 是类似的：把所有依赖下载下来，创建一个只有依赖的项目，然后用 cargo 预编译，编译完得到的 target 目录打成 `target.tar.zst`；然后基于预编译的结果再编译整个项目。
