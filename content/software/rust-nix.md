@@ -19,6 +19,68 @@ Rust 项目一般是用 Cargo 管理，但是它的缺点是每个项目都要�
 
 下面我分别来尝试一下这几个工具的使用。
 
+下面出现的一些命令参考了对应项目的文档。
+
+## cargo2nix
+
+### 安装
+
+cargo2nix 提供了 flakes 支持，不需要单独安装。
+
+### 使用
+
+cargo2nix 的运行比较简单，利用 flakes 的特性，直接 `nix run` 即可：
+
+```shell
+nix run github:cargo2nix/cargo2nix
+```
+
+它会生成一个 Cargo.nix 文件，还需要编写一个 `flake.nix` 配合使用，这里以 `jiegec/webhookd` 为例：
+
+```nix
+{
+  inputs = {
+    cargo2nix.url = "github:cargo2nix/cargo2nix/release-0.11.0";
+    flake-utils.follows = "cargo2nix/flake-utils";
+    nixpkgs.follows = "cargo2nix/nixpkgs";
+  };
+
+  outputs = inputs: with inputs;
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [cargo2nix.overlays.default];
+        };
+
+        rustPkgs = pkgs.rustBuilder.makePackageSet {
+          rustVersion = "1.61.0";
+          packageFun = import ./Cargo.nix;
+        };
+
+      in rec {
+        packages = {
+          webhookd = (rustPkgs.workspace.webhookd {}).bin;
+          default = packages.webhookd;
+        };
+      }
+    );
+}
+```
+
+然后编译：
+
+```shell
+$ git add .
+$ nix build
+$ ./result-bin/bin/webhookd --version
+webhookd 0.2.1
+```
+
+### 原理
+
+cargo2nix 解析了 Cargo.lock，生成 Cargo.nix 文件，最后包装成 flake.nix。
+
 ## crate2nix
 
 ### 安装
@@ -63,8 +125,7 @@ nix build -f Cargo.nix rootCrate.build
 
 根据 crate2nix 的文档，需要添加额外的 native 依赖：
 
-```shell
-$ cat default.nix
+```nix
 { pkgs ? import <nixpkgs> { } }:
 
 let
@@ -81,6 +142,9 @@ let
   };
 in
 generatedBuild.rootCrate.build
+```
+
+```shell
 $ nix build -f default.nix
 $ ./result/bin/webhookd --version
 webhookd 0.2.1
