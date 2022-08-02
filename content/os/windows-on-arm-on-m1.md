@@ -65,3 +65,5 @@ VMware Fusion 发布了新版本 [22H2](https://blogs.vmware.com/teamfusion/2022
 	contains the 2 currently supported drivers for graphics and networking.
 
 实测安装 VMware Tools 以后，就可以成功用 vmxnet3 网卡上网了，不需要之前的 bcdedit 方案。
+
+但是目前测试 Linux 虚拟机有一些问题，启动的时候死在 vmwgfx 驱动上，不能正常显示。
