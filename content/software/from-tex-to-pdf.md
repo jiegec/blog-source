@@ -237,7 +237,9 @@ TeXDict begin 1 0 bop 166 83 a Fa(Hello,)28 b(w)n(orld!)1929
 /a { moveto } B    % absolute positioning
 ```
 
-紧随其后的 `Fa` 我不确定它的意义。接下来是 `(Hello,)`，即把 `Hello,` 这些文字压入栈。
+紧随其后的 `Fa` 指的是字体。
+
+接下来是 `(Hello,)`，即把 `Hello,` 这些文字压入栈。
 
 接下来看到 `28 b`，它输出了栈顶的文本，进行了一个相对的水平移动，并且更新了 delta：
 
@@ -257,7 +259,7 @@ TeXDict begin 1 0 bop 166 83 a Fa(Hello,)28 b(w)n(orld!)1929
 
 1. `1 0 bop`: 创建了新页面
 2. `166 83 a`: 移动坐标到 `(166, 83)`
-3. `Fa`: 不确定用途，猜测是表示段落的开头
+3. `Fa`: 设置字体
 4. `(Hello,)`: 压栈 "Hello,"
 5. `28 b`: 输出栈顶，移动坐标，对应 `dviasm` 输出中的 `right: 3.333328pt`
 6. `(w)`: 压栈 "w"
