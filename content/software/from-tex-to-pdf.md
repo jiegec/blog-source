@@ -204,7 +204,7 @@ TeXDict begin 1 0 bop 166 83 a Fa(Hello,)28 b(w)n(orld!)1929
 这里出现的 `TeXDict` `bop` `a` 等等应该也是在前面定义的了。往回翻，发现正是 `tex.pro` 文件定义了这些对象。让我们一点点来看：
 
 ```postscript
-/TeXDict 300 dict def
+/TeXDict 300 dict def   % define a working dictionary
 ```
 
 表示 `TexDict` 会展开为 `300 dict`，即创建一个最大容量为 300 的 dict。接下来的 begin 和 end 就是在这个 dict 的作用域中进行运算。
@@ -212,13 +212,21 @@ TeXDict begin 1 0 bop 166 83 a Fa(Hello,)28 b(w)n(orld!)1929
 接下来是 `1 0 bop`，那么我们要看 `bop` 的定义，根据 DVI 中同名的命令，我们知道它的意思是 `begin of page`:
 
 ```postscript
-/bop {
-  userdict /bop-hook known {bop-hook} if
-  /SI save N
-  @rigin 0 0 moveto
-  /V matrix currentmatrix A 1 get A mul exch 0 get A mul add .99 lt{/QV}{/RV}ifelse load def
-  pop pop
-} N
+/bop           % %t %d bop -  -- begin a brand new page, %t=pageno %d=seqno
+  {
+    userdict /bop-hook known { bop-hook } if
+    /SI save N
+    @rigin
+%
+%   Now we check the resolution.  If it's correct, we use RV as V,
+%   otherwise we use QV.
+%
+    0 0 moveto
+    /V matrix currentmatrix
+    A 1 get A mul exch 0 get A mul add .99 lt
+    {/QV} {/RV} ifelse load def
+    pop pop
+  } N
 ```
 
 这里有一些代码的含义我还不清楚，先跳过。
@@ -226,7 +234,7 @@ TeXDict begin 1 0 bop 166 83 a Fa(Hello,)28 b(w)n(orld!)1929
 接下来的 `166 83 a`，根据定义就可以判断出来它是在移动位置：
 
 ```postscript
-/a { moveto } B
+/a { moveto } B    % absolute positioning
 ```
 
 紧随其后的 `Fa` 我不确定它的意义。接下来是 `(Hello,)`，即把 `Hello,` 这些文字压入栈。
@@ -234,10 +242,15 @@ TeXDict begin 1 0 bop 166 83 a Fa(Hello,)28 b(w)n(orld!)1929
 接下来看到 `28 b`，它输出了栈顶的文本，进行了一个相对的水平移动，并且更新了 delta：
 
 ```postscript
-/delta 0 N
-/tail {A /delta X 0 rmoveto} B
-/M {S p delta add tail} B
-/b {S p tail} B
+/delta 0 N         % we need a variable to hold space moves
+%
+%   The next ten macros allow us to make horizontal motions that
+%   are within 4 of the previous horizontal motion with a single
+%   character.  These are typically used for spaces.
+%
+/tail { A /delta X 0 rmoveto } B
+/M { S p delta add tail } B
+/b { S p tail } B      % show and tail!
 ```
 
 后面的也都是类似的操作，让我们简单来总结一下 `TeXDict begin 1 0 bop 166 83 a Fa(Hello,)28 b(w)n(orld!)1929 5539 y(1)p eop end` 都做了什么：
@@ -262,6 +275,8 @@ TeXDict begin 1 0 bop 166 83 a Fa(Hello,)28 b(w)n(orld!)1929
 3. 把 `tex.pro`、字体等还有翻译出来的 PS 拼接起来作为最终的输出
 
 这算是一种元编程，在 PS 中定义了一个 DSL，可以很方便地执行 DVI 指令。
+
+在 [这里](https://github.com/MiKTeX/miktex/blob/ab8ebca7c70fe8c9a1392dfb2393a0a7683e14cc/Programs/DviWare/dvips/source/tex.lpro) 可以看到原始的带注释的 `tex.lpro` 实现，上面涉及 `tex.pro` 的代码内容也是从这里复制来的。
 
 ## 从 PS 到 PDF
 
