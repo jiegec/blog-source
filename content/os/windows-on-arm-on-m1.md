@@ -68,7 +68,7 @@ VMware Fusion 发布了新版本 [22H2](https://blogs.vmware.com/teamfusion/2022
 
 但是目前测试 Linux 虚拟机有一些问题，一些内核版本在启动的时候 vmwgfx 驱动会报错，不能正常显示，但是系统是正常启动的，可以通过 SSH 访问。我测试的情况见下：
 
-Linux 5.19.6(5.19.0-1-arm64): 可以正常启动和显示
+Linux 5.19.6(5.19.0-1-arm64): 可以正常启动和显示，但是没有 3D 加速（按照 VMware 的说法是需要 5.19 内核 + Mesa 22.1.1 以上，但是我的环境版本已经符合了这个要求，可能是 Debian 打包缺了什么东西）
 
 Linux 5.18(5.18.0-0.bpo.1-arm64): `VMware Fusion has encountered an error and has shut down the virtual machine`
 
