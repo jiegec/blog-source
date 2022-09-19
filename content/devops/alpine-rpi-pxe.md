@@ -16,7 +16,7 @@ title: 在 rpi4 上用 PXE 运行 Alpine Linux
 
 ```bash
 > cd /lib/firmware/raspberrypi/bootloader/critical
-> rpi-eeprom-config pieeprom-2020-04-16.bin > config.txt
+> rpi-eeprom-config pieeprom-2021-04-29.bin > config.txt
 $ cat config.txt
 [all]
 BOOT_UART=1
@@ -27,18 +27,18 @@ DHCP_REQ_TIMEOUT=4000
 TFTP_FILE_TIMEOUT=30000
 TFTP_IP=
 TFTP_PREFIX=0
-BOOT_ORDER=0x12
+BOOT_ORDER=0x1
 SD_BOOT_MAX_RETRIES=3
 NET_BOOT_MAX_RETRIES=5
 [none]
 FREEZE_VERSION=0
-> sed 's/BOOT_UART=0/BOOT_UART=1/;s/BOOT_ORDER=0x1/BOOR_ORDER=0x21/' config.txt > config-pxe.txt
-> rpi-eeprom-config --out pieeprom-2020-04-16-pxe.bin --config config-pxe.txt pieeprom-2020-04-16.bin
-> rpi-eeprom-update -d -f pieeprom-2020-04-16.pxe.bin
+> sed 's/BOOT_UART=0/BOOT_UART=1/;s/BOOT_ORDER=0x1/BOOR_ORDER=0x12/' config.txt > config-pxe.txt
+> rpi-eeprom-config --out pieeprom-2021-04-29-pxe.bin --config config-pxe.txt pieeprom-2021-04-29.bin
+> rpi-eeprom-update -d -f pieeprom-2021-04-29-pxe.bin
 > reboot
 ```
 
-重启以后，可以用 `vcgencmd bootloader_config` 查看当前的启动配置，看是否正确地更新了启动配置。比较重要的是 BOOT_ORDER，`0x21` 表示先尝试网络启动，再尝试 SD 卡启动。
+重启以后，可以用 `vcgencmd bootloader_config` 查看当前的启动配置，看是否正确地更新了启动配置。比较重要的是 BOOT_ORDER，`0x12` 表示先尝试网络启动，再尝试 SD 卡启动。
 
 ## 路由器配置
 
