@@ -68,4 +68,21 @@ mknodat(AT_FDCWD, "test", S_IFCHR|0622, makedev(0x5, 0x1)) = -1 EPERM (Operation
 
 于是在[源代码](https://salsa.debian.org/clint/fakeroot)历史中搜寻了一番，发现了一个疑似的修复 commit：[configure.ac: fix __xmknod{,at} pointer argument](https://salsa.debian.org/clint/fakeroot/-/commit/c3eebec293e35b997bb46c22fb5a4e114afb5e7f)，不过我并不能确定是不是这个问题。
 
+进一步，我在 Docker 镜像中手动下载并编译 fakeroot 1.20.2、1.21 和 1.25.3，都可以复现这个问题，编译 1.29 版本则没有问题。用 git 克隆[仓库](https://salsa.debian.org/clint/fakeroot)，进一步定位到 upstream/1.26 和 upstream/1.27 版本都是正常的。而 upstream/1.25.2 会出错。进一步二分，找到修复的 commit 是 [libfakeroot.c: add wrappers for new glibc 2.33+ symbols](https://salsa.debian.org/clint/fakeroot/-/commit/feda578ca3608b7fc9a28a3a91293611c0ef47b7)，相关的代码如下：
+
+```diff
++  int mknod(const char *pathname, mode_t mode, dev_t dev) {
++     return WRAP_MKNOD MKNOD_ARG(_STAT_VER, pathname, mode, &dev);
++  }
++
++  #if defined(HAVE_FSTATAT) && defined(HAVE_MKNODAT)
++    int mknodat(int dir_fd, const char *pathname, mode_t mode, dev_t dev) {
++       return WRAP_MKNODAT MKNODAT_ARG(_STAT_VER, dir_fd, pathname, mode, &dev);
++    }
++  #endif
++#endif /* GLIBC_PREREQ */
+```
+
+这说明在这个修复之前，不能正确地拦截 mknod 的调用。所以 glibc 2.33+ 要配合 fakeroot 1.26+ 版本才可以正确地运行 fakeroot。
+
 结论：找个时间用新版的 Buildroot 重新构建一份。
