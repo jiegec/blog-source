@@ -244,6 +244,18 @@ switch (config) #
 switch (config) # show running-config
 ```
 
+### 查看 interface 状态
+
+```
+switch (config) # show interfaces brief
+```
+
+### 查看以太网端口状态
+
+```
+switch (config) # show interfaces ethernet status
+```
+
 ### 查看 lldp 邻居
 
 ```
@@ -267,4 +279,23 @@ switch (config interface ethernet 1/1/1-1/1/4) #
 
 ```
 switch (config) # show mac-address-table
+```
+
+### 查看链路聚合状态
+
+```
+switch (config) # show interfaces port-channel summary
+```
+
+### 把拆分的四个 SFP 口恢复成一个
+
+```
+switch (config interface ethernet 1/1/1) # module-type qsfp 
+```
+
+### 把一个 QSFP 口拆分成四个
+
+```
+switch (config interface ethernet 1/1) # shutdown
+switch (config interface ethernet 1/1) # module-type qsfp-split-4
 ```

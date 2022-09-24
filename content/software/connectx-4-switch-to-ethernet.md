@@ -96,3 +96,26 @@ Applying... Done!
 ```
 
 整个安装流程在仓库 <https://github.com/jiegec/mft-debian-bookworm> 中用脚本实现。
+
+## VMware ESXi
+
+如果要在 ESXi 上把网卡改成以太网模式，可以参考下面的文档：
+
+- https://docs.nvidia.com/networking/pages/releaseview.action?pageId=15049813
+- https://docs.nvidia.com/networking/plugins/servlet/mobile?contentId=15051769#content/view/15051769
+
+命令（ESXi 7.0U3）：
+
+```
+scp *.vib root@esxi:/some/path
+esxcli software vib install -v /some/path/MEL_bootbank_mft_4.21.0.703-0.vib
+esxcli software vib install -v /some/path/MEL_bootbank_nmst_4.21.0.703-1OEM.703.0.0.18434556.vib
+reboot
+/opt/mellanox/bin/mst start
+/opt/mellanox/bin/mst status -vv
+/opt/mellanox/bin/mlxfwmanager --query
+/opt/mellanox/bin/mlxconfig -d mt4115_pciconf0 set LINK_TYPE_P1=2 LINK_TYPE_P2=2
+reboot
+```
+
+然后就可以看到网卡了。
