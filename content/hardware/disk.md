@@ -96,3 +96,77 @@ $ lspci -vv
 [Intel SSD 545s Series](https://ark.intel.com/content/www/us/en/ark/products/125024/intel-ssd-545s-series-1-024tb-2-5in-sata-6gb-s-3d2-tlc.html) 读写速度约 4Gb/s，采用的是 SATA 3.0 6Gb/s。
 
 [SAMSUNG 970 EVO](https://www.samsung.com/semiconductor/minisite/ssd/product/consumer/970evo/) 读写速度 20~30 Gb/s，它采用的是 PCIe 3.0 x4(32Gb/s) NVMe。
+
+## SAS
+
+SAS 涉及的物理接口比较多，下面举一个具体的例子：DELL SCv2000
+
+文档：https://dl.dell.com/topicspdf/storage-sc2000_owners-manual_en-us.pdf
+
+它的背面：
+
+![](/images/scv2000.png)
+
+它有四个前端接口 Mini-SAS High Density (HD)，即 SFF-8644；两个后端接口 Mini-SAS，即 SFF-8088。
+
+## SAS 相关的物理接口
+
+查找 SFF 标准：https://www.snia.org/technology-communities/sff/specifications
+
+### SFF-8087
+
+Mini Multilane 4X Unshielded Connector Shell and Plug
+
+![](/images/sff8087.png)
+
+介绍：https://cs-electronics.com/sff-8087/
+
+Mini SAS 4i 连接器就是 36 pin 的 SFF-8087，支持四路 SAS。i 表示用于 internal 连接。对应的 external 接口是 SFF-8088。
+
+标准下载地址：https://members.snia.org/document/dl/25823
+
+相关标准：
+
+- SFF-8086: Mini Multilane 10 Gb/s 4X Common Elements Connector
+
+### SFF-8088
+
+Mini Multilane 4X Shielded Connector Shell and Plug
+
+![](/images/sff8088.png)
+
+标准下载地址：https://members.snia.org/document/dl/25824
+
+Mini SAS 4x 连接器就是 26 pin 的 SFF-8088，支持四路 SAS。用于 external 连接。对应的 internal 接口是 SFF-8087。
+
+### SFF-8482
+
+Serial Attachment 2X Unshielded Connector
+
+![](/images/sff8482.png)
+
+介绍：https://cs-electronics.com/sff-8482/
+
+支持两路 SAS，29 个引脚。和 SATA 的接口大小一样，目的是为了可以兼容 SATA 和 SAS 盘，比较常见。
+
+标准下载地址：https://members.snia.org/document/dl/25920
+
+相关标准：
+
+- SFF-8678: Serial Attachment 2X 3Gb/s Unshielded Connector
+- SFF-8680: Serial Attachment 2X 12Gb/s Unshielded Connector
+- SFF-8681: Serial Attachment 2X 24Gb/s Unshielded Connector
+
+### SFF-8614/8644
+
+SFF-8614: Mini Multilane 4/8X Shielded Cage/Connector (HDsh)
+
+标准下载地址：https://members.snia.org/document/dl/25939
+
+SFF-8644: Mini Multilane 4/8X 12 Gb/s Shielded Cage/Connector (HD12sh)
+
+标准下载地址：https://members.snia.org/document/dl/25952
+
+对应的 internal 版本是 SFF-8643: Mini Multilane 4/8X 12 Gb/s Unshielded Connector
+
+名称：External Mini-SAS HD(High Density)
