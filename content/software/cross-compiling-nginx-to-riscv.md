@@ -8,7 +8,7 @@ title: 交叉编译 Nginx 1.14.2 到 RISC-V
 
 最近又把一定的精力放到了 RISC-V 64 上的 rCore 用户态程序的支持上，同时也借到了 HiFive Unleashed 板子，所以有真实硬件可以拿来跑了。在这之前先在 QEMU 上把能跑的都跑起来。
 
-由于 rCore 对 glibc 的支持一直有问题，RISC-V 也不例外，所以还是选择用 musl 来做这件事情。一般搜索，终于找到了 Linux 下能用的 [musl-riscv-toolchain](<https://github.com/rv8-io/musl-riscv-toolchain>) 。编译好工具链以后，很多需要 libc 的用户态都能跑了，于是想着试一下 nginx 的编译。试着编译了一下，遇到了各种问题，最后搜到了[交叉编译Hi3536上面使用的nginx](<https://www.jianshu.com/p/5d9b60f7b262>)，里面的方法解决了这个问题。最后总结出了这样的 patch :
+由于 rCore 对 glibc 的支持一直有问题，RISC-V 也不例外，所以还是选择用 musl 来做这件事情。一般搜索，终于找到了 Linux 下能用的 [musl-riscv-toolchain](<https://github.com/rv8-io/musl-riscv-toolchain>) 。编译好工具链以后，很多需要 libc 的用户态都能跑了，于是想着试一下 nginx 的编译。试着编译了一下，遇到了各种问题，最后搜到了[交叉编译 Hi3536 上面使用的 nginx](<https://www.jianshu.com/p/5d9b60f7b262>)，里面的方法解决了这个问题。最后总结出了这样的 patch :
 
 ```diff
 diff --git a/nginx-1.14.2/auto/cc/name b/nginx-1.14.2/auto/cc/name

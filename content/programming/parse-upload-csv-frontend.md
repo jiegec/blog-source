@@ -28,4 +28,4 @@ reader.readAsArrayBuffer(blob_here);
 
 依赖了两个库：`chardet` 和 `iconv-lite` ，测试了一下，解析 UTF-8 GBK UTF-16BE 都没问题。
 
-P.S. 在生成 csv 的时候，也会出现 Excel 打开后乱码的问题，一开始我以为需要转 UTF-16 然后再添加 BOM Mark ，后来发现只要在最前面加上 0xEF 0xBB 0xFB （UTF-8 编码下的 BOM Mark）即可。
+P.S. 在生成 csv 的时候，也会出现 Excel 打开后乱码的问题，一开始我以为需要转 UTF-16 然后再添加 BOM Mark，后来发现只要在最前面加上 0xEF 0xBB 0xFB（UTF-8 编码下的 BOM Mark）即可。

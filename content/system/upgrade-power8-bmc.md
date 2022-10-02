@@ -8,7 +8,7 @@ title: IBM Power S822LC(8335-GTB) BMC 升级
 
 ## 背景
 
-最近拿到一台 IBM Power S822LC（8335-GTB） 机器的访问权限，这也是我第一次碰 ppc64le 指令集的服务器。然后发现，它的 BMC 版本比较老，我想连接 Remote Control 失败了，原因是 JViewer 不支持 macOS，我就想着能不能升级一下。
+最近拿到一台 IBM Power S822LC（8335-GTB）机器的访问权限，这也是我第一次碰 ppc64le 指令集的服务器。然后发现，它的 BMC 版本比较老，我想连接 Remote Control 失败了，原因是 JViewer 不支持 macOS，我就想着能不能升级一下。
 
 ## 升级过程
 
@@ -38,7 +38,7 @@ $ sudo ipmitool fru print 47
  Product Extra         :        hostboot-binar
 ```
 
-于是，我下载了比较新的版本，一个 hpm 文件，然后在 BMC 网页上进行升级。第一次升级比较保守，选择了 2017年的版本：
+于是，我下载了比较新的版本，一个 hpm 文件，然后在 BMC 网页上进行升级。第一次升级比较保守，选择了 2017 年的版本：
 
 ```shell
 $ sudo ipmitool fru print 47

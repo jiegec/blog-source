@@ -111,7 +111,7 @@ title: 「教学」异步 SRAM 时序
 
 ![](/images/sram_read_diagram.drawio.png)
 
-上面的一些数据可以从 [Artix-7 FPGA Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据，IO 标准是 `LVCMOS33`。其中寄存器到 FPGA 输入输出引脚的延迟，实际上由两部分组成：从寄存器到 IOB（IO Block） 的延迟，以及 IOB 到 FPGA 输入输出引脚的延迟。我们把地址寄存器的输出作为地址输出，这样 Vivado 就会把寄存器放到 IOB，于是可以忽略寄存器到 IOB 的延迟，详情可以阅读文档 [Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)。
+上面的一些数据可以从 [Artix-7 FPGA Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据，IO 标准是 `LVCMOS33`。其中寄存器到 FPGA 输入输出引脚的延迟，实际上由两部分组成：从寄存器到 IOB（IO Block）的延迟，以及 IOB 到 FPGA 输入输出引脚的延迟。我们把地址寄存器的输出作为地址输出，这样 Vivado 就会把寄存器放到 IOB，于是可以忽略寄存器到 IOB 的延迟，详情可以阅读文档 [Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)。
 
 把上面一串加起来，已经有大概 4 到 5ns 了。考虑了延迟以后，上面的图可能实际上是这个样子：
 
@@ -173,8 +173,8 @@ title: 「教学」异步 SRAM 时序
 这个写的时序图，从时间顺序来看有这么几件事情按顺序发生：
 
 1. 地址保持稳定
-2. 经过 \\(t_{AS}\\) 时间后，写使能信号 \\(\overline{WE}\\)变为低电平，表示“开始写入操作”，此时地址是稳定的
-3. 经过 \\(t_{WP}\\) 时间后，写使能信号\\(\overline{WE}\\)变为高电平，表示“结束写入操作”，此时地址和数据都是稳定的，并且数据满足 setup（\\(t_{DW}\\)） 和 hold（\\(t_{DH}\\)） 约束
+2. 经过 \\(t_{AS}\\) 时间后，写使能信号 \\(\overline{WE}\\) 变为低电平，表示“开始写入操作”，此时地址是稳定的
+3. 经过 \\(t_{WP}\\) 时间后，写使能信号\\(\overline{WE}\\) 变为高电平，表示“结束写入操作”，此时地址和数据都是稳定的，并且数据满足 setup（\\(t_{DW}\\)）和 hold（\\(t_{DH}\\)）约束
 4. 继续保持地址稳定，直到已经稳定了 \\(t_{WC}\\) 时间
 
 这些数据的范围如下：

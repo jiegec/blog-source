@@ -125,7 +125,7 @@ $$E: y^2+xy=x^3+ax^2+1$$
 
 ## NIST
 
-NIST 在 [FIPS 186-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf) 中定义了基于素数域的 Curve P-192, Curve P-224, Curve P-256, Curve P-384 和 Curve P-521 。在 [RFC5656](https://tools.ietf.org/html/rfc5656) 中，这几条曲线又名 nistp192 nistp224 nistp256 nistp384 和 nistp521 。
+NIST 在 [FIPS 186-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf) 中定义了基于素数域的 Curve P-192, Curve P-224, Curve P-256, Curve P-384 和 Curve P-521。在 [RFC5656](https://tools.ietf.org/html/rfc5656) 中，这几条曲线又名 nistp192 nistp224 nistp256 nistp384 和 nistp521。
 
 Curve P-192: 
 
@@ -147,7 +147,7 @@ Curve P-521:
 
 $$p=2^{521}-1$$
 
-另一类是基于 Binary Field （\\(GF(2^m)\\)）的曲线，有 Curve K-163，Curve B-163，Curve K-233，Curve B-233，Curve K-283，Curve B-283，Curve K-409，Curve B-409，Curve K-571，Curve B-571。相应地，RFC 5656 里又名 nistk163，nistk233，nistb233，nistk283，nistk409，nistb409，nistt571（我觉得是 nistb571/nistk571 ，不知道是不是写错了）
+另一类是基于 Binary Field（\\(GF(2^m)\\)）的曲线，有 Curve K-163，Curve B-163，Curve K-233，Curve B-233，Curve K-283，Curve B-283，Curve K-409，Curve B-409，Curve K-571，Curve B-571。相应地，RFC 5656 里又名 nistk163，nistk233，nistb233，nistk283，nistk409，nistb409，nistt571（我觉得是 nistb571/nistk571，不知道是不是写错了）
 
 Degree 163 (K-163/B-163) :
 
@@ -200,10 +200,10 @@ SECG 在 [SEC2](https://www.secg.org/sec2-v2.pdf) 中定义了若干的曲线，
 | nistb283                           | sect283r1 | 1.3.132.0.17 |
 | nistk409                           | sect409k1 | 1.3.132.0.36 |
 | nistb409                           | sect409r1 | 1.3.132.0.37 |
-| nistk571 (RFC 5656写的是 nistt571) | sect571k1 | 1.3.132.0.38 |
+| nistk571 (RFC 5656 写的是 nistt571) | sect571k1 | 1.3.132.0.38 |
 | nistb571                           | sect571r1 | 1.3.132.0.39 |
 
-sec 命名里，第四个字符里 \\(p\\) 表示是素数域，\\(t\\) 表示是 \\(GF(2^m)\\) 域。 后面的字母表示的 \\(k\\) 表示 Koblitz，\\(r\\) 表示 random，是参数的选取方式。
+sec 命名里，第四个字符里 \\(p\\) 表示是素数域，\\(t\\) 表示是 \\(GF(2^m)\\) 域。后面的字母表示的 \\(k\\) 表示 Koblitz，\\(r\\) 表示 random，是参数的选取方式。
 
 OID 有两种前缀：
 
@@ -216,7 +216,7 @@ iso(1) member-body(2) us(840) 10045 curves(3) prime(1)
 
 ## ANSI
 
-ANSI 也有 [X9.62 标准](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.202.2977&rep=rep1&type=pdf)，在附录里面也定义了若干个曲线。附录 `J.5.1` 里面有三个例子，就是 prime192v1 prime192v2 和 prime192v3，之后则是 prime239v1 prime239v2 prime239v3 和 prime256v1 。
+ANSI 也有 [X9.62 标准](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.202.2977&rep=rep1&type=pdf)，在附录里面也定义了若干个曲线。附录 `J.5.1` 里面有三个例子，就是 prime192v1 prime192v2 和 prime192v3，之后则是 prime239v1 prime239v2 prime239v3 和 prime256v1。
 
 | ANSI       | 别名               | OID                 |
 | ---------- | ------------------ | ------------------- |

@@ -31,12 +31,12 @@ index d0138cd..de3c5ff 100644
 
 ```
 
-主要涉及到两个 Patch ：
+主要涉及到两个 Patch：
 
-1. 启用对 Multicolor font ，比如 Emoji 的支持。由于一些 ethic problems 暂时在 Emacs 中被禁用了，所以自己启用回来。
+1. 启用对 Multicolor font，比如 Emoji 的支持。由于一些 ethic problems 暂时在 Emacs 中被禁用了，所以自己启用回来。
 2. 打上我前几天上报的 [BUG #29953](https://debbugs.gnu.org/cgi/bugreport.cgi?bug=29953) 的修复。已经在上游 Merge 到 `emacs-26` 分支中，这个修复会在下一个版本中。
 
-有了第一个，就可以正常显示 Emoji （对不起，RMS）；有了第二个，就解决了 `pyim` 和 `lsp-ui-peek` 用 `child-frame` 显示的一些问题了。
+有了第一个，就可以正常显示 Emoji（对不起，RMS）；有了第二个，就解决了 `pyim` 和 `lsp-ui-peek` 用 `child-frame` 显示的一些问题了。
 
 另外还有一个我自己在用的 `recoll.rb` ：
 ```rb

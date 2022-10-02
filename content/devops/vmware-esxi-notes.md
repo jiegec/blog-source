@@ -103,7 +103,7 @@ $ esxcli network firewall ruleset set --enabled=false --ruleset-id=sshClient
 
 查看更新状态：`cat /storage/core/software-update/stage_operation`；更新文件下载路径：`/storage/updatemgr/software-update*/stage`。有一个包特别大：`wcpovf` 需要两个多 G。
 
-CLI 更新方法： https://earlruby.org/2021/01/upgrading-vcenter-7-via-the-command-line/
+CLI 更新方法：https://earlruby.org/2021/01/upgrading-vcenter-7-via-the-command-line/
 
 ## 迁移虚拟机到不同 VM
 

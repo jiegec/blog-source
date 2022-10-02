@@ -59,7 +59,7 @@ endmodule
 2. 第二步进行 floorplan（2_1_floorplan），规划出芯片的大小，逻辑放在哪个位置，输入输出引脚放在什么位置（2_2_floorplan_io），还要考虑 SRAM 等宏或者 IP（2_4_mplace），电源网络 PDN（2_6_floorplan_pdn）
 3. 第三步是 Placement，就是把前面得到的一些 cell 放到芯片上的 (x,y) 坐标上
 4. 第四步是 Clock Tree Synthesis（4_1_cts），简称 CTS，生成时钟树
-5. 第五步是进行路由连线，OpenROAD 有两个路由：FastRoute（5_1_fastroute） 和 TritonRoute（5_2_TritonRoute）
+5. 第五步是进行路由连线，OpenROAD 有两个路由：FastRoute（5_1_fastroute）和 TritonRoute（5_2_TritonRoute）
 6. 第六步输出结果到 gds 文件（6_1_merge）。
 
 这些步骤可以在仓库的 `flow/Makefile` 里面看得比较清晰，英文版摘抄如下：
@@ -107,7 +107,7 @@ endmodule
 ## 工艺库常见术语
 
 - slvt/lvt/rvt/hvt: super-low/low/regular/high V threshold 前者速度快：阈值电压低，同时漏电流大
-- ss/tt/ff: slow-slow/typical-typical/fast-fast 后者速度快：电压高，温度低，比如 SS（0.99V 125C）TT（1.10V 25C）FF（1.21V -40C）；有时候还会看到 ssg，可以理解为 ss 的比较精确的版本，因此没有那么悲观，延迟比 SS 低一些，详见 [STA | ssg 跟ss corner 的区别——谬误更正版](https://cloud.tencent.com/developer/article/1598417)
+- ss/tt/ff: slow-slow/typical-typical/fast-fast 后者速度快：电压高，温度低，比如 SS（0.99V 125C）TT（1.10V 25C）FF（1.21V -40C）；有时候还会看到 ssg，可以理解为 ss 的比较精确的版本，因此没有那么悲观，延迟比 SS 低一些，详见 [STA | ssg 跟 ss corner 的区别——谬误更正版](https://cloud.tencent.com/developer/article/1598417)
 - c+数字：表示的是 channel length，c40 表示 40nm，数字越大速度越慢，能耗越低
 - 数字+track：表示的是 track height，sc12 表示 12-track，数字越大速度越快
 
@@ -125,4 +125,4 @@ ARM 的文档 [Choosing the physical IP libraries](https://developer.arm.com/doc
 - [Advanced ASIC Chip Synthesis Using Synopsys® Design Compiler™ Physical Compiler™ and PrimeTime®](https://link.springer.com/book/10.1007/b117024)
 - [Comparing NLDM And CCS delay models](https://www.paripath.com/blog/characterization-blog/comparing-nldm-and-ccs-delay-models)
 - [Introduction to Liberty : CCS, ECSM and NDLM](https://chitlesh.ch/wordpress/liberty-ccs-ecsm-or-ndlm/)
-- [STA概念：一文了解NLDM与CCS](https://blog.csdn.net/graymount/article/details/106010388)
+- [STA 概念：一文了解 NLDM 与 CCS](https://blog.csdn.net/graymount/article/details/106010388)

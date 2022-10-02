@@ -27,7 +27,7 @@ title: 移植系统到 Rocket Chip on VCU128
 1. BSCAN 不工作，估计是因为一些参数不对，@jsteward 之前在 zcu 平台上做了一些测试，估计要用类似的办法进行修改；我最后直接去掉了这部分逻辑
 2. 这个板子的 PHY RESET 信号要通过 I2C 接口访问 TI 的 Port Expander，所以没法直接连，要通过 gpio 输出来手动 reset
 3. SPI Startup Flash 的时序配置，见我之前的[博客]({{< relref "xilinx-axi-quad-spi-timing.md" >}})
-4. Xilinx PCS/PMA IP 也会自己挂一个设备到 MDIO bus上，应该有自己的 PHY 地址，而不要和物理的 PHY 冲突
+4. Xilinx PCS/PMA IP 也会自己挂一个设备到 MDIO bus 上，应该有自己的 PHY 地址，而不要和物理的 PHY 冲突
 
 ## U-Boot
 

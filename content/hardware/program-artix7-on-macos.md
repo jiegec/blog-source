@@ -6,7 +6,7 @@ category: hardware
 title: 在 macOS 烧写 Artix7 FPGA
 ---
 
-首先安装好openocd：
+首先安装好 openocd：
 
 ```brew install openocd --HEAD```
 

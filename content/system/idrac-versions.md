@@ -8,7 +8,7 @@ title: iDRAC 各版本
 
 ## iDRAC 版本
 
-目前接触到的 iDRAC 版本有：7 8 9 。一些常见的服务器型号和 iDRAC 版本对应关系：
+目前接触到的 iDRAC 版本有：7 8 9。一些常见的服务器型号和 iDRAC 版本对应关系：
 
 - 7: PowerEdge R320，PowerEdge R720
 - 8: [PowerEdge R730xd](https://www.dell.com/support/home/en-us/product-support/product/poweredge-r730xd/drivers)，PowerEdge R630，PowerEdge R730，PowerEdge C4130
@@ -26,7 +26,7 @@ title: iDRAC 各版本
 
 - 1.66.65 [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=3f4wv)，2014 年 12 月版本。
 - 2.10.10.10 [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverId=Y5K20)，2015 年 4 月版本。
-- 2.65.65.65 [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=0ghf4)，2020 年 3 月版本，添加了 HSTS 。
+- 2.65.65.65 [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=0ghf4)，2020 年 3 月版本，添加了 HSTS。
 
 ## iDRAC 8
 

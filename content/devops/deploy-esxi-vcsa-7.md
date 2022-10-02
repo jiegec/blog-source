@@ -15,7 +15,7 @@ title: 在裸机上部署 ESXi 和 vCSA 7
 358M VMware-VMvisor-Installer-7.0U1-16850804.x86_64.iso
 ```
 
-首先安装 ESXi，用 UNetBootin 制作 ESXi 的安装光盘。注意不能用 dd，因为它是 CDFS 格式的，不能直接boot。启动以后，按照界面要求，一路安装即可。
+首先安装 ESXi，用 UNetBootin 制作 ESXi 的安装光盘。注意不能用 dd，因为它是 CDFS 格式的，不能直接 boot。启动以后，按照界面要求，一路安装即可。
 
 接着，就可以用网页访问 ESXi 进行配置。比如安装一些 Linux 发行版，然后在 Linux 虚拟机里面 mount 上面的 VCSA 的 iso：
 

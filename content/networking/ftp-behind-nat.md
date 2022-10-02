@@ -6,7 +6,7 @@ category: networking
 title: 搭建 FTP server behind NAT
 ---
 
-我们出现新的需求，要把以前的 FTP 服务器迁移到 NAT 之后的一台机器上。但是，FTP 不仅用到 20 21 端口， PASV 还会用到高端口，这给端口转发带来了一些麻烦。我们一开始测试，直接在 Router 上转发 20 和 21 端口到 Server 上。但是很快发现， Filezilla 通过 PASV 获取到地址为 （内网地址，端口高8位，端口低8位），然后，Filezilla 检测出这个地址是内网地址，于是转而向 router_ip:port 发包，这自然是不会得到结果的。
+我们出现新的需求，要把以前的 FTP 服务器迁移到 NAT 之后的一台机器上。但是，FTP 不仅用到 20 21 端口，PASV 还会用到高端口，这给端口转发带来了一些麻烦。我们一开始测试，直接在 Router 上转发 20 和 21 端口到 Server 上。但是很快发现，Filezilla 通过 PASV 获取到地址为（内网地址，端口高 8 位，端口低 8 位），然后，Filezilla 检测出这个地址是内网地址，于是转而向 router_ip:port 发包，这自然是不会得到结果的。
 
 此时我们去网上找了找资料，找到了一个很粗暴的方法：
 ```shell
@@ -16,11 +16,11 @@ iptables -A PREROUTING -i external_interface -p tcp -m tcp --dport 1024:65535 -j
 ```
 
 
-有趣地是， macOS 自带的 ftp 命令（High Sierra似乎已经删去）可以正常使用。研究发现，它用 EPSV（Extended Passive Mode） 代替 PASV ，这里并没有写内网地址，因而可以正常使用。
+有趣地是，macOS 自带的 ftp 命令（High Sierra 似乎已经删去）可以正常使用。研究发现，它用 EPSV（Extended Passive Mode）代替 PASV，这里并没有写内网地址，因而可以正常使用。
 
-这么做， Filezilla 可以成功访问了。但是，用其它客户端的时候，它会直连那个内网地址而不是 Router 的地址，于是还是连不上。而且，使用了 1024-65535 的所有端口，这个太浪费而且会影响我们其它的服务。
+这么做，Filezilla 可以成功访问了。但是，用其它客户端的时候，它会直连那个内网地址而不是 Router 的地址，于是还是连不上。而且，使用了 1024-65535 的所有端口，这个太浪费而且会影响我们其它的服务。
 
-我们开始研究我们 FTP 服务器(pyftpdlib)的配置。果然，找到了适用于 FTP behind NAT 的相关配置：
+我们开始研究我们 FTP 服务器 (pyftpdlib) 的配置。果然，找到了适用于 FTP behind NAT 的相关配置：
 ```
      - (str) masquerade_address:
         the "masqueraded" IP address to provide along PASV reply when

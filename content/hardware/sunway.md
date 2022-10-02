@@ -8,7 +8,7 @@ title: Sunway 处理器架构分析
 
 ## 参考文档
 
-- [高性能众核处理器申威26010](https://crad.ict.ac.cn/CN/10.7544/issn1000-1239.2021.20201041)
+- [高性能众核处理器申威 26010](https://crad.ict.ac.cn/CN/10.7544/issn1000-1239.2021.20201041)
 - [稀疏矩阵向量乘法在申威众核架构上的性能优化](https://cjc.ict.ac.cn/online/onlinepaper/lyy-202065163512.pdf)
 - [Sunway SW26010](https://en.wikipedia.org/wiki/Sunway_SW26010)
 - [The Sunway TaihuLight supercomputer: system and applications](https://link.springer.com/content/pdf/10.1007/s11432-016-5588-7.pdf)

@@ -19,7 +19,7 @@ title: 编程作业中的学术诚信
 	ensure you are giving proper credit, but help with code understanding
 	and debugging.
 
-## 什么时候应该在代码中引用来源？ When should I cite a source in my code?
+## 什么时候应该在代码中引用来源？When should I cite a source in my code?
 
 
 1. 当你从外部来源复制了代码。无论你是复制了代码片段，还是一整个模块，你都需要引用来源。
@@ -33,7 +33,7 @@ title: 编程作业中的学术诚信
 		You were not the original developer of the code.
 
 
-## 我应该如何引用代码？ How should I cite the code?
+## 我应该如何引用代码？How should I cite the code?
 
 1. 通常来说，代码的网址和下载时间就足够了。如果可以让读者更加清晰地了解到代码来源，可以增加更多的细节。
 
@@ -41,7 +41,7 @@ title: 编程作业中的学术诚信
 		more details if it will help the reader get a clearer
 		understanding of the source.
 
-2. 如果你修改了代码，你需要注明：“Adapted from:”（修改自） 或者“Based on”（基于）。这样读者就知道你修改了代码。
+2. 如果你修改了代码，你需要注明：“Adapted from:”（修改自）或者“Based on”（基于）。这样读者就知道你修改了代码。
 
 		If you adapted the code, you should indicate “Adapted from:” or
 		“Based on” so it is understood that you modified the code.
@@ -303,7 +303,7 @@ title: 编程作业中的学术诚信
 */
 ```
 
-（来源: Apache Project 源代码 http://svn.apache.org 于 2019 年 7 月获取）
+（来源：Apache Project 源代码 http://svn.apache.org 于 2019 年 7 月获取）
 
 	(Source: Apache Project source code http://svn.apache.org retrieved in
 	July 2019.)
@@ -321,7 +321,7 @@ title: 编程作业中的学术诚信
 // http://msdn.microsoft.com/en-us/library/ms680578(VS.85).aspx 
 ```
 
-（来源： https://github.com/adobe/chromium/blob/master/base/debug/stack_trace_win.cc 于 2019 年 7 月获取） 
+（来源：https://github.com/adobe/chromium/blob/master/base/debug/stack_trace_win.cc 于 2019 年 7 月获取） 
 
 	(Source:
 	https://github.com/adobe/chromium/blob/master/base/debug/stack_trace_win.cc

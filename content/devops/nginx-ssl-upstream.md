@@ -6,7 +6,7 @@ category: devops
 title: Nginx 反代到 HTTPS 上游
 ---
 
-这次遇到一个需求，要反代到不在内网的地址，为了保证安全，还是得上 HTTPS ，所以尝试了一下怎么给 upstream 配置自签名 HTTPS 证书的验证。
+这次遇到一个需求，要反代到不在内网的地址，为了保证安全，还是得上 HTTPS，所以尝试了一下怎么给 upstream 配置自签名 HTTPS 证书的验证。
 
 ```
 upstream subpath {

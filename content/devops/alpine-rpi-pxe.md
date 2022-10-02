@@ -8,7 +8,7 @@ title: 在 rpi4 上用 PXE 运行 Alpine Linux
 
 ## 背景
 
-需要给 rpi 配置一个 pxe 的最小环境，然后看到 alpine 有 rpi 的支持，所以尝试给 rpi4 配置 alpine 。
+需要给 rpi 配置一个 pxe 的最小环境，然后看到 alpine 有 rpi 的支持，所以尝试给 rpi4 配置 alpine。
 
 ## PXE 设置
 
@@ -56,7 +56,7 @@ config dhcp 'lan'
 ...
 ```
 
-这样就配置完毕了。如果是 isc-dhcp-server ，修改 `/etc/dhcp/dhcpd.conf`：
+这样就配置完毕了。如果是 isc-dhcp-server，修改 `/etc/dhcp/dhcpd.conf`：
 
 ```
 subnet 10.0.1.0 netmask 255.255.255.0 {

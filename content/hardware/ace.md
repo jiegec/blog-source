@@ -60,15 +60,15 @@ title: 「教学」ACE 缓存一致性协议
 
 我们知道，AXI 有 AR 和 R channel 用于读取数据，那么遇到读或者写 miss 的时候，可以在 AR channel 上捎带一些信息，让下一级的 Interconnect 知道自己的意图是读还是写，然后 Interconnect 就在 R channel 上返回数据。
 
-那么，具体要捎带什么信息呢？我们“不妨”用这样一种命名方式：`操作+目的状态`，比如我读 miss 的时候，需要读取数据，进入 Shared 状态，那就叫 ReadShared；我写 miss 的时候，需要读取数据（通常写入缓存的只是一个缓存行的一部分，所以先要把完整的读进来），那就叫 ReadUnique。这个操作可以编码到一个信号中，传递给 Interconnect。
+那么，具体要捎带什么信息呢？我们“不妨”用这样一种命名方式：`操作 + 目的状态`，比如我读 miss 的时候，需要读取数据，进入 Shared 状态，那就叫 ReadShared；我写 miss 的时候，需要读取数据（通常写入缓存的只是一个缓存行的一部分，所以先要把完整的读进来），那就叫 ReadUnique。这个操作可以编码到一个信号中，传递给 Interconnect。
 
 再来考虑上面提到的第二件事情：写入一个 valid && !dirty 的缓存行的时候，需要升级自己的状态，比如从 Shared 到 Modified。
 
-这个操作，需要让 Interconnect 把其他缓存中的这个缓存行数据清空，并且把自己升级到 Unique。根据上面的 `操作+目的状态` 的命名方式，我们可以命名为 CleanUnique，即把其他缓存都 Clean 掉，然后自己变成 Unique。
+这个操作，需要让 Interconnect 把其他缓存中的这个缓存行数据清空，并且把自己升级到 Unique。根据上面的 `操作 + 目的状态` 的命名方式，我们可以命名为 CleanUnique，即把其他缓存都 Clean 掉，然后自己变成 Unique。
 
 接下来考虑上面提到的第三件事情：需要 evict 一个 valid && dirty 的缓存行的时候，需要把 dirty 数据写回，并且降级自己的状态，比如 Modified -> Shared/Invalid。
 
-按照前面的 `操作+目的状态` 命名法，可以命名为 WriteBackInvalid。ACE 实际采用的命名是 WriteBack。
+按照前面的 `操作 + 目的状态` 命名法，可以命名为 WriteBackInvalid。ACE 实际采用的命名是 WriteBack。
 
 终于到了第四件事情：收到 snoop 请求的时候，需要返回当前的缓存数据，并且更新状态。
 

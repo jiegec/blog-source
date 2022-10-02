@@ -26,7 +26,7 @@ title: 「教学」RISC-V Debug 协议
 
 ## JTAG
 
-首先什么是 JTAG ？简单来说，它工作流程是这样的：
+首先什么是 JTAG？简单来说，它工作流程是这样的：
 
 1. JTAG TAP 维护了一个状态机，由 TMS 信号控制
 2. 当状态机进入 CaptureDR/CaptureIR 状态的时候，加载数据到 DR/IR 中
@@ -65,7 +65,7 @@ title: 「教学」RISC-V Debug 协议
 可以看到，如果想操作 dmi 定义的寄存器，需要如下几个步骤，这也是 OpenOCD `dmi_op_timeout` 要做的事情：
 
 1. 设置 IR 为 0x11，对应 DMI。
-2. 向 DR 写入请求的地址+数据+操作，丢弃读取的结果。
+2. 向 DR 写入请求的地址 + 数据 + 操作，丢弃读取的结果。
 3. 等待若干个周期。
 4. 向 DR 写入全 0，对应无操作，同时读取结果，这个结果就对应上面的请求。
 
@@ -114,7 +114,7 @@ OpenOCD 的 `examine` 函数对 DMI 初始化并进行一些参数的获取。�
 
 ## Abstract Command 实现
 
-那么，如何实现上面提到的 Abstract Command （比如读写寄存器，读写内存等）呢？Debug Spec 里面提到一种 Execution-Based 的方式，即在 Debug mode 下，核心依然在执行代码，只不过执行的是调试用的特殊代码。它做的就是轮询 Debug Module 等待命令，接受到命令以后，就去读写寄存器/内存，然后通过 data0-12 来传输数据。
+那么，如何实现上面提到的 Abstract Command（比如读写寄存器，读写内存等）呢？Debug Spec 里面提到一种 Execution-Based 的方式，即在 Debug mode 下，核心依然在执行代码，只不过执行的是调试用的特殊代码。它做的就是轮询 Debug Module 等待命令，接受到命令以后，就去读写寄存器/内存，然后通过 data0-12 来传输数据。
 
 这里还有一个比较特别的点，就是读取寄存器的时候，寄存器的编号是直接记录在指令中的，所以可以让 Debug Module 动态生成指令，然后让核心刷新 ICache 然后跳转过去。另外，还可以利用 dscratch0/dscratch1 寄存器来保存 gpr，然后用 dret 退出的时候再恢复，这样就有两个 gpr 可以用来实现功能了，实际上这已经够用了（一个技巧是，把地址设为 0 附近，然后直接用 zero 寄存器加偏移来寻址）。
 

@@ -6,9 +6,9 @@ category: networking
 title: 在 macOS 和 Linux 之间搭建 tinc 网络
 ---
 
-一直听说 tinc 比较科学，所以尝试自己用 tinc 搭建一个网络。这里，macOS 这段没有固定 IP 地址，Linux 机器有固定 IP 地址 linux_ip 。假设网络名称为 example , macOS 端名为 macos 地址为 192.168.0.2, linux 端名为 linux 地址为 192.168.0.1。
+一直听说 tinc 比较科学，所以尝试自己用 tinc 搭建一个网络。这里，macOS 这段没有固定 IP 地址，Linux 机器有固定 IP 地址 linux_ip。假设网络名称为 example , macOS 端名为 macos 地址为 192.168.0.2, linux 端名为 linux 地址为 192.168.0.1。
 
-2018-11-11 注：本文用的 tinc 版本为 1.0.x ，而不是 1.1-pre ，两个分支命令不同，但协议可以兼容。
+2018-11-11 注：本文用的 tinc 版本为 1.0.x，而不是 1.1-pre，两个分支命令不同，但协议可以兼容。
 
 在 macOS 上配置：
 ```shell
@@ -86,7 +86,7 @@ Subnet = 192.168.0.1/24
 $ tincd -n example -K
 ```
 
-接着，把 linux 上 /etc/tinc/example/hosts/linux 拷贝到 macos 的 /usr/local/etc/tinc/example/hosts/linux ，然后把 macos 上 /usr/local/etc/tinc/example/hosts/macos 拷贝到 /etc/tinc/example/hosts/macos 。在两台机器上都 `tinc -n example -D -d3` 即可看到连接的建立，通过 ping 即可验证网络建立成功。
+接着，把 linux 上 /etc/tinc/example/hosts/linux 拷贝到 macos 的 /usr/local/etc/tinc/example/hosts/linux，然后把 macos 上 /usr/local/etc/tinc/example/hosts/macos 拷贝到 /etc/tinc/example/hosts/macos。在两台机器上都 `tinc -n example -D -d3` 即可看到连接的建立，通过 ping 即可验证网络建立成功。
 
 2018-05-29 Update: Android 上，利用 Tinc GUI 也可以把 Tinc 运行起来，只是配置不大一样：
 
@@ -115,4 +115,4 @@ $ cat subnet-down
 ip route del $SUBNET dev $INTERFACE table local
 ```
 
-注意 table local 的使用。需要 Root 。
+注意 table local 的使用。需要 Root。

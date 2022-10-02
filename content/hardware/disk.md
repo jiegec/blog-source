@@ -8,7 +8,7 @@ title: 硬盘相关的概念
 
 ## ATA
 
-[ATA](https://en.wikipedia.org/wiki/Parallel_ATA) 定义了发送给硬盘的命令，[标准](https://people.freebsd.org/~imp/asiabsdcon2015/works/d2161r5-ATAATAPI_Command_Set_-_3.pdf)定义了命令:
+[ATA](https://en.wikipedia.org/wiki/Parallel_ATA) 定义了发送给硬盘的命令，[标准](https://people.freebsd.org/~imp/asiabsdcon2015/works/d2161r5-ATAATAPI_Command_Set_-_3.pdf)定义了命令：
 
 - ech IDENTIFY DEVICE: 获取设备信息
 - 25h READ DMA EXT: 读取扇区
@@ -56,7 +56,7 @@ $ lspci -vv
 在[这里](https://pinoutguide.com/HD/M.2_NGFF_connector_pinout.shtml)可以看到两种 key 的 pinout。
 
 - B key: SATA pin B(41,43) A(47,49), PCIe x2 pin R1(29,31) T1(35,37) R0(41,43) T0(47,49), USB 3.0 pin TX(29, 31) RX(35,37)
-- M key: SATA 同上, PCIe x4 pin R3(5,7) T3(11,13) R2(17,19) T2(23,25) Lane 0,1 同上
+- M key: SATA 同上，PCIe x4 pin R3(5,7) T3(11,13) R2(17,19) T2(23,25) Lane 0,1 同上
 
 可以看到，SATA pin 和 PCIe 的两个 lane 在 B 和 M key 中是一样的，物理上也是可以兼容的。
 

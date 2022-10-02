@@ -12,11 +12,11 @@ title: 在 Rpi4 上运行 buildroot
 
 ## PXE 设置和路由器设置
 
-见 “在 Rpi4 上运行 Alpine Linux” 文章。
+见“在 Rpi4 上运行 Alpine Linux”文章。
 
 ## Buildroot 配置
 
-下载 buildroot ：
+下载 buildroot：
 
 ```bash
 > wget https://buildroot.org/downloads/buildroot-2020.08.tar.gz
@@ -25,7 +25,7 @@ title: 在 Rpi4 上运行 buildroot
 > make raspberrypi4_64_defconfig
 ```
 
-然后运行 `make menuconfig` ，在 `Filesystem images` 中打开 initramfs ，并设置 cpio 压缩为 gz 。然后直接编译：
+然后运行 `make menuconfig` ，在 `Filesystem images` 中打开 initramfs，并设置 cpio 压缩为 gz。然后直接编译：
 
 ```bash
 > make -j4

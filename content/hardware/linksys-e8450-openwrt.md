@@ -18,7 +18,7 @@ title: Linksys E8450 OpenWRT 配置 w/ 802.11ax
 $ wget https://downloads.openwrt.org/snapshots/targets/mediatek/mt7622/openwrt-mediatek-mt7622-linksys_e8450-squashfs-sysupgrade.bin
 ```
 
-然后访问固件升级页面：http://192.168.1.1/config-admin-firmware.html#firmware，选择下载的 bin 文件。点击 “开始升级”，然后等待。一段时间后，ssh 到路由器：
+然后访问固件升级页面：http://192.168.1.1/config-admin-firmware.html#firmware，选择下载的 bin 文件。点击“开始升级”，然后等待。一段时间后，ssh 到路由器：
 
 ```shell
 $ ssh root@192.168.1.1

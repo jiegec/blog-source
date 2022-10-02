@@ -6,15 +6,15 @@ category: networking
 title: 使用 Nginx 转发 VMware ESXi
 ---
 
-我们的 VMware ESXi 在一台 NAT Router 之后，但是我们希望通过域名可以直接访问 VMware ESXi 。我们首先的尝试是，把 8443 转发到它的 443 端口，比如：
+我们的 VMware ESXi 在一台 NAT Router 之后，但是我们希望通过域名可以直接访问 VMware ESXi。我们首先的尝试是，把 8443 转发到它的 443 端口，比如：
 
 ```shell
 socat TCP-LISTEN:8443,reuseaddr,fork TCP:esxi_addr:443
 ```
 
-它能工作地很好（假的，如果你把 8443 换成 9443 它就不工作了），但是，我们想要的是，直接通过 esxi.example.org 就可以访问它。于是，我们需要 Nginx 在其中做一个转发的功能。在这个过程中遇到了很多的坑，最后终于是做好了 （VMware Remote Console等功能还不行，需要继续研究）。
+它能工作地很好（假的，如果你把 8443 换成 9443 它就不工作了），但是，我们想要的是，直接通过 esxi.example.org 就可以访问它。于是，我们需要 Nginx 在其中做一个转发的功能。在这个过程中遇到了很多的坑，最后终于是做好了（VMware Remote Console 等功能还不行，需要继续研究）。
 
-首先讲讲为啥把 8443 换成 9443 不能工作吧 -- 很简单，ESXi 的网页界面会请求 8443 端口。只是恰好我用 8443 转发到 443， 所以可以正常工作。这个很迷，但是测试的结果确实如此。VMware Remote Console 还用到了别的端口，我还在研究之中。
+首先讲讲为啥把 8443 换成 9443 不能工作吧 -- 很简单，ESXi 的网页界面会请求 8443 端口。只是恰好我用 8443 转发到 443，所以可以正常工作。这个很迷，但是测试的结果确实如此。VMware Remote Console 还用到了别的端口，我还在研究之中。
 
 来谈谈怎么配置这个 Nginx 转发吧。首先是 80 跳转 443:
 ```
@@ -131,7 +131,7 @@ server {
 iptables -A PREROUTING -i wan_interface -p tcp -m tcp --dport 902 -j DNAT --to-destination esxi_addr:902
 ```
 
-2018-05-09 08:07 更新：最后发现，还是直接隧道到内网访问 ESXi 最科学。或者，让 443 重定向到 8443 ：
+2018-05-09 08:07 更新：最后发现，还是直接隧道到内网访问 ESXi 最科学。或者，让 443 重定向到 8443：
 ```
 server {
         listen 443 ssl;

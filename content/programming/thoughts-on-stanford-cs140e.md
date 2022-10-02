@@ -6,7 +6,7 @@ category: programming
 title: 近来做 Stanford CS140e 的一些进展和思考
 ---
 
-最近，受各路安利，剁手买下了 [这个淘宝商家的树莓派的套餐C](https://item.taobao.com/item.htm?id=537501616420) ，还买了许多 LED 灯泡、杜邦线和电阻，开始按照 [CS 140e](http://web.stanford.edu/class/cs140e/) 学习 Rust 并且用 Rust 编译写一个简易的操作系统。Assignment 0 的目标就是编写一个向 GPIO 16 连接的 LED 灯闪烁。首先当然就是愉快地按照教程下载 bootloader ，下载交叉编译工具链，顺带装一个 Raspbian 到机器上，随时可以当成一个低性能的 ARM/ARM64 （实际上，Raspbian 只用了armv7l，没有用 64bit）机器来用，以后如果配上 [@scateu](https://scateu.me) 团购的 Motorola Laptop Dock 的话就是一个几百块的笔记本了。把课程上的文件丢上去，可以看到绿色的活动指示灯闪烁，后面又把 CP2102 模块连上去，又能看到 Blink on, Blink off 的输出。然后按照要求，自己先码一段 C 语言，实现 blinky:
+最近，受各路安利，剁手买下了 [这个淘宝商家的树莓派的套餐 C](https://item.taobao.com/item.htm?id=537501616420) ，还买了许多 LED 灯泡、杜邦线和电阻，开始按照 [CS 140e](http://web.stanford.edu/class/cs140e/) 学习 Rust 并且用 Rust 编译写一个简易的操作系统。Assignment 0 的目标就是编写一个向 GPIO 16 连接的 LED 灯闪烁。首先当然就是愉快地按照教程下载 bootloader，下载交叉编译工具链，顺带装一个 Raspbian 到机器上，随时可以当成一个低性能的 ARM/ARM64（实际上，Raspbian 只用了 armv7l，没有用 64bit）机器来用，以后如果配上 [@scateu](https://scateu.me) 团购的 Motorola Laptop Dock 的话就是一个几百块的笔记本了。把课程上的文件丢上去，可以看到绿色的活动指示灯闪烁，后面又把 CP2102 模块连上去，又能看到 Blink on, Blink off 的输出。然后按照要求，自己先码一段 C 语言，实现 blinky:
 
 ```c++
 #define GPIO_BASE (0x3F000000 + 0x200000)
@@ -78,7 +78,7 @@ pub unsafe extern "C" fn kmain() {
 
 这边和上面一样，很多东西都已经给出了，只是重新改写一下而已。不过，这边的实测结果则是，一秒钟会闪烁很多下，看了下汇编，生成的循环比较紧凑，所以也没有达到想要的效果，不过后面到我实现了 Timer 的读取之后，就很精准了。
 
-接下来就是痛苦的学习 Rust 的过程，Assignment 1 上来就是解答关于 Rust 语言的一些问题，在过程中被 Rust 十分严格的 Lifetime 和 Borrow checker 弄得想死，好歹最后还是让测试都通过了。接下来就是真正地提供一些封装硬件接口的 API，然后利用这些 API 去实现更多功能，首先是利用栈上分配的空间模拟一个变长数组的 API：`stack-vec` ，然后是把底层的直接操作硬件的内存操作封装成类型安全的 `volatile` ，然后实现一个简单的支持断点续传的传文件的协议 `xmodem` ，又做了一个辅助电脑上使用 TTY+XMODEM 的小工具 `ttywrite` ，然后就开始撸硬件了：时钟 `timer` ，针对 GPIO pin 的类型安全的状态机 `GPIO` 。目前只实现到这里，然后做出了一个准确一秒闪烁的 blinky （令人惊讶的是，因为这里的 kernel 直接从文件头开始就是代码，最后的 binary 异常地小，而之前的代码从文件的偏移 0x8000 开始。目前看来，是因为之前的代码是整个文件加载到 0x0000 上，而代码默认了从  0x8000 开始，所以除了最开头的一个跳转指令，中间留了许多空余的空间。而这里的代码是直接被 bootloader 加载到了 0x80000 处并且跳转到这里执行，所以省去了许多空间）：
+接下来就是痛苦的学习 Rust 的过程，Assignment 1 上来就是解答关于 Rust 语言的一些问题，在过程中被 Rust 十分严格的 Lifetime 和 Borrow checker 弄得想死，好歹最后还是让测试都通过了。接下来就是真正地提供一些封装硬件接口的 API，然后利用这些 API 去实现更多功能，首先是利用栈上分配的空间模拟一个变长数组的 API：`stack-vec` ，然后是把底层的直接操作硬件的内存操作封装成类型安全的 `volatile` ，然后实现一个简单的支持断点续传的传文件的协议 `xmodem` ，又做了一个辅助电脑上使用 TTY+XMODEM 的小工具 `ttywrite` ，然后就开始撸硬件了：时钟 `timer` ，针对 GPIO pin 的类型安全的状态机 `GPIO` 。目前只实现到这里，然后做出了一个准确一秒闪烁的 blinky（令人惊讶的是，因为这里的 kernel 直接从文件头开始就是代码，最后的 binary 异常地小，而之前的代码从文件的偏移 0x8000 开始。目前看来，是因为之前的代码是整个文件加载到 0x0000 上，而代码默认了从  0x8000 开始，所以除了最开头的一个跳转指令，中间留了许多空余的空间。而这里的代码是直接被 bootloader 加载到了 0x80000 处并且跳转到这里执行，所以省去了许多空间）：
 
 ```rust
 fn blinky() {

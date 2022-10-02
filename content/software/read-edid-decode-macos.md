@@ -8,7 +8,7 @@ title: macOS 下读取并解析 EDID
 
 之前听说了 EDID 的存在，但是一直没有细究里面的格式和内容。今天了解了一下，发现其实非常简单，下面是方法：
 
-首先获取所有显示器输出的 EDID ：
+首先获取所有显示器输出的 EDID：
 
 ```bash
 ioreg -lw0 | grep IODisplayEDID

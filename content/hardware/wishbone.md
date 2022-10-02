@@ -66,11 +66,11 @@ title: 「教学」Wishbone 总线协议
 - `a` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，此时 `we_o=1` 说明是一个写操作，并且写入地址是 `addr_o=0x01`，写入的数据是 `data_o=0x12`
 - `b` 周期：此时 `valid_o=0 && ready_i=0` 说明无事发生
 - `c` 周期：此时 `valid_o=1 && ready_i=0` 说明 master 想要从地址 0x02（`addr_o=0x02`）读取数据（`we_o=0`），但是 slave 没有接受（`ready_i=0`）
-- `d` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生， master 从地址 0x02（`addr_o=0x02`）读取数据（`we_o=0`），读取的数据为 0x34（`data_i=0x34`）
+- `d` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 从地址 0x02（`addr_o=0x02`）读取数据（`we_o=0`），读取的数据为 0x34（`data_i=0x34`）
 - `e` 周期：此时 `valid_o=0 && ready_i=0` 说明无事发生
-- `f` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生， master 向地址 0x03（`addr_o=0x03`）写入数据（`we_o=1`），写入的数据为 0x56（`data_i=0x56`）
-- `g` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生， master 从地址 0x01（`addr_o=0x01`）读取数据（`we_o=0`），读取的数据为 0x12（`data_i=0x12`）
-- `h` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生， master 向地址 0x02（`addr_o=0x02`）写入数据（`we_o=1`），写入的数据为 0x9a（`data_i=0x9a`）
+- `f` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 向地址 0x03（`addr_o=0x03`）写入数据（`we_o=1`），写入的数据为 0x56（`data_i=0x56`）
+- `g` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 从地址 0x01（`addr_o=0x01`）读取数据（`we_o=0`），读取的数据为 0x12（`data_i=0x12`）
+- `h` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 向地址 0x02（`addr_o=0x02`）写入数据（`we_o=1`），写入的数据为 0x9a（`data_i=0x9a`）
 
 从上面的波形中，可以有几点观察：
 

@@ -97,7 +97,7 @@ when(past(stream.valid && ~stream.ready && ~outerReset)) {
 
 2: 在 reset 释放的第一个周期里，valid 不能为高：
 
-参考 AXI 标准(IHI0022E Page 38 A3.1.2)原文：
+参考 AXI 标准 (IHI0022E Page 38 A3.1.2) 原文：
 
 ```text
 The earliest point after reset that a master is permitted to begin driving ARVALID, AWVALID, or WVALID HIGH is at a rising ACLK edge after ARESETn is HIGH.

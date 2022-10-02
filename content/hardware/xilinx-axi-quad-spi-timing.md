@@ -14,7 +14,7 @@ title: 「教学」AXI Quad SPI 时序分析
 
 AXI Quad SPI 是一个 SPI 的控制器，它支持 XIP（eXecute In Place）模式，即可以暴露一个只读 AXI Slave 接口，当接收到读请求的时候，就按照标准的 SPI Flash 命令去对应的地址进行读取，然后返回结果。由于不同厂家的 SPI Flash 支持有所不同，所以 IP 上的设置可以看到厂家的选择。
 
-特别地，一个常见的需求是希望访问 Cfg（Configuration） Flash，亦即用来保存 Bitstream 的 Flash。当 FPGA 上电的时候，如果启动模式设置为 SPI Flash，FPGA 就会向 Cfg Flash 读取 Bitstream，Cfg Flash 需要连接到 FPGA 的指定引脚上，当 FPGA 初始化的时候由内部逻辑驱动，初始化完成后又要转交给用户逻辑。转交的方式就是通过 STARTUP 系列的 primitive。
+特别地，一个常见的需求是希望访问 Cfg（Configuration）Flash，亦即用来保存 Bitstream 的 Flash。当 FPGA 上电的时候，如果启动模式设置为 SPI Flash，FPGA 就会向 Cfg Flash 读取 Bitstream，Cfg Flash 需要连接到 FPGA 的指定引脚上，当 FPGA 初始化的时候由内部逻辑驱动，初始化完成后又要转交给用户逻辑。转交的方式就是通过 STARTUP 系列的 primitive。
 
 通常，如果要连接外部的 SPI Flash，需要连接几条信号线到顶层，然后通过 xdc 把信号绑定到引脚上，然后引脚连接了一个外部的 SPI Flash。但由于 Cfg Flash 比较特殊，所以信号从 AXI Quad SPI 直接连到 STARTUP 系列的 primitive 上。如果是采用 STARTUPE2 原语的 7 系列的 FPGA，那么只有时钟会通过 STARTUPE2 pritimive 连接到 SPI Flash 上，其他数据信号还是正常通过顶层绑定；如果是采用 STARTUPE3 原语的 UltraScale 系列的 FPGA，那么时钟和数据都通过 STARTUPE3 primitive 连接到 SPI Flash。
 
@@ -217,7 +217,7 @@ set tclk_trace_delay_min 0.2
 
 可以看到，这一部分和上面 UltraScale+ 部分差不多，只是多一个 `cclk_delay` 变量，这是因为 Artix 7 中，时钟只能创建到 USRCCLKO 引脚上，但是实际 SPI Flash 接收到的时钟等于 USRCCLKO 到 CCLK 引脚，然后再通过 PCB 上的线传播到 SPI Flash，所以需要手动添加一个偏移，这个偏移就是 USRCCLKO 到 CCLK 的延迟，可以在 [Artix 7 Data Sheet](https://www.xilinx.com/support/documentation/data_sheets/ds181_Artix_7_Data_Sheet.pdf) 里面看到：对于 1.0V，-2 速度的 FPGA，这个延迟最小值为 0.50ns，最大值为 6.70ns，这里采用了最大值。
 
-所以，下面的约束，除了时钟部分以外，和上面分析的 UltraScale+ 时序约束计算方法是相同的。不同点在于，首先约束了从 AXI Quad SPI 到 STARTUPE2 的路由时延，从 0.1ns 到 1.5ns，然后又从 USRCCLKO 创建了一个分频+延迟 `cclk_delay` 纳秒的时钟，作为 SPI Flash 上 SCK 引脚的时钟。
+所以，下面的约束，除了时钟部分以外，和上面分析的 UltraScale+ 时序约束计算方法是相同的。不同点在于，首先约束了从 AXI Quad SPI 到 STARTUPE2 的路由时延，从 0.1ns 到 1.5ns，然后又从 USRCCLKO 创建了一个分频 + 延迟 `cclk_delay` 纳秒的时钟，作为 SPI Flash 上 SCK 引脚的时钟。
 
 ```xdc
 # this is to ensure min routing delay from SCK generation to STARTUP input

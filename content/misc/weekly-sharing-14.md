@@ -6,7 +6,7 @@ category: misc
 title: 每周分享第 14 期
 ---
 
-最近沉迷写 OS ，没怎么搜罗新的东西（
+最近沉迷写 OS，没怎么搜罗新的东西（
 
 1. 用 Docker 做交叉编译 https://github.com/dockcross/dockcross#dockcross
 2. tar inplace extraction 有意思的思路 https://gitlab.com/antonok/taro

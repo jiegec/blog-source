@@ -8,11 +8,11 @@ title: Android Studio 手工更新小记
 
 迁移自本人在 CSDN 上的博客：https://blog.csdn.net/build7601/article/details/41776599
 
-因为长时间不更新Android Studio，回头一看，我的版本才135.1339820，最新版本都135.1626825去了，我就萌生了更新的念头。。
+因为长时间不更新 Android Studio，回头一看，我的版本才 135.1339820，最新版本都 135.1626825 去了，我就萌生了更新的念头。。
 
-首先，我尝试调用update_studio.sh。。。。。但是！！404 Not Found！！看来版本跨度太大无法打补丁了呢。。
+首先，我尝试调用 update_studio.sh。。。。。但是！！404 Not Found！！看来版本跨度太大无法打补丁了呢。。
 
-那只好看看https://dl.google.com/android/studio/patches/updates.xml 这个里面了，找到我的版本号：
+那只好看看 https://dl.google.com/android/studio/patches/updates.xml 这个里面了，找到我的版本号：
 
 ```xml
 <channel id="AI-0-beta" name="Android Studio updates" status="beta" url="http://tools.android.com/recent" feedback="https://code.google.com/p/android/issues/entry?template=Android+Studio+bug" majorVersion="0">
@@ -52,14 +52,14 @@ title: Android Studio 手工更新小记
 
 立马下载 https://dl.google.com/android/studio/patches/AI-135.1339820-135.1623071-patch-mac.jar ..也是大，差不多和重新下载一样大了。。
 
-进入Android Studio目录，输入java -cp AI-135.1339820-135.1623071-patch-mac.jar com.intellij.updater.Runner install . （记住后面的.表示安装目录）。
+进入 Android Studio 目录，输入 java -cp AI-135.1339820-135.1623071-patch-mac.jar com.intellij.updater.Runner install . （记住后面的。表示安装目录）。
 
 弹出窗口，升级成功，yeah！
 
-以后要想用patch升级，一定要尽快啊～
+以后要想用 patch 升级，一定要尽快啊～
 
-吐槽一下update_studio.sh的编写人，我要改进一下他的脚本。。升不上去太挫了。。
+吐槽一下 update_studio.sh 的编写人，我要改进一下他的脚本。。升不上去太挫了。。
 
 题外话：
 
-打完补丁，出现Java not found错误，发现我的java版本是Oracle1.8，而他要的是Apple1.6.。。那我只好安装一下，然后呢？就好了！！！！！
+打完补丁，出现 Java not found 错误，发现我的 java 版本是 Oracle1.8，而他要的是 Apple1.6.。。那我只好安装一下，然后呢？就好了！！！！！

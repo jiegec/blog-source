@@ -26,6 +26,6 @@ title: 每周分享第 1 期
 16. 海思 cc 居然支持 ASan : /opt/hisi-linux/x86-arm/arm-hisiv600-linux/arm-hisiv600-linux-gnueabi/lib/a7/libasan.so
 17. 遇到了 [设备名有空格导致 telegraf 读取 S.M.A.R.T. 信息失败](https://github.com/influxdata/telegraf/issues/4881) 的锅，不过似乎没人修
 18. 看到了一个很有意思的 Interview Pass Rate 关于使用的编辑器的调查，很有意思 [链接](https://triplebyte.com/blog/editor-report-the-rise-of-visual-studio-code)
-19. 发现一个 JSX 的替代品，用了 Template literal syntax ，挺好的 [链接](https://github.com/developit/htm)
+19. 发现一个 JSX 的替代品，用了 Template literal syntax，挺好的 [链接](https://github.com/developit/htm)
 
 也不知道能不能坚持下来，就这样了，发布（逃

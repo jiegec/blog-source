@@ -18,7 +18,7 @@ pacman -S samba
 
 我们还没有配好 Kerberos，所以跳过。
 
-然后配置 /etc/samba/smb.conf ，以下是一个例子。可以根据文档微调。
+然后配置 /etc/samba/smb.conf，以下是一个例子。可以根据文档微调。
 
 ```
 [global]
@@ -39,7 +39,7 @@ pacman -S samba
 
 ```
 
-这样，域上的用户 user 会拿到 home 目录为 /home/YOUR-DOMAIN-HERE/user ，uid 在 10000-2000范围内的用户。在一会经过配置之后，可以通过 `getent passwd` 验证。
+这样，域上的用户 user 会拿到 home 目录为 /home/YOUR-DOMAIN-HERE/user，uid 在 10000-2000 范围内的用户。在一会经过配置之后，可以通过 `getent passwd` 验证。
 
 接下来，需要把本机的 samba 登入到域的管理员，并且启动服务。
 
@@ -50,7 +50,7 @@ systemctl enable --now nmb
 systemctl enable --now winbind
 ```
 
-更改 /etc/nsswitch.conf ，在 passwd, shadow 和 group 都增添 winbind ：
+更改 /etc/nsswitch.conf，在 passwd, shadow 和 group 都增添 winbind：
 
 ```
 passwd: files mymachines systemd winbind
@@ -80,7 +80,7 @@ net ads lookup
 
 修改 /etc/pam.d/system-auth:
 
-第一部分： auth
+第一部分：auth
 
 ```
 auth [success=1 default=ignore]         pam_localuser.so
@@ -91,7 +91,7 @@ auth optional                           pam_permit.so
 auth required                           pam_env.so
 ```
 
-首先利用 pam_localuser.so 匹配用户名和 `/etc/passwd` ，如果有， `success=1` 代表跳过下面一条规则，故会跳到 pam_unix.so 这一行。如果失败，`default=ignore` 表示忽略它的结果。如果是本地用户，匹配 pam_localuser.so 成功后跳到 pam_unix.so ，如果成功了则跳到第五行， pam_permit.so 代表通过，最后由 pam_env.so 配置环境变量。如果是域用户，则由 pam_winbind.so 处理，如果成功，同样跳到第 5 条。如果本地用户和域用户都失败，就 pam_deny.so 认证失败。
+首先利用 pam_localuser.so 匹配用户名和 `/etc/passwd` ，如果有， `success=1` 代表跳过下面一条规则，故会跳到 pam_unix.so 这一行。如果失败，`default=ignore` 表示忽略它的结果。如果是本地用户，匹配 pam_localuser.so 成功后跳到 pam_unix.so，如果成功了则跳到第五行，pam_permit.so 代表通过，最后由 pam_env.so 配置环境变量。如果是域用户，则由 pam_winbind.so 处理，如果成功，同样跳到第 5 条。如果本地用户和域用户都失败，就 pam_deny.so 认证失败。
 
 第二部分：account
 

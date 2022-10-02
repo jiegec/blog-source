@@ -6,7 +6,7 @@ category: programming
 title: 把 GDB 降级到 8.0.1
 ---
 
-在 macOS 上使用 GDB 需要 codesigning 。但是在 GDB 升级到 8.1 后这种方法不知道为何失效了。所以我安装回了 GDB 8.0.1 并且重新 codesigning ，现在又可以正常升级了。
+在 macOS 上使用 GDB 需要 codesigning。但是在 GDB 升级到 8.1 后这种方法不知道为何失效了。所以我安装回了 GDB 8.0.1 并且重新 codesigning，现在又可以正常升级了。
 
 对 Formula 进行 patch：
 

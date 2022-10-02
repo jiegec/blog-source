@@ -64,7 +64,7 @@ cell (AND2_X1) {
 }
 ```
 
-首先要看 cell_fall 后面的 template 是 Timing_7_7，可以看到 variable_1 和 variable_2 对应的是 input_net_transition 和 total_output_net_capacitance。这里 cell_fall 指的是输出 pin ZN 从 1 变成 0 的时候，这个变化从 A1 的变化传播到 ZN 的时间，这个时间和输入的 transition 时间（大概是从 0 到 1 、从 1 到 0 的时间，具体从多少百分比到多少百分比见设置）和输出的 capacitance 有关，所以是一个查找表，查找的时候找最近的点进行插值。输出的 capacitance 取决于 wire load 和连接了这个输出的其他单元的输入。
+首先要看 cell_fall 后面的 template 是 Timing_7_7，可以看到 variable_1 和 variable_2 对应的是 input_net_transition 和 total_output_net_capacitance。这里 cell_fall 指的是输出 pin ZN 从 1 变成 0 的时候，这个变化从 A1 的变化传播到 ZN 的时间，这个时间和输入的 transition 时间（大概是从 0 到 1、从 1 到 0 的时间，具体从多少百分比到多少百分比见设置）和输出的 capacitance 有关，所以是一个查找表，查找的时候找最近的点进行插值。输出的 capacitance 取决于 wire load 和连接了这个输出的其他单元的输入。
 
 除了 cell_fall/cell_rise 两种类型，还有 fall_transition 和 rise_transition，这就是输出引脚的变化时间，又作为后继单元的输入 transition 时间。
 

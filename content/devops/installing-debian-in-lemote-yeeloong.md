@@ -34,7 +34,7 @@ $ sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist
 # set addr manually to 192.168.2.1
 ```
 
-回到 PMON ，配置远程启动：
+回到 PMON，配置远程启动：
 ```shell
 > ifaddr rtl0 192.168.2.2
 > load tftp://192.168.2.1/vmlinux-3.16.0-6-loongson-2f

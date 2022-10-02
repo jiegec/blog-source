@@ -8,12 +8,12 @@ title: 配置 fcitx-fbterm 实现在终端下显示和输入中文
 
 参考网站：
 
-[Ubuntu使用fbterm无法打开fb设备的解决及fcitx-fbterm安装](https://www.linuxidc.com/Linux/2015-01/111976.htm)
+[Ubuntu 使用 fbterm 无法打开 fb 设备的解决及 fcitx-fbterm 安装](https://www.linuxidc.com/Linux/2015-01/111976.htm)
 [Fcitx - ArchWiki](https://wiki.archlinux.org/index.php/fcitx)
-[完美中文tty, fbterm+yong(小小输入法)](https://blog.csdn.net/guozhiyingguo/article/details/52852394)
-[让linux console支持中文显示和fcitx输入法](http://www.voidcn.com/article/p-wrcgydjy-er.html)
+[完美中文 tty, fbterm+yong(小小输入法)](https://blog.csdn.net/guozhiyingguo/article/details/52852394)
+[让 linux console 支持中文显示和 fcitx 输入法](http://www.voidcn.com/article/p-wrcgydjy-er.html)
 
-考虑到 lemote yeeloong 机器的 cpu 运算性能，跑一个图形界面会非常卡，于是选择直接用 framebuffer 。但是，显示中文又成了问题。于是，采用了 fbterm 和 fcitx 配合，加上 gdm 的方法，完成了终端下的中文输入。
+考虑到 lemote yeeloong 机器的 cpu 运算性能，跑一个图形界面会非常卡，于是选择直接用 framebuffer。但是，显示中文又成了问题。于是，采用了 fbterm 和 fcitx 配合，加上 gdm 的方法，完成了终端下的中文输入。
 
 首先，安装相关的包：
 ``` shell

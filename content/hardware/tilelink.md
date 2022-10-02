@@ -20,7 +20,7 @@ title: TileLink 总线协议分析
 
 ## TileLink Uncached
 
-TileLink Uncached(TL-UL 和 TL-UH)包括了两个 channel：
+TileLink Uncached(TL-UL 和 TL-UH) 包括了两个 channel：
 
 - A channel: M->S 发送请求，类比 AXI 的 AR/AW/W
 - D channel: S->M 发送响应，类比 AXI 的 R/W
@@ -48,7 +48,7 @@ r_out.valid := in.ar.valid
 r_out.bits :<= edgeOut.Get(r_id, r_addr, r_size)._2
 ```
 
-然后 AW+W channel 也[连接](https://github.com/chipsalliance/rocket-chip/blob/850e1d5d56989f031fe3e7939a15afa1ec165d64/src/main/scala/amba/axi4/ToTL.scala#L119=) 到 A channel，由于不用考虑 burst的情况，这里在 aw 和 w 同时 valid 的时候才认为有请求。
+然后 AW+W channel 也[连接](https://github.com/chipsalliance/rocket-chip/blob/850e1d5d56989f031fe3e7939a15afa1ec165d64/src/main/scala/amba/axi4/ToTL.scala#L119=) 到 A channel，由于不用考虑 burst 的情况，这里在 aw 和 w 同时 valid 的时候才认为有请求。
 
 ```scala
 val w_out = Wire(out.a)
@@ -130,7 +130,7 @@ in.d.valid := Mux(r_wins, out.r.valid, out.b.valid)
 
 首先 Master A 发出 Acquire 请求，然后 Slave 向其他 Master 广播 Probe，等到其他 Master 返回 ProbeAck 后，再向 Master A 返回 Grant，最后 Master A 发送 GrantAck 给 Slave。这样 Master A 就获得了这个缓存行的一份拷贝，并且让 Master B 的缓存行失效或者状态变成只读。
 
-TileLink 的缓存行有三个状态：None，Branch 和 Trunk(Tip)。基本对应 MSI 模型： None->Invalid，Branch->Shared 和 Trunk->Modified。Rocket Chip 代码中 [ClientStates](https://github.com/chipsalliance/rocket-chip/blob/850e1d5d56989f031fe3e7939a15afa1ec165d64/src/main/scala/tilelink/Metadata.scala#L10=) 还定义了 Dirty 状态，大致对应 MESI 模型：None->Invalid，Branch->Shared，Trunk->Exclusive，Dirty->Modified。
+TileLink 的缓存行有三个状态：None，Branch 和 Trunk(Tip)。基本对应 MSI 模型：None->Invalid，Branch->Shared 和 Trunk->Modified。Rocket Chip 代码中 [ClientStates](https://github.com/chipsalliance/rocket-chip/blob/850e1d5d56989f031fe3e7939a15afa1ec165d64/src/main/scala/tilelink/Metadata.scala#L10=) 还定义了 Dirty 状态，大致对应 MESI 模型：None->Invalid，Branch->Shared，Trunk->Exclusive，Dirty->Modified。
 
 此外，标准还说可以在 B 和 C channel 上进行 TL-UH 的操作。标准这么设计的意图是可以让 Slave 转发操作到拥有缓存数据的 Master 上。比如 Master A 在 A channel 上发送 Put 请求，那么 Slave 向 Master B 的 B channel 上发送 Put 请求，Master B 在 C channel 上发送 AccessAck 响应，Slave 再把响应转回 Master A 的 D channel。这就像是一个片上的网络，Slave 负责在 Master 之间路由请求。
 

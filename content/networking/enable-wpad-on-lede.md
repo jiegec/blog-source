@@ -3,7 +3,7 @@ layout: post
 date: 2018-09-11 23:23:00 +0800
 tags: [lede,openwrt,wpad,pac]
 category: networking
-title: 在 LEDE （OpenWrt） 上启用 wpad 
+title: 在 LEDE（OpenWrt）上启用 wpad 
 ---
 
 WPAD（Web Proxy Auto-Discovery Protocol）是一个可以利用 dhcp 分发 pac 配置的协议。方法如下：

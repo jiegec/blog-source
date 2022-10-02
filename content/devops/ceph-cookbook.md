@@ -23,7 +23,7 @@ title: Ceph Cookbook
 
 ## 认证
 
-Ceph 客户端认证需要用户名+密钥。默认情况下，用户名是 `client.admin`，密钥路径是 `/etc/ceph/ceph.用户名.keyring`。`ceph --user abc` 表示以用户 `client.abc` 的身份访问集群。
+Ceph 客户端认证需要用户名 + 密钥。默认情况下，用户名是 `client.admin`，密钥路径是 `/etc/ceph/ceph.用户名.keyring`。`ceph --user abc` 表示以用户 `client.abc` 的身份访问集群。
 
 用户的权限是按照服务类型决定的。可以用 `ceph auth ls` 显示所有的用户以及权限：
 

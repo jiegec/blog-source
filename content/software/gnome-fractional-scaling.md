@@ -8,7 +8,7 @@ title: Gnome 的 Fractional Scaling
 
 ## 背景
 
-最近发现部分软件（包括Google Chrome，Firefox 和 Visual Studio Code） 在 125% 的 Fractional Scaling 模式下会很卡。找到了一些临时解决方法，但是很不优雅，也很麻烦。所以深入研究了一下 Fractional Scaling 的工作方式。
+最近发现部分软件（包括 Google Chrome，Firefox 和 Visual Studio Code）在 125% 的 Fractional Scaling 模式下会很卡。找到了一些临时解决方法，但是很不优雅，也很麻烦。所以深入研究了一下 Fractional Scaling 的工作方式。
 
 ## 临时解决方法
 
@@ -34,7 +34,7 @@ title: Gnome 的 Fractional Scaling
 
 在 [xrandr 文档](https://www.x.org/releases/X11R7.5/doc/man/man1/xrandr.1.html) 中，写了：transform 是一个 3x3 矩阵，矩阵乘以输出的点的坐标得到图形缓存里面的坐标。
 
-由此可以猜想：fractional scaling 的工作方式是，把绘制的 buffer 调大，然后再用 transform 把最终输出分辨率调成 1920x1080 。可以看到，xrandr 显示的分辨率除以 transform 对应的值，就是 1920x1080。但这并不能解释 100% 和 200% 的区别，所以肯定还漏了什么信息。
+由此可以猜想：fractional scaling 的工作方式是，把绘制的 buffer 调大，然后再用 transform 把最终输出分辨率调成 1920x1080。可以看到，xrandr 显示的分辨率除以 transform 对应的值，就是 1920x1080。但这并不能解释 100% 和 200% 的区别，所以肯定还漏了什么信息。
 
 翻了翻 [mutter 实现 fractional scaling 的 pr](https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3/diffs#989734a4aea877b0c1d80fa73cbe2ee59de79fba_376_422)，找到了实现 scale 的一部分：
 

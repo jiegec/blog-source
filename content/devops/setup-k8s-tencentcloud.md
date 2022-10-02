@@ -41,7 +41,7 @@ $ kubectl edit clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard
 # use `kubectl get clusterrole.rbac.authorization.k8s.io/cluster-admin -o yaml` to see full permissions
 ```
 
-接下来配置 metrics-server 。下载 metrics-server 仓库，然后修改镜像地址：
+接下来配置 metrics-server。下载 metrics-server 仓库，然后修改镜像地址：
 
 ```bash
 $ wget https://github.com/kubernetes-sigs/metrics-server/archive/v0.3.6.zip

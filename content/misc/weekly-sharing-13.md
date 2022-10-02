@@ -27,6 +27,6 @@ title: 每周分享第 13 期
 17. 解决 excel 读取 nodejs 生成的 csv 的乱码问题 https://github.com/f2e-journey/xueqianban/issues/34
 18. 清华的 Rust OS https://github.com/oscourse-tsinghua/rcore_plus
 19. GPU 加速的 JS http://gpu.rocks/
-20. 小型的 k8s 实现： k3s https://k3s.io/
+20. 小型的 k8s 实现：k3s https://k3s.io/
 21. 粗暴的隧道，极低的带宽，有啥用 https://0day.work/performance-of-iodine-over-dns-over-https/
 22. Caddy 乘着 Go 官方支持的车轻松加入 TLS1.3 家族 https://github.com/mholt/caddy/pull/2399/files

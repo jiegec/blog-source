@@ -28,7 +28,7 @@ $ objdump -t /path/to/abcd.o
 0000000000000028         *COM*  00000008 _abcd
 ```
 
-在合成的静态库 `.a` 里，也是存在的（一个定义+若干个引用）：
+在合成的静态库 `.a` 里，也是存在的（一个定义 + 若干个引用）：
 
 ```shell
 $ objdump -t /path/to/libabc.a | grep abcd

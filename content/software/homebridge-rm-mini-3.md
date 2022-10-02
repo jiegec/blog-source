@@ -44,6 +44,6 @@ title: 配置 homebridge-broadlink-rm-pro
 }
 ```
 
-这样就可以在手机上方便地控制空调温度了。测试了一下，可以用 Siri 说 “设置空调为 XX 度”，也是完全可以工作的。
+这样就可以在手机上方便地控制空调温度了。测试了一下，可以用 Siri 说“设置空调为 XX 度”，也是完全可以工作的。
 
 P.S. 小米的空气净化器现在可以用插件 https://github.com/torifat/xiaomi-mi-air-purifier#readme，之前博客里写的那一个已经不更新了。

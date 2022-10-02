@@ -36,7 +36,7 @@ EID:Slt DID State  DG     Size Intf Med SED PI SeSz Model               Sp Type
 --------------------------------------------------------------------------------
 ```
 
-其中 E32S2 是 Failed 的盘，属于 Disk Group 1；E32S4 是新插入的盘，准备替换掉 E32S2，目前不属于任何的 Disk Group。查看一下 Disk Group ：`perccli /c0/dall show`
+其中 E32S2 是 Failed 的盘，属于 Disk Group 1；E32S4 是新插入的盘，准备替换掉 E32S2，目前不属于任何的 Disk Group。查看一下 Disk Group：`perccli /c0/dall show`
 
 ```shell
 $ perccli /c0/dall show

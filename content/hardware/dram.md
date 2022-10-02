@@ -128,8 +128,8 @@ DRAM 的一个特点是需要定期刷新。有一个参数 tREFI，表示刷新
 ## 参考文档
 
 - Memory systems: Cache, DRAM & Disk
-- [译文： DDR4 SDRAM - Understanding the Basics（上）](https://zhuanlan.zhihu.com/p/262052220)
-- [译文： DDR4 SDRAM - Understanding the Basics（下）](https://zhuanlan.zhihu.com/p/263080272)
+- [译文：DDR4 SDRAM - Understanding the Basics（上）](https://zhuanlan.zhihu.com/p/262052220)
+- [译文：DDR4 SDRAM - Understanding the Basics（下）](https://zhuanlan.zhihu.com/p/263080272)
 - [JEDEC STANDARD DDR5 SDRAM JESD79-5](https://github.com/RAMGuide/TheRamGuide-WIP-/raw/main/DDR5%20Spec%20JESD79-5.pdf)
 - [JEDEC STANDARD DDR4 SDRAM JESD79-4B](http://www.softnology.biz/pdf/JESD79-4B.pdf)
 - [JEDEC STANDARD DDR3 SDRAM JESD79-3E](https://documents.pub/document/jesd79-3e-ddr3-sdram-specification.html)

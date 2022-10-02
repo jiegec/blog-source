@@ -49,7 +49,7 @@ name "virtio-rng-device", bus virtio-bus
 
 ![](/images/arp_packet.jpg)
 
-基于此，写了一个简单的以太网帧的解析，ARP 的回复和 ping 的回复（直接修改 `ECHO_REQUEST` 为 `ECHO_REPLY` 然后更新 CHECKSUM），实现了最基本的 ping ：
+基于此，写了一个简单的以太网帧的解析，ARP 的回复和 ping 的回复（直接修改 `ECHO_REQUEST` 为 `ECHO_REPLY` 然后更新 CHECKSUM），实现了最基本的 ping：
 
 ![](/images/arping.png)
 
@@ -57,9 +57,9 @@ name "virtio-rng-device", bus virtio-bus
 
 ## 显卡驱动
 
-网卡可以用了，很自然地会想到做一些其他的 virtio 驱动，第一个下手的是显卡。显卡和网卡的主要区别是，网卡是两个 queue 异步作，而在显卡驱动上则是在一个 queue 上每次放一输入一输出的缓冲区来进行交互，具体步骤在 virtio 标准中也写得很清楚。在这个过程中， QEMU 的 Tracing 功能帮了很大的忙，在调试 desc 的结构上提供了很多帮助。
+网卡可以用了，很自然地会想到做一些其他的 virtio 驱动，第一个下手的是显卡。显卡和网卡的主要区别是，网卡是两个 queue 异步作，而在显卡驱动上则是在一个 queue 上每次放一输入一输出的缓冲区来进行交互，具体步骤在 virtio 标准中也写得很清楚。在这个过程中，QEMU 的 Tracing 功能帮了很大的忙，在调试 desc 的结构上提供了很多帮助。
 
-然后就在 framebuffer 上画了一个 mandelbrot ：
+然后就在 framebuffer 上画了一个 mandelbrot：
 
 ![](/images/mandelbrot.jpg)
 
@@ -73,12 +73,12 @@ name "virtio-rng-device", bus virtio-bus
 
 在 @wangrunji0408 的提醒和建议下，我开始把一个 Rust 实现的网络栈 [smoltcp](https://github.com/m-labs/smoltcp) 集成到代码中来。这个库中，对底层 Interface 的要求如下：
 
-1. 当可以发包并且可以收包的时候，返回一收一发两个 Token ，并在使用的时候调用指定的函数。
-2. 当可以发包的时候，返回一个发的 Token ，含义同上。
+1. 当可以发包并且可以收包的时候，返回一收一发两个 Token，并在使用的时候调用指定的函数。
+2. 当可以发包的时候，返回一个发的 Token，含义同上。
 
 这是我第一次看到这种抽象，而且也没有特别明确的文档表示，这个 Token 代表什么，我应该提供什么。我直接按照一些已有的例子，照着实现了一把。过程中遇到了 ownership 的问题，通过 Arc 和 Mutex 解决了，然后又出现了死锁的问题，调了半天才调出来。
 
-接着按照 somltcp 的样例写一个简单的 udp echo server 和（假的） tcp 服务器：
+接着按照 somltcp 的样例写一个简单的 udp echo server 和（假的）tcp 服务器：
 
 ```rust
 // simple http server
@@ -102,7 +102,7 @@ if socket.can_send() {
 接着自然是往 QEMU 支持的剩下的 virtio 设备里下手。首先下手的是鼠标驱动。这次遇到了新的问题：
 
 1. 由于缓冲的存在，每次只有在 EV_SYN 的时候才会一次性把若干个事件放入队列中。
-2. 一个事件就要一个 desc chain ，意味着直接串足够大小的 buffer 到同一个 desc chain 中并不能工作。
+2. 一个事件就要一个 desc chain，意味着直接串足够大小的 buffer 到同一个 desc chain 中并不能工作。
 
 于是只好痛定思痛照着 Linux 内核的实现把完整的 Virtqueue 的操作实现了，并且顺带把前面的网卡和显卡的驱动也更新了。果然，每次都是三个左右的事件（X，Y，SYN）插入，然后根据这些事件就可以计算出当前的鼠标位置了。
 

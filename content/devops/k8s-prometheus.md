@@ -14,7 +14,7 @@ title: 在 k8s 中部署 Prometheus
 helm upgrade --install prometheus stable/prometheus
 ```
 
-这样就可以了，如果已经有 StorageClass （比如腾讯云的话，CBS 和 CFS），它就能自己起来了，然后在 Lens 里面也可以看到各种 metrics 的可视化。
+这样就可以了，如果已经有 StorageClass（比如腾讯云的话，CBS 和 CFS），它就能自己起来了，然后在 Lens 里面也可以看到各种 metrics 的可视化。
 
 如果是自建的单结点的 k8s 集群，那么还需要自己创造 PV，并且把 PVC 绑定上去。我采用的是 local 类型的 PV：
 

@@ -6,7 +6,7 @@ category: software
 title: 实现 VSCodeVim 中支持中文分词的单词移动
 ---
 
-最近用 VS Code 写中文 LaTeX 比较多，但是编辑起来总是比较麻烦，不能用各种带 w 的 motion ，不然整行都没了。于是 @xalanq 提出能不能拿一个 JS 的分词库，魔改一下 VSCode Vim 来得到同样效果？答案是可以的。
+最近用 VS Code 写中文 LaTeX 比较多，但是编辑起来总是比较麻烦，不能用各种带 w 的 motion，不然整行都没了。于是 @xalanq 提出能不能拿一个 JS 的分词库，魔改一下 VSCode Vim 来得到同样效果？答案是可以的。
 
 最后代码在 [jiegec/VSCodeVimChinese](https://github.com/jiegec/VSCodeVimChinese) 里，还没有合并到上游的打算。不定期根据上游发版本同步更新，在 Github Release 里发布 vsix 文件，目前版本为 v1.0.1。在 VS Code 里 `Extensions: Install from VSIX...` 即可安装。
 

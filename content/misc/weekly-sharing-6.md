@@ -6,7 +6,7 @@ category: misc
 title: 每周分享第 6 期
 ---
 
-今天刚迁移了域名到 jiege.ch ，原来的 jiegec.me 会自动跳转过来，链接什么的都不用变。
+今天刚迁移了域名到 jiege.ch，原来的 jiegec.me 会自动跳转过来，链接什么的都不用变。
 
 1. Rust 的 cfg! 宏只是返回 bool 而不会影响内部是否被编译 如果需要 if constexpr 的效果需要用 [cfg-if](https://github.com/alexcrichton/cfg-if)
 2. 基于 HTML5 canvas 的图表库 [Chart.js](https://github.com/chartjs/Chart.js)

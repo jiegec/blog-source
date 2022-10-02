@@ -42,5 +42,5 @@ UPDATE: GCC 12.1 发布了，试了一下这个正式版本可以正确地编译
 
 参考文档：
 
-- [手把手教你构建基于LoongArch64架构的Linux系统](https://github.com/sunhaiyong1978/CLFS-for-LoongArch/blob/main/CLFS_For_LoongArch64-20220108.md)
+- [手把手教你构建基于 LoongArch64 架构的 Linux 系统](https://github.com/sunhaiyong1978/CLFS-for-LoongArch/blob/main/CLFS_For_LoongArch64-20220108.md)
 - [How to Build a GCC Cross-Compiler](https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/)

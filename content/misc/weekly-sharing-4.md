@@ -22,4 +22,4 @@ title: 每周分享第 4 期
 12. 来自娄晨耀的清真 DNS 解决方案 https://github.com/Chenyao2333/freedns-go
 13. 快速的 tldr 实现 https://github.com/dbrgn/tealdeer
 14. MongoDB Data Source for Grafana 可以用 就是 aggregation 不大容易写对 https://github.com/JamesOsgood/mongodb-grafana
-15. Fish 3.0 发布 “fish now supports && (like and), || (like or), and ! (like not), for better migration from POSIX-compliant shells (#4620).”
+15. Fish 3.0 发布“fish now supports && (like and), || (like or), and ! (like not), for better migration from POSIX-compliant shells (#4620).”

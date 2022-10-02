@@ -52,16 +52,16 @@ $ docker push localhost:5000/$image
 $ minikube start --registry-mirror=https://registry.docker-cn.com --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --vm-driver=kvm2 --insecure-registry="0.0.0.0/0" --disk-size=50GB --cpus 128 --memory 131072
 ```
 
-这里的 0.0.0.0/0 可以缩小，磁盘、CPU和内存需要在这里就设好，之后不能改，要改只能重新开个虚拟机，不过这个过程也挺快的。
+这里的 0.0.0.0/0 可以缩小，磁盘、CPU 和内存需要在这里就设好，之后不能改，要改只能重新开个虚拟机，不过这个过程也挺快的。
 
-然后初始化一些组件（metrics server和kubernetes dashboard）：
+然后初始化一些组件（metrics server 和 kubernetes dashboard）：
 
 ```bash
 $ minikube addons enable metrics-server
 $ minikube dashboard
 ```
 
-如果要访问 dashboard 的话，可以用上面命令输出的链接，或者用 `kubectl proxy` 然后打开  http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/ （注意 http还是https）。
+如果要访问 dashboard 的话，可以用上面命令输出的链接，或者用 `kubectl proxy` 然后打开  http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/ （注意 http 还是 https）。
 
 如果问到 Access Token，可以用以下 alias 获得（fish/macOS）：
 
@@ -69,7 +69,7 @@ $ minikube dashboard
 $ alias kubedashboard="kubectl -n kubernetes-dashboard describe secret (kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print \$1}') | tail -n1 | awk '{print \$2}' | pbcopy"
 ```
 
-接着，配置一下 docker registry的密钥：
+接着，配置一下 docker registry 的密钥：
 
 ```bash
 $ kubectl create secret generic regcred --from-file=.dockerconfigjson=/path/to/config.json  --type=kubernetes.io/dockerconfigjson

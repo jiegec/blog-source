@@ -15,4 +15,4 @@ res_init();
 // _res.nsaddr_list is an array of resolvers
 ```
 
-用到了全局变量 `_res` ，虽然很 hacky ，但是至少是工作的，不清楚兼容性几何。
+用到了全局变量 `_res` ，虽然很 hacky，但是至少是工作的，不清楚兼容性几何。

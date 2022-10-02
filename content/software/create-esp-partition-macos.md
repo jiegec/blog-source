@@ -18,7 +18,7 @@ hdiutil create -fs fat32 -ov -size 60m -volname ESP -format UDTO -srcfolder esp 
 uefi.cdr: DOS/MBR boot sector; partition 1 : ID=0xb, start-CHS (0x3ff,254,63), end-CHS (0x3ff,254,63), startsector 1, 122879 sectors, extended partition table (last)
 ```
 
-接着转换为 vmdk ：
+接着转换为 vmdk：
 
 ```shell
 qemu-img convert -O vmdk uefi.cdr uefi.vmdk

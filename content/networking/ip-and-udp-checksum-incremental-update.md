@@ -6,7 +6,7 @@ category: networking
 title: IP 和 UDP Checksum 的增量更新问题
 ---
 
-之前在写 IP Checksum 的增量更新，就是当 TTL -= 1 的时候，Checksum 应该增加 0x0100 ，但是这样会有问题，在于，如果按照原来的 IP Checksum 计算方法，是不会出现 0xFFFF 的（求和，进位，然后取反写入），这种加法就有可能出现 0xFFFF 。于是翻阅了相关的RFC：
+之前在写 IP Checksum 的增量更新，就是当 TTL -= 1 的时候，Checksum 应该增加 0x0100，但是这样会有问题，在于，如果按照原来的 IP Checksum 计算方法，是不会出现 0xFFFF 的（求和，进位，然后取反写入），这种加法就有可能出现 0xFFFF。于是翻阅了相关的 RFC：
 
 首先是 RFC 1141 相关部分：
 
@@ -56,7 +56,7 @@ RFC 1624             Incremental Internet Checksum              May 1994
 
 只要把代码简单修改一下就可以了，或者遇到 0xFFFF 时设为 0，这时候就解决了这个问题。
 
-但是，仔细研究了一下发现， UDP Checksum 又是这么定义的（RFC 768）:
+但是，仔细研究了一下发现，UDP Checksum 又是这么定义的（RFC 768）:
 
 ```
 If the computed  checksum  is zero,  it is transmitted  as all ones (the

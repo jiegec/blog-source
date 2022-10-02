@@ -3,7 +3,7 @@ layout: post
 date: 2017-10-16 19:59:30 +0800
 tags: [algorithm,wiki]
 category: others
-title: 一个搞笑的伸展树的Wiki
+title: 一个搞笑的伸展树的 Wiki
 ---
 
 光哲同学在群里发了这个链接，特别搞笑，特此分享：
