@@ -28,7 +28,7 @@ title: rCore 软路由实现
 
 网络拓扑：
 
-![](/router_topo.png)
+![](/images/router_topo.png)
 
 可以，这很玄学。
 

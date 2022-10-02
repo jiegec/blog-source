@@ -8,7 +8,7 @@ title: 写了一个程序，分析各个源文件之间的include关系。
 
 迁移自本人在 CSDN 上的博客：https://blog.csdn.net/build7601/article/details/37343993
 
-![](/20140706162823328.png)
+![](/images/20140706162823328.png)
 
 最左边是expat， 上面zlib，左下角mxml，中间最恶心的是lua，右边的是jpeg。
 
