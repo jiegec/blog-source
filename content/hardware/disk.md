@@ -109,9 +109,19 @@ SAS 涉及的物理接口比较多，下面举一个具体的例子：DELL SCv20
 
 它有四个前端接口 Mini-SAS High Density (HD)，即 SFF-8644；两个后端接口 Mini-SAS，即 SFF-8088。
 
+SAS 标准：
+
+- INCITS 417 Serial Attached SCSI 1.1 (SAS-1.1)
+- INCITS 457 Serial Attached SCSI 2 (SAS-2)
+- INCITS 478 Serial Attached SCSI 2.1 (SAS-2.1)
+- INCITS 519 Serial Attached SCSI - 3 (SAS-3)
+- INCITS 534 Serial Attached SCSI - 4 (SAS-4)
+
 ## SAS 相关的物理接口
 
 查找 SFF 标准：https://www.snia.org/technology-communities/sff/specifications
+
+中文介绍：https://www.163.com/dy/article/H8TGPEUA0532B75P.html
 
 ### SFF-8087
 
@@ -139,9 +149,9 @@ Mini Multilane 4X Shielded Connector Shell and Plug
 
 Mini SAS 4x 连接器就是 26 pin 的 SFF-8088，支持四路 SAS。用于 external 连接。对应的 internal 接口是 SFF-8087。
 
-### SFF-8482
+### SFF-8482/SFF-8678/SFF-8680/SFF-8681
 
-Serial Attachment 2X Unshielded Connector
+SFF-8482: Serial Attachment 2X Unshielded Connector (EIA-966)
 
 ![](/images/sff8482.png)
 
@@ -151,22 +161,46 @@ Serial Attachment 2X Unshielded Connector
 
 标准下载地址：https://members.snia.org/document/dl/25920
 
-相关标准：
+不同速率的版本：
 
-- SFF-8678: Serial Attachment 2X 3Gb/s Unshielded Connector
-- SFF-8680: Serial Attachment 2X 12Gb/s Unshielded Connector
-- SFF-8681: Serial Attachment 2X 24Gb/s Unshielded Connector
+- SFF-8678: Serial Attachment 2X 6Gb/s Unshielded Connector
+- SFF-8680: Serial Attachment 2X 12Gb/s Unshielded Connector, 支持 SAS-2.x 和 SAS-3
+- SFF-8681: Serial Attachment 2X 24Gb/s Unshielded Connector, 支持 SAS-4
 
 ### SFF-8614/8644
 
 SFF-8614: Mini Multilane 4/8X Shielded Cage/Connector (HDsh)
 
+![](/images/sff8614.png)
+
 标准下载地址：https://members.snia.org/document/dl/25939
+
+对应的 internal 版本是 SFF-8643: Mini Multilane 4/8X 12 Gb/s Unshielded Connector
+
+名称：External Mini-SAS HD(High Density)
+
+升级版本：
 
 SFF-8644: Mini Multilane 4/8X 12 Gb/s Shielded Cage/Connector (HD12sh)
 
 标准下载地址：https://members.snia.org/document/dl/25952
 
-对应的 internal 版本是 SFF-8643: Mini Multilane 4/8X 12 Gb/s Unshielded Connector
+支持 SAS-3 和 PCIe 3.0
 
-名称：External Mini-SAS HD(High Density)
+### SFF-8639
+
+Multifunction 6X Unshielded Connector
+
+又称 U.2
+
+![](/images/sff8639.png)
+
+标准下载地址：https://members.snia.org/document/dl/26489
+
+用途：
+
+- Single port SATA (as defined by Serial ATA revision 3.1)
+- Two port SATA Express (as defined in Serial ATA Technical Proposal #TPR_C109, currently under development)
+- Dual port SAS (as defined by SFF-8482)
+- MultiLink SAS (as defined by SFF-8630)
+- Up to 4 lanes of PCIe (as defined in this specification)
