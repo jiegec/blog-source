@@ -58,7 +58,7 @@ sudo apt install nvidia-driver-470=470.129.06-0ubuntu1
 如果系统里已经安装了其他版本的 nvidia 驱动，可能会出现冲突。这时候，只需要把冲突的包也写在要安装的包里即可，例如：
 
 ```shell
-sudo apt install nvidia-utils-470=470.129.06-0ubuntu1 cuda-drivers=470.129.06-1 cuda-drivers-470=470.129.06-1 nvidia-driver-470=470.129.06-0ubuntu1 libnvidia-gl-470=470.129.06-0ubuntu1 libnvidia-compute-470=470.129.06-0ubuntu1 libnvidia-decode-470=470.129.06-0ubuntu1 libnvidia-encode-470=470.129.06-0ubuntu1 libnvidia-ifr1-470=470.129.06-0ubuntu1 libnvidia-fbc1-470=470.129.06-0ubuntu1 libnvidia-common-470=470.129.06-0ubuntu1 nvidia-kernel-source-470=470.129.06-0ubuntu1 nvidia-dkms-470=470.129.06-0ubuntu1 nvidia-kernel-common-470=470.129.06-0ubuntu1 libnvidia-extra-470=470.129.06-0ubuntu1 nvidia-compute-utils-470=470.129.06-0ubuntu1 xserver-xorg-video-nvidia-470=470.129.06-0ubuntu1 libnvidia-cfg1-470=470.129.06-0ubuntu1
+sudo apt install nvidia-utils-470=470.129.06-0ubuntu1 cuda-drivers=470.129.06-1 cuda-drivers-470=470.129.06-1 nvidia-driver-470=470.129.06-0ubuntu1 libnvidia-gl-470=470.129.06-0ubuntu1 libnvidia-compute-470=470.129.06-0ubuntu1 libnvidia-decode-470=470.129.06-0ubuntu1 libnvidia-encode-470=470.129.06-0ubuntu1 libnvidia-ifr1-470=470.129.06-0ubuntu1 libnvidia-fbc1-470=470.129.06-0ubuntu1 libnvidia-common-470=470.129.06-0ubuntu1 nvidia-kernel-source-470=470.129.06-0ubuntu1 nvidia-dkms-470=470.129.06-0ubuntu1 nvidia-kernel-common-470=470.129.06-0ubuntu1 libnvidia-extra-470=470.129.06-0ubuntu1 nvidia-compute-utils-470=470.129.06-0ubuntu1 xserver-xorg-video-nvidia-470=470.129.06-0ubuntu1 libnvidia-cfg1-470=470.129.06-0ubuntu1 nvidia-settings=470.129.06-0ubuntu1 libxnvctrl0=470.129.06-0ubuntu1 nvidia-modprobe=470.129.06-0ubuntu1
 ```
 
 最终，我们要保证，系统里面所有 nvidia 驱动相关的包都是同一个版本：
@@ -89,7 +89,7 @@ xserver-xorg-video-nvidia-470/unknown,now 470.129.06-0ubuntu1 amd64 [installed,a
 接下来，为了防止 apt 升级的时候顺手破坏了一致的版本，我们要把包固定在一个版本里：
 
 ```shell
-sudo apt-mark hold cuda-drivers nvidia-modprobe nvidia-settings
+sudo apt-mark hold cuda-drivers nvidia-modprobe nvidia-settings libxnvctrl0
 ```
 
 如果有其他 nvidia 包说要自动升级，也可以类似地固定住。
