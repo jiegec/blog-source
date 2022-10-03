@@ -117,6 +117,8 @@ SAS 标准：
 - INCITS 519 Serial Attached SCSI - 3 (SAS-3)
 - INCITS 534 Serial Attached SCSI - 4 (SAS-4)
 
+可以从 https://www.t10.org/drafts.htm#SCSI3_SAS 免费下载尚未成为标准的 SAS-4.1 Working Draft。
+
 ## SAS 相关的物理接口
 
 查找 SFF 标准：https://www.snia.org/technology-communities/sff/specifications

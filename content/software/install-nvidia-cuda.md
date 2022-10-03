@@ -23,10 +23,8 @@ Ubuntu 源有自带的 NVIDIA 驱动版本，但这里我们要使用 NVIDIA 的
 此时，下面就会显示一些命令，复制下来执行：
 
 ```shell
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
-sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub
-sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
+sudo dpkg -i cuda-keyring_1.0-1_all.deb
 sudo apt-get update
 ```
 
@@ -60,7 +58,7 @@ sudo apt install nvidia-driver-470=470.129.06-0ubuntu1
 如果系统里已经安装了其他版本的 nvidia 驱动，可能会出现冲突。这时候，只需要把冲突的包也写在要安装的包里即可，例如：
 
 ```shell
-sudo apt install nvidia-utils-470=470.129.06-0ubuntu1 cuda-drivers=470.129.06-1 cuda-drivers-470=470.129.06-1 nvidia-driver-470=470.129.06-0ubuntu1 libnvidia-gl-470=470.129.06-0ubuntu1 libnvidia-compute-470=470.129.06-0ubuntu1 libnvidia-decode-470=470.129.06-0ubuntu1 libnvidia-encode-470=470.129.06-0ubuntu1 libnvidia-ifr1-470=470.129.06-0ubuntu1 libnvidia-fbc1-470=470.129.06-0ubuntu1
+sudo apt install nvidia-utils-470=470.129.06-0ubuntu1 cuda-drivers=470.129.06-1 cuda-drivers-470=470.129.06-1 nvidia-driver-470=470.129.06-0ubuntu1 libnvidia-gl-470=470.129.06-0ubuntu1 libnvidia-compute-470=470.129.06-0ubuntu1 libnvidia-decode-470=470.129.06-0ubuntu1 libnvidia-encode-470=470.129.06-0ubuntu1 libnvidia-ifr1-470=470.129.06-0ubuntu1 libnvidia-fbc1-470=470.129.06-0ubuntu1 libnvidia-common-470=470.129.06-0ubuntu1 nvidia-kernel-source-470=470.129.06-0ubuntu1 nvidia-dkms-470=470.129.06-0ubuntu1 nvidia-kernel-common-470=470.129.06-0ubuntu1 libnvidia-extra-470=470.129.06-0ubuntu1 nvidia-compute-utils-470=470.129.06-0ubuntu1 xserver-xorg-video-nvidia-470=470.129.06-0ubuntu1 libnvidia-cfg1-470=470.129.06-0ubuntu1
 ```
 
 最终，我们要保证，系统里面所有 nvidia 驱动相关的包都是同一个版本：
