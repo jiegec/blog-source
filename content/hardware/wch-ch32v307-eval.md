@@ -344,3 +344,10 @@ Info : Verify Success
 ```
 
 访问串口 `screen /dev/tty.usbmodem* 115200`，可以看到正确地输出了内容。
+
+## 转发
+
+本文已授权转发到以下的地址：
+
+- [公众号 物联网小生 试用沁恒 CH32V307 评估板](https://mp.weixin.qq.com/s/wJ0X8qdIWRxavGo9N37QSg)
+- [语雀 硬件知识库 试用沁恒 CH32V307 评估板](https://www.yuque.com/zsafly/lfxyfc/zseeyx)

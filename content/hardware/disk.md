@@ -109,6 +109,15 @@ SAS 涉及的物理接口比较多，下面举一个具体的例子：DELL SCv20
 
 它有四个前端接口 Mini-SAS High Density (HD)，即 SFF-8644；两个后端接口 Mini-SAS，即 SFF-8088。
 
+RAID 卡例子：MegaRAID SAS 9361-8i
+
+文档：https://docs.broadcom.com/doc/12351995
+
+它的接口有：
+
+1. 两个 mini-SAS SFF-8643(Mini Multilane 4/8X 12 Gb/s Unshielded Connector (HD12un)) 内部连接器，连接到硬盘
+2. PCIe 3.0 8x 连接主板
+
 SAS 标准：
 
 - INCITS 417 Serial Attached SCSI 1.1 (SAS-1.1)
