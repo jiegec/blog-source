@@ -44,6 +44,12 @@ cd mft-4.20.1-14-x86_64-deb
 
 UPDATE 2022-10-28: 现在最新版本 mft-4.21.0-99 已经修复了下面出现的编译问题。
 
+```shell
+wget https://www.mellanox.com/downloads/MFT/mft-4.21.0-99-x86_64-deb.tgz
+unar mft-4.21.0-99-x86_64-deb.tgz
+cd mft-4.21.0-99-x86_64-deb
+```
+
 尝试用 `sudo ./install.sh` 安装，发现 dkms 报错。查看日志，发现是因为内核过高（5.18），有函数修改了用法，即要把 pci_unmap_single 的调用改为 dma_unmap_single，并且修改第一个参数，如 [linux commit a2e759612e5ff3858856fe97be5245eecb84e29b](https://github.com/torvalds/linux/commit/a2e759612e5ff3858856fe97be5245eecb84e29b) 指出的那样：
 
 
@@ -96,6 +102,8 @@ Configurations:                              Next Boot       New
 Applying... Done!
 -I- Please reboot machine to load new configurations.
 ```
+
+显示各个配置可能的选项和内容：`sudo mlxconfig -d /dev/mst/mtxxxx_pciconf0 show_confs`
 
 整个安装流程在仓库 <https://github.com/jiegec/mft-debian-bookworm> 中用脚本实现。
 
