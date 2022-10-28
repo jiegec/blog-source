@@ -42,6 +42,8 @@ unar mft-4.20.1-14-x86_64-deb.tgz
 cd mft-4.20.1-14-x86_64-deb
 ```
 
+UPDATE 2022-10-28: 现在最新版本 mft-4.21.0-99 已经修复了下面出现的编译问题。
+
 尝试用 `sudo ./install.sh` 安装，发现 dkms 报错。查看日志，发现是因为内核过高（5.18），有函数修改了用法，即要把 pci_unmap_single 的调用改为 dma_unmap_single，并且修改第一个参数，如 [linux commit a2e759612e5ff3858856fe97be5245eecb84e29b](https://github.com/torvalds/linux/commit/a2e759612e5ff3858856fe97be5245eecb84e29b) 指出的那样：
 
 
