@@ -79,9 +79,12 @@ title: 以太网的物理接口
 - QSFP-DD112：800Gbps
 - OSFP: 800Gbps/400Gbps
 
-可以看到，名字前面加了个 Q（Quad），速率就翻了 4 倍，同时物理接口的尺寸也变大了。所以，不带 Q 的 SFP 的物理尺寸都一样，带 Q 的 SFP 物理尺寸都一样大，但后者比前者大一些（SFP 是 113.9 mm^2，QSFP 是 156 mm^2）。OSFP 又比 QSFP 更大一些。
+可以看到，名字前面加了个 Q（Quad），速率就翻了 4 倍，因为有 4 个 lane，同时物理接口的尺寸也变大了。所以，不带 Q 的 SFP 的物理尺寸都一样，带 Q 的 SFP 物理尺寸都一样大，但后者比前者大一些（SFP 是 113.9 mm^2，QSFP 是 156 mm^2）。OSFP 又比 QSFP 更大一些，O 表示 Octal，就是 8 个 lane 的意思。
+
+可以在 [400G QSFP Transceiver Types and Fiber Connections](https://community.fs.com/blog/400g-qsfp-dd-transceiver-types-overview.html) 和 [400G OSFP Transceiver Types Overview](https://community.fs.com/blog/400g-osfp-transceiver-types-overview.html) 看到 QSFP-DD 和 OSFP 的对比。
 
 通常，网络设备也会支持把一个 QSFP 接口拆成多个 SFP 接口来使用，比如有的线，一边是 QSFP28，另一边是 4xSFP28，只要设备支持即可，目的是节省空间。
+
 
 [SFP 标准](https://members.snia.org/document/dl/26184) 规定了 [20 根信号线](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver#Signals)，正反面各 10 根，重要的是下面的这些（括号里写得是 Pin 的编号）：
 
