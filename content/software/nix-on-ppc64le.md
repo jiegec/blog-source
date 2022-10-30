@@ -117,11 +117,21 @@ custom-overlay = final: prev: {
 ```
 
 - linux-headers 编译失败，报告 unknown type name __vector128，见 [tools/bpf: Compilation issue on powerpc: unknown type name '__vector128'
-](https://www.spinics.net/lists/netdev/msg694314.html)。目前的解决办法是让 procps 不要依赖 systemd，进而不会依赖 linux-headers：
+](https://www.spinics.net/lists/netdev/msg694314.html)。目前的解决办法是让 procps/tmux 等包不要依赖 systemd，进而不会依赖 linux-headers：
 
 ```
 custom-overlay = final: prev: {
   # systemd cannot build due to linux-headers
   procps = prev.procps.override { withSystemd = false; };
+  tmux = prev.tmux.override { withSystemd = false; };
 };
 ```
+
+对于 home-manager，可以用下面的配置让它不要编译 systemd：
+
+```
+# systemd does not build
+systemd.user.systemctlPath = "/bin/systemctl";
+```
+
+当然了，这个治标不治本，还是要等上游修复。
