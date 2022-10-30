@@ -67,6 +67,42 @@ RUN make install -k || true
 
 ## 解决办法
 
+### binaryTarballCross 方法
+
+该方法学自 @NickCao，在 NixOS/nix 的 flake 中，有生成 tarball 的方法，如：
+
+```shell
+nix build ".#hydraJobs.binaryTarballCross.x86_64-linux.armv7l-linux"
+```
+
+这样就可以在 x86_64-linux 的 host 上，交叉编译生成一个用于 armv7l-linux 的安装 tarball。类似地，可以修改 flake.nix 来加入其他架构，如：
+
+```diff
+diff --git a/flake.nix b/flake.nix
+index cc2a48d9c..c55a267e2 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -21,7 +21,7 @@
+       linuxSystems = linux64BitSystems ++ [ "i686-linux" ];
+       systems = linuxSystems ++ [ "x86_64-darwin" "aarch64-darwin" ];
+
+-      crossSystems = [ "armv6l-linux" "armv7l-linux" ];
++      crossSystems = [ "armv6l-linux" "armv7l-linux" "powerpc64le-linux" "riscv64-linux" ];
+
+       stdenvs = [ "gccStdenv" "clangStdenv" "clang11Stdenv" "stdenv" "libcxxStdenv" "ccacheStdenv" ];
+```
+
+就可以用下面的命令来生成 riscv64-linux 和 powerpc64le-linux 架构的安装 tarball 了：
+
+```shell
+nix build ".#hydraJobs.binaryTarballCross.x86_64-linux.powerpc64le-linux"
+nix build ".#hydraJobs.binaryTarballCross.x86_64-linux.riscv64-linux"
+```
+
+生成的 tarball 可以在 result 中找到。
+
+### 手动替换法
+
 因此，我在网上进行搜索，发现 [Getting started with Nix on ppc64le](https://discourse.nixos.org/t/getting-started-with-nix-on-ppc64le/12712/8?u=jiegec) 中有人提到，可以先在 x86 的机器上交叉编译出 ppc64le 的 nix，然后把 nix tarball 中的 x86 nix 替换成 ppc64le 版本，再复制到 ppc64le 上安装，其余的步骤就一样了。
 
 我把脚本更新了一下，适配了最新的 nix 版本，最后得到了如下的脚本：
