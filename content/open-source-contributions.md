@@ -67,6 +67,11 @@ permalink: /open-source-contributions/
 
 ## Nixpkgs
 
+- [Add support for gnuradio on darwin](https://github.com/NixOS/nixpkgs/pull/197639)
+- [darwin.iproute2mac: 1.4.0 -> 1.4.1](https://github.com/NixOS/nixpkgs/pull/191867)
+- [jsonmerge: skip failed tests](https://github.com/NixOS/nixpkgs/pull/191624)
+- [krunvm: add support for darwin](https://github.com/NixOS/nixpkgs/pull/187003)
+- [recoll: fix no/bad configuration error on darwin](https://github.com/NixOS/nixpkgs/pull/186368)
 - [sioyek: unbreak on darwin](https://github.com/NixOS/nixpkgs/pull/185502)
 - [circleci-cli: 0.1.17142 -> 0.1.20397](https://github.com/NixOS/nixpkgs/pull/185111)
 - [foremost: unbreak on Darwin](https://github.com/NixOS/nixpkgs/pull/184825)
