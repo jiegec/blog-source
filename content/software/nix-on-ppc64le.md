@@ -154,6 +154,14 @@ custom-overlay = final: prev: {
 
 UPDATE: 向 nixpkgs 提交了 pr: https://github.com/NixOS/nixpkgs/pull/198591
 
+另外根据 bdwgc 的 issue 提示，添加下列的选项可以让它测试通过：
+
+```
+makeFlags = ["CFLAGS_EXTRA=\"-DNO_SOFT_VDB\""];
+```
+
+但是 issue 也说，这个方法对于 Power9 不工作。
+
 - linux-headers 编译失败，报告 unknown type name __vector128，见 [tools/bpf: Compilation issue on powerpc: unknown type name '__vector128'
 ](https://www.spinics.net/lists/netdev/msg694314.html) [bpftools: add enableDebugger, set to false on Power64 (WIP)](https://github.com/NixOS/nixpkgs/pull/192670)。目前的解决办法是让 procps/tmux 等包不要依赖 systemd，进而不会依赖 linux-headers：
 
