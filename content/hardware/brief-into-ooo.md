@@ -38,7 +38,7 @@ title: 浅谈乱序执行 CPU
 
 硬件实现的时候，为了性能，希望保留站可以做的比较多，这样可以容纳更多的指令。但是，保留站里面至少要保存操作数的值，会比较占用面积，并且时延也比较大。
 
-## ROB（ReOrder Buffer）
+## ROB (ReOrder Buffer)
 
 [参考教材](https://web.stanford.edu/class/cs349g/cs349g-speculation.pdf)
 

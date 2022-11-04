@@ -130,9 +130,9 @@ Dragon 协议是一个基于更新的协议，意味着写入缓存的时候，�
 
 ACE 协议在 AXI 的基础上，添加了三个 channel：
 
-1. AC：Coherent address channel，Input to master：ACADDR，ACSNOOP，ACPROT
-2. CR：Coherent response channel，Output from master：CRRESP
-3. CD：Coherent data channel，Output from master：CDDATA，CDLAST
+1. AC: Coherent address channel, Input to master: ACADDR, ACSNOOP, ACPROT
+2. CR: Coherent response channel, Output from master: CRRESP
+3. CD: Coherent data channel, Output from master: CDDATA, CDLAST
 
 此外，已有的 Channel 也添加了信号：
 

@@ -14,7 +14,7 @@ Nginx 的话，可以在 nginx.conf 的 http 中添加，也可以在 server 或
 client_max_body_size 100m;
 ```
 
-我的建议是，尽量缩小范围到需要的地方，即 location > server > http 。
+我的建议是，尽量缩小范围到需要的地方，即 location > server > http。
 
 在 PHP 中，则修改 /etc/php/7.0/fpm/php.ini：
 

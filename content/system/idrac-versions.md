@@ -10,7 +10,7 @@ title: iDRAC 各版本
 
 目前接触到的 iDRAC 版本有：7 8 9。一些常见的服务器型号和 iDRAC 版本对应关系：
 
-- 7: PowerEdge R320，PowerEdge R720
+- 7: PowerEdge R320, PowerEdge R720
 - 8: [PowerEdge R730xd](https://www.dell.com/support/home/en-us/product-support/product/poweredge-r730xd/drivers)，PowerEdge R630，PowerEdge R730，PowerEdge C4130
 - 9: [PowerEdge R7425](https://www.dell.com/support/home/en-us/product-support/product/poweredge-r7425/drivers)
 

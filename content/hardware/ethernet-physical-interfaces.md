@@ -67,16 +67,16 @@ title: 以太网的物理接口
 
 [SFP](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver) 是很常见的，特别是在高速的网络之中。而它又分为几种，对应不同的速率：
 
-- SFP：1Gbps/100Mbps
-- SFP+：10Gbps
-- SFP28：25Gbps
-- SFP56：50Gbps
-- QSFP：4Gbps
-- QSFP+：40Gbps
+- SFP: 1Gbps/100Mbps
+- SFP+: 10Gbps
+- SFP28: 25Gbps
+- SFP56: 50Gbps
+- QSFP: 4Gbps
+- QSFP+: 40Gbps
 - QSFP28: 100Gbps/50Gbps
-- QSFP56：200Gbps
-- QSFP-DD：400Gbps/200Gbps
-- QSFP-DD112：800Gbps
+- QSFP56: 200Gbps
+- QSFP-DD: 400Gbps/200Gbps
+- QSFP-DD112: 800Gbps
 - OSFP: 800Gbps/400Gbps
 
 可以看到，名字前面加了个 Q（Quad），速率就翻了 4 倍，因为有 4 个 lane，同时物理接口的尺寸也变大了。所以，不带 Q 的 SFP 的物理尺寸都一样，带 Q 的 SFP 物理尺寸都一样大，但后者比前者大一些（SFP 是 113.9 mm^2，QSFP 是 156 mm^2）。OSFP 又比 QSFP 更大一些，O 表示 Octal，就是 8 个 lane 的意思。

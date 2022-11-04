@@ -39,9 +39,9 @@ permalink: /tools/
 
 ## 调试工具
 
-1. CPU 上的调试器: GDB LLDB
-1. 编译器自带: AddressSanitizer, ThreadSanitizer, MemorySanitizer, UndefinedBehaviorSanitizer
-1. Valgrind 系列: valgrind, memcheck, cachegrind, callgrind, helgrind, drd, massif, dhat, lackey, nulgrind, bbv
+1. CPU 上的调试器：GDB LLDB
+1. 编译器自带：AddressSanitizer, ThreadSanitizer, MemorySanitizer, UndefinedBehaviorSanitizer
+1. Valgrind 系列：valgrind, memcheck, cachegrind, callgrind, helgrind, drd, massif, dhat, lackey, nulgrind, bbv
 1. MPI Tracing: [Pilgrim: Logger for MPI communication](https://github.com/pmodels/pilgrim)
 1. GPU Race Detection: [iGUARD: In-GPU Advanced Race Detection](https://github.com/csl-iisc/iGUARD)
 1. NUMA Profiling: [NumaPerf: Predictive NUMA Profiling](https://github.com/UTSASRG/NumaPerf)

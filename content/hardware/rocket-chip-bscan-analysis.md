@@ -85,4 +85,4 @@ end
 3. SiFive's JTAG Tunnel: https://github.com/sifive/fpga-shells/blob/c099bd9b4f916bc0ba88030939a9614d0b0daf2d/src/main/scala/ip/xilinx/Xilinx.scala#L13
 4. https://github.com/watz0n/arty_xjtag
 5. https://github.com/riscv/riscv-openocd/blob/7cb8843794a258380b7c37509e5c693977675b2a/src/target/riscv/riscv.c#L361
-6. UG740：7 Series FPGAs Configuration
+6. UG740: 7 Series FPGAs Configuration
