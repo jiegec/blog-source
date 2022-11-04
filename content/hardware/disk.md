@@ -215,3 +215,18 @@ Multifunction 6X Unshielded Connector
 - Dual port SAS (as defined by SFF-8482)
 - MultiLink SAS (as defined by SFF-8630)
 - Up to 4 lanes of PCIe (as defined in this specification)
+
+### SFF-8611
+
+MiniLink 4/8X I/O Cable Assemblies
+
+又称 OCuLink 1.0
+
+![](/images/sff8611.png)
+
+标准下载地址：https://members.snia.org/document/dl/27937
+
+用途：
+
+- PCIe
+- SAS
