@@ -85,6 +85,8 @@ Data Link Layer 的流量是 Credit-based 的：接受方会告诉发送方自�
 
 接触 PCIe 的时候可能会有一个疑惑，就是这些 Bus Device Function 都是怎么分配的，分配完之后，访问请求又是怎么路由的。
 
+### 路由
+
 首先回顾一下，上面提到了 TLP 的 Memory 和 IO 是根据地址路由，Configuration 是根据 Bus Device Function 路由，而 PCIe 大概是一个树形的结构，叶子结点就是 PCIe 设备，非叶子结点是桥或者交换机。回想一下，IP 的路由是按照最长前缀匹配，如果在 PCIe 中还这样做的话，又太过于复杂了，毕竟 PCIe 可以人为地设定每个设备的地址，让地址满足一定的连续性和局部性，这样路由选择就非常简单了。
 
 观察 PCIe 标准中 7.3.3 Configuration Request Routing Rules，结合 MindShare 的书，看 Root Ports，Switches 和 Bridges 的要求，就知道 Configuration 请求是如何路由的：
@@ -123,3 +125,246 @@ Data Link Layer 的流量是 Credit-based 的：接受方会告诉发送方自�
 - 路由 Non-Prefetchable Memory Request：`Memory Base <= Memory Address <= Memory Limit`
 
 而具体到每一个设备上，设备会提供若干个 BAR（Base Address Register），在枚举设备的时候，会给 BAR 分配地址，然后把设备的地址进行合并，记录到 Switch 上的 Base 和 Limit，然后一直递归，一路更新到 Root Complex。这样，就完成了地址分配，以及请求的路由。
+
+### 分配
+
+既然知道了 BDF 是如何路由的，那么接下来的问题是，怎么枚举设备和交换机，分配 Bus Number。这个事情在系统启动的时候会做（例如 UEFI），Linux 中也有相关的代码。下面就来对着 [edk2](https://github.com/tianocore/edk2) 的源代码来看看它是怎么做的。
+
+在 edk2 中，分配 Bus Number 的核心代码是 `PciScanBus` 函数：
+
+```cpp
+/**
+  Scan pci bus and assign bus number to the given PCI bus system.
+
+  @param  Bridge           Bridge device instance.
+  @param  StartBusNumber   start point.
+  @param  SubBusNumber     Point to sub bus number.
+  @param  PaddedBusRange   Customized bus number.
+
+  @retval EFI_SUCCESS      Successfully scanned and assigned bus number.
+  @retval other            Some error occurred when scanning pci bus.
+
+  @note   Feature flag PcdPciBusHotplugDeviceSupport determine whether need support hotplug.
+
+**/
+EFI_STATUS
+PciScanBus (
+  IN PCI_IO_DEVICE  *Bridge,
+  IN UINT8          StartBusNumber,
+  OUT UINT8         *SubBusNumber,
+  OUT UINT8         *PaddedBusRange
+  );
+```
+
+输入一个桥设备和初始的 Bus Number，输出 Subordinate Bus Number，也就是分配的最大的 Bus Number，以及 Padded Bus Range，例如如果要考虑热插拔的话，就需要预留一些 Bus Number。它在 `PciRootBridgeEnumerator` 函数中被调用，传入的是 RootBridgeDev。你可能也猜到了，这个函数可以递归调用，从 Root Bridge 开始往下，遇到新的桥设备的时候，就继续递归，然后根据下一层分配的 Bus Number 来计算上一层的 Subordinate Bus Number。
+
+`PciScanBus` 首先枚举当前桥设备下的所有 Device 和 Function，因为当前的桥设备已经被分配了 Bus Number，所以是可以访问它下面的 Device 和 Function 的。
+
+```cpp
+for (Device = 0; Device <= PCI_MAX_DEVICE; Device++) {
+  TempReservedBusNum = 0;
+  for (Func = 0; Func <= PCI_MAX_FUNC; Func++) {
+    //
+    // Check to see whether a pci device is present
+    //
+    Status =
+        PciDevicePresent(PciRootBridgeIo, &Pci, StartBusNumber, Device, Func);
+
+    if (EFI_ERROR(Status) && (Func == 0)) {
+      //
+      // go to next device if there is no Function 0
+      //
+      break;
+    }
+
+    if (EFI_ERROR(Status)) {
+      continue;
+    }
+
+    //
+    // Get the PCI device information
+    //
+    Status =
+        PciSearchDevice(Bridge, &Pci, StartBusNumber, Device, Func, &PciDevice);
+
+    if (EFI_ERROR(Status)) {
+      continue;
+    }
+
+    PciAddress = EFI_PCI_ADDRESS(StartBusNumber, Device, Func, 0);
+
+    if (IS_PCI_BRIDGE(&Pci) || IS_CARDBUS_BRIDGE(&Pci)) {
+      //
+      // For PPB
+      //
+
+      Status = PciAllocateBusNumber(Bridge, *SubBusNumber, 1, SubBusNumber);
+      if (EFI_ERROR(Status)) {
+        return Status;
+      }
+
+      SecondBus = *SubBusNumber;
+
+      Register = (UINT16)((SecondBus << 8) | (UINT16)StartBusNumber);
+      Address = EFI_PCI_ADDRESS(StartBusNumber, Device, Func,
+                                PCI_BRIDGE_PRIMARY_BUS_REGISTER_OFFSET);
+
+      Status = PciRootBridgeIo->Pci.Write(PciRootBridgeIo, EfiPciWidthUint16,
+                                          Address, 1, &Register);
+
+      //
+      // If it is PPB, recursively search down this bridge
+      //
+      if (IS_PCI_BRIDGE(&Pci)) {
+        //
+        // Temporarily initialize SubBusNumber to maximum bus number to ensure
+        // the PCI configuration transaction to go through any PPB
+        //
+        Register = PciGetMaxBusNumber(Bridge);
+        Address = EFI_PCI_ADDRESS(StartBusNumber, Device, Func,
+                                  PCI_BRIDGE_SUBORDINATE_BUS_REGISTER_OFFSET);
+        Status = PciRootBridgeIo->Pci.Write(PciRootBridgeIo, EfiPciWidthUint8,
+                                            Address, 1, &Register);
+
+        Status = PciScanBus(PciDevice, SecondBus, SubBusNumber, PaddedBusRange);
+        if (EFI_ERROR(Status)) {
+          return Status;
+        }
+      }
+
+      //
+      // Set the current maximum bus number under the PPB
+      //
+      Address = EFI_PCI_ADDRESS(StartBusNumber, Device, Func,
+                                PCI_BRIDGE_SUBORDINATE_BUS_REGISTER_OFFSET);
+
+      Status = PciRootBridgeIo->Pci.Write(PciRootBridgeIo, EfiPciWidthUint8,
+                                          Address, 1, SubBusNumber);
+    } else {
+      //
+      // It is device. Check PCI IOV for Bus reservation
+      // Go through each function, just reserve the MAX ReservedBusNum for one
+      // device
+      //
+
+      // OMITTED
+    }
+
+    if ((Func == 0) && !IS_PCI_MULTI_FUNC(&Pci)) {
+      //
+      // Skip sub functions, this is not a multi function device
+      //
+
+      Func = PCI_MAX_FUNC;
+    }
+  }
+}
+```
+
+从代码中去掉了一些热插拔相关的代码，简单来说，它的思路如下：
+
+1. 枚举当前设备下的 Device 和 Function
+2. 如果找到了一个桥设备，为它分配一个新的 Bus Number
+    1. 设置这个新的桥设备的 Primary Bus Number 为 Start Bus Number（也就是上一级的 Secondary Bus Number），Secondary Bus 是新分配的 Bus Number，Subordinate Bus Number 是最大值
+    2. 这样设置完成后，相当于所有的在 `[Secondary Bus Number, Max Bus Number]` 范围中的 Bus 请求都会路由到新的桥设备上
+    3. 递归调用 PciScanBus，参数是新的桥设备，Start Bus Number 为新的 Secondary Bus Number
+    4. 递归调用返回以后，新的桥设备下面所有的设备都分配到了自己的 Bus Number，这时候就可以知道准确的 Subordinate Bus Number 了，不再是刚才临时设置的 Max Bus Number，因此这时候再把准确的 Subordinate Bus Number 写入桥设备的 Subordinate Bus Number 中
+3. 枚举完所有设备以后，返回目前递归分配得到的最大的 Bus Number
+
+这样整理出来一看，其实很清楚，这就是一个 DFS 算法，在搜索过程中，为了保证当前的结点可达，保证从 Root Bridge 到当前的结点路径上的 Bus Number 范围都是 `[Secondary Bus Number, Max Bus Number]`；当结点搜索完以后，再回溯，回溯的时候就知道了实际分配到多大的 Bus Number，这时候再填回 Subordinate Bus Number，最后保证这个树上每一层的 `[Secondary Bus Number, Subordinate Bus Number]` 区间不重合，且每个子结点的区间都包含于父结点的区间。
+
+最后的结果，类似 MindShare 书中的这个图：
+
+![](/images/pcie_enum.png)
+
+为了支持 PCIe 热插拔，或者可能会动态产生新设备的 SR-IOV，代码中做了相应的预留：
+
+```cpp
+if (FeaturePcdGet(PcdPciBusHotplugDeviceSupport)) {
+  //
+  // If Hot Plug is supported,
+  // Get the bridge information
+  //
+  BusPadding = FALSE;
+  if (gPciHotPlugInit != NULL) {
+    if (IsPciHotPlugBus(PciDevice)) {
+      //
+      // If it is initialized, get the padded bus range
+      //
+      Status = gPciHotPlugInit->GetResourcePadding(
+          gPciHotPlugInit, PciDevice->DevicePath, PciAddress, &State,
+          (VOID **)&Descriptors, &Attributes);
+
+      if (EFI_ERROR(Status)) {
+        return Status;
+      }
+
+      BusRange = 0;
+      NextDescriptors = Descriptors;
+      Status = PciGetBusRange(&NextDescriptors, NULL, NULL, &BusRange);
+
+      FreePool(Descriptors);
+
+      if (!EFI_ERROR(Status)) {
+        BusPadding = TRUE;
+      } else if (Status != EFI_NOT_FOUND) {
+        //
+        // EFI_NOT_FOUND is not a real error. It indicates no bus number padding
+        // requested.
+        //
+        return Status;
+      }
+    }
+  }
+}
+
+if (FeaturePcdGet(PcdPciBusHotplugDeviceSupport) && BusPadding) {
+  //
+  // Ensure the device is enabled and initialized
+  //
+  if ((Attributes == EfiPaddingPciRootBridge) &&
+      ((State & EFI_HPC_STATE_ENABLED) != 0) &&
+      ((State & EFI_HPC_STATE_INITIALIZED) != 0)) {
+    *PaddedBusRange = (UINT8)((UINT8)(BusRange) + *PaddedBusRange);
+  } else {
+    //
+    // Reserve the larger one between the actual occupied bus number and padded
+    // bus number
+    //
+    Status = PciAllocateBusNumber(PciDevice, SecondBus, (UINT8)(BusRange),
+                                  &PaddedSubBus);
+    if (EFI_ERROR(Status)) {
+      return Status;
+    }
+
+    *SubBusNumber = MAX(PaddedSubBus, *SubBusNumber);
+  }
+}
+```
+
+```cpp
+//
+// It is device. Check PCI IOV for Bus reservation
+// Go through each function, just reserve the MAX ReservedBusNum for one device
+//
+if (PcdGetBool(PcdSrIovSupport) && (PciDevice->SrIovCapabilityOffset != 0)) {
+  if (TempReservedBusNum < PciDevice->ReservedBusNum) {
+    Status = PciAllocateBusNumber(
+        PciDevice, *SubBusNumber,
+        (UINT8)(PciDevice->ReservedBusNum - TempReservedBusNum), SubBusNumber);
+    if (EFI_ERROR(Status)) {
+      return Status;
+    }
+
+    TempReservedBusNum = PciDevice->ReservedBusNum;
+
+    if (Func == 0) {
+      DEBUG((DEBUG_INFO, "PCI-IOV ScanBus - SubBusNumber - 0x%x\n",
+             *SubBusNumber));
+    } else {
+      DEBUG((DEBUG_INFO, "PCI-IOV ScanBus - SubBusNumber - 0x%x (Update)\n",
+             *SubBusNumber));
+    }
+  }
+}
+```
