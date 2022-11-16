@@ -342,6 +342,8 @@ if (FeaturePcdGet(PcdPciBusHotplugDeviceSupport) && BusPadding) {
 }
 ```
 
+SR-IOV:
+
 ```cpp
 //
 // It is device. Check PCI IOV for Bus reservation
@@ -368,3 +370,5 @@ if (PcdGetBool(PcdSrIovSupport) && (PciDevice->SrIovCapabilityOffset != 0)) {
   }
 }
 ```
+
+分配好 Bus 以后，就可以对所有设备进行 Configuration Request 了，后续的 Memory 和 IO 地址的分配和路由，也是类似地递归地进行分配，然后回溯的时候合并地址区间即可。
