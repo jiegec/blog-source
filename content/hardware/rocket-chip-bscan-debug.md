@@ -8,7 +8,7 @@ title: 通过 BSCAN JTAG 对 Rocket Chip 进行调试
 
 ## 前言
 
-在上一个 [post](https://jia.je/hardware/2020/02/09/rocket-chip-bscan-analysis/) 里研究了原理，今天也是成功在 Artix 7 上实现了调试。效果如下：
+在上一个 [post](/hardware/2020/02/09/rocket-chip-bscan-analysis/) 里研究了原理，今天也是成功在 Artix 7 上实现了调试。效果如下：
 
 OpenOCD 输出：
 
