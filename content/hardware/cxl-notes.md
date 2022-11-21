@@ -150,7 +150,7 @@ Device 收到 SnpData 后，如果发现缓存行不在缓存中（状态是 I�
 - Slave -> Master A: Grant
 - Master A -> Slave: GrantAck
 
-在 TileLink Cached 里面，所有的 Master 都是平等的。而在 CXL 中，需要维护缓存一致性的，有 CPU 内部的各个缓存之间，还有 CPU 和设备之间。而 CXL.cache 主要负责的是与设备的缓存一致性部分，维护缓存一致性的核心是在 CPU 一侧，Host 相当于 TileLink 的 Slave，Device 相当于 TileLink 的 Master A。
+在 TileLink Cached 里面，所有的 Master 都是平等的。而在 CXL 中，需要维护缓存一致性的，有 CPU 内部的各个缓存之间，还有 CPU 和设备之间。而 CXL.cache 主要负责的是与设备的缓存一致性部分，维护缓存一致性的核心是在 CPU 一侧，Host 相当于 TileLink 的 Slave，Device 相当于 TileLink 的 Master A。可以说 CXL.cache 是不对称的缓存一致性协议。
 
 另一个相关的协议是 [ACE 缓存一致性协议](/hardware/2022/05/16/ace)，和 TileLink 类似。
 
@@ -163,3 +163,32 @@ Device 收到 SnpData 后，如果发现缓存行不在缓存中（状态是 I�
 - Host -> Device: GO-S
 
 可以看到，整体的流程也是差不多的。
+
+### CXL.mem
+
+CXL.mem 用于扩展内存，根据类型的不同，它可能单独使用，也可能和 CXL.cache 配合使用。具体来说，有三种一致性模型：
+
+1. HDM-H(Host-only Coherent)：仅 Type 3 设备，也就是无 CXL.cache
+2. HDM-D(Device Coherent)：仅 Legacy Type 2 设备，也就是有 CXL.cache
+3. HDM-DB(Device Coherent using Back-Invalidation)：Type 2 或 Type 3 设备
+
+在 CXL.cache 中，两端是 Host 和 Device；而 CXL.mem，两端是 Master 和 Subordinate。
+
+从 Master 到 Subordinate 的消息（M2S）有三类：
+
+1. Request(Req)
+2. Request with Data(RwD)
+3. Back-Invalidation Response(BIRsp)
+
+从 Subordinate 到 Master 的消息（S2M）有三类：
+
+1. Response without data(NDR, No Data Response)
+2. Response with Data(DRS, Data Response)
+3. Back-Invalidation Snoop(BiSnp)
+
+其中比较特别的是 Back-Invalidation，这个的目的是让 Device 可以通过 Snoop 修改 Host 中缓存了 Device 内存中的数据的缓存行。
+
+对于 Type 3 的设备（无 CXL.cache）来说，Device 就是一个扩展的内存，比较简单，只需要支持读写内存就可以了。Host 发送 `MemRd*`，Device 响应 MemData；Host 发送 `MemWr*`，Device 响应 Cmp。
+
+对于 Type 2 的设备（有 CXL.cache）来说，Device 既有自己的缓存，又有自己的内存，所以这时候就比较复杂了。例如 Host 在读取数据的时候（MemRd，SnpData/SnpInv/SnpCur），还需要对 Device Cache 进行 Snoop（SnpData/SnpInv/SnpCur），保证缓存的一致性。Host 想要写入数据到 Device Memory 的时候，如果此时 Device Cache 中有 Dirty 数据，需要进行写合并，再把合并后的数据写入到 Device Memory。当 Device 想要从自己的缓存读取数据，又缺失的时候，首先需要判断数据在 Host 端的缓存中，还是在 Device Memory 中，不同的偏置（Bias）模式决定了数据应该放在 Host 还是 Device 的缓存上。Device 要写入数据的时候，如果 Host 中缓存了该缓存行，则需要 Back-Invalidation。为了支持这些场景，CXL.cache 和 CXL.mem 会比较复杂。
+
