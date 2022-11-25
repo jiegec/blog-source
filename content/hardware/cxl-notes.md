@@ -109,7 +109,7 @@ H2D Data 的字段：
 
 第一种是 SnpData，例如在 Host 在读取的时候出现缺失，此时需要向 Device 发送 Snoop，获取最新的 Dirty 的 Data，或者让 Device 的缓存行降级为 Shared 状态。
 
-Device 收到 SnpData 后，如果发现缓存行不在缓存中（状态是 I），会回复一个 RspIHitI；如果缓存行在缓存中且数据没有修改（状态是 S 或者 E），降级到 S，会回复一个 RspSHitSE；如果缓存行是 dirty（状态是 M），降级到 S，然后回复 RspSFwdM 以及缓存行的数据；如果缓存行是 dirty（状态是 M），并且变成 Invalid，回复 RspIFwdM 以及缓存行的数据。
+Device 收到 SnpData 后，如果发现缓存行不在缓存中（状态是 I），会回复一个 RspIHitI；如果缓存行在缓存中且数据没有修改（状态是 S 或者 E），降级到 S，会回复一个 RspSHitSE；如果缓存行是 dirty（状态是 M），可以选择降级到 S，然后回复 RspSFwdM 以及缓存行的数据，也可以选择变成 Invalid，回复 RspIFwdM 以及缓存行的数据。
 
 可以看到，这些 D2H Response 的 Opcode 的名字格式很有规律，`Rsp+A+Hit/Fwd+B`，A 表示新的缓存行状态，B 是原来的缓存行状态，Hit 不附带数据，Fwd 附带数据。
 
