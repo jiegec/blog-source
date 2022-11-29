@@ -12,7 +12,7 @@ title: 以太网的物理接口
 
 更新：经 [@z4yx](https://github.com/z4yx) 指出，还可以看[华为的介绍文档](https://support.huawei.com/hedex/hdx.do?docid=EDOC1100156553&id=ZH-CN_TOPIC_0250303640&lang=zh)
 
-### 几几 BASE 杠什么是什么意思
+## 几几 BASE 杠什么是什么意思
 
 在下文里，经常可以看到类似 100BASE-TX 这种写法，它表示的意思是：
 
@@ -44,7 +44,7 @@ title: 以太网的物理接口
 
 
 
-### 各个速率对应的英文单词是什么
+## 各个速率对应的英文单词是什么
 
 - Fast Ethernet: 100Mbps
 - Gigabit Ethernet: 1Gbps
@@ -53,7 +53,7 @@ title: 以太网的物理接口
 - Forty Gigabit Ethernet: 40Gbps
 - Hundred Gigabit Ethernet: 100Gbps
 
-### 常见的连接器
+## 常见的连接器
 
 连接器（connector）一般来说指的就是线缆和网络设备之间的物理接口了。常见的有：
 
@@ -63,11 +63,11 @@ title: 以太网的物理接口
 
 对于光纤的接口，注意购买的时候要和光模块对应，不然可能插不进去。常见的有 LC-LC，SC-LC，SC-SC 等等，表示线的两端分别是什么接口。
 
-### MDI 和 MDI-X
+## MDI 和 MDI-X
 
 这其实就是大家常见的 RJ45 里面 8 根线对应的信号，在十兆和百兆的时候，需要区分 MDI 和 MDI-X，在同种类型的端口之间用交叉线，在不同类型的端口之间用直通线。在后来，有了 Auto MDI-X，也就是会按照实际情况自动检测并且匹配。从千兆开始，设备都支持 Auto MDI-X 了，所以线本身是交叉还是直通就无所谓了。
 
-### 各种 SFP
+## 各种 SFP
 
 [SFP](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver) 是很常见的，特别是在高速的网络之中。而它又分为几种，对应不同的速率：
 
@@ -100,7 +100,7 @@ title: 以太网的物理接口
 
 可以看到，收和发各有一个差分对共 4 条数据线。相对应的，QSFP 收和发各有四对差分对共 16 条数据线，一共 38 根线。并且有一些信号是复用了同样的 pin，这样的设计可以节省一些 pin，是很常见的。
 
-### MII
+## MII
 
 有时候，还会遇到各种 [MII](https://en.wikipedia.org/wiki/Media-independent_interface) 接口，也就是 MAC 和 PHY 之间的接口。有时候，还会伴随着 MDIO 接口，来进行控制信息的传输。它又分不同的类型：
 
@@ -115,7 +115,7 @@ title: 以太网的物理接口
 
 扩展阅读：[KXZ9031RNX Datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/00002117F.pdf)
 
-### SGMII
+## SGMII
 
 上面比较常见的是 GMII/RGMII/SGMII。其中比较特殊的是 [SGMII](https://archive.org/details/sgmii/mode/2up)，首先可以发现它信号很少，只有两对差分线 TX_P TX_N RX_P RX_N，其中时钟是可选的，因为可以从数据中恢复。你可能感到很奇怪，那么其他的信号，比如 DV/ER/CRS 等都去哪里了呢？其实是因为，SGMII 采用了 [8b/10b](https://zh.wikipedia.org/wiki/8b/10b) 的编码的同时，把这些控制信号通过一定的方式顺便编码进去了。具体来说，就是从 8 位的数据信号编码为 10 位的时候，有一些特殊的 10 位符号是没有对应 8 位的数据的，因此可以用这些特殊符号来表示一些信号，比如用 SPD（Start_of_Packet Delimiter，对应 /S/）和 EPD（End_of_Packet Delimiter，对应 /T/R/ 等）表示传输数据的开始和结尾，对应 TX_EN/RX_DV 信号；用 Error_Propagation（/V/）表示错误，对应 RX_ER 信号等等。所以，SGMII 其实还是一个 GMII 的变种，只不过采用 SerDes 的方式减少了引脚，MAC 内部或者 PHY 内部也是经过一个 GMII-SGMII 的转换，而其余部分是一样的。
 
@@ -145,3 +145,18 @@ IEEE 802.3 Figure 36-4 中给了一个例子，就是在发送一段数据的时
 - [Serial Gigabit Media Independent Interface](https://www.intel.com/content/www/us/en/programmable/solutions/technology/transceiver/protocols/pro-sgmii.html)
 - [1G/2.5G Ethernet PCS/PMA or SGMII v16.0](https://www.xilinx.com/support/documentation/ip_documentation/gig_ethernet_pcs_pma/v16_0/pg047-gig-eth-pcs-pma.pdf)
 - [https://en.wikipedia.org/wiki/Physical_coding_sublayer](https://en.wikipedia.org/wiki/Physical_coding_sublayer)
+
+## 物理层
+
+### 1000BASE-T
+
+在 IEEE 802.3ab-1999 中定义。
+
+![](/images/1000baset.png)
+
+物理层往上通过 GMII 连接 MAC，往下通过 MDI 连接其他网络设备。物理层又包括 PCS 和 PMA。
+
+1000BASE-T 使用四对差分线，每对差分线上都是全双工传输，波特率 125Mbaud，symbol 的范围是 `{2, 1, 0, -1, -2}`，通过 PAM5 传输。
+
+具体来讲，PCS 从 MAC 的 GMII 接口接收要发送的数据，GMII 是 125MHz，每个周期 8 位数据。这些数据与 scrambler 一起，生成 9 位的 `Sd_n[8:0]`，然后再编码为 `(TA_n, TB_n, TC_n, TD_n)`，也就是在四对差分线上传输的 symbol，取值范围是 `[-2, 2]`。简单总结一下，就是每个周期 8 位数据，先变成 9 位数据，再变成 4 个 symbol，每个 symbol 取值范围是 -2 到 2，这就叫做 8B1Q4，`converting GMII data (8B-8 bits) to four quinary symbols (Q4) that are transmitted during one clock (1Q4)`，把 8 位的数据转换为四个 symbol，每个 symbol 有五种取值（Quinary 表示 5）。
+
