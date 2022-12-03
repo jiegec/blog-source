@@ -148,9 +148,15 @@ IEEE 802.3 Figure 36-4 中给了一个例子，就是在发送一段数据的时
 
 ## 物理层
 
+### 100BASE-TX
+
+在 IEEE 802.3 的 Clause 24 和 25 中定义。
+
+100BASE-TX 的物理层分为 PCS，PMA，PMD。与 MAC 的连接是 MII 接口，MII 频率是 25MHz，每周期传输 4 bit 的数据。然后 PCS 负责把 4 bit 的数据通过 4B/5B 转换为 5 bit 的 code group；PMA 使用 NRZI 进行编码；PMD 层借用了 FDDI 协议的 PMD 层，只使用 MDI 的 1-3 和 6 四根线传输，两对差分对，一收一发。
+
 ### 1000BASE-T
 
-在 IEEE 802.3ab-1999 中定义。
+在 IEEE 802.3ab-1999 中定义，具体位置是 Clause 40。
 
 ![](/images/1000baset.png)
 
