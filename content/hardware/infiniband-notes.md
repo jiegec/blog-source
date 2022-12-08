@@ -102,8 +102,8 @@ LID 是一个 16 位的整数，所以同一个 Subnet 中可以连接的设备�
 使用 qperf/ib_send_lat 可以测量带宽和延迟。一个测试例子：
 
 - 以太网（udp_lat）：24.5 us
-- IPoIB（udp_lat）：8.7 us
-- IB（rc，ib_send_lat）：1.02 us
-- IB（rc_lat）：3.6 ~ 4.6 us
-- IB（uc_lat）：4.2 ~ 5.5 us
-- IB（ud_lat）：5.5 ~ 6.4 us
+- IPoIB (udp_lat): 8.7 us
+- IB (rc, ib_send_lat): 1.02 us
+- IB (rc_lat): 3.6 ~ 4.6 us
+- IB (uc_lat): 4.2 ~ 5.5 us
+- IB (ud_lat): 5.5 ~ 6.4 us

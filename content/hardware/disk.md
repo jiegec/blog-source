@@ -146,6 +146,16 @@ Mini SAS 4i 连接器就是 36 pin 的 SFF-8087，支持四路 SAS。i 表示用
 
 标准下载地址：https://members.snia.org/document/dl/25823
 
+它的引脚定义可以在 [SFF-9402](https://members.snia.org/document/dl/27380) 看到，它的引脚分为 A 面和 B 面，每面有 18 个 PIN，用途如下：
+
+- A2(Rx0+), A3(Rx0-), B2(Tx0+), B3(Tx0-)：第一组差分对
+- A4(Rx1+), A5(Rx1-), B4(Tx1+), B5(Tx1-)：第二组差分对
+- A13(Rx2+), A14(Rx2-), B13(Tx2+), B14(Tx2-)：第三组差分对
+- A16(Rx3+), A17(Rx3-), B16(Tx3+), B17(Tx3-)：第四组差分对
+- B8(Sclock), B9(Sload), A10(SDataOut), A11(SDataIn)：SGPIO 协议
+
+这四组差分对对应四路 SAS 或者 SATA。SGPIO 协议的标准是 [SFF-8485](https://members.snia.org/document/dl/25923)，主要用途是控制硬盘状态灯，以及判断盘是否插入。
+
 相关标准：
 
 - SFF-8086: Mini Multilane 10 Gb/s 4X Common Elements Connector
