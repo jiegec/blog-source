@@ -90,7 +90,7 @@ title: 以太网的物理接口
 通常，网络设备也会支持把一个 QSFP 接口拆成多个 SFP 接口来使用，比如有的线，一边是 QSFP28，另一边是 4xSFP28，只要设备支持即可，目的是节省空间。
 
 
-[SFP 标准](https://members.snia.org/document/dl/26184) 规定了 [20 根信号线](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver#Signals)，正反面各 10 根，重要的是下面的这些（括号里写得是 Pin 的编号）：
+[SFP 标准 SFF INF-8074](https://members.snia.org/document/dl/26184) 规定了 [20 根信号线](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver#Signals)，正反面各 10 根，重要的是下面的这些（括号里写得是 Pin 的编号）：
 
 1. Mod_ABS（6）：模块是否插入
 2. RD+（13）、RD-（12）：接收数据的差分对
