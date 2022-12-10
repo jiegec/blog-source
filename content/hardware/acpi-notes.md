@@ -415,3 +415,120 @@ static const struct acpi_device_id acpi_ipmi_match[] = {
 ```
 
 和上面的分析是可以对上的。
+
+## IO APIC
+
+在 DSDT 中，可以找到 IO APIC 的基地址：
+
+```asl
+Device (APIC)
+{
+    Name (_HID, EisaId ("PNP0003") /* IO-APIC Interrupt Controller */)  // _HID: Hardware ID
+    Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
+    {
+        Memory32Fixed (ReadOnly,
+            0xFEC00000,         // Address Base
+            0x00100000,         // Address Length
+            )
+    })
+}
+```
+
+可以看到 IO APIC 基地址是 0xFEC00000，在网上也可以查到同样的结果。实际上，在 Multiple APIC Description Table (MADT) 中也可以找到 IO APIC 的基地址：
+
+```
+[1ECh 0492   1]                Subtable Type : 01 [I/O APIC]
+[1EDh 0493   1]                       Length : 0C
+[1EEh 0494   1]                  I/O Apic ID : 08
+[1EFh 0495   1]                     Reserved : 00
+[1F0h 0496   4]                      Address : FEC00000
+[1F4h 0500   4]                    Interrupt : 00000000
+
+[1F8h 0504   1]                Subtable Type : 01 [I/O APIC]
+[1F9h 0505   1]                       Length : 0C
+[1FAh 0506   1]                  I/O Apic ID : 09
+[1FBh 0507   1]                     Reserved : 00
+[1FCh 0508   4]                      Address : FEC01000
+[200h 0512   4]                    Interrupt : 00000018
+
+[204h 0516   1]                Subtable Type : 01 [I/O APIC]
+[205h 0517   1]                       Length : 0C
+[206h 0518   1]                  I/O Apic ID : 0A
+[207h 0519   1]                     Reserved : 00
+[208h 0520   4]                      Address : FEC08000
+[20Ch 0524   4]                    Interrupt : 00000020
+
+[210h 0528   1]                Subtable Type : 01 [I/O APIC]
+[211h 0529   1]                       Length : 0C
+[212h 0530   1]                  I/O Apic ID : 0B
+[213h 0531   1]                     Reserved : 00
+[214h 0532   4]                      Address : FEC10000
+[218h 0536   4]                    Interrupt : 00000028
+
+[21Ch 0540   1]                Subtable Type : 01 [I/O APIC]
+[21Dh 0541   1]                       Length : 0C
+[21Eh 0542   1]                  I/O Apic ID : 0C
+[21Fh 0543   1]                     Reserved : 00
+[220h 0544   4]                      Address : FEC18000
+[224h 0548   4]                    Interrupt : 00000030
+```
+
+## DMA
+
+继续搜索 `_HID`，还可以找到一些传统的设备，比如 DMA Controller：
+
+```asl
+Device (DMAC)
+{
+    Name (_HID, EisaId ("PNP0200") /* PC-class DMA Controller */)  // _HID: Hardware ID
+    Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
+    {
+        IO (Decode16,
+            0x0000,             // Range Minimum
+            0x0000,             // Range Maximum
+            0x00,               // Alignment
+            0x10,               // Length
+            )
+        IO (Decode16,
+            0x0081,             // Range Minimum
+            0x0081,             // Range Maximum
+            0x00,               // Alignment
+            0x03,               // Length
+            )
+        IO (Decode16,
+            0x0087,             // Range Minimum
+            0x0087,             // Range Maximum
+            0x00,               // Alignment
+            0x01,               // Length
+            )
+        IO (Decode16,
+            0x0089,             // Range Minimum
+            0x0089,             // Range Maximum
+            0x00,               // Alignment
+            0x03,               // Length
+            )
+        IO (Decode16,
+            0x008F,             // Range Minimum
+            0x008F,             // Range Maximum
+            0x00,               // Alignment
+            0x01,               // Length
+            )
+        IO (Decode16,
+            0x00C0,             // Range Minimum
+            0x00C0,             // Range Maximum
+            0x00,               // Alignment
+            0x20,               // Length
+            )
+        DMA (Compatibility, NotBusMaster, Transfer8, )
+            {4}
+    })
+}
+```
+
+可以看到，它定义了如下的 IO Port 范围：
+
+- `0x00-0x0F`
+- 0x81, 0x87, 0x89, 0x8F
+- `0xC0-0xDE`
+
+寄存器定义可以在 [ISA DMA - OSDev](https://wiki.osdev.org/ISA_DMA) 处找到。
