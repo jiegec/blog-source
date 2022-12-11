@@ -689,3 +689,132 @@ int __init acpi_parse_spcr(bool enable_earlycon, bool enable_console)
     // omitted
 }
 ```
+
+## PCIe
+
+PCIe 总线是自带枚举功能的，所以只需要找到 Root Bridge，其他设备都可以枚举出来。而 ACPI 就提供了寻找 Root Bridge 的方法。
+
+搜索 `PNP0A08` 可以找到 PCIe 总线：
+
+```asl
+Device (PC00)
+{
+    Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
+    Name (_CID, EisaId ("PNP0A03") /* PCI Bus */)  // _CID: Compatible ID
+
+    Name (P0RS, ResourceTemplate ()
+    {
+        WordBusNumber (ResourceProducer, MinFixed, MaxFixed, PosDecode,
+            0x0000,             // Granularity
+            0x0000,             // Range Minimum
+            0x0015,             // Range Maximum
+            0x0000,             // Translation Offset
+            0x0016,             // Length
+            ,, )
+        IO (Decode16,
+            0x0CF8,             // Range Minimum
+            0x0CF8,             // Range Maximum
+            0x01,               // Alignment
+            0x08,               // Length
+            )
+        WordIO (ResourceProducer, MinFixed, MaxFixed, PosDecode, EntireRange,
+            0x0000,             // Granularity
+            0x0000,             // Range Minimum
+            0x0CF7,             // Range Maximum
+            0x0000,             // Translation Offset
+            0x0CF8,             // Length
+            ,, , TypeStatic, DenseTranslation)
+        WordIO (ResourceProducer, MinFixed, MaxFixed, PosDecode, EntireRange,
+            0x0000,             // Granularity
+            0x1000,             // Range Minimum
+            0x57FF,             // Range Maximum
+            0x0000,             // Translation Offset
+            0x4800,             // Length
+            ,, , TypeStatic, DenseTranslation)
+        DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, Cacheable, ReadWrite,
+            0x00000000,         // Granularity
+            0x000A0000,         // Range Minimum
+            0x000BFFFF,         // Range Maximum
+            0x00000000,         // Translation Offset
+            0x00020000,         // Length
+            ,, , AddressRangeMemory, TypeStatic)
+        DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, Cacheable, ReadWrite,
+            0x00000000,         // Granularity
+            0x00000000,         // Range Minimum
+            0x00000000,         // Range Maximum
+            0x00000000,         // Translation Offset
+            0x00000000,         // Length
+            ,, _Y00, AddressRangeMemory, TypeStatic)
+        DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, NonCacheable, ReadWrite,
+            0x00000000,         // Granularity
+            0xFE010000,         // Range Minimum
+            0xFE010FFF,         // Range Maximum
+            0x00000000,         // Translation Offset
+            0x00001000,         // Length
+            ,, , AddressRangeMemory, TypeStatic)
+        DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, NonCacheable, ReadWrite,
+            0x00000000,         // Granularity
+            0xFD000000,         // Range Minimum
+            0xFE7FFFFF,         // Range Maximum
+            0x00000000,         // Translation Offset
+            0x01800000,         // Length
+            ,, , AddressRangeMemory, TypeStatic)
+        DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, NonCacheable, ReadWrite,
+            0x00000000,         // Granularity
+            0x70000000,         // Range Minimum
+            0x92FFFFFF,         // Range Maximum
+            0x00000000,         // Translation Offset
+            0x23000000,         // Length
+            ,, , AddressRangeMemory, TypeStatic)
+        QWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, NonCacheable, ReadWrite,
+            0x0000000000000000, // Granularity
+            0x0000000000000000, // Range Minimum
+            0x0000000000000000, // Range Maximum
+            0x0000000000000000, // Translation Offset
+            0x0000000000000000, // Length
+            ,, , AddressRangeMemory, TypeStatic)
+    })
+
+    Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+    {
+        EROM ()
+        Return (P0RS) /* \_SB_.PC00.P0RS */
+    }
+}
+```
+
+上面省略掉了很多内容，不过可以看到 Root Bridge 的资源，这部分内容和 Linux 的 dmesg 是一致的：
+
+```
+ACPI: PCI Root Bridge [PC00] (domain 0000 [bus 00-15])
+acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI]
+acpi PNP0A08:00: _OSC: platform does not support [SHPCHotplug AER LTR]
+acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug PME PCIeCapability]
+acpi PNP0A08:00: host bridge window expanded to [mem 0xfd000000-0xfe7fffff window]; [mem 0xfd000000-0xfe7fffff window] ignored
+PCI host bridge to bus 0000:00
+pci_bus 0000:00: root bus resource [io  0x0000-0x0cf7 window]
+pci_bus 0000:00: root bus resource [io  0x1000-0x57ff window]
+pci_bus 0000:00: root bus resource [mem 0x000a0000-0x000bffff window]
+pci_bus 0000:00: root bus resource [mem 0x000c4000-0x000c7fff window]
+pci_bus 0000:00: root bus resource [mem 0xfd000000-0xfe7fffff window]
+pci_bus 0000:00: root bus resource [mem 0x70000000-0x92ffffff window]
+pci_bus 0000:00: root bus resource [bus 00-15]
+```
+
+Linux 相关代码在 `acpi_pci_root_create` 函数中：
+
+```c
+struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+				     struct acpi_pci_root_ops *ops,
+				     struct acpi_pci_root_info *info,
+				     void *sysdata)
+{
+    // omitted
+    ret = acpi_pci_probe_root_resources(info);
+    // omitted
+    pci_acpi_root_add_resources(info);
+	pci_add_resource(&info->resources, &root->secondary);
+	bus = pci_create_root_bus(NULL, busnum, ops->pci_ops,
+				  sysdata, &info->resources);
+}
+```
