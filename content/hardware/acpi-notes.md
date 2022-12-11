@@ -848,3 +848,36 @@ PCI: MMCONFIG at [mem 0x60000000-0x6fffffff] reserved in E820
 有了这个信息以后，就可以计算出要访问 Configuration Space 时 MMIO 的地址了：
 
 ![](/images/pcie_ecam.png)
+
+### 相关文档
+
+Linux 的文档 [ACPI considerations for PCI host bridges](https://docs.kernel.org/PCI/acpi-info.html) 对 ACPI PCIe 描述的比较详细，摘录如下：
+
+    The general rule is that the ACPI namespace should describe everything the
+    OS might use unless there’s another way for the OS to find it [1, 2].
+
+    For example, there’s no standard hardware mechanism for enumerating PCI host
+    bridges, so the ACPI namespace must describe each host bridge, the method
+    for accessing PCI config space below it, the address space windows the host
+    bridge forwards to PCI (using _CRS), and the routing of legacy INTx
+    interrupts (using _PRT).
+    
+    PCI devices, which are below the host bridge, generally do not need to be
+    described via ACPI. The OS can discover them via the standard PCI
+    enumeration mechanism, using config accesses to discover and identify
+    devices and read and size their BARs. However, ACPI may describe PCI devices
+    if it provides power management or hotplug functionality for them or if the
+    device has INTx interrupts connected by platform interrupt controllers and a
+    _PRT is needed to describe those connections.
+
+文档和上面讲的是一致的，对于 PCIe 自己可以枚举出来的，ACPI 就不需要再重复；但是枚举需要首先知道有哪些 Root Bridge 以及 ECAM 的基地址，这个信息只能由 ACPI 来提供。
+
+    The PCIe spec requires the Enhanced Configuration Access Method (ECAM)
+    unless there’s a standard firmware interface for config access, e.g., the
+    ia64 SAL interface [7]. A host bridge consumes ECAM memory address space and
+    converts memory accesses into PCI configuration accesses. The spec defines
+    the ECAM address space layout and functionality; only the base of the
+    address space is device-specific. An ACPI OS learns the base address from
+    either the static MCFG table or a _CBA method in the PNP0A03 device.
+
+这一段讲的其实就是 ECAM 与 MCFG 的关系。
