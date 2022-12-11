@@ -889,4 +889,4 @@ Linux 的文档 [ACPI considerations for PCI host bridges](https://docs.kernel.o
 - [Upgrading ACPI tables via initrd](https://www.kernel.org/doc/html/latest/admin-guide/acpi/initrd_table_override.html)：覆盖 ACPI 表
 - [SSDT Overlays](https://www.kernel.org/doc/html/latest/admin-guide/acpi/ssdt-overlays.html)：添加额外的 SSDT 表，类似 DT Overlay
 
-在黑苹果中，一般则是在 Bootloader(Clover/OpenCore) 一步把 ACPI 表修改了，如 [How to Patch Laptop DSDT and SSDTs](https://elitemacx86.com/threads/how-to-patch-laptop-dsdt-and-ssdts.178/。
+在黑苹果中，一般则是在 Bootloader(Clover/OpenCore) 一步把 ACPI 表修改了，如 [How to Patch Laptop DSDT and SSDTs](https://elitemacx86.com/threads/how-to-patch-laptop-dsdt-and-ssdts.178/)。
