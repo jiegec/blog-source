@@ -416,6 +416,38 @@ static const struct acpi_device_id acpi_ipmi_match[] = {
 
 和上面的分析是可以对上的。
 
+### ARM64
+
+再看一个 ARM64 平台上的 IPMI：
+
+```
+Device (IPI0)
+{
+    Name (_HID, "IPI0001")  // _HID: Hardware ID
+    Method (_IFT, 0, NotSerialized)  // _IFT: IPMI Interface Type
+    {
+        Return (0x03)
+    }
+
+    Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
+    {
+        QWordMemory (ResourceConsumer, PosDecode, MinFixed, MaxFixed, Cacheable, ReadWrite,
+            0x0000000000000000, // Granularity
+            0x00000003F00000E4, // Range Minimum
+            0x00000003F00000E7, // Range Maximum
+            0x0000000000000000, // Translation Offset
+            0x0000000000000004, // Length
+            ,, , AddressRangeMemory, TypeStatic)
+        Interrupt (ResourceConsumer, Level, ActiveHigh, Shared, ,, )
+        {
+            0x000001E4,
+        }
+    })
+}
+```
+
+这里的 `_IFT` 返回值是 0x3，查阅文档可知这表示的是 BT 类型。`_CRS` 中使用了 QWordMemory 宏来描述地址空间，这里实际上就是表示内存地址 `0x3F00000E4-0x3F00000E7`。
+
 ## IO APIC
 
 在 DSDT 中，可以找到 IO APIC 的基地址：
@@ -611,6 +643,7 @@ SPCR 表的内容：
 
 SPCR 表的定义可以在 [Serial Port Console Redirection Table (SPCR)](https://learn.microsoft.com/en-us/windows-hardware/drivers/serports/serial-port-console-redirection-table) 处看到：
 
+- Interface Type(00): Full 16550 interface
 - Interrupt Type(08): ARMH GIC interrupt (Global System Interrupt)
 - Baud Rate(07): 115200
 - Terminal Type(03): ANSI
