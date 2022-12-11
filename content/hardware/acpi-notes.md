@@ -41,7 +41,7 @@ acpixtract -a acpi.raw
 iasl -d *.dat
 ```
 
-## 串口
+## x86_64 串口
 
 下面来看一个具体的例子，主板 `WS X299 PRO/SE` 的 ACPI 表中记录的串口信息：
 
@@ -532,3 +532,127 @@ Device (DMAC)
 - `0xC0-0xDE`
 
 寄存器定义可以在 [ISA DMA - OSDev](https://wiki.osdev.org/ISA_DMA) 处找到。
+
+## CMOS/RTC
+
+经典的 CMOS/RTC 的 IO 端口定义也可以找到：
+
+```
+Device (RTC)
+{
+    Name (_HID, EisaId ("PNP0B00") /* AT Real-Time Clock */)  // _HID: Hardware ID
+    Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
+    {
+        IO (Decode16,
+            0x0070,             // Range Minimum
+            0x0070,             // Range Maximum
+            0x01,               // Alignment
+            0x02,               // Length
+            )
+        IO (Decode16,
+            0x0074,             // Range Minimum
+            0x0074,             // Range Maximum
+            0x01,               // Alignment
+            0x04,               // Length
+            )
+        IRQNoFlags ()
+            {8}
+    })
+    Method (_STA, 0, NotSerialized)  // _STA: Status
+    {
+        If ((STAS == 0x01))
+        {
+            Return (0x0F)
+        }
+        Else
+        {
+            Return (0x00)
+        }
+    }
+}
+```
+
+可以看到，它的 IO Port 是 0x70-0x71 和 0x74-0x78，中断号 8，和 [CMOS - OSDev](https://wiki.osdev.org/CMOS) 是一致的。
+
+## 启动图片
+
+启动图片以 BMP 格式保存在内存中，基地址记录在 BGRT 表中。可以直接从 `/sys/firmware/acpi/bgrt/image` 获取启动的图片内容。
+
+## ARM64 串口
+
+前面看过了 x86_64 平台的串口，是需要通过 IO Port 进行访问的。在 ARM 平台上，则一般是通过 MMIO 访问。搜索内核日志，可以发现内核从 SPCR(Serial Port Console Redirection table) 表获取得到串口的信息：
+
+```dmesg
+ACPI: SPCR: console: uart,mmio,0x3f00002f8,115200
+```
+
+SPCR 表的内容：
+
+```
+[024h 0036   1]               Interface Type : 00
+[025h 0037   3]                     Reserved : 000000
+
+[028h 0040  12]         Serial Port Register : [Generic Address Structure]
+[028h 0040   1]                     Space ID : 00 [SystemMemory]
+[029h 0041   1]                    Bit Width : 08
+[02Ah 0042   1]                   Bit Offset : 00
+[02Bh 0043   1]         Encoded Access Width : 01 [Byte Access:8]
+[02Ch 0044   8]                      Address : 00000003F00002F8
+
+[034h 0052   1]               Interrupt Type : 08
+[035h 0053   1]          PCAT-compatible IRQ : 00
+[036h 0054   4]                    Interrupt : 000001E4
+[03Ah 0058   1]                    Baud Rate : 07
+[03Bh 0059   1]                       Parity : 00
+[03Ch 0060   1]                    Stop Bits : 01
+[03Dh 0061   1]                 Flow Control : 00
+[03Eh 0062   1]                Terminal Type : 03
+```
+
+SPCR 表的定义可以在 [Serial Port Console Redirection Table (SPCR)](https://learn.microsoft.com/en-us/windows-hardware/drivers/serports/serial-port-console-redirection-table) 处看到：
+
+- Interrupt Type(08): ARMH GIC interrupt (Global System Interrupt)
+- Baud Rate(07): 115200
+- Terminal Type(03): ANSI
+
+和内核得到的信息是一致的。内核中解析 SPCR 表的函数是 `acpi_sparse_spcr`：
+
+```c
+int __init acpi_parse_spcr(bool enable_earlycon, bool enable_console)
+{
+    // omitted
+	if (table->serial_port.space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+        // omitted
+		switch (ACPI_ACCESS_BIT_WIDTH((bit_width))) {
+		case 8:
+			iotype = "mmio";
+			break;
+		}
+    }
+
+	switch (table->interface_type) {
+        // omitted
+	case ACPI_DBG2_16550_COMPATIBLE:
+		uart = "uart";
+		break;
+	}
+
+	switch (table->baud_rate) {
+        // omitted
+	case 7:
+		baud_rate = 115200;
+		break;
+	}
+
+	if (!baud_rate) {
+		snprintf(opts, sizeof(opts), "%s,%s,0x%llx", uart, iotype,
+			 table->serial_port.address);
+	} else {
+        // uart,mmio,0x3f00002f8,115200
+		snprintf(opts, sizeof(opts), "%s,%s,0x%llx,%d", uart, iotype,
+			 table->serial_port.address, baud_rate);
+	}
+
+    // omitted
+}
+```
