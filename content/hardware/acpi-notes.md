@@ -881,3 +881,12 @@ Linux 的文档 [ACPI considerations for PCI host bridges](https://docs.kernel.o
     either the static MCFG table or a _CBA method in the PNP0A03 device.
 
 这一段讲的其实就是 ECAM 与 MCFG 的关系。
+
+## 修改 ACPI 表内容
+
+想要修改 ACPI 表内容，最根本的办法是修改固件，但是修改起来比较麻烦。Linux 提供了一些方法来运行时打补丁：
+
+- [Upgrading ACPI tables via initrd](https://www.kernel.org/doc/html/latest/admin-guide/acpi/initrd_table_override.html)：覆盖 ACPI 表
+- [SSDT Overlays](https://www.kernel.org/doc/html/latest/admin-guide/acpi/ssdt-overlays.html)：添加额外的 SSDT 表，类似 DT Overlay
+
+在黑苹果中，一般则是在 Bootloader(Clover/OpenCore) 一步把 ACPI 表修改了，如 [How to Patch Laptop DSDT and SSDTs](https://elitemacx86.com/threads/how-to-patch-laptop-dsdt-and-ssdts.178/。
