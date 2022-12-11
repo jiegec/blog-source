@@ -697,6 +697,8 @@ Device (RTC)
 
 ## PCIe
 
+### Root Bridge
+
 PCIe 总线是自带枚举功能的，所以只需要找到 Root Bridge，其他设备都可以枚举出来。而 ACPI 就提供了寻找 Root Bridge 的方法。
 
 搜索 `PNP0A08` 可以找到 PCIe 总线：
@@ -823,3 +825,26 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
 				  sysdata, &info->resources);
 }
 ```
+
+### MCFG
+
+除了上面的 Root Bridge 以外，还有一个很重要的问题是，如何访问 PCIe 的 Configuration Space。传统的办法是通过 IO Port 0xCF8 和 0xCFC，但是这个方法慢，并且有局限性。而较新的办法是 Enhanced Configuration Access Mechanism (ECAM)，把 PCIe 设备的 Configuration Space 映射到内存中，那么就需要一个基地址。这个基地址是在 MCFG 表中给出的：
+
+```asl
+[02Ch 0044   8]                 Base Address : 0000000060000000
+[034h 0052   2]         Segment Group Number : 0000
+[036h 0054   1]             Start Bus Number : 00
+[037h 0055   1]               End Bus Number : FF
+[038h 0056   4]                     Reserved : 00000000
+```
+
+内核输出：
+
+```
+PCI: MMCONFIG for domain 0000 [bus 00-ff] at [mem 0x60000000-0x6fffffff] (base 0x60000000)
+PCI: MMCONFIG at [mem 0x60000000-0x6fffffff] reserved in E820
+```
+
+有了这个信息以后，就可以计算出要访问 Configuration Space 时 MMIO 的地址了：
+
+![](/images/pcie_ecam.png)
