@@ -890,3 +890,291 @@ Linux 的文档 [ACPI considerations for PCI host bridges](https://docs.kernel.o
 - [SSDT Overlays](https://www.kernel.org/doc/html/latest/admin-guide/acpi/ssdt-overlays.html)：添加额外的 SSDT 表，类似 DT Overlay
 
 在黑苹果中，一般则是在 Bootloader(Clover/OpenCore) 一步把 ACPI 表修改了，如 [How to Patch Laptop DSDT and SSDTs](https://elitemacx86.com/threads/how-to-patch-laptop-dsdt-and-ssdts.178/)。
+
+## ACPI 硬件规范
+
+除了用来描述系统中已有的设备，ACPI 还对硬件做出了一些要求，在标准的 Chapter 4 ACPI Hardware Specification 中定义。例如，电源按钮是如何通知操作系统的？操作系统的重启和关机是怎么实现的？
+
+### 电源按钮
+
+首先来看电源按钮（Power Button）。在 ACPI 中，定义了两种 Power Button 的实现方法，第一种就是比较经典的硬件按钮+中断的模式，当按下按钮的时候，中断状态（`PWRBTN_STS`）拉高，如果此时中断使能（`PWRBTN_EN`）也为高，就触发中断。这时候操作系统就知道电源键被按下了，开始进行关机操作。
+
+第二种实现方法则利用了 ACPI 的可编程性。具体来说，当按下电源键的时候，操作系统会收到一个 SCI（System Control Interrupt），此时操作系统会根据中断编号，去执行 ACPI 中的函数，函数去读取当前的电源键状态，然后调用 `Notify` 函数来通知操作系统，电源键被按下了。
+
+在使用虚拟机的时候，会知道 ACPI Shutdown 的说法，其实就是模拟了按下电源键的行为。QEMU 的相关代码：
+
+```c
+void acpi_pm1_evt_power_down(ACPIREGS *ar)
+{
+    if (ar->pm1.evt.en & ACPI_BITMASK_POWER_BUTTON_ENABLE) {
+        ar->pm1.evt.sts |= ACPI_BITMASK_POWER_BUTTON_STATUS;
+        ar->tmr.update_sci(ar);
+    }
+}
+```
+
+这个函数模拟了电源按钮，如果 `PWRBTN_EN=1`，就设置 `PWRBTN_STS=1` 并发送 SCI 中断。
+
+那么，操作系统如何访问 `PWRBTN_EN` 和 `PWRBTN_STS` 呢？在 FADP(Fixed ACPI Descrption Table) 表中，可以找到 PM1A/B Event Block Address 和 PM1A/B Control Block Address：
+
+```asl
+[038h 0056   4]     PM1A Event Block Address : 0000B000
+[03Ch 0060   4]     PM1B Event Block Address : 00000000
+[040h 0064   4]   PM1A Control Block Address : 0000B004
+[044h 0068   4]   PM1B Control Block Address : 00000000
+
+[058h 0088   1]       PM1 Event Block Length : 04
+[059h 0089   1]     PM1 Control Block Length : 02
+```
+
+那么就可以通过 IO Port 来访问这些寄存器了。`PWNBTN_STS` 属于 PM1 Status Registers，地址是 `PM1A/B Event Block Address=0xB000`；`PWNBTN_EN` 属于 PM1 Enable Registers，地址是 `PM1A/B Event Block Register + PM1 Event Block Length / 2=0xB002`。
+
+这里的 PM1A/B 是 Register Grouping，使得硬件上可以把寄存器实现在两个不同的芯片上，分别实现一部分功能。操作系统读取的时候，要读取 A 和 B 然后 OR 起来，写入的时候则是 A 和 B 都要写。像上面的情况，就是只有 A 没有 B，那就直接读写 A 就可以了。
+
+### 关机
+
+另一方面，如果 OS 想要关机，那要怎么告诉硬件呢？还是通过 ACPI。在 PM1 Control Registers 中，可以通过写入 `SLP_TYPx` 和 `SLP_EN` 字段来进行休眠或者关机操作。
+
+下面是 QEMU 针对 `SLP_EN` 写入的处理代码：
+
+```c
+/* ACPI PM1aCNT */
+static void acpi_pm1_cnt_write(ACPIREGS *ar, uint16_t val)
+{
+    ar->pm1.cnt.cnt = val & ~(ACPI_BITMASK_SLEEP_ENABLE);
+
+    if (val & ACPI_BITMASK_SLEEP_ENABLE) {
+        /* change suspend type */
+        uint16_t sus_typ = (val >> 10) & 7;
+        switch (sus_typ) {
+        case 0: /* soft power off */
+            qemu_system_shutdown_request(SHUTDOWN_CAUSE_GUEST_SHUTDOWN);
+            break;
+        case 1:
+            qemu_system_suspend_request();
+            break;
+        default:
+            if (sus_typ == ar->pm1.cnt.s4_val) { /* S4 request */
+                qapi_event_send_suspend_disk();
+                qemu_system_shutdown_request(SHUTDOWN_CAUSE_GUEST_SHUTDOWN);
+            }
+            break;
+        }
+    }
+}
+```
+
+### PM Timer
+
+ACPI 还提供了一个 3.579545 MHz 的时钟 PM_TMR。QEMU 相关代码：
+
+```c
+/* PM Timer ticks per second (HZ) */
+#define PM_TIMER_FREQUENCY  3579545
+
+static inline int64_t acpi_pm_tmr_get_clock(void)
+{
+    return muldiv64(qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL), PM_TIMER_FREQUENCY,
+                    NANOSECONDS_PER_SECOND);
+}
+```
+
+Linux 也可以把它当成一个时钟源：
+
+```dmesg
+clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
+```
+
+相关代码：
+
+```c
+/*
+ * The I/O port the PMTMR resides at.
+ * The location is detected during setup_arch(),
+ * in arch/i386/kernel/acpi/boot.c
+ */
+u32 pmtmr_ioport __read_mostly;
+
+static inline u32 read_pmtmr(void)
+{
+	/* mask the output to 24 bits */
+	return inl(pmtmr_ioport) & ACPI_PM_MASK;
+}
+
+static u64 acpi_pm_read(struct clocksource *cs)
+{
+	return (u64)read_pmtmr();
+}
+
+static struct clocksource clocksource_acpi_pm = {
+	.name		= "acpi_pm",
+	.rating		= 200,
+	.read		= acpi_pm_read,
+	.mask		= (u64)ACPI_PM_MASK,
+	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+};
+
+/* Number of PMTMR ticks expected during calibration run */
+#define PMTMR_TICKS_PER_SEC 3579545
+
+static int __init init_acpi_pm_clocksource(void)
+{
+    // omitted
+	return clocksource_register_hz(&clocksource_acpi_pm,
+						PMTMR_TICKS_PER_SEC);
+}
+```
+
+### GPE
+
+除了上面 PM1 中提到的一些中断来源，ACPI 还提供了通用的 General Purpose Event，硬件可以自定义一些中断编号，依然是通过 SCI 中断通知操作系统，操作系统根据 GPE 的 STS 寄存器来判断哪个 GPE 触发了中断，然后执行对应的 ACPI 函数。GPE 的地址也是在 FADT 中提供：
+
+```asl
+[050h 0080   4]           GPE0 Block Address : 0000AFE0
+
+[05Ch 0092   1]            GPE0 Block Length : 04
+```
+
+在 DSDT 的 `\_GPE` 下面，可以定义函数，在 GPE 到达的时候，会被操作系统执行。格式是 `\_GPE._Exx` 或 `\_GPE._Lxx`，E 表示 Edge sensitive，L 表示 Level sensitive。例如操作系统判断收到了 GPE 4，那可能会执行 `\_GPE._L04` 或 `\_GPE._E04` 函数。
+
+## PCIe Hot Plug
+
+在 QEMU 中，如果虚拟机要进行 PCIe Hot Plug 的时候，例如要增加 PCIe 设备，或者删除已有的 PCIe 设备，需要设法通知操作系统，告知操作系统哪个地方有新的设备，或者哪个已有的设备被弹出。QEMU 的实现文档是[QEMU<->ACPI BIOS PCI hotplug interface](https://www.qemu.org/docs/master/specs/acpi_pci_hotplug.html)，这里结合代码来解释一下。
+
+在 QEMU 中，要插入一个新的 PCIe 设备的时候，按照设备的 bus 和 slot 设置位为 1，并且发送 GPE：
+
+```c
+void acpi_pcihp_device_plug_cb(HotplugHandler *hotplug_dev, AcpiPciHpState *s,
+                               DeviceState *dev, Error **errp)
+{
+    // omitted
+
+    bsel = acpi_pcihp_get_bsel(bus);
+    g_assert(bsel >= 0);
+    s->acpi_pcihp_pci_status[bsel].up |= (1U << slot);
+    acpi_send_event(DEVICE(hotplug_dev), ACPI_PCI_HOTPLUG_STATUS);
+}
+
+// acpi_send_event eventually calls piix4_send_gpe
+static void piix4_send_gpe(AcpiDeviceIf *adev, AcpiEventStatusBits ev)
+{
+    PIIX4PMState *s = PIIX4_PM(adev);
+
+    acpi_send_gpe_event(&s->ar, s->irq, ev);
+}
+
+void acpi_send_gpe_event(ACPIREGS *ar, qemu_irq irq,
+                         AcpiEventStatusBits status)
+{
+    ar->gpe.sts[0] |= status;
+    acpi_update_sci(ar, irq);
+}
+```
+
+查看头文件，可知 `ACPI_PCI_HOTPLUG_STATUS=2`，根据上面的代码，可知这实际上就是发送了 GPE1。操作系统会执行 `\_GPE._E01` 函数：
+
+```asl
+Scope (_GPE)
+{
+    Name (_HID, "ACPI0006" /* GPE Block Device */)  // _HID: Hardware ID
+    Method (_E01, 0, NotSerialized)  // _Exx: Edge-Triggered GPE, xx=0x00-0xFF
+    {
+        Acquire (\_SB.PCI0.BLCK, 0xFFFF)
+        \_SB.PCI0.PCNT ()
+        Release (\_SB.PCI0.BLCK)
+    }
+}
+```
+
+这个代码上了锁，然后调用 `\_SB.PCI0.PCNT` 函数，`PCNT` 函数定义如下：
+
+```asl
+OperationRegion (PCST, SystemIO, 0xAE00, 0x08)
+Field (PCST, DWordAcc, NoLock, WriteAsZeros)
+{
+    PCIU,   32,
+    PCID,   32
+}
+
+Method (PCNT, 0, NotSerialized)
+{
+    BNUM = Zero
+    DVNT (PCIU, One)
+    DVNT (PCID, 0x03)
+}
+```
+
+上面的代码中，PCIU 的意思是 PCIe Up，就是新出现的设备；PCID 的意思是 PCIe Down，就是要删除的设备。PCIU 和 PCID 都要通过 IO Port 访问，根据上面的 `OperationRegion` 可知 `PCIU=0xAE00`，`PCID=0xAE04`。你可能已经猜到了 `PCIU` 和 `PCID` 的实现：当 CPU 读取这两个 IO Port 的时候，就会返回前面 `acpi_pcihp_device_plug_cb` 函数写入的 `acpi_pcihp_pci_status` 数组：
+
+```c
+static uint64_t pci_read(void *opaque, hwaddr addr, unsigned int size)
+{
+    // omitted
+    switch (addr) {
+    case PCI_UP_BASE:
+        val = s->acpi_pcihp_pci_status[bsel].up;
+        if (!s->legacy_piix) {
+            s->acpi_pcihp_pci_status[bsel].up = 0;
+        }
+        trace_acpi_pci_up_read(val);
+        break;
+    case PCI_DOWN_BASE:
+        val = s->acpi_pcihp_pci_status[bsel].down;
+        trace_acpi_pci_down_read(val);
+        break;
+    }
+    // omitted
+}
+```
+
+因此在 `PCNT` 函数中，读取 `PCIU` 和 `PCID` 就可以知道一个 Bitmap，记录了哪些设备出现了变化。最后一步就是通知操作系统了。在 ACPI 中，可以调用 `Notify` 函数，用于通知操作系统，通知的参数见 Table 5.187，这里列出来前面几种：
+
+- 0: Bus Check, This notification is performed on a device object to indicate to OSPM that it needs to perform a Plug and Play re-enumeration operation on the device tree starting from the point where it has been notified
+- 1: Device Check, Used to notify OSPM that the device either appeared or disappeared. If the device has appeared, OSPM will re-enumerate from the parent.
+- 2: Device Wake, Used to notify OSPM that the device has signaled its wake event, and that OSPM needs to notify OSPM native device driver for the device.
+- 3: Eject Request, Used to notify OSPM that the device should be ejected, and that OSPM needs to perform the Plug and Play ejection operation.
+
+`PCNT` 函数调用 `DVNT` 函数来进行最终的 `Notify`，对于 PCI Up，需要发送 1(Device Check) 让操作系统新的设备出现；对于 PCI Down，需要发送 3(Eject Request) 让操作系统弹出设备。这就解释了 `PCNT` 为什么要这样实现：
+
+```asl
+Method (PCNT, 0, NotSerialized)
+{
+    BNUM = Zero
+    DVNT (PCIU, One)
+    DVNT (PCID, 0x03)
+}
+```
+
+`DVNT` 的实现方法很粗暴，就是检查各个位，然后发送 `Notify` 到相应的 PCIe Slot 上：
+
+```asl
+Method (DVNT, 2, NotSerialized)
+{
+    If ((Arg0 & 0x08))
+    {
+        Notify (S18, Arg1)
+    }
+
+    If ((Arg0 & 0x10))
+    {
+        Notify (S20, Arg1)
+    }
+
+    If ((Arg0 & 0x20))
+    {
+        Notify (S28, Arg1)
+    }
+    // omitted
+}
+```
+
+这样就完成了整个 PCIe Hot Plug 的过程。回顾一下：
+
+- QEMU 要进行 PCIe Hot Plug
+- QEMU 记录要 Hot Plug 设备到数组中
+- QEMU 发送 GPE
+- OS 执行 GPE 1 Handler
+- Handler 读取 PCIU/PCID，根据 Bitmap 去 Notify
+- OS 根据 Notify 的设备进行对应的操作
+
+可以看到，大部分的工作其实是 QEMU 完成的，OS 只需要在收到 SCI 的时候，判断是 GPE 1 事件，执行对应的处理函数，等待 Notify 的到来。
