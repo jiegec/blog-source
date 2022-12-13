@@ -408,7 +408,7 @@ Device (SPMI)
 
 函数 `_CRS` 返回当前的资源配置，它动态地计算出一个资源配置，对应 IO Port 是 0x0CA2 和 0x0CA3。
 
-函数 `_IFT` 返回 IPMI Interface Type，0x01 表示 KCS，`_SRV` 返回 IPMI Spec Revision，在这里是 0x0200，也就是 IPMI 2.0。
+函数 `_IFT` 返回 IPMI Interface Type，0x01 表示 KCS(Keyboard Controller Style)，`_SRV` 返回 IPMI Spec Revision，在这里是 0x0200，也就是 IPMI 2.0。
 
 这些内容可以在 Linux 下 ACPI 结点的 `physical_node/params` 文件中看到：`kcs,i/o,0xca2,rsp=1,rsi=1,rsh=0,irq=0,ipmb=32`。
 
@@ -417,32 +417,11 @@ Device (SPMI)
 ```c
 static int acpi_ipmi_probe(struct platform_device *pdev)
 {
-	struct device *dev = &pdev->dev;
-	struct si_sm_io io;
-	acpi_handle handle;
-	acpi_status status;
-	unsigned long long tmp;
-	struct resource *res;
-
-	if (!si_tryacpi)
-		return -ENODEV;
-
-	handle = ACPI_HANDLE(dev);
-	if (!handle)
-		return -ENODEV;
-
-	memset(&io, 0, sizeof(io));
-	io.addr_source = SI_ACPI;
+	// omitted
 	dev_info(dev, "probing via ACPI\n");
-
-	io.addr_info.acpi_info.acpi_handle = handle;
 
 	/* _IFT tells us the interface type: KCS, BT, etc */
 	status = acpi_evaluate_integer(handle, "_IFT", NULL, &tmp);
-	if (ACPI_FAILURE(status)) {
-		dev_err(dev, "Could not find ACPI IPMI interface type\n");
-		return -EINVAL;
-	}
 
 	switch (tmp) {
 	case 1:
@@ -461,36 +440,11 @@ static int acpi_ipmi_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
-	io.dev = dev;
-	io.regsize = DEFAULT_REGSIZE;
-	io.regshift = 0;
-
 	res = ipmi_get_info_from_resources(pdev, &io);
 	if (!res)
 		return -EINVAL;
 
-	/* If _GPE exists, use it; otherwise use standard interrupts */
-	status = acpi_evaluate_integer(handle, "_GPE", NULL, &tmp);
-	if (ACPI_SUCCESS(status)) {
-		io.irq = tmp;
-		io.irq_setup = acpi_gpe_irq_setup;
-	} else {
-		int irq = platform_get_irq_optional(pdev, 0);
-
-		if (irq > 0) {
-			io.irq = irq;
-			io.irq_setup = ipmi_std_irq_setup;
-		}
-	}
-
-	io.slave_addr = find_slave_address(&io, io.slave_addr);
-
-	dev_info(dev, "%pR regsize %d spacing %d irq %d\n",
-		 res, io.regsize, io.regspacing, io.irq);
-
-	request_module("acpi_ipmi");
-
-	return ipmi_si_add_smi(&io);
+	// omitted
 }
 
 static const struct acpi_device_id acpi_ipmi_match[] = {
@@ -500,6 +454,14 @@ static const struct acpi_device_id acpi_ipmi_match[] = {
 ```
 
 和上面的分析是可以对上的。
+
+#### IPMI KCS
+
+查阅 IPMI 标准文档，可以看到 KCS(Keyboard Controller Style) Interface 下，操作系统通过两个 IO Port 来访问 BMC：
+
+![](/images/ipmi_kcs.png)
+
+图中的 `base` 就是上面 ACPI 表记录的 `IDTP=0x0CA2`，`base+1` 就是 ACPI 表记录的 `ICDP=0x0CA3`。结合寄存器的用途，可以猜测 IDTP 是 IPMI Data Transfer Port 的缩写，因为这个 Port 对应的是 `Data_In` 和 `Data_Out`；ICDP 是 IPMI Command Data Port 的缩写。
 
 ### ARM64
 
@@ -1116,7 +1078,7 @@ Scope (_SB)
 
 ### 电源按钮
 
-首先来看电源按钮（Power Button）。在 ACPI 中，定义了两种 Power Button 的实现方法，第一种就是比较经典的硬件按钮+中断的模式，当按下按钮的时候，中断状态（`PWRBTN_STS`）拉高，如果此时中断使能（`PWRBTN_EN`）也为高，就触发中断。这时候操作系统就知道电源键被按下了，开始进行关机操作。
+首先来看电源按钮（Power Button）。在 ACPI 中，定义了两种 Power Button 的实现方法，第一种就是比较经典的硬件按钮 + 中断的模式，当按下按钮的时候，中断状态（`PWRBTN_STS`）拉高，如果此时中断使能（`PWRBTN_EN`）也为高，就触发中断。这时候操作系统就知道电源键被按下了，开始进行关机操作。
 
 第二种实现方法则利用了 ACPI 的可编程性。具体来说，当按下电源键的时候，操作系统会收到一个 SCI（System Control Interrupt），此时操作系统会根据中断编号，去执行 ACPI 中的函数，函数去读取当前的电源键状态，然后调用 `Notify` 函数来通知操作系统，电源键被按下了。
 
