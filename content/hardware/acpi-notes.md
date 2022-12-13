@@ -48,6 +48,7 @@ iasl -d *.dat
 下面来看一个具体的例子，主板 `WS X299 PRO/SE` 的 ACPI 表中记录的串口信息：
 
 ```asl
+// UART 1
 Device (UAR1)
 {
     Name (_HID, EisaId ("PNP0501") /* 16550A-compatible COM Serial Port */)  // _HID: Hardware ID
@@ -55,12 +56,12 @@ Device (UAR1)
     Name (LDN, 0x02)
     Method (_STA, 0, NotSerialized)  // _STA: Status
     {
-        Return (^^SIO1.DSTA (0x00))
+        Return (^^SIO1.DSTA (0x00)) // Device Status
     }
 
     Method (_DIS, 0, NotSerialized)  // _DIS: Disable Device
     {
-        ^^SIO1.DCNT (0x00, 0x00)
+        ^^SIO1.DCNT (0x00, 0x00) // Device Control
     }
 
     Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
@@ -142,10 +143,6 @@ Device (UAR1)
         }
         EndDependentFn ()
     })
-    Method (_PRW, 0, NotSerialized)  // _PRW: Power Resources for Wake
-    {
-        Return (GPRW (0x6B, 0x04))
-    }
 }
 ```
 
@@ -174,6 +171,7 @@ IO (Decode16,
 进一步分析代码，`_STA` 函数返回设备当前的状态。可以在 Linux 的 ACPI 结点路径下看 `status` 文件，其内容是 `15`，表示工作正常。实现中，它调用了 `^^SIO1.DSTA(0x00)`，这里的 `^` 表示上一级命名空间。进一步找到 `DSTA` 的实现：
 
 ```asl
+// Device Status
 Method (DSTA, 1, NotSerialized)
 {
     ENFG (CGLD (Arg0))
@@ -215,6 +213,7 @@ Method (DSTA, 1, NotSerialized)
 可以看到，核心是要判断 `ACTR` 的取值，继续寻找，可以发现 `ACTR` 是一个 SuperIO 的寄存器：
 
 ```asl
+// Super IO
 Name (SP1O, 0x2E)
 
 OperationRegion (IOID, SystemIO, SP1O, 0x02)
@@ -324,12 +323,14 @@ int __init acpi_parse_spcr(bool enable_earlycon, bool enable_console)
 ```asl
 Name (IDTP, 0x0CA2)
 Name (ICDP, 0x0CA3)
+Name (SRVV, 0x0200)
 
 Device (SPMI)
 {
     Name (_HID, EisaId ("IPI0001"))  // _HID: Hardware ID
     Name (_STR, Unicode ("IPMI_KCS"))  // _STR: Description String
     Name (_UID, 0x00)  // _UID: Unique ID
+    // IPMI Status
     OperationRegion (IPST, SystemIO, ICDP, 0x01)
     Field (IPST, ByteAcc, NoLock, Preserve)
     {
@@ -405,7 +406,7 @@ Device (SPMI)
 
 函数 `_STA` 返回设备的当前状态，它读取了 IO Port 0x0CA3 的内容，进而判断 IPMI 是否正常。
 
-函数 `_CRS` 返回当前的资源配置，它动态地计算出一个资源配置，对应 IO Port 是 0x0CA2 或者 0x0CA3。
+函数 `_CRS` 返回当前的资源配置，它动态地计算出一个资源配置，对应 IO Port 是 0x0CA2 和 0x0CA3。
 
 函数 `_IFT` 返回 IPMI Interface Type，0x01 表示 KCS，`_SRV` 返回 IPMI Spec Revision，在这里是 0x0200，也就是 IPMI 2.0。
 
@@ -510,7 +511,7 @@ Device (IPI0)
     Name (_HID, "IPI0001")  // _HID: Hardware ID
     Method (_IFT, 0, NotSerialized)  // _IFT: IPMI Interface Type
     {
-        Return (0x03)
+        Return (0x03) // BT
     }
 
     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
@@ -594,6 +595,7 @@ Device (APIC)
 继续搜索 `_HID`，还可以找到一些传统的设备，比如 DMA Controller：
 
 ```asl
+// DMA Controller
 Device (DMAC)
 {
     Name (_HID, EisaId ("PNP0200") /* PC-class DMA Controller */)  // _HID: Hardware ID
@@ -704,6 +706,7 @@ PCIe 总线是自带枚举功能的，所以只需要找到 Root Bridge，其他
 搜索 `PNP0A08` 可以找到 PCIe 总线：
 
 ```asl
+// PCIe Bus 00
 Device (PC00)
 {
     Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
@@ -790,7 +793,7 @@ Device (PC00)
 }
 ```
 
-上面省略掉了很多内容，不过可以看到 Root Bridge 的资源，这部分内容和 Linux 的 dmesg 是一致的：
+上面省略掉了很多内容，只保留了 Root Bridge 的资源 `_CRS`，这部分内容和 Linux 的 dmesg 是一致的：
 
 ```
 ACPI: PCI Root Bridge [PC00] (domain 0000 [bus 00-15])
@@ -881,6 +884,222 @@ Linux 的文档 [ACPI considerations for PCI host bridges](https://docs.kernel.o
     either the static MCFG table or a _CBA method in the PNP0A03 device.
 
 这一段讲的其实就是 ECAM 与 MCFG 的关系。
+
+### PCIe 设备
+
+虽然有了 Root Bridge 以后，PCIe 总线下的设备都可以枚举出来，但是 ACPI 表中也可以记录 PCIe 设备，可以提供更多信息，例如 Power State 等等。具体来说，只需要在 Root Bridge 的结点下继续增加 Device 就可以了：
+
+```asl
+Scope (_SB)
+{
+    Device (PC00)
+    {
+        // 00:00.0 DMI3 Registers
+        Device (DMI0)
+        {
+            Name (_ADR, 0x00)  // _ADR: Address
+        }
+
+        // 00:04.0 CBDMA Registers
+        Device (CB0A)
+        {
+            Name (_ADR, 0x00040000)  // _ADR: Address
+        }
+
+        Device (CB0B)
+        {
+            Name (_ADR, 0x00040001)  // _ADR: Address
+        }
+
+        // 00:05.0 MM/Vt-d Configuration Registers
+        Device (IIM0)
+        {
+            Name (_ADR, 0x00050000)  // _ADR: Address
+        }
+
+        // 00:08.0 Ubox Registers
+        Device (UBX0)
+        {
+            Name (_ADR, 0x00080000)  // _ADR: Address
+        }
+
+        Device (ALZA)
+        {
+            Name (_ADR, 0x000E0000)  // _ADR: Address
+        }
+
+        Device (DISP)
+        {
+            Name (_ADR, 0x000F0000)  // _ADR: Address
+        }
+
+        Device (IHC1)
+        {
+            Name (_ADR, 0x00100000)  // _ADR: Address
+        }
+
+        Device (IHC2)
+        {
+            Name (_ADR, 0x00100001)  // _ADR: Address
+        }
+
+        Device (IIDR)
+        {
+            Name (_ADR, 0x00100002)  // _ADR: Address
+        }
+
+        Device (IMKT)
+        {
+            Name (_ADR, 0x00100003)  // _ADR: Address
+        }
+
+        Device (IHC3)
+        {
+            Name (_ADR, 0x00100004)  // _ADR: Address
+        }
+
+        Device (MRO0)
+        {
+            Name (_ADR, 0x00110000)  // _ADR: Address
+        }
+
+        Device (MRO1)
+        {
+            Name (_ADR, 0x00110001)  // _ADR: Address
+        }
+
+        // 00:14.0 USB 3.0 xHCI Controller
+        Device (XHCI)
+        {
+            Name (_ADR, 0x00140000)  // _ADR: Address
+        }
+
+        Device (OTG0)
+        {
+            Name (_ADR, 0x00140001)  // _ADR: Address
+        }
+
+        // 00:14.2 PCH Thermal Subsystem
+        Device (TERM)
+        {
+            Name (_ADR, 0x00140002)  // _ADR: Address
+        }
+
+        Device (CAMR)
+        {
+            Name (_ADR, 0x00140003)  // _ADR: Address
+        }
+
+        Device (NTHP)
+        {
+            Name (_ADR, 0x00140004)  // _ADR: Address
+        }
+
+        // 00:16.0 PCH CSME HECI #1
+        Device (HEC1)
+        {
+            Name (_ADR, 0x00160000)  // _ADR: Address
+        }
+
+        Device (HEC2)
+        {
+            Name (_ADR, 0x00160001)  // _ADR: Address
+        }
+
+        Device (IDER)
+        {
+            Name (_ADR, 0x00160002)  // _ADR: Address
+        }
+
+        Device (MEKT)
+        {
+            Name (_ADR, 0x00160003)  // _ADR: Address
+        }
+
+        Device (HEC3)
+        {
+            Name (_ADR, 0x00160004)  // _ADR: Address
+        }
+
+        Device (NAN1)
+        {
+            Name (_ADR, 0x00180000)  // _ADR: Address
+        }
+    }
+}
+```
+
+这里的 `_ADR` 编码了设备的 Device 和 Function，ACPI 标准 Table 6.2 定义：高 word 表示 Device，低 word 表示 Function。所以上面的 `DMI0` 就是 `Device=0, Function=0`，`CB0A` 就是 `Device=4, Function=0`，`CB0B` 就是 `Device=4, Function=1`。这些与 `lspci` 的输出基本是一致的，有一些设备没有出现，可能和具体的 CPU 型号有关：
+
+```
+00:00.0 Host bridge: Intel Corporation Sky Lake-E DMI3 Registers (rev 07)
+00:04.0 System peripheral: Intel Corporation Sky Lake-E CBDMA Registers (rev 07)
+00:04.1 System peripheral: Intel Corporation Sky Lake-E CBDMA Registers (rev 07)
+00:04.2 System peripheral: Intel Corporation Sky Lake-E CBDMA Registers (rev 07)
+00:04.3 System peripheral: Intel Corporation Sky Lake-E CBDMA Registers (rev 07)
+00:04.4 System peripheral: Intel Corporation Sky Lake-E CBDMA Registers (rev 07)
+00:04.5 System peripheral: Intel Corporation Sky Lake-E CBDMA Registers (rev 07)
+00:04.6 System peripheral: Intel Corporation Sky Lake-E CBDMA Registers (rev 07)
+00:04.7 System peripheral: Intel Corporation Sky Lake-E CBDMA Registers (rev 07)
+00:05.0 System peripheral: Intel Corporation Sky Lake-E MM/Vt-d Configuration Registers (rev 07)
+00:05.2 System peripheral: Intel Corporation Sky Lake-E RAS (rev 07)
+00:05.4 PIC: Intel Corporation Sky Lake-E IOAPIC (rev 07)
+00:08.0 System peripheral: Intel Corporation Sky Lake-E Ubox Registers (rev 07)
+00:08.1 Performance counters: Intel Corporation Sky Lake-E Ubox Registers (rev 07)
+00:08.2 System peripheral: Intel Corporation Sky Lake-E Ubox Registers (rev 07)
+00:14.0 USB controller: Intel Corporation 200 Series/Z370 Chipset Family USB 3.0 xHCI Controller
+00:14.2 Signal processing controller: Intel Corporation 200 Series PCH Thermal Subsystem
+00:16.0 Communication controller: Intel Corporation 200 Series PCH CSME HECI #1
+00:17.0 SATA controller: Intel Corporation 200 Series PCH SATA controller [AHCI mode]
+```
+
+前面提到的一些传统的设备，比如 DMA Controller，RTC 等，其实就是在 PCIe 下的 ISA bridge 下声明的：
+
+```asl
+Scope (_SB)
+{
+    Device (PC00)
+    {
+        // 00:1f.0 ISA bridge: Intel Corporation X299 Chipset LPC/eSPI Controller
+        Device (LPC0)
+        {
+            Name (_ADR, 0x001F0000)  // _ADR: Address
+
+            Device (DMAC)
+            {
+                Name (_HID, EisaId ("PNP0200") /* PC-class DMA Controller */)  // _HID: Hardware ID
+            }
+
+            Device (RTC)
+            {
+                Name (_HID, EisaId ("PNP0B00") /* AT Real-Time Clock */)  // _HID: Hardware ID
+            }
+
+            Device (PIC)
+            {
+                Name (_HID, EisaId ("PNP0000") /* 8259-compatible Programmable Interrupt Controller */)  // _HID: Hardware ID
+            }
+
+            Device (FPU)
+            {
+                Name (_HID, EisaId ("PNP0C04") /* x87-compatible Floating Point Processing Unit */)  // _HID: Hardware ID
+            }
+
+            Device (TMR)
+            {
+                Name (_HID, EisaId ("PNP0100") /* PC-class System Timer */)  // _HID: Hardware ID
+            }
+
+            Device (HPET)
+            {
+                Name (_HID, EisaId ("PNP0103") /* HPET System Timer */)  // _HID: Hardware ID
+            }
+
+            // omitted
+        }
+    }
+}
+```
 
 ## 修改 ACPI 表内容
 
@@ -1080,7 +1299,7 @@ Scope (_GPE)
     Method (_E01, 0, NotSerialized)  // _Exx: Edge-Triggered GPE, xx=0x00-0xFF
     {
         Acquire (\_SB.PCI0.BLCK, 0xFFFF)
-        \_SB.PCI0.PCNT ()
+        \_SB.PCI0.PCNT () \\ PCIe Notify
         Release (\_SB.PCI0.BLCK)
     }
 }
@@ -1089,18 +1308,20 @@ Scope (_GPE)
 这个代码上了锁，然后调用 `\_SB.PCI0.PCNT` 函数，`PCNT` 函数定义如下：
 
 ```asl
+// PCIe Status
 OperationRegion (PCST, SystemIO, 0xAE00, 0x08)
 Field (PCST, DWordAcc, NoLock, WriteAsZeros)
 {
-    PCIU,   32,
-    PCID,   32
+    PCIU,   32, // Up
+    PCID,   32  // Down
 }
 
+// PCIe Notify
 Method (PCNT, 0, NotSerialized)
 {
-    BNUM = Zero
-    DVNT (PCIU, One)
-    DVNT (PCID, 0x03)
+    BNUM = Zero // Bus Num = 0
+    DVNT (PCIU, One) // Device Notify
+    DVNT (PCID, 0x03) // Device Notify
 }
 ```
 
@@ -1137,17 +1358,19 @@ static uint64_t pci_read(void *opaque, hwaddr addr, unsigned int size)
 `PCNT` 函数调用 `DVNT` 函数来进行最终的 `Notify`，对于 PCI Up，需要发送 1(Device Check) 让操作系统新的设备出现；对于 PCI Down，需要发送 3(Eject Request) 让操作系统弹出设备。这就解释了 `PCNT` 为什么要这样实现：
 
 ```asl
+// PCIe Notify
 Method (PCNT, 0, NotSerialized)
 {
-    BNUM = Zero
-    DVNT (PCIU, One)
-    DVNT (PCID, 0x03)
+    BNUM = Zero \\ Bus Num = 0
+    DVNT (PCIU, One) \\ Device Notify(Device Check)
+    DVNT (PCID, 0x03) \\ Device Notify(Eject Request)
 }
 ```
 
 `DVNT` 的实现方法很粗暴，就是检查各个位，然后发送 `Notify` 到相应的 PCIe Slot 上：
 
 ```asl
+// Device Notify
 Method (DVNT, 2, NotSerialized)
 {
     If ((Arg0 & 0x08))
