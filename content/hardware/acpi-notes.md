@@ -10,7 +10,7 @@ title: ACPI 学习笔记
 
 ACPI 标准可以从[官网](https://uefi.org/specifications)下载。
 
-ACPI 的表现形式为一颗树，结点可能是属性，或者是一些函数。操作系统可以操作上面的属性，调用 ACPI 中的函数，来进行一些硬件相关的操作。ACPI 一般与主板密切相关，主板厂家配置好 ACPI 后，操作系统就不需要给每个主板都写一遍代码了。
+ACPI 的表现形式为一颗树加若干个表，表的结构比较规整，里面每个字段都有固定的含义。树的结点可能是属性，或者是一些函数。操作系统可以操作上面的属性，调用 ACPI 中的函数，来进行一些硬件相关的操作。ACPI 一般与主板密切相关，主板厂家配置好 ACPI 后，操作系统就不需要给每个主板都写一遍代码了。
 
 ## ASL
 
@@ -174,8 +174,10 @@ IO (Decode16,
 // Device Status
 Method (DSTA, 1, NotSerialized)
 {
+    // Enter Configuration Mode
     ENFG (CGLD (Arg0))
     Local0 = ACTR /* \_SB_.PC00.LPC0.SIO1.ACTR */
+    // Exit Configuration Mode
     EXFG ()
     If ((Local0 == 0xFF))
     {
@@ -185,6 +187,7 @@ Method (DSTA, 1, NotSerialized)
     Local0 &= 0x01
     If ((Arg0 < 0x10))
     {
+        // IO State
         IOST |= (Local0 << Arg0)
     }
 
@@ -226,13 +229,28 @@ Field (IOID, ByteAcc, NoLock, Preserve)
 IndexField (INDX, DATA, ByteAcc, NoLock, Preserve)
 {
     // omitted
-    ACTR,   8, 
+    Offset (0x30), 
+    ACTR,   8,  // Activate Register
 }
 ```
 
-`ACTR` 寄存器需要通过 0x2E/0x2F 这两个 IO Port 来访问，所以这里使用了 `IndexField`，例如要读取 `ACTR` 的当前值的话，首先要往 `0x2E` 处写入 `ACTR` 的偏移，再从 `0x2F` 处读出当前值。这些寄存器应该就属于 SuperIO 了。目前没有找到 SuperIO 的寄存器定义，就不细究了。
+`ACTR` 寄存器需要通过 0x2E/0x2F 这两个 IO Port 来访问，所以这里使用了 `IndexField`，例如要读取 `ACTR` 的当前值的话，首先要往 `0x2E` 处写入 `ACTR` 的偏移，再从 `0x2F` 处读出当前值。这些寄存器应该就属于 SuperIO 了。
 
 其他的几个函数含义是，`_CRS` 返回当前的资源配置，`_SRS` 可以修改资源配置，`_PRS` 列出可能的资源配置，`_DIS` 禁用设备。
+
+从 Linux 内核日志，可以发现这款主板用的是 NCT6796D 兼容的 SuperIO 芯片：
+
+```
+nct6775: Found NCT6796D or compatible chip at 0x2e:0x290
+```
+
+查询 [NCT6796D Datasheet](https://www.nuvoton.com/resource-files/NCT6796D_Datasheet_V0_6.pdf)，可以发现：
+
+- 芯片通过 LPC 总线与 CPU 连接，支持多种外设接口，包括 UART，PS/2，红外，GPIO，SMBus 等等
+- 偏移 0x30 的寄存器 `ACTR` 的最低位表示了 logical device 的当前状态。
+- 读取 `ACTR` 之前需要设置 LDN(Logical Device Number) 为 2，2 对应 Serial Port 1(UARTA)。这一步是在 `ENFG(CGLD(Arg0))` 中完成的。
+- `CGLD` 函数查询了 `DCAT`，可以发现，串口在 `DCAT` 的下标是 0，查表得到的是 2，也就是 Logial Device Number 为 2，和上面的发现是吻合的。`DCAT` 的下一项是 `0x3`，也就是 Logical Device Number 为 3，在 Datasheet 中可以看到是 Serial Port 2(UARTB)。
+- DSDT 中还可以找到 `PS2K` 的结点，就是 PS/2 键鼠，属性中标记了 `LDN=5`，和 Datasheet 也是一致的。
 
 ### ARM64
 
