@@ -1279,7 +1279,7 @@ Scope (_GPE)
     Method (_E01, 0, NotSerialized)  // _Exx: Edge-Triggered GPE, xx=0x00-0xFF
     {
         Acquire (\_SB.PCI0.BLCK, 0xFFFF)
-        \_SB.PCI0.PCNT () \\ PCIe Notify
+        \_SB.PCI0.PCNT () // PCIe Notify
         Release (\_SB.PCI0.BLCK)
     }
 }
@@ -1341,9 +1341,9 @@ static uint64_t pci_read(void *opaque, hwaddr addr, unsigned int size)
 // PCIe Notify
 Method (PCNT, 0, NotSerialized)
 {
-    BNUM = Zero \\ Bus Num = 0
-    DVNT (PCIU, One) \\ Device Notify(Device Check)
-    DVNT (PCID, 0x03) \\ Device Notify(Eject Request)
+    BNUM = Zero // Bus Num = 0
+    DVNT (PCIU, One) // Device Notify(1=Device Check)
+    DVNT (PCID, 0x03) // Device Notify(3=Eject Request)
 }
 ```
 
