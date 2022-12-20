@@ -485,7 +485,7 @@ static const struct acpi_device_id acpi_ipmi_match[] = {
 
 再看一个 ARM64 平台上的 IPMI：
 
-```
+```c
 Device (IPI0)
 {
     Name (_HID, "IPI0001")  // _HID: Hardware ID
@@ -635,7 +635,7 @@ Device (DMAC)
 
 经典的 CMOS/RTC 的 IO 端口定义也可以找到：
 
-```
+```c
 Device (RTC)
 {
     Name (_HID, EisaId ("PNP0B00") /* AT Real-Time Clock */)  // _HID: Hardware ID
@@ -1381,3 +1381,14 @@ Method (DVNT, 2, NotSerialized)
 - OS 根据 Notify 的设备进行对应的操作
 
 可以看到，大部分的工作其实是 QEMU 完成的，OS 只需要在收到 SCI 的时候，判断是 GPE 1 事件，执行对应的处理函数，等待 Notify 的到来。
+
+## Power State
+
+ACPI 定义的 Power State：
+
+![](/images/acpi_power.png)
+
+- G0-G3: 全局状态，G0 表示正在工作
+- S0-S5：睡眠状态，S0 表示正在工作，S5 表示关机
+- D0-D3：设备状态
+- C0-Cn：CPU 状态
