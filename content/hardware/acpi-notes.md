@@ -47,7 +47,7 @@ iasl -d *.dat
 
 下面来看一个具体的例子，主板 `WS X299 PRO/SE` 的 ACPI 表中记录的串口信息：
 
-```asl
+```c
 // UART 1
 Device (UAR1)
 {
@@ -157,7 +157,7 @@ dma disabled
 
 这和上面看到的是一致的：
 
-```
+```c
 IO (Decode16,
     0x03F8,             // Range Minimum
     0x03F8,             // Range Maximum
@@ -170,7 +170,7 @@ IO (Decode16,
 
 进一步分析代码，`_STA` 函数返回设备当前的状态。可以在 Linux 的 ACPI 结点路径下看 `status` 文件，其内容是 `15`，表示工作正常。实现中，它调用了 `^^SIO1.DSTA(0x00)`，这里的 `^` 表示上一级命名空间。进一步找到 `DSTA` 的实现：
 
-```asl
+```c
 // Device Status
 Method (DSTA, 1, NotSerialized)
 {
@@ -215,7 +215,7 @@ Method (DSTA, 1, NotSerialized)
 
 可以看到，核心是要判断 `ACTR` 的取值，继续寻找，可以发现 `ACTR` 是一个 SuperIO 的寄存器：
 
-```asl
+```c
 // Super IO
 Name (SP1O, 0x2E)
 
@@ -338,7 +338,7 @@ int __init acpi_parse_spcr(bool enable_earlycon, bool enable_console)
 
 接下来，再来看 ACPI 中是如何声明 IPMI 的。主板依然是 `WS X299 PRO/SE`，主板自带了 BMC，可以在 DSDT 中搜到相关的部分：
 
-```asl
+```c
 Name (IDTP, 0x0CA2)
 Name (ICDP, 0x0CA3)
 Name (SRVV, 0x0200)
@@ -517,7 +517,7 @@ Device (IPI0)
 
 在 DSDT 中，可以找到 IO APIC 的基地址：
 
-```asl
+```c
 Device (APIC)
 {
     Name (_HID, EisaId ("PNP0003") /* IO-APIC Interrupt Controller */)  // _HID: Hardware ID
@@ -574,7 +574,7 @@ Device (APIC)
 
 继续搜索 `_HID`，还可以找到一些传统的设备，比如 DMA Controller：
 
-```asl
+```c
 // DMA Controller
 Device (DMAC)
 {
@@ -685,7 +685,7 @@ PCIe 总线是自带枚举功能的，所以只需要找到 Root Bridge，其他
 
 搜索 `PNP0A08` 可以找到 PCIe 总线：
 
-```asl
+```c
 // PCIe Bus 00
 Device (PC00)
 {
@@ -813,7 +813,7 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
 
 除了上面的 Root Bridge 以外，还有一个很重要的问题是，如何访问 PCIe 的 Configuration Space。传统的办法是通过 IO Port 0xCF8 和 0xCFC，但是这个方法慢，并且有局限性。而较新的办法是 Enhanced Configuration Access Mechanism (ECAM)，把 PCIe 设备的 Configuration Space 映射到内存中，那么就需要一个基地址。这个基地址是在 MCFG 表中给出的：
 
-```asl
+```
 [02Ch 0044   8]                 Base Address : 0000000060000000
 [034h 0052   2]         Segment Group Number : 0000
 [036h 0054   1]             Start Bus Number : 00
@@ -869,7 +869,7 @@ Linux 的文档 [ACPI considerations for PCI host bridges](https://docs.kernel.o
 
 虽然有了 Root Bridge 以后，PCIe 总线下的设备都可以枚举出来，但是 ACPI 表中也可以记录 PCIe 设备，可以提供更多信息，例如 Power State 等等。具体来说，只需要在 Root Bridge 的结点下继续增加 Device 就可以了：
 
-```asl
+```c
 Scope (_SB)
 {
     Device (PC00)
@@ -1035,7 +1035,7 @@ Scope (_SB)
 
 前面提到的一些传统的设备，比如 DMA Controller，RTC 等，其实就是在 PCIe 下的 ISA bridge 下声明的：
 
-```asl
+```c
 Scope (_SB)
 {
     Device (PC00)
@@ -1116,7 +1116,7 @@ void acpi_pm1_evt_power_down(ACPIREGS *ar)
 
 那么，操作系统如何访问 `PWRBTN_EN` 和 `PWRBTN_STS` 呢？在 FADP(Fixed ACPI Descrption Table) 表中，可以找到 PM1A/B Event Block Address 和 PM1A/B Control Block Address：
 
-```asl
+```
 [038h 0056   4]     PM1A Event Block Address : 0000B000
 [03Ch 0060   4]     PM1B Event Block Address : 00000000
 [040h 0064   4]   PM1A Control Block Address : 0000B004
@@ -1228,7 +1228,7 @@ static int __init init_acpi_pm_clocksource(void)
 
 除了上面 PM1 中提到的一些中断来源，ACPI 还提供了通用的 General Purpose Event，硬件可以自定义一些中断编号，依然是通过 SCI 中断通知操作系统，操作系统根据 GPE 的 STS 寄存器来判断哪个 GPE 触发了中断，然后执行对应的 ACPI 函数。GPE 的地址也是在 FADT 中提供：
 
-```asl
+```
 [050h 0080   4]           GPE0 Block Address : 0000AFE0
 
 [05Ch 0092   1]            GPE0 Block Length : 04
@@ -1272,7 +1272,7 @@ void acpi_send_gpe_event(ACPIREGS *ar, qemu_irq irq,
 
 查看头文件，可知 `ACPI_PCI_HOTPLUG_STATUS=2`，根据上面的代码，可知这实际上就是发送了 GPE1。操作系统会执行 `\_GPE._E01` 函数：
 
-```asl
+```c
 Scope (_GPE)
 {
     Name (_HID, "ACPI0006" /* GPE Block Device */)  // _HID: Hardware ID
@@ -1287,7 +1287,7 @@ Scope (_GPE)
 
 这个代码上了锁，然后调用 `\_SB.PCI0.PCNT` 函数，`PCNT` 函数定义如下：
 
-```asl
+```c
 // PCIe Status
 OperationRegion (PCST, SystemIO, 0xAE00, 0x08)
 Field (PCST, DWordAcc, NoLock, WriteAsZeros)
@@ -1337,7 +1337,7 @@ static uint64_t pci_read(void *opaque, hwaddr addr, unsigned int size)
 
 `PCNT` 函数调用 `DVNT` 函数来进行最终的 `Notify`，对于 PCI Up，需要发送 1(Device Check) 让操作系统新的设备出现；对于 PCI Down，需要发送 3(Eject Request) 让操作系统弹出设备。这就解释了 `PCNT` 为什么要这样实现：
 
-```asl
+```c
 // PCIe Notify
 Method (PCNT, 0, NotSerialized)
 {
@@ -1349,7 +1349,7 @@ Method (PCNT, 0, NotSerialized)
 
 `DVNT` 的实现方法很粗暴，就是检查各个位，然后发送 `Notify` 到相应的 PCIe Slot 上：
 
-```asl
+```c
 // Device Notify
 Method (DVNT, 2, NotSerialized)
 {
