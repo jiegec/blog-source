@@ -69,7 +69,6 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 - Barcelo R: [Barcelo-R Ryzen 5 7530U brings Zen 3 into the mix for the messy AMD Ryzen 7000 mobile APU lineup](https://www.notebookcheck.net/Barcelo-R-Ryzen-5-7530U-brings-Zen-3-into-the-mix-for-the-messy-AMD-Ryzen-7000-mobile-APU-lineup.662046.0.html)
 - Dragon Range: [AMD Announces Ryzen Mobile 7045 HX-Series CPUs, Up to 16-Cores and 5.4 GHz for Laptops](https://www.anandtech.com/show/18716/amd-announces-ryzen-7045-hx-series-cpus-for-laptops-up-to-16-cores-and-5-4-ghz)
 - Phoenix/Rembrandt R: [AMD Lays Out 2023 Ryzen Mobile 7000 CPUs: Top-to-Bottom Updates, New Zen 4 'Phoenix' CPU Takes Point](https://www.anandtech.com/show/18718/amd-2023-ryzen-mobile-7000-cpus-unveiled-zen-4-phoenix-takes-point)
-- 
 
 ## EPYC 系列
 
