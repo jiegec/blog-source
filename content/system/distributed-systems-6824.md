@@ -61,11 +61,13 @@ title: MIT 6.824 Distributed Systems 学习笔记
 	function via an iterator. This allows us to handle lists of values that
 	are too large to fit in memory.
 
-所以 MapReduce 可以分为三个步骤：
+所以 MapReduce 从逻辑上可以分为三个步骤：
 
 1. Map 阶段：节点并行执行 Map 函数，每个节点处理一部分的 `(k1, v1)` 输入
 2. Shuffle 阶段：收集 Map 阶段的计算结果，根据 k2 分发到不同的节点
 3. Reduce 阶段：节点并行执行 Reduce 函数，每个节点处理一部分的 `(k2, list(k2))` 中间结果
+
+实际运行的时候，这三个阶段可以流水线式地同时进行。
 
 ### 实现
 
@@ -79,9 +81,77 @@ title: MIT 6.824 Distributed Systems 学习笔记
 
 ### 故障恢复
 
-如果运行过程中，Worker 宕机了，Master 可以通过 heartbeat 发现宕机的 Worker，然后把任务分配到其他正常运行的 Worker 中。如果 Master 宕机了，如果 Master 没有保存状态，很不幸，只能重新来过。论文没有怎么考虑这个情况，因为在这个场景下，Master 宕机概率很小。
+如果运行过程中，Worker 宕机了，Master 可以通过 heartbeat 发现宕机的 Worker，然后把任务分配到其他正常运行的 Worker 中。具体来讲，如果是 Map Worker 宕机，那需要新的 Worker 把之前执行过的所有 Map 任务重新跑，因为之前的 Map 任务的中间结果还保存在节点的本地存储中，宕机了就无法访问了；如果是 Reduce Worker 宕机，由于已经执行的 Reduce 任务的输出已经写到 GFS 中了，新的 Worker 可以接着继续执行没有完成的任务。如果 Master 宕机了，如果 Master 没有保存状态，很不幸，只能重新来过。论文没有怎么考虑这个情况，因为在这个场景下，Master 宕机概率很小。
 
 还有一种“故障”，就是部分节点因为一些原因，它可以正常工作，但是执行任务特别慢。如果不处理的话，可能大部分任务都完成了，只有几个节点在慢吞吞地跑，其他节点都在等待。论文提出的办法是，如果整体任务快完成了，Master 可以给不同 Worker 同样的任务，这些 Worker 只要有一个跑出了结果即可，不需要等待最慢的那一个。其实就是拿更多的计算量换取更短的完成时间。
+
+### Hadoop
+
+看一个实际的 MapReduce 例子，从 [Hadoop MapReduce Tutorial](https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html) 可以找到实现单词出现次数统计的代码：
+
+```java
+private final static IntWritable one = new IntWritable(1);
+private Text word = new Text();
+public void map(Object key, Text value, Context context
+                ) throws IOException, InterruptedException {
+  StringTokenizer itr = new StringTokenizer(value.toString());
+  while (itr.hasMoreTokens()) {
+    word.set(itr.nextToken());
+    context.write(word, one);
+  }
+}
+
+private IntWritable result = new IntWritable();
+public void reduce(Text key, Iterable<IntWritable> values,
+                    Context context
+                    ) throws IOException, InterruptedException {
+  int sum = 0;
+  for (IntWritable val : values) {
+    sum += val.get();
+  }
+  result.set(sum);
+  context.write(key, result);
+}
+```
+
+这里的实现和我们前面讨论的是一样的。最后在 main 函数中启动 MapReduce 任务：
+
+```java
+public static void main(String[] args) throws Exception {
+  Configuration conf = new Configuration();
+  Job job = Job.getInstance(conf, "word count");
+  job.setJarByClass(WordCount.class);
+  job.setMapperClass(TokenizerMapper.class);
+  job.setCombinerClass(IntSumReducer.class);
+  job.setReducerClass(IntSumReducer.class);
+  job.setOutputKeyClass(Text.class);
+  job.setOutputValueClass(IntWritable.class);
+  FileInputFormat.addInputPath(job, new Path(args[0]));
+  FileOutputFormat.setOutputPath(job, new Path(args[1]));
+  System.exit(job.waitForCompletion(true) ? 0 : 1);
+}
+```
+
+实际使用的时候，先在 HDFS 中准备好输入文件，启动 MapReduce，然后可以在 HDFS 中找到计算结果：
+
+```shell
+$ bin/hadoop fs -ls /user/joe/wordcount/input/
+/user/joe/wordcount/input/file01
+/user/joe/wordcount/input/file02
+
+$ bin/hadoop fs -cat /user/joe/wordcount/input/file01
+Hello World Bye World
+
+$ bin/hadoop fs -cat /user/joe/wordcount/input/file02
+Hello Hadoop Goodbye Hadoop
+$ bin/hadoop jar wc.jar WordCount /user/joe/wordcount/input /user/joe/wordcount/output
+$ bin/hadoop fs -cat /user/joe/wordcount/output/part-r-00000
+Bye 1
+Goodbye 1
+Hadoop 2
+Hello 2
+World 2
+```
 
 ### 小结
 
