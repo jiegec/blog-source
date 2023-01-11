@@ -48,11 +48,11 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 
 因此代号和编号有直接的对应关系：
 
-- Dragon Range: 7045，Extreme Gaming and Creator
-- Phoenix: 7040，Elite Ultrathin
-- Rembrandt R: 7035，Premium Thin & Light
-- Bracelo R: 7030，Mainstream Thin & Light
-- Mendocino: 7020，Everyday Computing
+- Dragon Range: 7045, Extreme Gaming and Creator
+- Phoenix: 7040, Elite Ultrathin
+- Rembrandt R: 7035, Premium Thin & Light
+- Bracelo R: 7030, Mainstream Thin & Light
+- Mendocino: 7020, Everyday Computing
 
 ### 参考资料
 

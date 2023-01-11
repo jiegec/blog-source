@@ -23,7 +23,7 @@ title: Intel 处理器
   - T：长寿命
   - U：单插槽
   - V：虚拟化，SaaS
-  - Y：Speed Select
+  - Y: Speed Select
 
 ### 4th Generation Intel® Xeon® Scalable Processors/Xeon CPU Max Series
 
@@ -64,8 +64,8 @@ title: Intel 处理器
 [命名方式](https://www.intel.com/content/www/us/en/processors/processor-numbers.html)
 
 - i3/i5/i7/i9：数字越大越高端
-- 万位+千位：对应代次，13 对应 13 代
-- 百位+十位+千位：型号，一般越大越高端
+- 万位 + 千位：对应代次，13 对应 13 代
+- 百位 + 十位 + 千位：型号，一般越大越高端
 - 后缀：F/H/HK/HX/K/P/U/X/XE/Y
   - F：桌面，无核显
   - H：笔记本，高性能
