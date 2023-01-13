@@ -35,6 +35,7 @@ sudo npm i -g yazl yauzl @microsoft/1ds-core-js vscode-regexpp xterm-headless vs
 ```
 sudo pkg install ripgrep
 cd /usr/local/lib/node_modules/@vscode/ripgrep/bin && ln -s /usr/local/bin/rg
+cd /usr/local/lib/node_modules/code-server/lib/vscode/node_modules/@vscode/ripgrep/bin && ln -s /usr/local/bin/rg
 ```
 
 然后，日志中会显示 @parcel/watcher 启动失败，显示 Undefined symbol，这是因为这个库没有做 FreeBSD 支持。需要使用 https://github.com/parcel-bundler/watcher/pull/128 版本，编译出 watcher.node 文件，替换：
@@ -43,6 +44,7 @@ cd /usr/local/lib/node_modules/@vscode/ripgrep/bin && ln -s /usr/local/bin/rg
 cd watcher
 npm install
 sudo cp build/Release/watcher.node /usr/local/lib/node_modules/@parcel/watcher/build/Release/
+sudo cp build/Release/watcher.node /usr/local/lib/node_modules/code-server/lib/vscode/node_modules/@parcel/watcher/build/Release/watcher.node
 ```
 
 这样就解决了 watcher 的问题。
