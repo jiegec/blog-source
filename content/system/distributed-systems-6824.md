@@ -9,7 +9,7 @@ draft: true
 
 ## 背景
 
-本来打算去年上分布式系统课的，但是由于时间冲突没有选，今年想上的时候课程又没有开，因此利用寒假时间自学 [MIT 6.824 Distributed Systems 课程 Spring 2022](https://pdos.csail.mit.edu/6.824/index.html)，跟着看视频，Lecture Notes 还有论文，同时也完成课程的实验。在这里分享一下我在学习过程中的一些笔记和感悟。
+本来打算去年上分布式系统课的，但是由于时间冲突没有选，今年想上的时候课程又没有开，因此利用寒假时间自学 [MIT 6.824 Distributed Systems 课程 Spring 2022](https://pdos.csail.mit.edu/6.824/index.html)（[Archive](https://web.archive.org/web/20220713034553/https://pdos.csail.mit.edu/6.824/index.html)），跟着看视频，Lecture Notes 还有论文，同时也完成课程的实验。在这里分享一下我在学习过程中的一些笔记和感悟。
 
 ## MapReduce
 
@@ -167,6 +167,119 @@ MIT 6.824 的 Lab 1 就是用 Go 语言在模板仓库中实现一个 MapReduce�
 实际上我在实现的时候偷懒了，没有像论文那样，把之前所有属于同一个 Worker 的 Map 任务重新跑一遍，因为中间结果访问不到了。但是在实验中，即使 Worker “宕机”了，中间结果还是可以访问的。如果出题人想增加难度，可以在程序 crash 之前，把 Map 输出的中间结果从文件系统删掉。另外，实际的 MapReduce 系统是可以流水线进行 Map Shuffle 和 Reduce 的，我的实现做了简化，必须先完成所有的 Map，再完成所有的 Reduce。但在实际场景中，如果一个一个阶段做，到了 Shuffle 阶段，忽然 Map Worker 宕机了，就不得不回到 Map 阶段重新跑。
 
 ## GFS
+
+### 背景
+
+第二篇论文是 2003 年的 [The Google File System](https://pdos.csail.mit.edu/6.824/papers/gfs.pdf)，讲述的是 GFS 分布式文件系统，也是上面的 MapReduce 所使用的分布式文件系统。Hadoop 使用的分布式文件系统 HDFS 和 GFS 很类似。
+
+为了存大量的数据，需要使用集群，但是集群节点数量一多，就会经常出现节点宕机或者硬盘故障等问题，需要一个系统来保证 Fault Tolerance。并且为了让应用程序更容易迁移到集群上，提供文件系统的接口，从上层应用的角度来看，就是一个巨大的文件系统，可以同时从很多个节点访问，这样就减少了应用开发者的负担。设计时还需要考虑扩展性，如果存储节点越多，性能就越好。
+
+GFS 在设计的时候，考虑到一些上层应用的特点。论文中认为，GFS 保存的文件都是比较大，不会出现大量的小文件（例如 PyPI），并且有大量的写入是在 Append，例如 MapReduce 中，Reduce Task 的输出就是追加到文件中，而不会在文件中间进行写入。所以 GFS 主要针对 Append 来优化，并且提供了原子 Append 操作，允许多个客户端同时进行 Append，适合多生产者的场景。另一方面，GFS 的上层应用不需要特别强的一致性，所以 GFS 以宽松一致性模型的代价，换来更好的性能，后面会进一步讨论这个问题。
+
+### 接口
+
+GFS 提供了文件系统的接口，包括常见的创建，删除，打开，关闭，读写文件等操作，但没有实现完整的 POSIX 文件系统接口，所以不希望 mount 到系统的某个路径上让应用程序访问，而是希望应用程序直接通过 GFS 的客户端库访问。
+
+### 架构
+
+GFS 的架构设计相对比较简单，只需要两类节点，即**一台** master 节点和许多台 chunkserver 节点，其中 master 节点负责管理 metadata，监控 chunkserver 的状态，而 chunkserver 节点保存实际的数据。
+
+文件系统中的文件被切分为固定大小的 chunk，每个 chunk 使用一个全局唯一的 64 位 chunk handle 标识，由 master 负责分配。这些 chunk 就保存在 chunkserver 上，这就是为啥叫做 chunkserver。
+
+master 节点虽然不保存文件内容，但是要负责 metadata 的存储，记录文件由哪些 chunk 组成，每个 chunk 都保存在哪些 chunkserver 节点中。为了保证数据可靠性，chunk 需要保存在多个 chunkserver 节点上。当某个 chunkserver 节点宕机的时候，master 发现这个节点一段时间没有回应 heartbeat，master 就会把数据迁移到其他在线的 chunkserver 上。
+
+这种单 master 的设计简化了 GFS 的设计，因为所有的管理都由一个 master 进程完成，但是 master 也可能会成为一个瓶颈，并且 master 宕机（需要后面讲的 Primary-Backup Replication）的时候，整个 GFS 就不可用了；同时也限制了整个集群的存储容量，因为 metadata 必须要保存在 master 节点的内存中，只能说不同时代有不同的背景，不同的背景下，就会有不同的取舍，出现不同的设计。当客户端想要读取数据的时候，向 master 询问，得到数据所在的 chunk 的 chunk handle 以及保存了数据的 chunkserver 地址，客户端再去找一个最近的 chunkserver 读取 chunk 内容，这样就减轻了 master 的网络负担。
+
+为了保证 master 的可靠性，首先需要有备份，master 的更新会实时地同步到 backup 节点，当 master 宕机的时候，原来的 backup 就变成了 master。其次需要把 metadata 持久化到硬盘中，这个比较类似于日志型文件系统，把操作记录在日志中，然后定期打 checkpoint 来控制日志的长度。而 chunk handle 与 chunkserver 的映射关系并没有持久化，而是在启动后向 chunkserver 获取，这样实现起来比较简单，代价是启动时间可能比较久。
+
+### 一致性模型
+
+下面一个问题比较重要，就是 GFS 提供了什么样的一致性模型。最理想的情况就是 GFS 表现地像一台服务器的本地文件系统一样，是强的一致性模型。但是在分布式系统中实现强一致性模型一般并不简单，并且一般是以性能为代价。
+
+接下来看 GFS 做了哪些保证，又有哪些地方可能出现不一致。对于文件的 metadata 的修改是原子的，例如创建文件，移动文件等等，因为只有一个 master，只需要进程内使用锁保护即可，实现比较简单。但是涉及到数据，就涉及到多个 chunkserver 上的副本，事情就复杂了起来。
+
+GFS 的一致性模型保证，如果写入的时候，同时只有一个写入，当写入成功时，数据是一致的（consistent），即所有客户端都可以看到一样的数据，并且数据的内容就是要写入的数据（defined）。如果对同一片区域同时有多个成功的写入，那么数据依然是一致的（consistent），但是数据的内容可能混合了来自不同写入请求的数据（undefined）。如果一次写入失败了，例如写入的时候节点宕机，那么数据可能出现不一致（inconsistent），即不同客户端可能看到不同的数据，这是一个很弱的保证。
+
+需要注意的是，按照上面的描述，如果多个客户端同时在文件末尾写入（regular append，seek 到文件末尾然后 write），虽然数据是一致的，但是数据会混合来自不同写入请求的数据（undefined），一些 Append 的数据就被覆盖了，这肯定是不希望看到的。所以 GFS 提供了原子的 Append 操作，保证即使在并发的情况下，每个 Append 要写入的数据都会正常写入，不会出现上面提到的被覆盖的问题，但是可能会被写入不止一次（at least once），并且如果 Append 的时候 chunk 写不下了，为了保证原子性，会插入 padding 以结束当前 chunk，在下一个 chunk 重新 Append。
+
+可以看到，这个一致性模型比较弱，应用在使用 GFS 的时候，需要针对这一点进行处理，不然可能会出现问题。例如如果需要并行写入的话，尽量使用原子 Append 操作，但是原子 Append 操作可能会在文件中引入 padding 和重复的数据，这些需要应用在读取的时候进行处理。
+
+### 实现
+
+为了实现上面的一致性模型，需要保证同一个 chunk 保存在不同 chunkserver 上的 replica 按照同样的顺序更新，并且客户端读取数据的时候，看到的都是最新版本的 replica。为了保证顺序一致，GFS 的办法是让一个节点来决定一个顺序，然后让其余节点和它保持一致。这个特别的节点叫做 primary，当客户端要写入到某个 chunk 的时候，master 从保存了这个 chunk 的若干个 chunkserver 中选择一个节点作为 primary，由 primary 决定写入的顺序。
+
+选定 primary 后，正常情况下就不需要改变了，但是需要考虑 primary 宕机的情况，所以 master 会监测 primary 节点的状态，如果它一段时间没有 heartbeat，需要设置其他 chunkserver 节点为 primary。但是，这里也有一个可能，就是 primary 并没有宕机，而是 master 和 primary 之间的网络中断。此时 primary 认为自己是 primary，正常处理客户端请求并更新数据，同时 master 认为原来的 primary 宕机了，选了一个新的 primary，此时同时有两个 primary 节点可以更新数据，就会出现一致性问题了。
+
+GFS 的解决办法是 lease，也就是说 primary 不是永久的，而是有时间限制的，例如 60s。如果 primary 一直在处理写入请求，那它就可以不断向 master 延长 lease 的时间限制，如果超时前，还是没有得到来自 master 的响应，那就不允许新的写入。另一方面，master 发现当前 primary 宕机后，要等到 lease 超时，再选出一个新的 primary。这样就解决了上述同时出现多 primary 的问题。
+
+接下来描述一下，一次写入要经过的过程：
+
+1. 客户端要写入文件的某个 chunk，询问服务端，哪个 chunkserver 持有 lease，以及其他的 replica 所在的 chunkserver；如果服务器还没有分配 lease，则分配给某一个 replica 所在的 chunkserver。
+2. 客户端缓存下 lease 和 replica 信息，之后的写入不需要联系 master，直接联系 primary 即可
+3. 客户端把要写入的数据发送给所有的 replica，当所有的 replica 都收到数据的时候，向 primary 发起写入请求；primary 按请求顺序给每个请求分配一个唯一的编号，然后按照编号顺序来写入数据
+4. primary 把写入请求转发到其他 replica（secondary replica），其他 replica 也按照编号顺序来学日数据
+5. secondary replica 完成写入后，通知 primary replica；所有 replica 完成写入后，primary 通知客户端写入完成
+
+可以看到，primary 节点给并发请求分配了串行的编号，这样在所有的 replica 上都会按照同样的顺序进行写入，保证了数据的一致性。只有在所有 replica 完成写入以后才会通知客户端，所以客户端后续从任何一个 replica 读取，都会得到新的数据。
+
+实际上，上面的第 3 步在实现的时候，并不是由客户端并行发给所有的 replica，这样瓶颈会在客户端的网络；而是客户端发给最近的 chunkserver，chunkserver 发给下一个，以类似链表的方式流水线式传输。
+
+原子 Append 操作的实现方法和上面写入的基本一样，只不过当 primary 发现当前 chunk 写不下的时候，会转而写入 padding，把 chunk 写满，然后让客户端重试，这样客户端就会向 master 申请写入一个新的 chunk，解决了写不下的问题。
+
+在之前提到过，原子 Append 实际上是 at-least-once，也就是说可能会写入多份。比如在进行原子 Append 的时候，某个 replica 宕机了，此时客户端需要重试，重试的时候就可能出现重复的数据。这个需要应用程序来处理。
+
+接下来考虑一个问题，当一个 chunkserver 重启了，怎么判断它上面保存的数据是否是最新的呢？GFS 的实现方法是给每个 chunk 保存一个版本号，当客户端要写入数据的时候，master 在分配 lease 的同时，版本号加一，并且通知在线的 replica，这样离线的 replica 在重启以后，master 可以发现它的版本不是最新的。客户端在从 chunkserver 读取数据的时候，也会检查版本号是否正确。
+
+### 小结
+
+GFS 是一个分布式的文件系统，使用单 master 和多 chunkserver 的架构，动态指定 primary replica 来分配写入操作的顺序，并且通过 lease 来防止网络分区的问题。缺点是只有一个 master，扩展性受限，一致性模型比较弱，需要应用程序的针对性处理。
+
+### HDFS
+
+Hadoop 的 [HDFS](https://hadoop.apache.org/docs/r3.3.4/hadoop-project-dist/hadoop-common/filesystem/introduction.html) 很多设计上参考了 GFS，它的 master 叫做 namenode，chunkserver 叫做 datanode。不过，HDFS 的一致性模型 `one-copy-update-semantics` 比 GFS 更加严格，与传统的本地 POSIX 文件系统一致。HDFS 甚至使用了 write-once-read-many 访问模型，也就是文件一旦写入，已经写过的部分就不能再修改，只能 append 或者 truncate。
+
+按照教程启动一个单节点的 HDFS 集群，需要写两个配置文件：
+
+配置文件 core-site.xml，用于 Hadoop 发现 HDFS：
+
+```xml
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+</configuration>
+```
+
+配置文件 hdfs-site.xml，降低 replication 数，否则无法单节点工作：
+
+```xml
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>
+```
+
+接下来，分别启动 namenode 和 datanode 就可以了：
+
+```shell
+export HADOOP_CONF_DIR=/path/to/hadoop/conf
+# Format before first launch
+hdfs namenode -format
+# Start namenode
+hdfs namenode
+# Start datanode
+hdfs datanode
+```
+
+有了 HDFS 以后，就可以在 HDFS 上进行 MapReduce：
+
+```shell
+# Run wordcount with HDFS
+hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar wordcount input output
+```
 
 ## Primary-Backup replication
 
