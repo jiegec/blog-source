@@ -3,20 +3,22 @@ layout: post
 date: 2023-01-21 20:18:00 +0800
 tags: [freebsd,cookbook]
 category: system
-title: FreeBSD Cookbook
+title: FreeBSD/NetBSD Cookbook
 ---
 
 ## 背景
 
-最近在维护 lsof 的时候，需要在 FreeBSD 上进行开发和测试，于是就装了一个 FreeBSD 虚拟机，特此记录我在使用过程中，与 Linux 不一样的一些 FreeBSD 命令。
+最近在维护 lsof 的时候，需要在 FreeBSD/NetBSD 上进行开发和测试，于是就装了虚拟机，特此记录我在使用过程中，与 Linux 不一样的一些 FreeBSD/NetBSD 命令。
+
+## FreeBSD
 
 文档参考：<https://docs.freebsd.org/en/books/handbook>
 
-## 安装
+### 安装
 
 在 <https://www.freebsd.org/where/> 找到最新版下载，对于虚拟机的需求，用 `-disk1.iso`，1 GB 左右。安装过程按照 UI 一步步走即可。
 
-## root 权限
+### root 权限
 
 FreeBSD 的 su 默认只有 wheel 组可以 su 到 root，所以安装的时候，建议给创建的帐号加上 wheel 组。也可以通过 pw 命令：
 
@@ -26,7 +28,7 @@ pw groupmod wheel -m freebsd
 
 sudo 需要通过包管理器安装，用法和 Linux 一样。
 
-## 包管理
+### 包管理
 
 使用 `pkg` 命令进行包管理：
 
@@ -45,7 +47,7 @@ cd /usr/ports/sysutils/lsof
 make install
 ```
 
-## 升级
+### 升级
 
 使用 `freebsd-update` 命令升级：
 
@@ -54,7 +56,7 @@ freebsd-update fetch
 freebsd-update install
 ```
 
-## 网络配置
+### 网络配置
 
 显示路由表：
 
@@ -102,7 +104,7 @@ ifconfig_net0="up"
 ifconfig_net1="up"
 ```
 
-## 换源：
+### 换源
 
 USTC <https://mirrors.ustc.edu.cn/help/freebsd-pkg.html>：
 
@@ -113,6 +115,31 @@ echo 'FreeBSD: { url: "pkg+http://mirrors.ustc.edu.cn/freebsd-pkg/${ABI}/quarter
 pkg update
 ```
 
-## truss
+### truss
 
 truss 相当于 Linux 中的 strace。
+
+## NetBSD
+
+### 包管理
+
+参考：<https://www.netbsd.org/docs/pkgsrc/using.html>
+
+使用 pkgin 做二进制包的包管理，首先安装 pkgin：
+
+```shell
+PATH="/usr/pkg/sbin:/usr/pkg/bin:$PATH"
+PKG_PATH="https://cdn.NetBSD.org/pub/pkgsrc/packages"
+PKG_PATH="$PKG_PATH/NetBSD/amd64/9.3/All/"
+export PATH PKG_PATH
+pkg_add pkgin
+```
+
+包管理：
+
+```shell
+pkgin install sudo vim fish
+pkgin upgrade
+```
+
+也可以从源码 pkgsrc 进行编译，在 /usr/pkg 路径下。
