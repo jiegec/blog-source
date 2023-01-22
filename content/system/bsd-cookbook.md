@@ -3,12 +3,12 @@ layout: post
 date: 2023-01-21 20:18:00 +0800
 tags: [freebsd,cookbook]
 category: system
-title: FreeBSD/NetBSD Cookbook
+title: FreeBSD/NetBSD/OpenBSD Cookbook
 ---
 
 ## 背景
 
-最近在维护 lsof 的时候，需要在 FreeBSD/NetBSD 上进行开发和测试，于是就装了虚拟机，特此记录我在使用过程中，与 Linux 不一样的一些 FreeBSD/NetBSD 命令。
+最近在维护 lsof 的时候，需要在 FreeBSD/NetBSD/OpenBSD 上进行开发和测试，于是就装了虚拟机，特此记录我在使用过程中，与 Linux 不一样的一些常用 FreeBSD/NetBSD/OpenBSD 命令。
 
 ## FreeBSD
 
@@ -190,4 +190,70 @@ sysupgrade auto https://cdn.NetBSD.org/pub/NetBSD/NetBSD-9.3/amd64
 
 ```shell
 tar -xzf syssrc.tgz -C /
+```
+
+## OpenBSD
+
+### 安装
+
+文档：<https://www.openbsd.org/faq/faq4.html>
+
+下载 <https://mirrors.tuna.tsinghua.edu.cn/OpenBSD/7.2/amd64/install72.iso>，然后按照 UI 提示进行安装。使用 virt-manager 安装 OpenBSD 虚拟机的时候，在安装界面会遇到无法输入的问题，可以创建一个 USB Keyboard 来解决。
+
+### 包管理
+
+文档：<https://www.openbsdhandbook.com/package_management/>
+
+常用命令：
+
+```shell
+# Use TUNA Mirrors
+echo "https://mirrors.tuna.tsinghua.edu.cn/OpenBSD/" > /etc/installurl
+# Search
+pkg_info -Q fish
+# Install
+pkg_add sudo fish vim
+# Update packages
+pkg_add -u
+```
+
+另一个方法是从源码编译，首先下载 ports：
+
+```shell
+wget https://mirrors.tuna.tsinghua.edu.cn/OpenBSD/7.2/ports.tar.gz
+cd /usr/src
+tar xzf /path/to/ports.tar.gz
+```
+
+### 系统升级
+
+参考：<https://www.openbsdhandbook.com/system_management/updates/>
+
+```shell
+syspatch -c
+syspatch
+```
+
+### autotools
+
+OpenBSD 允许存在多个版本的 autoconf/automake，所以在运行的时候需要用环境变量指定版本，如：
+
+```shell
+export AUTOCONF_VERSION=2.71
+export AUTOMAKE_VERSION=1.16
+```
+
+### 获取内核源码
+
+文档：<https://www.openbsd.org/faq/faq5.html>
+
+命令：
+
+```shell
+# Add exampleuser to group wsrc
+user mod -G wsrc exampleuser
+# Download and extract
+wget https://mirrors.tuna.tsinghua.edu.cn/OpenBSD/7.2/sys.tar.gz
+cd /usr/src
+tar xzf /path/to/sys.tar.gz
 ```
