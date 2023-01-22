@@ -142,4 +142,52 @@ pkgin install sudo vim fish
 pkgin upgrade
 ```
 
-也可以从源码 pkgsrc 进行编译，在 /usr/pkg 路径下。
+和 FreeBSD 一样，NetBSD 的 su 默认只有 wheel 组可以 su 到 root，建议在安装创建新用户的时候就把自己的帐号加入到 wheel 组中。sudo 使用之前需要 visudo 修改配置。
+
+也可以从源码 pkgsrc 进行编译，在 /usr/pkgsrc 路径下，编译好的程序会安装到 /usr/pkg/bin。
+
+克隆并初始化 pkgsrc：
+
+```shell
+cd /usr && cvs -q -z2 -d anoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P pkgsrc
+cd /usr/pkgsrc/bootstrap
+./bootstrap
+```
+
+编译 pkgsrc 中的软件：
+
+```shell
+cd /usr/pkgsrc/sysutils/lsof
+make
+```
+
+### 网络配置
+
+网络配置的命令和 FreeBSD 基本一样：
+
+- `netstat -nr`：查看路由表
+- `route`：修改路由表
+- `ifconfig`：配置网络接口
+
+但是 `/etc/rc.conf` 的配置语法不同，见 `man rc.conf` 和 <https://www.netbsd.org/docs/network/#configuration_files>。
+
+### 升级
+
+参考 <https://www.netbsd.org/docs/guide/en/chap-upgrading.html>
+
+使用 sysupgrade 命令升级：
+
+```
+pkgin install sysupgrade
+sysupgrade auto https://cdn.NetBSD.org/pub/NetBSD/NetBSD-9.3/amd64
+```
+
+### 安装内核源码
+
+内核源码可以从 <https://mirrors.tuna.tsinghua.edu.cn/NetBSD/NetBSD-9.3/source/sets/> 下载。对于 lsof 只需要其中的 syssrc.tgz。
+
+解压：
+
+```shell
+tar -xzf syssrc.tgz -C /
+```
