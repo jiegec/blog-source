@@ -3,12 +3,12 @@ layout: post
 date: 2023-01-21 20:18:00 +0800
 tags: [freebsd,cookbook]
 category: system
-title: FreeBSD/NetBSD/OpenBSD Cookbook
+title: FreeBSD/NetBSD/OpenBSD/DragonFlyBSD Cookbook
 ---
 
 ## 背景
 
-最近在维护 lsof 的时候，需要在 FreeBSD/NetBSD/OpenBSD 上进行开发和测试，于是就装了虚拟机，特此记录我在使用过程中，与 Linux 不一样的一些常用 FreeBSD/NetBSD/OpenBSD 命令。
+最近在维护 lsof 的时候，需要在 FreeBSD/NetBSD/OpenBSD/DragonFlyBSD 上进行开发和测试，于是就装了虚拟机，特此记录我在使用过程中，与 Linux 不一样的一些常用 FreeBSD/NetBSD/OpenBSD/DragonFlyBSD 命令。
 
 ## FreeBSD
 
@@ -139,6 +139,10 @@ make installkernel KERNCONF=MYKERNEL
 ```
 
 提交 patch：<https://wiki.freebsd.org/Phabricator>
+
+### 关机
+
+FreeBSD 的 shutdown 默认会停留在 halt 的状态，但是不会断电，需要添加 `-p` 选项。
 
 ## NetBSD
 
@@ -282,3 +286,39 @@ tar xzf /path/to/sys.tar.gz
 ### ktrace
 
 ktrace 相当于 Linux 中的 strace。结果会保存在文件中，用 kdump 命令显示。
+
+## DragonFlyBSD
+
+### 安装
+
+下载 ISO 文件：<https://mirror-master.dragonflybsd.org/iso-images/dfly-x86_64-6.4.0_REL.iso>
+
+用 installer 用户登录开始安装。
+
+### 用户管理
+
+和 FreeBSD 一样，su 需要 wheel 组，所以需要手动添加用户到 wheel 组中：
+
+```shell
+pw groupmod wheel -m username
+```
+
+### SSHD
+
+DragonFlyBSD 默认 sshd 配置不允许密码登录，如果要允许，需要修改 `/etc/ssh/sshd_config`，然后重启 ssh：
+
+```shell
+/etc/rc.d/sshd restart
+```
+
+### 包管理
+
+DragonFlyBSD 可以下载二进制包：
+
+```shell
+pkg update
+pkg upgrade
+pkg install sudo vim fish
+```
+
+也可以从源码编译，见 <https://www.dragonflybsd.org/docs/howtos/HowToDPorts/>
