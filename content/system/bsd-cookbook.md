@@ -119,6 +119,27 @@ pkg update
 
 truss 相当于 Linux 中的 strace。
 
+### 编译内核
+
+文档：<https://docs.freebsd.org/en/books/handbook/kernelconfig/>
+
+首先下载内核源码，然后创建内核配置：
+
+```shell
+cd /path/to/kernel/src
+cd sys/amd64/conf
+cp GENERIC MYKERNEL
+```
+
+编译和安装：
+
+```shell
+make buildkernel KERNCONF=MYKERNEL
+make installkernel KERNCONF=MYKERNEL
+```
+
+提交 patch：<https://wiki.freebsd.org/Phabricator>
+
 ## NetBSD
 
 ### 包管理
@@ -257,3 +278,7 @@ wget https://mirrors.tuna.tsinghua.edu.cn/OpenBSD/7.2/sys.tar.gz
 cd /usr/src
 tar xzf /path/to/sys.tar.gz
 ```
+
+### ktrace
+
+ktrace 相当于 Linux 中的 strace。结果会保存在文件中，用 kdump 命令显示。
