@@ -16,6 +16,12 @@ title: Solaris 11.4 安装
 
 Solaris 的在线软件源需要订阅，如果不想订阅，需要下载和 Solaris **版本一致** 的 IPS 仓库。下载的地址和上面一样，需要 7 个 zip 文件，如 V1019847-01_1of7.zip Oracle Solaris 11.4.42.111.0 IPS Repository (SPARC, x86) for (Oracle Solaris on x86-64 (64-bit)), 2.2 GB。建议用 wget 脚本批量下载。
 
+UPDATE: 根据 <https://blogs.oracle.com/solaris/post/building-open-source-software-on-oracle-solaris-114-cbe-release>，实际上可以不下载 IPS 仓库，而是用在线的仓库，内容和下载的一致：
+
+```shell
+sudo pkg set-publisher -G '*' -g http://pkg.oracle.com/solaris/release/ solaris
+```
+
 下载好了以后，全部解压到一个目录中，如 `/export/home/user/solaris`，然后启动本地的软件源服务：
 
 ```shell
