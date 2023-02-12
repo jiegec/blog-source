@@ -8,7 +8,7 @@ title: Transport Layer Interface 考古
 
 ## Transport Layer Interface
 
-现在网络编程主要采用的是 BSD Sockets API，但实际上当年还有另一套 API，就是 TLI（Transport Layer Interface），后来 BSD Sockets 胜出，成为了 POSIX 标准，TLI 后面也标准化为了 XTI，现在可以在部分 Unix 系统中找到。TLI/XTI 的使用方法和 Sockets API 有些类似，但是比较特别的一点在于，Sockets API 第一步是 `socket` 调用，传的参数就决定了这是 TCP 还是 UDP 还是其他什么协议，而 TLI 是通过打开不同的设备文件来进行区分：
+现在网络编程主要采用的是 BSD Sockets API，但实际上当年还有另一套 API，就是 TLI（Transport Layer Interface），后来 BSD Sockets 胜出，进入了 POSIX 标准，TLI 后面也标准化为了 XTI，现在可以在部分 Unix 系统中找到。TLI/XTI 的使用方法和 Sockets API 有些类似，但是比较特别的一点在于，Sockets API 第一步是 `socket` 调用，传的参数就决定了这是 TCP 还是 UDP 还是其他什么协议，而 TLI 是通过打开不同的设备文件来进行区分：
 
 ```c
 int fd = t_open("/dev/udp", O_RDWR, NULL);
