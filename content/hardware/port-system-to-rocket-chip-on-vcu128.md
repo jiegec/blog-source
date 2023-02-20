@@ -56,3 +56,9 @@ OpenSBI 移植比较简单，直接参考 template 修改即可，主要就是�
 Linux 目前可以 boot 到寻找 init，还没有碰文件系统，之后计划用 buildroot 打一个 initramfs 出来。为了在 U-Boot 中启动 Linux，用 U-Boot 的 mkimage 工具生成了 FIT 格式的 uImage，里面打包了 kernel image 和 dtb，就可以用 bootm 命令启动了，注意地址不要和加载地址重复。
 
 此外还遇到一个坑：RV64 里面 Linux dts 的 address cell 得是 2（对应 64 位），否则会有错误。但 U-Boot 对这个没有做要求。
+
+## 缓存一致性
+
+一开始的时候，AXI DMA 直接接到内存上，所以与 CPU 缓存是不一致的，网卡驱动需要经常地刷缓存。在 Rocket Chip 上，可以用 sifive 自己的 cflush 指令来刷缓存，但是它只能在 M 态执行，同时又支持虚拟地址，这种奇怪的设计就使得要在 OpenSBI，U-Boot 和 Linux 三处都添加逻辑：OpenSBI 处理 illegal instruction，如果发现是 cflush 指令，就再次 cflush；U-Boot 和 Linux 修改驱动，在合适的地方添加 cflush 指令。U-Boot 驱动比较简单，工作得比较好，但是 Linux 的网卡驱动怎么都改不好。
+
+最后决定，打开 Rocket Chip 的 Frontend Bus，添加一个 AXI Slave 接口，然后让 AXI DMA 通过 AXI Slave 接入到 Rocket Chip 中，然后通过 TLBroadcast 实现缓存一致性。这样软件实现会比较简单，但是硬件就更复杂了。
