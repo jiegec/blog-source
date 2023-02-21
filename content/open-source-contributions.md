@@ -44,6 +44,10 @@ permalink: /open-source-contributions/
 
 - [Fixed compilation error: std::string and int64_t undefined](https://github.com/openhwgroup/force-riscv/pull/54)
 
+## freebsd
+
+- [Add kf_file_nlink field to kf_file and populate it](https://reviews.freebsd.org/D38169)
+
 ## gpaw
 
 - [Fix issue #269 to add additional broadcast in some cases](https://gitlab.com/gpaw/gpaw/-/merge_requests/863)
@@ -67,6 +71,13 @@ permalink: /open-source-contributions/
 
 ## Nixpkgs
 
+- [spice-gtk: unbreak on darwin](https://github.com/NixOS/nixpkgs/pull/207657)
+- [pcsclite: fix libsystemd switch](https://github.com/NixOS/nixpkgs/pull/199946)
+- [python3Packages.brian2: init at 2.5.1](https://github.com/NixOS/nixpkgs/pull/198885)
+- [nest: init at 3.3](https://github.com/NixOS/nixpkgs/pull/198872)
+- [bpftools: fix build on ppc64le](https://github.com/NixOS/nixpkgs/pull/198587)
+- [ngspice: add darwin to platforms](https://github.com/NixOS/nixpkgs/pull/198374)
+- [spark2014: init at unstable-2022-05-25](https://github.com/NixOS/nixpkgs/pull/197926)
 - [Add support for gnuradio on darwin](https://github.com/NixOS/nixpkgs/pull/197639)
 - [darwin.iproute2mac: 1.4.0 -> 1.4.1](https://github.com/NixOS/nixpkgs/pull/191867)
 - [jsonmerge: skip failed tests](https://github.com/NixOS/nixpkgs/pull/191624)
@@ -109,8 +120,13 @@ permalink: /open-source-contributions/
 - [gtkwave: support darwin build](https://github.com/NixOS/nixpkgs/pull/178552)
 - [cairo: add patch to fix crashes on darwin](https://github.com/NixOS/nixpkgs/pull/178551)
 
+# openFPGALoader
+
+- [Add initial support for VCU128](https://github.com/trabucayre/openFPGALoader/pull/313)
+
 ## PyNN
 
+- [Fix quantities error and x-y order in plotting](https://github.com/NeuralEnsemble/PyNN/pull/763)
 - [Fix weight type in brain2 backend for issue 711](https://github.com/NeuralEnsemble/PyNN/pull/723)
 - [add missing __new__ for neuron 8.0.0, fixing issue #722](https://github.com/NeuralEnsemble/PyNN/pull/727)
 
