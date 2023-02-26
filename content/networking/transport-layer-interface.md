@@ -37,7 +37,7 @@ int fd = t_open("/dev/udp", O_RDWR, NULL);
 
 ## Transport Provider Interface
 
-TPI(Transport Provider Interface) 约定了内核和 libnsl 之间的接口。内核和用户态之间互相发送消息，有点像 HTTP，一个请求过去，一个响应回来。只不过请求是 “connect” 或者 “accept” 等等。相比 Sockets API，确实绕了很多，首先要封装到 struct 里面，然后通过统一的读写 syscall 进入到内核，再解析一遍 struct，再做实际的操作。如果直接 syscall 的话，内核实现会比较简单，只不过不 “Unix” 了。实际上，如过你阅读 Illumos 源码，它在解析 struct 以后，也会转而执行相应的 Sockets 处理函数，然后把返回值再封装成 TLI 的响应，发送给用户程序。
+TPI(Transport Provider Interface) 约定了内核和 libnsl 之间的接口。内核和用户态之间互相发送消息，有点像 HTTP，一个请求过去，一个响应回来。只不过请求是“connect”或者“accept”等等。相比 Sockets API，确实绕了很多，首先要封装到 struct 里面，然后通过统一的读写 syscall 进入到内核，再解析一遍 struct，再做实际的操作。如果直接 syscall 的话，内核实现会比较简单，只不过不“Unix”了。实际上，如过你阅读 Illumos 源码，它在解析 struct 以后，也会转而执行相应的 Sockets 处理函数，然后把返回值再封装成 TLI 的响应，发送给用户程序。
 
 比较有意思的是，TPI 本身也是有状态的：Idle，Unbound，Data Transfer，等待 ACK 等等。所以如果你在 Solaris 上跑 netstat，会发现 UDP 也有状态（Idle/Unbound），那实际上不是 UDP 的状态，而是 TPI 的状态。正因此，我在维护 lsof 的时候，经常看到 TCP/TPI state，不明所以，才会研究 TPI 的历史，然后找到 TLI，才知道除了 Sockets 以外，还有一套 Unix 上的网络 API。有趣的是，TLI 是 System V 提供的，以前经常听到 System V ABI 的说法，却不知道 System V 是一个 Unix 操作系统，现在依然还可以在很多地方看到它的身影。
 

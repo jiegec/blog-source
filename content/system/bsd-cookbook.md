@@ -106,7 +106,7 @@ ifconfig_net1="up"
 
 ### 换源
 
-USTC <https://mirrors.ustc.edu.cn/help/freebsd-pkg.html>：
+USTC <https://mirrors.ustc.edu.cn/help/freebsd-pkg.html>:
 
 ```shell
 mkdir -p /usr/local/etc/pkg/repos/

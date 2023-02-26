@@ -120,7 +120,7 @@ permalink: /open-source-contributions/
 - [gtkwave: support darwin build](https://github.com/NixOS/nixpkgs/pull/178552)
 - [cairo: add patch to fix crashes on darwin](https://github.com/NixOS/nixpkgs/pull/178551)
 
-# openFPGALoader
+## openFPGALoader
 
 - [Add initial support for VCU128](https://github.com/trabucayre/openFPGALoader/pull/313)
 
@@ -152,3 +152,8 @@ permalink: /open-source-contributions/
 - [Add support for multiple rtl file benchmark](https://github.com/SpinalHDL/SpinalHDL/pull/378)
 - [Add support for multi word memory access in BusSlaveFactory](https://github.com/SpinalHDL/SpinalHDL/pull/367)
 - [Fix iverilog simulation under macOS](https://github.com/SpinalHDL/SpinalHDL/pull/365)
+
+# 尚未合并
+
+- <https://lists.denx.de/pipermail/u-boot/2023-February/509789.html>
+- <https://lore.kernel.org/iwd/20230226062526.3115588-1-c@jia.je/T/#u>

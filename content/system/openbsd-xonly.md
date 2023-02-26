@@ -32,7 +32,7 @@ title: OpenBSD xonly 实现原理
 
 那么，怎么实现 x-only 呢？OpenBSD 的实现方法是 Protection Keys。在比较新的 CPU 中，页表的 4 个位用来表示使用的 Protection Key 下标，一共有 16 个：
 
-- Bits 62:59: `Protection key; if CR4.PKE = 1 or CR4.PKS = 1, this may control the page’s access rights (see Section 4.6.2); otherwise, it is ignored and not used to control access rights.`
+- Bits 62:59: `Protection key; if CR4.PKE = 1 or CR4.PKS = 1, this may control the page's access rights (see Section 4.6.2); otherwise, it is ignored and not used to control access rights.`
 
 那么 CPU 在查页表的时候，如果 `CR4.PKE=1 or CR4.PKS=1`，就会根据这四个位去查找 PKRU 寄存器的取值。PKRU 是一个 32 位的寄存器，每两位对应一个 Protection Key，这两位表示是否允许读写：
 
