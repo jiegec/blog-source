@@ -54,3 +54,16 @@ Bus 002 Device 002: ID 0846:9053 NetGear, Inc. A6210
 ```
 
 在使用 iwd 的连接无线网的时候，还出现一个小插曲，就是 iwd 遇到很长的中文 SSID 时会崩溃，于是我进行了修复，并且发送给 iwd mailing list（[link](https://lore.kernel.org/iwd/20230226062526.3115588-1-c@jia.je/T/#u)），并等待修复。原理很简单，一是打印十六进制字符的时候没有考虑符号，二是缺少了缓冲区溢出的检查。
+
+## Realtek 上游 Linux 内核驱动支持
+
+归功于 Sascha Hauer <s.hauer@pengutronix.de> 老哥，最近 Linux 上游增加了不少对 realtek 网卡的支持，因此只要系统足够新，realtek 的网卡也值得考虑，如：
+
+- RTL8723du: Linux 6.2+
+- RTL8811cu: Linux 6.2+
+- RTL8821cu: Linux 6.2+
+- RTL8812bu: Linux 6.2+
+- RTL8822bu: Linux 6.2+
+- RTL8822cu: Linux 6.2+
+
+RTL8188gu 也有正在 review 的 [patch](https://patchwork.kernel.org/project/linux-wireless/patch/5a9a264d-a59b-0d91-04f0-e5b38e6aaea0@gmail.com/)。经过我的测试也是工作的。
