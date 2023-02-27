@@ -11,10 +11,10 @@ permalink: /open-source-contributions/
 
 我主要参与如下开源项目的维护：
 
-- [canokeys](https://github.com/canokeys)
 - [lsof-org/lsof](https://github.com/lsof-org/lsof)
-- [nfcim](https://github.com/nfcim)
 - [NixOS/nixpkgs](https://github.com/nixos/nixpkgs)
+- [canokeys](https://github.com/canokeys)
+- [nfcim](https://github.com/nfcim)
 
 ## aws-cdk
 
@@ -44,7 +44,7 @@ permalink: /open-source-contributions/
 
 - [Fixed compilation error: std::string and int64_t undefined](https://github.com/openhwgroup/force-riscv/pull/54)
 
-## freebsd
+## FreeBSD
 
 - [Add kf_file_nlink field to kf_file and populate it](https://reviews.freebsd.org/D38169)
 
@@ -56,6 +56,11 @@ permalink: /open-source-contributions/
 ## gtkwave
 
 - [Fix compilation under macOS for Nix](https://github.com/gtkwave/gtkwave/pull/136)
+
+## iwd
+
+- [knownnetworks: fix printing SSID in hex](https://git.kernel.org/pub/scm/network/wireless/iwd.git/commit/?id=98b758f8934a95f961e3b5779bcc9b25b30ae97a)
+- [knownnetworks: fix potential out of bounds write](https://git.kernel.org/pub/scm/network/wireless/iwd.git/commit/?id=89309a862108c4caac41995b5fc76ade859d87a8)
 
 ## KiCad
 
@@ -122,6 +127,7 @@ permalink: /open-source-contributions/
 
 ## openFPGALoader
 
+- [Add flash support for VCU128](https://github.com/trabucayre/openFPGALoader/pull/316)
 - [Add initial support for VCU128](https://github.com/trabucayre/openFPGALoader/pull/313)
 
 ## PyNN
@@ -156,4 +162,3 @@ permalink: /open-source-contributions/
 # 尚未合并
 
 - <https://lists.denx.de/pipermail/u-boot/2023-February/509789.html>
-- <https://lore.kernel.org/iwd/20230226062526.3115588-1-c@jia.je/T/#u>
