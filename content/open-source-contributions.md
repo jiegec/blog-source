@@ -59,8 +59,9 @@ permalink: /open-source-contributions/
 
 ## iwd
 
-- [knownnetworks: fix printing SSID in hex](https://git.kernel.org/pub/scm/network/wireless/iwd.git/commit/?id=98b758f8934a95f961e3b5779bcc9b25b30ae97a)
-- [knownnetworks: fix potential out of bounds write](https://git.kernel.org/pub/scm/network/wireless/iwd.git/commit/?id=89309a862108c4caac41995b5fc76ade859d87a8)
+- [[PATCH 1/2] knownnetworks: fix potential out of bounds write](https://lore.kernel.org/iwd/20230226062526.3115588-1-c@jia.je/T/#u)
+	- [knownnetworks: fix printing SSID in hex](https://git.kernel.org/pub/scm/network/wireless/iwd.git/commit/?id=98b758f8934a95f961e3b5779bcc9b25b30ae97a)
+	- [knownnetworks: fix potential out of bounds write](https://git.kernel.org/pub/scm/network/wireless/iwd.git/commit/?id=89309a862108c4caac41995b5fc76ade859d87a8)
 
 ## KiCad
 
