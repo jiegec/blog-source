@@ -34,6 +34,11 @@ permalink: /open-source-contributions/
 - [Fix issue #428: add blackbox sources to argument of icarus-verilog and vcs](https://github.com/ucb-bar/chiseltest/pull/429)
 - [Fix VcsFlags not properly passed to vcs backend](https://github.com/ucb-bar/chiseltest/pull/426)
 
+## emacs
+
+- [bug#23909: 25.1.50; `button-label' must be called in the buffer where ...](https://lists.gnu.org/archive/html/bug-gnu-emacs/2016-07/msg00307.html)
+	- [button-* function doc string clarifications](https://github.com/emacs-mirror/emacs/commit/9eda79fc8c2b3e66ff6934ef0a8f2b747c27d245)
+
 ## FloPoCo
 
 - [two more bug fixes by Jiajie Chen](https://gitlab.com/flopoco/flopoco/-/commit/4672586b731b22562d2ce6994c5c78e41846a452)
@@ -57,6 +62,18 @@ permalink: /open-source-contributions/
 
 - [Fix compilation under macOS for Nix](https://github.com/gtkwave/gtkwave/pull/136)
 
+## homebrew-cask
+
+- [Update notion to 1.0.5](https://github.com/Homebrew/homebrew-cask/pull/59122)
+- [Add MacGesture v2.2.5](https://github.com/Homebrew/homebrew-cask/pull/57291)
+- [Update next to 0.07](https://github.com/Homebrew/homebrew-cask/pull/42698)
+- [Update bilibili to 2.14](https://github.com/Homebrew/homebrew-cask/pull/14330)
+- [Update bilibili to 2.13](https://github.com/Homebrew/homebrew-cask/pull/14316)
+
+## iproute2mac
+
+- [Fix ip route for macOS Catalina issue #30 ](https://github.com/brona/iproute2mac/pull/31)
+
 ## iwd
 
 - [[PATCH 1/2] knownnetworks: fix potential out of bounds write](https://lore.kernel.org/iwd/20230226062526.3115588-1-c@jia.je/T/#u)
@@ -70,6 +87,21 @@ permalink: /open-source-contributions/
 ## KNEM
 
 - [driver/linux: use the pin API added in Linux 5.6](https://gitlab.inria.fr/knem/knem/-/commit/fa80cec4970514a6388fe165cc0c4167fd813228)
+
+## legacy-homebrew
+
+- [emscripten 1.35.9](https://github.com/Homebrew/legacy-homebrew/pull/46005)
+- [gnuradio 3.7.8.1](https://github.com/Homebrew/legacy-homebrew/pull/45598)
+- [emscripten 1.35.2](https://github.com/Homebrew/legacy-homebrew/pull/45289)
+- [emscripten 1.35.0](https://github.com/Homebrew/legacy-homebrew/pull/45186)
+- [emscripten 1.34.12](https://github.com/Homebrew/legacy-homebrew/pull/44990)
+- [emscripten 1.34.11](https://github.com/Homebrew/legacy-homebrew/pull/44611)
+- [airspy 1.0.6](https://github.com/Homebrew/legacy-homebrew/pull/44581)
+- [libbladerf 2015.07](https://github.com/Homebrew/legacy-homebrew/pull/44580)
+- [uhd 003.009.000](https://github.com/Homebrew/legacy-homebrew/pull/43469)
+- [uhd 003.008.005](https://github.com/Homebrew/legacy-homebrew/pull/42796)
+- [hbase v0.89.9](https://github.com/Homebrew/legacy-homebrew/pull/35235)
+
 
 ## MiKTeX
 

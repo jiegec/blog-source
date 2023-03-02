@@ -12,6 +12,8 @@ title: 升级 Linksys E8450 的 OpenWRT 系统到 UBI
 
 ## 步骤
 
+请注意：更换文件系统操作比较危险，请先备份好数据，并做好变砖的心理准备。本文仅记录了作者编写时可行的更新操作，不代表读者在阅读时，依然可以按照这个顺序进行，请按照 <https://github.com/dangowrt/owrt-ubi-installer> 的文档进行操作。
+
 基本按照文档一步一步走。初始状态是一个 non-UBI 版本的 OpenWRT 固件：
 
 1. 下载官方的 1.0 固件：https://downloads.linksys.com/support/assets/firmware/FW_E8450_1.0.01.101415_prod.img
