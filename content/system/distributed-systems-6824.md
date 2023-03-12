@@ -297,7 +297,23 @@ GFS 的论文中采用的是第一种方法：`The master state is replicated fo
 
 ### Fault Tolerant Virtual Machine
 
-接下来就来看 VMware 的论文，如何使用 Replicated State Machine 的方法来实现高可用的虚拟机。既然是 State Machine，就得想清楚，State 是什么，State transfer 又是什么。
+接下来就来看 VMware 的论文，如何使用 Replicated State Machine 的方法来实现高可用的虚拟机。既然是 State Machine，就得想清楚，State 是什么，State transfer 又是什么。State 包括寄存器（例如 EAX，EBX 等），各种特权态相关的配置寄存器（如 CR2）、MSR，还有内存里的数据和指令。在没有外部输入的影响下，除了少数的情况（例如 RDRAND 和访问外设，读时间等等），单核 CPU 执行应该是确定性的，所以可以认为从某个 State 开始，执行 n 条指令这一个操作是一个 State transfer。考虑外部影响的话就有很多，例如中断，比如 DMA（网卡，磁盘），或者通过 MMIO 或 IO Port 读写外设。
+
+由于 VMware 本来就是虚拟机，可以想到，当 CPU 执行时，遇到这些出现外部影响，都 trap 到虚拟机的管理程序，这时候就记录下来，CPU 执行了 n 条指令，然后记录并应用外部的影响，然后继续执行。
+
+有了这个基础以后，就可以构建 Fault Tolerant Virtual Machine 了。具体方法：
+
+1. 启动 Primary 和 Backup 虚拟机，寄存器和内存初始化成一样的内容
+2. 开始执行 Primary，等待外部影响的到来，或者执行了会带来不确定性的指令，trap 到虚拟机管理程序
+3. 记录下 Primary 已经执行的指令条数 n，记录下外部影响或不确定性的内容和结果，发送给 Backup，然后继续执行
+4. Backup 收到 Primary 发送过来的信息，开始执行 CPU，并且指定运行 n 条指令后 trap，然后施加外部影响
+5. 循环这个过程，如果 Primary 宕机了，则从 Backup 继续开始执行
+
+可以看到，这个过程中 Primary 始终领先 Backup 至少一步：Primary 走一步，Backup 走一步，Primary 再走一步，Backup 再走一步。
+
+对于时钟中断来讲，比较简单，只需要记录时间中断在哪个指令处到达即可。网络的话则比较复杂，为了让 OS 不会看到 DMA 的中间状态，论文的方法是先把 DMA 的数据缓存下来，然后在模拟中断到达的同时，也把内存更新了，OS 看到的就是接收到中断的时候，“瞬间” DMA 也完成了。其他的不确定性也可以用类似的方法来解决。题外话，处理器验证的时候，处理器和模拟器的 cosim 也是类似的方法，只不过可能是指令级别的 lockstep。
+
+还需要考虑一种情况，就是如果 Primary 跑的比较快，Backup 的状态和 Primary 有了一定的差距，此时 Primary 处理了一个来自客户端的请求，更新了内部状态，并且发送了响应。但此时 Backup 还没有来得及同步这个信息，可能还处于之前的状态，如果 Primary 宕机了，这个请求没来得及同步到 Backup 就丢失了，客户端以为状态变了，实际上 Backup 的状态没有变。所以只要 Primary 不发送数据出去，Backup 就可以当什么事情都没有发生过，假装丢包了。所以对于这一类外部可以观测到的行为，需要在缓冲区中等待，当 Backup 也同步了以后，才能发送出去。这个就是所谓的 The Output Rule。
 
 ## Raft
 
