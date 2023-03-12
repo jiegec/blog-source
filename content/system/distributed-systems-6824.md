@@ -304,3 +304,36 @@ GFS 的论文中采用的是第一种方法：`The master state is replicated fo
 ## ZooKeeper
 
 ## Chain Replication
+
+接下来要解决的问题是，对于一个分布式的存储系统，如何保证高性能、高可用以及强一致性。保证高可用性的办法就是 Replication，把同一份数据写到多个节点上，这样就算部分节点宕机了，依然可以访问数据；但是也面临着如何保证一致性的问题，怎么保证多个节点上的数据是一致的？
+
+首先来看 Primary/Backup 方法，就是指定一个节点为 Primary，其余节点为 Backup。客户端的所有的请求（读 + 写）都会发送到 Primary。当 Primary 宕机的时候，则把其中一个 Backup 升级为 Primary。回忆一下 GFS，会发现 GFS 采用了 Primary/Backup 方法。当客户端要写入数据的时候，需要四个阶段：
+
+1. 客户端发送给 Primary
+2. Primary 并行发送给所有的 Backup
+3. 所有的 Backup 告诉 Primary 写入完成
+4. Primary 告诉客户端写入完成
+
+这样设计是为了保证强一致性：所有请求都在 Primary 处理，自然就给请求确定了一个顺序，接下来就可以很方便地满足强一致性的要求了。需要注意的是，在第 3 步之前，Primary 还不能确认这次写入已经完成，所以如果此时又来了一个读取请求，要么提供旧的数据，要么等到第 3 步完成才返回新的数据，这样才能满足强一致性的要求。
+
+和 Raft/Zookeeper 等 quorum 一致性算法进行对比的话，Primary/Backup 方法可以容忍 N-1 个节点的宕机，而 quorum 可以容忍 N/2 个节点的宕机。当然了，代价就是需要把数据存储更多份。但实际上，即使采用了 Primary/Backup 方法，还需要考虑怎么维护这些存储节点的状态，这需要一个单独的配置节点来管理。那怎么保证配置节点的高可用性？这时候就可以用 Raft 或者上面提到的 ZooKeeper 了。这就是在不同的层次上，用不同的一致性协议，达到不同的目的。
+
+但是 Primary/Backup 方法的所有请求压力都在 Primary 节点上，并且 Primary 节点需要消耗很多的网络带宽，因为要给每个 Backup 发送一份数据，这样 Primary 节点的 CPU 和网络都可能成为瓶颈。为了解决这个问题，[Chain Replication](https://pdos.csail.mit.edu/6.824/papers/cr-osdi04.pdf) 论文提供了另一个解决方案。
+
+它的思路是，既然不希望 Primary 成为瓶颈，那就把 Primary 的任务分担到多个节点上。具体来讲，Primary/Backup 方法中，读请求，读响应，写请求，写响应都发生在 Primary 节点上。而 Chain Replication 方法中，读请求，读响应，写响应发生在 Tail 节点上，写请求发生在 Head 节点上。这是怎么做的呢？
+
+Chain Replication 把节点串成一个链表，既然是链表，就有头节点 Head 和尾节点 Tail，写请求从 Head 流向 Tail，所以链表中的节点，越接近 Head 数据越新，越接近 Tail 数据越旧，这样只有到达 Tail 的数据是保存了 N 份，可以认为是写入完成的，所以由 Tail 来发送写响应。假如有三个节点，那么一次写请求的流程就是：
+
+1. 客户端发送写请求给节点 1（Head）
+2. 节点 1（Head）更新自己的数据，然后发送给节点 2
+3. 节点 2 更新自己的数据，然后发送给节点 3（Tail）
+4. 节点 3（Tail）更新自己的数据，发送写响应给客户端
+
+和 Primary/Backup 方法进行对比的话，同样是一次写入，Primary/Backup 需要四步，Chain Replication 需要 N+1 步，所以如果 N 比较大了，那么 Chain Replication 的延迟也会比较大。但 Chain Replication 的好处在于解决了瓶颈，原来 Primary 的工作分散到了 Head 和 Tail，并且数据通过网络按照链表顺序一路往下传，可以很好地利用网络带宽。
+
+Ceph 的论文 [RADOS: A Scalable, Reliable Storage Service for Petabyte-scale
+Storage Clusters](https://ceph.com/assets/pdfs/weil-rados-pdsw07.pdf) 里画了一个图，对比了上面两种方法和 Splay Replication：
+
+![](/images/replication.png)
+
+第一种 Primary-copy 也就是 Primary/Backup 方法，写请求需要四个 RTT，等到 Backup 都写入完成告知 Primary 以后，Primary 就可以响应读请求了。第二种 Chain 也就是 Chain Replication 方法，写请求需要 N+1 个 RTT，由于写请求到达 Tail 的时候已经保证了写入的一致性，所以随时可以读，不需要等到写入完成。第三种 Splay 结合了以上两种办法。
