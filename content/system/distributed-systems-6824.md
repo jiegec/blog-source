@@ -311,11 +311,44 @@ GFS 的论文中采用的是第一种方法：`The master state is replicated fo
 
 可以看到，这个过程中 Primary 始终领先 Backup 至少一步：Primary 走一步，Backup 走一步，Primary 再走一步，Backup 再走一步。
 
-对于时钟中断来讲，比较简单，只需要记录时间中断在哪个指令处到达即可。网络的话则比较复杂，为了让 OS 不会看到 DMA 的中间状态，论文的方法是先把 DMA 的数据缓存下来，然后在模拟中断到达的同时，也把内存更新了，OS 看到的就是接收到中断的时候，“瞬间” DMA 也完成了。其他的不确定性也可以用类似的方法来解决。题外话，处理器验证的时候，处理器和模拟器的 cosim 也是类似的方法，只不过可能是指令级别的 lockstep。
+对于时钟中断来讲，比较简单，只需要记录时间中断在哪个指令处到达即可。网络的话则比较复杂，为了让 OS 不会看到 DMA 的中间状态，论文的方法是先把 DMA 的数据缓存下来，然后在模拟中断到达的同时，也把内存更新了，OS 看到的就是接收到中断的时候，“瞬间”DMA 也完成了。其他的不确定性也可以用类似的方法来解决。题外话，处理器验证的时候，处理器和模拟器的 cosim 也是类似的方法，只不过可能是指令级别的 lockstep。
 
 还需要考虑一种情况，就是如果 Primary 跑的比较快，Backup 的状态和 Primary 有了一定的差距，此时 Primary 处理了一个来自客户端的请求，更新了内部状态，并且发送了响应。但此时 Backup 还没有来得及同步这个信息，可能还处于之前的状态，如果 Primary 宕机了，这个请求没来得及同步到 Backup 就丢失了，客户端以为状态变了，实际上 Backup 的状态没有变。所以只要 Primary 不发送数据出去，Backup 就可以当什么事情都没有发生过，假装丢包了。所以对于这一类外部可以观测到的行为，需要在缓冲区中等待，当 Backup 也同步了以后，才能发送出去。这个就是所谓的 The Output Rule。
 
 ## Raft
+
+### 介绍
+
+[Raft](http://nil.csail.mit.edu/6.824/2022/papers/raft-extended.pdf) 是一个分布式共识算法，对于一个 n 节点的系统，需要超过 n/2 个节点在线才可以工作。超过 n/2 的目的是防止网络分区，保证只有最多一个网络分区可以有进展。Raft 实现了一个 Replicated State Machine，也就是说维护一个分布式的状态机，只要保证初始状态一致，状态转移一致，那么状态机的当前状态也会一致。所以 Raft 的目标就是保证状态转移的历史一致。
+
+Raft 围绕着 leader 进行，需要首先选举出一个 leader，所有的请求都由 leader 处理。leader 接收到请求后，把请求发送给其他的节点，当有过半的节点记录了这个请求，就可以提交请求的内容到状态中。具体来说，请求过程如下：
+
+1. 客户端发送请求给 leader
+2. leader 把请求加入到日志中，但不应用到状态机
+3. leader 发送日志给其他节点（follower）
+4. follower 把 leader 发送的日志加入到日志中
+5. leader 等到有超过半数的节点（leader+follower）的日志有上述请求，就把请求应用到状态机
+6. leader 发送响应，告诉客户端请求已经完成
+7. leader 告诉 follower 可以应用上述请求
+8. follower 把请求应用到状态机
+
+下面仔细讨论 Raft 的一些细节。
+
+### Leader election
+
+首先是 leader election，这一步需要选举出一个 leader。为了保证 leader 唯一，要求每个节点每次只能投一票，并且有超过半数的节点投票给同一个 leader。但如果运气不好，有可能选举不出来，可能需要进行多轮投票。怎么表示投票的轮次呢？Raft 引入了 term 的概念。每个 term 最多一个 leader，如果 leader 宕机了，或者没有选举出 leader，就可以启动一个新的 term。
+
+leader 会定期发送心跳给其他节点，当节点发现当前的 leader 一段时间都没有发送心跳，就可以认为当前的 leader 宕机了，可以开启新一轮的 leader election，因此增加 currentTerm，并且把身份变成 candidate，开始拉票。拉票就是发给其他节点，让其他节点投票给自己。每个节点每个 term 只能给一个节点投票。当某个节点的票数过半的时候，节点的身份转为 leader，开始给其他节点发心跳包，其他节点就自动转为 follower。
+
+如果多个节点同时拉票，可能会出现分票的情况，没有节点票数过半，这样就只能在超时以后，重新投票。为了防止节点继续同时拉票，这个超时的时间是随机化的，这样随机出短的超时的节点更容易胜出成为 leader。
+
+### Log
+
+有了 leader 以后，就要开始处理来自客户端的请求了。为了保证一致性，需要同步请求到超过半数的节点，
+
+### Persistence
+
+### Snapshot
 
 ## ZooKeeper
 
@@ -353,3 +386,25 @@ Storage Clusters](https://ceph.com/assets/pdfs/weil-rados-pdsw07.pdf) 里画了�
 ![](/images/replication.png)
 
 第一种 Primary-copy 也就是 Primary/Backup 方法，写请求需要四个 RTT，等到 Backup 都写入完成告知 Primary 以后，Primary 就可以响应读请求了。第二种 Chain 也就是 Chain Replication 方法，写请求需要 N+1 个 RTT，由于写请求到达 Tail 的时候已经保证了写入的一致性，所以随时可以读，不需要等到写入完成。第三种 Splay 结合了以上两种办法。
+
+## Distributed Transactions
+
+## Frangipani
+
+## Spanner
+
+## FaRM
+
+## Spark
+
+## Memcached
+
+## Causal Consistency
+
+## Secure Untrusted Data Repository
+
+## Blockchain
+
+## Blockstack
+
+## Ethereum
