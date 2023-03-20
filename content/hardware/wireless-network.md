@@ -60,3 +60,17 @@ HR-DSSS 工作在 2.4 GHz 频段上，常用的是 13 个 channel，中心频率
 | CCK 11                  | 8 chip CCK                  |  11             |  1.375            | 11               | 8               | DQPSK      |
 | PBCC 5.5                | PBCC                        |  5.5            |  11               | N/A              | 0.5             | QPSK       |
 | PBCC 11                 | PBCC                        |  11             |  11               | N/A              | 1               | QPSK       |
+
+
+### 802.11g
+
+[802.11g](https://ieeexplore.ieee.org/document/1210624) 定义了第 19 章 `Extended Rate PHY specification`，也就是 ERP(Extended Rate PHY)，其主要采用的技术是 OFDM，连起来就是 ERP-OFDM，额外支持更多速率：6、9、12、18、24、36、48 和 54 Mbps。各种调制技术的速率对比：
+
+- DSSS: 802.11 1/2 Mbps
+- CCK: 802.11b 5.5/11 Mbps
+- OFDM: 802.11g 6/9/12/18/24/36/48/54 Mbps
+- PBCC: 802.11b 5.5/11 Mbps, 802.11g 22/33 Mbps
+
+OFDM 的核心思想就是采用多个载波信号，这些载波信号的频率呈等差数列，同时保证各载波相互正交，这样就提高了数据传输速率。为了保证正交，相邻载波信号的频率的差要满足 \\( \Delta{f} = k / T_U \\)，其中 k 是正整数，\\( T_U \\) 是每个 symbol 的时间（引用 [wikipedia](https://zh.wikipedia.org/zh-cn/%E6%AD%A3%E4%BA%A4%E9%A0%BB%E5%88%86%E5%A4%8D%E7%94%A8#%E6%AD%A3%E4%BA%A4)）。
+
+802.11g 的信号带宽是 20MHz，分成 52 个子载波，子载波的间距是 0.3125 MHz（20 MHz / 64），所以实际上只占了 \\( 0.3125 MHz * 52 = 16.25 MHz \\) 的频谱。其中 48 个用于传输数据，每个载波上可以采用不同的调制方法。54 Mbps 是怎么算的呢？802.11g 的 Symbol rate 是 250000 每秒，如果使用 64-QAM 调制，那么每个 symbol 对应 6 个 bit，然后使用纠错码，纠错的时候浪费了 1/4 的位，实际数据占 3/4，一共 48 个载波，那么数据速率就是 `48 * 250000 * 6 * 3/4 = 54 Mbps`。
