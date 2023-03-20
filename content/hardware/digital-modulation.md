@@ -22,6 +22,14 @@ Frequency-Shift Keying 调整载波信号的频率
 
 ![](/images/bfsk.png)
 
+## PSK
+
+Phase-Shift Keying 调整载波信号的相位
+
+![](/images/bpsk.png)
+
+DPSK(Differential Phase-Shift Keying) 是在 PSK 的基础上，把相位的绝对值变成相位的差。例如 BPSK 传输 0 对应 0 度相位，传输 1 对应 180 度相位，那么 DBPSK 传输 0 时保持相位和上一个 symbol 一样，传输 1 时相位相对上一个 symbol 增加 180 度。
+
 ## QAM
 
 Quadrature Amplitude Modulation 两个正交载波信号之和，调整两个信号的相位和幅度
