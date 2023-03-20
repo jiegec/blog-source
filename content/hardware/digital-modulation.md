@@ -6,6 +6,10 @@ category: system
 title: 数字调制
 ---
 
+## 背景
+
+最近在学习 802.11，需要学习很多数字调制相关的知识，因此自学了一下通信原理。
+
 ## ASK
 
 Amplitude-Shift Keying 调整载波信号的幅度
