@@ -586,3 +586,76 @@ netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
 在了解 AXI DMA 的工作原理的基础上，Intel 82599 的队列其实也不复杂，只不过直接采取了以 Descriptor 数组作为循环队列的方式，并且这里归属于硬件的 Descriptor 空间其实是 [Head, Tail) 左闭右开区间的形式（AXI DMA 是链表的头和尾，都属于硬件），这样就可以用 Head == Tail 来表示空队列，当然了，队列也永远会差一项才能满（除非额外记录队列中合法元素个数）。最后贴一张 Intel 82599 Datasheet 中的图片来帮助理解：
 
 ![](/images/82599_queue.png)
+
+## ConnectX-4
+
+接下来看看 ConnectX-4 是如何设计它的各个队列的。首先，它有 Work Queue，用于发送数据（Send Queue）和准备接收数据的缓冲区（Receive Queue），然后硬件处理 Work Queue 中的 Entry 后，就会把结果写入到 Completion Queue，并且通过 Event Queue 通知 CPU。
+
+文档：<https://network.nvidia.com/files/doc-2020/ethernet-adapters-programming-manual.pdf>
+
+### Work Queue
+
+Work Queue 和前面 Intel 82599 的设计很像，也是一个 Descriptor 的数组的形式，只不过 Work Queue Entry 是不定长的，支持不同的 Entry Format，例如 Send WQE、Receive WQE 和 Shared Receive WQE。
+
+驱动初始化的时候，创建好 Work Queue：
+
+```c
+static int mlx5e_open_queues(struct mlx5e_channel *c,
+           struct mlx5e_params *params,
+           struct mlx5e_channel_param *cparam) {
+  err = mlx5e_open_sqs(c, params, cparam);
+
+  err = mlx5e_open_rxq_rq(c, params, &cparam->rq);
+}
+```
+
+之后，和 Intel 82599 类似，发送的时候就向 Send Queue 插入 Entry，然后更新 Doorbell 让硬件开始发送；为了接收，先分配好缓冲区，初始化 Receive Queue，更新 Doorbell 让硬件开始接收数据。
+
+### Completion Queue
+
+和 Intel 82599 不同的是，这里表示项目完成是通过 Completion Queue 完成的，也就是说，硬件会向 Completion Queue 插入一项，来表示对应的 Work Queue Entry 完成情况。这样的设计下，Work Queue 完全由软件写入，Completion Queue 完全由硬件写入，不像前面 AXI DMA 和 Intel 82599 那样硬件会更新 Descriptor 里面的状态位。Completion Queue 也有两个 Counter，相当于队列的头和尾指针：Producer Counter 记录了硬件写入的 Completion Queue Entry（CQE） 数量，Consumer Counter 记录了软件已经处理了的 CQE 数量。在这里有一个比较有意思的设计：
+
+```c
+ownership cqe_ownership(cqe) {
+  if (cqe.owner == ((consumer_counter >> log2_cq_size) & 1)) {
+    return SW ownership
+  } else {
+    return HW ownership
+  }
+}
+```
+
+可以看到，它根据 consumer_counter 的当前值的高位（mask 掉 CQ 大小对应的 bits）与 CQE 的 owner 字段进行比对，如果相等，就认为是属于软件；否则则是属于硬件。软件在轮询的时候，只有遇到 SW ownership 的 CQE 才会处理，否则就忽略。乍一看，这个设计挺奇怪的，因为溢出的问题，`((consumer_counter >> log2_cq_size) & 1)` 每次溢出就会取反，所以相应的 ownership 的对应关系也会取反。回想一下，之前 AXI DMA 的做法，接收的时候，软件设置一个状态位，硬件完成接收以后，也设置一个状态位，软件完成处理以后，再恢复状态位为可以接收的状态，这样来回操作比较麻烦。在 ConnectX-4 的这种设计下，硬件只需要在填 CQE 的时候，toggle 一下 owner 位即可，软件不需要修改内容，只需要修改 consumer_counter。
+
+这样看可能比较迷糊，来拆解一下整个过程。首先是 AXI DMA 的接收队列的 Descriptor 的处理：
+
+1. 软件设置 status = 0 表示这个 Descriptor 可以接收
+2. 硬件设置 status |= COMPLETED
+3. 软件读取 status 发现 COMPLETED，处理数据，然后重新设置 status = 0
+
+可以看到，Descriptor 的内容是软件和硬件来回修改。ConnectX-4 的设计下，软件不需要对 CQE 做任何修改：
+
+1. 初始情况下，owner = 1 和 consumer_counter = 0，对应 HW owner，所以软件不会认为是合法的 CQE
+2. 硬件开始向 CQ 插入 CQE，此时 owner ^=1 变为 0，对应 SW owner，所以软件可以开始读取并处理 CQE
+3. 硬件不断插入，出现了第一次溢出，软件跟着处理，也第一次溢出了，此时 `((consumer_counter >> log2_cq_size) & 1) = 1`，此时 1 对应 SW owner，0 对应 HW owner。当硬件插入 CQE 以后，owner 才从 0（HW owner） 又变回 1（SW owner），软件就知道，可以继续读取并处理 CQE
+4. 这个过程继续下去，owner 的含义不断翻转
+
+可以看到，整个过程软件不需要写入 CQE 的内容，只需要不断轮询并更新 consumer_counter。硬件实现也很简单，不断地对 owner 进行异或，就实现了通知软件的功能。这就类似于，每当 counter 溢出的时候，就自动“清空”所有 CQE 的 “valid” 位，然后硬件再设置 “valid = 1”。硬件只需要保证 producer_counter 不会追上 consumer_counter 就可以了，硬件也不需要去读取 CQE 的内容来判断软件是否处理完成。这个方式还是比较有意思的。
+
+```c
+static void *get_sw_cqe(struct mlx5_ib_cq *cq, int n)
+{
+  void *cqe = get_cqe(cq, n & cq->ibcq.cqe);
+  struct mlx5_cqe64 *cqe64;
+
+  cqe64 = (cq->mcq.cqe_sz == 64) ? cqe : cqe + 64;
+
+  if (likely(get_cqe_opcode(cqe64) != MLX5_CQE_INVALID) &&
+      !((cqe64->op_own & MLX5_CQE_OWNER_MASK) ^ !!(n & (cq->ibcq.cqe + 1)))) {
+    return cqe;
+  } else {
+    return NULL;
+  }
+}
+
+实际上，写这篇博客就是因为有同学看到了 CQE 的 owner 的奇怪设定，我才来研究的这个问题。我就是为了这点醋，才包的这顿饺子，前面做了一大堆的引入。
