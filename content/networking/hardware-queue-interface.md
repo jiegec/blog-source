@@ -430,6 +430,8 @@ AXI DMA 提供了一个 Descriptor 链来异步地传输数据，U-Boot 为了�
 
 Intel 82599 是一个有线网卡，Linux 的驱动是 ixgbe。Intel 82599 为收和发都提供了多个队列，每个队列都对应了一个 Descriptor 数组，在内存中连续存放。Linux 驱动使用了 64 个接收队列和发送队列。
 
+文档链接：<https://cdrdv2-public.intel.com/331520/82599-datasheet-v3-4.pdf>
+
 ### 接收队列
 
 和 AXI DMA 的链表形式不同。每个接收队列都由如下的寄存器定义：
