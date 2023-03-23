@@ -657,5 +657,6 @@ static void *get_sw_cqe(struct mlx5_ib_cq *cq, int n)
     return NULL;
   }
 }
+```
 
 实际上，写这篇博客就是因为有同学看到了 CQE 的 owner 的奇怪设定，我才来研究的这个问题。我就是为了这点醋，才包的这顿饺子，前面做了一大堆的引入。
