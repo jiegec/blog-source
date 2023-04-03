@@ -45,3 +45,109 @@ TPI(Transport Provider Interface) 约定了内核和 libnsl 之间的接口。�
 
 - [Networking Services (XNS)](https://pubs.opengroup.org/onlinepubs/9647699/toc.pdf)
 - [Transport Provider Interface](http://www.openss7.org/docs/tpi.pdf)
+
+## ChatGPT
+
+问：What is Transport Layer Interface?
+
+答：The Transport Layer Interface (TLI) is an application programming interface (API) that provides a standard interface for communication between an application program and the transport layer protocols of a network. It was originally developed by AT&T for the Unix operating system and is now used in many other operating systems.
+
+The TLI provides a set of functions that allow applications to communicate with the transport layer protocols, such as TCP and UDP, in a network-independent manner. Applications can use TLI to establish connections, send and receive data, and manage network resources.
+
+One of the advantages of TLI is that it provides a layer of abstraction between the application and the transport layer protocols, which allows the application to be independent of the underlying network. This means that an application can be developed using TLI on one operating system and run on another operating system with different transport layer protocols.
+
+However, TLI is an older interface and has largely been replaced by newer interfaces such as the sockets API, which is now the de facto standard for network programming.
+
+问：What's the relationship between Transport Layer Interface and Transport Provider Interface?
+
+答：The Transport Layer Interface (TLI) and Transport Provider Interface (TPI) are both application programming interfaces (APIs) that provide a standard way for applications to communicate with the transport layer protocols of a network. However, they are different interfaces that serve different purposes.
+
+TLI is an API that was developed by AT&T for the Unix operating system to provide a network-independent interface for applications to communicate with transport layer protocols such as TCP and UDP. It provides a set of functions that allow applications to establish connections, send and receive data, and manage network resources.
+
+On the other hand, TPI is an API that was developed by the X/Open consortium to provide a standard interface for communication between the transport layer protocols and network drivers or hardware. It provides a set of functions that allow transport providers to interact with network drivers or hardware and handle network-specific issues such as congestion control, flow control, and error handling.
+
+In other words, TLI is an interface for applications to communicate with the transport layer protocols, while TPI is an interface for transport providers to communicate with network drivers or hardware. The two interfaces are related in that TLI can be implemented using TPI, but they are distinct and serve different purposes in the network architecture.
+
+问：Please write a UDP echo server in Transport Layer Interface
+
+答：Sure, here is an example of a UDP echo server using the Transport Layer Interface (TLI) in C language:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <tiuser.h>
+
+#define BUFSIZE 1024
+#define SERVICE_NAME "echo"
+
+int main(int argc, char *argv[])
+{
+    int sockfd, len, n;
+    struct t_call call;
+    struct t_unitdata ud;
+    struct t_uderr uderr;
+    struct netbuf *recvbuf;
+    char buf[BUFSIZE];
+    struct sockaddr_in servaddr, cliaddr;
+    struct hostent *server;
+    int portno = 5001; // can be any available port number
+
+    // create socket
+    if ((sockfd = t_open("/dev/udp", O_RDWR, NULL)) < 0) {
+        perror("t_open");
+        exit(1);
+    }
+
+    // bind socket to port
+    memset((char *)&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = INADDR_ANY;
+    servaddr.sin_port = htons(portno);
+    if (t_bind(sockfd, NULL, NULL) < 0) {
+        perror("t_bind");
+        exit(1);
+    }
+
+    // listen for incoming requests
+    while (1) {
+        memset((char *)&call, 0, sizeof(call));
+        memset((char *)&cliaddr, 0, sizeof(cliaddr));
+        memset((char *)&ud, 0, sizeof(ud));
+        call.addr.buf = (char *)&cliaddr;
+        call.addr.maxlen = sizeof(cliaddr);
+        call.addr.len = 0;
+        call.opt.len = 0;
+        call.udata.len = 0;
+
+        // receive message
+        recvbuf = (struct netbuf *)t_alloc(sockfd, T_UNITDATA, T_ALL);
+        if (t_rcvudata(sockfd, recvbuf, &ud, &uderr) < 0) {
+            perror("t_rcvudata");
+            exit(1);
+        }
+        memcpy(buf, recvbuf->buf, recvbuf->len);
+        buf[recvbuf->len] = '\0';
+        printf("Received: %s\n", buf);
+
+        // send message back to client
+        ud.udata.buf = buf;
+        ud.udata.len = recvbuf->len;
+        ud.addr.buf = (char *)&cliaddr;
+        ud.addr.len = sizeof(cliaddr);
+        ud.addr.maxlen = sizeof(cliaddr);
+        if (t_sndudata(sockfd, &ud) < 0) {
+            perror("t_sndudata");
+            exit(1);
+        }
+    }
+    return 0;
+}
+```
+
+This UDP echo server listens on a specific port and waits for incoming messages from clients. When it receives a message, it sends the same message back to the client as a response. Note that this example assumes that the TLI library is already installed on your system, and the program is compiled with the appropriate TLI library flags.
