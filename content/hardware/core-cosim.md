@@ -140,4 +140,4 @@ Overall, co-simulation is a powerful technique that can be used to verify your R
 
 ## 多核
 
-以上的方法都是针对单核 CPU 进行协同仿真的，但多核会更加复杂，多核涉及到不同核心之间的同步、通信等等，很难把一个周期精确的 CPU 和一个不精确的模拟器匹配起来。这时候，可能就需要实现一个周期精确的 C 模型了。
+以上的方法都是针对单核 CPU 进行协同仿真的，但多核会更加复杂，多核涉及到不同核心之间的同步、通信等等，很难把一个周期精确的 CPU 和一个不精确的模拟器匹配起来。香山提供了一个思路：<https://github.com/OpenXiangShan/XiangShan-doc/blob/main/slides/20210624-RVWC-SMP-Difftest%20%E6%94%AF%E6%8C%81%E5%A4%9A%E5%A4%84%E7%90%86%E5%99%A8%E7%9A%84%E5%B7%AE%E5%88%86%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95.pdf>
