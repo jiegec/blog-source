@@ -256,6 +256,8 @@ endmodule
 
 firtool 也支持 `-repl-seq-mem` 参数，用法和输出与 Scala FIRRTL Compiler 类似。
 
+我最近也写了一个小工具：[chisel-memory-lower](https://github.com/jiegec/chisel-memory-lower)来解析生成的 conf 文件，生成对应的 BlackBox。
+
 ### 复杂组合逻辑
 
 再来看 Hardfloat 的例子。代码：
