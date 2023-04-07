@@ -110,3 +110,34 @@ title: RAM 读写冲突
 - READ_FIRST：写的同时也在读，只不过读取的是写入前的旧数据
 
 关于这个行为，在 [RAM IP Core 中 Write First Read First 和 No Change 的区别](https://xilinx.eetrend.com/blog/2020/100055273.html) 处可以看到比较清晰的解释。
+
+## SRAM IP
+
+接下来在仿真中看看 SRAM IP 的行为是什么样子。SRAM IP 有一个引脚 COLLDISN，其语义为：
+
+- 如果 COLLDISN 为 1，那么如果出现读写冲突，那么写入是被保证的，但是读取会失败
+- 如果 COLLDISN 为 0，那么如果出现读写冲突，读写都会失败
+
+仿真得到如下波形：
+
+<script type="WaveDrom">
+{
+  signal:
+    [
+      { name: "clk", wave: "p......."},
+      { name: "w_addr", wave: "2.......", data: ["0000"]},
+      { name: "w_data", wave: "2x...2x.", data: ["1111", "2222"]},
+      { name: "w_en", wave: "10...10."},
+      { name: "r_addr", wave: "2.......", data: ["0000"]},
+      { name: "r_en", wave: "0.10.1.0"},
+      { name: "mem_colldisn_0[0]", wave: "x2....2.", data: ["1111", "xxxx"]},
+      { name: "r_data_colldisn_0", wave: "xxx2..2.", data: ["1111", "xxxx"]},
+      { name: "mem_colldisn_1[0]", wave: "x2....2.", data: ["1111", "2222"]},
+      { name: "r_data_colldisn_1", wave: "xxx2..22", data: ["1111", "xxxx", "2222"]},
+    ]
+}
+</script>
+
+第一个周期没有读写冲突，所以成功写入，第三个周期也可以正确地都出来。第六个周期读写冲突，此时如果 COLLDISN 等于 0，那么读写都失败，下一个周期读取结果是 xxxx，并且之后继续读取依然是 xxxx，因为内存中的数据被破坏了；而如果 COLLDISN 等于 1，那么写入成功，内存中的值变为 2222，但读取失败，下一个周期读取结果是 xxxx，但是再下一个周期就可以正常读取，得到 2222。
+
+这就与 Xilinx FPGA 不一样：这里如果 COLLDISN 等于 0，读写冲突的时候，可能写入会失效，内存中的值变为不确定的内容。所以为了保证正确性，要么在 SRAM IP 外部进行读写冲突检查，如果要冲突了，就关掉读口，然后从写口 bypass 数据到读口；要么在 SRAM IP 内部进行读写冲突检查（设置 COLLDISN 等于 1），然后不要使用冲突时读取的数据。
