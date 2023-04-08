@@ -147,7 +147,7 @@ module mem_1r1w (
 endmodule
 ```
 
-会发现生成的 RAMB36E1 原语的 WRITE_MODE 依然是 READ_FIRST。经过测试发现，如果综合的时候用两个时钟信号，就会用 WRITE_FIRST；如果用了一个，就会用 READ_FIRST，与语义无关。所以如果依赖 Vivado 的 infer RAM，得到的结果和预期可能不一致。
+会发现生成的 RAMB36E1 原语的 WRITE_MODE 依然是 READ_FIRST。经过测试发现，如果综合的时候用两个时钟信号，就会用 WRITE_FIRST；如果用了一个，就会用 READ_FIRST，与语义无关。所以如果依赖 Vivado 的 infer RAM，得到的结果和预期可能不一致，和前面的文档一致：`For the primitives with RAM_MODE set to SDP, the write mode is READ_FIRST for synchronous clocking and WRITE_FIRST for asynchronous clocking.`。
 
 又额外测试了一下 yosys：`yosys mem_1r1w.v -p "synth_xilinx"`，结果发现 yosys 会忠实地按照语义为 WRITE_FIRST 生成 bypass 逻辑。虽然 yosys 可以做的更好：把识别出来的 READ_FIRST 或 WRITE_FIRST 传给 RAMB36E1，但 yosys 至少尊重了代码。
 
