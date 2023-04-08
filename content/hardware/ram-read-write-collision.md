@@ -79,6 +79,78 @@ title: RAM 读写冲突
 
 这点似乎经常被我们忽略。
 
+那么，如果在 Verilog 中实现一个语义上 WRITE_FIRST 的 RAM，会发生什么呢：
+
+```verilog
+`timescale 1ns/1ps
+module mem_1r1w (
+  input clk,
+  input [5:0] R0_addr,
+  input R0_en,
+  output [63:0] R0_data,
+  input [5:0] W0_addr,
+  input W0_en,
+  input [63:0] W0_data
+);
+
+  reg [5:0] reg_R0_addr;
+  reg [63:0] mem [63:0];
+
+  always @(posedge clk) begin
+    if (W0_en) begin
+      mem[W0_addr] <= W0_data;
+    end
+  end
+
+  always @(posedge clk) begin
+    if (R0_en) begin
+      reg_R0_addr <= R0_addr;
+    end
+  end
+
+  assign R0_data = mem[reg_R0_addr];
+
+endmodule
+```
+
+奇怪的是，综合出来会使用 BRAM 实现，并且采用 READ_FIRST 作为 RAMB36E1 的 WRITE_MODE_A 和 WRITE_MODE_B。如果写成语义 READ_FIRST：
+
+```verilog
+`timescale 1ns/1ps
+module mem_1r1w (
+  input clk,
+  input [5:0] R0_addr,
+  input R0_en,
+  output [63:0] R0_data,
+  input [5:0] W0_addr,
+  input W0_en,
+  input [63:0] W0_data
+);
+
+  reg [63:0] reg_R0_data;
+  reg [63:0] mem [63:0];
+
+  always @(posedge clk) begin
+    if (W0_en) begin
+      mem[W0_addr] <= W0_data;
+    end
+  end
+
+  always @(posedge clk) begin
+    if (R0_en) begin
+      reg_R0_data <= mem[R0_addr];
+    end
+  end
+
+  assign R0_data = reg_R0_data;
+
+endmodule
+```
+
+会发现生成的 RAMB36E1 原语的 WRITE_MODE 依然是 READ_FIRST。经过测试发现，如果综合的时候用两个时钟信号，就会用 WRITE_FIRST；如果用了一个，就会用 READ_FIRST，与语义无关。所以如果依赖 Vivado 的 infer RAM，得到的结果和预期可能不一致。
+
+又额外测试了一下 yosys：`yosys mem_1r1w.v -p "synth_xilinx"`，结果发现 yosys 会忠实地按照语义为 WRITE_FIRST 生成 bypass 逻辑。虽然 yosys 可以做的更好：把识别出来的 READ_FIRST 或 WRITE_FIRST 传给 RAMB36E1，但 yosys 至少尊重了代码。
+
 ### 一读写
 
 接下来测试单读写口的场景。单读写口和上面不同，它的冲突点在于，写入的时候，读取的数据如何变化。下面用同样的方法，测试三种模式下 xpm_memory_spram 的行为，得到如下波形：
