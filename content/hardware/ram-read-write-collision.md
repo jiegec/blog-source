@@ -141,3 +141,16 @@ title: RAM 读写冲突
 第一个周期没有读写冲突，所以成功写入，第三个周期也可以正确地都出来。第六个周期读写冲突，此时如果 COLLDISN 等于 0，那么读写都失败，下一个周期读取结果是 xxxx，并且之后继续读取依然是 xxxx，因为内存中的数据被破坏了；而如果 COLLDISN 等于 1，那么写入成功，内存中的值变为 2222，但读取失败，下一个周期读取结果是 xxxx，但是再下一个周期就可以正常读取，得到 2222。
 
 这就与 Xilinx FPGA 不一样：这里如果 COLLDISN 等于 0，读写冲突的时候，可能写入会失效，内存中的值变为不确定的内容。所以为了保证正确性，要么在 SRAM IP 外部进行读写冲突检查，如果要冲突了，就关掉读口，然后从写口 bypass 数据到读口；要么在 SRAM IP 内部进行读写冲突检查（设置 COLLDISN 等于 1），然后不要使用冲突时读取的数据。
+
+## Chisel
+
+Chisel 中 RAM 对应的是 SyncReadMem，它可以指定 Read under Write behavior：
+
+- `SyncReadMem()`: unspecified in FIRRTL, `WriteFirst` in behavior model
+- `SyncReadMem(Undefined)`: unspecified in FIRRTL, `WriteFirst` in behavior model
+- `SyncReadMem(ReadFirst)`: `old` in FIRRTL, `ReadFirst` in behavior model
+- `SyncReadMem(WriteFirst)`: `new` in FIRRTL, `WriteFirst` in behavior model
+
+也就是说，在行为级模型中，只有 WriteFirst 和 ReadFirst 两种行为，并且默认是 `WriteFirst`。但是，前面也提到，实际上 XPM 只支持 `Undefined`（生成 `x`）和 `ReadFirst`（READ_FIRST）两种；上面的 SRAM IP 更是只支持 `Undefined`（生成 `x`）。
+
+这就导致写 Chisel 代码的时候，如果不小心用了 1R1W，并且代码依赖了 Read Under Write 在行为级模型下的行为，那么在使用 XPM 或者 SRAM IP 进行替换的时候，就需要额外的逻辑来处理这个不同。例如，如果要模拟 `WriteFirst`，就比较地址，然后进行 bypass；但是 `ReadFirst` 就没办法模拟了。最好的解决方法还是，不要出现冲突，即使要冲突，也要在上层进行处理。
