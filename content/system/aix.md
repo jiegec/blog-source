@@ -70,7 +70,7 @@ ksh /dnf_aixtoolbox.sh -y
 /opt/freeware/bin/dnf install gcc
 ```
 
-安装好的包会放到 /opt/firmware 路径下。
+安装好的包会放到 /opt/freeware 路径下。
 
 安装过程中可能需要继续扩大各个 fs 的大小。
 
