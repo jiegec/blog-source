@@ -54,7 +54,9 @@ custom
 
 ## VirtualBox
 
-测试了一下，在 VirtualBox 7.0.6 中，可以正常安装 SCO OpenServer 5，不需要额外的设置，按照上面一样的方法进行安装即可。
+测试了一下，在 VirtualBox 7.0.6 中，可以正常安装 SCO OpenServer 5，不需要额外的设置，按照上面一样的方法进行安装即可，鼠标选择 PS/2 Microsoft Mouse，和 QEMU 一样有移动距离不对的情况。安装完，把硬盘启动顺序调到前面，重启即可。
+
+网卡的话，照常 `netconfig`，然后添加 AMD PCNet 网卡即可。
 
 ## 参考文档
 
