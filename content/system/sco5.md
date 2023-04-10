@@ -52,6 +52,10 @@ custom
 
 依法炮制，可以安装 gcc、bash、make、git 等常用软件，只不过版本都很老。
 
+## VirtualBox
+
+测试了一下，在 VirtualBox 7.0.6 中，可以正常安装 SCO OpenServer 5，不需要额外的设置，按照上面一样的方法进行安装即可。
+
 ## 参考文档
 
 本博客参考了以下文档中的命令：
