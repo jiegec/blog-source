@@ -38,7 +38,9 @@ ssh -oCiphers=aes128-cbc -oHostKeyAlgorithms=ssh-rsa -oKexAlgorithms=+diffie-hel
 
 ## 安装软件
 
-通过 FTP 访问 <ftp://ftp2.sco.com/pub/skunkware/osr5/vols/> 可以看到一些软件的安装包。例如，要安装 gcc：
+OpenServer 有自带的工具链：挂载安装 ISO，使用 custom 命令安装 OpenServer Development System 和 SCO OpenServer Linker and Application Development Libraries。但是需要 License 才能使用。
+
+另一个方法是通过 FTP 访问 <ftp://ftp2.sco.com/pub/skunkware/osr5/vols/>，可以看到一些软件的安装包，在里面下载软件并安装。例如，要安装 gcc：
 
 ```shell
 wget ftp://ftp2.sco.com/pub/skunkware/osr5/vols/gcc-2.95.2-VOLS.tar
