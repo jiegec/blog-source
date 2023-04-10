@@ -24,7 +24,7 @@ qemu-system-i386 -accel kvm -m 16384 -serial mon:stdio -drive file=sco-hdd.qcow2
 qemu-system-i386 -accel kvm -m 16384 -serial chardev:mouse -drive file=sco-hdd.qcow2,if=ide -cdrom osr507suppcd5.iso -net nic -net tap,script=no,ifname=tap0 -chardev msmouse,id=mouse
 ```
 
-启动以后，运行 custom 命令，然后从 CD-ROM 安装 Graphics and NIC Drivers。我尝试了安装 Maintenance Pack 5，但是启动以后会找不到硬盘，只好恢复之前的 qcow2 备份。
+启动以后，运行 custom 命令，然后从 CD-ROM 安装 Graphics and NIC Drivers。我尝试了安装 Maintenance Pack 5，但是启动以后会找不到硬盘，只好恢复之前的 qcow2 备份。可能是缺少了运行 `/etc/conf/cf.d/link_unix` 命令。
 
 为了让图形界面的鼠标工作，在命令行里运行 `mkdev mouse`，然后创建一个 Serial mouse -> Microsoft Serial Mouse，Relink kernel 再重启。注意要和 QEMU 的 `-serial chardev:mouse -chardev msmouse,id=mouse` 配合。但是外面鼠标和里面鼠标移动的距离不一样。
 
