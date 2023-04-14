@@ -135,5 +135,38 @@ open (const char *__path, int __oflag, ...)
 }
 ```
 
-可以看到，它核心的思想就是根据 open 第三个参数的有无，调用相应的 `__open_2` 或者 `__open_alias` 函数，这样就不用再用 `va_args` 方法了，并且如果传入了过多的参数，可以直接在编译期指出错误。
+可以看到，它核心的思想就是根据 open 第三个参数的有无，调用相应的 `__open_2` 或者 `__open_alias` 函数，这样就不用再用 `va_args` 方法了，并且如果传入了过多的参数，可以直接在编译期指出错误。例子：
+
+```c
+#include <fcntl.h>
+
+int main() {
+    open("123", 0, 0, 0, 0);
+    return 0;
+}
+```
+
+报错：
+
+```c
+In file included from /usr/include/fcntl.h:301,
+                 from <source>:2:
+In function 'open',
+    inlined from 'main' at <source>:5:5:
+/usr/include/x86_64-linux-gnu/bits/fcntl2.h:44:5: error: call to '__open_too_many_args' declared with attribute error: open can be called either with 2 or 3 arguments, not more
+   44 |     __open_too_many_args ();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~
+ASM generation compiler returned: 1
+In file included from /usr/include/fcntl.h:301,
+                 from <source>:2:
+In function 'open',
+    inlined from 'main' at <source>:5:5:
+/usr/include/x86_64-linux-gnu/bits/fcntl2.h:44:5: error: call to '__open_too_many_args' declared with attribute error: open can be called either with 2 or 3 arguments, not more
+   44 |     __open_too_many_args ();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~
+Execution build compiler returned: 1
+```
+
+Compiler Explorer：<https://godbolt.org/z/hebshz3P5>。
+
 
