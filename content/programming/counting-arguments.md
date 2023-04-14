@@ -169,4 +169,7 @@ Execution build compiler returned: 1
 
 Compiler Explorer：<https://godbolt.org/z/hebshz3P5>。
 
+## ChatGPT
+
+尝试询问了一下 ChatGPT：<https://shareg.pt/IXUKjYK>，它可以写出额外传入 int 个数的版本，可以写出哨兵（传入 `-1` 表示结束）的版本，提示了 builtin 以后，再提示 inline 和 always_inline，最后让它拆分成两个函数，得到的代码距离正确结果已经比较接近，但还是有一些问题。
 
