@@ -216,7 +216,7 @@ int main() {
 }
 ```
 
-也是可以工作的。Compiler Explore 链接：<https://godbolt.org/z/TxKb3YEcf>。
+也是可以工作的。Compiler Explorer 链接：<https://godbolt.org/z/TxKb3YEcf>。
 
 ## ChatGPT
 
