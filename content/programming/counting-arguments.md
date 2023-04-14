@@ -169,6 +169,55 @@ Execution build compiler returned: 1
 
 Compiler Explorer：<https://godbolt.org/z/hebshz3P5>。
 
+## 使用 C 宏
+
+和 Claude 聊了一下，是否能够用 C 宏来实现，它的回答是：
+
+```c
+#define PRINTF(...) printf(__VA_ARGS__)
+#define NARG(...)  (sizeof((int[]){__VA_ARGS__})/sizeof(int))
+
+int printf(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    
+    // Access the variable arguments using va_arg based on 
+    // the number of arguments passed, obtained using NARG
+    
+    va_end(args);
+}
+
+// Usage:
+PRINTF(1, 2, 3);     // Prints 1 2 3 
+PRINTF(1, 2, 3, 4); // Prints 1 2 3 4
+```
+
+核心思路就是把参数列表放到数组里，然后让编译器去推断数组大小。沿着这个思路，实现出代码：
+
+```c
+#include <stdio.h>
+#include <stdarg.h>
+
+void my_printf_inner(int count, ...) {
+    va_list args;
+    va_start(args, count);
+
+    for (int i = 0;i < count;i++) {
+        printf("%d\n", va_arg(args, int));
+    }
+    va_end(args);
+}
+
+#define MY_PRINTF(...) do {int len=(sizeof((int[]){__VA_ARGS__})/sizeof(int)); my_printf_inner(len, __VA_ARGS__); } while(0);
+
+int main() {
+    MY_PRINTF(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    return 0;
+}
+```
+
+也是可以工作的。Compiler Explore 链接：<https://godbolt.org/z/TxKb3YEcf>。
+
 ## ChatGPT
 
 尝试询问了一下 ChatGPT：<https://shareg.pt/IXUKjYK>，它可以写出额外传入 int 个数的版本，可以写出哨兵（传入 `-1` 表示结束）的版本，提示了 builtin 以后，再提示 inline 和 always_inline，最后让它拆分成两个函数，得到的代码距离正确结果已经比较接近，但还是有一些问题。
