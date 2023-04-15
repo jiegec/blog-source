@@ -253,17 +253,15 @@ package sifive {
           NestedPrefixModulesAnnotation(target, prefix, inclusive)
       }
     }
-
   }
-
 }
 
 object AddPrefix {
   def apply(module: Module, prefix: String, inclusive: Boolean = true) = {
-      annotate(new ChiselAnnotation {
-        def toFirrtl =
-          new NestedPrefixModulesAnnotation(module.toTarget, prefix, true)
-      })
+    annotate(new ChiselAnnotation {
+      def toFirrtl =
+        new NestedPrefixModulesAnnotation(module.toTarget, prefix, inclusive)
+    })
   }
 }
 ```
