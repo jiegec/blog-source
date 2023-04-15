@@ -160,3 +160,112 @@ object StandardAXI4BundleBundle {
 val MEM = IO(new StandardAXI4BundleBundle(32, 64, 4))
 MEM <> target.mem_axi4.head.viewAs[StandardAXI4BundleBundle]
 ```
+
+## 给所有模块添加名称前缀
+
+有些时候，我们希望给所有模块添加一个名称前缀，防止可能出现的冲突。
+
+在 Chisel 3 中，可以使用自定义 FIRRTL Transform 来实现这个功能。这一部分的实现参考了 [chisel issue #1059](https://github.com/chipsalliance/chisel3/issues/1059#issuecomment-814353578)：
+
+```scala
+import firrtl._
+import firrtl.annotations.NoTargetAnnotation
+import firrtl.options.Dependency
+import firrtl.passes.PassException
+import firrtl.transforms.DedupModules
+
+// adapted from https://github.com/chipsalliance/chisel3/issues/1059#issuecomment-814353578
+
+/** Specifies a global prefix for all module names. */
+case class ModulePrefix(prefix: String) extends NoTargetAnnotation
+
+/** FIRRTL pass to add prefix to module names
+  */
+object PrefixModulesPass extends Transform with DependencyAPIMigration {
+  // we run after deduplication to save some work
+  override def prerequisites = Seq(Dependency[DedupModules])
+
+  // we do not invalidate the results of any prior passes
+  override def invalidates(a: Transform) = false
+
+  override protected def execute(state: CircuitState): CircuitState = {
+    val prefixes = state.annotations.collect { case a: ModulePrefix =>
+      a.prefix
+    }.distinct
+    prefixes match {
+      case Seq() =>
+        logger.info("[PrefixModulesPass] No ModulePrefix annotation found.")
+        state
+      case Seq("") => state
+      case Seq(prefix) =>
+        val c = state.circuit.mapModule(onModule(_, prefix))
+        state.copy(circuit = c.copy(main = prefix + c.main))
+      case other =>
+        throw new PassException(
+          s"[PrefixModulesPass] found more than one prefix annotation: $other"
+        )
+    }
+  }
+
+  private def onModule(m: ir.DefModule, prefix: String): ir.DefModule =
+    m match {
+      case e: ir.ExtModule => e.copy(name = prefix + e.name)
+      case mod: ir.Module =>
+        val name = prefix + mod.name
+        val body = onStmt(mod.body, prefix)
+        mod.copy(name = name, body = body)
+    }
+
+  private def onStmt(s: ir.Statement, prefix: String): ir.Statement = s match {
+    case i: ir.DefInstance => i.copy(module = prefix + i.module)
+    case other             => other.mapStmt(onStmt(_, prefix))
+  }
+}
+```
+
+实现思路就是遍历 IR，找到所有的 Module 并改名，再把所有模块例化也做一次替换。最后在生成 Verilog 的时候添加 Annotation 即可：
+
+```scala
+new ChiselStage().execute(
+  Array("-o", s"${name}.v"),
+  Seq(
+    ChiselGeneratorAnnotation(genModule),
+    RunFirrtlTransformAnnotation(Dependency(PrefixModulesPass)),
+    ModulePrefix(prefix)
+  )
+```
+
+如果使用新的 MLIR FIRRTL Compiler，则可以利用 `sifive.enterprise.firrtl.NestedPrefixModulesAnnotation` annotation，让 firtool 来进行 [prefix 操作](https://github.com/llvm/circt/blob/fc6b00fd20d8a50f17a908cc681c8cf3a4d1c000/lib/Dialect/FIRRTL/Transforms/PrefixModules.cpp)：
+
+```scala
+package sifive {
+  package enterprise {
+    package firrtl {
+      import _root_.firrtl.annotations._
+
+      case class NestedPrefixModulesAnnotation(
+          val target: Target,
+          prefix: String,
+          inclusive: Boolean
+      ) extends SingleTargetAnnotation[Target] {
+
+        def duplicate(n: Target): Annotation =
+          NestedPrefixModulesAnnotation(target, prefix, inclusive)
+      }
+    }
+
+  }
+
+}
+
+object AddPrefix {
+  def apply(module: Module, prefix: String, inclusive: Boolean = true) = {
+      annotate(new ChiselAnnotation {
+        def toFirrtl =
+          new NestedPrefixModulesAnnotation(module.toTarget, prefix, true)
+      })
+  }
+}
+```
+
+这个方法的灵感来自 @sequencer。唯一的缺点就是比较 Hack，建议 SiFive 把相关的类也开源出来用。
