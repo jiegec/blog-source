@@ -125,6 +125,34 @@ DRAM 的一个特点是需要定期刷新。有一个参数 tREFI，表示刷新
 
 此外，如果访问会连续命中同一个 Page，那么直接读写即可；反之如果每次读写几乎都不会命中同一个 Page，那么可以设置 Auto Precharge，即读写以后自动 Precharge，减少了下一次访问前因为 Row 不同导致的 PRE 命令。一个思路是在对每个 Page 的最后一次访问采用 Auto Precharge。
 
+## 传输速率
+
+DDR SDRAM 的传输速率计算方式如下：
+
+	Memory Speed (MT/s) * 64 (bits/transfer)
+
+例如一个 DDR4-3200 的内存，带宽就是 `3200 * 64 = 204.8 Gb/s = 25.6 GB/s`。但前面已经看到，除了传输数据，还需要进行很多命令，实际上很难达到 100% 的带宽。然后 CPU 可以连接多个 channel 的 DRAM，再考虑多个 CPU Socket，系统的总带宽就是
+
+	Memory Speed (MT/s) * 64 (bits/transfer) * Channels * Sockets
+
+使用 MLC 等工具进行测试，计算实际与理论的比值，我测试得到的大概在 70%-90% 之间。
+
+## HBM
+
+HBM 相比前面的 DDR SDRAM，它堆叠了多个 DRAM，提供多个 channel 并且提高了位宽。例如 [Micron HBM with ECC](https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/dram/hbm2e/8gb_and_16gb_hbm2e_dram.pdf)，堆叠了 4/8 层 DRAM，提供 8 个 channel，每个 channel 的数据宽度是 128 位，以 3200 MT/s 计算，一个 HBM 芯片的传输速率最大是：
+
+	3200 (MT/s) * 128 (bits/transfer) * 8 (Channels) = 3276.8 Gb/s = 409.6 GB/s
+
+所以一片 HBM 的传输速率就相当于 16 个传统的 DDR SDRAM：8 个 Channel 加双倍的位宽。128 位实际上就是把两片 64-bit DDR SDRAM 并起来了，可以当成一个 128 位的用，也可以在 Pseudo Channel 模式下，当成共享地址和命令信号的两个 DDR SDRAM 用。
+
+Xilinx 的 Virtex Ultrascale Plus HBM FPGA 提供了 `1800 (MT/s) * 128 (bits/transfer) * 8 (Channels) = 230.4 GB/s` 的带宽，如果用了两片 HBM 就是 460.8 GB/s。暴露给 FPGA 逻辑的是 16 个 256 位的 AXI3 端口，AXI 频率 450 MHz，内存频率 900 MHz。可以看到，每个 AXI3 就对应了一个 HBM 的 pseudo channel。每个 pseudo channel 是 64 位，但是 AXI 端口是 256 位：在速率不变的情况下，从 450MHz 到 900MHz，再加上 DDR，相当于频率翻了四倍，所以位宽要从 64 位翻四倍到 256 位。
+
+当然了，HBM 的高带宽的代价就是引脚数量很多。所以一般在 Silicon Interposer 上连接，而不是传统的在 PCB 上走线（图源 [A 1.2V 20nm 307GB/s HBM DRAM with At-Speed Wafer-Level I/O Test Scheme and Adaptive Refresh Considering Temperature Distribution](https://picture.iczhiku.com/resource/ieee/WYifSuFTZuHLFcMV.pdf)）：
+
+![](/images/hbm_stack.png)
+
+可以理解为把原来插在主板上的内存条，通过堆叠，变成一个 HBM Die，然后紧密地连接到 CPU 中。
+
 ## 参考文档
 
 - Memory systems: Cache, DRAM & Disk
