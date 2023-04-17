@@ -147,11 +147,21 @@ HBM 相比前面的 DDR SDRAM，它堆叠了多个 DRAM，提供多个 channel �
 
 Xilinx 的 Virtex Ultrascale Plus HBM FPGA 提供了 `1800 (MT/s) * 128 (bits/transfer) * 8 (Channels) = 230.4 GB/s` 的带宽，如果用了两片 HBM 就是 460.8 GB/s。暴露给 FPGA 逻辑的是 16 个 256 位的 AXI3 端口，AXI 频率 450 MHz，内存频率 900 MHz。可以看到，每个 AXI3 就对应了一个 HBM 的 pseudo channel。每个 pseudo channel 是 64 位，但是 AXI 端口是 256 位：在速率不变的情况下，从 450MHz 到 900MHz，再加上 DDR，相当于频率翻了四倍，所以位宽要从 64 位翻四倍到 256 位。
 
-当然了，HBM 的高带宽的代价就是引脚数量很多。所以一般在 Silicon Interposer 上连接，而不是传统的在 PCB 上走线（图源 [A 1.2V 20nm 307GB/s HBM DRAM with At-Speed Wafer-Level I/O Test Scheme and Adaptive Refresh Considering Temperature Distribution](https://picture.iczhiku.com/resource/ieee/WYifSuFTZuHLFcMV.pdf)）：
+当然了，HBM 的高带宽的代价就是引脚数量很多。根据 [HBM3 JESD238A](https://www.jedec.org/system/files/docs/JESD238A.pdf)，每个 Channel 要 120 个 pin，一共 16 个 channel（HBM2 是 8 channel，每个 channel 128 位；HBM3 是 16 channel，每个 channel 64 位），然后还有其他的 52 个 pin，这些加起来就 1972 个 pin 了。所以一般在 Silicon Interposer 上连接，而不是传统的在 PCB 上走线（图源 [A 1.2V 20nm 307GB/s HBM DRAM with At-Speed Wafer-Level I/O Test Scheme and Adaptive Refresh Considering Temperature Distribution](https://picture.iczhiku.com/resource/ieee/WYifSuFTZuHLFcMV.pdf)）：
 
 ![](/images/hbm_stack.png)
 
+所以在 HBM3 标准里，用 Microbump 来描述 HBM 的 pin。
+
 可以理解为把原来插在主板上的内存条，通过堆叠，变成一个 HBM Die，然后紧密地连接到 CPU 中。但是另一方面，密度上去了，价格也更贵了。
+
+A100 显卡 40GB PCIe 版本提供了 1555 GB/s 的内存带宽。根据倍数关系，可以猜测是 5 个 8GB 的 HBM，每个提供 `1555 / 5 = 311 GB/s` 的带宽，那么时钟频率就是 `311 (GB/s) * 8 (bits/byte) / 128 (bits/transfer) / 8 (channels) / 2 (DDR) = 1215 MHz`，这与 `nvidia-smi -q` 看到的结果是一致的。
+
+进一步，A100 80GB PCIe 版本提供了 1935 GB/s 的带宽，按照同样的方法计算，可得时钟频率是 `1935 (GB/s) / 5 * 8 (bits/byte) / 128 (bits/transfer) / 8 (channels) / 2(DDR) = 1512 MHz`，与 [Product Brief](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/PB-10577-001_v02.pdf) 一致。频率的提高是因为从 HBM2 升级到了 HBM2e。
+
+A100 文档中的 Memory bus width 5120 的计算方式也就清楚了：`128 (bits/transfer) * 8 (channels) * 5 (stacks) = 5120 (bits)`。
+
+H100 SXM5 升级到了 HBM3，内存容量依然是 80GB，但是时钟频率提高，内存带宽是 `2619 (MHz) * 2 (DDR) * 128 (bits/transfer) * 8 (channels) * 5 (stacks) / 8 (bits/byte) = 3352 GB/s`。
 
 ## 参考文档
 
