@@ -306,3 +306,13 @@ buildroot login: root
 login[70]: root login on 'console'
 root@buildroot:~# 
 ```
+
+Linux 中也可以访问网络（通过主线内的 liteeth 驱动）：
+
+```shell
+$ dmesg | grep liteeth
+[    3.499861] liteeth f0002000.mac eth0: irq 2 slots: tx 2 rx 2 size 2048
+$ ip link set eth0 up
+$ ip a add 192.168.1.50/24 dev eth0
+$ ping 192.168.1.100
+```
