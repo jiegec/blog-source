@@ -96,7 +96,7 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
 001111111111111111110000
 ```
 
-也就是说，随着延迟增大，采样的数据从 0 变成 1，再从 1 变成 0。我们的目标是，让 `dqs` 和 `ck` 同步。在上图中，`dqs_2` 的上升沿和 `ck` 上升沿是最接近的，而刚好 `dqs_2` 也正好出现在采样 0 变成采样 1的位置。这意味着，只要找到采样数据从 0 变成 1 的位置，就知道如何让 DQS 与 CK 同步了。
+也就是说，随着延迟增大，采样的数据从 0 变成 1，再从 1 变成 0。我们的目标是，让 `dqs` 和 `ck` 同步。在上图中，`dqs_2` 的上升沿和 `ck` 上升沿是最接近的，而刚好 `dqs_2` 也正好出现在采样 0 变成采样 1 的位置。这意味着，只要找到采样数据从 0 变成 1 的位置，就知道如何让 DQS 与 CK 同步了。
 
 这样就完成了 Write Leveling 的步骤，实现了 DQS 与 CK 同步的目标，那么在写入数据的时候，DRAM 就可以得到正确的 DQS 信号了。
 
@@ -143,7 +143,7 @@ set_property IOSTANDARD  SSTL12   [get_ports "PL_DDR4_CS_B"] ;# Bank  66 VCCO - 
 
 沿着这个思路，我给 litedram 添加了 clam shell topology 的支持：<https://github.com/enjoy-digital/litedram/pull/332> 和 <https://github.com/enjoy-digital/litex/pull/1673>，实现方法：
 
-1. 在校准阶段，把 Top 和 Bottom 两个 cs_n 暴露给软件，软件在 MRS 的时候，分两次写入，第一次原样写到 Top，第二次交换地址顺序，再写入 Bottom
+1. 在校准阶段，把 Top 和 Bottom 两个 cs_n 暴露给软件，软件在 MRS 的时候，分两次写入，第一次原样写到 Top，第二次交换地址顺序，再写入 Bottom。
 2. 正常工作阶段，把 Top 和 Bottom 的两个 cs_n 当成一个用，也就是当成 single rank dram。
 
 ## 参考文档

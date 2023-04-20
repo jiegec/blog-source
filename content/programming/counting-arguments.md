@@ -167,7 +167,7 @@ In function 'open',
 Execution build compiler returned: 1
 ```
 
-Compiler Explorer：<https://godbolt.org/z/hebshz3P5>。
+Compiler Explorer:<https://godbolt.org/z/hebshz3P5>.
 
 ## 使用 C 宏
 
