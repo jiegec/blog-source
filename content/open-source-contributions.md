@@ -16,6 +16,11 @@ permalink: /open-source-contributions/
 - [canokeys](https://github.com/canokeys)
 - [nfcim](https://github.com/nfcim)
 
+## aosc-os-abbs
+
+- [etckeeper: new, 1.18.20](https://github.com/AOSC-Dev/aosc-os-abbs/pull/4495)
+- [lsof: update to 4.98.0](https://github.com/AOSC-Dev/aosc-os-abbs/pull/4494)
+
 ## aws-cdk
 
 - [feat(cloudfront): support Behavior-specific viewer protocol policy for CloudFrontWebDistribution](https://github.com/aws/aws-cdk/pull/16389)
@@ -109,6 +114,10 @@ permalink: /open-source-contributions/
 
 ## Nixpkgs
 
+- [circt: 1.34.0 -> 1.37.0](https://github.com/NixOS/nixpkgs/pull/224621)
+- [mucommander: 1.1.0-1 -> 1.2.0-1](https://github.com/NixOS/nixpkgs/pull/224304)
+- [copilot-cli: 1.26.0 -> 1.27.0](https://github.com/NixOS/nixpkgs/pull/224303)
+- [rain: 1.2.0 -> 1.3.3](https://github.com/NixOS/nixpkgs/pull/217061)
 - [spice-gtk: unbreak on darwin](https://github.com/NixOS/nixpkgs/pull/207657)
 - [pcsclite: fix libsystemd switch](https://github.com/NixOS/nixpkgs/pull/199946)
 - [python3Packages.brian2: init at 2.5.1](https://github.com/NixOS/nixpkgs/pull/198885)
@@ -192,6 +201,8 @@ permalink: /open-source-contributions/
 - [Add support for multi word memory access in BusSlaveFactory](https://github.com/SpinalHDL/SpinalHDL/pull/367)
 - [Fix iverilog simulation under macOS](https://github.com/SpinalHDL/SpinalHDL/pull/365)
 
-# 尚未合并
+## U-Boot
 
-- <https://lists.denx.de/pipermail/u-boot/2023-February/509789.html>
+- [spi: xilinx_spi: Fix spi reset](https://github.com/u-boot/u-boot/commit/4fffbc1108f3f5e2932cdefea8b5f831b46040c7)
+
+# 尚未合并
