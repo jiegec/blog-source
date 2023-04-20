@@ -141,6 +141,11 @@ set_property IOSTANDARD  SSTL12   [get_ports "PL_DDR4_CS_B"] ;# Bank  66 VCCO - 
 
 所以 Xilinx 文档也是可能出错的，需要结合多个信息源来判断。这里有 xdc 和 schematic 可以参考，都可以发现这个结论。
 
+沿着这个思路，我给 litedram 添加了 clam shell topology 的支持：<https://github.com/enjoy-digital/litedram/pull/332> 和 <https://github.com/enjoy-digital/litex/pull/1673>，实现方法：
+
+1. 在校准阶段，把 Top 和 Bottom 两个 cs_n 暴露给软件，软件在 MRS 的时候，分两次写入，第一次原样写到 Top，第二次交换地址顺序，再写入 Bottom
+2. 正常工作阶段，把 Top 和 Bottom 的两个 cs_n 当成一个用，也就是当成 single rank dram。
+
 ## 参考文档
 
 - <https://www.systemverilog.io/design/ddr4-initialization-and-calibration/>
