@@ -146,6 +146,97 @@ set_property IOSTANDARD  SSTL12   [get_ports "PL_DDR4_CS_B"] ;# Bank  66 VCCO - 
 1. 在校准阶段，把 Top 和 Bottom 两个 cs_n 暴露给软件，软件在 MRS 的时候，分两次写入，第一次原样写到 Top，第二次交换地址顺序，再写入 Bottom。
 2. 正常工作阶段，把 Top 和 Bottom 的两个 cs_n 当成一个用，也就是当成 single rank dram。
 
+## 训练代码
+
+下面结合 litex 和 litedram 的代码，以及 DDR4 标准，来验证上面的观察。
+
+### Write Leveling
+
+Write Leveling 的核心函数是 `sdram_write_leveling_scan`，它的核心思路是：
+
+第一步调用 `sdram_write_leveling_on` 打开 DRAM 的 Write Leveling 模式：
+
+```c
+  sdram_write_leveling_on();
+```
+
+循环每个 DRAM 芯片的每个 DQS 信号：
+
+```c
+for(i=0;i<SDRAM_PHY_MODULES;i++) {
+  for (dq_line = 0; dq_line < DQ_COUNT; dq_line++) {
+    /* 设置 DQS 初始延迟为 0 */
+    sdram_leveling_action(i, dq_line, write_rst_delay);
+
+    /* 循环 DQS 延迟 */
+    for(j=0;j<err_ddrphy_wdly;j++) {
+      int zero_count = 0;
+      int one_count = 0;
+
+      for (k=0; k<loops; k++) {
+        /* 发送 DQS 序列：00000001 */
+        ddrphy_wlevel_strobe_write(1);
+
+        /* 统计 1 和 0 的个数 */
+        if (buf[SDRAM_PHY_MODULES-1-i] != 0)
+          one_count++;
+        else
+          zero_count++;
+      }
+      if (one_count > zero_count)
+        /* DQS 采样到了 CK 的正半周期 */
+        taps_scan[j] = 1;
+      else
+        /* DQS 采样到了 CK 的负半周期 */
+        taps_scan[j] = 0;
+
+      /* 每次循环增加一次 DQS 延迟 */
+      sdram_leveling_action(i, dq_line, write_inc_delay);
+    }
+
+    /* 找到一个最长的连续 1 的序列 */
+    one_window_active = 0;
+    one_window_start = 0;
+    one_window_count = 0;
+    one_window_best_start = 0;
+    one_window_best_count = -1;
+    for(j=0;j<err_ddrphy_wdly+1;j++) {
+      if (one_window_active) {
+        if ((j == err_ddrphy_wdly) || (taps_scan[j] == 0)) {
+          /* 结束了一段连续的 1 */
+          one_window_active = 0;
+          one_window_count = j - one_window_start;
+          /* 记录最长的连续 1 的长度和位置 */
+          if (one_window_count > one_window_best_count) {
+            one_window_best_start = one_window_start;
+            one_window_best_count = one_window_count;
+          }
+        }
+      } else {
+        /* 找到连续的 1 的开头 */
+        if (j != err_ddrphy_wdly && taps_scan[j]) {
+          one_window_active = 1;
+          one_window_start = j;
+        }
+      }
+    }
+
+    /* 要找的延迟就是连续的 1 序列的开始位置 */
+    delays[i] = one_window_best_start;
+  }
+}
+
+sdram_write_leveling_off();
+```
+
+这样就实现了 Write Leveling 的全流程：
+
+1. 设置 DRAM 进入 Write Leveling 模式，DRAM 用 DQS 对 CK 采样，结果输出到 DQ
+2. 在不同的 DQS 延迟下，发送同样的 00000001 DQS 模式，观察 DQ 上的数据
+3. 统计 DQ 上的 1 和 0 的个数，如果 1 更多，就认为当前 DQS 延迟下，DQS 采样到了 CK 的正半周期；反之如果 0 更多，就认为当前 DQS 延迟下，DQS 采样到了 CK 的负半周期
+4. 在第三步的结果中，找到最长的连续的 1 序列，那么这个序列的开始，就对应了采样值从 0 到 1 的变化，此时 DQS 与 CK 基本同步
+5. 最后设置 DRAM 退出 Write Leveling 模式
+
 ## 参考文档
 
 - <https://www.systemverilog.io/design/ddr4-initialization-and-calibration/>
