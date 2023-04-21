@@ -27,6 +27,8 @@ python3 -m litex_boards.targets.digilent_arty --build --with-ethernet
 
 这样就可以在 build/digilent_arty/gateware 目录下找到 bitstream。可以通过命令行参数来自定义需要的功能，详见 <https://github.com/litex-hub/litex-boards/blob/f5e51d72bca6ed0325c1213791a78362326002f8/litex_boards/targets/digilent_arty.py#L162-L180>。
 
+如果想切换 CPU 为 Rocket Chip 的话，克隆并安装 <https://github.com/litex-hub/pythondata-cpu-rocket>，添加 `--cpu-type rocket --cpu-variant small` 参数即可。
+
 ## 下载 bitstream
 
 最后，连接 microUSB 和网线到电脑，然后下载 bitstream：
