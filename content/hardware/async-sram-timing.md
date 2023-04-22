@@ -226,7 +226,7 @@ title: 「教学」异步 SRAM 时序
 
 1. 让 `we_n=0` 在时钟下降沿输出，但是编写的时候需要比较谨慎，比如先设置一个上升沿触发的寄存器，然后用另一个寄存器在下降沿对这个寄存器进行采样，再输出。
 2. 用一个更高频率的时钟驱动 `we_n` 的寄存器。
-3. 用 FPGA 提供的 `ODELAY `自定义输出延迟原语，设置一个固定的输出延迟，比如 1ns。
+3. 用 FPGA 提供的 `ODELAY` 自定义输出延迟原语，设置一个固定的输出延迟，比如 1ns。
 4. 用 `ODDR` 原语，人为地添加一个大约 0.50ns 的延迟。
 5. 对 `we_n` 设置一个最小的输出延迟（设置了一个很大的 hold），并且不允许输出 `we_n` 的寄存器放在 IOB 中（否则无法人为增加信号传播的路径长度）。约束：`set_output_delay -clock [get_clocks sram_clk] -min -5.00 [get_ports sram_we_n]` 和 `set_property IOB FALSE [get_cells top/sram_controller/we_n_reg]`。这里的信号和寄存器名称需要按照实际情况修改，第二个不允许放置在 IOB 的约束也可以在 Verilog 代码中用 `(* IOB = "FALSE" *)` 来实现。
 
