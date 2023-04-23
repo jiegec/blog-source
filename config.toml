@@ -71,6 +71,11 @@ googleAnalytics = "G-3109FRSVTT"
     name = "系列"
     url = "/series/"
 
+  [[menu.main]]
+    identifier = "kb"
+    name = "知识库"
+    url = "/kb/"
+
 # allow raw html e.g. WaveDrom
 [markup]
   [markup.goldmark]
