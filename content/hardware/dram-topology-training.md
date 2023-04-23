@@ -6,6 +6,8 @@ category: hardware
 title: DRAM 的拓扑和训练
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/sdram.html)中。
+
 ## DRAM Training
 
 DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其中很重要的一步就是计算出各个数据线相对于时钟的偏移（skew）。这个偏移是怎么来的呢？

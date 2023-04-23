@@ -6,6 +6,8 @@ category: hardware
 title: 「教学」DRAM 结构和特性
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/sdram.html)中。
+
 ## DRAM 是如何组织的
 
 DRAM 分成很多层次：Bank Group，Bank，Row，Column，从大到小，容量也是各级别的乘积。
