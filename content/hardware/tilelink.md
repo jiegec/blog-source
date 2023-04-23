@@ -6,6 +6,8 @@ category: hardware
 title: TileLink 总线协议分析
 ---
 
+本文的内容已经整合到[知识库](kb/hardware/cache_coherence_protocol.html)中。
+
 ## 背景
 
 最近在研究一些支持缓存一致性的缓存的实现，比如 rocket-chip 的实现和 sifive 的实现，因此需要研究一些 TileLink 协议。本文讨论的时候默认读者具有一定的 AXI 知识，因此很多内容会直接参考 AXI。
@@ -112,7 +114,7 @@ in.d.valid := Mux(r_wins, out.r.valid, out.b.valid)
 
 ## TileLink Cached
 
-上面说的两个模块都是 TileLink Uncached，那么它如何支持缓存一致性呢？首先，它引入了三个 channel：C、D 和 E，支持三种操作：
+上面说的两个模块都是 TileLink Uncached，那么它如何支持缓存一致性呢？首先，它引入了三个 channel：B、C 和 E，支持三种操作：
 
 - Acquire：M->S 在 A channel 上发送 Acquire，S->M 在 D channel 上发送 Grant，然后 M->S 在 E channel 上发送 GrantAck；功能是获取一个 copy，可以看到这个和 Get 是类似的，都是在 A channel 上发送请求，在 D channel 上接受响应，只不过额外需要在 E channel 上发送 GrantAck。
 - Release：M->S 在 C channel 上发送 Release，S->M 在 D channel 上发送 ReleaseAck；功能是删除自己的 copy，一般是缓存行要被换出的时候，发送 ReleaseData 来写回 Dirty 数据

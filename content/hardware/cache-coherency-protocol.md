@@ -6,6 +6,8 @@ category: hardware
 title: 「教学」缓存一致性协议分析
 ---
 
+本文的内容已经整合到[知识库](kb/hardware/cache_coherence_protocol.html)中。
+
 ## 背景
 
 最近在《高等计算机系统结构》课程中学习缓存一致性协议算法，这里用自己的语言来组织一下相关知识的讲解。

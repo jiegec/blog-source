@@ -6,6 +6,8 @@ category: hardware
 title: 「教学」ACE 缓存一致性协议
 ---
 
+本文的内容已经整合到[知识库](kb/hardware/cache_coherence_protocol.html)中。
+
 ## 背景
 
 最近几天分析了 TileLink 的缓存一致性协议部分内容，见[TileLink 总线协议分析]({{< relref "tilelink.md" >}})，趁此机会研究一下之前尝试过研究，但是因为缺少一些基础知识而弃坑的 ACE 协议分析。
