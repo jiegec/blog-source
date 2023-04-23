@@ -6,7 +6,7 @@ category: hardware
 title: TileLink 总线协议分析
 ---
 
-本文的内容已经整合到[知识库](kb/hardware/cache_coherence_protocol.html)中。
+本文的内容已经整合到[知识库](/kb/hardware/cache_coherence_protocol.html)中。
 
 ## 背景
 
