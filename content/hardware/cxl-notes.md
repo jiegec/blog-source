@@ -6,6 +6,8 @@ category: hardware
 title: CXL 学习笔记
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/pcie.html)中。
+
 ## 背景
 
 前段时间学习了 PCIe，趁此机会，进一步学习一下密切相关的 CXL。
