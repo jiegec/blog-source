@@ -318,3 +318,10 @@ $ ip link set eth0 up
 $ ip a add 192.168.1.50/24 dev eth0
 $ ping 192.168.1.100
 ```
+
+## 其他开发板
+
+除了 Digilent Arty A7，我还做了以下开发板的 LiteX 支持：
+
+- [VCU128](https://github.com/jiegec/litex-boards/tree/vcu128)，支持 UART，SDRAM 和 HBM
+- [MA703FA-35T](https://github.com/jiegec/litex-boards/tree/ma703fa-35t)，支持 UART，SDRAM，ETH 和 HDMI
