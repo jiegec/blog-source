@@ -146,6 +146,25 @@ IEEE 802.3 Figure 36-4 中给了一个例子，就是在发送一段数据的时
 - [1G/2.5G Ethernet PCS/PMA or SGMII v16.0](https://www.xilinx.com/support/documentation/ip_documentation/gig_ethernet_pcs_pma/v16_0/pg047-gig-eth-pcs-pma.pdf)
 - [https://en.wikipedia.org/wiki/Physical_coding_sublayer](https://en.wikipedia.org/wiki/Physical_coding_sublayer)
 
+## 1000BASE-X 与 SFP 的关系
+
+1000BASE-X 在 802.3 Clause 36 中定义，它的层级是这样的：
+
+![](/images/1000basex.png)
+
+它支持三种不同的介质，对应了三个 PMD 层，也就是 LX、SX 和 CX。这些体现在设备上，其实就是不同的 SFP 模块。SFP 模块实际上就是图中的 PMD 层，SFP 接口上连接的是 1000BASE-X 的 PCS/PMA，这也就是为什么说在带有 SFP 的 FPGA 上，Xilinx 的 IP 叫做 1G/2.5G Ethernet PCS/PMA。在这里，PCS 和 PMA 层在 FPGA 内部通过 IP 实现，通过 PCB 连接到 SFP 上，光模块就是 PMD 层。见下图：
+
+![](/images/xilinx_pcs_pma.png)
+
+左边通过 GMII 连接到内部的 MAC，右边连接到 SFP 上，通过光模块，连接到光纤。这里光模块只需要负责光电转换。另一种比较常见的形式，就是 MAC 在 FPGA 内部，PHY（包括 PCS/PMA/PMD）都在 FPGA 外部，此时 FPGA IO 上就是各种 MII。
+
+那么 SFP 电口模块是怎么工作的呢？我们知道，电口采用的是 1000BASE-T 标准。实际上，它里面有一个 PHY 芯片，发送的时候，首先解码 1000BASE-X 变回原始数据，再按照 1000BASE-T 的方式编码再发出去；接收的时候，按照 1000BASE-T 进行解码，再重新编码为 1000BASE-X 发送给 PMA 层。
+
+还有一类电口模块，与上面不同的地方在于，SFP 上走的是 SGMII，而不是 1000BASE-X。这两种模式没有太大的区别，都是两对差分线，一收一发，所以很多时候二者是同时支持，可以切换的。例如 [Cisco Compatible 10/100/1000BASE-T SFP SGMII Copper RJ-45 100m Industrial Transceiver Module (LOS)](https://www.fs.com/products/177936.html?attribute=44906&id=1109184) 就是在 SFP 上走 SGMII 协议。
+
+推荐阅读 [Designing a Copper SFP using the VSC8221 10/100/1000BASE-T PHY](https://ww1.microchip.com/downloads/en/Appnotes/VPPD-01080.pdf)，它里面讲了如何将 VSC8221 芯片用于电口模块：VSC8221 芯片一头是 1000BASEX（又称 802.3z SerDes，802.3z 就是 1000BASE-X）或者 SGMII，另一头是 1000BASE-T MDI。
+
+
 ## 物理层
 
 ### 100BASE-TX
@@ -165,23 +184,4 @@ IEEE 802.3 Figure 36-4 中给了一个例子，就是在发送一段数据的时
 1000BASE-T 使用四对差分线，每对差分线上都是全双工传输，波特率 125Mbaud，symbol 的范围是 `{2, 1, 0, -1, -2}`，通过 PAM5 传输。
 
 具体来讲，PCS 从 MAC 的 GMII 接口接收要发送的数据，GMII 是 125MHz，每个周期 8 位数据。这些数据与 scrambler 一起，生成 9 位的 `Sd_n[8:0]`，然后再编码为 `(TA_n, TB_n, TC_n, TD_n)`，也就是在四对差分线上传输的 symbol，取值范围是 `[-2, 2]`。简单总结一下，就是每个周期 8 位数据，先变成 9 位数据，再变成 4 个 symbol，每个 symbol 取值范围是 -2 到 2，这就叫做 8B1Q4，`converting GMII data (8B-8 bits) to four quinary symbols (Q4) that are transmitted during one clock (1Q4)`，把 8 位的数据转换为四个 symbol，每个 symbol 有五种取值（Quinary 表示 5）。
-
-
-## 1000BASE-X 与 SFP 的关系
-
-1000BASE-X 在 802.3 Clause 36 中定义，它的层级是这样的：
-
-![](/images/1000basex.png)
-
-它支持三种不同的介质，对应了三个 PMD 层，也就是 LX、SX 和 CX。这些体现在设备上，其实就是不同的 SFP 模块。SFP 模块实际上就是图中的 PMD 层，SFP 接口上连接的是 1000BASE-X 的 PCS/PMA，这也就是为什么说在带有 SFP 的 FPGA 上，Xilinx 的 IP 叫做 1G/2.5G Ethernet PCS/PMA。在这里，PCS 和 PMA 层在 FPGA 内部通过 IP 实现，通过 PCB 连接到 SFP 上，光模块就是 PMD 层。见下图：
-
-![](/images/xilinx_pcs_pma.png)
-
-左边通过 GMII 连接到内部的 MAC，右边连接到 SFP 上，通过光模块，连接到光纤。这里光模块只需要负责光电转换。另一种比较常见的形式，就是 MAC 在 FPGA 内部，PHY（包括 PCS/PMA/PMD）都在 FPGA 外部，此时 FPGA IO 上就是各种 MII。
-
-那么 SFP 电口模块是怎么工作的呢？我们知道，电口采用的是 1000BASE-T 标准。实际上，它里面有一个 PHY 芯片，发送的时候，首先解码 1000BASE-X 变回原始数据，再按照 1000BASE-T 的方式编码再发出去；接收的时候，按照 1000BASE-T 进行解码，再重新编码为 1000BASE-X 发送给 PMA 层。
-
-还有一类电口模块，与上面不同的地方在于，SFP 上走的是 SGMII，而不是 1000BASE-X。这两种模式没有太大的区别，都是两对差分线，一收一发，所以很多时候二者是同时支持，可以切换的。例如 [Cisco Compatible 10/100/1000BASE-T SFP SGMII Copper RJ-45 100m Industrial Transceiver Module (LOS)](https://www.fs.com/products/177936.html?attribute=44906&id=1109184) 就是在 SFP 上走 SGMII 协议。
-
-推荐阅读 [Designing a Copper SFP using the VSC8221 10/100/1000BASE-T PHY](https://ww1.microchip.com/downloads/en/Appnotes/VPPD-01080.pdf)，它里面讲了如何将 VSC8221 芯片用于电口模块：VSC8221 芯片一头是 1000BASEX（又称 802.3z SerDes，802.3z 就是 1000BASE-X）或者 SGMII，另一头是 1000BASE-T MDI。
 
