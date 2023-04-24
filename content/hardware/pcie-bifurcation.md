@@ -6,6 +6,8 @@ category: hardware
 title: PCIe Bifurcation
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/pcie.html)中。
+
 ## 背景
 
 最近看到两篇关于 PCIe Bifurcation 的文章：
