@@ -82,7 +82,7 @@ NAND Flash 的读取粒度是 Page，这就是为什么 NAND Flash 更像块设�
 
 NOR Flash 和 NAND Flash 的区别在于，NOR Flash 可以随机访问，可以提供 XIP 支持。下面以 [128Mb, 3V, Multiple I/O Serial Flash Memory](https://www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/n25q/n25q_128mb_3v_65nm.pdf) 为例子看看它是如何读写的。
 
-SPI NOR Flash 读取的时候，只需要一条命令就可以了：READ/FAST READ。其中 READ 命令比较简单：发送 Command，发送地址，然后 Slave 紧接着就会发送数据；FAST READ 可以达到更高的频率，但是为了让 NOR Flash 有时间读取数据，在 Master 发送 Command 和地址后，还需要发送 Dummy cycles，然后 Slave 才会发送数据。和前面一样，FAST READ 也支持不同的 IO 类型，例如 Dual Output，Dual Input/Output，Quad Output，Quad Input/Output。
+SPI NOR Flash 读取的时候，只需要一条命令就可以了：READ/FAST READ。其中 READ 命令比较简单：发送 Command，发送地址，然后 Slave 紧接着就会发送数据；FAST READ 可以达到更高的频率，但是为了让 NOR Flash 有时间读取数据，在 Master 发送 Command 和地址后，还需要发送 Dummy cycles，然后 Slave 才会发送数据。和前面一样，FAST READ 也支持不同的 IO 类型，例如 Dual Output，Dual Input/Output，Quad Output，Quad Input/Output。一些比较高端的 SPI NOR Flash 还支持 DTR（Double Transfer Rate），实际上就是 DDR，在时钟上升沿和下降沿都采样数据。
 
 写入的时候，和 NAND Flash 一样，也需要先擦除，再写入。SPI Flash 的存储层级是：
 
@@ -126,3 +126,17 @@ SD 卡规定，SPI 模式下，所有的数据传输都是对齐到 8 位，也�
 想要读取数据的话，就要发送 READ_SINGLE_BLOCK 命令，参数就是要读取的 Block 地址。SD 卡回先回复一个字节的响应，然后开始发数据，数据从 Start Block Token 开始，然后是一个 Block 的数据（通常是 512 字节），最后再两个字节的 CRC16。
 
 写数据则是发送 WRITE_BLOCK 命令，SD 卡回复一个字节的响应，然后控制器开始传输数据，数据从 Start Block Token 开始，接着是要写入的数据，最后是两个字节的 CRC16，然后 SD 卡回复一个字节的响应，标志着写入成功。
+
+## SPI 以太网控制器
+
+有一些以太网产品提供了 SPI 接口，例如 [KSZ8851SNL/SNLI](https://ww1.microchip.com/downloads/aemDocuments/documents/UNG/ProductDocuments/DataSheets/KSZ8851SNL-Single-Port-Ethernet-Controller-with-SPI-DS00002381C.pdf)，集成了 MAC 和 PHY，直接连接 MDI/MDI-X 接口，虽然最高只支持百兆网，但是接口上确实非常简单。
+
+SPI 上发送的命令就两类：一类是读写寄存器，一类是读写 RX/TX FIFO。
+
+## 键盘和触摸板
+
+一些型号的苹果电脑的键盘和触摸板是通过 SPI 接口访问的，在 Linux 中有相应的 applespi 驱动。
+
+## SPI vs I2C
+
+一些芯片提供了 SPI 或 I2C 的选项：共用两个信号，允许用户选择用 I2C 还是 SPI。例如 [WM8731](http://cdn.sparkfun.com/datasheets/Dev/Arduino/Shields/WolfsonWM8731.pdf)，既支持 I2C（记为 2-wire mode），又支持 SPI（记为 3-wire mode）。一般这种时候，SPI 和 I2C 就是用来配置一些寄存器的，另外可能还有一些接口，例如 WM8731 负责声音数据传输的实际上是 I2S。
