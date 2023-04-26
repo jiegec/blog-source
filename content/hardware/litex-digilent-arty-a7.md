@@ -324,6 +324,6 @@ $ ping 192.168.1.100
 除了 Digilent Arty A7，我还做了以下开发板的 LiteX 支持：
 
 - [VCU128](https://github.com/jiegec/litex-boards/tree/vcu128)，支持 UART，SDRAM 和 HBM；以太网因为是 SGMII 暂时无法解决
-- [MA703FA-35T](https://github.com/jiegec/litex-boards/tree/ma703fa-35t)，支持 UART，SDRAM，ETH 和 HDMI；尚未测试 SD 卡，估计实现难度不大
+- [MA703FA-35T](https://github.com/jiegec/litex-boards/tree/ma703fa-35t)，支持 UART，SDRAM，ETH、SD 卡和 HDMI
 - [Alinx AX7021](https://github.com/jiegec/litex-boards/tree/alinx_ax7021)，支持 UART over JTAG 和 HDMI
 - [THU Digital Design](https://lab.cs.tsinghua.edu.cn/digital-design/doc/hardware/board/)，基于 @gaoyichuan 的实现，支持 UART，SDRAM，ETH，SD 卡和 VGA
