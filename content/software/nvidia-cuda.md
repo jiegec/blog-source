@@ -58,7 +58,7 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 编译选项与显卡对应关系 https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/
 
-可以在 nvcc --help 搜索 gpu-architecture 找到：
+可以在 `nvcc --help` 搜索 gpu-architecture 找到：
 
 - cuda 11.4 sm_35 to sm_87
 - cuda 11.3 sm_35 to sm_86
