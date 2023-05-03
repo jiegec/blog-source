@@ -23,7 +23,7 @@ SPI 协议涉及到四个信号：
 
 ## 波形
 
-SPI 有不同的类型，下面讲一种比较常见的配置（即 CPOL=0，CPHA=0），在这种模式下，Master 和 Slave 都是在时钟的下降沿修改输出的数据，然后在时钟的上升沿对接收到的数据进行采样：
+SPI 有不同的类型，下面讲一种比较常见的配置（即 CPOL=0，CPHA=0），在这种模式下，Master 和 Slave 都是在时钟的下降沿修改输出的数据，然后在时钟（`sclk`）的上升沿对接收到的数据进行采样：
 
 <script type="WaveDrom">
 {
@@ -38,9 +38,9 @@ SPI 有不同的类型，下面讲一种比较常见的配置（即 CPOL=0，CPH
 }
 </script>
 
-波形图中，时钟上升沿时，数据处于稳定的状态，所以此时 Master 对 MISO 采样，Slave 对 MOSI 采样；时钟下降沿时，Master 和 Slave 都可以修改输出的数据。
+波形图中，时钟（`sclk`）上升沿时，数据处于稳定的状态，所以此时 Master 对 MISO 采样，Slave 对 MOSI 采样，可以得到稳定的数据；时钟下降沿时，Master 和 Slave 修改输出的数据。
 
-实际在 RTL 中实现的时候，Master 可以不写 negedge 逻辑，而是写一个分频器，在分频出来的负半周期里，实现数据的修改，如上图中的 `clk` 分频到 `sclk`。
+实际在 RTL 中实现的时候，Master 可以不写 negedge 逻辑，而是写一个分频器，在分频出来的负半周期里，实现数据的修改，如上图中的 `clk` 分频到 `sclk`。一般使用一个状态机来实现 SPI Master，记录当前传输到哪一个 bit，以及记录当前是 `sclk` 的正半周期还是负半周期。
 
 SPI 本身很简单，所以核心不在 SPI，而是在 SPI 之上定义的各种协议。
 
@@ -138,5 +138,7 @@ SPI 上发送的命令就两类：一类是读写寄存器，一类是读写 RX/
 一些型号的苹果电脑的键盘和触摸板是通过 SPI 接口访问的，在 Linux 中有相应的 applespi 驱动。
 
 ## SPI vs I2C
+
+SPI 和 I2C 的区别在于，前者信号更多，全双工传输；后者信号更少，半双工传输。SPI 通过 CS 信号选择 Slave 芯片，I2C 通过地址进行区分。此外 I2C 还需要 Pull up resistor，这样如果没有设备响应，就会 NACK。
 
 一些芯片提供了 SPI 或 I2C 的选项：共用两个信号，允许用户选择用 I2C 还是 SPI。例如 [WM8731](http://cdn.sparkfun.com/datasheets/Dev/Arduino/Shields/WolfsonWM8731.pdf)，既支持 I2C（记为 2-wire mode），又支持 SPI（记为 3-wire mode）。一般这种时候，SPI 和 I2C 就是用来配置一些寄存器的，另外可能还有一些接口，例如 WM8731 负责声音数据传输的实际上是 I2S。
