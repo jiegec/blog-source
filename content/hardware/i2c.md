@@ -33,8 +33,10 @@ I2C 协议涉及到两个信号：
 
 1. idle 阶段，scl 和 sda 都是 1
 2. start 阶段，首先是 sda 变成 0，之后是 scl 变成 0
-3. data/ack 阶段，在 scl 上升沿采样数据，在 scl 下降沿修改数据
+3. data/ack 阶段，在 scl 上升沿采样数据，在 scl 下降沿（准确来说，负半周期）修改数据
 4. stop 阶段，首先是 scl 变成 1，之后是 sda 变成 1
+
+传输数据的时候，需要保证 sda 在 scl 正半周期的时候保持不变。如果变了，那就是 start 或者 stop。
 
 这里的 data/ack 指的则是传输的具体内容：例如 master 要传输 7 位的地址和 1 位的读使能，响应地址的 slave 要返回 ack；之后，无论是 master 还是 slave 发送数据，接收的一方都要返回 ack。ack 是低有效，意味着 0 表示成功，1 表示失败。
 
