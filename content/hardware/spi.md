@@ -50,6 +50,14 @@ SPI Flash 是一种很常见的 SPI 外设，可以用来访问 NAND/NOR Flash�
 
 为了提升性能，很多 SPI Flash 还会提供 Dual SPI 和 Quad SPI 模式。标准的 SPI 中，Master 到 Slave 和 Slave 到 Master 分别是一根信号线，如果要继续提高性能，那就要引入更多的信号线来进行数据传输，所以 Dual SPI 就是让原来的 MISO 和 MOSI 都可以同时发送数据；Quad SPI 则是又额外添加了两个信号线来进行数据传输。
 
+常见的 SPI Flash 厂家：
+
+- Spansion -> Cypress -> Infineon
+- Numonyx -> Micron
+- Winbond
+- GigaDevice
+- Macronix
+
 ### SPI NAND Flash
 
 下面以 [Alliance Memory SPI NAND Flash Datasheet](https://www.alliancememory.com/wp-content/uploads/pdf/flash/AllianceMemory_SPI_NAND_Flash_July2020_Rev1.0.pdf) 为例子，看看通常 SPI Flash 都支持哪些命令，都是如何传输数据的。
