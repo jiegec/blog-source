@@ -6,6 +6,8 @@ category: hardware
 title: InfiniBand 学习笔记
 ---
 
+本文的内容已经整合到[知识库](/kb/networking/infiniband.html)中。
+
 ## 参考文献
 
 

@@ -6,6 +6,8 @@ category: hardware
 title: SPI 协议
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/spi.html)中。
+
 ## 背景
 
 最近数设课上，同学们开始购买外设，其中就涉及到 SPI 协议，因此顺带写一下 SPI 协议的教程，帮助同学们进行理解。

@@ -6,6 +6,8 @@ category: hardware
 title: 「教学」AXI Quad SPI 时序分析
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/spi.html)中。
+
 ## 背景
 
 之前一直没搞懂 Vivado 中 xdc 需要怎么编写，遇到一些必须要写 xdc 的时候就很头疼，不知道怎么写才可以得到正确的结果。今天分析了一下 AXI Quad SPI 的时序 xdc，终于理解了其中的含义。
