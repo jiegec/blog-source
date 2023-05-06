@@ -72,7 +72,7 @@ Run hw_server, printing all log types:
 $ hw_server -L- -l alloc,eventcore,waitpid,events,protocol,context,children,discovery,asyncreq,proxy,tcflog,elf,stack,plugin,shutdown,disasm,jtag2,jtag,pcie,slave,dpc
 ```
 
-Here `-L-` means to output the log to stderr, and the following `-l` string of parameters are various log switches. It is ran both kernels, and the difference is found by comparing the logs:
+Here `-L-` means to output the log to stderr, and the following `-l` string of parameters are various log switches. It is ran on both kernels, and the difference is found by comparing the logs:
 
 ```shell
 Success (6.2.12):
