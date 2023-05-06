@@ -6,6 +6,8 @@ category: software
 title: How a Linux 6.2.13 BUG stops Vivado from recognizing FPGA
 ---
 
+[中文版本](/software/2023/05/06/linux-regression-vivado/)
+
 ## TLDR
 
 In short, the commit introduced by Linux 6.2.13:
