@@ -169,7 +169,7 @@ Regards,
 Tad.
 ```
 
-Continue to follow the above [link] (https://lore.kernel.org/linux-mm/cb8dc31a-fef2-1d09-f133-e9f7b9f9e77a@sony.com/), and you can see that in the error log inside, there is also a similar mmap call:
+Continue to follow the above [link](https://lore.kernel.org/linux-mm/cb8dc31a-fef2-1d09-f133-e9f7b9f9e77a@sony.com/), and you can see that in the error log inside, there is also a similar mmap call:
 
 ```shell
 > mmap(NULL, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_32BIT, -1, 0) = 0x40720000
