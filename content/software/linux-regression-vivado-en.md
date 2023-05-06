@@ -186,12 +186,6 @@ mmap(NULL, 4, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_32BIT, 7, 0) = -1 ENOMEM (Can
 
 The parameter also contains MAP_32BIT, and the result is also ENOMEM. Combined with other discussions on the mailing list, it can be basically confirmed that the author ignored the situation of MAP_32BIT, and the BUG is introduced by the commit.
 
-## 总结
-
-这就是整个 Debug 流程，从 Vivado 找不到 FPGA 的表象，到内在的 Linux 内核 BUG，看起来毫不相关，但却能发现背后的逻辑。
-
-我和 @vowstar 一起完成了整个调试的流程，学到了许多，因此写了这篇博客。
-
 ## Summary
 
 This is the whole debugging process. From the fact that Vivado can't find the FPGA, to the internal Linux kernel BUG, they seem irrelevant, but we can find the connection behind the scene.
