@@ -97,3 +97,42 @@ __attribute__ ((visibility ("hidden"))) int hidden_function() {}
     4. 函数放在 .text section
 
 关于 COMMON 符号的详细内容，建议阅读 [All about COMMON symbols - MaskRay](https://maskray.me/blog/2022-02-06-all-about-common-symbols) 和 [COMMON 符号](/software/2022/07/11/archive-common-linking/)。
+
+## 链接
+
+链接要做的是把多个 obj 合并成一个可执行文件或者动态库，主要目的是将一个 obj 中定义的符号与另一个 obj 中 undefined 的符号对应起来。
+
+链接器运行时，传入若干个 obj 文件，然后按照下面的流程进行：
+
+1. 维护一个全局的符号表
+2. 循环每个 obj 文件，循环其中的符号，找到其中的 GLOBAL/WEAK 符号
+3. 把 GLOBAL/WEAK 符号插入到符号表中，处理各种情况，例如：
+    1. 如果出现两个 defined 符号冲突，报告 multiple definition 错误
+    2. 如果出现重名的 weak 符号和 strong 符号，选择保留 strong 的符号
+4. 如果存在没有找到匹配的 defined 符号的 undefined 符号，报告 undefined reference 错误
+
+符号表是在解析 obj 文件的同时动态更新的，因此，如果 A 使用了 B 的符号，那么应该把 A 放在前面，这样链接器解析 A 的时候会在符号表中创建 undefined 符号，然后 B 在后面，当链接器解析 B 的时候，就可以把 B 的 defined 符号与 A 的 undefined 符号进行匹配。
+
+## 静态库
+
+静态库将多个 .o 合并为一个 .a，并且创建了索引。具体来说，创建一个静态库的时候：
+
+```shell
+$ ar rcs libxxx.a obj1.o obj2.o obj3.o ...
+```
+
+生成的 .a 会包括所有的 .o，然后创建索引（`ar rcs` 中的 `s`，会运行 `ranlib` 命令），索引的内容是一个符号到 .o 文件的映射：
+
+```shell
+$ nm -s /lib/x86_64-linux-gnu/libc.a
+Archive index:
+__printf in printf.o
+_IO_printf in printf.o
+printf in printf.o
+__scanf in scanf.o
+scanf in scanf.o
+```
+
+因此，链接器在遇到参数是 .a 的静态库的时候，不会查看里面的每个 .o 文件，而是从 Archive index 入手，如果当前的符号表依赖了 Archive index 中的符号，那就加载相应的 .o 文件。
+
+## 动态库
