@@ -6,6 +6,8 @@ category: hardware
 title: 在命令行中进行 Vivado 仿真
 ---
 
+## 已有 Vivado 项目
+
 想要在命令行里进行 Vivado 仿真，所以查了下 Xilinx 的 UG900 文档，找到了命令行仿真的方法。首先是生成仿真所需的文件：
 
 ```tcl
@@ -33,3 +35,23 @@ quit
 ```
 
 这样就可以把仿真的波形输出到 dump.vcd 文件，拖到本地然后用 GTKWave 看。更多支持的命令可以到 UG900 里找。
+
+## 无项目模式
+
+如果没有创建 Vivado 项目，也可以单独进行仿真，具体分为三个步骤：
+
+1. 第一步，对每个源 Verilog 文件，运行 `xvlog module.v` 命令
+2. 第二步，生成 snapshot，运行 `xelab -debug all --snapshot snapshot_name top_module_name`
+3. 第三步，仿真，运行 `xsim snapshot_name`
+
+如果想要生成波形文件，编辑 `xsim.tcl` 为以下内容：
+
+```tcl
+open_vcd
+log_vcd *
+run -all
+close_vcd
+quit
+```
+
+把第三步运行的命令改为：`xsim snapshot_name -tclbatch xsim.tcl` 即可。
