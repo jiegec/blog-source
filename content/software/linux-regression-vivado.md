@@ -186,6 +186,8 @@ mmap(NULL, 4, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_32BIT, 7, 0) = -1 ENOMEM (Can
 
 赫然也是 MAP_32BIT，结果也是 ENOMEM，那说明就是这个问题了。结合邮件列表的其他讨论，基本可以确认是作者忽略了 MAP_32BIT 的情况，所以出现了问题。
 
+从 Linux 6.2.14 回滚出问题的 commit 以后，问题解决了。
+
 ## 总结
 
 这就是整个 Debug 流程，从 Vivado 找不到 FPGA 的表象，到内在的 Linux 内核 BUG，看起来毫不相关，但却能发现背后的逻辑。
