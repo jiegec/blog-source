@@ -33,7 +33,7 @@ JFlash SPI 还支持 Quad SPI 模式，可以在它的文档里找到连接方�
 
 ## JFlash SPI
 
-连接了以后，就可以在 JFlash SPI 软件中识别出 SPI Flash 了：Flash ID 0xEF 40 18。JFlash SPI 软件有一个 BUG，它会认为这个芯片是 Infineon 的 S25FL128K，而不是 Winbond 的 W25Q128，怀疑是 JFlash SPI 的 BUG。
+连接了以后，就可以在 JFlash SPI 软件中识别出 SPI Flash 了：Flash ID 0xEF 40 18。有意思的是，JFlash SPI 软件会认为这个芯片是 Infineon 的 S25FL128K，而不是 Winbond 的 W25Q128。发邮件问了一下 SEGGER，得到的回复是这两个芯片的 Flash ID 都是 0xEF4018，所以无法区分。
 
 ## flashrom
 
