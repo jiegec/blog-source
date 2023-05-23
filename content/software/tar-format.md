@@ -67,3 +67,68 @@ struct posix_header
 格式是：`length key=value\n`，然后可以有多个这样的键值对。这样就可以解决 `posix_header` 里名字长度限制的问题：只要在 PaxHeader 文件里，保存一个 key 为 path，value 为实际名字的信息。那么 tar 在看到 PaxHeader 的时候，记录下来，再遇到下一个文件的时候，就知道要用 PaxHeader 中的 path，而不是保存在 `posix_header` 中的 `name[100]`。
 
 类似地，PaxHeader 还可以存很多其他 `posix_header` 中没有的信息，例如 `atime`、`ctime` 和 `uid` 等等。完整列表可以参考 [Extended header keywords](https://www.ibm.com/docs/en/zos/2.4.0?topic=descriptions-pax-interchange-portable-archives#r4paxsh__pxchk)。
+
+# Bard
+
+Bard 讲解 Tar 格式：
+
+A tar file is an archive file format that is used to store a collection of files in a single file. The tar format is a standard format on Unix-like operating systems and is also supported by many other operating systems.
+
+A tar file consists of a series of blocks, each of which contains 512 bytes of data. Each block contains a header and a body. The header contains information about the file, such as the file name, the file size, and the file permissions. The body contains the actual contents of the file.
+
+The tar format is a simple and efficient format for storing files. It is also a portable format, which means that tar files can be moved from one computer to another without any problems.
+
+Here is a more detailed description of the tar file format:
+
+* The header of a tar file is 512 bytes long. It contains the following information:
+    * The name of the file
+    * The size of the file
+    * The permissions of the file
+    * The modification time of the file
+    * The owner of the file
+    * The group of the file
+* The body of a tar file contains the actual contents of the file. The body is padded to a multiple of 512 bytes.
+* Tar files can be compressed using a variety of compression algorithms, such as gzip, bzip2, and xz.
+
+Tar files are a versatile format that can be used for a variety of purposes. They are commonly used for backing up files, distributing software, and archiving files.
+
+Here are some of the benefits of using tar files:
+
+* Tar files are a standard format that is supported by many operating systems.
+* Tar files are a portable format, which means that they can be moved from one computer to another without any problems.
+* Tar files can be compressed using a variety of compression algorithms, which can significantly reduce the size of the archive.
+* Tar files can be easily created and managed using the tar command-line tool.
+
+If you need to store a collection of files in a single file, then a tar file is a good option to consider.
+
+Bard 讲解 PAX 扩展：
+
+The POSIX 1003.1-2001 (pax) format for tar archives supports file names longer than 256 characters by using a different format for storing file names and metadata than the traditional ustar format. In the pax format, file names are stored as null-terminated strings, which means that they can be any length up to the maximum file size supported by the underlying file system. The metadata for each file is also stored in a separate record, which allows for more flexibility in the types of metadata that can be stored.
+
+To create a tar archive in the pax format, you can use the following command:
+
+```
+tar cf - --format=pax /path/to/files
+```
+
+To extract a tar archive in the pax format, you can use the following command:
+
+```
+tar xvf - --format=pax archive.tar
+```
+
+The pax format is a more flexible and powerful format than the ustar format, and it is recommended for use when creating or extracting tar archives that may contain file names longer than 256 characters.
+
+Here are some additional details about the pax format:
+
+* File names are stored as null-terminated strings, which means that they can be any length up to the maximum file size supported by the underlying file system.
+* The metadata for each file is stored in a separate record, which allows for more flexibility in the types of metadata that can be stored.
+* The pax format is supported by most modern tar implementations.
+
+Here are some examples of file names that can be stored in the pax format:
+
+* "This is a file name with more than 256 characters."
+* "/path/to/a/file/with/a/long/name."
+* "file.with.spaces.in.its.name"
+
+The pax format is a good choice for storing file names that may be long, contain special characters, or be stored in a directory hierarchy with a long path.
