@@ -87,7 +87,7 @@ TCF 08:45:12.391: jtagpoll: cannot get port description list: JTAG device enumer
 Finally saw the error message: `jtagpoll: cannot get port description list: ftdidb_lock failed: FTDMGR wasn't properly initialized`. Use it as a keyword to search, and sure enough, someone else has encountered the same problem:
 
 - [XSDB fails with "ftdidb_lock failed: FTDMGR wasn't properly initialized"](https://support.xilinx.com/s/article/000033531?language=en_US)
-- [Linux 多用户环境下 Vivado 无法连接 Digilent JTAG 适配器的解决方法(Solution to Vivado unable to connect to Digilent JTAG adapter in Linux multi-user environment)](https://blog.t123yh.xyz:2/index.php/archives/1013)
+- [Linux 多用户环境下 Vivado 无法连接 Digilent JTAG 适配器的解决方法 (Solution to Vivado unable to connect to Digilent JTAG adapter in Linux multi-user environment)](https://blog.t123yh.xyz:2/index.php/archives/1013)
 
 We tried the solution from the first post, it didn't work. The problem pointed out in the second article is that in a multi-user environment, multiple users use the same file, and then there is a permission problem, so the file must be deleted. We tried the method in the second document, but it didn't solve the problem.
 
