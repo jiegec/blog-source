@@ -6,6 +6,8 @@ category: hardware
 title: 「教学」Wishbone 总线协议
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/bus_protocol.html)中。
+
 ## 背景
 
 最近在研究如何把 Wishbone 总线协议引入计算机组成原理课程，因此趁此机会学习了一下 Wishbone 的协议。

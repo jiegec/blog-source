@@ -6,6 +6,8 @@ category: system
 title: 802.11 学习
 ---
 
+本文的内容已经整合到[知识库](/kb/networking/wlan.html)中。
+
 ## 背景
 
 最近在学习 802.11，在博客上记录一下我的学习过程。
