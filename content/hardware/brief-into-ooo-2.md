@@ -6,6 +6,8 @@ category: hardware
 title: 浅谈乱序执行 CPU（二）
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/ooo_cpu.html)中。
+
 ## 背景
 
 之前写过一个[浅谈乱序执行 CPU]({{< relref "brief-into-ooo.md" >}})，随着学习的深入，内容越来越多，页面太长，因此把后面的一部分内容独立出来，变成了这篇博客文章。之后也许会有（三）（四）等等。
