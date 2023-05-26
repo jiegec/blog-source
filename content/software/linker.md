@@ -137,3 +137,143 @@ scanf in scanf.o
 因此，链接器在遇到参数是 .a 的静态库的时候，不会查看里面的每个 .o 文件，而是从 Archive index 入手，如果当前的符号表依赖了 Archive index 中的符号，那就加载相应的 .o 文件。
 
 ## 动态库
+
+生成动态库的方法是，编译的时候添加 `-fPIC` 选项，链接的时候添加 `-shared` 编译参数：
+
+```shell
+gcc -fPIC -c source1.c -o source1.o
+gcc -shared source1.o -o libtest.so.0.0.0
+# oneliner:
+gcc -fPIC -shared source1.c -o libtest.so.0.0.0
+```
+
+此时代码中定义的函数会出现在 Dynamic Symbol Table 中，可以用 `objdump -T` 命令查看：
+
+```shell
+$ cat source1.c
+int simple_function() {}
+$ objdump -T libtest.so.0.0.0
+
+libtest.so.0.0.0:     file format elf64-x86-64
+
+DYNAMIC SYMBOL TABLE:
+0000000000000000  w   D  *UND*  0000000000000000 __cxa_finalize
+0000000000000000  w   D  *UND*  0000000000000000 _ITM_registerTMCloneTable
+0000000000000000  w   D  *UND*  0000000000000000 _ITM_deregisterTMCloneTable
+0000000000000000  w   D  *UND*  0000000000000000 __gmon_start__
+00000000000010f9 g    DF .text  0000000000000007 simple_function
+```
+
+如果代码中用了 libc 的一些函数，那么这些函数则会以 undefined symbol 的形式出现在 Dynamic Symbol Table 中：
+
+```shell
+$ cat source1.c
+#include <stdio.h>
+int simple_function() {
+  printf("Simple function");
+}
+$ objdump -T libtest.so.0.0.0
+
+libtest.so.0.0.0:     file format elf64-x86-64
+
+DYNAMIC SYMBOL TABLE:
+0000000000000000  w   D  *UND*  0000000000000000  Base        _ITM_deregisterTMCloneTable
+0000000000000000      DF *UND*  0000000000000000 (GLIBC_2.2.5) printf
+0000000000000000  w   D  *UND*  0000000000000000  Base        __gmon_start__
+0000000000000000  w   D  *UND*  0000000000000000  Base        _ITM_registerTMCloneTable
+0000000000000000  w   DF *UND*  0000000000000000 (GLIBC_2.2.5) __cxa_finalize
+0000000000001109 g    DF .text  000000000000001b  Base        simple_function
+```
+
+### 符号版本
+
+中间出现的 Base 或者 GLIBC_2.2.5 是符号的版本号，这样做的目的是为了兼容性：假如某天 glibc 想要给一个函数添加一个新的参数，但是现有的程序编译的时候动态链接了旧版本的 glibc，新旧两个版本的函数名字一样，但是功能却不一样，如果直接让旧程序用新 glibc 的函数，就会出现问题。即使参数不变，如果函数的语义变了，也可能带来不兼容的问题。
+
+解决办法是给符号添加版本号，这样旧版本的程序会继续找到旧版本的符号，解决了兼容性的问题。例如 memcpy 在 glibc 中就有两个版本：
+
+```shell
+$ objdump -T /lib/x86_64-linux-gnu/libc.so.6 | grep memcpy
+00000000000a2b70 g    DF .text  0000000000000028 (GLIBC_2.2.5) memcpy
+000000000009bc50 g   iD  .text  0000000000000109  GLIBC_2.14  memcpy
+```
+
+在 [glibc 代码](https://github.com/bminor/glibc/blob/a363f7075125fa654342c69331e6c075518ec28c/sysdeps/x86_64/multiarch/memcpy.c#LL38C11-L38C11)中，通过 `versioned_symbol` 宏来实现：
+
+```c
+versioned_symbol (libc, __new_memcpy, memcpy, GLIBC_2_14);
+```
+
+更多关于符号版本的内容，可以阅读 [All about symbol versioning](https://maskray.me/blog/2020-11-26-all-about-symbol-versioning)。
+
+### 动态链接
+
+编译好动态链接库以后，可以在链接的时候，作为参数引入：
+
+```shell
+$ cat main.c
+extern void simple_function();
+int main() { simple_function(); }
+$ gcc main.c libtest.so.0.0.0 -o main
+$ LD_LIRBARY_PATH=$PWD ./main
+Simple function
+```
+
+可以观察一下发生了什么事情：首先，链接的时候，会找到 `libtest.so.0.0.0` 导出的符号表，发现它定义了 `main.c` 缺少的 `simple_function` 函数，因此链接不会出错。但是，函数本身没有被链接到 `main` 里面，需要在运行时去加载动态库，这样 `main` 才可以调用函数：
+
+```shell
+$ objdump -t main
+0000000000000000       F *UND*  0000000000000000              simple_function
+$ objdump -T main
+0000000000000000      DF *UND*  0000000000000000  Base        simple_function
+$ readelf -d ./main
+Dynamic section at offset 0x2dd0 contains 27 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libtest.so.0.0.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+$ ./main
+./main: error while loading shared libraries: libtest.so.0.0.0: cannot open shared object file: No such file or directory
+$ ldd ./main
+        linux-vdso.so.1 (0x00007ffe07dbc000)
+        libtest.so.0.0.0 => not found
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f83ee3fb000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f83ee602000)
+$ LD_LIBRARY_PATH=$PWD ldd ./main
+        linux-vdso.so.1 (0x00007fffb0bd5000)
+        libtest.so.0.0.0 => /tmp/libtest.so.0.0.0 (0x00007f985b3db000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f985b1db000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f985b3e7000)
+```
+
+首先可以看到，二进制里面 `simple_function` 依然属于 undefined 状态。但 `main` 也指定了 NEEDED libtest.so.0.0.0，那么在运行的时候，ld.so 就会去寻找这个动态库。由于当前路径不在系统默认路径中，直接运行是找不到的（`not found`），这里的解决办法是添加动态库的路径到 `LD_LIBRARY_PATH` 中。
+
+### soname
+
+上述例子中，编译出来的动态库名称带有完整的版本号：`major.minor.patch=0.0.0`，但一般认为，如果 `major` 版本号没有变，可以认为是 ABI 兼容的，可以更新动态库的版本，而不用重新编译程序。但是，上面的例子里，`readelf -d main` 显示 NEEDED 的动态库名字里也包括了完整的版本号，那就没有办法寻找到同 major 的不同版本了。
+
+解决办法是让同 major 的不同版本共享同一个 soname，常见的做法就是只保留 major 版本号：`libtest.so.0`，而不是 `libtest.so.0.0.0`。在编译动态库的时候，通过 `-Wl,-soname,libtest.so.0` 参数来指定 soname：
+
+```shell
+$ gcc -fPIC -shared source1.c -Wl,-soname,libtest.so.0 -o libtest.so.0.0.0
+$ gcc main.c libtest.so.0.0.0 -o main
+$ readelf -d main
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libtest.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+```
+
+此时可以看到 NEEDED 的动态库名字已经是预期的 `libtest.so.0`，这意味着 `main` 函数在动态加载的时候，不考虑小版本，只指定了 `major` 版本为 0 的 libtest 动态库。但单是这样还不能运行：
+
+```shell
+$ LD_LIBRARY_PATH=$PWD ./main
+./main: error while loading shared libraries: libtest.so.0: cannot open shared object file: No such file or directory
+```
+
+毕竟 ld.so 要找的是 `libtest.so.0`，但是文件系统里只有 `libtest.so.0.0.0`，最后的这一步用符号链接来实现：
+
+```shell
+$ ln -s libtest.so.0.0.0 libtest.so.0
+$ LD_LIBRARY_PATH=$PWD ./main
+Simple function
+```
+
+这样，如果哪天发布了 libtest.so 的 0.0.1 版本，只需要修改符号链接 `libtest.so.0 -> libtest.so.0.0.1` 即可，不需要重新编译 `main` 程序。
