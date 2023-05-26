@@ -6,6 +6,8 @@ category: hardware
 title: CHI 学习笔记
 ---
 
+本文的内容已经整合到[知识库](/kb/hardware/cache_coherence_protocol.html)中。
+
 ## CHI 介绍
 
 CHI 协议是 AMBA 5 标准中的缓存一致性协议，前身是 ACE 协议。最新的 CHI 标准可以从 [AMBA 5 CHI Architecture Specification](https://developer.arm.com/documentation/ihi0050/latest) 处下载。
