@@ -4,7 +4,6 @@ date: 2023-05-06 12:09:00 +0800
 tags: [linker,ld]
 category: software
 title: 链接器的工作原理
-draft: true
 ---
 
 ## 背景
