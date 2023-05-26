@@ -277,3 +277,103 @@ Simple function
 ```
 
 这样，如果哪天发布了 libtest.so 的 0.0.1 版本，只需要修改符号链接 `libtest.so.0 -> libtest.so.0.0.1` 即可，不需要重新编译 `main` 程序。
+
+想要查看动态库的 soname，可以用 `readelf -d` 查看：
+
+```shell
+$ readelf -d libtest.so.0.0.0
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000e (SONAME)             Library soname: [libtest.so.0]
+```
+
+### dynamic linker/loader
+
+前文讲到，动态链接库参与链接的时候，实际上函数本身没有链接进可执行程序，最后的加载是由 dynamic linker/loader 完成的，在 linux 上是 ld.so，在 macOS 上是 dyld。它在程序启动的时候，负责根据 NEEDED 信息，知道程序要加载哪些动态库，然后去文件系统里找，如果找到了，就把相应的动态库加载到内存中，然后把可执行程序中对动态链接库的函数调用，变成真实的地址。相当于把原来静态链接的时候，链接器做的事情，挪到了程序运行开始时，即 linking at run time。
+
+那么这里就涉及到一个问题了：NEEDED 只记录了文件名，但是却没有路径。这意味着动态库也需要用类似 PATH 的机制，在一些路径里去寻找一个想要的动态库。例如前文修改 `LD_LIBRARY_PATH`，实际上就是告诉 ld.so，可以在这个环境变量指向的路径中寻找动态库的文件。
+
+而用系统包管理器安装的动态库，一般不需要修改 `LD_LIBRARY_PATH` 也可以用。这是靠 `/etc/ld.so.cache` 文件实现的。在动态库相关的问题里，经常会看到运行 `ldconfig` 命令。这个命令的用途是，收集系统目录里的动态库，建立一个索引，保存在 `/etc/ld.so.cache` 文件中。然后 ld.so 直接去 `/etc/ld.so.cache` 中寻找 NEEDED 的动态库对应的文件系统中的路径，不需要再重新扫描一遍目录了。所以 `/etc/ld.so.cache` 就是一个文件系统中动态库的缓存，这也就是为啥叫做 `ld.so.cache`。
+
+既然是缓存，就要考虑缓存和实际对不上的情况，这就是为啥要运行 `ldconfig` 命令更新缓存。当然了，包管理器会自动运行 `ldconfig`，只有自己 `make install` 一些库的时候，才需要手动进行 `ldconfig`。
+
+`ldconfig` 会从 `/etc/ld.so.conf` 中配置的路径中扫描动态链接库，常见的路径包括：
+
+- /lib/x86_64-linux-gnu
+- /usr/lib/x86_64-linux-gnu
+- /usr/local/lib
+- /usr/local/lib/x86_64-linux-gnu
+
+包管理器安装的动态库基本都在这些目录中。可以用 `ldconfig -p` 来查看缓存 `ld.so.cache` 的内容：
+
+```shell
+$ /sbin/ldconfig -p
+1967 libs found in cache `/etc/ld.so.cache'
+        libz3.so.4 (libc6,x86-64) => /lib/x86_64-linux-gnu/libz3.so.4
+        libz3.so (libc6,x86-64) => /lib/x86_64-linux-gnu/libz3.so
+        ld-linux.so.2 (ELF) => /lib/i386-linux-gnu/ld-linux.so.2
+        ld-linux.so.2 (ELF) => /lib32/ld-linux.so.2
+        ld-linux.so.2 (ELF) => /lib/ld-linux.so.2
+        ld-linux-x86-64.so.2 (libc6,x86-64) => /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+        ld-linux-x32.so.2 (libc6,x32) => /libx32/ld-linux-x32.so.2
+```
+
+维护了 soname 到文件系统中动态库文件的映射。并且添加了一些属性来帮助 ld.so 进行过滤和选择。
+
+### rpath
+
+除了 LD_LIBRARY_PATH 和 `/etc/ld.so.cache`，ld.so 还可以通过 rpath 来寻找动态库。设想要打包一个 Qt 程序，希望在别人的机器上可以直接跑，但是别人的机器上不一定有 Qt，因此需要把程序和 Qt 的各种动态库打包在一起。但是，这时候 Qt 的动态库不会在系统路径中，不会被 `ldconfig` 索引。一种办法就是写一个脚本，设置一下 `LD_LIBRARY_PATH`，再启动 Qt 程序。另一种办法，就是利用 rpath：在程序中就告诉 ld.so 去哪里找它依赖（NEEDED）的动态库。这个路径可以是相对于可执行文件的路径。
+
+设置 `rpath` 的方法是，编译的时候添加 `-Wl,-rpath,RPATH` 选项，例如：
+
+```shell
+$ gcc main.c libtest.so.0.0.0 -o main
+$ ./main
+./main: error while loading shared libraries: libtest.so.0: cannot open shared object file: No such file or directory
+$ gcc main.c libtest.so.0.0.0 -Wl,-rpath,$PWD -o main
+$ ./main
+Simple function
+$ readelf -d main
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libtest.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000001d (RUNPATH)            Library runpath: [/tmp]
+$ gcc main.c libtest.so.0.0.0 -Wl,-rpath,'$ORIGIN' -o main
+$ ./main
+Simple function
+$ readelf -d main
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libtest.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN]
+```
+
+第一个编译命令不带 `rpath`，因此 ld.so 会找不到动态库，可以添加 LD_LIBRARY_PATH 的办法来解决。第二个和第三个编译命令带 `rpath`，其中第二个使用了绝对路径，第三个使用了相对路径（`$ORIGIN` 表示可执行文件所在的目录）。那么，ld.so 在寻找 libtest.so.0 的时候，会在 RUNPATH 中进行寻找。
+
+### 调试
+
+动态链接经常会遇到各种找不到动态库的问题，需要使用一些工具来帮助找到问题。最常用的就是 `ldd` 命令，显示一个程序依赖的动态库以及路径：
+
+```shell
+$ ldd $(which vim)
+        linux-vdso.so.1 (0x00007fff599a4000)
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f0504dfc000)
+        libtinfo.so.6 => /lib/x86_64-linux-gnu/libtinfo.so.6 (0x00007f0504dc9000)
+        libselinux.so.1 => /lib/x86_64-linux-gnu/libselinux.so.1 (0x00007f0504d9b000)
+        libsodium.so.23 => /lib/x86_64-linux-gnu/libsodium.so.23 (0x00007f05049a6000)
+        libacl.so.1 => /lib/x86_64-linux-gnu/libacl.so.1 (0x00007f0504d90000)
+        libgpm.so.2 => /lib/x86_64-linux-gnu/libgpm.so.2 (0x00007f050499e000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f05047bd000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f0504f07000)
+        libpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007f0504723000)
+        libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f0504d89000)
+```
+
+当然了，`ldd` 有一定的风险，不建议在不信任的程序上运行 `ldd`，详情见 [ldd.1](https://man7.org/linux/man-pages/man1/ldd.1.html)。更稳妥的方法是用 `objdump -p` 或者 `readelf -d`：
+
+```shell
+$ objdump -p $(which vim) | grep NEEDED
+$ readelf -d $(which vim) | grep NEEDED
+```
+
+但是 ldd 可以打印出动态库依赖的动态库，而 objdump 和 readelf 只会打印直接依赖。
