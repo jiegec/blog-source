@@ -583,3 +583,5 @@ dyld[17486]: <FB664621-26AE-3F46-8F5A-DD5D890A5CE7> /usr/lib/liboah.dylib
 dyld[17486]: <54E8FBE1-DF0D-33A2-B8FA-356565C12929> /usr/lib/libc++.1.dylib
 Simple function
 ```
+
+与 Linux 上的 `/etc/ld.so.cache` 类似，macOS 也针对动态库的加载做了优化，但是 macOS 做的更彻底：由于 macOS 的系统库是只读的，于是直接把所有系统库打包成一个文件，这个文件就是 dyld shared cache。可以用 [keith/dyld-shared-cache-extractor](https://github.com/keith/dyld-shared-cache-extractor) 来还原出内部的 dylib。在 macOS Ventura 13.4 中，可以解出 2499 个动态库。
