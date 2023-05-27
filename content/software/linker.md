@@ -585,3 +585,18 @@ Simple function
 ```
 
 与 Linux 上的 `/etc/ld.so.cache` 类似，macOS 也针对动态库的加载做了优化，但是 macOS 做的更彻底：由于 macOS 的系统库是只读的，于是直接把所有系统库打包成一个文件，这个文件就是 dyld shared cache。可以用 [keith/dyld-shared-cache-extractor](https://github.com/keith/dyld-shared-cache-extractor) 来还原出内部的 dylib。在 macOS Ventura 13.4 中，可以解出 2499 个动态库。
+
+## relocation
+
+链接器找到符号以后，就需要进行 relocation。在编译的时候，为了准备未来链接时的需要，提前做了一些准备：因为符号的地址还不知道，所以生成一条指令，指令的立即数内包括了符号的地址的信息，但此时还不知道立即数应该是多少，所以编译器把指令的立即数填充为 0，同时生成一个 relocation。当链接器看到 relocation 的时候，在已经排好所有符号的地址的时候，就可以按照 relocation 更新代码。
+
+由于动态链接库可能会被加载到不同的基地址上，所以为了解决动态链接库内部的符号链接问题，采用 PIC 的方法，即通过指令本身的地址进行相对运算，计算出另一个符号的地址。这样动态链接库加载到不同地址的时候，内部的符号之间都可以正常引用，不需要修改指令，使得动态库可以在不同的进程间共享。
+
+但是还需要考虑动态链接库使用了其他动态链接库的符号（全局变量）。这个时候，PIC 的方法失效了，因为无法确定其他动态链接库会加载到什么地址。此时的解决办法是用 GOT，程序在引用符号的时候，去 GOT 里查找实际的地址。动态链接器负责填 GOT 表的内容，这样动态库本身还是不会修改，只会修改 GOT。
+
+如果动态链接库调用了其他动态链接库的函数，也可以用类似的方法，但是实践起来稍有不同。函数也在 GOT 表的 PLT 表里有实际的地址，但动态链接库不会自动替换，而是让编译器生成一个 PLT stub。PLT stub 做的事情是：
+
+1. 如果初始化过，那么直接跳转到实际的函数
+2. 如果没有初始化过，调用 ld.so 提供的函数，函数会找到实际的函数，并且对 PLT 进行初始化
+
+这一系列的做法都是为了让动态库的大部分内容保持不变，只修改少部分数据使得 relocation 可以工作。完整的内容建议阅读[PLT and GOT - the key to code sharing and dynamic libraries](https://www.technovelty.org/linux/plt-and-got-the-key-to-code-sharing-and-dynamic-libraries.html)。
