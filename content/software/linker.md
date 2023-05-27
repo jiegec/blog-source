@@ -170,6 +170,7 @@ $ cat source1.c
 #include <stdio.h>
 int simple_function() {
   printf("Simple function");
+  return 0;
 }
 $ objdump -T libtest.so.0.0.0
 
@@ -375,4 +376,163 @@ $ objdump -p $(which vim) | grep NEEDED
 $ readelf -d $(which vim) | grep NEEDED
 ```
 
-但是 ldd 可以打印出动态库依赖的动态库，而 objdump 和 readelf 只会打印直接依赖。
+但是 ldd 可以打印出动态库依赖的动态库，而 objdump 和 readelf 只会打印直接依赖。也可以设置环境变量，让 ld.so 打印出加载的动态库：
+
+```shell
+$ export LD_DEBUG=files
+$ ./main
+   2243766:     file=libtest.so.0 [0];  needed by ./main [0]
+   2243766:     file=libtest.so.0 [0];  generating link map
+   2243766:       dynamic: 0x00007fcd57c23df8  base: 0x00007fcd57c20000   size: 0x0000000000004018
+   2243766:         entry: 0x00007fcd57c20000  phdr: 0x00007fcd57c20040  phnum:                  9
+   2243766:
+   2243766:     file=libc.so.6 [0];  needed by ./main [0]
+   2243766:     file=libc.so.6 [0];  generating link map
+   2243766:       dynamic: 0x00007fcd57bf1b60  base: 0x00007fcd57a20000   size: 0x00000000001e0f50
+   2243766:         entry: 0x00007fcd57a47350  phdr: 0x00007fcd57a20040  phnum:                 14
+   2243766:
+   2243766:     calling init: /lib64/ld-linux-x86-64.so.2
+   2243766:     calling init: /lib/x86_64-linux-gnu/libc.so.6
+   2243766:     calling init: /tmp/libtest.so.0
+   2243766:     initialize program: ./main
+   2243766:     transferring control: ./main
+   2243766:     calling fini: ./main [0]
+   2243766:     calling fini: /tmp/libtest.so.0 [0]
+Simple function
+```
+
+### macOS
+
+macOS 与 Linux 下动态库的使用方法基本类似，但有一些细微的差别。首先是 macOS 上的动态库的后缀用的是 dylib 而不是 so：
+
+```shell
+$ gcc -fPIC -shared source1.c -o libtest.dylib
+$ gcc main.c libtest.dylib -o main
+$ objdump -t libtest.dylib
+libtest.dylib:  file format mach-o arm64
+
+SYMBOL TABLE:
+0000000000003f7c g     F __TEXT,__text _simple_function
+0000000000000000         *UND* _printf
+$ objdump -t main
+main:   file format mach-o arm64
+
+SYMBOL TABLE:
+0000000100000000 g     F __TEXT,__text __mh_execute_header
+0000000100003f94 g     F __TEXT,__text _main
+0000000000000000         *UND* _simple_function
+```
+
+虽然这里用的是 gcc 命令，但实际上 macOS 上的 gcc 命令是 clang。这里直接用 clang 命令也是一样的。可以看到，这里的可执行文件中 `simple_function` 函数也是处于 undefined 状态，需要在运行时由 `libtest.dylib` 提供。
+
+macOS 下的动态链接器是 dyld，它会解析 MachO 的 Load command 去加载动态库：
+
+```shell
+$ objdump -p main
+Load command 13
+          cmd LC_LOAD_DYLIB
+      cmdsize 40
+         name libtest.dylib (offset 24)
+   time stamp 2 Thu Jan  1 08:00:02 1970
+      current version 0.0.0
+compatibility version 0.0.0
+Load command 14
+          cmd LC_LOAD_DYLIB
+      cmdsize 56
+         name /usr/lib/libSystem.B.dylib (offset 24)
+   time stamp 2 Thu Jan  1 08:00:02 1970
+      current version 1319.100.3
+compatibility version 1.0.0
+```
+
+这就相当于 Linux 中的 NEEDED，告诉动态链接器要加载哪些动态库。可以用 `otool -L` 或者 `dyld_info` 命令列出可执行文件所有依赖的动态库：
+
+```shell
+$ otool -L main
+main:
+        libtest.dylib (compatibility version 0.0.0, current version 0.0.0)
+        /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1319.100.3)
+$ dyld_info -dependents main
+main [arm64]:
+    -dependents:
+        attributes     load path
+                       libtest.dylib
+                       /usr/lib/libSystem.B.dylib
+```
+
+macOS 也提供了 rpath 的机制，在 `LC_LOAD_DYLIB` 中指定 `@rpath`，然后通过 `LC_RPATH` 指定有哪些 rpath，那么动态链接器就可以根据可执行文件的相对路径去寻找动态库：
+
+```shell
+$ objdump -p /Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron
+Load command 8
+          cmd LC_RPATH
+      cmdsize 48
+         path @executable_path/../Frameworks (offset 12)
+Load command 13
+          cmd LC_LOAD_DYLIB
+      cmdsize 80
+         name @rpath/Electron Framework.framework/Electron Framework (offset 24)
+   time stamp 0 Thu Jan  1 08:00:00 1970
+      current version 22.5.2
+compatibility version 0.0.0
+Load command 14
+          cmd LC_LOAD_DYLIB
+      cmdsize 56
+         name /usr/lib/libSystem.B.dylib (offset 24)
+   time stamp 0 Thu Jan  1 08:00:00 1970
+      current version 1311.100.3
+$ otool -L /Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron
+/Applications/Visual Studio Code.app/Contents/MacOS/Electron:
+        @rpath/Electron Framework.framework/Electron Framework (compatibility version 0.0.0, current version 22.5.2)
+        /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1311.100.3)
+```
+
+也可以让 dyld 动态打印日志：
+
+```shell
+$ export DYLD_PRINT_LIBRARIES=1
+$ ./main
+dyld[17486]: <F4E9A9E0-E958-3D0C-8D5A-7DC3ABA8E8C4> /Volumes/Data/temp/main
+dyld[17486]: <DD5E30FB-753D-3746-8034-50C56971C47B> /Volumes/Data/temp/libtest.dylib
+dyld[17486]: <4BEBCD61-9E62-39BE-BFD2-C7D0689A826D> /usr/lib/libSystem.B.dylib
+dyld[17486]: <FEA038BA-CC59-3085-93B0-AB8437AA6CE2> /usr/lib/system/libcache.dylib
+dyld[17486]: <34AC4B05-E145-3C58-8C24-1190770EAB31> /usr/lib/system/libcommonCrypto.dylib
+dyld[17486]: <1D6552C4-49C4-374F-8371-198BCFC4174D> /usr/lib/system/libcompiler_rt.dylib
+dyld[17486]: <E61C2838-9EA2-33CE-B96B-85FF38DB7744> /usr/lib/system/libcopyfile.dylib
+dyld[17486]: <4A9F9101-A1B1-3FB7-89EA-746CFCE95099> /usr/lib/system/libcorecrypto.dylib
+dyld[17486]: <C2FD3094-B465-39A4-B774-16583FF53C4B> /usr/lib/system/libdispatch.dylib
+dyld[17486]: <A2947B47-B494-36D4-96C6-95977FFB51FB> /usr/lib/system/libdyld.dylib
+dyld[17486]: <C4512BA5-7CA3-30AE-9793-5CC5417F0FC3> /usr/lib/system/libkeymgr.dylib
+dyld[17486]: <91A88FDF-FD27-32AF-A2CE-70F7E4065C3B> /usr/lib/system/libmacho.dylib
+dyld[17486]: <A2D17FF6-CBC6-3D19-89E1-F5E57191E8A3> /usr/lib/system/libquarantine.dylib
+dyld[17486]: <2213EE66-253B-3234-AA4D-B46F07C3540E> /usr/lib/system/libremovefile.dylib
+dyld[17486]: <68D76774-F8B4-36EA-AA35-0AB4044D56C7> /usr/lib/system/libsystem_asl.dylib
+dyld[17486]: <5541DF62-A795-3F57-A54C-1AEC4DD3E44C> /usr/lib/system/libsystem_blocks.dylib
+dyld[17486]: <95A70E20-1DF3-3DDF-900C-315ED0B2C067> /usr/lib/system/libsystem_c.dylib
+dyld[17486]: <BEB9DE52-6F49-370A-B45B-CBE6780E7083> /usr/lib/system/libsystem_collections.dylib
+dyld[17486]: <121F8B4D-3939-300D-BE22-979D6B476361> /usr/lib/system/libsystem_configuration.dylib
+dyld[17486]: <7CE9526A-B673-363A-8905-71D080974C0E> /usr/lib/system/libsystem_containermanager.dylib
+dyld[17486]: <54BF691A-0908-3548-95F2-34CFD58E5617> /usr/lib/system/libsystem_coreservices.dylib
+dyld[17486]: <579733C7-851D-3B3E-83B5-FD203BA50D02> /usr/lib/system/libsystem_darwin.dylib
+dyld[17486]: <4EFF0147-928F-3321-8268-655FE71DC209> /usr/lib/system/libsystem_dnssd.dylib
+dyld[17486]: <5068382F-DC0F-3824-8ED5-18A24B35FEF9> /usr/lib/system/libsystem_featureflags.dylib
+dyld[17486]: <4448FB99-7B1D-3E15-B7EE-3340FF0DA88D> /usr/lib/system/libsystem_info.dylib
+dyld[17486]: <82E529F5-C4DF-3D42-9113-3A4F87FEF1A0> /usr/lib/system/libsystem_m.dylib
+dyld[17486]: <0AC99C6E-CB01-30E5-AB10-65AB990652A5> /usr/lib/system/libsystem_malloc.dylib
+dyld[17486]: <3B2CC4A9-A5EE-3627-8293-4AF4D891074E> /usr/lib/system/libsystem_networkextension.dylib
+dyld[17486]: <E4AA6E5F-2501-3382-BFB3-64464E6D8254> /usr/lib/system/libsystem_notify.dylib
+dyld[17486]: <99FDEFF2-36F1-3436-B8B2-DE0003B5A4BF> /usr/lib/system/libsystem_sandbox.dylib
+dyld[17486]: <E529D1AC-D20A-3308-9033-E1712A9C655E> /usr/lib/system/libsystem_secinit.dylib
+dyld[17486]: <42F503E2-9273-360A-A086-C1B19BBD3962> /usr/lib/system/libsystem_kernel.dylib
+dyld[17486]: <F80C6971-C080-31F5-AB6E-BE01311154AF> /usr/lib/system/libsystem_platform.dylib
+dyld[17486]: <46D35233-A051-3F4F-BBA4-BA56DDDC4D1A> /usr/lib/system/libsystem_pthread.dylib
+dyld[17486]: <F9F1F4BE-D97F-37A7-8382-552C22DF1BB4> /usr/lib/system/libsystem_symptoms.dylib
+dyld[17486]: <3F3E75B7-F0A7-30BB-9FD7-FD1307FE6055> /usr/lib/system/libsystem_trace.dylib
+dyld[17486]: <E3BF7A76-2CBE-3DB9-8496-8BB6DBBE0CFC> /usr/lib/system/libunwind.dylib
+dyld[17486]: <F3F19227-FF8F-389C-A094-6F4C16E458AF> /usr/lib/system/libxpc.dylib
+dyld[17486]: <52AA13E2-567C-36C2-9494-7B892FDBF245> /usr/lib/libc++abi.dylib
+dyld[17486]: <5BEAFA2B-3AF4-3ED2-B054-1F58A7C851EF> /usr/lib/libobjc.A.dylib
+dyld[17486]: <FB664621-26AE-3F46-8F5A-DD5D890A5CE7> /usr/lib/liboah.dylib
+dyld[17486]: <54E8FBE1-DF0D-33A2-B8FA-356565C12929> /usr/lib/libc++.1.dylib
+Simple function
+```
