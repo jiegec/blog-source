@@ -287,6 +287,53 @@ $ readelf -d libtest.so.0.0.0
  0x000000000000000e (SONAME)             Library soname: [libtest.so.0]
 ```
 
+### cuda
+
+在 CUDA 中，如果程序需要访问 NVML 或者一些底层的 CUDA 函数，会链接到 libcuda（而不是 libcudart），但是如果在 CUDA 目录下寻找 libcuda，只会找到一个 `targets/x86_64-linux/lib/stubs/libcuda.so`，里面的函数都是空的，只有一个 `retq` 指令：
+
+```shell
+$ objdump -S ./targets/x86_64-linux/lib/stubs/libcuda.so
+./targets/x86_64-linux/lib/stubs/libcuda.so:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000007370 <cuGetErrorString>:
+    7370:       b8 22 00 00 00          mov    $0x22,%eax
+    7375:       c3                      retq
+    7376:       66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+    737d:       00 00 00
+
+0000000000007380 <cuGetErrorName>:
+    7380:       b8 22 00 00 00          mov    $0x22,%eax
+    7385:       c3                      retq
+    7386:       66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+    738d:       00 00 00
+```
+
+这个 `libcuda.so` 用途就是导出了所有可能会用到的符号，并且设置 `soname` 为 `libcuda.so.1`：
+
+```shell
+$ readelf -d ./targets/x86_64-linux/lib/stubs/libcuda.so
+
+Dynamic section at offset 0xdf30 contains 8 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000e (SONAME)             Library soname: [libcuda.so.1]
+```
+
+这就意味着，`ld.so` 会去寻找 `libcuda.so.1`，而不是 `libcuda`。前者才是真正实现了 CUDA Driver 的动态库：
+
+```shell
+$ dpkg -S libcuda.so.1
+libnvidia-compute-470:amd64: /usr/lib/x86_64-linux-gnu/libcuda.so.1
+$ ls -alh /usr/lib/x86_64-linux-gnu/libcuda.so.1
+lrwxrwxrwx 1 root root 21 May 13  2022 /usr/lib/x86_64-linux-gnu/libcuda.so.1 -> libcuda.so.470.129.06
+```
+
+而 CUDA Driver 的实现和 NVIDIA Driver 的版本是绑定的，因此 `libcuda.so.1` 是软链接，软链接到对应驱动版本的 `libcuda.so`。这样做的好处就是，编译 CUDA 的机器，不需要安装 NVIDIA Driver，CUDA 也不需要自己带一份 CUDA Driver 进来，节省了空间。
+
+像 pytorch 这种支持 CUDA 的程序，不会在链接的时候链接到 `libcuda` 上，而是在用户需要的时候，去 `dlopen`。这样即使用户的电脑上没有装 NVIDIA Driver，也可以运行支持 CUDA 的 pytorch。
+
 ### dynamic linker/loader
 
 前文讲到，动态链接库参与链接的时候，实际上函数本身没有链接进可执行程序，最后的加载是由 dynamic linker/loader 完成的，在 linux 上是 ld.so，在 macOS 上是 dyld。它在程序启动的时候，负责根据 NEEDED 信息，知道程序要加载哪些动态库，然后去文件系统里找，如果找到了，就把相应的动态库加载到内存中，然后把可执行程序中对动态链接库的函数调用，变成真实的地址。相当于把原来静态链接的时候，链接器做的事情，挪到了程序运行开始时，即 linking at run time。
