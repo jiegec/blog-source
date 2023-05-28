@@ -21,6 +21,8 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 可以通过 apt show cuda-runtime-x-x 找到：
 
+- cuda 12.1 >= 530
+- cuda 12.0 >= 525
 - cuda 11.7 >= 515
 - cuda 11.6 >= 510
 - cuda 11.5 >= 495
@@ -44,6 +46,8 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 可以在 cuda/include/crt/host_config.h 文件里找到：
 
+- cuda 12.1: gcc <= 12, 3.2 < clang < 16
+- cuda 12.0: gcc <= 12, 3.2 < clang < 15
 - cuda 11.5: gcc <= 11
 - cuda 11.4: gcc <= 10
 - cuda 11.3: gcc <= 10, 3.2 < clang < 12
@@ -60,6 +64,7 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 可以在 `nvcc --help` 搜索 gpu-architecture 找到：
 
+- cuda 12.0 sm_50 to sm_90a
 - cuda 11.4 sm_35 to sm_87
 - cuda 11.3 sm_35 to sm_86
 - cuda 11.1 sm_35 to sm_86
@@ -71,6 +76,7 @@ title: NVIDIA 驱动和 CUDA 版本信息速查
 
 显卡的 Compute Capability 可以在 https://developer.nvidia.com/cuda-gpus 找到：
 
+- H100: 90
 - A100: 80
 - V100: 70
 - P100: 60
