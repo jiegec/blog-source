@@ -600,3 +600,9 @@ Simple function
 2. 如果没有初始化过，调用 ld.so 提供的函数，函数会找到实际的函数，并且对 PLT 进行初始化
 
 这一系列的做法都是为了让动态库的大部分内容保持不变，只修改少部分数据使得 relocation 可以工作。完整的内容建议阅读[PLT and GOT - the key to code sharing and dynamic libraries](https://www.technovelty.org/linux/plt-and-got-the-key-to-code-sharing-and-dynamic-libraries.html)。
+
+### relocation truncated to fit
+
+常见的 `relocation truncated to fit` 错误的意思是，链接器在进行 relocation 的时候，无法把想要的值填入到编译器预留的立即数里面。这是因为，编译器在编译的时候，其实不知道偏移具体是多少，那么这时候就可以选择用不同的指令序列，有的指令序列比较短，但是立即数位数也比较少；有的指令序列比较长，但是可以访问更大范围的偏移。如果编译器选择了比较小的范围，但是链接器链接的时候，发现放不下，就会出现 `relocation truncated to fit` 的错误。
+
+解决方法，一是查看是否真的有那么大的偏移，例如是否不小心分配了一个超级大的全局数组，是的话是否砍掉一些大小；二是修改 Code Model，也就是让编译器选择更大的 Code Model，以更长的指令的代价，支持更大范围的 relocation。完整内容推荐阅读 [Relocation overflow and code models by MaskRay](https://maskray.me/blog/2023-05-14-relocation-overflow-and-code-models)。
