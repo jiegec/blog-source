@@ -77,6 +77,12 @@ $ /Applications/MiKTeX\ Console.app/Contents/bin/miktex-fc-conflist
 </fontconfig>
 ```
 
+UPDATE: 新版本 macOS 中，路径建议加上 `/System/Library/AssetsV2/com_apple_MobileAsset_Font7`：
+
+```xml
+<dir>/System/Library/AssetsV2/com_apple_MobileAsset_Font7</dir>
+```
+
 这样，就可以找到 Kaiti SC 了：
 
 ```shell
