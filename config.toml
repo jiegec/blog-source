@@ -86,3 +86,6 @@ googleAnalytics = "G-3109FRSVTT"
 [outputFormats.RSS]
 mediatype = "application/rss"
 baseName = "feed"
+
+[services.RSS]
+limit = 50
