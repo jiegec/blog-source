@@ -27,7 +27,7 @@ SPI 协议涉及到四个信号：
 
 SPI 有不同的类型，下面讲一种比较常见的配置（即 CPOL=0，CPHA=0），在这种模式下，Master 和 Slave 都是在时钟的下降沿修改输出的数据，然后在时钟（`sclk`）的上升沿对接收到的数据进行采样：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -38,7 +38,7 @@ SPI 有不同的类型，下面讲一种比较常见的配置（即 CPOL=0，CPH
       { name: "cs_n", wave: "10......1"},
     ]
 }
-</script>
+```
 
 波形图中，时钟（`sclk`）上升沿时，数据处于稳定的状态，所以此时 Master 对 MISO 采样，Slave 对 MOSI 采样，可以得到稳定的数据；时钟下降沿时，Master 和 Slave 修改输出的数据。
 

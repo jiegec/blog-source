@@ -16,7 +16,7 @@ title: 「教学」异步 SRAM 时序
 
 寄存器在时钟的上升沿（下图的 `a`）进行采样，为了保证采样的稳定性，输入引脚 `D` 需要在时钟上升沿之前 \\(t_{su}\\) 的时刻（下图的 `b`）到时钟上升沿之后 \\(t_h\\) 的时刻（下图的 `c`）保持稳定，输出引脚 `Q` 会在时钟上升沿之后 \\(t_{cko}\\) 的时刻（下图的 `d`）变化：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -25,7 +25,7 @@ title: 「教学」异步 SRAM 时序
       { name: "Q", wave: "x...3.", node: "....d"}
     ]
 }
-</script>
+```
 
 ## 接口
 
@@ -58,7 +58,7 @@ title: 「教学」异步 SRAM 时序
 
 简单起见，先设置一个非常快的 SRAM 控制器频率：500MHz，每个周期 2ns，假如在 `a` 时刻地址寄存器输出了当前要读取的地址，那么数据会在一段时间后变为合法。这里 `a->b` 是读取周期时间 \\(t_{RC}\\)，`a->c` 是地址到数据的延迟 \\(t_{AA}\\)，`b->d` 是地址改变后数据的保持时间 \\(t_{OH}\\)。
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -67,11 +67,11 @@ title: 「教学」异步 SRAM 时序
       { name: "data", wave: "xxx4....x", node: "...c....d"},
     ]
 }
-</script>
+```
 
 那么根据这个图，很自然的想法是，我先给出地址，然后数周期，数了五个周期后，此时 \\(t_{RC}=10\mathrm{ns}\\)，然后我就在 `e` 的上升沿上把输入数据锁存到寄存器中，例如下面的波形：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -81,11 +81,11 @@ title: 「教学」异步 SRAM 时序
       { name: "data_reg", wave: "x.....4..", node: "......f"},
     ]
 }
-</script>
+```
 
 这个时候 `data_reg` 的 setup 时间是 `c->e`，hold 时间是 `e->d`。从图中看起来还有很多的余量，但如果考虑最坏情况，\\(t_{AA}=10\mathrm{ns}\\)，就会变成下面的波形：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -95,7 +95,7 @@ title: 「教学」异步 SRAM 时序
       { name: "data_reg", wave: "x.....x4.", node: "......."},
     ]
 }
-</script>
+```
 
 这个时候在 `e` 时刻不再满足 setup 约束。这个问题在仿真中，可能会“极限操作”表现为没有问题，但实际上，地址从 FPGA 到 SRAM 的延迟有：
 
@@ -115,7 +115,7 @@ title: 「教学」异步 SRAM 时序
 
 把上面一串加起来，已经有大概 4 到 5ns 了。考虑了延迟以后，上面的图可能实际上是这个样子：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -126,13 +126,13 @@ title: 「教学」异步 SRAM 时序
       { name: "data_fpga", wave: "x.......4.x"},
     ]
 }
-</script>
+```
 
 考虑了这么多实际的延迟因素以后，会发现这个事情并不简单，需要预先估计出数据在大概什么时候稳定，这时候才能保证数据寄存器上保存的数据是正确的。
 
 转念一想，我们的 SRAM Controller 肯定不会跑在 500MHz 这么高的频率下。假如采用 100MHz，可以每两个周期进行一次读操作：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -143,13 +143,13 @@ title: 「教学」异步 SRAM 时序
       { name: "data_fpga", wave: "x.......4.....x."},
     ]
 }
-</script>
+```
 
 此时在 `b` 时钟上边沿对 `data_fpga` 采样就可以保证满足时序的要求。注意这里第二个周期（上图的 `a`）不能给出第二次读取的地址，否则稳定时间太短，不满足 hold 约束。
 
 如果频率继续降低，使得一个时钟周期大于 \\(t_{AA}\\) 加上各种延迟和 setup 时间，那就可以每个周期进行一次读操作：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -160,7 +160,7 @@ title: 「教学」异步 SRAM 时序
       { name: "data_fpga", wave: "x.......4....x..6...x"},
     ]
 }
-</script>
+```
 
 此时在 `a` 时钟上升沿上，对 `data_fpga` 进行采样，并且输出下一次读请求的地址。
 
@@ -188,7 +188,7 @@ title: 「教学」异步 SRAM 时序
 3. 等待若干个周期（下图的 `c -> d`），直到 \\(t_{WP}\\) （下图的 `c -> d`）和 \\(t_{AW}\\) （下图的 `a -> d`）时间满足条件
 4. 设置 \\(\overline{WE}\\) 为高电平（下图的 `d`），等待若干个周期（下图的 `d -> b`），直到满足图中的 \\(t_{WC}\\) （下图的 `a -> b`）时间满足条件
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -200,7 +200,7 @@ title: 「教学」异步 SRAM 时序
       { name: "ce_n", wave: "x0......."},
     ]
 }
-</script>
+```
 
 这时候你可能有点疑惑，之前分析读时序的时候，考虑了那么多延迟，为什么写的时候不考虑了？这是因为，写的时候所有的信号都是从 FPGA 输出到 SRAM 的，只要这些信号都是从寄存器直接输出，它们的延迟基本是一样的，所以在 FPGA 侧是什么波形，在 SRAM 侧也是什么波形（准确来说，数据信号因为输出是三态门，所以延迟会稍微高一点，但是由于数据信号的时序余量很大，这个额外的延迟可以忽略不计）。
 
@@ -208,7 +208,7 @@ title: 「教学」异步 SRAM 时序
 
 再考虑一个比较实际的 100MHz 主频 SRAM 控制器，按照如下的波形，则是每三个周期进行一次写操作：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -220,7 +220,7 @@ title: 「教学」异步 SRAM 时序
       { name: "ce_n", wave: "x0..............."},
     ]
 }
-</script>
+```
 
 如果觉得这样做太过保守，想要提升性能，有如下几个可能的思路：
 
@@ -234,7 +234,7 @@ title: 「教学」异步 SRAM 时序
 
 单周期：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -246,11 +246,11 @@ title: 「教学」异步 SRAM 时序
       { name: "ce_n", wave: "x0.............."},
     ]
 }
-</script>
+```
 
 双周期：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -262,7 +262,7 @@ title: 「教学」异步 SRAM 时序
       { name: "ce_n", wave: "x0.............."},
     ]
 }
-</script>
+```
 
 ## PL241 SRAM 控制器
 

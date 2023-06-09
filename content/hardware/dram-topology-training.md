@@ -24,7 +24,7 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
 
 但是数据信号（DQ 和 DQS）依然是并行点对点连接到 DRAM 上的（上图左侧）。这就出现了问题：不同的 DRAM 芯片，数据和时钟的偏差不同，数据可能差不多时间到，但是时钟的延迟越来越大：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -40,13 +40,13 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
       { name: "clock_dram7", wave: "p....", phase: -0.8},
     ]
 }
-</script>
+```
 
 注：这里简化了，当成 SDR 来画。
 
 不做任何处理的话，DRAM 采样得到的数据就不正确了。为了解决这个问题，就需要人为地在数据信号上也加上可变的延迟，保证时钟和数据同步，这样 DRAM 才可以实现正确的写入：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -62,7 +62,7 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
       { name: "data_dram3", wave: "01010", phase: -0.4},
     ]
 }
-</script>
+```
 
 ## Write Leveling
 
@@ -75,7 +75,7 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
 
 示意图如下：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -90,7 +90,7 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
       { name: "dq_3", wave: "01...", phase: -1.15},
     ]
 }
-</script>
+```
 
 上图中，用不断增大的四种延迟的 `dqs` 对 `ck` 进行采样：用 `dqs_0` 和 `dqs_1` 采样得到了 0，用 `dqs_2` 和 `dqs_3` 采样得到了 1。把这些结果列出来，可能会得到类似下面的结果：
 

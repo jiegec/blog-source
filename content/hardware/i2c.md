@@ -21,7 +21,7 @@ I2C 协议涉及到两个信号：
 
 由于只有一个数据信号，所以 SDA 由 Master 和 Slave 轮流输出。一次请求的开始条件是，SDA 从 1 变成 0，之后 SCL 从 1 变成 0。开始请求以后，每次 SCL 上升沿采样一位的数据。请求结束时，SCL 从 0 变成 1，然后 SDA 从 0 变成 1。一次请求的波形如下：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -30,7 +30,7 @@ I2C 协议涉及到两个信号：
       { name: "i2c", wave: "34.5.....|6.7....", data: ["idle", "start", "data", "ack", "stop"]},
     ]
 }
-</script>
+```
 
 1. idle 阶段，scl 和 sda 都是 1
 2. start 阶段，首先是 sda 变成 0，之后是 scl 变成 0

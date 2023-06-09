@@ -49,7 +49,7 @@ title: 「教学」Wishbone 总线协议
 
 根据我们上面设计的自研总线，可以绘制出下面的波形图（以 master 的信号为例）：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -63,7 +63,7 @@ title: 「教学」Wishbone 总线协议
       { name: "data_i", wave: "xxxx=xx=xx", data: ["0x34", "0x12"]},
     ]
 }
-</script>
+```
 
 - `a` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，此时 `we_o=1` 说明是一个写操作，并且写入地址是 `addr_o=0x01`，写入的数据是 `data_o=0x12`
 - `b` 周期：此时 `valid_o=0 && ready_i=0` 说明无事发生
@@ -102,7 +102,7 @@ title: 「教学」Wishbone 总线协议
 
 把上面自研总线的波形图改成 Wishbone Classic Standard，就可以得到：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -117,13 +117,13 @@ title: 「教学」Wishbone 总线协议
       { name: "DAT_I", wave: "xxxx=xx=xx", data: ["0x34", "0x12"]},
     ]
 }
-</script>
+```
 
 ## Wishbone Classic Pipelined
 
 上面的 Wishbone Classic Standard 协议非常简单，但是会遇到一个问题：假设实现的是一个 SRAM 控制器，它的读操作有一个周期的延迟，也就是说，在这个周期给出地址，需要在下一个周期才可以得到结果。在 Wishbone Classic Standard 中，就会出现下面的波形：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -138,7 +138,7 @@ title: 「教学」Wishbone 总线协议
       { name: "DAT_I", wave: "xx=x=x", data: ["0x12", "0x34"]},
     ]
 }
-</script>
+```
 
 - `a` 周期：master 给出读地址 0x01，此时 SRAM 控制器开始读取，但是此时数据还没有读取回来，所以 `ACK_I=0`
 - `b` 周期：此时 SRAM 完成了读取，把读取的数据 0x12 放在 `DAT_I` 并设置 `ACK_I=1`
@@ -154,7 +154,7 @@ title: 「教学」Wishbone 总线协议
 
 进行如上修改以后，我们就得到了 Wishbone Classic Pipelined 总线协议。上面的两次连续读操作波形如下：
 
-<script type="WaveDrom">
+```wavedrom
 {
   signal:
     [
@@ -170,7 +170,7 @@ title: 「教学」Wishbone 总线协议
       { name: "DAT_I", wave: "xx==x", data: ["0x12", "0x34"]},
     ]
 }
-</script>
+```
 
 - `a` 周期：master 请求读地址 0x01，slave 接收读请求（`STALL_O=0`）
 - `b` 周期：slave 返回读请求结果 0x12，并设置 `ACK_I=1`；同时 master 请求读地址 0x02，slave 接收读请求（`STALL_O=0`）
