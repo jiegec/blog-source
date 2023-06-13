@@ -267,6 +267,8 @@ Processing /etc/profile... Done
 / #
 ```
 
+我在 la32r-QEMU 的基础上，把 LoongArch 32 Reduced 的支持部分移植到了 QEMU 8.0.0 上：<https://github.com/jiegec/qemu/commits/la32r-8.0.0>。
+
 ## 虚实地址映射
 
 LoongArch 有两种虚实地址映射方法：
