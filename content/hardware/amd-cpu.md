@@ -33,10 +33,10 @@ title: AMD 处理器
 | ------------ | --- | ----- | ------------- | ------ | --------------------------------------------- |
 | Raphael      | 桌面  | RDNA2 | AM5           | Zen 4  | 7950X(3D)/7900(X(3D))/7800X3D/7700(X)/7600(X) |
 | Dragon Range | 笔记本 | RDNA2 | FL1           | Zen 4  | 7945HX/7845HX/7745HX/7645HX                   |
-| Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 7940HS/7840HS/7640HS                          |
-| Rembrandt R  | 笔记本 | RDNA2 | FP7           | Zen 3+ | 7735HS/7535HS/7736U/7735U/7535U/7335U         |
-| Barcelo R    | 笔记本 | GCN5? | FP6           | Zen 3  | 7730U/7530U/7330U                             |
-| Mendocino    | 笔记本 | RDNA2 | ？             | Zen 2  | 7520U/7320U                                   |
+| Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 7940H(S)/7840H(S)/7840U/7640H(S)/7640U/7540U/7440U                          |
+| Rembrandt R  | 笔记本 | RDNA2 | FP7/FP7r2     | Zen 3+ | 7735HS/7736U/7735U/7535HS/7535U/7335U         |
+| Barcelo R    | 笔记本 | GCN5  | FP6           | Zen 3  | 7730U/7530U/7330U                             |
+| Mendocino    | 笔记本 | RDNA2 | FT6           | Zen 2  | 7520U/7320U                                   |
 
 AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](https://www.anandtech.com/show/18718/amd-2023-ryzen-mobile-7000-cpus-unveiled-zen-4-phoenix-takes-point)：
 
