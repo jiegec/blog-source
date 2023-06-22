@@ -31,3 +31,9 @@ title: ESXi 配置 LACP 链路聚合
 参考文档：[LACP Teaming and Failover Configuration for Distributed Port Groups](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.networking.doc/GUID-9454ED41-6CFC-49F1-9982-34C1276F775A.html) 和 [Configure a Link Aggregation Group to Handle the Traffic for Distributed Port Groups](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.networking.doc/GUID-45DF45A6-DBDB-4386-85BF-400797683D05.html)
 
 这样就配置完成了。
+
+## 非 LACP 的链路聚合
+
+如果想要链路聚合，但是又不想用 Virtual Distributed Switch，可以在交换机上配置 Static Link Aggregation，然后在 ESXi 上添加多个 Uplink，配置 NIC teaming 为 `Route based on IP hash` 模式即可。
+
+参考：[NIC teaming in ESXi and ESX](https://kb.vmware.com/s/article/1004088)
