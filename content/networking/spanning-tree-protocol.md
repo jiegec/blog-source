@@ -113,3 +113,17 @@ STP 协议在工作的时候，为了防止协议初始化过程中引入了不�
 ## BPDU Filter
 
 BPDU Filter 顾名思义，在特定端口上禁用 STP 协议：不发送 BPDU，收到的 BPDU 都忽略，可以用来限制 STP 工作的范围。
+
+## Virtual Port Channel (vPC)
+
+STP 解决了环路的问题，使得网络管理员在设计拓扑的时候，可以添加更多边来提供冗余。但是，STP 的工作原理决定了，冗余链路平时是被禁用的，不会走流量。是否有办法，在提供冗余的同时，又能够利用上冗余链路的带宽？
+
+针对这个场景，厂商提供了不同的解决方案，这里以 Cisco 的 vPC 作为一个例子来介绍。vPC 就是虚拟的 Port Channel 的意思，Port Channel 就是链路聚合，把两个交换机之间的多条链路当成一个用；Virtual Port Channel(vPC) 则是把 Port Channel 扩展到了跨交换机，二对一，一部分链路连到 Switch 1，剩下的链路连到 Switch 2，但是从外面看过来，等价于只有一个交换机：
+
+![](/images/vpc.png)
+
+来源：[Port Channels and vPCs](https://www.ciscopress.com/articles/article.asp?p=3150966&seqNum=2)
+
+这样就实现了对冗余链路的利用。
+
+在 vPC 的 Peer Switch 模式下，为了让 Switch 3 看到的只是一个交换机，它把 Switch 1 和 Switch 2 伪装成同一个交换机：STP 的 Bridge ID 相同，在 STP 协议中看起来到就是一个 Root Bridge。
