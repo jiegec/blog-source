@@ -127,3 +127,5 @@ STP 解决了环路的问题，使得网络管理员在设计拓扑的时候，�
 这样就实现了对冗余链路的利用。
 
 在 vPC 的 Peer Switch 模式下，为了让 Switch 3 看到的只是一个交换机，它把 Switch 1 和 Switch 2 伪装成同一个交换机：STP 的 Bridge ID 相同，在 STP 协议中看起来到就是一个 Root Bridge。
+
+在 Dell 和 Mellanox 交换机中，类似的功能叫做 MLAG(Multi-switch LAG/Multi-chassis LAG)。
