@@ -92,6 +92,34 @@ Warning: This command may cause confliction in netconf status. Continue? [Y/N]:y
 [HUAWEI]arp send-packet X.X.X.X ffff-ffff-ffff interface Vlanif VLAN
 ```
 
+### 启用 STP 协议
+
+```
+[HUAWEI]stp enable
+[HUAWEI]stp mode vbst
+```
+
+### 设置 NTP 服务器
+
+```
+[HUAWEI]ntp-service unicast-server x.x.x.x
+```
+
+### 设置远程 syslog 服务器
+
+```
+[HUAWEI]info-center loghost x.x.x.x
+```
+
+### 设置 LACP 链路聚合
+
+```
+[HUAWEI-XGigabitEthernet0/0/1]eth-trunk 1
+[HUAWEI-XGigabitEthernet0/0/2]eth-trunk 1
+[HUAWEI]interface Eth-Trunk 1
+[HUAWEI-Eth-Trunk1]mode lacp
+```
+
 ## DELL
 
 测试型号：N3048
@@ -174,6 +202,26 @@ console(config)#isdp enable
 
 ```
 console(config)#snmp-server community [COMMUNITY NAME] ro
+```
+
+### 设置 NTP 服务器
+
+```
+console(config)#sntp unicast client enable
+console(config)#sntp server x.x.x.x
+```
+
+### 设置 NTP 服务器
+
+```
+console(config)#sntp unicast client enable
+console(config)#sntp server x.x.x.x
+```
+
+### 设置 STP 协议
+
+```
+console(config)#spanning-tree mode rapid-pvst
 ```
 
 ## H3C
@@ -298,4 +346,39 @@ switch (config interface ethernet 1/1/1) # module-type qsfp
 ```
 switch (config interface ethernet 1/1) # shutdown
 switch (config interface ethernet 1/1) # module-type qsfp-split-4
+```
+
+### 设置链路聚合
+
+```
+switch (config interface ethernet 1/1) # channel-group 1 mode active
+switch (config interface ethernet 1/2) # channel-group 1 mode active
+```
+
+模式可以选择：active(LACP)/passive(LACP)/on(Static)
+
+### 设置 STP 协议
+
+```
+switch (config) # spanning-tree mode rpvst
+```
+
+### 设置远程 syslog 服务器
+
+```
+switch (config) # logging x.x.x.x
+```
+
+### 设置 NTP 服务器
+
+```
+switch (config) # ntp server x.x.x.x
+```
+
+## Cisco
+
+### 设置 NTP 服务器
+
+```
+# ntp server x.x.x.x
 ```
