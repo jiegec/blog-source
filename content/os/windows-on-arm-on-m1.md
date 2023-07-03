@@ -112,3 +112,9 @@ Linux 5.15.15(5.15.0-0.bpo.3-arm64):
 [   10.766327]  el0t_64_sync_handler+0x1a4/0x1b0
 [   10.766328]  el0t_64_sync+0x1a0/0x1a4
 ```
+
+回收硬盘空间：
+
+```shell
+sudo vmware-toolbox-cmd disk shrink /
+```
