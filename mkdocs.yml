@@ -3,6 +3,7 @@ site_name: 杰哥的{运维,编程,调板子}小笔记
 site_url: https://jia.je/
 
 theme:
+  custom_dir: overrides
   name: material
   language: zh
   features:
@@ -10,6 +11,7 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
+    - navigation.footer
     - content.code.copy
     - toc.follow
     - toc.integrate
@@ -75,3 +77,7 @@ extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js
   - https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js
 
+extra:
+  social:
+    - icon: fontawesome/brands/github 
+      link: https://github.com/jiegec
