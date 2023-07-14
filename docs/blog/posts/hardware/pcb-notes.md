@@ -4,8 +4,9 @@ date: 2021-03-08
 tags: [pcb,lceda,schematic,footprint,circuit]
 categories:
     - hardware
-title: PCB 笔记
 ---
+
+# PCB 笔记
 
 记录一下在学习画板子过程中学到的心得。
 

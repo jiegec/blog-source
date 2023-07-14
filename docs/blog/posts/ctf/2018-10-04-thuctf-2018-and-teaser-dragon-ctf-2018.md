@@ -4,8 +4,9 @@ date: 2018-10-04
 tags: [ctf,thuctf]
 categories:
     - ctf
-title: THUCTF 2018 和 Teaser Dragon CTF 2018 小记
 ---
+
+# THUCTF 2018 和 Teaser Dragon CTF 2018 小记
 
 终于可以公开 [writeup](https://github.com/jiegec/ctf-writeups/tree/master/2018-09-28-thuctf2018) 了，大家也可以去看 twd2 写的 [writeup](https://twd2.me/archives/11097) 。这次是我第一次打 CTF，发现题目还挺有意思的，虽然也有一些题目做不出来，有拿钱还是美滋滋。
 

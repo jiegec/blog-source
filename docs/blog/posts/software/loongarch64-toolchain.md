@@ -4,8 +4,9 @@ date: 2022-05-02
 tags: [loongarch,toolchain,gcc]
 categories:
     - software
-title: LoongArch64 工具链构建
 ---
+
+# LoongArch64 工具链构建
 
 最近因为龙芯杯的原因，想自己搞个 LoongArch64 的交叉编译工具链试试，结果遇到了很多坑，最后终于算是搞出来了。
 

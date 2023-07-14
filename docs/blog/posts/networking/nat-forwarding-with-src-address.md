@@ -4,8 +4,9 @@ date: 2018-05-06
 tags: [linux,nat,forwarding]
 categories:
     - networking
-title: 使用 iptables 和策略路由进行带源地址的 forwarding
 ---
+
+# 使用 iptables 和策略路由进行带源地址的 forwarding
 
 陈老师打开他的服务器，突然发现 CPU 莫名高负载，然后发现是有一个用户被远程登录拿来挖矿了。但是这台机器在 NAT 后，所以登录的源地址全是 NAT 路由，所以不知道对方的地址是什么。我们为了能使用 fail2ban 来禁用多次尝试失败的 IP，但又不想因为别人把 NAT 路由的地址给禁了，这样我们自己也用不了了。所以必须要让这台机器能够知道 ssh 的源地址，我们现在简单的 socat 方案不能满足这个需求。
 

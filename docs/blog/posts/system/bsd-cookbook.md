@@ -4,8 +4,9 @@ date: 2023-01-21
 tags: [freebsd,cookbook]
 categories:
     - system
-title: FreeBSD/NetBSD/OpenBSD/DragonFlyBSD Cookbook
 ---
+
+# FreeBSD/NetBSD/OpenBSD/DragonFlyBSD Cookbook
 
 ## 背景
 

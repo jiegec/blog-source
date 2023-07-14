@@ -4,8 +4,9 @@ date: 2018-10-07
 tags: [verilog,licheetang,fpga,uart]
 categories:
     - hardware
-title: 在荔枝糖（Lichee Tang）上初次体验 FPGA 
 ---
+
+# 在荔枝糖（Lichee Tang）上初次体验 FPGA 
 
 今天从张宇翔学长那拿到了 [荔枝糖（Lichee Tang）](http://tang.lichee.pro/) 的 FPGA 板子，于是立即开始把前段时间学到的 Verilog 应用上来。不过想到现在我手上没有多少外设，然后又必须远程到 Windows 电脑上去操作，于是先实现了一下 UART 通信。
 

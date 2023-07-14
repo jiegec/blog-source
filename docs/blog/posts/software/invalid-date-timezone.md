@@ -4,8 +4,9 @@ date: 2022-07-26
 tags: [linux,timezone,date,tzdata]
 categories:
     - software
-title: invalid date 报错与时区的关系
 ---
+
+# invalid date 报错与时区的关系
 
 ## 背景
 

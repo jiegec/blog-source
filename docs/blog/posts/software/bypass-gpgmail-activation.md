@@ -4,8 +4,9 @@ date: 2018-10-04
 tags: [gpg,gpgmail,macos,radare2]
 categories:
     - software
-title: 绕过 GPGMail 的激活检测
 ---
+
+# 绕过 GPGMail 的激活检测
 
 前段时间 GPGMail [宣布不再免费](https://gpgtools.org/support-plan)，在三十天的试用期后就不给用了。唉，可能是官方实在没钱维护了，也可能是官方想赚钱了。不过，既然 GPGMail 采用的是[自由的许可证](https://github.com/GPGTools/GPGMail/blob/high-sierra/LICENSE.txt)，意味着我们可以自己对代码进行更改。和许可证验证相关的[代码](https://github.com/GPGTools/GPGMail/blob/c08ce21eee08a1089c82c04af1fab5b85d72de68/Source/GPGMailBundle.m#L846)如下：
 

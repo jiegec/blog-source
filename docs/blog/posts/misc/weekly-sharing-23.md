@@ -4,8 +4,9 @@ date: 2019-05-11
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 23 期
 ---
+
+# 每周分享第 23 期
 
 1. VS Code Remote https://code.visualstudio.com/blogs/2019/05/02/remote-development
 2. Rust 命令行看图片 https://github.com/atanunq/viu

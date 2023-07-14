@@ -4,8 +4,9 @@ date: 2022-12-10
 tags: [acpi,notes,learn]
 categories:
     - hardware
-title: ACPI 学习笔记
 ---
+
+# ACPI 学习笔记
 
 ## 标准
 

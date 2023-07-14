@@ -4,8 +4,9 @@ date: 2021-03-12
 tags: [ceph,k8s,kubernetes,rook]
 categories:
     - devops
-title: 通过 rook 在 k8s 上部署 ceph 集群
 ---
+
+# 通过 rook 在 k8s 上部署 ceph 集群
 
 ## 背景
 

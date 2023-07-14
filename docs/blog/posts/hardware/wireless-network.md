@@ -4,8 +4,9 @@ date: 2023-03-20
 tags: [wireless,wifi,wlan,802.11]
 categories:
     - system
-title: 802.11 学习
 ---
+
+# 802.11 学习
 
 本文的内容已经整合到[知识库](/kb/networking/wlan.html)中。
 

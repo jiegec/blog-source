@@ -4,8 +4,9 @@ date: 2023-04-26
 tags: [spi]
 categories:
     - hardware
-title: SPI 协议
 ---
+
+# SPI 协议
 
 本文的内容已经整合到[知识库](/kb/hardware/spi.html)中。
 

@@ -4,8 +4,9 @@ date: 2022-06-19
 tags: [wishbone,bus,teaching]
 categories:
     - hardware
-title: 「教学」Wishbone 总线协议
 ---
+
+# 「教学」Wishbone 总线协议
 
 本文的内容已经整合到[知识库](/kb/hardware/bus_protocol.html)中。
 

@@ -4,8 +4,9 @@ date: 2019-08-16
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 37 期
 ---
+
+# 每周分享第 37 期
 
 1. Rust netlink 库 https://github.com/jbaublitz/neli
 2. Rust 处理 signal 进行配置的 reload https://vorner.github.io/2019/08/11/runtime-configuration-reloading.html

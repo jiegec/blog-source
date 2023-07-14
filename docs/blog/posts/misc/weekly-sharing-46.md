@@ -4,8 +4,9 @@ date: 2019-10-19
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 46 期
 ---
+
+# 每周分享第 46 期
 
 1. LibC++ 正式支持 WASI https://releases.llvm.org/9.0.0/projects/libcxx/docs/ReleaseNotes.html
 2. 从文本反推 regex https://github.com/pemistahl/grex

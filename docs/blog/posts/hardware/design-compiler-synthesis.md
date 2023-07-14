@@ -4,8 +4,9 @@ date: 2022-03-14
 tags: [synthesis,synopsys,dc,designcompiler]
 categories:
     - hardware
-title: Synopsys Design Compiler 综合实践
 ---
+
+# Synopsys Design Compiler 综合实践
 
 ## 工艺库
 

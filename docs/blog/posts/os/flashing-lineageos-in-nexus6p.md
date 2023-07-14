@@ -4,8 +4,9 @@ date: 2018-05-29
 tags: [android,nexus6p,huawei,angler,lineageos]
 categories:
     - os
-title: 向 Nexus 6P 中刷入 LineageOS 实践
 ---
+
+# 向 Nexus 6P 中刷入 LineageOS 实践
 
 Nexus 6P 自带的系统没有允许 Root，所以需要自己解锁 bootloader 并且刷上别的系统。我选择了 LineageOS。Nexus 6P 的代号为 angler，首先可以找到官方的[安装教程](https://wiki.lineageos.org/devices/angler/install)。
 

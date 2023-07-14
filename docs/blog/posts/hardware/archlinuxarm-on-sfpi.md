@@ -4,8 +4,9 @@ date: 2018-11-06
 tags: [sfpi,saltedfishpi,dd,extfs,ext4]
 categories:
     - hardware
-title: 向咸鱼派写入 ArchlinuxARM
 ---
+
+# 向咸鱼派写入 ArchlinuxARM
 
 之前由于我的 macOS 上不知道为啥不能把我的 TF 卡设备放到我的虚拟机里，所以之前就没能刷 ArchLinuxARM 上去。今天我想到了一个方法，完成了这件时期：
 

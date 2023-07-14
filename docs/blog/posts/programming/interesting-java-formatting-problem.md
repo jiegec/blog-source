@@ -4,8 +4,9 @@ date: 2017-12-31
 tags: [java,datetime formatting]
 categories:
     - programming
-title: 有趣的 Java 日期格式化问题
 ---
+
+# 有趣的 Java 日期格式化问题
 
 今天在群里看到有人说，Java 的日期格式化有问题，如果用 `YYYY-MM-dd` ，今天的日期就会显示 `2018-12-31` 。我立马在本地用 Java REPL (aka Groovy) 跑了一下，果然如此：
 

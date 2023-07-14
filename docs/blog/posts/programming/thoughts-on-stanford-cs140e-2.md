@@ -4,8 +4,9 @@ date: 2018-02-06
 tags: [rust,os,stanford,cs140e,kernel,gpio,hardware,rpi3,shell,bootloader,xmodem,uart]
 categories:
     - programming
-title: 近来做 Stanford CS140e 的一些进展和思考（2）
 ---
+
+# 近来做 Stanford CS140e 的一些进展和思考（2）
 
 在[上一篇文章](thoughts-on-stanford-cs140e.md)之后，我又有了一些进展：`UART` ，简易的`shell` ，修复了之前写的 `xmodem` 中的 BUG，一个可以从 `UART` 接收一个 `kernel` 写入到内存中再跳转过去的 `bootloader` 。
 

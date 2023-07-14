@@ -4,8 +4,9 @@ date: 2023-02-12
 tags: [solaris,tli,xti,sysv,unix]
 categories:
     - networking
-title: Transport Layer Interface 考古
 ---
+
+# Transport Layer Interface 考古
 
 ## Transport Layer Interface
 

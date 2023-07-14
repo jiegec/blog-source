@@ -4,8 +4,9 @@ date: 2018-06-10
 tags: [nginx,php,mediawiki]
 categories:
     - programming
-title: 调整 Nginx 和 PHP 的上传文件大小限制
 ---
+
+# 调整 Nginx 和 PHP 的上传文件大小限制
 
 之前迁移的 MediaWiki，有人提出说无法上传一个 1.4M 的文件。我去看了一下网站，上面写的是限制在 2M，但是一上传就说 Entity Too Large，无法上传。后来经过研究，是 Nginx 对 POST 的大小进行了限制，同时 PHP 也有限制。
 

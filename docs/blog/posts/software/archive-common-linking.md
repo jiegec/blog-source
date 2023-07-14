@@ -4,8 +4,9 @@ date: 2022-07-11
 tags: [macos,ld,linking,common,fortran]
 categories:
     - software
-title: Archive 中 COMMON 符号的链接问题
 ---
+
+# Archive 中 COMMON 符号的链接问题
 
 ## 背景
 

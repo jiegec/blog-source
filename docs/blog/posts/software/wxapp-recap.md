@@ -4,8 +4,9 @@ date: 2018-12-27
 tags: [wechat,wxapp,grafana,elk,mongodb]
 categories:
     - software
-title: 《加速奔向 2019》小程序编写和运营回顾
 ---
+
+# 《加速奔向 2019》小程序编写和运营回顾
 
 ## 前言
 

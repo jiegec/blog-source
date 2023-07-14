@@ -4,8 +4,9 @@ date: 2023-05-03
 tags: [i2c]
 categories:
     - hardware
-title: I2C 协议
 ---
+
+# I2C 协议
 
 本文的内容已经整合到[知识库](/kb/hardware/i2c.html)中。
 

@@ -4,8 +4,9 @@ date: 2018-07-15
 tags: [icmp,ping,multicast]
 categories:
     - networking
-title: 用 multicast 地址找到同一网段的主机
 ---
+
+# 用 multicast 地址找到同一网段的主机
 
 IPv4 :
 

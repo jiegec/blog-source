@@ -4,8 +4,9 @@ date: 2020-04-17
 tags: [k8s,kubernetes,tencentcloud,ingress,nginx-ingress,letsencrypt,cert-manager]
 categories:
     - devops
-title: 在 k8s 内用 Cert Manager 配合 Nginx Ingress Controller 配置 Let's Encrypt HTTPS 证书
 ---
+
+# 在 k8s 内用 Cert Manager 配合 Nginx Ingress Controller 配置 Let's Encrypt HTTPS 证书
 
 上一篇博客讲了 nginx ingress 的配置，那自然第一步要配上 https。首先配置 cert-manager：
 

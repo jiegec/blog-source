@@ -4,8 +4,9 @@ date: 2019-06-21
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 29 期
 ---
+
+# 每周分享第 29 期
 
 1. ZFS on Linux 发布 0.8.1 https://github.com/zfsonlinux/zfs/releases/tag/zfs-0.8.1
 2. slim: Dockerfile to VM image https://github.com/ottomatica/slim

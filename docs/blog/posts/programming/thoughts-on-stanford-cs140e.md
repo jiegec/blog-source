@@ -4,8 +4,9 @@ date: 2018-02-04
 tags: [rust,os,stanford,cs140e,kernel,gpio,hardware,rpi3,xmodem]
 categories:
     - programming
-title: 近来做 Stanford CS140e 的一些进展和思考
 ---
+
+# 近来做 Stanford CS140e 的一些进展和思考
 
 最近，受各路安利，剁手买下了 [这个淘宝商家的树莓派的套餐 C](https://item.taobao.com/item.htm?id=537501616420) ，还买了许多 LED 灯泡、杜邦线和电阻，开始按照 [CS 140e](http://web.stanford.edu/class/cs140e/) 学习 Rust 并且用 Rust 编译写一个简易的操作系统。Assignment 0 的目标就是编写一个向 GPIO 16 连接的 LED 灯闪烁。首先当然就是愉快地按照教程下载 bootloader，下载交叉编译工具链，顺带装一个 Raspbian 到机器上，随时可以当成一个低性能的 ARM/ARM64（实际上，Raspbian 只用了 armv7l，没有用 64bit）机器来用，以后如果配上 [@scateu](https://scateu.me) 团购的 Motorola Laptop Dock 的话就是一个几百块的笔记本了。把课程上的文件丢上去，可以看到绿色的活动指示灯闪烁，后面又把 CP2102 模块连上去，又能看到 Blink on, Blink off 的输出。然后按照要求，自己先码一段 C 语言，实现 blinky:
 

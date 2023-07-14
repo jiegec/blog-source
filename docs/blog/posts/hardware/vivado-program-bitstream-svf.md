@@ -4,8 +4,9 @@ date: 2022-04-10
 tags: [vivado,svf,jtag,bitstream]
 categories:
     - hardware
-title: 导出 Vivado 下载 Bitstream 的 SVF 文件
 ---
+
+# 导出 Vivado 下载 Bitstream 的 SVF 文件
 
 ## 背景
 

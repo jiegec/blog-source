@@ -4,8 +4,9 @@ date: 2019-05-17
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 24 期
 ---
+
+# 每周分享第 24 期
 
 1. 在线波形绘制 https://wavedrom.com/editor.html
 2. Python 波形绘制 https://github.com/wallento/wavedrompy

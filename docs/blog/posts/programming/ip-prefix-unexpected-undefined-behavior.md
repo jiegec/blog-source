@@ -4,8 +4,9 @@ date: 2019-06-21
 tags: [c,cpp,ip,cidr,ub]
 categories:
     - programming
-title: IP 前缀转换上意外遇到的 Undefined Behavior
 ---
+
+# IP 前缀转换上意外遇到的 Undefined Behavior
 
 最近发现了两个很神奇的 Undefined Behavior，出现在 Prefix Len 和 Netmask 的转换的问题下。一个简单思路可能是：
 

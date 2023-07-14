@@ -4,8 +4,9 @@ date: 2018-11-20
 tags: [linux,usbip,raspi,sfpi]
 categories:
     - software
-title: USB/IP 实践
 ---
+
+# USB/IP 实践
 
 之前一直想玩 USB/IP，但是一直没有找俩 Linux 设备然后共享，今天终于尝试了一下，没有什么大问题。这次采用的设备是 Raspberri Pi 3 和 SaltedFish Pi。一开始尝试从后者向前者共享，但总是出现这个错误：
 

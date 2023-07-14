@@ -4,8 +4,9 @@ date: 2017-10-16
 tags: [algorithm,wiki]
 categories:
     - others
-title: 一个搞笑的伸展树的 Wiki
 ---
+
+# 一个搞笑的伸展树的 Wiki
 
 光哲同学在群里发了这个链接，特别搞笑，特此分享：
 [伸展树 - 百度百科](https://baike.baidu.com/history/%E4%BC%B8%E5%B1%95%E6%A0%91/105576656)

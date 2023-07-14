@@ -4,8 +4,9 @@ date: 2022-09-19
 tags: [linux,fakeroot,mknod]
 categories:
     - software
-title: Buildroot 2020.08 的 Fakeroot 版本过旧导致的兼容性问题
 ---
+
+# Buildroot 2020.08 的 Fakeroot 版本过旧导致的兼容性问题
 
 ## 背景
 

@@ -4,8 +4,9 @@ date: 2018-11-26
 tags: [linux,zfs,macos,timemachine,backup]
 categories:
     - software
-title: Mac 上安装 Arch Linux，ZFS 真香
 ---
+
+# Mac 上安装 Arch Linux，ZFS 真香
 
 最近在 Mac 上装了 Arch Linux，按照 [Mac - Arch Linux Wiki](https://wiki.archlinux.org/index.php/Mac) 一路一路走，创建单独的一个 EFI 分区给 Arch Linux 放 GRUB 和内核，一个 ext4 作为根分区。由于 Arch ISO 不支持 Broadcom 的无线网卡，于是先拿 Apple Ethernet Adapter 连到路由器上装机。然后把一些需要的驱动装上了，桌面用的 KDE Plasma，Trackpad 用的 xf86-input-mtrack-git，HiDPI 设置为 2x Scale，各种体验都还可以，就是 Wi-Fi 的 802.1X 没配置好，然后 kwalletd5 老是崩没找到原因。常见的应用除了微信基本都有，也终于可以体验 Steam Play，利用 Proton 在 Linux 上跑一些只支持 Windows 的游戏，不过我已经很少玩游戏了。
 

@@ -4,8 +4,9 @@ date: 2021-03-03
 tags: [poweredge,dell,idrac]
 categories:
     - system
-title: iDRAC 各版本
 ---
+
+# iDRAC 各版本
 
 ## iDRAC 版本
 

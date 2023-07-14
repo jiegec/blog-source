@@ -4,8 +4,9 @@ date: 2018-11-05
 tags: [sfpi,saltedfishpi,uboot,linux,kernel,dts,devicetree]
 categories:
     - hardware
-title: 咸鱼派的启动配置
 ---
+
+# 咸鱼派的启动配置
 
 最近刚拿到了一个[咸鱼派](https://github.com/sbc-fish/sfpi)的测试板子，准备自己把 U-Boot 和 Linux 内核这一套东西跑通，都用主线的东西，尽量减少魔改的部分。首先是编译 u-boot，我用的是现在的 master 分支的最新版 99431c1c：
 

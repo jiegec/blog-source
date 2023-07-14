@@ -4,8 +4,9 @@ date: 2021-08-06
 tags: [intel,intrinsics]
 categories:
     - misc
-title: 轶事一则
 ---
+
+# 轶事一则
 
 7.31 号周六的时候，发现 Intel Intrinsics Guide(https://software.intel.com/sites/landingpage/IntrinsicsGuide/) 出现错误，加载数据失败，于是在 Intel 的网站上提交了一个 bug。
 

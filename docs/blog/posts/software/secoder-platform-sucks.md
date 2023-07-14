@@ -4,8 +4,9 @@ date: 2018-10-12
 tags: [secoder,softwarengineering,cd,ci,gitlab]
 categories:
     - software
-title: 软工平台踩坑记
 ---
+
+# 软工平台踩坑记
 
 老师要求我们搞 CI/CD，CI 自然是很快就搞好了，不过 CD 还得配一下。今天研究了一下它的 Deployer 架构，发现了若干易用性问题：
 

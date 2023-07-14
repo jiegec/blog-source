@@ -4,8 +4,9 @@ date: 2022-07-16
 tags: [ceph]
 categories:
     - devops
-title: Ceph Cookbook
 ---
+
+# Ceph Cookbook
 
 ## 概念
 

@@ -4,8 +4,9 @@ date: 2023-04-09
 tags: [aix,unix]
 categories:
     - system
-title: AIX 7.2 虚拟机安装
 ---
+
+# AIX 7.2 虚拟机安装
 
 ## 安装过程
 

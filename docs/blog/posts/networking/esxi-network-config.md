@@ -4,8 +4,9 @@ date: 2021-03-27
 tags: [esxi,esxcli,ipv6]
 categories:
     - networking
-title: ESXi 网络配置
 ---
+
+# ESXi 网络配置
 
 用过 ESXi 的大家都知道，它网页版对网络的配置功能有限，特别是 IPv6 的部分，有的事情无法实现。更好的办法是 SSH 到 ESXi 上直接用命令行进行配置。
 

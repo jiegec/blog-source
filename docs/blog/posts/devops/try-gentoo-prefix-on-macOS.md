@@ -4,8 +4,9 @@ date: 2017-12-27
 tags: [gentoo,gentoo-prefix,macos,package-manager]
 categories:
     - devops
-title: 在 macOS 上试用 Gentoo/Prefix
 ---
+
+# 在 macOS 上试用 Gentoo/Prefix
 
 前几天参加了[许朋程](https://keybase.io/jsteward)主讲的 Tunight，对 Gentoo 有了一定的了解，不过看到如此复杂的安装过程和长久的编译时间，又看看我的 CPU，只能望而却步了。不过，有 Gentoo/Prefix 这个工具，使得我们可以在其它的操作系统（如 macOS,Solaris 等）上在一个 $EPREFIX 下跑 Portage，也就是把 Portage 运行在别的操作系统，当作一个包管理器，并且可以和别的操作系统并存。
 

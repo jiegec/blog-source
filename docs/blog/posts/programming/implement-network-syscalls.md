@@ -4,8 +4,9 @@ date: 2019-03-04
 tags: [rcore,rust,os,e1000,syscall,msi,pci,interrupt]
 categories:
     - programming
-title: 实现网络的 syscall
 ---
+
+# 实现网络的 syscall
 
 有了网卡驱动，接下来要做的就做网络的 syscall 了。为了测试，首先在 busybox 里找可以用来测试的 applet，由于没有实现 poll，所以 nc telnet 啥的都用不了。最后选择到了 ping 和 pscan 上。
 

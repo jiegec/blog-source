@@ -4,8 +4,9 @@ date: 2018-04-10
 tags: [rust,os,stanford,cs140e,rpi3,aarch64]
 categories:
     - programming
-title: 近来做 Stanford CS140e 的一些进展和思考（8）
 ---
+
+# 近来做 Stanford CS140e 的一些进展和思考（8）
 
 在[上一篇文章](thoughts-on-stanford-cs140e-7.md)之后，我其实还是很忙，但是一直心理惦记着这件事，毕竟只剩最后的一点点就可以做完了，不做完总是觉得心痒。
 

@@ -4,8 +4,9 @@ date: 2018-10-07
 tags: [brouter,ebtables,ipv6]
 categories:
     - networking
-title: 使用 veth 实现 IPv6-only 的 Brouter 功能
 ---
+
+# 使用 veth 实现 IPv6-only 的 Brouter 功能
 
 最近从 @shankerwangmiao 学到了一个方法：通过 veth 把两个 bridge 的 IPv6 桥接起来。方法如下：
 

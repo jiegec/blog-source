@@ -4,8 +4,9 @@ date: 2023-01-12
 tags: [chi,bus,coherence,notes,learn]
 categories:
     - hardware
-title: CHI 学习笔记
 ---
+
+# CHI 学习笔记
 
 本文的内容已经整合到[知识库](/kb/hardware/cache_coherence_protocol.html)中。
 

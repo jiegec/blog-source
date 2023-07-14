@@ -4,8 +4,9 @@ date: 2018-09-13
 tags: [ssh,adb,forwarding]
 categories:
     - networking
-title: 通过 SSH 隧道连接 ADB 和 Android 设备
 ---
+
+# 通过 SSH 隧道连接 ADB 和 Android 设备
 
 由于本机算力不足，想要在远程[编译 LineageOS](building-lineageos-in-archlinux.md) ，其中有一步需要连接到已有的设备，于是突发奇想：
 

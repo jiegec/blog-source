@@ -4,8 +4,9 @@ date: 2019-06-15
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 28 期
 ---
+
+# 每周分享第 28 期
 
 10. Rust Sec https://github.com/RustSec/advisory-db
 2. opendrop 开源的 AirDrop 实现 https://github.com/seemoo-lab/opendrop

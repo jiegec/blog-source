@@ -4,8 +4,9 @@ date: 2018-09-13
 tags: [mongodb,ubuntu]
 categories:
     - software
-title: 在 Ubuntu 上跨版本迁移 MongoDB
 ---
+
+# 在 Ubuntu 上跨版本迁移 MongoDB
 
 由于 MongoDB 只支持当前版本和上一个版本的数据库格式，然后刚刚滚系统升级的时候升级到了 3.6.x，而数据库格式仍然是 3.2.x 的，于是需要先安装回 3.4.x 版本的 MongoDB，输入命令把数据库升级到 3.4.x 版本后，再用 3.6.x 的数据库进行升级。
 

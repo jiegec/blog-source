@@ -4,8 +4,9 @@ date: 2020-03-17
 tags: [chisel,rocketchip,riscv]
 categories:
     - hardware
-title: 在 Rocket Chip 上挂接 TLRAM
 ---
+
+# 在 Rocket Chip 上挂接 TLRAM
 
 最近遇到一个需求，需要在 Rocket Chip 里面开辟一块空间，通过 verilog 的 $readmemh 来进行初始化而不是用 BootROM，这样每次修改内容不需要重新跑一次 Chisel -> Verilog 的流程。然后到处研究了一下，找到了解决的方案：
 

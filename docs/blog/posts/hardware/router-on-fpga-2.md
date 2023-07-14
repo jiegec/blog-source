@@ -4,8 +4,9 @@ date: 2019-05-15
 tags: [router,fpga,router-on-fpga]
 categories:
     - hardware
-title: 在 FPGA 上实现路由器（2）
 ---
+
+# 在 FPGA 上实现路由器（2）
 
 ## 前言
 

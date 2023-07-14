@@ -4,8 +4,9 @@ date: 2018-08-05
 tags: [keyboard]
 categories:
     - os 
-title: 更改 macOS 屏幕亮度的按键
 ---
+
+# 更改 macOS 屏幕亮度的按键
 
 由于我打开了「Invert Fn」功能，所以需要调亮度的时候，是采用 Fn+F1/F2 的方法。但是，我的机械键盘则是，不按 Fn 时为 1-9，按着 Fn 时为对应的 F1-F9，但是就无法调整亮度和声音了。
 

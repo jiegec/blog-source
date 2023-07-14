@@ -4,8 +4,9 @@ date: 2018-05-05
 tags: [nat,mosh,upnp,miniupnpd]
 categories:
     - networking
-title: 利用 UPnP 协议进行 mosh NAT 穿透的研究
 ---
+
+# 利用 UPnP 协议进行 mosh NAT 穿透的研究
 
 由于经常要从宿舍、教室等不同的 Wi-Fi 之间切换，但是 ssh 连接又总是断，所以想用 mosh 代替 ssh。但是 mosh 也有它的问题：
 

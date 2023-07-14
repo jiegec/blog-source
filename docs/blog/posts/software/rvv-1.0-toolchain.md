@@ -4,8 +4,9 @@ date: 2022-01-25
 tags: [riscv,vector,rvv,llvm,clang,binutils]
 categories:
     - software
-title: RISC-V Vector 1.0 工具链构建
 ---
+
+# RISC-V Vector 1.0 工具链构建
 
 不久前 RVV 1.0 标准终于是出来了，但是工具链的支持目前基本还处于刚 upstream 还没有 release 的状态。而目前 RVV 1.0 的支持主要在 LLVM 上比较活跃，因此也是采用 LLVM Clang + GCC Newlib Toolchain 的方式进行配合，前者做 RVV 1.0 的编译，后者提供 libc 等基础库。
 

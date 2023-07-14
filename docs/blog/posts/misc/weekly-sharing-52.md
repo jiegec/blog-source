@@ -4,8 +4,9 @@ date: 2019-12-01
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 52 期
 ---
+
+# 每周分享第 52 期
 
 1. 传递 Rust 闭包到 C https://readhacker.news/s/4dbWL
 

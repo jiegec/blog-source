@@ -4,8 +4,9 @@ date: 2019-04-01
 tags: [gowin,fpga,programmer,centos]
 categories:
     - hardware
-title: 高云 FPGA 踩坑
 ---
+
+# 高云 FPGA 踩坑
 
 最近拿到了高云 FPGA GW2A-18 开发版，想在这上面做一些小工程。不过首先要配置好环境什么的。官方提供了 Linux 和 Windows 的两套工具，自然是拥抱 Linux 咯，但是由于官方适配的是 Redhat 系的操作系统，所以用 Debian 系的时候出现了若干问题，后面会谈到怎么解决的。
 

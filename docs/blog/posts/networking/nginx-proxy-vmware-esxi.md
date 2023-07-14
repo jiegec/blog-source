@@ -4,8 +4,9 @@ date: 2018-05-08
 tags: [linux,nat,forwarding,vmware,esxi,nginx,proxy]
 categories:
     - networking
-title: 使用 Nginx 转发 VMware ESXi
 ---
+
+# 使用 Nginx 转发 VMware ESXi
 
 我们的 VMware ESXi 在一台 NAT Router 之后，但是我们希望通过域名可以直接访问 VMware ESXi。我们首先的尝试是，把 8443 转发到它的 443 端口，比如：
 

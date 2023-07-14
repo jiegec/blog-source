@@ -4,8 +4,9 @@ date: 2023-04-14
 tags: [c,printf,gcc,builtin]
 categories:
     - programming
-title: C/C++ 数参数个数的特别方法
 ---
+
+# C/C++ 数参数个数的特别方法
 
 ## 背景
 

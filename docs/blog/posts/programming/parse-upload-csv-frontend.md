@@ -4,8 +4,9 @@ date: 2019-07-17
 tags: [js,frontend,iconv,encoding,gbk]
 categories:
     - programming
-title: 前端解析上传的 CSV
 ---
+
+# 前端解析上传的 CSV
 
 之前做过一个在前端解析上传的 CSV 的功能，但是只能支持部分的 encoding，遇到 gbk 就傻眼了。一番研究以后，找到了比较科学的方案：
 

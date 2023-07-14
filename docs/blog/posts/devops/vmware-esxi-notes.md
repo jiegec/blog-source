@@ -4,8 +4,9 @@ date: 2021-10-05
 tags: [esxi,vmware]
 categories:
     - devops
-title: ESXi 常用信息
 ---
+
+# ESXi 常用信息
 
 ## 常用链接
 

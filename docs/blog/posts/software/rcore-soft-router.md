@@ -4,8 +4,9 @@ date: 2019-04-07
 tags: [rcore,router,ixgbe,os]
 categories:
     - software
-title: rCore 软路由实现
 ---
+
+# rCore 软路由实现
 
 最近在研究软路由在 rCore 上的实现，但限于硬件限制，目前先在虚拟机里测试。软路由大概要做这些东西：
 

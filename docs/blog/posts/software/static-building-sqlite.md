@@ -4,8 +4,9 @@ date: 2019-03-24
 tags: [rcore,x86,x86_64,static,musl,sqlite]
 categories:
     - software
-title: 静态编译 sqlite3
 ---
+
+# 静态编译 sqlite3
 
 最近 rCore 支持了动态链接库，于是想着在测试 sqlite 的时候直接用动态的，不过出现了玄学的问题，它会访问一个不存在的地址，看代码也没看出个所以然来。所以研究了一下 sqlite 的静态编译。首先在 `configure` 的时候尝试了一下：
 

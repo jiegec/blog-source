@@ -4,8 +4,9 @@ date: 2020-05-18
 tags: [nfc,usb,fido,fido2,ctap,u2f]
 categories:
     - hardware
-title: FIDO U2F、FIDO2 和 CTAP 的关系
 ---
+
+# FIDO U2F、FIDO2 和 CTAP 的关系
 
 ## 背景
 

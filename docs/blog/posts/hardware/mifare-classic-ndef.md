@@ -4,8 +4,9 @@ date: 2020-05-10
 tags: [nfc,mifare,mifareclassic,iso14443,typea,ndef]
 categories:
     - hardware
-title: MIFARE Classic 上配置 NDEF
 ---
+
+# MIFARE Classic 上配置 NDEF
 
 ## 背景
 

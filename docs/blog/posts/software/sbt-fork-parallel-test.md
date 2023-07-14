@@ -4,8 +4,9 @@ date: 2020-04-13
 tags: [sbt,scala,testing]
 categories:
     - software
-title: 在 sbt 中 fork 并且并行运行测试
 ---
+
+# 在 sbt 中 fork 并且并行运行测试
 
 ## 问题
 

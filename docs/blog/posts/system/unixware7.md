@@ -4,8 +4,9 @@ date: 2023-04-10
 tags: [unixware,unix]
 categories:
     - system
-title: UnixWare 7.1.4 虚拟机安装
 ---
+
+# UnixWare 7.1.4 虚拟机安装
 
 ## 安装过程
 

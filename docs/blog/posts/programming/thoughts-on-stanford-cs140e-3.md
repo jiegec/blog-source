@@ -4,8 +4,9 @@ date: 2018-02-16
 tags: [rust,os,stanford,cs140e,kernel,hardware,rpi3,shell,bootloader,mit 6.828,atags]
 categories:
     - programming
-title: 近来做 Stanford CS140e 的一些进展和思考（3）
 ---
+
+# 近来做 Stanford CS140e 的一些进展和思考（3）
 
 由于 `Assignment 2: File System ` 延期发布，所以中间那段时间转向 `MIT 6.828` 稍微研究了一下。前几天放出了新的任务，在[上一篇文章](thoughts-on-stanford-cs140e-2.md)之后，我又有了一些进展：实现了从内存中读取 `ATAGS(ARM Tags)` 信息的代码，从而可以获得内存大小的信息，根据这个信息，实现了 `bump` 和 `bin` 两种内存分配器，并且把二者之一注册为全局内存分配器，利用上更新了的 `std` 就可以使用需要动态分配内存的相关工具了。利用这个，我实现了 `shell` 输入历史的回溯，把输入历史保存在一个动态增长的数组中，再特殊处理上下键，把当前的行替换为历史。
 

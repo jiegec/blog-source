@@ -4,8 +4,9 @@ date: 2021-03-13
 tags: [gnome,scaling,x11,wayland,xwayland]
 categories:
     - software
-title: Gnome 的 Fractional Scaling
 ---
+
+# Gnome 的 Fractional Scaling
 
 ## 背景
 

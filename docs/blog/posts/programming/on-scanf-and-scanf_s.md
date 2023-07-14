@@ -4,8 +4,9 @@ date: 2017-10-17
 tags: [vs,c,c++,cs]
 categories:
     - programming
-title: 关于 scanf 和 scanf_s 的问题
 ---
+
+# 关于 scanf 和 scanf_s 的问题
 
 最近作为程设基础的小教员，收到很多同学的求助，关于`scanf`和`scanf_s`的问题已经遇到了两次，特此写一篇博文来叙述一下这个问题。
 

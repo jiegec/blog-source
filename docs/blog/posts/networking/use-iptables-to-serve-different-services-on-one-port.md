@@ -4,8 +4,9 @@ date: 2018-07-06
 tags: [iptables,ip]
 categories:
     - networking
-title: 通过 iptables 在同一个端口根据源地址解复用（demux）
 ---
+
+# 通过 iptables 在同一个端口根据源地址解复用（demux）
 
 现在遇到一个场景，原来的一个服务只给一个客户端用，但现在增加了一个客户端，由于客户端配置相同，但是服务端需要区别对待两个客户端的服务端配置，所以利用 iptables 根据源地址做了一个端口转发，实现了 demux。
 

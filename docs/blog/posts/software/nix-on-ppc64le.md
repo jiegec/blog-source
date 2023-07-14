@@ -4,8 +4,9 @@ date: 2022-10-29
 tags: [nix,power,powerpc,ppc64le]
 categories:
     - software
-title: 在 ppc64le Linux 上运行 Nix
 ---
+
+# 在 ppc64le Linux 上运行 Nix
 
 ## 背景
 

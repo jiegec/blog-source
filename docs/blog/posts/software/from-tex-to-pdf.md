@@ -4,8 +4,9 @@ date: 2022-08-05
 tags: [tex,latex,ps,dvi,pdf]
 categories:
     - software
-title: 从 TeX 到 PDF 的过程
 ---
+
+# 从 TeX 到 PDF 的过程
 
 ## 背景
 

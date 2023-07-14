@@ -4,8 +4,9 @@ date: 2023-01-09
 tags: [amd,cpu]
 categories:
     - hardware
-title: AMD 处理器
 ---
+
+# AMD 处理器
 
 ## Ryzen 系列
 

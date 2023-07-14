@@ -4,8 +4,9 @@ date: 2022-01-05
 tags: [chisel,rocketchip,diplomacy]
 categories:
     - hardware
-title: 分析 Rocket Chip 中 Diplomacy 系统
 ---
+
+# 分析 Rocket Chip 中 Diplomacy 系统
 
 ## 概念
 

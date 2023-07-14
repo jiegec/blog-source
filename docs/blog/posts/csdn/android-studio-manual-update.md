@@ -4,8 +4,9 @@ date: 2014-12-06
 tags: [java,intellijidea,android,androidstudio]
 categories:
     - csdn
-title: Android Studio 手工更新小记
 ---
+
+# Android Studio 手工更新小记
 
 迁移自本人在 CSDN 上的博客：https://blog.csdn.net/build7601/article/details/41776599
 

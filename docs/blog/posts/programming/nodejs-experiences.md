@@ -4,8 +4,9 @@ date: 2018-06-08
 tags: [nodejs,mongodb,mongoose,session]
 categories:
     - programming
-title: 最近写 Node.js 遇到的若干坑
 ---
+
+# 最近写 Node.js 遇到的若干坑
 
 最近在做前后端分离，前端在用 Vue.js 逐步重写，后端则变为 api 的形式。同时，我尝试了用 autocannon 和 clinic 工具测试自己的 api endpoint 的性能，一开始发现有几个延迟会特别高，即使是一个很简单的 api 也有不正常的高延迟。
 

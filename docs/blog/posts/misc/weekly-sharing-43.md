@@ -4,8 +4,9 @@ date: 2019-09-28
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 43 期
 ---
+
+# 每周分享第 43 期
 
 1. Async in C https://github.com/naasking/async.h
 2. Mozilla 的 QUIC 实现 https://github.com/mozilla/neqo/

@@ -4,8 +4,9 @@ date: 2020-11-08
 tags: [spack,openmpi,slurm]
 categories:
     - software
-title: 在 Spack 中用 external 的 Slurm 依赖编译 OpenMPI
 ---
+
+# 在 Spack 中用 external 的 Slurm 依赖编译 OpenMPI
 
 最近在一个集群上，需要用一个自己编译的 openmpi，但并没有 root 权限，所以需要自己搞一个 spack，在 spack 里面装 openmpi。但默认的安装选项下，它没有打开 slurm 支持，所以 srun 的话会出问题，只能 sbatch 然后指定 host 去做。于是我研究了一下怎么在 spack 里引入 external 的 slurm，然后用它来编译 openmpi
 

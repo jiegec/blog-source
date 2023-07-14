@@ -4,8 +4,9 @@ date: 2020-12-04
 tags: [rust,rustc,codesign,m1,bigsur,macos,aarch64,darwin]
 categories:
     - programming
-title: Rust 在 M1 上的 Code Signing 问题和临时解决方法
 ---
+
+# Rust 在 M1 上的 Code Signing 问题和临时解决方法
 
 不久前，rust 添加了 Tier2 的 aarch64-apple-darwin 的支持，试了一下，确实可以运行，不过当我编译的时候，出现：
 

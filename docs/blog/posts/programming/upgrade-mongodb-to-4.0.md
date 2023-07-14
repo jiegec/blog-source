@@ -4,8 +4,9 @@ date: 2018-07-04
 tags: [mongodb,transaction]
 categories:
     - programming
-title: 升级 MongoDB 到 4.0
 ---
+
+# 升级 MongoDB 到 4.0
 
 MongoDB 4.0 刚刚发布，加入了我很想要的 Transaction 功能。不过，我一更新就发现 MongoDB 起不来了。研究了一下日志，发现由于我创建数据库时，MongoDB 版本是 3.4，虽然后来升级到了 3.6，但还是用着 3.4 的兼容模式。这个可以这样来检测：
 

@@ -4,8 +4,9 @@ date: 2022-01-30
 tags: [windows,vmware,m1,vm]
 categories:
     - os
-title: 在 M1 上运行 Windows ARM 虚拟机
 ---
+
+# 在 M1 上运行 Windows ARM 虚拟机
 
 目前 Windows ARM 出了预览版，可以从 [Windows Insider Preview Downloads](https://www.microsoft.com/en-us/software-download/windowsinsiderpreviewARM64) 下载，得到一个 9.5GB 的 vhdx 文件。
 

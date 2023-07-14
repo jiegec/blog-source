@@ -4,8 +4,9 @@ date: 2018-01-30
 tags: [vs,c,cs,c++]
 categories:
     - programming
-title: 再次吐槽 VS 关于 scanf 和 scanf_s 的问题
 ---
+
+# 再次吐槽 VS 关于 scanf 和 scanf_s 的问题
 
 继[上次的吐槽](/programming/2017/10/17/on-scanf-and-scanf_s/)后，今天再次遇到同学因为 `scanf` 在 VS 下的 `deprecation error` 感到十分迷茫，在知乎上求助又因为拍照的原因被说，我就在此再次吐槽一下 VS 这对初学者很不友善很不友善的两点。
 

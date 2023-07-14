@@ -4,8 +4,9 @@ date: 2019-08-23
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 38 期
 ---
+
+# 每周分享第 38 期
 
 1. 针对部分 HTTP/2 实现的新漏洞 https://github.com/Netflix/security-bulletins/blob/master/advisories/third-party/2019-002.md
 2. 只读 tmux 加魔改 https://brianmckenna.org/blog/guest_tmux

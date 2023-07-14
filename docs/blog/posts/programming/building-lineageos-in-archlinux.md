@@ -4,8 +4,9 @@ date: 2018-06-18
 tags: [lineageos,archlinux,python2,angler]
 categories:
     - programming
-title: 在 ArchLinux 上编译 LineageOS for Huawei Angler
 ---
+
+# 在 ArchLinux 上编译 LineageOS for Huawei Angler
 
 实践了一下如何在 ArchLinux 上编译自己的 LineageOS。本文主要根据[官方文档](https://wiki.lineageos.org/devices/angler/build) 进行编写。
 

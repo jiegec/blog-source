@@ -4,8 +4,9 @@ date: 2020-11-19
 tags: [m1,macbookair,applesilicon,macos,arm,arm64]
 categories:
     - hardware
-title: ARM M1 MacBook Air 开箱
 ---
+
+# ARM M1 MacBook Air 开箱
 
 ## 购买
 

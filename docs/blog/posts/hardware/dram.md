@@ -4,8 +4,9 @@ date: 2021-12-12
 tags: [dram,ddr,teaching]
 categories:
     - hardware
-title: 「教学」DRAM 结构和特性
 ---
+
+# 「教学」DRAM 结构和特性
 
 本文的内容已经整合到[知识库](/kb/hardware/sdram.html)中。
 

@@ -4,8 +4,9 @@ date: 2019-09-14
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 41 期
 ---
+
+# 每周分享第 41 期
 
 1. Wget2 1.99.2 beta 发布 https://lists.gnu.org/archive/html/info-gnu/2019-09/msg00001.html
 2. 独立的 printf 实现 https://github.com/mpaland/printf

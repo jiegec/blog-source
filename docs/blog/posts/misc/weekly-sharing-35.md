@@ -4,8 +4,9 @@ date: 2019-08-02
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 35 期
 ---
+
+# 每周分享第 35 期
 
 1. Apple Touch Bar 的 Windows 第三方支持 https://github.com/imbushuo/DFRDisplayKm
 2. WSL2 新的进展 http://www.phoronix.com/scan.php?page=news_item&px=Windows-WSL2-Localhost-Plus

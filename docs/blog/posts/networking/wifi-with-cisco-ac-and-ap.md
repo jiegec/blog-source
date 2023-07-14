@@ -4,8 +4,9 @@ date: 2018-04-28
 tags: [cisco,wifi,vlan]
 categories:
     - networking
-title: 使用 Cisco AC + AP 组合搭建网络实践
 ---
+
+# 使用 Cisco AC + AP 组合搭建网络实践
 
 有一台已配置好直接可用的 AC 在地址 ac-address。我们需要搭建交换机 + AP 的网络，并且用一台 Linux 服务器进行 DHCP 从而给 AP 分发 AC 的地址。这里以 systemd-networkd 为例。
 

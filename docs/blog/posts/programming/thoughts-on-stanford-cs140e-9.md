@@ -4,8 +4,9 @@ date: 2019-02-12
 tags: [rust,os,stanford,cs140e,kernel]
 categories:
     - programming
-title: 近来做 Stanford CS140e 的一些进展和思考（9）
 ---
+
+# 近来做 Stanford CS140e 的一些进展和思考（9）
 
 距离[上一篇 CS140e 系列文章](thoughts-on-stanford-cs140e-8.md)已经过去了很久，距离第一篇文章过了一年零几天。在后来这一段时间内，CS140e 结束了课程，又开始了新一年的 winter 2019 课程，迎来的却是 C 版本的 CS140e，不禁让人感到失望。还好，Sergio Benitez 放出了原来的 CS140e 的[镜像](https://cs140e.sergio.bz)，如果大家仍然想回去查看原版优质的 CS140e，可以点进去参考。
 

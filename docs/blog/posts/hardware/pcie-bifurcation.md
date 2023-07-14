@@ -4,8 +4,9 @@ date: 2023-01-05
 tags: [pcie,bus,bifurcation]
 categories:
     - hardware
-title: PCIe Bifurcation
 ---
+
+# PCIe Bifurcation
 
 本文的内容已经整合到[知识库](/kb/hardware/pcie.html)中。
 

@@ -4,8 +4,9 @@ date: 2021-12-09
 tags: [dcst,education]
 categories:
     - misc
-title: 教学随想
 ---
+
+# 教学随想
 
 ## 背景
 

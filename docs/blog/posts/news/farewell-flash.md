@@ -4,8 +4,9 @@ date: 2017-07-26
 tags: [flash,adobe]
 categories:
     - news
-title: Farewell, Flash
 ---
+
+# Farewell, Flash
 
 It's time to say goodbye to Flash.
 [HN #1](https://news.ycombinator.com/item?id=14848786)

@@ -4,8 +4,9 @@ date: 2019-01-10
 tags: [alacritty,font]
 categories:
     - software
-title: 调整 Alacritty 的 Powerline 字体显示偏移
 ---
+
+# 调整 Alacritty 的 Powerline 字体显示偏移
 
 今天体验了一下 Alacritty，以前一直在用 iTerm2，但是它的高级功能我都没用到。于是现在用了下 Alacritty，把 Solarized Dark 配置了，发现 Inconsolata for Powerline 字体显示有点偏差，于是调整了一下：
 

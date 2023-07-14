@@ -4,8 +4,9 @@ date: 2017-10-17
 tags: [cs,prime,algorithm]
 categories:
     - programming
-title: 分析一个我第一次见的素数测试函数
 ---
+
+# 分析一个我第一次见的素数测试函数
 
 今天逛到这个[连接](http://blog.csdn.net/l04205613/article/details/6025118)，发现其中的第四种素数判定方法很有意思：
 

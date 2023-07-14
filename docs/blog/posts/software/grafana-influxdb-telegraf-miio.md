@@ -4,8 +4,9 @@ date: 2018-11-27
 tags: [macos,grafana,influxdb,telegraf,miio]
 categories:
     - software
-title: 配置 Grafana+InfluxDB+Telegraf 并添加 MIIO 数据来源
 ---
+
+# 配置 Grafana+InfluxDB+Telegraf 并添加 MIIO 数据来源
 
 之前一直想配一个监控系统，现在有机会了，就简单配了一下。发现真的特别简单，用 Homebrew 安装这三个软件并且都跑起来，然后稍微动一下配置，就可以得到可观的效果了。
 

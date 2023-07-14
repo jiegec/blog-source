@@ -4,8 +4,9 @@ date: 2018-10-04
 tags: [android,apn,ipv6]
 categories:
     - networking
-title: 在 Android 上打开 LTE 的 IPv6
 ---
+
+# 在 Android 上打开 LTE 的 IPv6
 
 听闻北京移动给 LTE 配置了 SLAAC，但现在需要手动打开，方法如下：
 

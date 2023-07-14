@@ -1,9 +1,10 @@
 ---
 layout: page
 date: 1970-01-01
-title: 工具
 permalink: /tools/
 ---
+
+# 工具
 
 ## 在线工具
 

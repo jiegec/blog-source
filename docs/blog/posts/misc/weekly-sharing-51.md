@@ -4,8 +4,9 @@ date: 2019-11-24
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 51 期
 ---
+
+# 每周分享第 51 期
 
 1. 一个 LaTeX 的 LSP https://github.com/latex-lsp/texlab
 

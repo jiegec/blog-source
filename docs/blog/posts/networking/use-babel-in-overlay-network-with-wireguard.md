@@ -4,8 +4,9 @@ date: 2018-08-10
 tags: [wireguard,babel,routing,go]
 categories:
     - networking
-title: 在 WireGuard 构建的 Overlay Network 上跑 babel 路由协议
 ---
+
+# 在 WireGuard 构建的 Overlay Network 上跑 babel 路由协议
 
 
 受 [Run Babeld over Wireguard - Fugoes's Blog](https://blog.fugoes.xyz/2018/02/03/Run-Babeld-over-Wireguard.html) 和 [Route-based VPN on Linux with WireGuard](https://vincent.bernat.im/en/blog/2018-route-based-vpn-wireguard) 启发，自己也想尝试一下，在一个有多个结点的网络中，如何通过 WireGuard 构建一个 overlay network，并通过 babel 自动进行结点发现和路径选择。

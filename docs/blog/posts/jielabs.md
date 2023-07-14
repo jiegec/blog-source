@@ -1,9 +1,10 @@
 ---
 layout: page
 date: 2020-01-01
-title: JieLabs 是如何工作的
 permalink: /jielabs
 ---
+
+# JieLabs 是如何工作的
 
 ## 简介
 

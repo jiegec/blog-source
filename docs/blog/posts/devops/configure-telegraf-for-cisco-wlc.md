@@ -4,8 +4,9 @@ date: 2019-10-19
 tags: [telegraf,cisco,wlc,snmp,mib]
 categories:
     - devops
-title: 为 Cisco WLC 配置 Telegraf
 ---
+
+# 为 Cisco WLC 配置 Telegraf
 
 最近想到可以给 Cisco WLC 也配置一下监控，查了一下，果然有一些方法。大概研究了一下，找到了方法：
 

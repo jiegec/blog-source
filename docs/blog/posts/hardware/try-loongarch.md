@@ -4,8 +4,9 @@ date: 2023-06-12
 tags: [loongarch,la64,la32,la32r,qemu]
 categories:
     - hardware
-title: LoongArch 初尝试
 ---
+
+# LoongArch 初尝试
 
 ## 背景
 

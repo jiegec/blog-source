@@ -4,8 +4,9 @@ date: 2019-10-26
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 47 期
 ---
+
+# 每周分享第 47 期
 
 1. CLion 完善了 Rust 调试支持 https://blog.jetbrains.com/clion/2019/10/debugging-rust-code-in-clion/
 2. Nginx HTTP3 的 docker 镜像 https://github.com/RanadeepPolavarapu/docker-nginx-http3

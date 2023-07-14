@@ -4,8 +4,9 @@ date: 2019-01-07
 tags: [rust,ld,linker,ffi]
 categories:
     - programming
-title: Rust 获取 Linker Script 中的地址
 ---
+
+# Rust 获取 Linker Script 中的地址
 
 在 Linker Script 中可以记录下一个地址到一个变量中，大概这样：
 

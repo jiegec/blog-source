@@ -4,8 +4,9 @@ date: 2019-03-22
 tags: [rcore,riscv,crosscompiling,musl]
 categories:
     - software
-title: 交叉编译 Nginx 1.14.2 到 RISC-V
 ---
+
+# 交叉编译 Nginx 1.14.2 到 RISC-V
 
 最近又把一定的精力放到了 RISC-V 64 上的 rCore 用户态程序的支持上，同时也借到了 HiFive Unleashed 板子，所以有真实硬件可以拿来跑了。在这之前先在 QEMU 上把能跑的都跑起来。
 

@@ -4,8 +4,9 @@ date: 2021-10-18
 tags: [uboot,linux,riscv,rocketchip,vcu128,fpga,serial]
 categories:
     - hardware
-title: 移植系统到 Rocket Chip on VCU128
 ---
+
+# 移植系统到 Rocket Chip on VCU128
 
 ## 背景
 

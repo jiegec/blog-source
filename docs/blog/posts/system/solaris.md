@@ -4,8 +4,9 @@ date: 2023-02-03
 tags: [solaris]
 categories:
     - system
-title: Solaris 11.4 安装
 ---
+
+# Solaris 11.4 安装
 
 ## 下载安装镜像
 

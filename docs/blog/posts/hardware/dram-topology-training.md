@@ -4,8 +4,9 @@ date: 2023-04-20
 tags: [ddr,sdram,dram]
 categories:
     - hardware
-title: DRAM 的拓扑和训练
 ---
+
+# DRAM 的拓扑和训练
 
 本文的内容已经整合到[知识库](/kb/hardware/sdram.html)中。
 

@@ -4,8 +4,9 @@ date: 2020-08-12
 tags: [certbot,route53,aws,letsencrypt,iam]
 categories:
     - devops
-title: 用 certbot 申请 route53 上的域名的 LetsEncrypt 证书并上传到 IAM
 ---
+
+# 用 certbot 申请 route53 上的域名的 LetsEncrypt 证书并上传到 IAM
 
 最近遇到了 AWS Certificate Manager 的一些限制，所以只能用 IAM 证书。于是上网找到了通过 certbot 申请 LE 证书，通过 route53 API 验证的方法。
 

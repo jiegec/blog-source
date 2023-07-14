@@ -4,8 +4,9 @@ date: 2020-09-11
 tags: [alpine,pxe,rpi,rpi4]
 categories:
     - devops
-title: 在 rpi4 上用 PXE 运行 Alpine Linux
 ---
+
+# 在 rpi4 上用 PXE 运行 Alpine Linux
 
 ## 背景
 

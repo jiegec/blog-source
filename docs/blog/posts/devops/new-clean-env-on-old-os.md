@@ -4,8 +4,9 @@ date: 2019-03-21
 tags: [centos,alpine,slurm,redhat]
 categories:
     - devops
-title: 在古老的 OS 上运行一个干净的新的环境
 ---
+
+# 在古老的 OS 上运行一个干净的新的环境
 
 由于某些课程的原因，需要在一个 CentOS 7 上跑一些编译和运行代码。看到这么古老的软件，我心想不行，肯定要找新一些的软件来用。首先想到的是 tmux，于是按照[网上的脚本](https://gist.github.com/ryin/3106801) 很快装了一个 tmux 2.8 版本，果然好了很多。但是常用的很多软件依然是个问题。试了一下最近比较新的 code-server，因为 ABI 问题跑不起来。
 

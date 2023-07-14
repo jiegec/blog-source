@@ -4,8 +4,9 @@ date: 2021-12-04
 tags: [sunway,sw26010,cpu]
 categories:
     - hardware
-title: Sunway 处理器架构分析
 ---
+
+# Sunway 处理器架构分析
 
 ## 参考文档
 

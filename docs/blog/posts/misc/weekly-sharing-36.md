@@ -4,8 +4,9 @@ date: 2019-08-10
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 36 期
 ---
+
+# 每周分享第 36 期
 
 1. QuickJS + libuv https://github.com/saghul/qjsuv
 2. Rust 实现的 Ruby https://github.com/artichoke/artichoke

@@ -4,8 +4,9 @@ date: 2021-06-25
 tags: [k8s,ceph,rook,cephfs,cephadm]
 categories:
     - devops
-title: 将 k8s rook ceph 集群迁移到 cephadm
 ---
+
+# 将 k8s rook ceph 集群迁移到 cephadm
 
 ## 背景
 

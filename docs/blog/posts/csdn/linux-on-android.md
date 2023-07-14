@@ -4,8 +4,9 @@ date: 2014-04-26
 tags: [android,ubuntu,linuxonandroid]
 categories:
     - csdn
-title: Linux on Android 简单教程
 ---
+
+# Linux on Android 简单教程
 
 迁移自本人在 CSDN 上的博客：https://blog.csdn.net/build7601/article/details/24544879
 

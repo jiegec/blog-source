@@ -4,8 +4,9 @@ date: 2018-07-15
 tags: [debian,stretch,mussh]
 categories:
     - devops
-title: 用 MuSSH 快速对多台机器进行软件包升级
 ---
+
+# 用 MuSSH 快速对多台机器进行软件包升级
 
 Debian Stretch 9.5 刚刚更新，自己手上有不少 stretch 的机器，于是顺手把他们都升级了。不过，这个过程比较繁琐，于是我采用了 MuSSH 的方法，让这个效率可以提高，即自动同时 SSH 到多台机器上进行更新。
 

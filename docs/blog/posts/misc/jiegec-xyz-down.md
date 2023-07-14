@@ -4,8 +4,9 @@ date: 2019-04-22
 tags: [jiegecxyz,domain]
 categories:
     - misc
-title: jiegec.xyz 域名即将停用
 ---
+
+# jiegec.xyz 域名即将停用
 
 最早买域名的时候，买的是 jiegec.xyz，后来发现了更好的域名，于是这个老域名一直就是一个简单的网页转址。很快，它就要过期了，我也不打算续费了，大家继续用我的新域名吧。
 

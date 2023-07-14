@@ -4,8 +4,9 @@ date: 2020-04-17
 tags: [k8s,kubernetes,tencentcloud,tke,nginx,nginx-ingress]
 categories:
     - devops
-title: 在 TKE 上配置不使用 LB 的 Nginx Ingress Controller
 ---
+
+# 在 TKE 上配置不使用 LB 的 Nginx Ingress Controller
 
 ## 背景
 

@@ -4,8 +4,9 @@ date: 2019-09-06
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 40 期
 ---
+
+# 每周分享第 40 期
 
 1. TeX Typesetting Game https://texnique.xyz/
 2. Writing Linux Kernel Module in Rust https://github.com/fishinabarrel/linux-kernel-module-rust

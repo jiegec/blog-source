@@ -4,8 +4,9 @@ date: 2018-10-20
 tags: [etc,janestreet,cisco,wifi,flukenetworks]
 categories:
     - networking
-title: ETC 比赛无线网络搭建小记
 ---
+
+# ETC 比赛无线网络搭建小记
 
 正好上着李贺武老师的《无线移动网络技术》课，然后今天又给 ETC 比赛搭建无线网络，于是周二的时候找老师咨询了一下意见。我们大概给老师讲了一下场地的样子和尺寸（当时估计的大了），然后老师给我们提供了一个可以供参考的部署方案，包括几个 AP 分别放在哪，这些 AP 的 2.4GHz 都用哪个 channel，然后都用多少功率。并且很友善地在周五的时候让助教来场地帮我们 survey 一下无线网络的状况。我们用 Fluke Networks 的 AirCheck Wi-Fi Tester 看了一下场地的各个频道的 AP 数量和信号强度，发现虽然 AP 挺多的，但是它们的信号都比我们的小不少，而且我们也都开到了 50mW，所以干扰不大。
 

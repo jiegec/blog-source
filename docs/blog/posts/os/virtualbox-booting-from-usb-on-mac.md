@@ -4,8 +4,9 @@ date: 2018-09-14
 tags: [virtualbox,macos]
 categories:
     - os
-title: 在 macOS 的 VirtualBox 上从 USB 启动
 ---
+
+# 在 macOS 的 VirtualBox 上从 USB 启动
 
 做了一个 Windows 10 安装 U 盘，想测试一下能不能启动，于是想用 VirtualBox 起一个虚拟机。但是发现，一般情况下要从 ISO 或者把 U 盘克隆成一个 vdi/vmdk etc 再启动。不过找到了 Cem Arslan 的 [VirtualBox - Booting From USB (MAC)](https://www.linkedin.com/pulse/virtualbox-booting-from-usb-mac-cem-arslan) 实验了一下，确实可以用，以 `/dev/disk2` 为例方法如下：
 

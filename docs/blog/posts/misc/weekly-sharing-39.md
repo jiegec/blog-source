@@ -4,8 +4,9 @@ date: 2019-08-30
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 39 期
 ---
+
+# 每周分享第 39 期
 
 1. 另一个 Pattern Matching in C++ 库 https://github.com/mpark/patterns
 2. Rust 编写的一个 shell http://www.jonathanturner.org/2019/08/introducing-nushell.html

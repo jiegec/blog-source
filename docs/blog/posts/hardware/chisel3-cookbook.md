@@ -4,8 +4,9 @@ date: 2022-01-03
 tags: [chisel,verilog,hdl,cookbook]
 categories:
     - hardware
-title: Chisel3 Cookbook
 ---
+
+# Chisel3 Cookbook
 
 ## Chisel 版本选择
 

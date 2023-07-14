@@ -4,8 +4,9 @@ date: 2018-05-11
 tags: [linux,x11,display,xauthority,awk,perl]
 categories:
     - programming
-title: 在脚本中寻找 X11 的 DISPLAY 和 XAUTHORITY
 ---
+
+# 在脚本中寻找 X11 的 DISPLAY 和 XAUTHORITY
 
 之前在搞一个小工具，在里面需要访问 X11 server，但是访问 X11 server 我们需要两个东西：DISPLAY 和 XAUTHORITY 两个环境变量。但是，由于它们在不同的发型版和 Display Manager 下都有些不同，所以花了不少功夫才写了一些。
 

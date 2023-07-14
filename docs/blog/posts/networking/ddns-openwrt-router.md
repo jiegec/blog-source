@@ -4,8 +4,9 @@ date: 2018-10-22
 tags: [ddns,gandi,openwrt,cron]
 categories:
     - networking
-title: OpenWRT 上配置 Gandi DDNS
 ---
+
+# OpenWRT 上配置 Gandi DDNS
 
 一直想给自己的 OpenWRT 路由器添加 DDNS 功能，但 Gandi 不在官方的 ddns-scripts 列表中，自己在网上找了一些脚本，发现是 Python 写的，尝试把 Python 安装到路由器上又发现空间不够，虽然可以安装到 USB 上，但总归是麻烦。
 

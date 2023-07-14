@@ -4,8 +4,9 @@ date: 2022-05-16
 tags: [axi,bus,cache,coherence,teaching]
 categories:
     - hardware
-title: 「教学」ACE 缓存一致性协议
 ---
+
+# 「教学」ACE 缓存一致性协议
 
 本文的内容已经整合到[知识库](/kb/hardware/cache_coherence_protocol.html)中。
 

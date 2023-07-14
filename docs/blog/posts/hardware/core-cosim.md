@@ -4,8 +4,9 @@ date: 2023-03-23
 tags: [riscv,cpu,spike,cosim,simulation,verilator]
 categories:
     - hardware
-title: 单核处理器的协同仿真
 ---
+
+# 单核处理器的协同仿真
 
 ## 背景
 

@@ -4,8 +4,9 @@ date: 2023-01-11
 tags: [intel,cpu]
 categories:
     - hardware
-title: Intel 处理器
 ---
+
+# Intel 处理器
 
 ## Xeon 系列
 

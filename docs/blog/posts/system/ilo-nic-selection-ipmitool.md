@@ -4,8 +4,9 @@ date: 2021-03-29
 tags: [hpe,ilo,ilo4,ipmi,ipmitool]
 categories:
     - system
-title: 通过 ipmitool 配置 iLO 4 管理端口
 ---
+
+# 通过 ipmitool 配置 iLO 4 管理端口
 
 ipmitool 自带了对 iDRAC 的支持，可以通过 `ipmitool delloem` 设置 iDRAC 的管理端口。但是对 iLO 的支持并没有实现。研究了一番，找到了通过 raw command 配置 iLO 4 管理端口的方法。
 

@@ -4,8 +4,9 @@ date: 2022-05-09
 tags: [tilelink,bus,cache,coherence]
 categories:
     - hardware
-title: TileLink 总线协议分析
 ---
+
+# TileLink 总线协议分析
 
 本文的内容已经整合到[知识库](/kb/hardware/cache_coherence_protocol.html)中。
 

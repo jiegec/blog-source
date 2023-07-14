@@ -4,8 +4,9 @@ date: 2020-07-10
 tags: [k8s,kubernetes,tencentcloud,prometheus,helm]
 categories:
     - devops
-title: 在 k8s 中部署 Prometheus
 ---
+
+# 在 k8s 中部署 Prometheus
 
 实验了一下在 k8s 中部署 Prometheus，因为它和 k8s 有比较好的集成，很多 App 能在 k8s 里通过 service discovery 被 Prometheus 找到并且抓取数据。实践了一下，其实很简单。
 

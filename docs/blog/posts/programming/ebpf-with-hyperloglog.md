@@ -4,8 +4,9 @@ date: 2018-06-15
 tags: [ebpf,tc,iproute2,hyperloglog]
 categories:
     - programming
-title: 编写 eBPF 程序和利用 HyperLogLog 统计包的信息
 ---
+
+# 编写 eBPF 程序和利用 HyperLogLog 统计包的信息
 
 前段时间在写概率论与数理统计的期末论文，讨论的主题是如何对一个十分巨大的多重集合（或者是流）中相异元素个数进行估计，写的是 HyperLogLog 等算法。联想到前段时间 LWN 上多次提到的 eBPF 和 BCC 的文章，我准备自己用 eBPF 实现一个高效的估计 inbound packet 中来相异源地址的个数和 outbound packet 中相异目的地址的个数。经过了许多的尝试和努力，最终是写成了 [jiegec/hll_ebpf](https://github.com/jiegec/hll_ebpf) ，大致原理如下：
 

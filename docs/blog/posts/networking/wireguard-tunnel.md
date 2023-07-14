@@ -4,8 +4,9 @@ date: 2018-06-29
 tags: [tun,wireguard,systemd-networkd]
 categories:
     - networking
-title: Wireguard 隧道搭建
 ---
+
+# Wireguard 隧道搭建
 
 随着 Wireguard Go 版本的开发，在 macOS 上起 WireGuard Tunnel 成为现实。于是，搭建了一个 macOS 和 Linux 之间的 WireGuard Tunnel。假设 Linux 端为服务端，macOS 端为客户端。
 

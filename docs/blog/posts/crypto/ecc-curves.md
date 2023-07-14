@@ -4,8 +4,9 @@ date: 2020-05-21
 tags: [ecc,crypto]
 categories:
     - crypto
-title: 各种 ecc 曲线
 ---
+
+# 各种 ecc 曲线
 
 ## 背景知识
 

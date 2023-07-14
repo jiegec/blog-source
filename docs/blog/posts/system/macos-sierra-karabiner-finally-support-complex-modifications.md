@@ -4,8 +4,9 @@ date: 2017-06-15
 tags: [macos,karabiner-elements,keyboard]
 categories:
     - system
-title: In macOS Sierra, Karabiner-Elements finally support complex modifications
 ---
+
+# In macOS Sierra, Karabiner-Elements finally support complex modifications
 
 In favor of this [commit](https://github.com/tekezo/Karabiner-Elements/commit/f37815dcf58fd1e91d3cd3d154c2ed3749a2510e), Karabiner-Elements now supports the much welcomed yet long-lost feature, namely complex modifications that enable users to trigger complex keypress.
 

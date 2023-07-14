@@ -4,8 +4,9 @@ date: 2019-04-24
 tags: [router,fpga,router-on-fpga]
 categories:
     - hardware
-title: 在 FPGA 上实现路由器
 ---
+
+# 在 FPGA 上实现路由器
 
 最近在做 FPGA 上硬件的路由器，感觉接近一个基本可用的阶段了吧，大概谈一谈做这个的思路、过程和踩过的坑。
 

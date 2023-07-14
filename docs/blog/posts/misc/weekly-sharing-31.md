@@ -4,8 +4,9 @@ date: 2019-07-05
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 31 期
 ---
+
+# 每周分享第 31 期
 
 1. 一个 Docker 的 TUI https://github.com/jesseduffield/lazydocker
 2. 在线 Git cheatsheet http://ndpsoftware.com/git-cheatsheet.html

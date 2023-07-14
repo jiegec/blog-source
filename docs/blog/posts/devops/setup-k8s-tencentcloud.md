@@ -4,8 +4,9 @@ date: 2020-03-17
 tags: [k8s,kubernetes,tencentcloud,dashboard]
 categories:
     - devops
-title: 体验 Tencent Kubernetes Engine
 ---
+
+# 体验 Tencent Kubernetes Engine
 
 之前在机器上试验了一下 kubernetes，感觉挺不错的，所以就想把腾讯云上面的机器也交给 kubernetes 管理。找到容器服务，新建集群，选择模板里的标准托管集群就可以了。然后开启下面的公网访问，设置一个比较小的 IP 地址段，按照页面下面的要求合并一下 kube config（因为还有别的 k8s cluster）：
 

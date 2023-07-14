@@ -4,8 +4,9 @@ date: 2019-05-30
 tags: [ip,udp,checksum]
 categories:
     - networking
-title: IP 和 UDP Checksum 的增量更新问题
 ---
+
+# IP 和 UDP Checksum 的增量更新问题
 
 之前在写 IP Checksum 的增量更新，就是当 TTL -= 1 的时候，Checksum 应该增加 0x0100，但是这样会有问题，在于，如果按照原来的 IP Checksum 计算方法，是不会出现 0xFFFF 的（求和，进位，然后取反写入），这种加法就有可能出现 0xFFFF。于是翻阅了相关的 RFC：
 

@@ -4,8 +4,9 @@ date: 2019-02-23
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 12 期
 ---
+
+# 每周分享第 12 期
 
 看脑王迟到了（
 

@@ -4,8 +4,9 @@ date: 2017-10-30
 tags: [tyche,oj,cpu,cpuid]
 categories:
     - others
-title: 用 CPUID 获取评测机器的 CPU
 ---
+
+# 用 CPUID 获取评测机器的 CPU
 
 受[用 CPUID 检测各大 OJ 测评机所用的 CPU（以及日常黑 BZOJ）](https://zhuanlan.zhihu.com/p/28322626)的启发，我决定去测试一下徐老师自己写的 OJ（名为 Tyche）所跑的机器是什么 CPU。于是我改造一下代码，用以下代码测评：
 

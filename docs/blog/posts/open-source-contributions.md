@@ -1,9 +1,10 @@
 ---
 layout: page
 date: 1970-01-01
-title: 开源软件贡献
 permalink: /open-source-contributions/
 ---
+
+# 开源软件贡献
 
 记录我对开源软件的一些微小的贡献，以勉励自己，督促自己不忘为社区做贡献。
 

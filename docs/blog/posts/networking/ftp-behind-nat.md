@@ -4,8 +4,9 @@ date: 2018-05-08
 tags: [linux,nat,forwarding,ftp]
 categories:
     - networking
-title: 搭建 FTP server behind NAT
 ---
+
+# 搭建 FTP server behind NAT
 
 我们出现新的需求，要把以前的 FTP 服务器迁移到 NAT 之后的一台机器上。但是，FTP 不仅用到 20 21 端口，PASV 还会用到高端口，这给端口转发带来了一些麻烦。我们一开始测试，直接在 Router 上转发 20 和 21 端口到 Server 上。但是很快发现，Filezilla 通过 PASV 获取到地址为（内网地址，端口高 8 位，端口低 8 位），然后，Filezilla 检测出这个地址是内网地址，于是转而向 router_ip:port 发包，这自然是不会得到结果的。
 

@@ -4,8 +4,9 @@ date: 2021-12-06
 tags: [cpu,manycore,intel,mic,a64fx]
 categories:
     - hardware
-title: Manycore 处理器架构分析
 ---
+
+# Manycore 处理器架构分析
 
 ## 参考文档
 

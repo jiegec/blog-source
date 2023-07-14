@@ -4,8 +4,9 @@ date: 2019-08-02
 tags: [la,logicanalyzer,sigrok,pulseview]
 categories:
     - hardware
-title: 用 PulseView 配合 DSLogic 调试 SPI Flash
 ---
+
+# 用 PulseView 配合 DSLogic 调试 SPI Flash
 
 最近需要用到逻辑分析仪来调试 SPI Flash，设备是 DreamSourceLab 的 DSLogic，最开始用的是官方的 DSView，确实能够抓到 SPI 的信号，也可以解析出一些 SPI Flash 的数据，但是很多是不完整的。
 

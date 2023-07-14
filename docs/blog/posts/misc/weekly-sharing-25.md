@@ -4,8 +4,9 @@ date: 2019-05-24
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 25 期
 ---
+
+# 每周分享第 25 期
 
 1. 关掉各种 Intel BUG 的 mitigation https://t.me/one_real_world/1517
 2. GCC 10 支持用 MMX 模拟 SSE http://www.phoronix.com/scan.php?page=news_item&px=GCC-10-Emulating-MMX-With-SSE

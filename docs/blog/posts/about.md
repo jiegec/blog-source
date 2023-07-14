@@ -1,9 +1,10 @@
 ---
 layout: page
 date: 1970-01-01
-title: 关于
 permalink: /about/
 ---
+
+# 关于
 
 我是清华大学计算机系的一名在读博士生。
 

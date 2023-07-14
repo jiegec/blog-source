@@ -4,8 +4,9 @@ date: 2023-01-13
 tags: [vscode,code-server,freebsd]
 categories:
     - software
-title: 在 FreeBSD 上运行 code-server
 ---
+
+# 在 FreeBSD 上运行 code-server
 
 ## 背景
 

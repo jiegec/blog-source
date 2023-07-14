@@ -4,8 +4,9 @@ date: 2014-05-30
 tags: [java,intellijidea]
 categories:
     - csdn
-title: IntelliJ IDEA 手动更新方法
 ---
+
+# IntelliJ IDEA 手动更新方法
 
 迁移自本人在 CSDN 上的博客：https://blog.csdn.net/build7601/article/details/27704683
 

@@ -4,8 +4,9 @@ date: 2019-10-11
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 45 期
 ---
+
+# 每周分享第 45 期
 
 1. Android ARM32/64 环境模拟 https://github.com/zhkl0228/unidbg
 2. Calibre 4.0 https://readhacker.news/s/4aukk

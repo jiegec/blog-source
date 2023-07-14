@@ -4,8 +4,9 @@ date: 2023-04-04
 tags: [chisel,verilog,hdl,firtool,circt]
 categories:
     - hardware
-title: firtool 尝试
 ---
+
+# firtool 尝试
 
 ## 背景
 

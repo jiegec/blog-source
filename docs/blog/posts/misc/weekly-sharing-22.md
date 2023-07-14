@@ -4,8 +4,9 @@ date: 2019-05-03
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 22 期
 ---
+
+# 每周分享第 22 期
 
 1. AXI-Stream Components https://github.com/alexforencich/verilog-axis
 2. go self update 库 https://github.com/rhysd/go-github-selfupdate

@@ -4,8 +4,9 @@ date: 2020-10-09
 tags: [bmc,ipmi,power,ibm]
 categories:
     - system
-title: IBM Power S822LC(8335-GTB) BMC 升级
 ---
+
+# IBM Power S822LC(8335-GTB) BMC 升级
 
 ## 背景
 

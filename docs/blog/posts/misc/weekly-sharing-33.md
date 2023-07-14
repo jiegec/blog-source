@@ -4,8 +4,9 @@ date: 2019-07-19
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 33 期
 ---
+
+# 每周分享第 33 期
 
 1. 一个讲 Rust 比较硬核的博客 http://system.joekain.com/
 2. 利用 fzf 实现 shell 的 REPL https://github.com/pawelduda/fzf-live-repl

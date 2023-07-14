@@ -4,8 +4,9 @@ date: 2018-05-01
 tags: [arch,boot,efi,fat32]
 categories:
     - system
-title: 在服务器上安装 Archlinux 记录
 ---
+
+# 在服务器上安装 Archlinux 记录
 
 有一台服务器的 Ubuntu 挂了，我们想在上面重装一个 Archlinux。我们首先下载了 archlinux-2018.04.01 的 ISO, 直接 dd 到 U 盘上，但是遇到了问题。
 

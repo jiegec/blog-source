@@ -4,8 +4,9 @@ date: 2023-05-06
 tags: [linux,vivado]
 categories:
     - software
-title: How a Linux 6.2.13 BUG stops Vivado from recognizing FPGA
 ---
+
+# How a Linux 6.2.13 BUG stops Vivado from recognizing FPGA
 
 [中文版本](/software/2023/05/06/linux-regression-vivado/)
 

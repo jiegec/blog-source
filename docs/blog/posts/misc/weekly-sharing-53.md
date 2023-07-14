@@ -4,8 +4,9 @@ date: 2019-12-08
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 53 期
 ---
+
+# 每周分享第 53 期
 
 1. GDB Enhanced Features https://github.com/hugsy/gef
 2. Lisp on Lua https://fennel-lang.org/

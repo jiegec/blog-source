@@ -4,8 +4,9 @@ date: 2022-11-20
 tags: [cxl,bus,coherence,notes,learn]
 categories:
     - hardware
-title: CXL 学习笔记
 ---
+
+# CXL 学习笔记
 
 本文的内容已经整合到[知识库](/kb/hardware/pcie.html)中。
 

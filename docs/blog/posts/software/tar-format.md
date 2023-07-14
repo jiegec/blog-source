@@ -4,8 +4,9 @@ date: 2023-05-23
 tags: [tar]
 categories:
     - software
-title: Tar 文件格式
 ---
+
+# Tar 文件格式
 
 本文的内容已经整合到[知识库](/kb/software/tar.html)中。
 

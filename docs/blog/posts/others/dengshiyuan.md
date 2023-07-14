@@ -4,8 +4,9 @@ date: 2016-08-02
 tags: [physics]
 categories:
     - others
-title: 等时圆
 ---
+
+# 等时圆
 
 最近学校老师讲了一下等时圆。先从这个题讲起：
 

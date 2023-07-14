@@ -4,8 +4,9 @@ date: 2022-12-06
 tags: [infiniband,ib,notes,learn]
 categories:
     - hardware
-title: InfiniBand 学习笔记
 ---
+
+# InfiniBand 学习笔记
 
 本文的内容已经整合到[知识库](/kb/networking/infiniband.html)中。
 

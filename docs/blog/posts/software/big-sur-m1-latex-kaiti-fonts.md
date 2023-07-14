@@ -4,8 +4,9 @@ date: 2021-02-09
 tags: [c++,fortran,gcc,clang,ld,linking,symbols,objdump]
 categories:
     - software
-title: 在 Big Sur(M1) 上解决 LaTeX 找不到楷体字体的问题
 ---
+
+# 在 Big Sur(M1) 上解决 LaTeX 找不到楷体字体的问题
 
 ## 背景
 

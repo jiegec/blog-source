@@ -4,8 +4,9 @@ date: 2023-04-07
 tags: [sram,collision,readunderwrite,xpm,xilinx,bram]
 categories:
     - hardware
-title: RAM 读写冲突
 ---
+
+# RAM 读写冲突
 
 ## 背景
 

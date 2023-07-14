@@ -4,8 +4,9 @@ date: 2019-11-03
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 48 期
 ---
+
+# 每周分享第 48 期
 
 1. 一个特殊的用于显示数字的字体 https://blog.janestreet.com/commas-in-big-numbers-everywhere/
 2. Intel 的 SPMD 编译器 https://ispc.github.io/

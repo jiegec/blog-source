@@ -4,8 +4,9 @@ date: 2022-07-06
 tags: [nvidia,cuda]
 categories:
     - software
-title: NVIDIA 驱动和 CUDA 安装速查
 ---
+
+# NVIDIA 驱动和 CUDA 安装速查
 
 ## 背景
 

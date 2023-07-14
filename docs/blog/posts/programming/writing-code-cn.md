@@ -4,8 +4,9 @@ date: 2022-07-12
 tags: [mit,plagiarism]
 categories:
     - programming
-title: 编程作业中的学术诚信
 ---
+
+# 编程作业中的学术诚信
 
 本文是我自己对 [Academic Integrity at MIT: Writing Code](https://integrity.mit.edu/handbook/writing-code) 的非官方中文翻译。本文已经得到了官方的邮件授权。
 

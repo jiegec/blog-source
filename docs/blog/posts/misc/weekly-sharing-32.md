@@ -4,8 +4,9 @@ date: 2019-07-12
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 32 期
 ---
+
+# 每周分享第 32 期
 
 1. Rpi4 的 Type-C 设计有问题  https://readhacker.news/s/45WYc
 2. Debian buster released

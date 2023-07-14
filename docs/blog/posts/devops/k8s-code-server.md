@@ -4,8 +4,9 @@ date: 2020-04-22
 tags: [k8s,kubernetes,tencentcloud,vscode,code-server]
 categories:
     - devops
-title: 在 k8s 中部署 code-server
 ---
+
+# 在 k8s 中部署 code-server
 
 实验了一下在 k8s 中部署 [code-server](https://github.com/cdr/code-server)，并不复杂，和之前几篇博客的配置是类似的：
 

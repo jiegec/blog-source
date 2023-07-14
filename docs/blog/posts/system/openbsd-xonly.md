@@ -4,8 +4,9 @@ date: 2023-02-07
 tags: [openbsd,xonly,security]
 categories:
     - system
-title: OpenBSD xonly 实现原理
 ---
+
+# OpenBSD xonly 实现原理
 
 ## 背景
 

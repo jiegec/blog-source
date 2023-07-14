@@ -4,8 +4,9 @@ date: 2019-09-28
 tags: [nginx,rtmp,hls,obs]
 categories:
     - software
-title: 用 Nginx 作为 RTMP 服务器并提供直播服务
 ---
+
+# 用 Nginx 作为 RTMP 服务器并提供直播服务
 
 Nginx 除了可以做 HTTP 服务器以外，还可以做 RTMP 服务器，同时转成 HLS 再提供给用户，这样可以实现一个直播的服务器，用 OBS 推上来即可。
 

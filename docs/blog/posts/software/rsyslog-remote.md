@@ -4,8 +4,9 @@ date: 2022-07-01
 tags: [linux,rsyslog,remote,logging]
 categories:
     - software
-title: rsyslog 收集远程日志
 ---
+
+# rsyslog 收集远程日志
 
 ## 背景
 

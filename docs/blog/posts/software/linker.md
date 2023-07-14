@@ -4,8 +4,9 @@ date: 2023-05-06
 tags: [linker,ld]
 categories:
     - software
-title: 链接器的工作原理
 ---
+
+# 链接器的工作原理
 
 ## 背景
 

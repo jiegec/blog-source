@@ -4,8 +4,9 @@ date: 2021-07-19
 tags: [sigs,tsinghua,email]
 categories:
     - misc
-title: 轶事一则
 ---
+
+# 轶事一则
 
 7.17 号周六的时候，一位朋友 [@elenacliu](https://github.com/elenacliu) 发现[深研院网站](https://www.sigs.tsinghua.edu.cn/2020/0923/c118a21164/page.htm)的一个[文档链接](https://www.sigs.tsinghua.edu.cn/_upload/article/files/81/7c/a5c0421f4e418de32ef13701da95/448b40b3-87e2-4026-832e-28b113a01f4a.pdf)，文档中标题写的是 2021，但是网页的标题显示的是 2006 年。于是我发邮件给深研院的招生办，抄送本部的研招办，提交了这个 issue。
 

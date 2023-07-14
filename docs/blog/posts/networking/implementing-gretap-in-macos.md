@@ -4,8 +4,9 @@ date: 2018-08-21
 tags: [tuntaposx,tap,gre,gretap]
 categories:
     - networking
-title: 在 macOS 下实现 GRETAP
 ---
+
+# 在 macOS 下实现 GRETAP
 
 由于没有找到 macOS 下现成的 GRETAP 实现，我就想到自己实现一个。由于[tuntaposx](http://tuntaposx.sourceforge.net/)提供了一个和 Linux 下基本一样的 TAP Interface，于是自己利用 raw socket 和 TAP Interface 实现了一下，主要方法：
 

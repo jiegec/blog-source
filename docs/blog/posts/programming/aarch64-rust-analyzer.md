@@ -4,8 +4,9 @@ date: 2020-09-13
 tags: [rust,rust-analyzer,arm,arm64,aarch64]
 categories:
     - programming
-title: 在 arm64 上使用 rust-analyzer
 ---
+
+# 在 arm64 上使用 rust-analyzer
 
 远程到 arm64 的机器上进行开发，发现没有 rust-analyzer 的支持。研究了一下，发现在 rustup 里面可以找到，不过要配置一下：
 

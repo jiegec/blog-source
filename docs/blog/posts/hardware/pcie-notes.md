@@ -4,8 +4,9 @@ date: 2022-11-12
 tags: [pcie,bus,notes,learn]
 categories:
     - hardware
-title: PCIe 学习笔记
 ---
+
+# PCIe 学习笔记
 
 本文的内容已经整合到[知识库](/kb/hardware/pcie.html)中。
 

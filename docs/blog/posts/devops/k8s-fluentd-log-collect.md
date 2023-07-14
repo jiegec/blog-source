@@ -4,8 +4,9 @@ date: 2021-04-02
 tags: [k8s,kubernetes,fluentd,logging]
 categories:
     - devops
-title: 用 fluentd 收集 k8s 中容器的日志
 ---
+
+# 用 fluentd 收集 k8s 中容器的日志
 
 ## 背景
 

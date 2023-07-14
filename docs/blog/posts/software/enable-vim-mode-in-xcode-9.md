@@ -4,8 +4,9 @@ date: 2018-09-08
 tags: [xcode,vim,xvim]
 categories:
     - software
-title: 在 Xcode 9 上启用 Vim 模拟（XVim 2） 
 ---
+
+# 在 Xcode 9 上启用 Vim 模拟（XVim 2） 
 
 作为一个不用 vim 编辑会死星人，用 Xcode 总是止不住自己想 Escape 的心。于是找到了 [XVimProject/XVim2](https://github.com/XVimProject/XVim) 进行配置。
 

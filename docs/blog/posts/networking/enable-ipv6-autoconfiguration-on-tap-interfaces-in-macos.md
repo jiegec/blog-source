@@ -4,8 +4,9 @@ date: 2018-08-25
 tags: [slacc,ipv6,tuntaposx,tap]
 categories:
     - networking
-title: 在 macOS 上 TAP Interface 上启用 IPv6 自动配置
 ---
+
+# 在 macOS 上 TAP Interface 上启用 IPv6 自动配置
 
 由于 macOS 对 TAP Interface 不会自动出现一个设置中对应的服务，所以需要手动进行配置。一番测试后，发现可以通过：
 

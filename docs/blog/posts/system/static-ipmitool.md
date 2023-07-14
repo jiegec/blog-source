@@ -4,8 +4,9 @@ date: 2021-03-29
 tags: [ipmitool,static]
 categories:
     - system
-title: 静态编译 ipmitool
 ---
+
+# 静态编译 ipmitool
 
 为了在 ESXi 上运行 ipmitool，需要静态编译 ipmitool。网上已经有一些解决方案：
 

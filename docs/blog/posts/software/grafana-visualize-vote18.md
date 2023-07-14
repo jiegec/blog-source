@@ -4,8 +4,9 @@ date: 2018-12-07
 tags: [grafana,influxdb,telegraf,nodejs,scraper]
 categories:
     - software
-title: Grafana 可视化实践：清华大学 2018 年度人物评选
 ---
+
+# Grafana 可视化实践：清华大学 2018 年度人物评选
 
 最近这段时间，清华内部正在投票选出今年的年度人物，想到最近刚好在学习使用 Grafana+InfluxDB+Telegraf 全家桶，于是想着能不能写个爬虫把数据都拿下来，然后用 Grafana 画出来，就可以得到一个投票随时间变化的趋势。爬虫很简单，就是登录，获取页面信息，然后按照 InfluxDB 的输入格式进行输出即可。代码放在了 [jiegec/student-tsinghua-vote18](https://github.com/jiegec/student-tsinghua-vote18) 下。
 

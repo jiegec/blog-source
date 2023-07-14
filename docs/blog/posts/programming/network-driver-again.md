@@ -4,8 +4,9 @@ date: 2019-02-26
 tags: [rcore,rust,os,e1000]
 categories:
     - programming
-title: 使用 Rust 实现 e1000 驱动
 ---
+
+# 使用 Rust 实现 e1000 驱动
 
 是的。我又来了。上次做了[使用 Rust 实现 VirtIO 驱动](virtio-drivers-implementation.md)之后，继续往 rCore 加更多的驱动支持。由于现在工作重点是 x86_64 下的 syscall 实现，所以选了一个比较有代表性的驱动 e1000 来实现。其实如果只是为了在 qemu 下运行的话，其实只需要支持 virtio-pci 就可以了，原来的 virtio-net 直接拿来用就可以了。
 

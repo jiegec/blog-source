@@ -4,8 +4,9 @@ date: 2022-05-10
 tags: [memory,bus,dram,auth,teaching]
 categories:
     - hardware
-title: 「教学」内存认证算法
 ---
+
+# 「教学」内存认证算法
 
 ## 背景
 

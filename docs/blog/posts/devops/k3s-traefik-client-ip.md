@@ -4,8 +4,9 @@ date: 2022-02-22
 tags: [k8s,k3s,kubernetes,traefik,proxy]
 categories:
     - devops
-title: 解决 k3s 中 traefik 不会转发 X-Forwarded-For 等头部的问题
 ---
+
+# 解决 k3s 中 traefik 不会转发 X-Forwarded-For 等头部的问题
 
 ## 背景
 

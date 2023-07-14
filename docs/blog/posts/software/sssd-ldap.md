@@ -4,8 +4,9 @@ date: 2021-02-15
 tags: [sssd,ldap,pam,nss,starttls]
 categories:
     - software
-title: 使用 SSSD 的 LDAP 认证
 ---
+
+# 使用 SSSD 的 LDAP 认证
 
 ## 前言
 

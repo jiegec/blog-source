@@ -4,8 +4,9 @@ date: 2018-09-07
 tags: [smart,macos,smartmontools,kext]
 categories:
     - hardware
-title: 在 macOS 上读取移动硬盘的 S.M.A.R.T. 信息
 ---
+
+# 在 macOS 上读取移动硬盘的 S.M.A.R.T. 信息
 
 之前想看看自己各个盘的情况，但是发现只能看电脑内置的 SSD 的 S.M.A.R.T 信息，而移动硬盘的都显示：
 

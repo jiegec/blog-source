@@ -4,8 +4,9 @@ date: 2019-08-12
 tags: [linux,fb,framebuffer,fbgrab,fbdump]
 categories:
     - software
-title: 在 Linux 下捕获 Framebuffer
 ---
+
+# 在 Linux 下捕获 Framebuffer
 
 最近需要在 linux 下抓取 Framebuffer 的内容，在网上找到了两种方法，在我这里只有第二、第三种可以成功，没有细究具体原因，可能与我的 Framebuffer 配置有关。方法如下：
 

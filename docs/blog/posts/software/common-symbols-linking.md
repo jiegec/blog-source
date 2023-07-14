@@ -4,8 +4,9 @@ date: 2021-02-09
 tags: [c++,fortran,gcc,clang,ld,linking,symbols,objdump]
 categories:
     - software
-title: COMMON 符号
 ---
+
+# COMMON 符号
 
 ## 背景
 

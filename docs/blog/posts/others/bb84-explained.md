@@ -4,8 +4,9 @@ date: 2020-05-01
 tags: [algorithm,qkd,quantom,bb84]
 categories:
     - others
-title: 解释 BB84 协议
 ---
+
+# 解释 BB84 协议
 
 ## 背景
 

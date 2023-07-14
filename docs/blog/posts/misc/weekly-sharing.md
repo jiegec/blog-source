@@ -4,8 +4,9 @@ date: 2018-12-07
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 1 期
 ---
+
+# 每周分享第 1 期
 
 向阮一峰学习，把自己在一周里看到的有趣的事情分享一下。不过形式就比较随意了。
 

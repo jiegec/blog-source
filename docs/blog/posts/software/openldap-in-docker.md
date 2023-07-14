@@ -4,8 +4,9 @@ date: 2023-05-13
 tags: [ldap,openldap,docker]
 categories:
     - software
-title: 使用 Docker 部署 OpenLDAP
 ---
+
+# 使用 Docker 部署 OpenLDAP
 
 ## Docker-Compose
 

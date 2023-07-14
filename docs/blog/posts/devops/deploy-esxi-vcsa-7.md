@@ -4,8 +4,9 @@ date: 2020-10-18
 tags: [vmware,esxi,vcsa,baremetal,visualization]
 categories:
     - devops
-title: 在裸机上部署 ESXi 和 vCSA 7
 ---
+
+# 在裸机上部署 ESXi 和 vCSA 7
 
 之前在另一篇文章里提到过 vCSA 的安装，这次又在另一台机器上重新做了一遍，特此记录一下。
 

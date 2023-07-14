@@ -4,8 +4,9 @@ date: 2023-02-26
 tags: [netgear,wifi,wireless,dongle,usb,linux]
 categories:
     - hardware
-title: 在 Linux 上使用 Netgear A6210 USB 无线网卡
 ---
+
+# 在 Linux 上使用 Netgear A6210 USB 无线网卡
 
 ## 背景
 

@@ -4,8 +4,9 @@ date: 2023-03-19
 tags: [modulation,digital]
 categories:
     - system
-title: 数字调制
 ---
+
+# 数字调制
 
 ## 背景
 

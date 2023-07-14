@@ -4,8 +4,9 @@ date: 2019-06-28
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 30 期
 ---
+
+# 每周分享第 30 期
 
 1. 一个可参考的防止 side channel attack 的方法 https://www.undeadly.org/cgi?action=article;sid=20190621081455
 

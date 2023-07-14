@@ -4,8 +4,9 @@ date: 2020-03-10
 tags: [k8s,kubernetes,docker]
 categories:
     - devops
-title: 用 Kubernetes 部署无状态服务
 ---
+
+# 用 Kubernetes 部署无状态服务
 
 ## 背景
 

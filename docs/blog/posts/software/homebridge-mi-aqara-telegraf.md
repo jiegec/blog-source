@@ -4,8 +4,9 @@ date: 2018-12-13
 tags: [homebridge,mi,aqara,telegraf,influxdb]
 categories:
     - software
-title: 配置 homebridge-mi-aqara 并添加为 telegraf 的数据源
 ---
+
+# 配置 homebridge-mi-aqara 并添加为 telegraf 的数据源
 
 最近有了设备，想把设备拿到的数据都导一份存到 influxdb 里，但是目前找到的只有 [homebridge-mi-aqara](https://github.com/YinHangCode/homebridge-mi-aqara) 可以访问并拿到数据，然后它又提供了 mqtt 的数据获取方案，于是自己写了个脚本去读取这些数据。
 

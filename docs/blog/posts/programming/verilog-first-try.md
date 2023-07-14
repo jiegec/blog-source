@@ -4,8 +4,9 @@ date: 2018-06-21
 tags: [fpga,verilog,verilator,cpu]
 categories:
     - programming
-title: Verilog 初体验
 ---
+
+# Verilog 初体验
 
 自己以前一直对硬件方面没有接触，但是大二大三很快就要接触相关知识，所以自己就先预习一下 Verilog HDL，以便以后造计算机。听学长们推荐了一本书叫《自己动手写 CPU》，由于自己手中只有很老的 Spartan-3 板子，手上没有可以用来试验的 FPGA，所以选择用 Verilog + Verilator 进行模拟。既然是模拟，自然是会有一定的问题，不过这个以后再说。
 

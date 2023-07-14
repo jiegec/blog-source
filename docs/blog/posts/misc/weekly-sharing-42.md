@@ -4,8 +4,9 @@ date: 2019-09-21
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 42 期
 ---
+
+# 每周分享第 42 期
 
 1. Dart 2.5 发布
 2. Rust USB device 库 https://github.com/mvirkkunen/usb-device

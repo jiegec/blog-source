@@ -4,8 +4,9 @@ date: 2019-05-31
 tags: [weeklysharing]
 categories:
     - misc
-title: 每周分享第 26 期
 ---
+
+# 每周分享第 26 期
 
 1. Grafana 6.2 发布 https://grafana.com/blog/2019/05/22/grafana-v6.2-released/
 2. Program Synthesis Talk by Paul Zhu https://paulz.me/talk/program-synthesis/

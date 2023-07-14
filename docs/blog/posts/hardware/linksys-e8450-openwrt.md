@@ -4,8 +4,9 @@ date: 2021-03-18
 tags: [openwrt,linksys,e8450,wifi,80211ax]
 categories:
     - hardware
-title: Linksys E8450 OpenWRT 配置 w/ 802.11ax
 ---
+
+# Linksys E8450 OpenWRT 配置 w/ 802.11ax
 
 ## 背景
 

@@ -4,8 +4,9 @@ date: 2018-05-05
 tags: [windows,ad,pam,winbind,samba]
 categories:
     - system
-title: 在 Archlinux 上用 winbind 配合 pam 配置 Windows AD 认证登录
 ---
+
+# 在 Archlinux 上用 winbind 配合 pam 配置 Windows AD 认证登录
 
 作为不清真的网络管理员，为了配置一套完整的统一认证系统，陈老师采用了 Windows AD 的方法给这里配置统一认证。重装了系统，自然要把之前的统一认证再配到新装的 Archlinux 上。
 

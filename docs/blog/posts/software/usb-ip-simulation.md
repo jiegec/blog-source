@@ -4,8 +4,9 @@ date: 2020-05-15
 tags: [linux,usbip]
 categories:
     - software
-title: USB/IP 模拟 USB 设备
 ---
+
+# USB/IP 模拟 USB 设备
 
 ## 背景
 

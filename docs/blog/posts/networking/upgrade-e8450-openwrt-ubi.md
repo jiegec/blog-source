@@ -4,8 +4,9 @@ date: 2022-01-03
 tags: [openwrt,linksys,e8450,ubi,flash,router]
 categories:
     - networking
-title: 升级 Linksys E8450 的 OpenWRT 系统到 UBI
 ---
+
+# 升级 Linksys E8450 的 OpenWRT 系统到 UBI
 
 ## 背景
 

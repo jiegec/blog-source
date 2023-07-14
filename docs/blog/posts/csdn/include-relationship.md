@@ -4,8 +4,9 @@ date: 2014-07-06
 tags: [java,android,libgdx,box2d]
 categories:
     - csdn
-title: 写了一个程序，分析各个源文件之间的 include 关系。
 ---
+
+# 写了一个程序，分析各个源文件之间的 include 关系。
 
 迁移自本人在 CSDN 上的博客：https://blog.csdn.net/build7601/article/details/37343993
 

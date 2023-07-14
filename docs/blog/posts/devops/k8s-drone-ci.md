@@ -4,8 +4,9 @@ date: 2020-04-21
 tags: [k8s,kubernetes,tencentcloud,drone,ci]
 categories:
     - devops
-title: 在 k8s 中部署 Drone 用于 CI
 ---
+
+# 在 k8s 中部署 Drone 用于 CI
 
 实验了一下在 k8s 中部署 CI，在 drone gitlab-ci 和 jenkins 三者中选择了 drone，因为它比较轻量，并且基于 docker，可以用 GitHub 上的仓库，比较方便。
 

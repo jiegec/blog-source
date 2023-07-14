@@ -4,8 +4,9 @@ date: 2018-05-24
 tags: [fedora,riscv,qemu]
 categories:
     - os
-title: 体验 Fedora on RISCV
 ---
+
+# 体验 Fedora on RISCV
 
 看到 RISCV 很久了，但一直没能体验。最近工具链不断更新，QEMU 在 2.12.0 也正式加入了 riscv 的模拟。但是自己编译一个内核又太麻烦，就找到了 Fedora 做的 RISCV port，下载下来试用了一下。之前试过一次，但是遇到了一些问题，刚才总算是成功地搞出来了。
 

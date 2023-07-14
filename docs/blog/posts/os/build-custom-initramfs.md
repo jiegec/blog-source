@@ -4,8 +4,9 @@ date: 2018-07-16
 tags: [linux,initrd,initramfs]
 categories:
     - os
-title: 构建简易的 initramfs
 ---
+
+# 构建简易的 initramfs
 
 一直对 Linux 的启动很感兴趣，但对 initrd 和 initramfs 等概念不大了解，于是上网找了资料，自己成功地看到了现象。
 

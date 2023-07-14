@@ -4,8 +4,9 @@ date: 2020-03-09
 tags: [jailkit,chroot,scp]
 categories:
     - devops
-title: 用 jailkit 限制用户仅 scp
 ---
+
+# 用 jailkit 限制用户仅 scp
 
 最近需要用 scp 部署到生产机器，但又不想出现安全问题，所以用了 jailkit 的方法。首先是创建单独的用户，然后生成 ssh key 来认证，不再赘述。此时是可以 scp 了，但用户依然可以获得 shell，不够安全。
 

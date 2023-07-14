@@ -4,8 +4,9 @@ date: 2018-07-06
 tags: [container,lxc,systemd-nspawn,systemd-run]
 categories:
     - devops
-title: 通过 systemd-run 直接在容器中执行命令
 ---
+
+# 通过 systemd-run 直接在容器中执行命令
 
 之前使用 `systemd-nspawn` 开了容器，然后通过 `machinectl shell` 进去，想要起一个服务然后丢到后台继续执行，但是发现离开这个 session 后这个进程总是会被杀掉，于是找了 `systemd-run` 的方案，即：
 
