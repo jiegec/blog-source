@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-04
 tags: [gpg,gpgmail,macos,radare2]
-category: software
+categories:
+    - software
 title: 绕过 GPGMail 的激活检测
 ---
 

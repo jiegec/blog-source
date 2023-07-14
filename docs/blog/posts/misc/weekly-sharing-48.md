@@ -2,7 +2,8 @@
 layout: post
 date: 2019-11-03
 tags: [weeklysharing]
-category: misc
+categories:
+    - misc
 title: 每周分享第 48 期
 ---
 

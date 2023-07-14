@@ -2,7 +2,8 @@
 layout: post
 date: 2018-05-20
 tags: [vmware,vcsa,esxi]
-category: devops
+categories:
+    - devops
 title: 在 VMware ESXi 上部署 vCSA 实践
 ---
 

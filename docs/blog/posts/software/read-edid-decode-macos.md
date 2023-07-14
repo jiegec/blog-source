@@ -2,7 +2,8 @@
 layout: post
 date: 2019-08-14
 tags: [macos,edid]
-category: software
+categories:
+    - software
 title: macOS 下读取并解析 EDID
 ---
 

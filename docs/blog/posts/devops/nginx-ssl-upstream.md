@@ -2,7 +2,8 @@
 layout: post
 date: 2019-05-22
 tags: [nginx,https]
-category: devops
+categories:
+    - devops
 title: Nginx 反代到 HTTPS 上游
 ---
 

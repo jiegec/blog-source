@@ -2,7 +2,8 @@
 layout: post
 date: 2022-11-20
 tags: [cxl,bus,coherence,notes,learn]
-category: hardware
+categories:
+    - hardware
 title: CXL 学习笔记
 ---
 

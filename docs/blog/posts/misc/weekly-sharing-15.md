@@ -2,7 +2,8 @@
 layout: post
 date: 2019-03-16
 tags: [weeklysharing]
-category: misc
+categories:
+    - misc
 title: 每周分享第 15 期
 ---
 

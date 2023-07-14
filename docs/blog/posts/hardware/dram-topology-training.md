@@ -2,7 +2,8 @@
 layout: post
 date: 2023-04-20
 tags: [ddr,sdram,dram]
-category: hardware
+categories:
+    - hardware
 title: DRAM 的拓扑和训练
 ---
 

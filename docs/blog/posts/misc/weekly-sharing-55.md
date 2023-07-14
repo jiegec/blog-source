@@ -2,7 +2,8 @@
 layout: post
 date: 2020-01-31
 tags: [weeklysharing]
-category: misc
+categories:
+    - misc
 title: 每周分享第 55 期
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2018-11-06
 tags: [sfpi,saltedfishpi,dd,extfs,ext4]
-category: hardware
+categories:
+    - hardware
 title: 向咸鱼派写入 ArchlinuxARM
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2021-05-06
 tags: [disk,pcie,ahci,sata,sas,nvme]
-category: hardware
+categories:
+    - hardware
 title: 硬盘相关的概念
 ---
 

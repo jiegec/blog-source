@@ -2,7 +2,8 @@
 layout: post
 date: 2016-08-02
 tags: [physics]
-category: others
+categories:
+    - others
 title: 等时圆
 ---
 

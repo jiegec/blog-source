@@ -2,7 +2,8 @@
 layout: post
 date: 2021-03-29
 tags: [hpe,ilo,ilo4,ipmi,ipmitool]
-category: system
+categories:
+    - system
 title: 通过 ipmitool 配置 iLO 4 管理端口
 ---
 

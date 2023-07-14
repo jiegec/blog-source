@@ -2,7 +2,8 @@
 layout: post
 date: 2023-06-20
 tags: [stp,rstp,mstp,pvst,vbst]
-category: software
+categories:
+    - software
 title: 生成树协议
 ---
 

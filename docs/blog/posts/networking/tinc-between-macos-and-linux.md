@@ -2,7 +2,8 @@
 layout: post
 date: 2018-05-09
 tags: [linux,macos,tinc]
-category: networking
+categories:
+    - networking
 title: 在 macOS 和 Linux 之间搭建 tinc 网络
 ---
 

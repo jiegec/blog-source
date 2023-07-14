@@ -2,7 +2,8 @@
 layout: post
 date: 2018-09-11
 tags: [lede,openwrt,wpad,pac]
-category: networking
+categories:
+    - networking
 title: 在 LEDE（OpenWrt）上启用 wpad 
 ---
 

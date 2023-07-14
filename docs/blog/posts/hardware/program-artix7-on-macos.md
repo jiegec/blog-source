@@ -2,7 +2,8 @@
 layout: post
 date: 2020-02-09
 tags: [openocd,fpga,artix7,macos]
-category: hardware
+categories:
+    - hardware
 title: 在 macOS 烧写 Artix7 FPGA
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2016-05-22
 tags: [haskell, ghc, emacs, ghc]
-category: programming
+categories:
+    - programming
 ---
 
 Just got a piece of great news: GHC 8.0.1 is out! See the announcement [here][http://article.gmane.org/gmane.comp.lang.haskell.ghc.devel/11928].

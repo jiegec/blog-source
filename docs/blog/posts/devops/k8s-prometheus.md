@@ -2,7 +2,8 @@
 layout: post
 date: 2020-07-10
 tags: [k8s,kubernetes,tencentcloud,prometheus,helm]
-category: devops
+categories:
+    - devops
 title: 在 k8s 中部署 Prometheus
 ---
 

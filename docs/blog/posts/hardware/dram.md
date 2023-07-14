@@ -2,7 +2,8 @@
 layout: post
 date: 2021-12-12
 tags: [dram,ddr,teaching]
-category: hardware
+categories:
+    - hardware
 title: 「教学」DRAM 结构和特性
 ---
 

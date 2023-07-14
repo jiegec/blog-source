@@ -2,7 +2,8 @@
 layout: post
 date: 2018-09-14
 tags: [virtualbox,macos]
-category: os
+categories:
+    - os
 title: 在 macOS 的 VirtualBox 上从 USB 启动
 ---
 

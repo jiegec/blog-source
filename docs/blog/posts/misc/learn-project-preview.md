@@ -2,7 +2,8 @@
 layout: post
 date: 2019-02-17
 tags: [learnproject,preview]
-category: misc
+categories:
+    - misc
 title: 预告 Learn-Project 4.0 版
 ---
 

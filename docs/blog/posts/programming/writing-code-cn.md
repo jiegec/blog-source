@@ -2,7 +2,8 @@
 layout: post
 date: 2022-07-12
 tags: [mit,plagiarism]
-category: programming
+categories:
+    - programming
 title: 编程作业中的学术诚信
 ---
 

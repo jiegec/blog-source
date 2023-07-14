@@ -2,7 +2,8 @@
 layout: post
 date: 2016-07-07
 tags: [coding, study]
-category: life
+categories:
+    - life
 ---
 
 Finally the end of Senior 2 arrives. I'm on the way to Senior 3.

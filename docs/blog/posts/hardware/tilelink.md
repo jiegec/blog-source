@@ -2,7 +2,8 @@
 layout: post
 date: 2022-05-09
 tags: [tilelink,bus,cache,coherence]
-category: hardware
+categories:
+    - hardware
 title: TileLink 总线协议分析
 ---
 

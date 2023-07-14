@@ -2,7 +2,8 @@
 layout: post
 date: 2018-07-06
 tags: [iptables,ip]
-category: networking
+categories:
+    - networking
 title: 通过 iptables 在同一个端口根据源地址解复用（demux）
 ---
 

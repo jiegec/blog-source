@@ -2,7 +2,8 @@
 layout: post
 date: 2023-05-23
 tags: [tar]
-category: software
+categories:
+    - software
 title: Tar 文件格式
 ---
 

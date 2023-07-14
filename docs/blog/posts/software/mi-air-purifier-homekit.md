@@ -2,7 +2,8 @@
 layout: post
 date: 2018-11-04
 tags: [homebridge,xiaomi,airpurifier,homekit]
-category: software
+categories:
+    - software
 title: 使用 HomeBridge 把小米空气净化器加入到 HomeKit 中
 ---
 

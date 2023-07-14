@@ -2,7 +2,8 @@
 layout: post
 date: 2018-02-16
 tags: [rust,os,stanford,cs140e,kernel,hardware,rpi3,shell,bootloader,mit 6.828,atags]
-category: programming
+categories:
+    - programming
 title: 近来做 Stanford CS140e 的一些进展和思考（3）
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2023-04-09
 tags: [aix,unix]
-category: system
+categories:
+    - system
 title: AIX 7.2 虚拟机安装
 ---
 

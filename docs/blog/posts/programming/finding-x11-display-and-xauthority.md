@@ -2,7 +2,8 @@
 layout: post
 date: 2018-05-11
 tags: [linux,x11,display,xauthority,awk,perl]
-category: programming
+categories:
+    - programming
 title: 在脚本中寻找 X11 的 DISPLAY 和 XAUTHORITY
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2022-08-02
 tags: [nix,rust]
-category: software
+categories:
+    - software
 title: 用 Nix 编译 Rust 项目
 ---
 

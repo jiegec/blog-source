@@ -2,7 +2,8 @@
 layout: post
 date: 2017-06-15
 tags: [macos,karabiner-elements,keyboard]
-category: system
+categories:
+    - system
 title: In macOS Sierra, Karabiner-Elements finally support complex modifications
 ---
 

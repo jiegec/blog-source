@@ -2,7 +2,8 @@
 layout: post
 date: 2019-01-13
 tags: [grafana,influxdb,telegraf]
-category: software
+categories:
+    - software
 title: Grafana 中可视化 Ping 时把 Timeout 显示为指定值
 ---
 

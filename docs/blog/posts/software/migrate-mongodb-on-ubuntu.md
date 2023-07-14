@@ -2,7 +2,8 @@
 layout: post
 date: 2018-09-13
 tags: [mongodb,ubuntu]
-category: software
+categories:
+    - software
 title: 在 Ubuntu 上跨版本迁移 MongoDB
 ---
 

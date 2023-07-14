@@ -2,7 +2,8 @@
 layout: post
 date: 2021-08-06
 tags: [intel,intrinsics]
-category: misc
+categories:
+    - misc
 title: 轶事一则
 ---
 

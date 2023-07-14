@@ -2,7 +2,8 @@
 layout: post
 date: 2018-03-26
 tags: []
-category: others
+categories:
+    - others
 title: 最近比较忙
 ---
 

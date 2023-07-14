@@ -2,7 +2,8 @@
 layout: post
 date: 2017-10-17
 tags: [vs,c,c++,cs]
-category: programming
+categories:
+    - programming
 title: 关于 scanf 和 scanf_s 的问题
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2021-12-09
 tags: [dcst,education]
-category: misc
+categories:
+    - misc
 title: 教学随想
 ---
 

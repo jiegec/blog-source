@@ -2,7 +2,8 @@
 layout: post
 date: 2022-07-16
 tags: [ceph]
-category: devops
+categories:
+    - devops
 title: Ceph Cookbook
 ---
 

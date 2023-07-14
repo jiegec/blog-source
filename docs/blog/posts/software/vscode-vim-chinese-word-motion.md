@@ -2,7 +2,8 @@
 layout: post
 date: 2019-01-16
 tags: [vscode,vim,vscodevim,chinese]
-category: software
+categories:
+    - software
 title: 实现 VSCodeVim 中支持中文分词的单词移动
 ---
 

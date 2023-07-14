@@ -2,7 +2,8 @@
 layout: post
 date: 2021-08-30
 tags: [rhel,centos,upgrade,linux]
-category: system
+categories:
+    - system
 title: 一次从 RHEL 6 到 CentOS 7 的更新
 ---
 

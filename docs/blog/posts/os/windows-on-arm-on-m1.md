@@ -2,7 +2,8 @@
 layout: post
 date: 2022-01-30
 tags: [windows,vmware,m1,vm]
-category: os
+categories:
+    - os
 title: 在 M1 上运行 Windows ARM 虚拟机
 ---
 

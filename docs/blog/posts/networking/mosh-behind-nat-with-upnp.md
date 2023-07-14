@@ -2,7 +2,8 @@
 layout: post
 date: 2018-05-05
 tags: [nat,mosh,upnp,miniupnpd]
-category: networking
+categories:
+    - networking
 title: 利用 UPnP 协议进行 mosh NAT 穿透的研究
 ---
 

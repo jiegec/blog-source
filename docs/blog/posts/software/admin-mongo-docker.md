@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-23
 tags: [docker,secoder,mongodb]
-category: software
+categories:
+    - software
 title: 部署 adminMongo 的 Docker 镜像
 ---
 

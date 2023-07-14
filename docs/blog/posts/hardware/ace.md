@@ -2,7 +2,8 @@
 layout: post
 date: 2022-05-16
 tags: [axi,bus,cache,coherence,teaching]
-category: hardware
+categories:
+    - hardware
 title: 「教学」ACE 缓存一致性协议
 ---
 

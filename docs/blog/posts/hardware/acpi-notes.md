@@ -2,7 +2,8 @@
 layout: post
 date: 2022-12-10
 tags: [acpi,notes,learn]
-category: hardware
+categories:
+    - hardware
 title: ACPI 学习笔记
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2023-05-06
 tags: [linker,ld]
-category: software
+categories:
+    - software
 title: 链接器的工作原理
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2019-05-08
 tags: [rcore,axi,uart,uartlite,interrupt,intc,xilinx,vivado]
-category: os
+categories:
+    - os
 title: 给 Rocket Chip 挂接串口外设
 ---
 

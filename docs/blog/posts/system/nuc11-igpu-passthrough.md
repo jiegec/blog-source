@@ -2,7 +2,8 @@
 layout: post
 date: 2022-05-05
 tags: [windows,win11,esxi,vmware,gpu,igpu,passthrough]
-category: system
+categories:
+    - system
 title: NUC11 ESXi 中 iGPU 直通虚拟机
 ---
 

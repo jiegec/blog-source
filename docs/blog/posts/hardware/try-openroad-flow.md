@@ -2,7 +2,8 @@
 layout: post
 date: 2022-03-12
 tags: [openroad,synthesis,yosys]
-category: hardware
+categories:
+    - hardware
 title: OpenROAD Flow 初尝试
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2021-03-12
 tags: [k8s,k3s,kubernetes]
-category: devops
+categories:
+    - devops
 title: 用 k3s 部署 k8s
 ---
 

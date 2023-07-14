@@ -2,7 +2,8 @@
 layout: post
 date: 2021-07-24
 tags: [homebridge,broadlink,rm]
-category: software
+categories:
+    - software
 title: 配置 homebridge-broadlink-rm-pro
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2021-03-08
 tags: [pcb,lceda,schematic,footprint,circuit]
-category: hardware
+categories:
+    - hardware
 title: PCB 笔记
 ---
 

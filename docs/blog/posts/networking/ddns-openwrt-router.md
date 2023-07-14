@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-22
 tags: [ddns,gandi,openwrt,cron]
-category: networking
+categories:
+    - networking
 title: OpenWRT 上配置 Gandi DDNS
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2023-03-20
 tags: [wireless,wifi,wlan,802.11]
-category: system
+categories:
+    - system
 title: 802.11 学习
 ---
 

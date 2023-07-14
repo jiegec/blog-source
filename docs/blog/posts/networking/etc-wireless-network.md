@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-20
 tags: [etc,janestreet,cisco,wifi,flukenetworks]
-category: networking
+categories:
+    - networking
 title: ETC 比赛无线网络搭建小记
 ---
 

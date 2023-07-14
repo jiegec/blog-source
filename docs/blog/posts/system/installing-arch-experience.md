@@ -2,7 +2,8 @@
 layout: post
 date: 2018-05-01
 tags: [arch,boot,efi,fat32]
-category: system
+categories:
+    - system
 title: 在服务器上安装 Archlinux 记录
 ---
 

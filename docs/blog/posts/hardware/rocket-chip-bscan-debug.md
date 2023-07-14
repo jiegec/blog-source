@@ -2,7 +2,8 @@
 layout: post
 date: 2020-02-10
 tags: [fpga,riscv,rocketchip,bscan,jtag,openocd]
-category: hardware
+categories:
+    - hardware
 title: 通过 BSCAN JTAG 对 Rocket Chip 进行调试
 ---
 

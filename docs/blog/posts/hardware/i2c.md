@@ -2,7 +2,8 @@
 layout: post
 date: 2023-05-03
 tags: [i2c]
-category: hardware
+categories:
+    - hardware
 title: I2C 协议
 ---
 

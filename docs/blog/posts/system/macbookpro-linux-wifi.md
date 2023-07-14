@@ -2,7 +2,8 @@
 layout: post
 date: 2020-01-05
 tags: [linux,wifi,broadcom,bcm43602,brcmfmac,macbookpro]
-category: system
+categories:
+    - system
 title: MacBookPro 14,3 Wi-Fi 驱动问题解决方案
 ---
 

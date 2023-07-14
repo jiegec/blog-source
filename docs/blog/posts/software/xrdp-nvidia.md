@@ -2,7 +2,8 @@
 layout: post
 date: 2021-12-29
 tags: [linux,nvidia,xrdp,rdp]
-category: software
+categories:
+    - software
 title: XRDP 和 NVIDIA 显卡兼容性问题
 ---
 

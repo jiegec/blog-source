@@ -2,7 +2,8 @@
 layout: post
 date: 2019-08-16
 tags: [weeklysharing]
-category: misc
+categories:
+    - misc
 title: 每周分享第 37 期
 ---
 

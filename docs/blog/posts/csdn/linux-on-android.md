@@ -2,7 +2,8 @@
 layout: post
 date: 2014-04-26
 tags: [android,ubuntu,linuxonandroid]
-category: csdn
+categories:
+    - csdn
 title: Linux on Android 简单教程
 ---
 

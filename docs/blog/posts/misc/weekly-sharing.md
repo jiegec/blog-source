@@ -2,7 +2,8 @@
 layout: post
 date: 2018-12-07
 tags: [weeklysharing]
-category: misc
+categories:
+    - misc
 title: 每周分享第 1 期
 ---
 

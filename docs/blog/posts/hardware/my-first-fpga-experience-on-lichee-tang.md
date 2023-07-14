@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-07
 tags: [verilog,licheetang,fpga,uart]
-category: hardware
+categories:
+    - hardware
 title: 在荔枝糖（Lichee Tang）上初次体验 FPGA 
 ---
 

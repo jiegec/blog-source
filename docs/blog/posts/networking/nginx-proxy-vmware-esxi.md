@@ -2,7 +2,8 @@
 layout: post
 date: 2018-05-08
 tags: [linux,nat,forwarding,vmware,esxi,nginx,proxy]
-category: networking
+categories:
+    - networking
 title: 使用 Nginx 转发 VMware ESXi
 ---
 

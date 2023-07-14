@@ -2,7 +2,8 @@
 layout: post
 date: 2018-08-21
 tags: [tuntaposx,tap,gre,gretap]
-category: networking
+categories:
+    - networking
 title: 在 macOS 下实现 GRETAP
 ---
 

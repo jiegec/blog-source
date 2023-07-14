@@ -2,7 +2,8 @@
 layout: post
 date: 2018-01-02
 tags: [networking, nat, ipv6, nat64, dns, dns64]
-category: networking
+categories:
+    - networking
 title: NAT64 初尝试
 ---
 

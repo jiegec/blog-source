@@ -2,7 +2,8 @@
 layout: post
 date: 2016-03-09
 tags: [twitter,vim,share]
-category: programming
+categories:
+    - programming
 ---
 
 I'm here to share some interesting links. I do not have much time writing the blog now.

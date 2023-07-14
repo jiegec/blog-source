@@ -2,7 +2,8 @@
 layout: post
 date: 2022-05-02
 tags: [loongarch,toolchain,gcc]
-category: software
+categories:
+    - software
 title: LoongArch64 工具链构建
 ---
 

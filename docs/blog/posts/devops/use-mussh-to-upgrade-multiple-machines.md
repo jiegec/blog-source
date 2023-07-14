@@ -2,7 +2,8 @@
 layout: post
 date: 2018-07-15
 tags: [debian,stretch,mussh]
-category: devops
+categories:
+    - devops
 title: 用 MuSSH 快速对多台机器进行软件包升级
 ---
 

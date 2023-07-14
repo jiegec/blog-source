@@ -2,7 +2,8 @@
 layout: post
 date: 2022-05-31
 tags: [qemu,libvirt,virtmanager,debian,riscv,rv64]
-category: software
+categories:
+    - software
 title: 在 libvirt 中运行 RISC-V 虚拟机
 ---
 

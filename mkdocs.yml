@@ -13,7 +13,7 @@ plugins:
       archive_name: 归档
       # archive_toc: true
       categories_name: 分类
-      categories_toc: true
+      # categories_toc: true
       # blog_toc: true
 
 markdown_extensions:

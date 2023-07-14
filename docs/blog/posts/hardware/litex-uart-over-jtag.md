@@ -2,7 +2,8 @@
 layout: post
 date: 2023-04-24
 tags: [xilinx,fpga,litex,alinx,ax7021]
-category: hardware
+categories:
+    - hardware
 title: 在 LiteX 中使用 UART over JTAG
 ---
 

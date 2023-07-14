@@ -2,7 +2,8 @@
 layout: post
 date: 2019-02-26
 tags: [rcore,rust,os,e1000]
-category: programming
+categories:
+    - programming
 title: 使用 Rust 实现 e1000 驱动
 ---
 

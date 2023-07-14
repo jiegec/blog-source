@@ -2,7 +2,8 @@
 layout: post
 date: 2022-06-19
 tags: [wishbone,bus,teaching]
-category: hardware
+categories:
+    - hardware
 title: 「教学」Wishbone 总线协议
 ---
 

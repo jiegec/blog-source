@@ -2,7 +2,8 @@
 layout: post
 date: 2019-03-08
 tags: [rcore,rust,os,nginx,syscall,fs,sfs]
-category: programming
+categories:
+    - programming
 title: 在 rCore 上运行 nginx
 ---
 

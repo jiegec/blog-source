@@ -2,7 +2,8 @@
 layout: post
 date: 2018-12-07
 tags: [grafana,influxdb,telegraf,nodejs,scraper]
-category: software
+categories:
+    - software
 title: Grafana 可视化实践：清华大学 2018 年度人物评选
 ---
 

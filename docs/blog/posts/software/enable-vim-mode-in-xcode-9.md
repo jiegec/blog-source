@@ -2,7 +2,8 @@
 layout: post
 date: 2018-09-08
 tags: [xcode,vim,xvim]
-category: software
+categories:
+    - software
 title: 在 Xcode 9 上启用 Vim 模拟（XVim 2） 
 ---
 

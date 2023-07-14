@@ -2,7 +2,8 @@
 layout: post
 date: 2019-07-17
 tags: [js,frontend,iconv,encoding,gbk]
-category: programming
+categories:
+    - programming
 title: 前端解析上传的 CSV
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2018-02-27
 tags: [rust,os,stanford,cs140e,rpi3,fat32]
-category: programming
+categories:
+    - programming
 title: 近来做 Stanford CS140e 的一些进展和思考（4）
 ---
 

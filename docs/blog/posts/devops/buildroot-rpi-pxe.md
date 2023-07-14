@@ -2,7 +2,8 @@
 layout: post
 date: 2020-09-12
 tags: [buildroot,pxe,rpi,rpi4]
-category: devops
+categories:
+    - devops
 title: 在 Rpi4 上运行 buildroot
 ---
 

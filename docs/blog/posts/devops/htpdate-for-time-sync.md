@@ -2,7 +2,8 @@
 layout: post
 date: 2019-05-25
 tags: [ntp,ntpdate,http,httpdate]
-category: devops
+categories:
+    - devops
 title: 用 htpdate 替代 ntpdate 实现时间同步
 ---
 

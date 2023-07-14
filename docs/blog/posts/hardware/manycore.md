@@ -2,7 +2,8 @@
 layout: post
 date: 2021-12-06
 tags: [cpu,manycore,intel,mic,a64fx]
-category: hardware
+categories:
+    - hardware
 title: Manycore 处理器架构分析
 ---
 

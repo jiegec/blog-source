@@ -2,7 +2,8 @@
 layout: post
 date: 2018-08-05
 tags: [keyboard]
-category: os 
+categories:
+    - os 
 title: 更改 macOS 屏幕亮度的按键
 ---
 

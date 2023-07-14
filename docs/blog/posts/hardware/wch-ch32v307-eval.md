@@ -2,7 +2,8 @@
 layout: post
 date: 2022-04-19
 tags: [wch,ch32,ch32v307,riscv,eval]
-category: hardware
+categories:
+    - hardware
 title: 试用沁恒 CH32V307 评估板
 ---
 

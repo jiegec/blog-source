@@ -2,7 +2,8 @@
 layout: post
 date: 2021-03-16
 tags: [k8s,kubernetes,docker,gitlab,gitlabci,ci,helm]
-category: devops
+categories:
+    - devops
 title: 用 gitlab ci 构建并部署应用到 k8s
 ---
 

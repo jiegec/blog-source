@@ -2,7 +2,8 @@
 layout: post
 date: 2020-10-18
 tags: [vmware,esxi,vcsa,baremetal,visualization]
-category: devops
+categories:
+    - devops
 title: 在裸机上部署 ESXi 和 vCSA 7
 ---
 

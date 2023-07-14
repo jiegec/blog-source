@@ -2,7 +2,8 @@
 layout: post
 date: 2018-05-06
 tags: [linux,nat,forwarding]
-category: networking
+categories:
+    - networking
 title: 使用 iptables 和策略路由进行带源地址的 forwarding
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2022-11-23
 tags: [mellanox,mlnx,nvidia,infiniband,firmware]
-category: hardware
+categories:
+    - hardware
 title: 升级 Mellanox 网卡固件
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2016-07-23
 tags: [git, compression]
-category: programming
+categories:
+    - programming
 ---
 
 I have found a good way to track changes in .gz files:

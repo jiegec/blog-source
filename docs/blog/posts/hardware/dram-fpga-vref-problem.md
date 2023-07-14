@@ -2,7 +2,8 @@
 layout: post
 date: 2021-12-13
 tags: [dram,ddr,fpga,7series,xilinx,kintex7,mig]
-category: hardware
+categories:
+    - hardware
 title: DRAM 在 Kintex 7 FPGA 上内部 Vref 的性能问题
 ---
 

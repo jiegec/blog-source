@@ -2,7 +2,8 @@
 layout: post
 date: 2020-04-21
 tags: [k8s,kubernetes,tencentcloud,drone,ci]
-category: devops
+categories:
+    - devops
 title: 在 k8s 中部署 Drone 用于 CI
 ---
 

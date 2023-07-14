@@ -2,7 +2,8 @@
 layout: post
 date: 2019-04-07
 tags: [rcore,router,ixgbe,os]
-category: software
+categories:
+    - software
 title: rCore 软路由实现
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2023-05-06
 tags: [linux,vivado]
-category: software
+categories:
+    - software
 title: Linux 6.2.13 引入的 BUG 导致 Vivado 无法识别 FPGA
 ---
 

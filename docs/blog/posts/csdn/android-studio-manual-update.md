@@ -2,7 +2,8 @@
 layout: post
 date: 2014-12-06
 tags: [java,intellijidea,android,androidstudio]
-category: csdn
+categories:
+    - csdn
 title: Android Studio 手工更新小记
 ---
 

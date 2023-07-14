@@ -2,7 +2,8 @@
 layout: post
 date: 2018-04-07
 tags: [rust,os,stanford,cs140e,rpi3,aarch64]
-category: programming
+categories:
+    - programming
 title: 近来做 Stanford CS140e 的一些进展和思考（7）
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-04
 tags: [android,apn,ipv6]
-category: networking
+categories:
+    - networking
 title: 在 Android 上打开 LTE 的 IPv6
 ---
 

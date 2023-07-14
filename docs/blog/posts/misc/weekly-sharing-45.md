@@ -2,7 +2,8 @@
 layout: post
 date: 2019-10-11
 tags: [weeklysharing]
-category: misc
+categories:
+    - misc
 title: 每周分享第 45 期
 ---
 

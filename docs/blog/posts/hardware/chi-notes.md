@@ -2,7 +2,8 @@
 layout: post
 date: 2023-01-12
 tags: [chi,bus,coherence,notes,learn]
-category: hardware
+categories:
+    - hardware
 title: CHI 学习笔记
 ---
 

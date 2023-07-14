@@ -2,7 +2,8 @@
 layout: post
 date: 2021-03-12
 tags: [switch,router]
-category: devops
+categories:
+    - devops
 title: 常用交换机命令
 ---
 

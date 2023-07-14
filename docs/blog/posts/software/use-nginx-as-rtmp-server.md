@@ -2,7 +2,8 @@
 layout: post
 date: 2019-09-28
 tags: [nginx,rtmp,hls,obs]
-category: software
+categories:
+    - software
 title: 用 Nginx 作为 RTMP 服务器并提供直播服务
 ---
 

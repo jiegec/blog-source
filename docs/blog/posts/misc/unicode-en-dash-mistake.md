@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-13
 tags: [unicode,pdf]
-category: misc
+categories:
+    - misc
 title: Unicode En Dash 小坑
 ---
 

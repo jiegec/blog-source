@@ -2,7 +2,8 @@
 layout: post
 date: 2018-07-06
 tags: [container,lxc,systemd-nspawn,systemd-run]
-category: devops
+categories:
+    - devops
 title: 通过 systemd-run 直接在容器中执行命令
 ---
 

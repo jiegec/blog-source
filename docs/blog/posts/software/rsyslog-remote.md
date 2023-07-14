@@ -2,7 +2,8 @@
 layout: post
 date: 2022-07-01
 tags: [linux,rsyslog,remote,logging]
-category: software
+categories:
+    - software
 title: rsyslog 收集远程日志
 ---
 

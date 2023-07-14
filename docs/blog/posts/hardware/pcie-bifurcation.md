@@ -2,7 +2,8 @@
 layout: post
 date: 2023-01-05
 tags: [pcie,bus,bifurcation]
-category: hardware
+categories:
+    - hardware
 title: PCIe Bifurcation
 ---
 

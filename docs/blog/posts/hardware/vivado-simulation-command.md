@@ -2,7 +2,8 @@
 layout: post
 date: 2020-04-04
 tags: [vivado,simulation,verilog,tcl]
-category: hardware
+categories:
+    - hardware
 title: 在命令行中进行 Vivado 仿真
 ---
 

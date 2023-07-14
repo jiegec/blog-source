@@ -2,7 +2,8 @@
 layout: post
 date: 2019-03-21
 tags: [centos,alpine,slurm,redhat]
-category: devops
+categories:
+    - devops
 title: 在古老的 OS 上运行一个干净的新的环境
 ---
 

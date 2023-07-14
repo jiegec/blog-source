@@ -2,7 +2,8 @@
 layout: post
 date: 2018-11-20
 tags: [linux,usbip,raspi,sfpi]
-category: software
+categories:
+    - software
 title: USB/IP 实践
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2021-06-23
 tags: [gcc,clang,c++,cpp,c++11,abi]
-category: programming
+categories:
+    - programming
 title: C++ 11 的 ABI 问题
 ---
 

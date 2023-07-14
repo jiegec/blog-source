@@ -2,7 +2,8 @@
 layout: post
 date: 2022-06-07
 tags: [nix,nixos,cookbook]
-category: software
+categories:
+    - software
 title: Nix Cookbook
 ---
 

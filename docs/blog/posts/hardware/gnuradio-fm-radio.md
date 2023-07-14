@@ -2,7 +2,8 @@
 layout: post
 date: 2022-10-24
 tags: [gnuradio,rtlsdr,grc,fm]
-category: hardware
+categories:
+    - hardware
 title: 在 GNURadio Companion 中收听 FM 广播
 ---
 

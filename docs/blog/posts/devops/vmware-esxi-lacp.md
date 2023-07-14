@@ -2,7 +2,8 @@
 layout: post
 date: 2022-09-24
 tags: [esxi,vmware,lacp]
-category: devops
+categories:
+    - devops
 title: ESXi 配置 LACP 链路聚合
 ---
 

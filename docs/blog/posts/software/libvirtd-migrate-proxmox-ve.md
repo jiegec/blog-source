@@ -2,7 +2,8 @@
 layout: post
 date: 2023-06-15
 tags: [libvirtd,qemu,proxmoxve,pve]
-category: software
+categories:
+    - software
 title: 从 libvirtd 迁移到 Proxmox VE
 ---
 

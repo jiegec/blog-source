@@ -2,7 +2,8 @@
 layout: post
 date: 2017-10-17
 tags: [cs,prime,algorithm]
-category: programming
+categories:
+    - programming
 title: 分析一个我第一次见的素数测试函数
 ---
 

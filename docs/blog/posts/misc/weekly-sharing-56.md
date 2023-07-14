@@ -2,7 +2,8 @@
 layout: post
 date: 2020-02-28
 tags: [weeklysharing]
-category: misc
+categories:
+    - misc
 title: 每周分享第 56 期
 ---
 

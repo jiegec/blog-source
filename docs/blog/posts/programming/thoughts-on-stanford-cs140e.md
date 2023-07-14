@@ -2,7 +2,8 @@
 layout: post
 date: 2018-02-04
 tags: [rust,os,stanford,cs140e,kernel,gpio,hardware,rpi3,xmodem]
-category: programming
+categories:
+    - programming
 title: 近来做 Stanford CS140e 的一些进展和思考
 ---
 

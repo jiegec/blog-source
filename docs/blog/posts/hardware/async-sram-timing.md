@@ -2,7 +2,8 @@
 layout: post
 date: 2022-05-19
 tags: [sram,timing,teaching]
-category: hardware
+categories:
+    - hardware
 title: 「教学」异步 SRAM 时序
 ---
 

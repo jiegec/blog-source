@@ -2,7 +2,8 @@
 layout: post
 date: 2019-06-21
 tags: [c,cpp,ip,cidr,ub]
-category: programming
+categories:
+    - programming
 title: IP 前缀转换上意外遇到的 Undefined Behavior
 ---
 

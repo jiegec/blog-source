@@ -2,7 +2,8 @@
 layout: post
 date: 2022-11-12
 tags: [pcie,bus,notes,learn]
-category: hardware
+categories:
+    - hardware
 title: PCIe 学习笔记
 ---
 

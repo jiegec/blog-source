@@ -2,7 +2,8 @@
 layout: post
 date: 2018-06-15
 tags: [ebpf,tc,iproute2,hyperloglog]
-category: programming
+categories:
+    - programming
 title: 编写 eBPF 程序和利用 HyperLogLog 统计包的信息
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2023-03-19
 tags: [modulation,digital]
-category: system
+categories:
+    - system
 title: 数字调制
 ---
 

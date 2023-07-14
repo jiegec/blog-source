@@ -2,7 +2,8 @@
 layout: post
 date: 2019-04-30
 tags: [libc,linux,c,dns]
-category: software
+categories:
+    - software
 title: 在 Linux 中用 C 代码获取 DNS 服务器列表
 ---
 

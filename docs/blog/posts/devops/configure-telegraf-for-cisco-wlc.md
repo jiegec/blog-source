@@ -2,7 +2,8 @@
 layout: post
 date: 2019-10-19
 tags: [telegraf,cisco,wlc,snmp,mib]
-category: devops
+categories:
+    - devops
 title: 为 Cisco WLC 配置 Telegraf
 ---
 

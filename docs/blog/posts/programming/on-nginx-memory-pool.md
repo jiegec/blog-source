@@ -2,7 +2,8 @@
 layout: post
 date: 2017-12-02
 tag: [nginx,source code,tuna]
-category: programming
+categories:
+    - programming
 ---
 
 今晚参加了 Tunight，会长给我们讲了 Nginx 的一些内部运作的机制和原理。中间的时候，会长展示的代码中用到了线程池方面的一些函数，但是大多地方只有调用 `ngx_pcalloc` 而没有看到相应的对象释放的过程，于是在演示的最后，会长应大家要求对 Nginx 魔幻的线程池实现做了现场代码分析。

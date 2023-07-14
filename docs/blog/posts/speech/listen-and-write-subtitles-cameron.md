@@ -2,7 +2,8 @@
 layout: post
 date: 2016-03-19
 tags: [cameron,subtitles]
-category: speech
+categories:
+    - speech
 ---
 
 Here is the subtitle:

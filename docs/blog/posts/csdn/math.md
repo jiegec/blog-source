@@ -2,7 +2,8 @@
 layout: post
 date: 2014-09-20
 tags: [math,wolframalpha]
-category: csdn
+categories:
+    - csdn
 title: 用数学方法 + 数学软件去做一个物理题~
 ---
 

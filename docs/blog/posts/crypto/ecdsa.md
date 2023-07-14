@@ -2,7 +2,8 @@
 layout: post
 date: 2023-07-14
 tags: [ecdsa,ecc,crypto]
-category: crypto
+categories:
+    - crypto
 title: ECDSA
 ---
 

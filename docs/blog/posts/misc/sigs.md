@@ -2,7 +2,8 @@
 layout: post
 date: 2021-07-19
 tags: [sigs,tsinghua,email]
-category: misc
+categories:
+    - misc
 title: 轶事一则
 ---
 

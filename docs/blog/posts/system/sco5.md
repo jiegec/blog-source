@@ -2,7 +2,8 @@
 layout: post
 date: 2023-04-09
 tags: [sco,unixware,unix]
-category: system
+categories:
+    - system
 title: SCO OpenServer 5.0.7 虚拟机安装
 ---
 

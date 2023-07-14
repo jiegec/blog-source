@@ -2,7 +2,8 @@
 layout: post
 date: 2023-01-11
 tags: [intel,cpu]
-category: hardware
+categories:
+    - hardware
 title: Intel 处理器
 ---
 

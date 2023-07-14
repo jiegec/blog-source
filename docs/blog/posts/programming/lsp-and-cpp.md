@@ -2,7 +2,8 @@
 layout: post
 date: 2017-12-12
 tags: [lsp, cpp, clang, compilation_database, cquery, clangd]
-category: programming
+categories:
+    - programming
 ---
 
 之前时间，巨硬发布了 LSP（Language Server Protocol），目的是解决目前 IDE 和各语言的 m+n 问题。想法很好，不过直到最近，终于有我觉得可以用的工具出来了，并且已经代替了我在使用的其它的插件。

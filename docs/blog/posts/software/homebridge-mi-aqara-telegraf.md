@@ -2,7 +2,8 @@
 layout: post
 date: 2018-12-13
 tags: [homebridge,mi,aqara,telegraf,influxdb]
-category: software
+categories:
+    - software
 title: 配置 homebridge-mi-aqara 并添加为 telegraf 的数据源
 ---
 

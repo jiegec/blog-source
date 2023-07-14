@@ -2,7 +2,8 @@
 layout: post
 date: 2019-03-08
 tags: [weeklysharing]
-category: misc
+categories:
+    - misc
 title: 每周分享第 14 期
 ---
 

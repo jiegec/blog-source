@@ -2,7 +2,8 @@
 layout: post
 date: 2022-01-25
 tags: [riscv,vector,rvv,llvm,clang,binutils]
-category: software
+categories:
+    - software
 title: RISC-V Vector 1.0 工具链构建
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2020-12-27
 tags: [ethernet,ieee,fiber,sfp,qsfp,gigabitethernet,rgmii,sgmii,qsgmii]
-category: hardware
+categories:
+    - hardware
 title: 以太网的物理接口
 ---
 

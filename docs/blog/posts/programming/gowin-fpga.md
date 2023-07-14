@@ -2,7 +2,8 @@
 layout: post
 date: 2019-04-01
 tags: [gowin,fpga,programmer,centos]
-category: hardware
+categories:
+    - hardware
 title: 高云 FPGA 踩坑
 ---
 

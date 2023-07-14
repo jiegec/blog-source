@@ -2,7 +2,8 @@
 layout: post
 date: 2021-12-17
 tags: [cpu,cache,coherence,msi,mesi,moesi,teaching]
-category: hardware
+categories:
+    - hardware
 title: 「教学」缓存一致性协议分析
 ---
 

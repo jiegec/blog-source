@@ -2,7 +2,8 @@
 layout: post
 date: 2021-09-14
 tags: [ooo,cpu,tomasulo,outoforder,renaming,brief-into-ooo]
-category: hardware
+categories:
+    - hardware
 title: 浅谈乱序执行 CPU
 ---
 

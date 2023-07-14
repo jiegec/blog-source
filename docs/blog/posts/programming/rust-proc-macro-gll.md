@@ -2,7 +2,8 @@
 layout: post
 date: 2019-11-15
 tags: [rust,gll,parsing,parser,metaprogramming]
-category: programming
+categories:
+    - programming
 title: 用 Rust Procedure Macro 实现 GLL Parser
 ---
 

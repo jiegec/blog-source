@@ -2,7 +2,8 @@
 layout: post
 date: 2020-03-14
 tags: [k8s,kubernetes,gitlab,gitlab-runner]
-category: devops
+categories:
+    - devops
 title: 在 Kubernetes 集群上部署 gitlab—runner
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2018-11-26
 tags: [linux,zfs,macos,timemachine,backup]
-category: software
+categories:
+    - software
 title: Mac 上安装 Arch Linux，ZFS 真香
 ---
 

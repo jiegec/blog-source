@@ -2,7 +2,8 @@
 layout: post
 date: 2017-07-26
 tags: [flash,adobe]
-category: news
+categories:
+    - news
 title: Farewell, Flash
 ---
 

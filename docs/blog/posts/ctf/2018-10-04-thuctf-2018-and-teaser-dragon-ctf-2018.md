@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-04
 tags: [ctf,thuctf]
-category: ctf
+categories:
+    - ctf
 title: THUCTF 2018 和 Teaser Dragon CTF 2018 小记
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2018-08-25
 tags: [slacc,ipv6,tuntaposx,tap]
-category: networking
+categories:
+    - networking
 title: 在 macOS 上 TAP Interface 上启用 IPv6 自动配置
 ---
 

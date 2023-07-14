@@ -2,7 +2,8 @@
 layout: post
 date: 2021-01-26
 tags: [hdl,pipeline,spinalhdl,skid,buffer,register]
-category: hardware
+categories:
+    - hardware
 title: Skid Buffer
 ---
 

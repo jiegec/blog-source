@@ -2,7 +2,8 @@
 layout: post
 date: 2021-09-27
 tags: [xilinx,vivado,fpga,spi,timing,teaching]
-category: hardware
+categories:
+    - hardware
 title: 「教学」AXI Quad SPI 时序分析
 ---
 

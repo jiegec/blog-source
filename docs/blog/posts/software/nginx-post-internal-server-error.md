@@ -2,7 +2,8 @@
 layout: post
 date: 2021-07-16
 tags: [nginx,http,post,disk]
-category: software
+categories:
+    - software
 title: Nginx 处理 POST 请求出现 Internal Server Error 排查一则
 ---
 

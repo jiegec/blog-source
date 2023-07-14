@@ -2,7 +2,8 @@
 layout: post
 date: 2020-04-22
 tags: [k8s,kubernetes,tencentcloud,vscode,code-server]
-category: devops
+categories:
+    - devops
 title: 在 k8s 中部署 code-server
 ---
 

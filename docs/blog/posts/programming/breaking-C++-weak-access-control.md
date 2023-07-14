@@ -2,7 +2,8 @@
 layout: post
 date: 2018-03-07
 tags: [c++,hack]
-category: programming
+categories:
+    - programming
 title: 〖新手向〗绕过 C++ 类的访问限制
 ---
 

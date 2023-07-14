@@ -2,7 +2,8 @@
 layout: post
 date: 2020-05-21
 tags: [ecc,crypto]
-category: crypto
+categories:
+    - crypto
 title: 各种 ecc 曲线
 ---
 

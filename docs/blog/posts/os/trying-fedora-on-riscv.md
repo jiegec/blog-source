@@ -2,7 +2,8 @@
 layout: post
 date: 2018-05-24
 tags: [fedora,riscv,qemu]
-category: os
+categories:
+    - os
 title: 体验 Fedora on RISCV
 ---
 

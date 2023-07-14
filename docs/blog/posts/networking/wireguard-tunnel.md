@@ -2,7 +2,8 @@
 layout: post
 date: 2018-06-29
 tags: [tun,wireguard,systemd-networkd]
-category: networking
+categories:
+    - networking
 title: Wireguard 隧道搭建
 ---
 

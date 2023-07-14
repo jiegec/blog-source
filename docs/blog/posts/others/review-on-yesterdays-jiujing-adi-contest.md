@@ -2,7 +2,8 @@
 layout: post
 date: 2017-10-16
 tags: [adi,tsinghua,cs]
-category: others
+categories:
+    - others
 title: 回顾昨天的酒井知识竞赛
 ---
 

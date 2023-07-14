@@ -2,7 +2,8 @@
 layout: post
 date: 2022-01-12
 tags: [website]
-category: misc
+categories:
+    - misc
 title: jiege.ch 停用
 ---
 

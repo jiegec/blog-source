@@ -2,7 +2,8 @@
 layout: post
 date: 2018-08-31
 tags: [rfc,rfc8367,aprilfool,iptables,kernel,mod,xtables]
-category: networking
+categories:
+    - networking
 title: 通过 Ipfilter Extension 实现 RFC8367
 ---
 

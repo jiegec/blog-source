@@ -2,7 +2,8 @@
 layout: post
 date: 2023-05-08
 tags: [spi,nor,flash,jlink,jflash]
-category: hardware
+categories:
+    - hardware
 title: 使用 JLink 操作 SPI NOR Flash
 ---
 

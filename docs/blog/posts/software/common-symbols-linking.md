@@ -2,7 +2,8 @@
 layout: post
 date: 2021-02-09
 tags: [c++,fortran,gcc,clang,ld,linking,symbols,objdump]
-category: software
+categories:
+    - software
 title: COMMON 符号
 ---
 

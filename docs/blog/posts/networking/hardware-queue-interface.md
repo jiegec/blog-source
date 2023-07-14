@@ -2,7 +2,8 @@
 layout: post
 date: 2023-03-22
 tags: [network,nic,descriptor]
-category: networking
+categories:
+    - networking
 title: 软硬件队列接口
 ---
 

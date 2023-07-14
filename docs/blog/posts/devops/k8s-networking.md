@@ -2,7 +2,8 @@
 layout: post
 date: 2021-09-18
 tags: [k8s,cni,flannel,docker]
-category: devops
+categories:
+    - devops
 title: 研究 k8s 网络工作原理
 ---
 

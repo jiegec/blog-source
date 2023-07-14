@@ -2,7 +2,8 @@
 layout: post
 date: 2017-10-16
 tags: [algorithm,wiki]
-category: others
+categories:
+    - others
 title: 一个搞笑的伸展树的 Wiki
 ---
 

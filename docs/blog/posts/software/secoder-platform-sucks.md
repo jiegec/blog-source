@@ -2,7 +2,8 @@
 layout: post
 date: 2018-10-12
 tags: [secoder,softwarengineering,cd,ci,gitlab]
-category: software
+categories:
+    - software
 title: 软工平台踩坑记
 ---
 

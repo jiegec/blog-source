@@ -2,7 +2,8 @@
 layout: post
 date: 2018-06-21
 tags: [fpga,verilog,verilator,cpu]
-category: programming
+categories:
+    - programming
 title: Verilog 初体验
 ---
 

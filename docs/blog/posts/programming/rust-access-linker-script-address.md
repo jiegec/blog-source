@@ -2,7 +2,8 @@
 layout: post
 date: 2019-01-07
 tags: [rust,ld,linker,ffi]
-category: programming
+categories:
+    - programming
 title: Rust 获取 Linker Script 中的地址
 ---
 

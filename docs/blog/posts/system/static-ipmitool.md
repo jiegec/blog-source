@@ -2,7 +2,8 @@
 layout: post
 date: 2021-03-29
 tags: [ipmitool,static]
-category: system
+categories:
+    - system
 title: 静态编译 ipmitool
 ---
 

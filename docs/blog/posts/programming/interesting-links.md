@@ -2,7 +2,8 @@
 layout: post
 date: 2016-04-09
 tags: [links,share]
-category: programming
+categories:
+    - programming
 ---
 
 Having a bad cold. Really annoying.

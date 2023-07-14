@@ -2,7 +2,8 @@
 layout: post
 date: 2023-01-09
 tags: [amd,cpu]
-category: hardware
+categories:
+    - hardware
 title: AMD 处理器
 ---
 

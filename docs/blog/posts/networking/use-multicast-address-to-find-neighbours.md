@@ -2,7 +2,8 @@
 layout: post
 date: 2018-07-15
 tags: [icmp,ping,multicast]
-category: networking
+categories:
+    - networking
 title: 用 multicast 地址找到同一网段的主机
 ---
 

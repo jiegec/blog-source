@@ -2,7 +2,8 @@
 layout: post
 date: 2021-03-27
 tags: [esxi,esxcli,ipv6]
-category: networking
+categories:
+    - networking
 title: ESXi 网络配置
 ---
 

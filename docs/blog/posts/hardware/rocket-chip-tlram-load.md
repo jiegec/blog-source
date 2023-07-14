@@ -2,7 +2,8 @@
 layout: post
 date: 2020-03-17
 tags: [chisel,rocketchip,riscv]
-category: hardware
+categories:
+    - hardware
 title: 在 Rocket Chip 上挂接 TLRAM
 ---
 

@@ -2,7 +2,8 @@
 layout: post
 date: 2018-07-26
 tags: [lenovo,newifi,uboot,lede,openwrt,go,ebtables,bridge,ipv6,goauthing,z4yx]
-category: networking 
+categories:
+    - networking 
 title: 向 Lenovo y1s 刷入 OpenWRT 17.01.5 固件，并把 IPv6 bridge 到内网中和配置认证脚本
 ---
 

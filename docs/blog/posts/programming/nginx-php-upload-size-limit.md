@@ -2,7 +2,8 @@
 layout: post
 date: 2018-06-10
 tags: [nginx,php,mediawiki]
-category: programming
+categories:
+    - programming
 title: 调整 Nginx 和 PHP 的上传文件大小限制
 ---
 

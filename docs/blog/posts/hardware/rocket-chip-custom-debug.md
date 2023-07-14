@@ -2,7 +2,8 @@
 layout: post
 date: 2022-05-13
 tags: [rocketchip,riscv,debug]
-category: hardware
+categories:
+    - hardware
 title: 向 Rocket Chip 添加自定义调试信号
 ---
 

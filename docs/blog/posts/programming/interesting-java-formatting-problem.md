@@ -2,7 +2,8 @@
 layout: post
 date: 2017-12-31
 tags: [java,datetime formatting]
-category: programming
+categories:
+    - programming
 title: 有趣的 Java 日期格式化问题
 ---
 

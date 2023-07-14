@@ -2,7 +2,8 @@
 layout: post
 date: 2023-04-26
 tags: [spi]
-category: hardware
+categories:
+    - hardware
 title: SPI 协议
 ---
 
