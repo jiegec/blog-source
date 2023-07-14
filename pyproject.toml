@@ -5,9 +5,10 @@ description = ""
 authors = ["Jiajie Chen <c@jia.je>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 mkdocs = "^1.4.3"
 mkdocs-material = "9.2.0b0"
+mkdocs-rss-plugin = "^1.7.0"
 
 [tool.poetry.dev-dependencies]
 
