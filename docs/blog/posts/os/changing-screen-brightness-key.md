@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-08-05 09:59:00 +0800
+date: 2018-08-05
 tags: [keyboard]
 category: os 
 title: 更改 macOS 屏幕亮度的按键

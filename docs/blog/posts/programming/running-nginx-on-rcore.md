@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-03-08 18:07:00 +0800
+date: 2019-03-08
 tags: [rcore,rust,os,nginx,syscall,fs,sfs]
 category: programming
 title: 在 rCore 上运行 nginx

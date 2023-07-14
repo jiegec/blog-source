@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-05-06 22:16:00 +0800
+date: 2023-05-06
 tags: [linux,vivado]
 category: software
 title: How a Linux 6.2.13 BUG stops Vivado from recognizing FPGA

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-08-02 14:28:00 +0800
+date: 2022-08-02
 tags: [nix,rust]
 category: software
 title: 用 Nix 编译 Rust 项目

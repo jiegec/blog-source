@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-12-09 11:57:00 +0800
+date: 2021-12-09
 tags: [dcst,education]
 category: misc
 title: 教学随想

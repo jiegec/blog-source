@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-07-19 21:28:00 +0800
+date: 2019-07-19
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 33 期

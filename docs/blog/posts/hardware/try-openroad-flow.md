@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-03-12 22:52:00 +0800
+date: 2022-03-12
 tags: [openroad,synthesis,yosys]
 category: hardware
 title: OpenROAD Flow 初尝试

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-07-01 20:14:00 +0800
+date: 2022-07-01
 tags: [linux,rsyslog,remote,logging]
 category: software
 title: rsyslog 收集远程日志

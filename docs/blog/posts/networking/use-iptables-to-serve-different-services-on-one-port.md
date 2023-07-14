@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-07-06 09:36:00 +0800
+date: 2018-07-06
 tags: [iptables,ip]
 category: networking
 title: 通过 iptables 在同一个端口根据源地址解复用（demux）

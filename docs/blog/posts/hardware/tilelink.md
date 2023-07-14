@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-05-09 16:15:00 +0800
+date: 2022-05-09
 tags: [tilelink,bus,cache,coherence]
 category: hardware
 title: TileLink 总线协议分析

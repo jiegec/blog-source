@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-12-06 20:33:00 +0800
+date: 2018-12-06
 tags: [010editor,macos,parser,binary,hex,flv,h264,avc]
 category: software
 title: 编写 010 Editor 的 FLV Template

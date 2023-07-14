@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-02-10 23:09:00 +0800
+date: 2020-02-10
 tags: [vivado,chisel,verilog]
 category: hardware
 title: 在 Vivado 中对 chisel3 产生的 verilog 代码仿真

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-05-11 09:00:00 +0800
+date: 2019-05-11
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 23 期

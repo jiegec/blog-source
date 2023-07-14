@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-03-03 20:13:00 +0800
+date: 2021-03-03
 tags: [poweredge,dell,idrac]
 category: system
 title: iDRAC 各版本

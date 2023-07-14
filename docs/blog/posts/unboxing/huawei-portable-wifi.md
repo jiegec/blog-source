@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-08-08 20:38:00 +0800
+date: 2017-08-08
 tags: [huawei,wifi]
 category: unboxing
 title: 华为随行 WiFi 2 mini 开箱

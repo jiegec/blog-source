@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-06-08 10:33:00 +0800
+date: 2018-06-08
 tags: [nodejs,mongodb,mongoose,session]
 category: programming
 title: 最近写 Node.js 遇到的若干坑

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-12-22 00:19:00 +0800
+date: 2018-12-22
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 3 期

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-03-14 15:22:00 +0800
+date: 2022-03-14
 tags: [synthesis,synopsys,dc,designcompiler]
 category: hardware
 title: Synopsys Design Compiler 综合实践

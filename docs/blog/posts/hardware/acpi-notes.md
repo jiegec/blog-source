@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-12-10 20:44:00 +0800
+date: 2022-12-10
 tags: [acpi,notes,learn]
 category: hardware
 title: ACPI 学习笔记

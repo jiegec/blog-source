@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-03-08 18:25:00 +0800
+date: 2019-03-08
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 14 期

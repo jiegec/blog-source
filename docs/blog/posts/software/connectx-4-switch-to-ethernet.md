@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-07-02 20:26:00 +0800
+date: 2022-07-02
 tags: [linux,mellanox,connectx4,ethernet,infiniband,mst,mft]
 category: software
 title: 切换 ConnectX-4 为以太网模式

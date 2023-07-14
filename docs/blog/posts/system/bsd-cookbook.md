@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-01-21 20:18:00 +0800
+date: 2023-01-21
 tags: [freebsd,cookbook]
 category: system
 title: FreeBSD/NetBSD/OpenBSD/DragonFlyBSD Cookbook

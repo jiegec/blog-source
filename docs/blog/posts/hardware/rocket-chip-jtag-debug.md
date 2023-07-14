@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-03-09 19:04:00 +0800
+date: 2022-03-09
 tags: [fpga,riscv,rocketchip,jtag,openocd,vcu128,ft4232]
 category: hardware
 title: 通过 JTAG 对 VCU128 上的 Rocket Chip 进行调试

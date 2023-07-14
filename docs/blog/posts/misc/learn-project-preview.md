@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-02-17 13:04:00 +0800
+date: 2019-02-17
 tags: [learnproject,preview]
 category: misc
 title: 预告 Learn-Project 4.0 版

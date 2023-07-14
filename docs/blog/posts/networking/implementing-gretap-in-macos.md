@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-08-21 09:42:00 +0800
+date: 2018-08-21
 tags: [tuntaposx,tap,gre,gretap]
 category: networking
 title: 在 macOS 下实现 GRETAP

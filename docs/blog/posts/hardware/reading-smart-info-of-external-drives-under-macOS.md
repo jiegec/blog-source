@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-09-07 10:20:00 +0800
+date: 2018-09-07
 tags: [smart,macos,smartmontools,kext]
 category: hardware
 title: 在 macOS 上读取移动硬盘的 S.M.A.R.T. 信息

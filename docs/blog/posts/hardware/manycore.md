@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-12-06 00:11:00 +0800
+date: 2021-12-06
 tags: [cpu,manycore,intel,mic,a64fx]
 category: hardware
 title: Manycore 处理器架构分析

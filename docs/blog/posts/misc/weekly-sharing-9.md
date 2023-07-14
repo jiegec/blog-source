@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-02-01 19:16:00 +0800
+date: 2019-02-01
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 9 期

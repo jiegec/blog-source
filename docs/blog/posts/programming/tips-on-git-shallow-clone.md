@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-04-03 14:38:09 +0800
+date: 2016-04-03
 tags: [git,clone,tips]
 category: programming
 ---

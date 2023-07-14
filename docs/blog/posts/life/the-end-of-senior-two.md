@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-07-07 18:44:22 +0800
+date: 2016-07-07
 tags: [coding, study]
 category: life
 ---

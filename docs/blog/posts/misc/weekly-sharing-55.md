@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-01-31 17:58:00 +0800
+date: 2020-01-31
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 55 期

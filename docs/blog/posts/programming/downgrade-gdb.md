@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-04-17 13:08:00 +0800
+date: 2018-04-17
 tags: [macos,gdb,homebrew]
 category: programming
 title: 把 GDB 降级到 8.0.1

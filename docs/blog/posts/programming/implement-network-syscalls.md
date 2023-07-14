@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-03-04 16:40:00 +0800
+date: 2019-03-04
 tags: [rcore,rust,os,e1000,syscall,msi,pci,interrupt]
 category: programming
 title: 实现网络的 syscall

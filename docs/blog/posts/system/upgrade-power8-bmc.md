@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-10-09 08:16:00 +0800
+date: 2020-10-09
 tags: [bmc,ipmi,power,ibm]
 category: system
 title: IBM Power S822LC(8335-GTB) BMC 升级

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-05-23 21:24:00 +0800
+date: 2023-05-23
 tags: [tar]
 category: software
 title: Tar 文件格式

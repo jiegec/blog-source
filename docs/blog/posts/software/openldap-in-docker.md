@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-05-13 15:57:00 +0800
+date: 2023-05-13
 tags: [ldap,openldap,docker]
 category: software
 title: 使用 Docker 部署 OpenLDAP

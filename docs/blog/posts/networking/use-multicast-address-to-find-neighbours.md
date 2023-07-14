@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-07-15 17:19:00 +0800
+date: 2018-07-15
 tags: [icmp,ping,multicast]
 category: networking
 title: 用 multicast 地址找到同一网段的主机

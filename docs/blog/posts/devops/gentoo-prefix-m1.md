@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-07-08 22:36:00 +0800
+date: 2023-07-08
 tags: [gentoo,gentoo-prefix,macos,m1]
 category: devops
 title: 在 Apple M1 上试用 Gentoo/Prefix

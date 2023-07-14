@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-05-05 15:39:00 +0800
+date: 2018-05-05
 tags: [windows,ad,pam,winbind,samba]
 category: system
 title: 在 Archlinux 上用 winbind 配合 pam 配置 Windows AD 认证登录

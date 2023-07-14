@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-10-17 16:46:40 +0800
+date: 2017-10-17
 tags: [vs,c,c++,cs]
 category: programming
 title: 关于 scanf 和 scanf_s 的问题

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-06-10 16:04:00 +0800
+date: 2018-06-10
 tags: [nginx,php,mediawiki]
 category: programming
 title: 调整 Nginx 和 PHP 的上传文件大小限制

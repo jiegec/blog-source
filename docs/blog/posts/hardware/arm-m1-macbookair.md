@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-11-19 18:35:00 +0800
+date: 2020-11-19
 tags: [m1,macbookair,applesilicon,macos,arm,arm64]
 category: hardware
 title: ARM M1 MacBook Air 开箱

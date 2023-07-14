@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-13 18:36:00 +0800
+date: 2019-01-13
 tags: [grafana,influxdb,telegraf]
 category: software
 title: Grafana 中可视化 Ping 时把 Timeout 显示为指定值

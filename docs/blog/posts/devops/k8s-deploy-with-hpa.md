@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-03-10 13:57:00 +0800
+date: 2020-03-10
 tags: [k8s,kubernetes,docker]
 category: devops
 title: 用 Kubernetes 部署无状态服务

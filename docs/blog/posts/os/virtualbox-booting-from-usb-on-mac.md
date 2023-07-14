@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-09-14 23:57:00 +0800
+date: 2018-09-14
 tags: [virtualbox,macos]
 category: os
 title: 在 macOS 的 VirtualBox 上从 USB 启动

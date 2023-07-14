@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-04-10 09:36:00 +0800
+date: 2022-04-10
 tags: [vivado,svf,jtag,bitstream]
 category: hardware
 title: 导出 Vivado 下载 Bitstream 的 SVF 文件

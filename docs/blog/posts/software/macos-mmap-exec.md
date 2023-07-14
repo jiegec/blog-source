@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-02-07 18:11:00 +0800
+date: 2020-02-07
 tags: [macos,mmap,catalina]
 category: software
 title: 在 macOS 上带执行权限 mmap 一个已删除文件遇到的问题和解决方案

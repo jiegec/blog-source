@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-03-08 00:03:00 +0800
+date: 2021-03-08
 tags: [pcb,lceda,schematic,footprint,circuit]
 category: hardware
 title: PCB 笔记

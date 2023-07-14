@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-05-13 08:35:00 +0800
+date: 2022-05-13
 tags: [rocketchip,riscv,debug]
 category: hardware
 title: 向 Rocket Chip 添加自定义调试信号

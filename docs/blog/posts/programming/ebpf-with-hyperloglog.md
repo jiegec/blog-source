@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-06-15 22:03:00 +0800
+date: 2018-06-15
 tags: [ebpf,tc,iproute2,hyperloglog]
 category: programming
 title: 编写 eBPF 程序和利用 HyperLogLog 统计包的信息

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-06-21 21:18:00 +0800
+date: 2019-06-21
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 29 期

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-04-01 09:00:00 +0800
+date: 2019-04-01
 tags: [gowin,fpga,programmer,centos]
 category: hardware
 title: 高云 FPGA 踩坑

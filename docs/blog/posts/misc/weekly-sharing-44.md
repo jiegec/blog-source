@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-10-04 15:47:00 +0800
+date: 2019-10-04
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 44 期

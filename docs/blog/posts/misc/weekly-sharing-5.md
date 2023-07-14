@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-04 21:12:00 +0800
+date: 2019-01-04
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 5 期

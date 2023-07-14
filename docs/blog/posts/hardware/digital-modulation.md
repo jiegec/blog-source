@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-03-19 12:26:00 +0800
+date: 2023-03-19
 tags: [modulation,digital]
 category: system
 title: 数字调制

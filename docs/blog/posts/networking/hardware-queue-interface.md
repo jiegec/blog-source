@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-03-22 22:30:00 +0800
+date: 2023-03-22
 tags: [network,nic,descriptor]
 category: networking
 title: 软硬件队列接口

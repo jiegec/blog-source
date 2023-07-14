@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-04-09 06:17:34 +0800
+date: 2016-04-09
 tags: [links,share]
 category: programming
 ---

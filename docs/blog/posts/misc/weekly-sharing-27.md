@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-06-07 14:05:00 +0800
+date: 2019-06-07
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 27 期

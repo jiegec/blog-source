@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-03-30 00:33:00 +0800
+date: 2022-03-30
 tags: [hdl,yosys,sv2v,fpnew,fpu]
 category: hardware
 title: 用 sv2v+yosys 把 fpnew 转为 verilog 网表

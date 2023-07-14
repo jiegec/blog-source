@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-12-12 14:01:00 +0800
+date: 2021-12-12
 tags: [riscv,cpu,debug,jtag,teaching]
 category: hardware
 title: 「教学」RISC-V Debug 协议

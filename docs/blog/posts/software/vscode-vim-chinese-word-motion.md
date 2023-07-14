@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-16 00:15:00 +0800
+date: 2019-01-16
 tags: [vscode,vim,vscodevim,chinese]
 category: software
 title: 实现 VSCodeVim 中支持中文分词的单词移动

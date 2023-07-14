@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-11-27 20:33:00 +0800
+date: 2018-11-27
 tags: [macos,grafana,influxdb,telegraf,miio]
 category: software
 title: 配置 Grafana+InfluxDB+Telegraf 并添加 MIIO 数据来源

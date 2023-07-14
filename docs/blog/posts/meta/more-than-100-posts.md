@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-11-17 07:35:00 +0800
+date: 2018-11-17
 tags: [blog]
 category: meta
 title: 超过 100 篇博文了！

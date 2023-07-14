@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-04-26 00:28:00 +0800
+date: 2023-04-26
 tags: [spi]
 category: hardware
 title: SPI 协议

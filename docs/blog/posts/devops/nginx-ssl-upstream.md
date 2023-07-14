@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-05-22 16:01:00 +0800
+date: 2019-05-22
 tags: [nginx,https]
 category: devops
 title: Nginx 反代到 HTTPS 上游

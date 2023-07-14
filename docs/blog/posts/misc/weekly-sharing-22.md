@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-05-03 07:38:00 +0800
+date: 2019-05-03
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 22 期

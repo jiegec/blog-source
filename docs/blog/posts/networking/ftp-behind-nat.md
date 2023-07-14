@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-05-08 13:34:00 +0800
+date: 2018-05-08
 tags: [linux,nat,forwarding,ftp]
 category: networking
 title: 搭建 FTP server behind NAT

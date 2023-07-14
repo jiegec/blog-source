@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-07-12 23:06:00 +0800
+date: 2018-07-12
 tags: [debian,fcitx,googlepinyin,fbterm]
 category: misc
 title: 配置 fcitx-fbterm 实现在终端下显示和输入中文

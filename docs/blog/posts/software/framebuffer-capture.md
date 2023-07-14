@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-08-12 20:18:00 +0800
+date: 2019-08-12
 tags: [linux,fb,framebuffer,fbgrab,fbdump]
 category: software
 title: 在 Linux 下捕获 Framebuffer

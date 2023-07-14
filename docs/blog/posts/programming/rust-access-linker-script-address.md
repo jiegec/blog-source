@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-07 11:57:00 +0800
+date: 2019-01-07
 tags: [rust,ld,linker,ffi]
 category: programming
 title: Rust 获取 Linker Script 中的地址

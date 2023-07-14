@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-25 10:58:00 +0800
+date: 2019-01-25
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 8 期

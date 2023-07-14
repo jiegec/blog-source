@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-07-14 17:26:00 +0800
+date: 2023-07-14
 tags: [ecdsa,ecc,crypto]
 category: crypto
 title: ECDSA

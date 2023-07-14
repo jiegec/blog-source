@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-07-12 23:42:00 +0800
+date: 2019-07-12
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 32 期

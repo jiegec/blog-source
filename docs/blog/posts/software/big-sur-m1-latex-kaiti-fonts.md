@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-02-09 20:08:00 +0800
+date: 2021-02-09
 tags: [c++,fortran,gcc,clang,ld,linking,symbols,objdump]
 category: software
 title: 在 Big Sur(M1) 上解决 LaTeX 找不到楷体字体的问题

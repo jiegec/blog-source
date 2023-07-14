@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-12-12 08:13:40 +0800
+date: 2017-12-12
 tags: [lsp, cpp, clang, compilation_database, cquery, clangd]
 category: programming
 ---

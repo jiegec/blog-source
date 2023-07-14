@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-04-27 08:34:00 +0800
+date: 2019-04-27
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 21 期

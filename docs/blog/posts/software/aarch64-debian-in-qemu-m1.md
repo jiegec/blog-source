@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-01-02 13:05:00 +0800
+date: 2021-01-02
 tags: [debian,macos,m1,qemu,aarch64]
 category: software
 title: 在 M1 上用 QEMU 运行 Debian 虚拟机

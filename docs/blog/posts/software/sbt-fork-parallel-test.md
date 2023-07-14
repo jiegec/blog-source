@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-04-13 21:00:00 +0800
+date: 2020-04-13
 tags: [sbt,scala,testing]
 category: software
 title: 在 sbt 中 fork 并且并行运行测试

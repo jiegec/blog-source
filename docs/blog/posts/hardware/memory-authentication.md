@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-05-10 20:28:00 +0800
+date: 2022-05-10
 tags: [memory,bus,dram,auth,teaching]
 category: hardware
 title: 「教学」内存认证算法

@@ -10,7 +10,9 @@ plugins:
   - blog:
       post_url_format: "{categories}/{date}/{file}"
       blog_dir: .
-      blog_toc: true
+      archive_name: 归档
+      categories_name: 分类
+      # blog_toc: true
 
 markdown_extensions:
   - pymdownx.arithmatex:

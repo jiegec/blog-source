@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-07-16 03:43:00 +0800
+date: 2018-07-16
 tags: [linux,initrd,initramfs]
 category: os
 title: 构建简易的 initramfs

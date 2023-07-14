@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-04-04 20:33:00 +0800
+date: 2023-04-04
 tags: [chisel,verilog,hdl,firtool,circt]
 category: hardware
 title: firtool 尝试

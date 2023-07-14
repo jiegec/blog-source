@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-01-05 01:21:00 +0800
+date: 2020-01-05
 tags: [linux,wifi,tplink,rtl8822bu,dkms]
 category: system
 title: TP-Link Archer T4U V3 Linux 驱动安装

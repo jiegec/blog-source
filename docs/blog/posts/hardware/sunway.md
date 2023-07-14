@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-12-04 09:13:00 +0800
+date: 2021-12-04
 tags: [sunway,sw26010,cpu]
 category: hardware
 title: Sunway 处理器架构分析

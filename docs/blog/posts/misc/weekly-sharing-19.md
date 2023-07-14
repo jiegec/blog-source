@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-04-15 01:03:00 +0800
+date: 2019-04-15
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 19 期

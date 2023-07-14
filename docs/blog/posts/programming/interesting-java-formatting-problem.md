@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-12-31 10:55:23 +0800
+date: 2017-12-31
 tags: [java,datetime formatting]
 category: programming
 title: 有趣的 Java 日期格式化问题

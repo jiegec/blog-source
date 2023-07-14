@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-06-15 16:03:00 +0800
+date: 2023-06-15
 tags: [libvirtd,qemu,proxmoxve,pve]
 category: software
 title: 从 libvirtd 迁移到 Proxmox VE

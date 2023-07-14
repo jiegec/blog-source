@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-04-19 15:55:00 +0800
+date: 2023-04-19
 tags: [digilent,arty,xilinx,fpga,litex]
 category: hardware
 title: 在 Arty A7 上用 LiteX 和 VexRiscv 跑 Linux

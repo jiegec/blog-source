@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-09-19 20:14:00 +0800
+date: 2022-09-19
 tags: [linux,fakeroot,mknod]
 category: software
 title: Buildroot 2020.08 的 Fakeroot 版本过旧导致的兼容性问题

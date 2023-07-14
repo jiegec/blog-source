@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-06-19 17:05:00 +0800
+date: 2022-06-19
 tags: [wishbone,bus,teaching]
 category: hardware
 title: 「教学」Wishbone 总线协议

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-01-11 08:59:00 +0800
+date: 2023-01-11
 tags: [intel,cpu]
 category: hardware
 title: Intel 处理器

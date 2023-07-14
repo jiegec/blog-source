@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-06-21 21:23:00 +0800
+date: 2019-06-21
 tags: [c,cpp,ip,cidr,ub]
 category: programming
 title: IP 前缀转换上意外遇到的 Undefined Behavior

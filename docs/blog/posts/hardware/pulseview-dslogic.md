@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-08-02 23:15:00 +0800
+date: 2019-08-02
 tags: [la,logicanalyzer,sigrok,pulseview]
 category: hardware
 title: 用 PulseView 配合 DSLogic 调试 SPI Flash

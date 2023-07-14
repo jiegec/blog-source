@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-03-31 12:32:00 +0800
+date: 2019-03-31
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 17 期

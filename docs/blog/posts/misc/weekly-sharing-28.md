@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-06-15 08:13:00 +0800
+date: 2019-06-15
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 28 期

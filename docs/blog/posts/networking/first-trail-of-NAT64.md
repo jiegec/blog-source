@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-01-02 19:41:22 +0800
+date: 2018-01-02
 tags: [networking, nat, ipv6, nat64, dns, dns64]
 category: networking
 title: NAT64 初尝试

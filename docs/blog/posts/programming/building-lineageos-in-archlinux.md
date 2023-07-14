@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-06-18 05:47:00 +0800
+date: 2018-06-18
 tags: [lineageos,archlinux,python2,angler]
 category: programming
 title: 在 ArchLinux 上编译 LineageOS for Huawei Angler

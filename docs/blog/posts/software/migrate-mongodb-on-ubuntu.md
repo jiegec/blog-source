@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-09-13 14:27:00 +0800
+date: 2018-09-13
 tags: [mongodb,ubuntu]
 category: software
 title: 在 Ubuntu 上跨版本迁移 MongoDB

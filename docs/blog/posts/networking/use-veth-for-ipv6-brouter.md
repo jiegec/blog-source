@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-10-07 11:05:00 +0800
+date: 2018-10-07
 tags: [brouter,ebtables,ipv6]
 category: networking
 title: 使用 veth 实现 IPv6-only 的 Brouter 功能

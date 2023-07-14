@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-03-05 19:55:49 +0800
+date: 2018-03-05
 tags: [rust,os,stanford,cs140e,fat32,fuzz test]
 category: programming
 title: 近来做 Stanford CS140e 的一些进展和思考（6）

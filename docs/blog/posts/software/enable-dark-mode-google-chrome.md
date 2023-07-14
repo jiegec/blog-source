@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-11-27 00:17:00 +0800
+date: 2018-11-27
 tags: [macos,darkmode,googlechrome]
 category: software
 title: 强制启用 Google Chrome 原生的 Dark Mode

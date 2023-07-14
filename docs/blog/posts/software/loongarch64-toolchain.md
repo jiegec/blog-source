@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-05-02 20:35:00 +0800
+date: 2022-05-02
 tags: [loongarch,toolchain,gcc]
 category: software
 title: LoongArch64 工具链构建

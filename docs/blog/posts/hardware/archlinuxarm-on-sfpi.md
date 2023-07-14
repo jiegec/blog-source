@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-11-06 19:18:00 +0800
+date: 2018-11-06
 tags: [sfpi,saltedfishpi,dd,extfs,ext4]
 category: hardware
 title: 向咸鱼派写入 ArchlinuxARM

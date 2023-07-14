@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-25 11:00:00 +0800
+date: 2019-01-25
 tags: [thuwc,oi,wc]
 category: misc
 title: THUWC 2019 小记

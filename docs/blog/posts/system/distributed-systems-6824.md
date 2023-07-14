@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-01-10 21:38:00 +0800
+date: 2023-01-10
 tags: [mit,mit6824,distributed,raft,mapreduce,gfs,zookeeper,learn,notes]
 category: system
 title: MIT 6.824 Distributed Systems 学习笔记

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-10-29 18:54:00 +0800
+date: 2022-10-29
 tags: [nix,power,powerpc,ppc64le]
 category: software
 title: 在 ppc64le Linux 上运行 Nix

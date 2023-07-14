@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-01-12 08:45:00 +0800
+date: 2022-01-12
 tags: [website]
 category: misc
 title: jiege.ch 停用

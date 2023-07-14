@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2014-09-20 17:03:17 +0800
+date: 2014-09-20
 tags: [math,wolframalpha]
 category: csdn
 title: 用数学方法 + 数学软件去做一个物理题~

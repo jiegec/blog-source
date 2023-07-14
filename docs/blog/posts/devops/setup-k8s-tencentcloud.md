@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-03-17 21:56:00 +0800
+date: 2020-03-17
 tags: [k8s,kubernetes,tencentcloud,dashboard]
 category: devops
 title: 体验 Tencent Kubernetes Engine

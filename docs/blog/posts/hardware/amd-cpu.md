@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-01-09 19:37:00 +0800
+date: 2023-01-09
 tags: [amd,cpu]
 category: hardware
 title: AMD 处理器

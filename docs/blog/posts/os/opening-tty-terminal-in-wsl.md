@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-05-25 21:56:00 +0800
+date: 2018-05-25
 tags: [windows,wsl,getty,agetty,terminal,cu]
 category: os
 title: 在 WSL 上开启一个 getty 到串口的方法

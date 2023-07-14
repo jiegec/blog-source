@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-11 11:20:00 +0800
+date: 2019-01-11
 tags: [site]
 category: meta
 title: 域名已经迁移到 jiege.ch

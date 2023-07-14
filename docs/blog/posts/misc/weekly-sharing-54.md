@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-12-27 15:12:00 +0800
+date: 2019-12-27
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 54 期

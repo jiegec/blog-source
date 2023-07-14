@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-07-16 19:32:00 +0800
+date: 2022-07-16
 tags: [ceph]
 category: devops
 title: Ceph Cookbook

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-01-30 20:50:00 +0800
+date: 2022-01-30
 tags: [windows,vmware,m1,vm]
 category: os
 title: 在 M1 上运行 Windows ARM 虚拟机

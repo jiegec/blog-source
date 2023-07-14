@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-04-04 18:50:00 +0800
+date: 2020-04-04
 tags: [vivado,simulation,verilog,tcl]
 category: hardware
 title: 在命令行中进行 Vivado 仿真

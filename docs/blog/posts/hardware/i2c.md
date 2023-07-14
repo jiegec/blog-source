@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-05-03 22:53:00 +0800
+date: 2023-05-03
 tags: [i2c]
 category: hardware
 title: I2C 协议

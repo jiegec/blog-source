@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-09-13 16:34:00 +0800
+date: 2020-09-13
 tags: [rust,rust-analyzer,arm,arm64,aarch64]
 category: programming
 title: 在 arm64 上使用 rust-analyzer

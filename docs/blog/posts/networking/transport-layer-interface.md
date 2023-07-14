@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-02-12 20:52:00 +0800
+date: 2023-02-12
 tags: [solaris,tli,xti,sysv,unix]
 category: networking
 title: Transport Layer Interface 考古

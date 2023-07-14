@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-07-26 22:02:20 +0800
+date: 2017-07-26
 tags: [flash,adobe]
 category: news
 title: Farewell, Flash

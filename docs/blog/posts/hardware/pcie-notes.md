@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-11-12 14:56:00 +0800
+date: 2022-11-12
 tags: [pcie,bus,notes,learn]
 category: hardware
 title: PCIe 学习笔记

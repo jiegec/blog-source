@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-10-23 20:08:00 +0800
+date: 2018-10-23
 tags: [docker,secoder,mongodb]
 category: software
 title: 部署 adminMongo 的 Docker 镜像

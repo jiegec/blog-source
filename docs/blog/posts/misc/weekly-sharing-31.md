@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-07-05 16:06:00 +0800
+date: 2019-07-05
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 31 期

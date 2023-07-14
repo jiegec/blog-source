@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-05-08 23:18:00 +0800
+date: 2023-05-08
 tags: [spi,nor,flash,jlink,jflash]
 category: hardware
 title: 使用 JLink 操作 SPI NOR Flash

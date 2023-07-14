@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-12-06 18:47:00 +0800
+date: 2022-12-06
 tags: [infiniband,ib,notes,learn]
 category: hardware
 title: InfiniBand 学习笔记

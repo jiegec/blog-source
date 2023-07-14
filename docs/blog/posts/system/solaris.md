@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-02-03 12:26:00 +0800
+date: 2023-02-03
 tags: [solaris]
 category: system
 title: Solaris 11.4 安装

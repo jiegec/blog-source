@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-01-30 16:05:33 +0800
+date: 2018-01-30
 tags: [vs,c,cs,c++]
 category: programming
 title: 再次吐槽 VS 关于 scanf 和 scanf_s 的问题

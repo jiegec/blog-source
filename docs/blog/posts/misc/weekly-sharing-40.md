@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-09-06 20:41:00 +0800
+date: 2019-09-06
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 40 期

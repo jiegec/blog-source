@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-04-24 19:41:00 +0800
+date: 2019-04-24
 tags: [router,fpga,router-on-fpga]
 category: hardware
 title: 在 FPGA 上实现路由器

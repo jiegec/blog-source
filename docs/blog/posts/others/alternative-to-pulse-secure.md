@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-10-26 07:50:34 +0800
+date: 2017-10-26
 tags: [tsinghua,networking,sslvpn]
 category: others
 title: 一个代替 Pulse Secure 客户端的工具

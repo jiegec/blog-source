@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-05-30 16:06:00 +0800
+date: 2019-05-30
 tags: [ip,udp,checksum]
 category: networking
 title: IP 和 UDP Checksum 的增量更新问题

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-06-21 21:36:00 +0800
+date: 2018-06-21
 tags: [fpga,verilog,verilator,cpu]
 category: programming
 title: Verilog 初体验

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2014-05-30 19:19:47 +0800
+date: 2014-05-30
 tags: [java,intellijidea]
 category: csdn
 title: IntelliJ IDEA 手动更新方法

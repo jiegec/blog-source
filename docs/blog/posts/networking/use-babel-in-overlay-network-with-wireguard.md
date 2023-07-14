@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-08-10 09:17:00 +0800
+date: 2018-08-10
 tags: [wireguard,babel,routing,go]
 category: networking
 title: 在 WireGuard 构建的 Overlay Network 上跑 babel 路由协议

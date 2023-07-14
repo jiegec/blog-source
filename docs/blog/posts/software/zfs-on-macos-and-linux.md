@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-11-26 20:51:00 +0800
+date: 2018-11-26
 tags: [linux,zfs,macos,timemachine,backup]
 category: software
 title: Mac 上安装 Arch Linux，ZFS 真香

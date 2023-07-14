@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-07-11 22:53:00 +0800
+date: 2022-07-11
 tags: [macos,ld,linking,common,fortran]
 category: software
 title: Archive 中 COMMON 符号的链接问题

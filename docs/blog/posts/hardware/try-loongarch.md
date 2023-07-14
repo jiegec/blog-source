@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-06-12 22:51:00 +0800
+date: 2023-06-12
 tags: [loongarch,la64,la32,la32r,qemu]
 category: hardware
 title: LoongArch 初尝试

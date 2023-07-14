@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-04-17 18:13:00 +0800
+date: 2020-04-17
 tags: [k8s,kubernetes,tencentcloud,ingress,nginx-ingress,letsencrypt,cert-manager]
 category: devops
 title: 在 k8s 内用 Cert Manager 配合 Nginx Ingress Controller 配置 Let's Encrypt HTTPS 证书

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-10 12:47:00 +0800
+date: 2019-01-10
 tags: [grafana,regex]
 category: software
 title: Grafana Variable 的 regex 过滤方式

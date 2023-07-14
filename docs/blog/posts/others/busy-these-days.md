@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-03-26 15:05:00 +0800
+date: 2018-03-26
 tags: []
 category: others
 title: 最近比较忙

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-03-08 17:47:50 +0800
+date: 2018-03-08
 tags: [wuwenhu]
 category: others
 title: 偶遇清华吴文虎教授

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-09-21 09:50:00 +0800
+date: 2019-09-21
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 42 期

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-03-09 22:10:31 +0800
+date: 2016-03-09
 tags: [twitter,vim,share]
 category: programming
 ---

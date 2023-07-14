@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-07-04 07:22:00 +0800
+date: 2018-07-04
 tags: [mongodb,transaction]
 category: programming
 title: 升级 MongoDB 到 4.0

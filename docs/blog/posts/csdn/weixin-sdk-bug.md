@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2014-10-06 09:18:19 +0800
+date: 2014-10-06
 tags: [java,intellijidea,android,androidstudio]
 category: csdn
 title: "@微信 SDK 开发者，发现一个 BUG~"

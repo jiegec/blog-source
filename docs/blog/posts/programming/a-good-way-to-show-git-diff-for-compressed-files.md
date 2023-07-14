@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-07-23 14:46:41 +0800
+date: 2016-07-23
 tags: [git, compression]
 category: programming
 ---

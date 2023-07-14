@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-02-07 21:57:00 +0800
+date: 2023-02-07
 tags: [openbsd,xonly,security]
 category: system
 title: OpenBSD xonly 实现原理

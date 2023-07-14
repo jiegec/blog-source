@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-12-26 16:03:00 +0800
+date: 2021-12-26
 tags: [nvidia,cuda]
 category: software
 title: NVIDIA 驱动和 CUDA 版本信息速查

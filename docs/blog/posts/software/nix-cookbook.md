@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-06-07 22:29:00 +0800
+date: 2022-06-07
 tags: [nix,nixos,cookbook]
 category: software
 title: Nix Cookbook

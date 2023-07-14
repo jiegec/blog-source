@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-05-22 07:47:16 +0800
+date: 2016-05-22
 tags: [haskell, ghc, emacs, ghc]
 category: programming
 ---

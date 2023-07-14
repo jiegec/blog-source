@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-11-05 22:17:00 +0800
+date: 2018-11-05
 tags: [sfpi,saltedfishpi,uboot,linux,kernel,dts,devicetree]
 category: hardware
 title: 咸鱼派的启动配置

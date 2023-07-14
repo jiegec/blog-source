@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-10-05T21:19:00+08:00
+date: 2021-10-05
 tags: [esxi,vmware]
 category: devops
 title: ESXi 常用信息

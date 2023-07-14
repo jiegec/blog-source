@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-02-12 11:35:00 +0400
+date: 2019-02-12
 tags: [rust,os,stanford,cs140e,kernel]
 category: programming
 title: 近来做 Stanford CS140e 的一些进展和思考（9）

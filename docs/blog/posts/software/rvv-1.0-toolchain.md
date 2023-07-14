@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-01-25 21:41:00 +0800
+date: 2022-01-25
 tags: [riscv,vector,rvv,llvm,clang,binutils]
 category: software
 title: RISC-V Vector 1.0 工具链构建

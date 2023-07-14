@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-06-01 07:57:00 +0800
+date: 2018-06-01
 tags: [nginx,http]
 category: devops
 title: 在 Nginx 将某个子路径反代

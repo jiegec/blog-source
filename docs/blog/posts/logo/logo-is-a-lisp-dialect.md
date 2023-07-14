@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-03-13 09:24:28 +0800
+date: 2016-03-13
 tags: [lisp,logo]
 category: logo
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-05-01 11:12:30 +0800
+date: 2020-05-01
 tags: [algorithm,qkd,quantom,bb84]
 category: others
 title: 解释 BB84 协议

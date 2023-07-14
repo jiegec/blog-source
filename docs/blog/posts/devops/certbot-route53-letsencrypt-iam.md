@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-08-12 09:46:00 +0800
+date: 2020-08-12
 tags: [certbot,route53,aws,letsencrypt,iam]
 category: devops
 title: 用 certbot 申请 route53 上的域名的 LetsEncrypt 证书并上传到 IAM

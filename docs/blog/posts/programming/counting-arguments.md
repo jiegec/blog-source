@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-04-14 09:24:00 +0800
+date: 2023-04-14
 tags: [c,printf,gcc,builtin]
 category: programming
 title: C/C++ 数参数个数的特别方法

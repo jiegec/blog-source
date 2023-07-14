@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-07-06 11:42:00 +0800
+date: 2022-07-06
 tags: [nvidia,cuda]
 category: software
 title: NVIDIA 驱动和 CUDA 安装速查

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-10-30 21:07:23 +0800
+date: 2017-10-30
 tags: [tyche,oj,cpu,cpuid]
 category: others
 title: 用 CPUID 获取评测机器的 CPU

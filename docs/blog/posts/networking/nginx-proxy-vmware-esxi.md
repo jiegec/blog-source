@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-05-08 19:26:00 +0800
+date: 2018-05-08
 tags: [linux,nat,forwarding,vmware,esxi,nginx,proxy]
 category: networking
 title: 使用 Nginx 转发 VMware ESXi

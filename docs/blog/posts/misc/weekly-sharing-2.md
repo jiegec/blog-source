@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-12-14 15:55:00 +0800
+date: 2018-12-14
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 2 期

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-02-28 15:56:00 +0800
+date: 2020-02-28
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 56 期

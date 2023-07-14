@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2016-03-19 20:23:46 +0800
+date: 2016-03-19
 tags: [cameron,subtitles]
 category: speech
 ---

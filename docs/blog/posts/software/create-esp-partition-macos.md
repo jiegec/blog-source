@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-09-14 16:07:00 +0800
+date: 2019-09-14
 tags: [linux,efi,esp,macos,vmware]
 category: software
 title: 在 macOS 上创建 ESP 镜像文件

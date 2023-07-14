@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-03-20 16:56:00 +0800
+date: 2023-03-20
 tags: [wireless,wifi,wlan,802.11]
 category: system
 title: 802.11 学习

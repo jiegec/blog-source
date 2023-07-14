@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-04-09 12:47:00 +0800
+date: 2023-04-09
 tags: [aix,unix]
 category: system
 title: AIX 7.2 虚拟机安装

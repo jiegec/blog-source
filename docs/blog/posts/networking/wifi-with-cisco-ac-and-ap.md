@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-04-28 21:58:00 +0800
+date: 2018-04-28
 tags: [cisco,wifi,vlan]
 category: networking
 title: 使用 Cisco AC + AP 组合搭建网络实践

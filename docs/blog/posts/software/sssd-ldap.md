@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-02-15 10:44:00 +0800
+date: 2021-02-15
 tags: [sssd,ldap,pam,nss,starttls]
 category: software
 title: 使用 SSSD 的 LDAP 认证

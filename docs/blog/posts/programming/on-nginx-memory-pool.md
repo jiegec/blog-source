@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-12-02 22:16:07 +0800
+date: 2017-12-02
 tag: [nginx,source code,tuna]
 category: programming
 ---

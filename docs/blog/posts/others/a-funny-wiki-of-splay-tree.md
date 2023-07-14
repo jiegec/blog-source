@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2017-10-16 19:59:30 +0800
+date: 2017-10-16
 tags: [algorithm,wiki]
 category: others
 title: 一个搞笑的伸展树的 Wiki

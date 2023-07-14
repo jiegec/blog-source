@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-01-26 20:34:00 +0800
+date: 2021-01-26
 tags: [hdl,pipeline,spinalhdl,skid,buffer,register]
 category: hardware
 title: Skid Buffer

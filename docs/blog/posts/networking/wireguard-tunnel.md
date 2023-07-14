@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-06-29 10:59:00 +0800
+date: 2018-06-29
 tags: [tun,wireguard,systemd-networkd]
 category: networking
 title: Wireguard 隧道搭建

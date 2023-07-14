@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-04-22 11:42:00 +0800
+date: 2019-04-22
 tags: [jiegecxyz,domain]
 category: misc
 title: jiegec.xyz 域名即将停用

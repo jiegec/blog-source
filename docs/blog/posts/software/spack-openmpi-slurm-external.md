@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-11-08 00:51:00 +0800
+date: 2020-11-08
 tags: [spack,openmpi,slurm]
 category: software
 title: 在 Spack 中用 external 的 Slurm 依赖编译 OpenMPI

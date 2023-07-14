@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-03-17 23:20:00 +0800
+date: 2020-03-17
 tags: [chisel,rocketchip,riscv]
 category: hardware
 title: 在 Rocket Chip 上挂接 TLRAM

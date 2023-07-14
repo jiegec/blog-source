@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-09-13 13:20:00 +0800
+date: 2018-09-13
 tags: [ssh,adb,forwarding]
 category: networking
 title: 通过 SSH 隧道连接 ADB 和 Android 设备

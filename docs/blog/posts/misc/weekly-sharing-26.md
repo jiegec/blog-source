@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-05-31 18:38:00 +0800
+date: 2019-05-31
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 26 期

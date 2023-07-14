@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-01-07 14:24:24 +0800
+date: 2018-01-07
 tags: [emacs, patch, multicolor font, emoji, frame, child frame]
 category: programming
 title: 我正在使用的两个 Emacs 的 Patch

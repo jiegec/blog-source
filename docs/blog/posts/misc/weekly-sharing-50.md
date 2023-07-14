@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-11-17 14:04:00 +0800
+date: 2019-11-17
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 50 期

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-29 17:23:00 +0800
+date: 2019-01-29
 tags: [driver,rcore,linux,virtio]
 category: programming
 title: 使用 Rust 实现 VirtIO 驱动

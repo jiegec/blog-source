@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-05-02 12:15:00 +0800
+date: 2019-05-02
 tags: [site]
 category: meta
 title: 把博客生成器从 Jekyll 迁移到 Hugo

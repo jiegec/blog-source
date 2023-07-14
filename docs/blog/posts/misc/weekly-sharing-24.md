@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-05-17 20:04:00 +0800
+date: 2019-05-17
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 24 期

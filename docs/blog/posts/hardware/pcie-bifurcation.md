@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-01-05 15:41:00 +0800
+date: 2023-01-05
 tags: [pcie,bus,bifurcation]
 category: hardware
 title: PCIe Bifurcation

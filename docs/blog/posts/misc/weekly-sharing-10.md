@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-02-08 15:52:00 +0800
+date: 2019-02-08
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 10 期

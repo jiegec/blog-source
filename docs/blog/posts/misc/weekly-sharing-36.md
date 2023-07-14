@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-08-10 09:15:00 +0800
+date: 2019-08-10
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 36 期

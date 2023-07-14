@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-09-08 02:01:00 +0800
+date: 2018-09-08
 tags: [xcode,vim,xvim]
 category: software
 title: 在 Xcode 9 上启用 Vim 模拟（XVim 2） 

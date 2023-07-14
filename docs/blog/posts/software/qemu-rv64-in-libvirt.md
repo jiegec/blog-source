@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-05-31 09:22:00 +0800
+date: 2022-05-31
 tags: [qemu,libvirt,virtmanager,debian,riscv,rv64]
 category: software
 title: 在 libvirt 中运行 RISC-V 虚拟机

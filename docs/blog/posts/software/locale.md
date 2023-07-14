@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-09-02 12:35:00 +0800
+date: 2021-09-02
 tags: [locale,sort]
 category: software
 title: Locale 影响排序的特殊副作用

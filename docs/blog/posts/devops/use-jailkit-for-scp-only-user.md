@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-03-09 13:48:00 +0800
+date: 2020-03-09
 tags: [jailkit,chroot,scp]
 category: devops
 title: 用 jailkit 限制用户仅 scp

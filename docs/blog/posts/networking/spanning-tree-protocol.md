@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-06-20 23:10:00 +0800
+date: 2023-06-20
 tags: [stp,rstp,mstp,pvst,vbst]
 category: software
 title: 生成树协议

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-07-11 23:12:00 +0800
+date: 2018-07-11
 tags: [debian,mips,loongson,lemote,yeeloong,jessie]
 category: devops
 title: 在 Lemote Yeeloong 上安装 Debian jessie

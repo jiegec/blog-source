@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-09-14 07:50:00 +0800
+date: 2019-09-14
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 41 期

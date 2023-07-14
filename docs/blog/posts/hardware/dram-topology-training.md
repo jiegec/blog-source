@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-04-20 09:11:00 +0800
+date: 2023-04-20
 tags: [ddr,sdram,dram]
 category: hardware
 title: DRAM 的拓扑和训练

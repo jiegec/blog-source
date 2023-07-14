@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-04-07 00:48:00 +0800
+date: 2023-04-07
 tags: [sram,collision,readunderwrite,xpm,xilinx,bram]
 category: hardware
 title: RAM 读写冲突

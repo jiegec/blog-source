@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2020-12-04 09:27:00 +0800
+date: 2020-12-04
 tags: [rust,rustc,codesign,m1,bigsur,macos,aarch64,darwin]
 category: programming
 title: Rust 在 M1 上的 Code Signing 问题和临时解决方法

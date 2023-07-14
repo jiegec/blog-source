@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-10-11 14:27:00 +0800
+date: 2019-10-11
 tags: [weeklysharing]
 category: misc
 title: 每周分享第 45 期

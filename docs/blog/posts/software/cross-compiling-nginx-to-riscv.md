@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-03-22 23:18:00 +0800
+date: 2019-03-22
 tags: [rcore,riscv,crosscompiling,musl]
 category: software
 title: 交叉编译 Nginx 1.14.2 到 RISC-V

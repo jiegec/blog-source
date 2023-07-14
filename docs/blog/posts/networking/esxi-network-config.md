@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-03-27 22:07:00 +0800
+date: 2021-03-27
 tags: [esxi,esxcli,ipv6]
 category: networking
 title: ESXi 网络配置

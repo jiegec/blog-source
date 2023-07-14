@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-09-11 23:23:00 +0800
+date: 2018-09-11
 tags: [lede,openwrt,wpad,pac]
 category: networking
 title: 在 LEDE（OpenWrt）上启用 wpad 

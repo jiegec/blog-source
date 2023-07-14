@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2022-05-16 00:34:00 +0800
+date: 2022-05-16
 tags: [axi,bus,cache,coherence,teaching]
 category: hardware
 title: 「教学」ACE 缓存一致性协议

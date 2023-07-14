@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-03-24 19:13:00 +0800
+date: 2019-03-24
 tags: [rcore,x86,x86_64,static,musl,sqlite]
 category: software
 title: 静态编译 sqlite3

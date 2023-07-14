@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-02-09 19:02:00 +0800
+date: 2021-02-09
 tags: [c++,fortran,gcc,clang,ld,linking,symbols,objdump]
 category: software
 title: COMMON 符号

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-04-07 12:13:00 +0800
+date: 2019-04-07
 tags: [rcore,router,ixgbe,os]
 category: software
 title: rCore 软路由实现

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-04-10 19:11:00 +0800
+date: 2023-04-10
 tags: [unixware,unix]
 category: system
 title: UnixWare 7.1.4 虚拟机安装

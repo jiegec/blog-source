@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2019-01-10 20:19:00 +0800
+date: 2019-01-10
 tags: [alacritty,font]
 category: software
 title: 调整 Alacritty 的 Powerline 字体显示偏移

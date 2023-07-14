@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-03-23 11:18:00 +0800
+date: 2023-03-23
 tags: [riscv,cpu,spike,cosim,simulation,verilator]
 category: hardware
 title: 单核处理器的协同仿真

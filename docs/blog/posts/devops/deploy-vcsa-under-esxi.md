@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-05-20 16:44:00 +0800
+date: 2018-05-20
 tags: [vmware,vcsa,esxi]
 category: devops
 title: 在 VMware ESXi 上部署 vCSA 实践

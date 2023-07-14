@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2018-10-13 22:51:00 +0800
+date: 2018-10-13
 tags: [unicode,pdf]
 category: misc
 title: Unicode En Dash 小坑

@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2021-03-12 11:35:00 +0800
+date: 2021-03-12
 tags: [switch,router]
 category: devops
 title: 常用交换机命令
