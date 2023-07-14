@@ -16,13 +16,13 @@ categories:
 
 $$E: y^2 \equiv x^3 + ax + b \mod{p}$$
 
-曲线的参数共有 \\((p, a, b, G, n, h)\\)。\\(G\\) 是一个点 \\((G_x, G_y)\\)，\\(n\\) 是 \\(G\\) 的阶。
+曲线的参数共有 $(p, a, b, G, n, h)$。$G$ 是一个点 $(G_x, G_y)$，$n$ 是 $G$ 的阶。
 
 第二种：
 
 $$E: y^2+xy=x^3+ax^2+1$$
 
-称为 Kbolitz curve。不同的曲线有不同的参数 \\((m,f(x),a,b,G,n,h)\\)，对应不同的 \\(GF(2^m)\\) 域。
+称为 Kbolitz curve。不同的曲线有不同的参数 $(m,f(x),a,b,G,n,h)$，对应不同的 $GF(2^m)$ 域。
 
 ## OpenSSL
 
@@ -149,7 +149,7 @@ Curve P-521:
 
 $$p=2^{521}-1$$
 
-另一类是基于 Binary Field（\\(GF(2^m)\\)）的曲线，有 Curve K-163，Curve B-163，Curve K-233，Curve B-233，Curve K-283，Curve B-283，Curve K-409，Curve B-409，Curve K-571，Curve B-571。相应地，RFC 5656 里又名 nistk163，nistk233，nistb233，nistk283，nistk409，nistb409，nistt571（我觉得是 nistb571/nistk571，不知道是不是写错了）
+另一类是基于 Binary Field（$GF(2^m)$）的曲线，有 Curve K-163，Curve B-163，Curve K-233，Curve B-233，Curve K-283，Curve B-283，Curve K-409，Curve B-409，Curve K-571，Curve B-571。相应地，RFC 5656 里又名 nistk163，nistk233，nistb233，nistk283，nistk409，nistb409，nistt571（我觉得是 nistb571/nistk571，不知道是不是写错了）
 
 Degree 163 (K-163/B-163) :
 
@@ -205,7 +205,7 @@ SECG 在 [SEC2](https://www.secg.org/sec2-v2.pdf) 中定义了若干的曲线，
 | nistk571 (RFC 5656 写的是 nistt571) | sect571k1 | 1.3.132.0.38 |
 | nistb571                           | sect571r1 | 1.3.132.0.39 |
 
-sec 命名里，第四个字符里 \\(p\\) 表示是素数域，\\(t\\) 表示是 \\(GF(2^m)\\) 域。后面的字母表示的 \\(k\\) 表示 Koblitz，\\(r\\) 表示 random，是参数的选取方式。
+sec 命名里，第四个字符里 $p$ 表示是素数域，$t$ 表示是 $GF(2^m)$ 域。后面的字母表示的 $k$ 表示 Koblitz，$r$ 表示 random，是参数的选取方式。
 
 OID 有两种前缀：
 
