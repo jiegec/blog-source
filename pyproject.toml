@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "blog-source"
+version = "0.1.0"
+description = ""
+authors = ["Jiajie Chen <c@jia.je>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+mkdocs = "^1.4.3"
+mkdocs-material = "9.2.0b0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
