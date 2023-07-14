@@ -3,7 +3,7 @@ layout: post
 date: 2023-06-20
 tags: [stp,rstp,mstp,pvst,vbst]
 categories:
-    - software
+    - networking
 ---
 
 # 生成树协议

@@ -13,6 +13,7 @@ nav:
   - 标签: tags.md
   - 系列: series.md
   - 项目: projects/README.md
+  - 工具: tools.md
 
 plugins:
   - tags:

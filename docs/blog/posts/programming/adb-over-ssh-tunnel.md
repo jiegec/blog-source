@@ -3,7 +3,7 @@ layout: post
 date: 2018-09-13
 tags: [ssh,adb,forwarding]
 categories:
-    - networking
+    - programming
 ---
 
 # 通过 SSH 隧道连接 ADB 和 Android 设备

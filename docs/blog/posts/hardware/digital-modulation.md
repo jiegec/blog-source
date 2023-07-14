@@ -3,7 +3,7 @@ layout: post
 date: 2023-03-19
 tags: [modulation,digital]
 categories:
-    - system
+    - hardware
 ---
 
 # 数字调制

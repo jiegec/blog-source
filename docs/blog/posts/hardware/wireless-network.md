@@ -3,7 +3,7 @@ layout: post
 date: 2023-03-20
 tags: [wireless,wifi,wlan,ieee802.11]
 categories:
-    - system
+    - hardware
 ---
 
 # 802.11 学习
