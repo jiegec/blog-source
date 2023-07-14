@@ -6,9 +6,11 @@ categories:
     - programming
 ---
 
+# LSP 和 C++
+
 之前时间，巨硬发布了 LSP（Language Server Protocol），目的是解决目前 IDE 和各语言的 m+n 问题。想法很好，不过直到最近，终于有我觉得可以用的工具出来了，并且已经代替了我在使用的其它的插件。
 
-由于我最近主要就是做做程设作业，做做 OJ 这些，主要就是和 C++打交道。所以我当然就开始找一些比较成熟的 C++的 LSP server。有一个 Sourcegraph 维护的 [langserver.org](https://langserver.org/) ，上面有着目前的各个语言和编辑器/IDE 的支持情况，我刚才提到的 cquery 也会加入到这个列表里去。从这个列表里可以看到，我用的比较多的 Python 和 Haskell 都已经有不错的的 LSP server，我已经开始在本地体验 pyls 和 hie 了，感觉做得挺不错的。
+由于我最近主要就是做做程设作业，做做 OJ 这些，主要就是和 C++ 打交道。所以我当然就开始找一些比较成熟的 C++的 LSP server。有一个 Sourcegraph 维护的 [langserver.org](https://langserver.org/) ，上面有着目前的各个语言和编辑器/IDE 的支持情况，我刚才提到的 cquery 也会加入到这个列表里去。从这个列表里可以看到，我用的比较多的 Python 和 Haskell 都已经有不错的的 LSP server，我已经开始在本地体验 pyls 和 hie 了，感觉做得挺不错的。
 
 回到 C++，我的主力编辑器是 Emacs，其次是 CLion，而 Emacs 上的[LSP 支持 lsp-mode](https://github.com/emacs-lsp/lsp-mode)也在快速发展，与之配合的[lsp-ui](https://github.com/emacs-lsp/lsp-ui) 也出现了很多很棒的功能。
 

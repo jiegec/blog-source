@@ -6,6 +6,8 @@ categories:
     - life
 ---
 
+# The end of senior two
+
 Finally the end of Senior 2 arrives. I'm on the way to Senior 3.
 The summer vacation is rather short which is really common
 in China. These days I have been diving into Emacs by subscribing

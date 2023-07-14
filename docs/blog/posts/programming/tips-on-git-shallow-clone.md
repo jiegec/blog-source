@@ -6,6 +6,8 @@ categories:
     - programming
 ---
 
+# Tips on git shallow clone
+
 Just learned a new tip on git shallow clone. As you know, some repository are really really large, such as emacs and linux. Cloning is slow and unstable. And there is no way to pause and resume a git clone. So I use shallow clone to clone them. But what if I want to clone other branches?
 
 

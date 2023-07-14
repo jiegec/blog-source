@@ -6,6 +6,8 @@ categories:
     - programming
 ---
 
+# A good way to show git diff for compressed files
+
 I have found a good way to track changes in .gz files:
 Add these to ~/.gitconfig:
 
