@@ -2,17 +2,19 @@ site_name: 杰哥的{运维,编程,调板子}小笔记
 
 theme:
   name: material
+  language: zh
 
 nav:
   - index.md
+  - tags.md
 
 plugins:
+  - tags:
+      tags_file: tags.md
   - blog:
       post_url_format: "{categories}/{date}/{file}"
       blog_dir: .
-      archive_name: 归档
       # archive_toc: true
-      categories_name: 分类
       # categories_toc: true
       # blog_toc: true
 
