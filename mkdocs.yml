@@ -8,7 +8,11 @@ theme:
   features:
     - navigation.tracking
     - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
     - content.code.copy
+    - toc.follow
+    - toc.integrate
 
 nav:
   - 博客: index.md
@@ -41,6 +45,7 @@ plugins:
         - tags
   - search:
   - git-revision-date-localized:
+      enabled: !ENV [DEPLOY, false]
       enable_creation_date: true
 
 markdown_extensions:
