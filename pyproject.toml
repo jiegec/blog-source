@@ -10,6 +10,7 @@ mkdocs = "^1.4.3"
 mkdocs-material = "9.2.0b0"
 mkdocs-rss-plugin = "^1.7.0"
 mkdocs-git-revision-date-localized-plugin = "^1.2.0"
+mkdocs-wavedrom-plugin = {git = "https://github.com/jiegec/mkdocs-wavedrom-plugin.git"}
 
 [tool.poetry.dev-dependencies]
 
