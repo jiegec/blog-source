@@ -10,7 +10,7 @@ title: 「教学」ACE 缓存一致性协议
 
 ## 背景
 
-最近几天分析了 TileLink 的缓存一致性协议部分内容，见[TileLink 总线协议分析]({{< relref "tilelink.md" >}})，趁此机会研究一下之前尝试过研究，但是因为缺少一些基础知识而弃坑的 ACE 协议分析。
+最近几天分析了 TileLink 的缓存一致性协议部分内容，见[TileLink 总线协议分析](tilelink.md)，趁此机会研究一下之前尝试过研究，但是因为缺少一些基础知识而弃坑的 ACE 协议分析。
 
 下面主要参考了 IHI0022E 的版本，也就是 AXI4 对应的 ACE 版本。
 
@@ -36,7 +36,7 @@ title: 「教学」ACE 缓存一致性协议
 
 ## Cache state model
 
-首先来看一下 ACE 的缓存状态模型，我在之前的[缓存一致性协议分析]({{< relref "cache-coherency-protocol.md" >}})中也分析过，它有这么五种，就是 MOESI 的不同说法：
+首先来看一下 ACE 的缓存状态模型，我在之前的[缓存一致性协议分析](cache-coherency-protocol.md)中也分析过，它有这么五种，就是 MOESI 的不同说法：
 
 1. UniqueDirty: Modified
 2. SharedDirty: Owned

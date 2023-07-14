@@ -102,4 +102,4 @@ pub extern "C" fn kmain() {
 
 目前只做到这里。后面还有大把的坑要踩，难写的 Rust 还得继续啃下去。我的代码都以 diff 的形式放在了 [jiegec/cs140e](https://github.com/jiegec/cs140e) ，写得并不美观。接下来就是实现 `UART` 了，终于要实现串口通信了。
 
-2018-01-06 更新： [下一篇文章已经更新]({{< relref "thoughts-on-stanford-cs140e-2.md" >}}) 。
+2018-01-06 更新： [下一篇文章已经更新](thoughts-on-stanford-cs140e-2.md) 。

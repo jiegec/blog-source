@@ -81,7 +81,7 @@ homeDirectory: /home/user02
 
 可以看到 Docker 镜像初始化了两个用户，仅供测试用，它用的密码比较弱。
 
-# TLS
+## TLS
 
 接着，给 OpenLDAP 配置 TLS。首先用 OpenSSL 生成 CA 和证书：
 
@@ -134,7 +134,7 @@ $ ldapsearch -x -b dc=example,dc=com -H ldap://localhost:1389/
 $ LDAPTLS_CACERT=$PWD/certs/ldap_ca.crt ldapsearch -x -b dc=example,dc=com -H ldaps://localhost:1636/
 ```
 
-# 修改密码
+## 修改密码
 
 管理员修改用户的密码，使用 ldappasswd 修改：
 
@@ -203,7 +203,7 @@ gidNumber: 1000
 homeDirectory: /home/user01
 ```
 
-# ldap-ui
+## ldap-ui
 
 如果想要 Web 管理界面，可以用 ldap-ui，在 docker-compose 添加：
 
@@ -222,7 +222,7 @@ homeDirectory: /home/user01
 
 访问 localhost:5000，就可以用 admin 用户登录了。如果想用其他用户登录，由于 BIND 路径多了一级 ou=users，所以要么修改 BIND_PATTERN，要么用户名要写成 user01,ou=users
 
-# 权限管理
+## 权限管理
 
 前面修改了权限，从而允许用户修改自己的密码：
 
@@ -273,7 +273,7 @@ olcAccess: {1}to *
 
 由于从前往后匹配，找到第一个匹配就不看后面的规则的原因，更精确的过滤要放在前面。
 
-# LDAP 用于其他软件的认证
+## LDAP 用于其他软件的认证
 
 LDAP 很重要的一个用途是用于其他软件的认证，一般来说有两种用法：
 

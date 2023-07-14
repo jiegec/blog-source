@@ -6,7 +6,7 @@ category: programming
 title: 使用 Rust 实现 e1000 驱动
 ---
 
-是的。我又来了。上次做了[使用 Rust 实现 VirtIO 驱动]({{< relref "virtio-drivers-implementation.md" >}})之后，继续往 rCore 加更多的驱动支持。由于现在工作重点是 x86_64 下的 syscall 实现，所以选了一个比较有代表性的驱动 e1000 来实现。其实如果只是为了在 qemu 下运行的话，其实只需要支持 virtio-pci 就可以了，原来的 virtio-net 直接拿来用就可以了。
+是的。我又来了。上次做了[使用 Rust 实现 VirtIO 驱动](virtio-drivers-implementation.md)之后，继续往 rCore 加更多的驱动支持。由于现在工作重点是 x86_64 下的 syscall 实现，所以选了一个比较有代表性的驱动 e1000 来实现。其实如果只是为了在 qemu 下运行的话，其实只需要支持 virtio-pci 就可以了，原来的 virtio-net 直接拿来用就可以了。
 
 为什么挑 e1000 呢，一方面是支持的设备多，有真实硬件可以测试，虽然不一定要裸机上跑，但是可以通过 PCI passthrough 来测试驱动的正确性。另一方面是网上的资料比较多，有现成的简单的代码可以借鉴。这次主要借鉴了三个来源：一是 Biscuit OS，二是 Judge Duck OS，三是 Linux。
 

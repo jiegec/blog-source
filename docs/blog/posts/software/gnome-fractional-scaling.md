@@ -14,7 +14,7 @@ title: Gnome 的 Fractional Scaling
 
 根据关键字，找到了 [Chrome menus too slow after enabling fractional scaling in Ubuntu 20.04](https://askubuntu.com/questions/1274719/chrome-menus-too-slow-after-enabling-fractional-scaling-in-ubuntu-20-04)。按它的方法，关闭 Google Chrome 的硬件加速，发现卡顿问题确实解决了。
 
-类似地，也可以[关闭 VSCode 的硬件加速](Chrome menus too slow after enabling fractional scaling in Ubuntu 20.04)，在 Firefox 里也可以找到相应的设置。这样操作确实可以解决问题。但是，对于每一个出问题的应用都这样搞一遍，还是挺麻烦的。
+类似地，也可以[关闭 VSCode 的硬件加速](https://gist.github.com/andriyudatama/fe5d00deb36feeea30ef35a5ea0f7eff)，在 Firefox 里也可以找到相应的设置。这样操作确实可以解决问题。但是，对于每一个出问题的应用都这样搞一遍，还是挺麻烦的。
 
 另一个思路是，[不使用 Fractional Scaling，而只是把字体变大](https://askubuntu.com/questions/1230208/fractional-scaling-does-not-work-properly-ubuntu-20-04/1272794#1272794)。但毕竟和我们想要的效果不大一样。
 

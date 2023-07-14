@@ -11,7 +11,9 @@ plugins:
       post_url_format: "{categories}/{date}/{file}"
       blog_dir: .
       archive_name: 归档
+      # archive_toc: true
       categories_name: 分类
+      categories_toc: true
       # blog_toc: true
 
 markdown_extensions:

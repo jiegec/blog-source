@@ -6,7 +6,7 @@ category: programming
 title: 近来做 Stanford CS140e 的一些进展和思考（2）
 ---
 
-在[上一篇文章]({{< relref "thoughts-on-stanford-cs140e.md" >}})之后，我又有了一些进展：`UART` ，简易的`shell` ，修复了之前写的 `xmodem` 中的 BUG，一个可以从 `UART` 接收一个 `kernel` 写入到内存中再跳转过去的 `bootloader` 。
+在[上一篇文章](thoughts-on-stanford-cs140e.md)之后，我又有了一些进展：`UART` ，简易的`shell` ，修复了之前写的 `xmodem` 中的 BUG，一个可以从 `UART` 接收一个 `kernel` 写入到内存中再跳转过去的 `bootloader` 。
 
 首先是 `UART` ，就是通过两个 `GPIO pin` 进行数据传输，首先在 `memory mapped IO` 上进行相应的初始化，然后包装了 `io::Read` 和 `io::Write` （这里实现一开始有 BUG，后来修复了），然后很快地完成了一个仅仅能 `echo` 的 `kernel` 。
 
@@ -18,4 +18,4 @@ title: 近来做 Stanford CS140e 的一些进展和思考（2）
 
 整个过程挺虐的，踩了很多的坑，由于很多东西都没有，输入输出目前也只有 `UART` ，写了 `UART` 后又遇到 `XMODEM` 难以调试的问题。十分感谢 `#tuna` 上的 @BenYip 及时地指出了代码的几处问题，节省了我许多时间。
 
-更新：[下一篇在这里]({{< relref "thoughts-on-stanford-cs140e-3.md" >}})。
+更新：[下一篇在这里](thoughts-on-stanford-cs140e-3.md)。

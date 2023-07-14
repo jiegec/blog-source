@@ -22,7 +22,7 @@ Ceph 有这些组成部分：
 
 ## 配置
 
-我们采用的是 [rook](rook.io) 来部署 ceph 集群。
+我们采用的是 [rook](https://rook.io/) 来部署 ceph 集群。
 
 参考文档：https://rook.github.io/docs/rook/v1.5/ceph-examples.html
 

@@ -205,4 +205,4 @@ permalink: /open-source-contributions/
 
 - [spi: xilinx_spi: Fix spi reset](https://github.com/u-boot/u-boot/commit/4fffbc1108f3f5e2932cdefea8b5f831b46040c7)
 
-# 尚未合并
+## 尚未合并

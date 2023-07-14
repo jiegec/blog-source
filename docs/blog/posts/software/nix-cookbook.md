@@ -320,7 +320,7 @@ home-manager switch --flake .
 
 ### search.nixos.org
 
-[search.nixos.org](search.nixos.org) 可以搜索 nixpkgs 上的各种包，也可以看到不同平台支持情况。缺点是看不出是否 unfree 和 broken，并且一些 darwin os-specific 的包不会显示。
+[search.nixos.org](https://search.nixos.org/) 可以搜索 nixpkgs 上的各种包，也可以看到不同平台支持情况。缺点是看不出是否 unfree 和 broken，并且一些 darwin os-specific 的包不会显示。
 
 ### nix-tree
 

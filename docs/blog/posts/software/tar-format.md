@@ -8,11 +8,11 @@ title: Tar 文件格式
 
 本文的内容已经整合到[知识库](/kb/software/tar.html)中。
 
-# 背景
+## 背景
 
 最近在解压 tar.gz 文件的时候，发现如果用 unar 解压，就会出现文件名截断到 100 个字节的问题，而如果用 gnu tar 解压，文件名就是正常的，因此深入研究了一下 Tar 的文件格式。实际上，这是因为早期 tar 格式设计的时候，就设定了路径最长 100 字节的限制，后来的扩展解决了这个问题，但是 unar 没能正确地识别扩展，导致解压路径出错。
 
-# Tar 文件格式
+## Tar 文件格式
 
 Tar 的文件格式比较简单，就是一系列的 File Entry，最后是两个 512 字节的全 0，表示结束。每个 File Entry 由头部和数据组成，头部的格式是：
 
@@ -51,7 +51,7 @@ struct posix_header
 
 总结一下，Tar 文件的格式就是：`(头部，数据)*结尾`。每一个部分都对齐到 512 字节。
 
-# PAX 扩展
+## PAX 扩展
 
 如果仔细观察，会发现上面的 `posix_header` 里面，`name` 字段只有 100 个字节，意味着如果文件路径特别长，那就放不下，只能截断了。为了解决这个问题，Tar 引入了 PAX 扩展。
 
@@ -70,7 +70,7 @@ struct posix_header
 
 类似地，PaxHeader 还可以存很多其他 `posix_header` 中没有的信息，例如 `atime`、`ctime` 和 `uid` 等等。完整列表可以参考 [Extended header keywords](https://www.ibm.com/docs/en/zos/2.4.0?topic=descriptions-pax-interchange-portable-archives#r4paxsh__pxchk)。
 
-# Bard
+## Bard
 
 Bard 讲解 Tar 格式：
 
