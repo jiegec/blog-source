@@ -5,6 +5,10 @@ site_url: https://jia.je/
 theme:
   name: material
   language: zh
+  features:
+    - navigation.tracking
+    - navigation.tabs
+    - content.code.copy
 
 nav:
   - 博客: index.md
@@ -15,6 +19,7 @@ nav:
   - 系列: series.md
   - 项目: projects/README.md
   - 工具: tools.md
+  - 订阅: "/feed.xml"
 
 plugins:
   - tags:
@@ -34,10 +39,20 @@ plugins:
       categories:
         - categories
         - tags
+  - search:
+  - git-revision-date-localized:
+      enable_creation_date: true
 
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 
 extra_javascript:
   - javascripts/mathjax.js
