@@ -5,8 +5,12 @@ theme:
   language: zh
 
 nav:
-  - index.md
-  - tags.md
+  - 博客: index.md
+  - 关于: about.md
+  - 开源: open-source-contributions.md
+  - 标签: tags.md
+  - 系列: series.md
+  - 项目: projects/README.md
 
 plugins:
   - tags:
