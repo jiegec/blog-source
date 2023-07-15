@@ -216,6 +216,8 @@ iso(1) identified-organization(3) certicom(132) curve(0)
 iso(1) member-body(2) us(840) 10045 curves(3) prime(1)
 ```
 
+完整列表见 [OID 1.3.132.0](https://oidref.com/1.3.132.0) 和 [OID 1.2.840.10045.3.1](https://oidref.com/1.2.840.10045.3.1)
+
 ## ANSI
 
 ANSI 也有 [X9.62 标准](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.202.2977&rep=rep1&type=pdf)，在附录里面也定义了若干个曲线。附录 `J.5.1` 里面有三个例子，就是 prime192v1 prime192v2 和 prime192v3，之后则是 prime239v1 prime239v2 prime239v3 和 prime256v1。
