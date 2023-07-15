@@ -8,6 +8,10 @@ categories:
 
 # 使用 Docker 部署 OpenLDAP
 
+OpenLDAP 是一个开源的用户系统实现，主要支持 LDAP 协议，可以给其他系统提供用户认证。下面讨论了如何在 Docker 中部署 OpenLDAP。
+
+<!-- more -->
+
 ## Docker-Compose
 
 OpenLDAP 可以用现成的 Docker 镜像：[bitnami/openldap](https://hub.docker.com/r/bitnami/openldap/)，配合 Docker-Compose 进行部署：

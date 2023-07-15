@@ -29,6 +29,7 @@ nav:
 
 plugins:
   - tags:
+      enabled: !ENV [DEPLOY, false]
       tags_file: tags.md
   - blog:
       post_url_format: "{categories}/{date}/{file}"
@@ -36,6 +37,7 @@ plugins:
       archive_toc: true
       categories_toc: true
       blog_toc: true
+      pagination_per_page: 25
   - rss:
       enabled: !ENV [DEPLOY, false]
       abstract_chars_count: -1

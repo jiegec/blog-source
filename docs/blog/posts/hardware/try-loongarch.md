@@ -12,6 +12,8 @@ categories:
 
 最近应龙芯要求把监控程序移植到了 LoongArch 32 Reduced 架构上，趁此机会体验了一下 LoongArch 相关的软件和系统。
 
+<!-- more -->
+
 ## 在 QEMU 中运行 LoongArch Arch Linux
 
 主页：https://github.com/loongarchlinux

@@ -10,7 +10,9 @@ categories:
 
 ## 背景
 
-最近设计了一款 [PMOD SPI NOR Flash](https://github.com/jiegec/PMOD-SPI-NOR-FLASH) 扩展板，搭载了 W25Q128 SPI NOR Flash 芯片。在 jlc 生产回来以后，通过 JLink 连接到电脑上进行测试。
+最近设计了一款 [PMOD SPI NOR Flash](https://github.com/jiegec/PMOD-SPI-NOR-FLASH) 扩展板，搭载了 W25Q128 SPI NOR Flash 芯片。在 jlc 生产回来以后，通过 JLink 连接到电脑上进行测试，看看是否可以用 JLink 操作 SPI NOR Flash。
+
+<!-- more -->
 
 ## 连接到 JLink
 

@@ -10,7 +10,9 @@ categories:
 
 ## 背景
 
-上一次折腾 Gentoo/Prefix 是[五年多以前](/devops/2017/12/27/try-gentoo-prefix-on-macos/)，当时还是用的 Intel Mac，最近需要探索一下在现在的 macOS 系统上用 Gentoo/Prefix 会遇到哪些问题，因此今天在 Apple M1 上重新尝试一次。
+上一次折腾 Gentoo/Prefix 是[五年多以前](try-gentoo-prefix-on-macOS.md)，当时还是用的 Intel Mac，最近需要探索一下在现在的 macOS 系统上用 Gentoo/Prefix 会遇到哪些问题，因此今天在 Apple M1 上重新尝试一次。
+
+<!-- more -->
 
 ## 安装
 

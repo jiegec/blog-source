@@ -8,7 +8,7 @@ categories:
 
 # Linux 6.2.13 引入的 BUG 导致 Vivado 无法识别 FPGA
 
-[English version](/software/2023/05/06/linux-regression-vivado-en/)
+[English version](linux-regression-vivado-en.md)
 
 ## TLDR
 
@@ -39,6 +39,8 @@ Date:   Fri Apr 14 14:59:19 2023 -0400
 ```
 
 修复了 BUG 的同时，引入了新的 BUG，导致 MAP_32BIT 有时无法工作，而 Xilinx 的 Digilent 下载器代码使用了这个参数，导致 mmap 失败，无法识别 FPGA。
+
+<!-- more -->
 
 ## 背景
 

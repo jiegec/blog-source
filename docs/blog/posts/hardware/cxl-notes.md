@@ -146,7 +146,7 @@ Device 收到 SnpData 后，如果发现缓存行不在缓存中（状态是 I�
 
 #### 和其他协议的对比
 
-之前在 [TileLink 总线协议分析](/hardware/2022/05/09/tilelink/#tilelink-cached) 分析过 TileLink 的缓存一致性实现方法，如果某一个缓存（Master A）出现了缺失，需要经过如下的过程：
+之前在 [TileLink 总线协议分析](tilelink.md/#tilelink-cached) 分析过 TileLink 的缓存一致性实现方法，如果某一个缓存（Master A）出现了缺失，需要经过如下的过程：
 
 - Master A -> Slave: Acquire
 - Slave -> Master B: Probe
@@ -156,7 +156,7 @@ Device 收到 SnpData 后，如果发现缓存行不在缓存中（状态是 I�
 
 在 TileLink Cached 里面，所有的 Master 都是平等的。而在 CXL 中，需要维护缓存一致性的，有 CPU 内部的各个缓存之间，还有 CPU 和设备之间。而 CXL.cache 主要负责的是与设备的缓存一致性部分，维护缓存一致性的核心是在 CPU 一侧，Host 相当于 TileLink 的 Slave，Device 相当于 TileLink 的 Master A。可以说 CXL.cache 是不对称的缓存一致性协议。
 
-另一个相关的协议是 [ACE 缓存一致性协议](/hardware/2022/05/16/ace)，和 TileLink 类似。
+另一个相关的协议是 [ACE 缓存一致性协议](ace.md)，和 TileLink 类似。
 
 例如 CXL 中设备读取缓存的时候，出现了缺失，那么需要经过如下的过程：
 

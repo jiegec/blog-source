@@ -39,7 +39,7 @@ sudo apt-get update
 1. 驱动版本需要支持所使用的显卡
 2. 驱动版本需要支持所使用的 CUDA 版本
 
-这些信息在网络上都可以查到，也可以参考 [NVIDIA 驱动和 CUDA 版本信息速查](/software/2021/12/26/nvidia-cuda/)。
+这些信息在网络上都可以查到，也可以参考 [NVIDIA 驱动和 CUDA 版本信息速查](nvidia-cuda.md)。
 
 假如我们已经选择了要安装 470.129.06 版本，那么，我们接下来要确认一下 NVIDIA 的 APT 源的版本名称：
 

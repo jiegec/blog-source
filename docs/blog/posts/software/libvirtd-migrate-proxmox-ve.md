@@ -12,6 +12,8 @@ categories:
 
 之前用 libvirtd + virt-manager 做 Linux 上的虚拟化，好处是比较轻量级，但是远程控制起来比较麻烦，要么通过 RDP 访问 virt-manager 的 UI，要么就用 cockpit 在网页里去配置虚拟机。此时就会比较怀念 VMware ESXi 的网页，但是 ESXi 装完以后，宿主机就很不自由了，很多东西没法自定义。最后就想到在 Debian 上装一个 Proxmox VE，希望得到一个比较好的中间态。
 
+<!-- more -->
+
 ## Proxmox VE 安装
 
 按照官方的 [Install Proxmox VE on Debian 11 Bullseye](https://pve.proxmox.com/wiki/Install_Proxmox_VE_on_Debian_11_Bullseye) 去安装即可。我的环境是 Debian Bookworm，把路径改成 Bookworm 的 pvetest 即可。安装的时候可能会遇到一些小问题，例如用 ifupdown2 替换 ifupdown 的时候会检查 config 是否正确等等。安装完以后重启，就可以用 root 用户访问 Proxmox VE 了。
