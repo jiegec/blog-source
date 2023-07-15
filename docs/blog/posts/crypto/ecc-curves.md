@@ -94,14 +94,14 @@ $$E: y^2+xy=x^3+ax^2+1$$
   wap-wsg-idm-ecid-wtls10: NIST/SECG/WTLS curve over a 233 bit binary field
   wap-wsg-idm-ecid-wtls11: NIST/SECG/WTLS curve over a 233 bit binary field
   wap-wsg-idm-ecid-wtls12: WTLS curve over a 224 bit prime field
-  Oakley-EC2N-3:
-        IPSec/IKE/Oakley curve #3 over a 155 bit binary field.
-        Not suitable for ECDSA.
-        Questionable extension field!
-  Oakley-EC2N-4:
-        IPSec/IKE/Oakley curve #4 over a 185 bit binary field.
-        Not suitable for ECDSA.
-        Questionable extension field!
+  Oakley-EC2N-3: 
+	IPSec/IKE/Oakley curve #3 over a 155 bit binary field.
+	Not suitable for ECDSA.
+	Questionable extension field!
+  Oakley-EC2N-4: 
+	IPSec/IKE/Oakley curve #4 over a 185 bit binary field.
+	Not suitable for ECDSA.
+	Questionable extension field!
   brainpoolP160r1: RFC 5639 curve over a 160 bit prime field
   brainpoolP160t1: RFC 5639 curve over a 160 bit prime field
   brainpoolP192r1: RFC 5639 curve over a 192 bit prime field
@@ -181,7 +181,7 @@ SECG 在 [SEC2](https://www.secg.org/sec2-v2.pdf) 中定义了若干的曲线，
 |          | secp192k1 | 1.3.132.0.31        |            |
 | nistp224 | secp224r1 | 1.3.132.0.33        |            |
 |          | secp224k1 | 1.3.132.0.32        |            |
-| nistp256 | secp256r1 | 1.2.840.10045.3.1.7 | prime192v7 |
+| nistp256 | secp256r1 | 1.2.840.10045.3.1.7 | prime256v1 |
 |          | secp256k1 | 1.3.132.0.10        |            |
 | nistp384 | secp384r1 | 1.3.132.0.34        |            |
 |          | secp384k1 |                     |            |
