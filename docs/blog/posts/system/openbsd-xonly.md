@@ -12,6 +12,8 @@ categories:
 
 最近看到 [xonly status](https://marc.info/?l=openbsd-tech&m=167501519712725&w=2)，看到 OpenBSD 最近在实现 xonly，也就是让一些页只能执行，不能读不能写。以往类似的做法是 `W^X`，也就是可以执行的时候不能写，可以写的时候不能执行。显然，xonly 是更加严格的，连读都不可以。查了一下历史，`W^X` 最早也是在 OpenBSD 中实现的，说不定以后 xonly 也会被各个操作系统实现。
 
+<!-- more -->
+
 ## amd64 上的实现
 
 在 amd64 的页表中，决定执行/读/写权限的是（见 Intel 文档 `Table 4-20. Format of a Page-Table Entry that Maps a 4-KByte Page`）：

@@ -19,6 +19,8 @@ Chisel 3.6 很快就要发布了（目前最新版本是 3.6.0-RC2），这个�
 
 因此提前测试一下 firtool，看看其和 Scala FIRRTL Compiler 有哪些区别，是否有更好的输出。
 
+<!-- more -->
+
 ## 使用 firtool
 
 使用 firtool 有两种方法：

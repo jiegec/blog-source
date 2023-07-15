@@ -12,6 +12,8 @@ categories:
 
 今年的龙芯杯又开始报名了，我来写一篇关于协同仿真（cosim）的博客蹭蹭热度。下面的内容参考了一些已有的协同仿真的框架，例如 [ibex co-sim](https://ibex-core.readthedocs.io/en/latest/03_reference/cosim.html) 和 [OpenXiangShan/difftest](https://github.com/OpenXiangShan/difftest)。
 
+<!-- more -->
+
 ## 协同仿真
 
 RTL 层次的协同仿真可以做不同层次的，这里讨论的是指令提交层次，具体来讲，就是把 CPU 和一个模拟器放在一起协同仿真，检查每条指令执行完以后的状态是否一致。基于代码样例的测试虽然可以覆盖很多情况，但是如果出了错误，报错的地方不一定是出现问题的地方，有些时候就需要往回找很久，才能找到刚出现问题的地方。软件上，大家经常苦于内存错误，经常找不到刚出现溢出的地方，所以要用 valgrind 或者 asan 等工具来直接定位第一次出错的地方。硬件上也是类似，为了精确定位到出错的波形，可以用 cosim。

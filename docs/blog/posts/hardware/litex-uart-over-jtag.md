@@ -14,6 +14,8 @@ categories:
 
 因此研究了一下 LiteX 自带的 UART over JTAG 功能，在 Alinx AX7021 中调试出来了。
 
+<!-- more -->
+
 ## LiteX 配置
 
 启用很简单，直接在命令里添加 `--uart-name jtag_uart` 即可：

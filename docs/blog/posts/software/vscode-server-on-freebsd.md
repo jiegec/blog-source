@@ -10,7 +10,9 @@ categories:
 
 ## 背景
 
-最近在 FreeBSD 上移植开源软件，但是因为 vscode 官方不支持 FreeBSD，所以尝试使用 code-server
+最近在 FreeBSD 上移植开源软件，但是因为 vscode 官方不支持 FreeBSD，所以尝试使用 code-server。
+
+<!-- more -->
 
 ## 使用
 

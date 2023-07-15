@@ -16,6 +16,8 @@ categories:
 
 在调研的时候，发现了 [morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi) 仓库，里面总结了一些 Linux 支持比较好的 USB 无线网卡，由于是外国人写的，所以里面很多型号在国内都买不到，但实际上 USB 无线网卡的芯片组一般就是那些，所以需要先确定芯片组，再根据芯片组找对应的 USB 无线网卡。
 
+<!-- more -->
+
 开发用于 USB 无线网卡的厂商常见的是：Mediatek（2011 年 MediaTek 收购了 Ralink）和 Realtek。国内直接买到的 USB 无线网卡大部分是 Realtek，但是 Realtek 的 Linux 驱动很长一段时间都是 out of tree 的状态，只有比较新的一些芯片组有内核支持，而 Mediatek 系列的芯片内核支持较好，缺点是比较贵。下面从上面的仓库里摘录了一些芯片组的 Linux 内核支持情况：
 
 | Chipset    | Linux | Commit                                                                                                                                                                   | 802.11   | USB | Bluetooth | Package | Links                                                                                                                                                                                        |

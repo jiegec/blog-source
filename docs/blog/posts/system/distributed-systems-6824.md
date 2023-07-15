@@ -13,6 +13,8 @@ draft: true
 
 本来打算去年上分布式系统课的，但是由于时间冲突没有选，今年想上的时候课程又没有开，因此利用寒假时间自学 [MIT 6.824 Distributed Systems 课程 Spring 2022](http://nil.csail.mit.edu/6.824/2022/)（[Archive](https://web.archive.org/web/20220713034553/https://pdos.csail.mit.edu/6.824/index.html)），跟着看视频，Lecture Notes 还有论文，同时也完成课程的实验。在这里分享一下我在学习过程中的一些笔记和感悟。有趣的是，MIT 6.824 Spring 2023 年把课号改成了 6.5840，类似地 6.828 OS 也改成了 6.1810。
 
+<!-- more -->
+
 ## MapReduce
 
 ### 背景

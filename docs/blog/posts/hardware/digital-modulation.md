@@ -12,6 +12,8 @@ categories:
 
 最近在学习 802.11，需要学习很多数字调制相关的知识，因此自学了一下通信原理。
 
+<!-- more -->
+
 ## ASK
 
 Amplitude-Shift Keying 调整载波信号的幅度

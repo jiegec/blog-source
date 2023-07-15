@@ -12,6 +12,8 @@ categories:
 
 之前尝试过在 ppc64le 的机器上运行 Nix，当时的尝试是把代码克隆下来编译，我还写了一个 Docker 脚本：
 
+<!-- more -->
+
 ```docker
 # Based on https://github.com/NixOS/nix/issues/6048
 # Build nixos/nix from source

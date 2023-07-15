@@ -14,6 +14,8 @@ categories:
 
 最近在知乎上看到 [LogicJitterGibbs](https://www.zhihu.com/people/ljgibbs) 的 [资料整理：可以学习 1W 小时的 PCIe](https://zhuanlan.zhihu.com/p/447134701)，我跟着资料学习了一下，然后在这里记录一些我学习 PCIe 的笔记。
 
+<!-- more -->
+
 下面的图片主要来自 PCIe 3.0 标准以及 MindShare 的 PCIe 3.0 书本。
 
 ## 分层

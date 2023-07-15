@@ -14,6 +14,8 @@ categories:
 
 最后使用 VirtualBox 7.0.6 成功启动，注意创建虚拟机的时候不要给太多内存，例如 4GB 就起不来，2GB 可以。硬盘我也只给了 4GB 的空间。
 
+<!-- more -->
+
 安装过程中会询问 License number 和 License code，可以选择使用 Evaluation License，或者使用下面参考文档中提供的 License。按照流程一直走就可以了。如果重启出现无法 mount root 的问题，就 poweroff 再开机。
 
 ## 参考文档

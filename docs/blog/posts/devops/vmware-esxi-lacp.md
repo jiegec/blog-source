@@ -12,6 +12,8 @@ categories:
 
 给 ESXi 接了两路 10Gbps 的以太网，需要用 LACP 来聚合。ESXi 自己不能配置 LACP，需要配合 vCenter Server 的 Distributed Switch 来配置。
 
+<!-- more -->
+
 ## 步骤
 
 参考文档：[LACP Support on a vSphere Distributed Switch](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.networking.doc/GUID-0D1EF5B4-7581-480B-B99D-5714B42CD7A9.html)

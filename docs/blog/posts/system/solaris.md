@@ -12,7 +12,9 @@ categories:
 
 访问 <https://www.oracle.com/solaris/solaris11/downloads/solaris-downloads.html>，点击下载，登录后跳转到一个新的页面。在 Platform 下拉框选择 x86，会出现一系列可以下载的文件。以 11.4.42.111.0 为例，需要下载的是：V1019840-01.iso Oracle Solaris 11.4.42.111.0 Interactive Text Install ISO (x86) for (Oracle Solaris on x86-64 (64-bit)), 890.5 MB。可以直接在浏览器中下载，也可以点击网页中的 WGET Options，用 wget 脚本下载。
 
-下载以后，挂载 ISO 到虚拟机，正常按照指示进行安装
+下载以后，挂载 ISO 到虚拟机，正常按照指示进行安装。
+
+<!-- more -->
 
 ## 配置软件源
 

@@ -10,21 +10,13 @@ categories:
 
 本文的内容已经整合到[知识库](/kb/networking/infiniband.html)中。
 
-## 参考文献
-
-
-- [Infiniband Architecture Overview](https://www.snia.org/sites/default/files/files2/files2/SDC2013/presentations/Hardware/DavidDeming_Infiniband_Architectural_Overview.pdf)
-- [InfiniBand Architecture Specification Volume 1 Release 1.2.1](https://www.afs.enea.it/asantoro/V1r1_2_1.Release_12062007.pdf)
-- [InfiniBand Architecture Specification Volume 2 Release 1.4](https://cw.infinibandta.org/document/dl/8566)
-- [An Introduction to the InfiniBand Architecture](https://cali-doc.unilim.fr/_media/mpi/intel-mpi/infinibandchap42.pdf)
-- InfiniBand Network Architecture - MindShare
-- [ArchWiki - InfiniBand](https://wiki.archlinux.org/title/InfiniBand)
-
 ## 概览
 
 InfiniBand 的网络分为两层，第一层是由 End Node 和 Switch 组成的 Subnet，第二层是由 Router 连接起来的若干个 Subnet。有点类似以太网以及 IP 的关系，同一个二层内通过 MAC 地址转发，三层间通过 IP 地址转发。
 
 在 IB 网络中，End Node 一般是插在结点上的 IB 卡（Host Channel Adapter，HCA）或者是存储结点上的 Target Channel Adapter。End Node 之间通过 Switch 连接成一个 Subnet，由 Subnet Manager 给每个 Node 和 Switch 分配 Local ID，同一个 Subnet 中通过 LID（Local ID）来路由。但是 LID 位数有限，为了进一步扩展，可以用 Router 连接多个 Subnet，此时要通过 GID（Global ID）来路由。
+
+<!-- more -->
 
 ![](/images/iba.png)
 
@@ -111,3 +103,12 @@ LID 是一个 16 位的整数，所以同一个 Subnet 中可以连接的设备�
 - IB (rc_lat): 3.6 ~ 4.6 us
 - IB (uc_lat): 4.2 ~ 5.5 us
 - IB (ud_lat): 5.5 ~ 6.4 us
+
+## 参考文献
+
+- [Infiniband Architecture Overview](https://www.snia.org/sites/default/files/files2/files2/SDC2013/presentations/Hardware/DavidDeming_Infiniband_Architectural_Overview.pdf)
+- [InfiniBand Architecture Specification Volume 1 Release 1.2.1](https://www.afs.enea.it/asantoro/V1r1_2_1.Release_12062007.pdf)
+- [InfiniBand Architecture Specification Volume 2 Release 1.4](https://cw.infinibandta.org/document/dl/8566)
+- [An Introduction to the InfiniBand Architecture](https://cali-doc.unilim.fr/_media/mpi/intel-mpi/infinibandchap42.pdf)
+- InfiniBand Network Architecture - MindShare
+- [ArchWiki - InfiniBand](https://wiki.archlinux.org/title/InfiniBand)

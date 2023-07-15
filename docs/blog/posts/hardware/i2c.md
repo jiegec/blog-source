@@ -21,6 +21,8 @@ I2C 协议涉及到两个信号：
 - SCL: 时钟信号，Master -> Slave
 - SDA：数据信号，Master <-> Slave
 
+<!-- more -->
+
 由于只有一个数据信号，所以 SDA 由 Master 和 Slave 轮流输出。一次请求的开始条件是，SDA 从 1 变成 0，之后 SCL 从 1 变成 0。开始请求以后，每次 SCL 上升沿采样一位的数据。请求结束时，SCL 从 0 变成 1，然后 SDA 从 0 变成 1。一次请求的波形如下：
 
 ```wavedrom

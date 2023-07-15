@@ -12,6 +12,8 @@ categories:
 
 最近在维护 lsof 的时候，需要在 FreeBSD/NetBSD/OpenBSD/DragonFlyBSD 上进行开发和测试，于是就装了虚拟机，特此记录我在使用过程中，与 Linux 不一样的一些常用 FreeBSD/NetBSD/OpenBSD/DragonFlyBSD 命令。
 
+<!-- more -->
+
 ## FreeBSD
 
 文档参考：<https://docs.freebsd.org/en/books/handbook>

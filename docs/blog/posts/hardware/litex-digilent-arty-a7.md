@@ -8,6 +8,10 @@ categories:
 
 # 在 Arty A7 上用 LiteX 和 VexRiscv 跑 Linux
 
+Arty A7 是一款 Digilent 出品的 FPGA 开发板，为了在它上面跑 Linux，可以用 LiteX 生成由 VexRiscv 作为 RISC-V 核心的 SoC，最后可以在开发板上把 Linux 跑起来。
+
+<!-- more -->
+
 ## litex 安装
 
 litex 安装过程按照 <https://github.com/enjoy-digital/litex/wiki/Installation> 进行，由于需要 pip install，建议用 venv 来开一个干净的环境：

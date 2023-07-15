@@ -14,6 +14,8 @@ ACPI 标准可以从[官网](https://uefi.org/specifications)下载。
 
 ACPI 的表现形式为一颗树加若干个表，表的结构比较规整，里面每个字段都有固定的含义。树的结点可能是属性，或者是一些函数。操作系统可以操作上面的属性，调用 ACPI 中的函数，来进行一些硬件相关的操作。ACPI 一般与主板密切相关，主板厂家配置好 ACPI 后，操作系统就不需要给每个主板都写一遍代码了。
 
+<!-- more -->
+
 ## ASL
 
 为了开发 ACPI，需要使用 ACPI Source Language(ASL) 来进行编程，使用 iasl 编译成 ACPI 表以后，由操作系统进行解释执行。推荐阅读一个比较好的 ASL 教程：[ACPI Source Language (ASL) Tutorial](https://acpica.org/sites/acpica/files/asl_tutorial_v20190625.pdf)。

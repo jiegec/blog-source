@@ -18,6 +18,8 @@ mknod: ....../dev/console: Operation not permitted
 
 还有一个背景是前段时间把系统升级到了 Ubuntu 22.04 LTS。
 
+<!-- more -->
+
 ## 研究
 
 跑的时候没有用 root，而是用 fakeroot 跑的，按理说在 fakeroot 里跑 mknod 是不会报错的，我直接运行系统的 fakeroot 是正常的：

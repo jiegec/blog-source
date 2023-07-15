@@ -14,6 +14,8 @@ categories:
 
 最后换成了 VirtualBox 7.0.6。用 VirtualBox 创建虚拟机的时候，不要给太多内存，4GB 就会无法启动，2GB 可以，硬盘也不要给太多，4GB 就足够。
 
+<!-- more -->
+
 剩下就是按照安装界面一路默认即可，License 可以选择 Defer，使用 Evaluation License。
 
 关机以后，修改启动顺序，把硬盘放到 CD 前，然后启动，就可以进入系统了。如果重启出现无法 mount root 的问题，就 poweroff 再开机。

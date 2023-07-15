@@ -14,6 +14,8 @@ categories:
 
 通过 google 可以搜索到 AIX 7.2 的 ISO，下载第一个 ISO 到本地，然后在 QEMU 中启动安装镜像：
 
+<!-- more -->
+
 ```bash
 qemu-img create -f qcow2 aix-hdd.qcow2 20G
 qemu-system-ppc64 -cpu POWER8 -machine pseries -m 16384 -serial mon:stdio -drive file=aix-hdd.qcow2,if=none,id=drive-virtio-disk0 -device virtio-scsi-pci,id=scsi -device scsi-hd,drive=drive-virtio-disk0 -cdrom aix_7200-04-02-2027_1of2_072020.iso -prom-env boot-command='boot cdrom:\ppc\chrp\bootfile.exe' -display none

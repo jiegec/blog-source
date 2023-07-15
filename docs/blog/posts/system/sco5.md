@@ -12,6 +12,8 @@ categories:
 
 首先从 <https://www.sco.com/support/update/download/release.php?rid=218> 下载 SCO OpenServer 的安装 ISO 和从 <https://www.sco.com/support/update/download/release.php?rid=187> 下载 Supplement CD 5 ISO，然后用 QEMU 启动，这次需要用图形界面：
 
+<!-- more -->
+
 ```shell
 qemu-system-i386 -accel kvm -m 16384 -serial mon:stdio -drive file=sco-hdd.qcow2,if=ide -cdrom ../../ISOs/OpenServer-5.0.7Hw-10Jun05_1800.iso
 ```

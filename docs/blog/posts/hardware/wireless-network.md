@@ -14,6 +14,8 @@ categories:
 
 最近在学习 802.11，在博客上记录一下我的学习过程。
 
+<!-- more -->
+
 本文参考了 [802.11-1997](https://ieeexplore.ieee.org/document/654749) 并使用了标准中的图片。
 
 ## MAC 层帧格式

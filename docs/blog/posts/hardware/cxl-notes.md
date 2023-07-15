@@ -16,6 +16,8 @@ categories:
 
 CXL 的标准是公开下载的：https://www.computeexpresslink.org/download-the-specification，我目前参考的是 2022 年 8 月 1 日的 CXL 3.0 版本。
 
+<!-- more -->
+
 ## CXL 设备类型
 
 CXL 对 PCIe 的重要的扩展，一是在于让设备可以和 CPU 实现缓存一致性（CXL.cache），二是可以做远程的内存（CXL.mem）。

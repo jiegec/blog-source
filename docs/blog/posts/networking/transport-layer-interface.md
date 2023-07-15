@@ -18,6 +18,9 @@ int fd = t_open("/dev/udp", O_RDWR, NULL);
 
 比如 TCP 就是 `/dev/tcp`，UDP 就是 `/dev/udp`，同理还有 `/dev/icmp` 等等。这颇有 Unix 的哲学：everything is a file。而 BSD Sockets API 则是有对应的系统调用，libc 基本不需要做什么事情。
 
+<!-- more -->
+
+
 沿着这个思路，既然 TLI 第一步是打开一个文件，难道后面的一系列的 bind、connect、send、recv 等操作也是对文件读写吗？是的！如果我们查看 illumos 的[源码](https://github.com/illumos/illumos-gate/blob/46f52c84cb830d1636c093bd5c2d83074aeaf21c/usr/src/lib/libnsl/nsl/_conn_util.c#L76-L82)，会发现 `t_connect` 函数的核心实现是：
 
 ```c

@@ -12,6 +12,8 @@ categories:
 
 在网卡等场景下，经常会需要在软硬件之间传输大量的数据，通常的方法是建立循环队列，例如 H2C（Host to Chip）方向，是 Host 作为 Producer 增加数据到队尾，Chip 作为 Consumer 从队头读取数据。由于每次传输的数据不定长，为了方便，队列的项是一个定长的 Descriptor，Descriptor 指向了数据的地址。但具体的细节，不同的实现还不太一样。下面逐个案例进行分析。
 
+<!-- more -->
+
 ## AXI DMA
 
 文档：<https://docs.xilinx.com/r/en-US/pg021_axi_dma>
