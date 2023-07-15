@@ -56,6 +56,8 @@ plugins:
       pymdownx: true
 
 markdown_extensions:
+  - toc:
+      permalink: true
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.highlight:
@@ -84,3 +86,6 @@ extra:
   social:
     - icon: fontawesome/brands/github 
       link: https://github.com/jiegec
+  analytics:
+    provider: google
+    property: G-3109FRSVTT
