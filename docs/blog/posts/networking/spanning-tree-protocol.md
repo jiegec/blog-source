@@ -8,6 +8,7 @@ categories:
 
 # 生成树协议
 
+本文的内容已经整合到[知识库](/kb/networking/spanning_tree_protocol.html)中。
 
 ## Spanning Tree Protocol
 

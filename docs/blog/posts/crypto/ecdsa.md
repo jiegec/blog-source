@@ -16,6 +16,8 @@ ECDSA 是一个基于椭圆曲线的签名算法，使用时需要确定一个�
 
 <!-- more -->
 
+本文的内容已经整合到[知识库](/kb/cryptography/ecdsa.html)中。
+
 本文参考了 [ECDSA - Wikipedia](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm)。
 
 ## 生成 key pair
