@@ -19,8 +19,10 @@ vsish -e cat /hardware/cpu/cpuList/0 | grep -i -E 'family|model|stepping|microco
 - [ESXi 从 6.7 到 6.7U1 升级时出现版本问题](https://kb.vmware.com/s/article/56145)
 - [ESXi 6.7 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/6_7#custom_iso)
 - [ESXi 7.0 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/7_0#custom_iso)
-- [ESXi 7.0 标准版下载](https://customerconnect.vmware.com/en/web/vmware/evalcenter?p=free-esxi7)
-- [NUC 11 ESXi 7.0 网卡支持](https://flings.vmware.com/community-networking-driver-for-esxi/comments)
+- [ESXi 8.0 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/8_0#custom_iso)
+- [ESXi 7.0 标准版下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/7_0)
+- [ESXi 8.0 标准版下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/8_0)
+- [NUC 11 ESXi 7.0 网卡支持](https://flings.vmware.com/community-networking-driver-for-esxi/comments)：
 
 ```shell
 $ esxcli software vib install -d $PWD/Net-Community-Driver_1.2.0.0-1vmw.700.1.0.15843807_18028830.zip
@@ -49,6 +51,8 @@ $ esxcli software profile update -p ESXi-7.0U3-18644231-standard -d https://host
 ```
 
 ref: [Update Standalone ESXi Host](https://docs.macstadium.com/docs/update-standalone-esxi-host-via-online-bundle)
+
+目前 OEM 版本还没找到在线升级方法，需要下载 zip 然后按照离线升级方法安装。
 
 ## 防火墙
 
