@@ -405,3 +405,17 @@ int vfio_set_irq_signaling(VFIODevice *vbasedev, int index, int subindex,
     return 0;
 }
 ```
+
+## DPDK
+
+DPDK 是一个在用户态进行网络处理的框架，它可以用 VFIO 来接管网卡，在用户态运行网卡驱动。它对 VFIO 的调用和 QEMU 类似，这里就不贴出代码了，直接给出链接：
+
+- 核心：<https://github.com/DPDK/dpdk/blob/main/lib/eal/linux/eal_vfio.c>
+- 中断：<https://github.com/DPDK/dpdk/blob/main/lib/eal/linux/eal_interrupts.c>
+
+## UIO
+
+在 VFIO 之前，还可以用 UIO（User I/O）驱动来做类似的事情。简单来说，UIO 驱动会创建一个设备文件 `/dev/uioX`，读取文件等于等待中断，mmap 以后可以访问它的 BAR 空间（偏移从 sysfs 中读取），Configuration 空间通过 sysfs 来读写。用户程序的例子见 [Example code using uio_pci_generic](https://egeeks.github.io/kernal/uio-howto/uio_pci_generic_example.html) 和 [Linux Userspace Memory & I/O](https://tuxengineering.com/blog/2020/08/15/Linux-Userspace.html)。
+
+但是 UIO 驱动不处理 IOMMU 映射，所以会有安全问题，使用 UIO 的时候也需要关掉 IOMMU。特别地，如果打开了 Secure Boot，将会无法使用 UIO。关于 UIO 的文档可以阅读 [The Userspace I/O HOWTO](https://www.kernel.org/doc/html/v4.13/driver-api/uio-howto.html)。
+
