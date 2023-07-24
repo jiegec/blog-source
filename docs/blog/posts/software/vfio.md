@@ -243,7 +243,7 @@ static void vfio_populate_device(VFIOPCIDevice *vdev, Error **errp)
     for (i = VFIO_PCI_BAR0_REGION_INDEX; i < VFIO_PCI_ROM_REGION_INDEX; i++) {
         char *name = g_strdup_printf("%s BAR %d", vbasedev->name, i);
 
-        ret = vfio_region_setup(OBJECT(vdev), vbasedev,
+        vfio_region_setup(OBJECT(vdev), vbasedev,
                                 &vdev->bars[i].region, i, name);
     }
 }
@@ -273,6 +273,7 @@ const MemoryRegionOps vfio_region_ops = {
 那么在虚拟机读写这段内存的时候，回调函数 vfio_region_read/vfio_region_write 会被调用，此时再去通过 Device FD 来访问实际的 BAR 空间：
 
 ```c
+// error handling code removed
 uint64_t vfio_region_read(void *opaque,
                           hwaddr addr, unsigned size)
 {
@@ -286,12 +287,8 @@ uint64_t vfio_region_read(void *opaque,
     } buf;
     uint64_t data = 0;
 
-    if (pread(vbasedev->fd, &buf, size, region->fd_offset + addr) != size) {
-        error_report("%s(%s:region%d+0x%"HWADDR_PRIx", %d) failed: %m",
-                     __func__, vbasedev->name, region->nr,
-                     addr, size);
-        return (uint64_t)-1;
-    }
+    pread(vbasedev->fd, &buf, size, region->fd_offset + addr);
+
     switch (size) {
     case 1:
         data = buf.byte;
@@ -309,9 +306,6 @@ uint64_t vfio_region_read(void *opaque,
         hw_error("vfio: unsupported read size, %u bytes", size);
         break;
     }
-
-    /* Same as write above */
-    vbasedev->ops->vfio_eoi(vbasedev);
 
     return data;
 }
@@ -369,7 +363,7 @@ uint32_t vfio_pci_read_config(PCIDevice *pdev, uint32_t addr, int len)
     }
 
     if (~emu_bits & (0xffffffffU >> (32 - len * 8))) {
-        ssize_t ret = pread(vdev->vbasedev.fd, &phys_val, len,
+        pread(vdev->vbasedev.fd, &phys_val, len,
                     vdev->config_offset + addr);
         phys_val = le32_to_cpu(phys_val);
     }
@@ -381,3 +375,33 @@ uint32_t vfio_pci_read_config(PCIDevice *pdev, uint32_t addr, int len)
 ```
 
 因此如果 QEMU 想在 PCIe passthrough 的时候，伪装一些 Configuration Space 的内容，就可以通过修改 emulated_config_bits 来实现。
+
+### 中断
+
+VFIO 的中断通过 `ioctl(VFIO_DEVICE_SET_IRQS)` 来初始化，把 eventfd 和中断绑定起来：
+
+```c
+// error handling code removed
+int vfio_set_irq_signaling(VFIODevice *vbasedev, int index, int subindex,
+                           int action, int fd, Error **errp)
+{
+    struct vfio_irq_set *irq_set;
+    int argsz;
+    int32_t *pfd;
+
+    argsz = sizeof(*irq_set) + sizeof(*pfd);
+
+    irq_set = g_malloc0(argsz);
+    irq_set->argsz = argsz;
+    irq_set->flags = VFIO_IRQ_SET_DATA_EVENTFD | action;
+    irq_set->index = index;
+    irq_set->start = subindex;
+    irq_set->count = 1;
+    pfd = (int32_t *)&irq_set->data;
+    *pfd = fd;
+
+    ioctl(vbasedev->fd, VFIO_DEVICE_SET_IRQS, irq_set);
+
+    return 0;
+}
+```
