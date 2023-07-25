@@ -10,13 +10,15 @@ categories:
 
 ## Ryzen 系列
 
+注：下表中省略了 PRO 前缀，部分型号有带 PRO 和不带 PRO 的版本，部分型号仅有带 PRO 的版本，部分型号没有带 PRO 的版本。
+
 ### Ryzen 5000
 
 | 代号       | 用途  | 核显   | 插槽    | 微架构   | 型号                                                                    |
 | -------- | --- | ---- | ----- | ----- | --------------------------------------------------------------------- |
-| Vermeer  | 桌面  | 无    | AM4   | Zen 3 | 5950X/5900(X)/5800(X(3D))/5700X/5600(X)                               |
+| Vermeer  | 桌面  | 无    | AM4   | Zen 3 | 5950X/5945/5900(X)/5845/5800(X(3D))/5700X/5645/5600(X(3D))                               |
 | Chagall  | 工作站 | 无    | sWRX8 | Zen 3 | 5995WX/5975WX/5965WX/5955WX/5945WX                                    |
-| Cezanne  | 桌面  | GCN5 | AM4   | Zen 3 | 5750G/5700G(E)/5650G/5600G(E)/5500/5300G(E)                           |
+| Cezanne  | 桌面  | GCN5 | AM4   | Zen 3 | 5750G(E)/5700G(E)/5650G(E)/5600G(E)/5500/5350G(E)/5300G(E)                           |
 | Cezanne  | 笔记本 | GCN5 | FP6   | Zen 3 | 5980HX/5980HS/5900HX/5900HS/5800H(S)/5800U/5600H(S)/5600U/5560U/5400U |
 | Barceló  | 笔记本 | GCN5 | FP6   | Zen 3 | 5825U/5825C/5625U/5625C/5425U/5425C/5125C                             |
 | Lucienne | 笔记本 | GCN5 | FP6   | Zen 2 | 5700U/5500U/5300U                                                     |
@@ -35,12 +37,12 @@ categories:
 
 | 代号           | 用途  | 核显    | 插槽            | 微架构    | 型号                                            |
 | ------------ | --- | ----- | ------------- | ------ | --------------------------------------------- |
-| Raphael      | 桌面  | RDNA2 | AM5           | Zen 4  | 7950X(3D)/7900(X(3D))/7800X3D/7700(X)/7600(X) |
+| Raphael      | 桌面  | RDNA2 | AM5           | Zen 4  | 7950X(3D)/7945/7900(X(3D))/7800X3D/7745/7700(X)/7645/7600(X)/7500F |
 | Dragon Range | 笔记本 | RDNA2 | FL1           | Zen 4  | 7945HX/7845HX/7745HX/7645HX                   |
 | Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 7940H(S)/7840H(S)/7840U/7640H(S)/7640U/7540U/7440U                          |
 | Rembrandt R  | 笔记本 | RDNA2 | FP7/FP7r2     | Zen 3+ | 7735HS/7736U/7735U/7535HS/7535U/7335U         |
 | Barcelo R    | 笔记本 | GCN5  | FP6           | Zen 3  | 7730U/7530U/7330U                             |
-| Mendocino    | 笔记本 | RDNA2 | FT6           | Zen 2  | 7520U/7320U                                   |
+| Mendocino    | 笔记本 | RDNA2 | FT6           | Zen 2  | 7520U//7520C/7320U/7320C                                   |
 
 AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](https://www.anandtech.com/show/18718/amd-2023-ryzen-mobile-7000-cpus-unveiled-zen-4-phoenix-takes-point)：
 
@@ -57,6 +59,13 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 - Rembrandt R: 7035, Premium Thin & Light
 - Bracelo R: 7030, Mainstream Thin & Light
 - Mendocino: 7020, Everyday Computing
+
+### Z1
+
+Ryzen Z1 系列：
+
+- [Ryzen Z1](https://www.amd.com/en/product/13226)
+- [Ryzen Z1 Extreme](https://www.amd.com/en/product/13221)
 
 ### 参考资料
 
