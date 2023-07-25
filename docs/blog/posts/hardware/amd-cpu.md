@@ -90,3 +90,15 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 ### 参考资料
 
 - [AMD Gives Details on EPYC Zen4: Genoa and Bergamo, up to 96 and 128 Cores](https://www.anandtech.com/show/17055/amd-gives-details-on-epyc-zen4-genoa-and-bergamo-up-to-96-and-128-cores)
+
+## Family, Model, Stepping
+
+AMD 的 CPUID 分为三部分：Family，Model 和 Stepping，例如：
+
+- AMD EPYC 7001 Naples：Family=23(0x17)，Model=1(0x01)，Stepping=2(0x02)
+- AMD EPYC 7002 Rome：Family=23(0x17)，Model=49(0x31)，Stepping=0(0x00)
+- AMD Ryzen 7020U Mendocino：Family=23(0x17)，Model=160(0xa0)，Stepping=0(0x00)
+
+可以在 [amd-ucode](https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/amd-ucode/README) 查阅最新 microcode 版本。
+
+修复 EPYC 7002 Rome 的 [Zenbleed](https://github.com/google/security-research/security/advisories/GHSA-v6wh-rxpg-cmm8) 漏洞的 microcode 版本是 [0x0830107a](https://lore.kernel.org/linux-firmware/20230719191757.3210370-1-john.allen@amd.com/)。
