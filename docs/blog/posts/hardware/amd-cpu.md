@@ -94,7 +94,8 @@ Ryzen Z1 系列：
 | Milan   | 7003 | 64    | Zen 3  | SP3 |
 | Milan-X | 7003 | 64    | Zen 3  | SP3 |
 | Genoa   | 9004 | 96    | Zen 4  | SP5 |
-| Bergamo | ?    | 128   | Zen 4c | SP5 |
+| Genoa-X | 9004 | 96    | Zen 4  | SP5 |
+| Bergamo | 97X4 | 128   | Zen 4c | SP5 |
 
 ### 参考资料
 
