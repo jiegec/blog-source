@@ -38,9 +38,17 @@ categories:
 - 2.70.70.70: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=dnh17)，2019 年 10 月版本。
 - 2.75.75.75: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=krcxx)，2020 年 6 月版本。
 - 2.75.100.75: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=dpv0r)，2021 年 1 月版本。
+- 2.80.80.80: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=vdd4r)，2021 年 5 月版本。
+- 2.84.84.84: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=g79dw)，2023 年 3 月版本。
 
 ## iDRAC 9
 
 - 4.00.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=4jcpk)，2019 年 12 月版本。LLDP 连接视图。
 - 4.22.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=9f2tg)，2020 年 7 月版本。
 - 4.40.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=62gw1)，2020 年 12 月版本，下一代的 iDRAC virtual console 和 virtual media，支持 Infiniband。
+- 5.00.00.00: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=f87rp)，2021 年 6 月版本。
+- 7.00.00.00: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=kh4xx)，2023 年 6 月版本。
+
+## 在线升级
+
+iDRAC 可以在线从 Dell 官网下载新版本升级，在网页上选择通过 HTTPS 升级，域名写 <downloads.dell.com> ，具体见[文档](https://www.dell.com/support/kbdoc/zh-cn/000130533/dell-poweredge-how-to-update-the-firmware-via-https-connection-to-idrac?lang=en)。
