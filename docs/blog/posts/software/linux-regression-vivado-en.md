@@ -41,6 +41,8 @@ Date:   Fri Apr 14 14:59:19 2023 -0400
 
 While fixing a BUG, a new BUG is introduced, causing MAP_32BIT to fail to work sometimes, and Xilinx's Digilent driver uses this parameter, causing mmap to fail and unable to recognize the FPGA.
 
+The new BUG has been fixed in [[PATCH v2] maple_tree: Make maple state reusable after mas_empty_area()](https://lore.kernel.org/linux-mm/20230505145829.74574-1-zhangpeng.00@bytedance.com/).
+
 <!-- more -->
 
 ## Background
