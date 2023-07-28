@@ -27,6 +27,46 @@ categories:
 
 <!-- more -->
 
+Vermeer:
+
+- [5600](https://www.amd.com/en/product/11831)
+- [5600X](https://www.amd.com/en/product/10471)
+- [5600X3D](https://www.amd.com/en/product/13541)
+- [PRO 5645](https://www.amd.com/en/product/12186)
+- [5700X](https://www.amd.com/en/product/11826)
+- [5800](https://www.amd.com/en/product/10791)
+- [5800X](https://www.amd.com/en/product/10466)
+- [5800X3D](https://www.amd.com/en/product/11576)
+- [PRO 5845](https://www.amd.com/en/product/12176)
+- [5900X](https://www.amd.com/en/product/10461)
+- [5900](https://www.amd.com/en/product/10796)
+- [PRO 5945](https://www.amd.com/en/product/12181)
+- [5950X](https://www.amd.com/en/product/10456)
+
+Chagall:
+
+- [PRO 5945WX](https://www.amd.com/en/product/11806)
+- [PRO 5955WX](https://www.amd.com/en/product/11801)
+- [PRO 5965WX](https://www.amd.com/en/product/11796)
+- [PRO 5975WX](https://www.amd.com/en/product/11791)
+- [PRO 5995WX](https://www.amd.com/en/product/11786)
+
+Cezanne 桌面:
+
+- [5300G](https://www.amd.com/en/product/11181)
+- [5300GE](https://www.amd.com/en/product/11196)
+- [PRO 5350G](https://www.amd.com/en/product/11246)
+- [PRO 5350GE](https://www.amd.com/en/product/11251)
+- [5500](https://www.amd.com/en/product/11811)
+- [5600G](https://www.amd.com/en/product/11176)
+- [5600GE](https://www.amd.com/en/product/11191)
+- [PRO 5650G](https://www.amd.com/en/product/11241)
+- [PRO 5650GE](https://www.amd.com/en/product/11236)
+- [5700G](https://www.amd.com/en/product/11171)
+- [5700GE](https://www.amd.com/en/product/11186)
+- [PRO 5750G](https://www.amd.com/en/product/11231)
+- [PRO 5750GE](https://www.amd.com/en/product/11226)
+
 ### Ryzen 6000
 
 | 代号        | 用途  | 核显    | 插槽  | 微架构    | 型号                                                        |
@@ -38,7 +78,7 @@ categories:
 | 代号           | 用途  | 核显    | 插槽            | 微架构    | 型号                                            |
 | ------------ | --- | ----- | ------------- | ------ | --------------------------------------------- |
 | Raphael      | 桌面  | RDNA2 | AM5           | Zen 4  | 7950X(3D)/7945/7900(X(3D))/7800X3D/7745/7700(X)/7645/7600(X)/7500F |
-| Dragon Range | 笔记本 | RDNA2 | FL1           | Zen 4  | 7945HX/7845HX/7745HX/7645HX                   |
+| Dragon Range | 笔记本 | RDNA2 | FL1           | Zen 4  | 7945HX(3D)/7845HX/7745HX/7645HX                   |
 | Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 7940H(S)/7840H(S)/7840U/7640H(S)/7640U/7540U/7440U                          |
 | Rembrandt R  | 笔记本 | RDNA2 | FP7/FP7r2     | Zen 3+ | 7735HS/7736U/7735U/7535HS/7535U/7335U         |
 | Barcelo R    | 笔记本 | GCN5  | FP6           | Zen 3  | 7730U/7530U/7330U                             |
