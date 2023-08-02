@@ -282,7 +282,7 @@ cd tools/src
 
 4. 修改 `make-3.82/dir.c`，在 `dir_setup_glob` 函数里添加一句 `gl->gl_lstat = lstat;`，解决 `make: ./file.c:158: enter_file: Assertion strcache_iscached (name) failed.` 的问题（参考了 [[PATCH v2] make: 4.2.1 -> 4.3](https://lore.kernel.org/all/20200122223655.2569-1-sno@netbsd.org/T/)）
 
-    ```
+    ```diff
     @@ -1213,6 +1213,7 @@
        gl->gl_readdir = read_dirstream;
        gl->gl_closedir = ansi_free;
@@ -422,10 +422,18 @@ cd tools/src
 source shrc
 packagetools linux-aarch64
 export SPEC_INSTALL_NOCHECK=1
-./install.sh
+./install.sh -d /install/path
 ```
 
 添加 `export SPEC_INSTALL_NOCHECK=1` 环境变量是因为修改了源码，md5 对不上，所以要跳过校验。
+
+在 AArch64 上跑 SPEC 的时候，可能会遇到 [Miscompare #7](https://www.spec.org/cpu2006/Docs/faq.html#Miscompare.07)，在编译选项里加上 `-fsigned-char` 即可：
+
+```
+# fix compilation and miscompare
+int=default=default=default:
+PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
+```
 
 ## 自己测的数据
 
