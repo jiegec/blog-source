@@ -505,19 +505,49 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 ## 自己测的数据
 
+因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+/17000+ 秒。
+
+实测在 -Ofast 编译选项下，SPECfp 里的 gamess 和 bwaves 会失败，改成 -O3/-O2/-O1 以后 gamess 依然失败，只有不开 -O 或者 -O0 才能跑通 gamess。所以就不测 SPECfp 了，只测 SPECint。
+
 下面贴出自己测的数据（Estimated，base），不保证满足 SPEC 的要求，仅供参考。
 
 - i9-13900K Raptor Lake（`-O2`）: SPECint2006 79.6
 - i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: SPECint2006 85.3 86.8
 - Kunpeng 920 TaiShan V110（`-O2`）: SPECint2006 23.3
 
-因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+/17000+ 秒。
+## 网上的数据
 
-[Anandtech 的数据](https://www.anandtech.com/show/16084/intel-tiger-lake-review-deep-dive-core-11th-gen/8) SPECint2006：
+### Speed（SPECint2006）
+
+[Anandtech 的数据](https://www.anandtech.com/show/16084/intel-tiger-lake-review-deep-dive-core-11th-gen/8)：
 
 - i9-10900K Comet Lake: 58.76
 - R9 3950X Zen 2: 50.02
 - R7 4800U Zen 2: 37.10
 - Amazon Graviton 2 Neoverse-N1: 29.99
 
-实测在 -Ofast 编译选项下，SPECfp 里的 gamess 和 bwaves 会失败，改成 -O3/-O2/-O1 以后 gamess 依然失败，只有不开 -O 或者 -O0 才能跑通 gamess。
+[Anandtech 的数据](https://www.anandtech.com/show/14694/amd-rome-epyc-2nd-gen/9)：
+
+- EPYC 7742 Zen 2: 39.25
+- EPYC 7601 Zen 1: 31.45
+
+[Baikal 的数据](https://www.163.com/dy/article/IB0CL7PU0511838M.html):
+
+- Baikal-S：19
+- Kunpeng 920: 26
+
+### Rate（SPECint_rate2006）
+
+[Kunpeng 920 官方数据](https://www.hisilicon.com/en/products/Kunpeng/Huawei-Kunpeng/Huawei-Kunpeng-920)：
+
+- Kunpeng 920 64 Cores: >930
+
+[夏晶的数据](https://www.zhihu.com/question/308299017/answer/592860614)：
+
+- AMD Zen 2 64 Cores: ~1200
+- Intel Skylake 8180 v5 28 Cores: ~750
+- Cavium TX2 32 Cores: ~750
+- AMD Zen 1 7601 32 Cores: ~700
+- Qualcomm 2400 48 Cores: ~650
+- Phytium FT2000 64 Cores: ~600
+- intel skylake 6148 v5 20 Cores: ~550
