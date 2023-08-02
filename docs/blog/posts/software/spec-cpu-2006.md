@@ -429,9 +429,9 @@ export SPEC_INSTALL_NOCHECK=1
 
 ## 自己测的数据
 
-下面贴出自己测的数据（Estimated），不保证满足 SPEC 的要求，仅供参考。
+下面贴出自己测的数据（Estimated，SPECspeed，base），不保证满足 SPEC 的要求，仅供参考。
 
 - i9-13900K（`-O2`）: SPECint2006 79.6
 - i9-13900K（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: SPECint2006 85.3
 
-跑一次测试要 5000+ 秒。
+因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+ 秒。
