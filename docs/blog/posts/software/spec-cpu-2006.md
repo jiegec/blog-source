@@ -193,7 +193,75 @@ CXX = /usr/bin/g++
 FC = /usr/bin/gfortran
 ```
 
-至此所有编译错误都解决了。
+### gamess
+
+gamess 是 SPECfp 里面的测例，编译的时候报错：
+
+```
+aldeci.fppized.f:1674:72:
+
+ 1674 |       CALL BINOM6(X(LIFA),NACT)
+      |                                                                        1
+Error: Type mismatch in argument 'ifa' at (1); passed REAL(8) to INTEGER(4)
+```
+
+参考 [Disable argument-mismatch errors for SPEC CPU2006 416.gamess for GCC >= 8](https://github.com/advancetoolchain/advance-toolchain/issues/549)，添加编译选项 `-std=legacy` 来解决：
+
+```
+# optimization flags for base
+default=base=default=default:
+COPTIMIZE = -O2 -fgnu89-inline -fcommon
+CXXOPTIMIZE = -O2
+FOPTIMIZE = -O2 -std=legacy
+```
+
+### dealII
+
+dealII 是 SPECfp 里面的测例，编译的时候报错：
+
+```shell
+parameter_handler.cc: In member function 'long int ParameterHandler::get_integer(const std::string&) const':
+parameter_handler.cc:763:26: error: ISO C++ forbids comparison between pointer and integer [-fpermissive]
+  763 |   AssertThrow ((s.c_str()!='\0') || (*endptr == '\0'),
+      |                 ~~~~~~~~~^~~~~~
+include/base/exceptions.h:596:15: note: in definition of macro 'AssertThrow'
+  596 |         if (!(cond))                                                 \
+      |               ^~~~
+```
+
+编译选项打开 `-fpermissive` 即可：
+
+```
+# optimization flags for base
+default=base=default=default:
+COPTIMIZE = -O2 -fgnu89-inline -fcommon
+CXXOPTIMIZE = -O2 -fpermissive
+FOPTIMIZE = -O2 -std=legacy
+```
+
+### soplex
+
+soplex 是 SPECfp 里面的测例，编译的时候报错：
+
+```shell
+mpsinput.cc: In member function 'bool soplex::MPSInput::readLine()':
+mpsinput.cc:75:52: error: no match for 'operator==' (operand types are 'std::basic_istream<char>::__istream_type' {aka 'std::basic_istream<char>'} and 'int')
+   75 |          if (m_input.getline(m_buf, sizeof(m_buf)) == 0)
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^~ ~
+      |                             |                         |
+      |                             |                         int
+      |                             std::basic_istream<char>::__istream_type {aka std::basic_istream<char>}
+```
+
+解决办法：降低 C++ 标准版本：
+
+```
+# optimization flags for base
+default=base=default=default:
+COPTIMIZE = -O2 -fgnu89-inline -fcommon
+CXXOPTIMIZE = -O2 -fpermissive --std=c++98
+FOPTIMIZE = -O2 -std=legacy
+```
 
 ### 完整配置
 
@@ -210,8 +278,8 @@ teeout = yes
 # optimization flags for base
 default=base=default=default:
 COPTIMIZE = -O2 -fgnu89-inline -fcommon
-CXXOPTIMIZE = -O2
-FOPTIMIZE = -O2
+CXXOPTIMIZE = -O2 -fpermissive --std=c++98
+FOPTIMIZE = -O2 -std=legacy
 
 # specify compilers
 default=default=default=default:
@@ -443,3 +511,5 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 - i9-13900K（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: SPECint2006 85.3
 
 因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+ 秒。
+
+实测在 -Ofast 编译选项下，SPECfp 里的 gamess 和 bwaves 会失败，改成 -O3/-O2/-O1 以后 gamess 依然失败，只有不开 -O 或者 -O0 才能跑通 gamess。
