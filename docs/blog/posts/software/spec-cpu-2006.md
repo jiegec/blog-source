@@ -505,11 +505,19 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 ## 自己测的数据
 
-下面贴出自己测的数据（Estimated，SPECspeed，base），不保证满足 SPEC 的要求，仅供参考。
+下面贴出自己测的数据（Estimated，base），不保证满足 SPEC 的要求，仅供参考。
 
-- i9-13900K（`-O2`）: SPECint2006 79.6
-- i9-13900K（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: SPECint2006 85.3
+- i9-13900K Raptor Lake（`-O2`）: SPECint2006 79.6
+- i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: SPECint2006 85.3 86.8
+- Kunpeng 920 TaiShan V110（`-O2`）: SPECint2006 23.3
 
-因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+ 秒。
+因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+/17000+ 秒。
+
+[Anandtech 的数据](https://www.anandtech.com/show/16084/intel-tiger-lake-review-deep-dive-core-11th-gen/8) SPECint2006：
+
+- i9-10900K Comet Lake: 58.76
+- R9 3950X Zen 2: 50.02
+- R7 4800U Zen 2: 37.10
+- Amazon Graviton 2 Neoverse-N1: 29.99
 
 实测在 -Ofast 编译选项下，SPECfp 里的 gamess 和 bwaves 会失败，改成 -O3/-O2/-O1 以后 gamess 依然失败，只有不开 -O 或者 -O0 才能跑通 gamess。
