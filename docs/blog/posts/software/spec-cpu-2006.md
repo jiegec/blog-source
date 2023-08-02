@@ -538,6 +538,10 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 - Baikal-S：19
 - Kunpeng 920: 26
 
+[龙芯 3A6000 新闻](https://www.ithome.com/0/709/460.htm)：
+
+- Loongson 3A6000: 43.1
+
 ### Rate（SPECint_rate2006）
 
 [Kunpeng 920 官方数据](https://www.hisilicon.com/en/products/Kunpeng/Huawei-Kunpeng/Huawei-Kunpeng-920)：
@@ -552,4 +556,8 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 - AMD Zen 1 7601 32 Cores: ~700
 - Qualcomm 2400 48 Cores: ~650
 - Phytium FT2000 64 Cores: ~600
-- intel skylake 6148 v5 20 Cores: ~550
+- Intel Skylake 6148 v5 20 Cores: ~550
+
+[龙芯 3A6000 新闻](https://www.ithome.com/0/709/460.htm)：
+
+- Loongson 3A6000: 155
