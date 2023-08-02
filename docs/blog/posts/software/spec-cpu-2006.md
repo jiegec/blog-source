@@ -223,3 +223,31 @@ CXXPORTABILITY = -DSPEC_CPU_LINUX
 481.wrf=default=default=default:
 CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
 ```
+
+此时再运行 `runspec int` 就可以正常跑了。
+
+## 其他 ISA
+
+如果想在 AArch64 上跑，那么安装的时候会发现缺少 prebuilt 的 tools 二进制，此时就要手动按照 [Building the SPEC CPU2006 Tool Suite](https://www.spec.org/cpu2006/Docs/tools-build.html) 进行编译：
+
+```shell
+cd tools/src
+./buildtools
+```
+
+需要注意，这一步需要修改文件系统，所以如果之前是直接 mount ISO，要先复制一份，此外还要把权限改成可写（`chmod -R u+w`）。
+
+运行的时候会遇到错误，可以参考 [Build SPEC CPU2006 in riscv64 linux](https://github.com/GQBBBB/GQBBBB.github.io/issues/10) 解决，riscv64 和 aarch64 的解决方法是类似的：
+
+1. 替换源代码下的几个 config.guess 和 config.sub（expat-2.0.1/conftools，make-3.82/config，rxp-1.5.0，specinvoke，specsum/build-aux，tar-1.25/build-aux，xz-5.0.0/build-aux），解决不认识 aarch64 target triple 的问题
+2. 修改 `make-3.82/glob/glob.c`，把 `# if _GNU_GLOB_INTERFACE_VERSION == GLOB_INTERFACE_VERSION` 改成 `# if _GNU_GLOB_INTERFACE_VERSION >= GLOB_INTERFACE_VERSION`，解决 alloca 和 stat 的问题
+2. 修改 `make-3.82/make.h`，在 `struct rlimit stack_limit;` 前面添加 `extern`，解决 -fno-common 的问题
+3. 修改 `make-3.82/dir.c`，在 `dir_setup_glob` 函数里添加一句 `gl->gl_lstat = lstat;`，解决 `make: ./file.c:158: enter_file: Assertion strcache_iscached (name) failed.` 的问题（参考了 [[PATCH v2] make: 4.2.1 -> 4.3](https://lore.kernel.org/all/20200122223655.2569-1-sno@netbsd.org/T/)）
+4. 修改 `tar-1.25/gnu/stdio.in.h` 和 `specsum/gnulib/stdio.in.h`，找到 `_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");` 一句，注释掉，解决 gets undefined 的问题（参考了 [CentOS下Git升级](https://blog.csdn.net/turbock/article/details/108851022)）
+5. 修改 `buildtools`，在 perl 的 configure 命令中的 `-A ldflags` 附近，把 `-A libs=-lm` 添加到命令中（参考 [https://serverfault.com/a/801997/323597](https://serverfault.com/questions/761966/building-old-perl-from-source-how-to-add-math-library)）
+
+## 自己测的数据
+
+下面贴出自己测的数据（Estimated），没有开 OpenMP，不保证满足 SPEC 的要求，仅供参考。
+
+- i9-13900K: SPECint(R)_base2006 79.6
