@@ -14,6 +14,18 @@ categories:
 
 <!-- more -->
 
+## 基本概念
+
+SPEC CPU 2006 分 int 和 fp 两种，又分不同的模式：
+
+1. speed：跑单进程，看看单进程多少时间能完成；不开 OpenMP，但是编译器可以自动并行化（ICC）
+2. rate：跑多进程，看看单位时间内能跑多少个任务
+
+根据编译选项的不同，分为：
+
+1. base：所有测例都用同样的优化选项
+2. peak：不同测例可以用不同的优化选项
+
 ## 安装
 
 首先需要获取一份 cpu2006-1.2.iso 文件，md5 可以在 [官网](https://www.spec.org/md5sums.html) 上查到。在 Linux 环境下，mount 这个 iso 并运行里面的 install.sh：
@@ -241,14 +253,178 @@ cd tools/src
 
 1. 替换源代码下的几个 config.guess 和 config.sub（在 expat-2.0.1/conftools，make-3.82/config，rxp-1.5.0，specinvoke，specsum/build-aux，tar-1.25/build-aux，xz-5.0.0/build-aux 目录下），解决不认识 aarch64 target triple 的问题
 2. 修改 `make-3.82/glob/glob.c`，把 `# if _GNU_GLOB_INTERFACE_VERSION == GLOB_INTERFACE_VERSION` 改成 `# if _GNU_GLOB_INTERFACE_VERSION >= GLOB_INTERFACE_VERSION`，禁用 make 自带的 glob 实现，解决 alloca 和 stat 的问题
-2. 修改 `make-3.82/make.h`，在 `struct rlimit stack_limit;` 前面添加 `extern`，解决 -fno-common 的问题
-3. 修改 `make-3.82/dir.c`，在 `dir_setup_glob` 函数里添加一句 `gl->gl_lstat = lstat;`，解决 `make: ./file.c:158: enter_file: Assertion strcache_iscached (name) failed.` 的问题（参考了 [[PATCH v2] make: 4.2.1 -> 4.3](https://lore.kernel.org/all/20200122223655.2569-1-sno@netbsd.org/T/)）
-4. 修改 `tar-1.25/gnu/stdio.in.h` 和 `specsum/gnulib/stdio.in.h`，找到 `_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");` 一句，注释掉，解决 gets undefined 的问题（参考了 [CentOS下Git升级](https://blog.csdn.net/turbock/article/details/108851022)）
-5. 修改 `buildtools`，在 perl 的 configure 命令中的 `-A ldflags` 附近，把 `-A libs=-lm` 添加到命令中，解决找不到 math 函数的问题（参考 [https://serverfault.com/a/801997/323597](https://serverfault.com/questions/761966/building-old-perl-from-source-how-to-add-math-library)）
-6. 修改 `perl-5.12.3/Configure`，把判断 GCC 版本的 `1*` 都改成 `1.*`，解决 miniperl Segmentation fault 的问题（参考 [unmatched(riscv64)上编译,安装和移植SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）
-7. 修改 `TimeDate-1.20/t/getdate.t` 的 `my $offset = Time::Local::timegm(0,0,0,1,0,70);` 为 `my $offset = Time::Local::timegm(0,0,0,1,0,1970);`，解决 `error running TimeDate-1.20 test suite` 报错（参考 [unmatched(riscv64)上编译,安装和移植SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）
+
+    ```diff
+    @@ -52,7 +52,7 @@
+     #define GLOB_INTERFACE_VERSION 1
+     #if !defined _LIBC && defined __GNU_LIBRARY__ && __GNU_LIBRARY__ > 1
+     # include <gnu-versions.h>
+    -# if _GNU_GLOB_INTERFACE_VERSION == GLOB_INTERFACE_VERSION
+    +# if _GNU_GLOB_INTERFACE_VERSION >= GLOB_INTERFACE_VERSION
+     #  define ELIDE_CODE
+     # endif
+     #endif
+    ```
+
+3. 修改 `make-3.82/make.h`，在 `struct rlimit stack_limit;` 前面添加 `extern`，解决 -fno-common 的问题
+
+    ```diff
+    @@ -344,7 +344,7 @@
+     #endif
+     #ifdef SET_STACK_SIZE
+     # include <sys/resource.h>
+    -struct rlimit stack_limit;
+    +extern struct rlimit stack_limit;
+     #endif
+    
+     struct floc
+    ```
+
+4. 修改 `make-3.82/dir.c`，在 `dir_setup_glob` 函数里添加一句 `gl->gl_lstat = lstat;`，解决 `make: ./file.c:158: enter_file: Assertion strcache_iscached (name) failed.` 的问题（参考了 [[PATCH v2] make: 4.2.1 -> 4.3](https://lore.kernel.org/all/20200122223655.2569-1-sno@netbsd.org/T/)）
+
+    ```
+    @@ -1213,6 +1213,7 @@
+       gl->gl_readdir = read_dirstream;
+       gl->gl_closedir = ansi_free;
+       gl->gl_stat = local_stat;
+    +  gl->gl_lstat = lstat;
+       /* We don't bother setting gl_lstat, since glob never calls it.
+          The slot is only there for compatibility with 4.4 BSD.  */
+     }
+    ```
+
+5. 修改 `tar-1.25/gnu/stdio.in.h` 和 `specsum/gnulib/stdio.in.h`，找到 `_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");` 一句，注释掉，解决 gets undefined 的问题（参考了 [CentOS下Git升级](https://blog.csdn.net/turbock/article/details/108851022)）
+
+    ```diff
+    @@ -159,7 +159,7 @@
+        so any use of gets warrants an unconditional warning.  Assume it is
+        always declared, since it is required by C89.  */
+     #undef gets
+    -_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");
+    +// _GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");
+    
+     #if @GNULIB_FOPEN@
+     # if @REPLACE_FOPEN@
+    ```
+
+6. 修改 `buildtools`，在 perl 的 configure 命令中的 `-A ldflags` 附近，把 `-A libs=-lm -A ccflags=-fwrapv` 添加到命令中，解决找不到 math 函数的问题和 numconvert.t 测试失败的问题（参考 [https://serverfault.com/a/801997/323597](https://serverfault.com/questions/761966/building-old-perl-from-source-how-to-add-math-library) 和 [如何在Hifive Unmatched开发板上安装SPEC CPU 2006](https://zhuanlan.zhihu.com/p/441856175)）：
+
+    ```diff
+    @@ -355,7 +355,7 @@
+         LD_LIBRARY_PATH=`pwd`
+         DYLD_LIBRARY_PATH=`pwd`
+         export LD_LIBRARY_PATH DYLD_LIBRARY_PATH
+    -    ./Configure -dOes -Ud_flock $PERLFLAGS -Ddosuid=undef -Dprefix=$INSTALLDIR -Dd_bincompat3=undef -A ldflags=-L${INSTALLDIR}/lib -A ccflags=-I${INSTALLDIR}/include -Ui_db -Ui_gdbm -Ui_ndbm -Ui_dbm -Uuse5005threads ; testordie "error configuring perl"
+    +    ./Configure -dOes -Ud_flock $PERLFLAGS -Ddosuid=undef -Dprefix=$INSTALLDIR -Dd_bincompat3=undef -A libs=-lm -A ccflags=-fwrapv -A ldflags="-L${INSTALLDIR}/lib" -A ccflags="-I${INSTALLDIR}/include -g" -Ui_db -Ui_gdbm -Ui_ndbm -Ui_dbm -Uuse5005threads ; testordie "error configuring perl"
+         $MYMAKE; testordie "error building Perl"
+         ./perl installperl; testordie "error installing Perl"
+         setspecperllib
+    ```
+
+7. 修改 `perl-5.12.3/Configure`，把判断 GCC 版本的 `1*` 都改成 `1.*`，解决 miniperl Segmentation fault 的问题（参考 [unmatched(riscv64)上编译,安装和移植SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）
+
+    ```diff
+    @@ -4536,7 +4536,7 @@
+     fi
+     $rm -f try try.*
+     case "$gccversion" in
+    -1*) cpp=`./loc gcc-cpp $cpp $pth` ;;
+    +1.*) cpp=`./loc gcc-cpp $cpp $pth` ;;
+     esac
+     case "$gccversion" in
+     '') gccosandvers='' ;;
+    @@ -5128,7 +5140,7 @@
+     case "$hint" in
+     default|recommended)
+            case "$gccversion" in
+    -       1*) dflt="$dflt -fpcc-struct-return" ;;
+    +       1.*) dflt="$dflt -fpcc-struct-return" ;;
+            esac
+            case "$optimize:$DEBUGGING" in
+            *-g*:old) dflt="$dflt -DDEBUGGING";;
+    @@ -5143,7 +5155,7 @@
+                    ;;
+            esac
+            case "$gccversion" in
+    -       1*) ;;
+    +       1.*) ;;
+            2.[0-8]*) ;;
+            ?*)     set strict-aliasing -fno-strict-aliasing
+                    eval $checkccflag
+    @@ -5245,7 +5257,7 @@
+     *)  cppflags="$cppflags $ccflags" ;;
+     esac
+     case "$gccversion" in
+    -1*) cppflags="$cppflags -D__GNUC__"
+    +1.*) cppflags="$cppflags -D__GNUC__"
+     esac
+     case "$mips_type" in
+     '');;
+    ```
+
+8. 修改 `perl-5.12.3/Configure`，在 `if $ok; then` 后面加上如下代码，解决 magic.t 测试失败的问题（参考 [如何在Hifive Unmatched开发板上安装SPEC CPU 2006](https://zhuanlan.zhihu.com/p/441856175) 和 [Tests fail with GCC 5.0 because Errno cannot obtain errno constants](https://github.com/Perl/perl5/issues/14491)）：
+
+    ```
+    elif echo 'Maybe "'"$cc"' -E -ftrack-macro-expansion=0" will work...'; \
+           $cc -E -ftrack-macro-expansion=0 <testcpp.c >testcpp.out 2>&1; \
+           $contains 'abc.*xyz' testcpp.out >/dev/null 2>&1 ; then
+           echo "Yup, it does."
+           x_cpp="$cc $cppflags -E -ftrack-macro-expansion=0"
+           x_minus='';
+    elif echo 'Maybe "'"$cc"' -E -ftrack-macro-expansion=0 -" will work...';
+           $cc -E -ftrack-macro-expansion=0 - <testcpp.c >testcpp.out 2>&1; \
+           $contains 'abc.*xyz' testcpp.out >/dev/null 2>&1 ; then
+           echo "Yup, it does."
+           x_cpp="$cc $cppflags -E -ftrack-macro-expansion=0"
+           x_minus='-';
+    ```
+
+    ```diff
+    @@ -4688,6 +4688,18 @@
+    
+     if $ok; then
+            : nothing
+    +elif echo 'Maybe "'"$cc"' -E -ftrack-macro-expansion=0" will work...'; \
+    +       $cc -E -ftrack-macro-expansion=0 <testcpp.c >testcpp.out 2>&1; \
+    +       $contains 'abc.*xyz' testcpp.out >/dev/null 2>&1 ; then
+    +       echo "Yup, it does."
+    +       x_cpp="$cc $cppflags -E -ftrack-macro-expansion=0"
+    +       x_minus='';
+    +elif echo 'Maybe "'"$cc"' -E -ftrack-macro-expansion=0 -" will work...';
+    +       $cc -E -ftrack-macro-expansion=0 - <testcpp.c >testcpp.out 2>&1; \
+    +       $contains 'abc.*xyz' testcpp.out >/dev/null 2>&1 ; then
+    +       echo "Yup, it does."
+    +       x_cpp="$cc $cppflags -E -ftrack-macro-expansion=0"
+    +       x_minus='-';
+     elif echo 'Maybe "'"$cc"' -E" will work...'; \
+            $cc -E <testcpp.c >testcpp.out 2>&1; \
+            $contains 'abc.*xyz' testcpp.out >/dev/null 2>&1 ; then
+    ```
+
+9. 修改 `TimeDate-1.20/t/getdate.t` 的 `my $offset = Time::Local::timegm(0,0,0,1,0,70);` 为 `my $offset = Time::Local::timegm(0,0,0,1,0,1970);`，解决 `error running TimeDate-1.20 test suite` 报错（参考 [unmatched(riscv64)上编译,安装和移植SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）：
+
+    ```diff
+    @@ -156,7 +156,7 @@
+    !;
+
+    require Time::Local;
+    -my $offset = Time::Local::timegm(0,0,0,1,0,70);
+    +my $offset = Time::Local::timegm(0,0,0,1,0,1970);
+
+    @data = split(/\n/, $data);
+    ```
 
 这样就可以正常完成 `./buildtools` 了，中间 perl 测试出错，按 `y` 忽略即可。
+
+编译完成以后，回到复制后的 ISO 根目录进行打包，打包完正常安装即可：
+
+```shell
+source shrc
+packagetools linux-aarch64
+export SPEC_INSTALL_NOCHECK=1 ./install.sh
+```
+
+添加 `export SPEC_INSTALL_NOCHECK=1` 环境变量是因为修改了源码，md5 对不上，所以要跳过校验。
 
 ## 自己测的数据
 
