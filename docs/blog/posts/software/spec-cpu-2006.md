@@ -240,15 +240,21 @@ cd tools/src
 运行的时候会遇到错误，可以参考 [Build SPEC CPU2006 in riscv64 linux](https://github.com/GQBBBB/GQBBBB.github.io/issues/10) 解决，riscv64 和 aarch64 的解决方法是类似的：
 
 1. 替换源代码下的几个 config.guess 和 config.sub（在 expat-2.0.1/conftools，make-3.82/config，rxp-1.5.0，specinvoke，specsum/build-aux，tar-1.25/build-aux，xz-5.0.0/build-aux 目录下），解决不认识 aarch64 target triple 的问题
-2. 修改 `make-3.82/glob/glob.c`，把 `# if _GNU_GLOB_INTERFACE_VERSION == GLOB_INTERFACE_VERSION` 改成 `# if _GNU_GLOB_INTERFACE_VERSION >= GLOB_INTERFACE_VERSION`，解决 alloca 和 stat 的问题
+2. 修改 `make-3.82/glob/glob.c`，把 `# if _GNU_GLOB_INTERFACE_VERSION == GLOB_INTERFACE_VERSION` 改成 `# if _GNU_GLOB_INTERFACE_VERSION >= GLOB_INTERFACE_VERSION`，禁用 make 自带的 glob 实现，解决 alloca 和 stat 的问题
 2. 修改 `make-3.82/make.h`，在 `struct rlimit stack_limit;` 前面添加 `extern`，解决 -fno-common 的问题
 3. 修改 `make-3.82/dir.c`，在 `dir_setup_glob` 函数里添加一句 `gl->gl_lstat = lstat;`，解决 `make: ./file.c:158: enter_file: Assertion strcache_iscached (name) failed.` 的问题（参考了 [[PATCH v2] make: 4.2.1 -> 4.3](https://lore.kernel.org/all/20200122223655.2569-1-sno@netbsd.org/T/)）
 4. 修改 `tar-1.25/gnu/stdio.in.h` 和 `specsum/gnulib/stdio.in.h`，找到 `_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");` 一句，注释掉，解决 gets undefined 的问题（参考了 [CentOS下Git升级](https://blog.csdn.net/turbock/article/details/108851022)）
 5. 修改 `buildtools`，在 perl 的 configure 命令中的 `-A ldflags` 附近，把 `-A libs=-lm` 添加到命令中，解决找不到 math 函数的问题（参考 [https://serverfault.com/a/801997/323597](https://serverfault.com/questions/761966/building-old-perl-from-source-how-to-add-math-library)）
+6. 修改 `perl-5.12.3/Configure`，把判断 GCC 版本的 `1*` 都改成 `1.*`，解决 miniperl Segmentation fault 的问题（参考 [unmatched(riscv64)上编译,安装和移植SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）
+7. 修改 `TimeDate-1.20/t/getdate.t` 的 `my $offset = Time::Local::timegm(0,0,0,1,0,70);` 为 `my $offset = Time::Local::timegm(0,0,0,1,0,1970);`，解决 `error running TimeDate-1.20 test suite` 报错（参考 [unmatched(riscv64)上编译,安装和移植SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）
+
+这样就可以正常完成 `./buildtools` 了，中间 perl 测试出错，按 `y` 忽略即可。
 
 ## 自己测的数据
 
 下面贴出自己测的数据（Estimated），不保证满足 SPEC 的要求，仅供参考。
 
 - i9-13900K（`-O2`）: SPECint2006 79.6
-- i9-13900K（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: SPECint2006
+- i9-13900K（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: SPECint2006 85.3
+
+跑一次测试要 5000+ 秒。
