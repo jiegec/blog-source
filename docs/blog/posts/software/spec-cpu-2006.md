@@ -421,7 +421,8 @@ cd tools/src
 ```shell
 source shrc
 packagetools linux-aarch64
-export SPEC_INSTALL_NOCHECK=1 ./install.sh
+export SPEC_INSTALL_NOCHECK=1
+./install.sh
 ```
 
 添加 `export SPEC_INSTALL_NOCHECK=1` 环境变量是因为修改了源码，md5 对不上，所以要跳过校验。
