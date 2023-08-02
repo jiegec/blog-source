@@ -519,6 +519,8 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 ### Speed（SPECint2006）
 
+只考虑单核，不考虑 ICC 的自动多线程并行化。
+
 [Anandtech 的数据](https://www.anandtech.com/show/16084/intel-tiger-lake-review-deep-dive-core-11th-gen/8)：
 
 - i9-10900K Comet Lake: 58.76
