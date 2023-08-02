@@ -542,6 +542,16 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 - Loongson 3A6000: 43.1
 
+[龙芯 3A6000](https://www.bilibili.com/video/BV1am4y1x71V/):
+
+- Loonngson 3A6000: 43.1
+- Intel Core i3-10100: 42.5
+- Hygon 3250: 39
+- Kirin 990: 26.4
+- Zhaoxin KX6780A: 20.5
+- Phytium FT-D2000: 15.4
+- Pangu M900: 12.4
+
 ### Rate（SPECint_rate2006）
 
 [Kunpeng 920 官方数据](https://www.hisilicon.com/en/products/Kunpeng/Huawei-Kunpeng/Huawei-Kunpeng-920)：
