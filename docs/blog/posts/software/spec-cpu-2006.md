@@ -545,13 +545,28 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 [龙芯 3A6000](https://www.bilibili.com/video/BV1am4y1x71V/):
 
-- Loonngson 3A6000: 43.1
+- Loongson 3A6000: 43.1
 - Intel Core i3-10100: 42.5
 - Hygon 3250: 39
 - Kirin 990: 26.4
 - Zhaoxin KX6780A: 20.5
 - Phytium FT-D2000: 15.4
 - Pangu M900: 12.4
+
+[在龙芯 3A5000 上测试 SPEC CPU 2006](https://zhuanlan.zhihu.com/p/393600027):
+
+- Loongson 3A5000: 26.6
+
+[龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
+
+- Intel i9-10850K: 62.5
+- AMD R5 5600G: 48.2 59.9
+- AMD R5 2600: 36.1 40.5
+- Intel i5-6500: 40.1
+- Hygon C86 3250: 30.5
+- Loongson 3A5000HV: 26.5
+- Zhaoxin KX-U6780A: 15.5
+- Phytium D2000: 15.3
 
 ### Rate（SPECint_rate2006）
 
