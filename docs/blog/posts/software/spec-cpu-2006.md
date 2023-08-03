@@ -509,11 +509,12 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 实测在 -Ofast 编译选项下，SPECfp 里的 gamess 和 bwaves 会失败，改成 -O3/-O2/-O1 以后 gamess 依然失败，只有不开 -O 或者 -O0 才能跑通 gamess。所以就不测 SPECfp 了，只测 SPECint。
 
-下面贴出自己测的数据（Estimated，base），不保证满足 SPEC 的要求，仅供参考。
+下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
-- i9-13900K Raptor Lake（`-O2`）: SPECint2006 79.6
-- i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: SPECint2006 85.3 86.8
-- Kunpeng 920 TaiShan V110（`-O2`）: SPECint2006 23.3
+- i9-13900K Raptor Lake（`-O2`）: 79.6
+- i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
+- Kunpeng 920 TaiShan V110（`-O2`）: 23.3
+- Kunpeng 920 TaiShan V110（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 24.5
 
 ## 网上的数据
 
