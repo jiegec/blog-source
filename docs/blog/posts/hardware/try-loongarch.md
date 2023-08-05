@@ -273,6 +273,187 @@ Processing /etc/profile... Done
 
 我在 la32r-QEMU 的基础上，把 LoongArch 32 Reduced 的支持部分移植到了 QEMU 8.0.0 上：<https://github.com/jiegec/qemu/commits/la32r-8.0.0>。
 
+### 用 crosstool-ng 自己编译一个 LoongArch 32 Reduced 工具链
+
+虽然龙芯给了编译好的交叉编译工具链，但还是想自己用 crosstool-ng 编译一个。完成的 crosstool-ng 配置见 [jiegec/crosstool-ng loongarch32r](https://github.com/jiegec/crosstool-ng/tree/loongarch32r)，这里记录一下折腾的过程。
+
+第一步是设置龙芯提供的源码，然后把 target 设置为 loongarch32r-unknown-linux-gnu：
+
+```ini
+CT_ARCH_ARCH="loongarch32r"
+CT_ARCH_SUFFIX="r"
+
+# vendor sources
+CT_LINUX_SRC_DEVEL=y
+CT_LINUX_DEVEL_URL="https://gitee.com/loongson-edu/la32r-Linux.git"
+CT_BINUTILS_SRC_DEVEL=y
+CT_BINUTILS_DEVEL_URL="https://gitee.com/loongson-edu/la32r_binutils.git"
+CT_GLIBC_SRC_DEVEL=y
+CT_GLIBC_DEVEL_URL="https://gitee.com/loongson-edu/la32r_glibc-2.28"
+CT_GCC_SRC_DEVEL=y
+CT_GCC_DEVEL_URL="https://gitee.com/loongson-edu/la32r_gcc-8.3.0.git"
+
+# no gdb available
+CT_DEBUG_GDB=n
+```
+
+不知道为啥，龙芯没有提供 LoongArch 32 Reduced 的 gdb 源码，开源的 binutils 不包括 gdb 的部分。
+
+```bash
+# Compute LoongArch-specific values
+
+CT_DoArchTupleValues() {
+    CT_TARGET_ARCH="loongarch${CT_ARCH_BITNESS}${CT_ARCH_SUFFIX}"
+}
+```
+
+这样配置以后开始编译，会出现下面的错误：
+
+```shell
+[ERROR]      ../sysdeps/unix/sysv/linux/loongarch/init-first.c:57: error: visibility attribute not supported in this configuration; ignored [-Werror=attributes]
+```
+
+这是因为 crosstool-ng 开启了 `-Werror`，添加以下设置关闭它：
+
+```ini
+# disable -Werror
+CT_GLIBC_ENABLE_WERROR=n
+```
+
+这时候出现了新的错误：
+
+```shell
+[ALL  ]      dl-fxstatat64.c:(.text+0x4f5c): undefined reference to `rtld_errno'
+[ALL  ]      /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/buildtools/lib/gcc/loongarch32r-unknown-linux-gnu/8.3.0/../.
+./../../loongarch32r-unknown-linux-gnu/bin/ld: dl-fxstatat64.c:(.text+0x4f60): undefined reference to `rtld_errno'
+[ALL  ]      /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/buildtools/lib/gcc/loongarch32r-unknown-linux-gnu/8.3.0/../../../../loongarch32r-unknown-linux-gnu/bin/ld: /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/elf/librtld.os:dl-fxstatat64.c:(.text+0x4f60): more undefined references to `rtld_errno' follow
+[ERROR]      collect2: error: ld returned 1 exit status
+```
+
+阅读代码，可以发现 `rtld_errno` 定义在 `csu/errno.c` 中：
+
+```c
+#if RTLD_PRIVATE_ERRNO
+
+/* Code compiled for rtld refers only to this name.  */
+int rtld_errno attribute_hidden;
+
+#endif
+```
+
+寻找 `RTLD_PRIVATE_ERRNO` 的定义：
+
+```c
+#if IS_IN (rtld)
+# define RTLD_PRIVATE_ERRNO 1
+#else
+# define RTLD_PRIVATE_ERRNO 0
+#endif
+```
+
+而 `IS_IN (rtld)` 的定义是：
+
+```c
+/* Use `#if IS_IN (module)` to detect what component is being compiled.  */
+#define PASTE_NAME1(a,b) a##b
+#define PASTE_NAME(a,b)  PASTE_NAME1 (a,b)
+#define IN_MODULE        PASTE_NAME (MODULE_, MODULE_NAME)
+#define IS_IN(lib)       (IN_MODULE == MODULE_##lib)
+```
+
+简单来说，`IS_IN (rtld)` 就是判断 `MODULE_NAME == rtld`，而这个是通过编译选项传入的，例如：
+
+```shell
+[ALL  ]      loongarch32r-unknown-linux-gnu-gcc  -g -O2 -U_FORTIFY_SOURCE   -march=loongarch32r         errno.c -c -std=gnu11 -fgnu89-inline  -Wall -Wundef -Wwrite-strings -fmerge-all-constants -fno-stack-protector -frounding-math -Wstrict-prototypes -Wold-style-definition -fmath-errno    -fno-stack-protector -DSTACK_PROTECTOR_LEVEL=0   -ftls-model=initial-exec      -I../include -I/home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/csu  -I/home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib  -I../sysdeps/unix/sysv/linux/loongarch/ilp32  -I../sysdeps/unix/sysv/linux/loongarch  -I../sysdeps/loongarch/nptl  -I../sysdeps/unix/sysv/linux/generic/wordsize-32  -I../sysdeps/unix/sysv/linux/generic  -I../sysdeps/unix/sysv/linux/include -I../sysdeps/unix/sysv/linux  -I../sysdeps/nptl  -I../sysdeps/pthread  -I../sysdeps/gnu  -I../sysdeps/unix/inet  -I../sysdeps/unix/sysv  -I../sysdeps/unix  -I../sysdeps/posix  -I../sysdeps/loongarch/ilp32  -I../sysdeps/loongarch  -I../sysdeps/init_array  -I../sysdeps/ieee754/ldbl-128  -I../sysdeps/ieee754/dbl-64  -I../sysdeps/ieee754/flt-32  -I../sysdeps/wordsize-32  -I../sysdeps/ieee754  -I../sysdeps/generic  -I.. -I../libio -I. -nostdinc -isystem /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/buildtools/lib/gcc/loongarch32r-unknown-linux-gnu/8.3.0/include -isystem /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/buildtools/lib/gcc/loongarch32r-unknown-linux-gnu/8.3.0/include-fixed -isystem /home/jiegec/x-tools/loongarch32r-unknown-linux-gnu/loongarch32r-unknown-linux-gnu/sysroot/usr/include -D_LIBC_REENTRANT -include /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/libc-modules.h -DMODULE_NAME=libc -include ../include/libc-symbols.h       -DTOP_NAMESPACE=glibc -o /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/csu/errno.o -MD -MP -MF /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/csu/errno.o.dt -MT /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/csu/errno.o
+```
+
+可以看到，中间是 `-DMODULE_NAME=libc`，而不是 `-DMODULE_NAME=rtld`，所以没有这个符号。
+
+那么接下来要找，什么情况下会编译 `-DMODULE_NAME=rtld` 的 `csu/errno.c`。正好之前有交叉编译到其他 target 的交叉工具链，因此去看了一下，对应 `-DMODULE_NAME=rtld` 的应该是 `csu/rtld-errno.os`，它应该出现在 `rtld-modules` 中：
+
+```shell
+[ALL  ]      make subdir=csu -C ../csu ..=../ objdir=/home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-check_fds.os rtld-sysdep.os'
+```
+
+但实际上并没有，所以继续看 `rtld-modules` 从哪里来，继续翻日志：
+
+```shell
+[ALL  ]      LC_ALL=C sed -n 's@^/home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/([^(]*)(([^)]*.os)) *.*$@1 2@p'     /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/elf/librtld.map | while read lib file; do   case $lib in   libc_pic.a)     LC_ALL=C fgrep -l /$file    /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/stamp.os /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/*/stamp.os |     LC_ALL=C     sed 's@^/home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/([^/]*)/stamp.os$@rtld-1'" +=$file@"    ;;   */*.a)     echo rtld-${lib%%/*} += $file ;;   *) echo "Wasn't expecting $lib($file)" >&2; exit 1 ;;   esac; done > /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/elf/librtld.mkT                  [ALL  ]      echo rtld-subdirs = `LC_ALL=C sed 's/^rtld-([^ ]*).*$/1/' /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/bu
+ild/build-libc/multilib/elf/librtld.mkT                    | LC_ALL=C sort -u` >> /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/elf/librtld.mkT 
+```
+
+可以看到它是从 `librtld.map` 中解析依赖关系，然后生成 `rtld-modules`。查看 `librtld.map`：
+
+```shell
+Archive member included to satisfy reference by file (symbol)
+
+/home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/libc_pic.a(check_fds.os)
+                              /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/elf/dl-allobjs.os (__libc_check_standard_fds)
+/home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/libc_pic.a(setjmp.os)
+                              /home/jiegec/ct-ng/.build/loongarch32r-unknown-linux-gnu/build/build-libc/multilib/elf/dl-allobjs.os (__sigsetjmp)
+```
+
+确实没有出现 errno.os。找一份正常的编译工具链，应该是这样的输出：
+
+```shell
+Archive member included to satisfy reference by file (symbol)
+
+/home/jiegec/ct-ng/.build/riscv64-unknown-linux-gnu/build/build-libc/multilib/libc_pic.a(check_fds.os)
+                              /home/jiegec/ct-ng/.build/riscv64-unknown-linux-gnu/build/build-libc/multilib/elf/dl-allobjs.os (__libc_check_standard_fds)
+/home/jiegec/ct-ng/.build/riscv64-unknown-linux-gnu/build/build-libc/multilib/libc_pic.a(errno.os)
+                              /home/jiegec/ct-ng/.build/riscv64-unknown-linux-gnu/build/build-libc/multilib/libc_pic.a(check_fds.os) (__libc_errno)
+/home/jiegec/ct-ng/.build/riscv64-unknown-linux-gnu/build/build-libc/multilib/libc_pic.a(setjmp.os)
+                              /home/jiegec/ct-ng/.build/riscv64-unknown-linux-gnu/build/build-libc/multilib/elf/dl-allobjs.os (__sigsetjmp)
+```
+
+可以看到，这里就有了 `errno.os`，并且符号是 `__libc_errno`。此时去看 `errno.os` 的符号表：
+
+```shell
+SYMBOL TABLE:
+00000000 g     O .data  00000010 __emutls_v.errno
+```
+
+而引用 errno 的其他 object 的符号表：
+
+```shell
+SYMBOL TABLE:
+00000000         *UND*  00000000 __emutls_v.__libc_errno
+```
+
+可以看到差了一个 `__libc_` 前缀。对应的 `errno.c` 源码：
+
+```c
+__thread int errno;
+extern __thread int __libc_errno __attribute__ ((alias ("errno")))
+  attribute_hidden;
+```
+
+可以看到，按理说应该是两个符号，后者是一个 alias。但实际生成符号的时候，没有了后者。此时对比一下另一个交叉编译工具链的源码，发现它没有 __emutls_v 的前缀，符号也是正确的，因此在 crosstool-ng 中打开 TLS：
+
+```ini
+# target supports tls
+# fix glibc undefined rtld_errno
+CT_CC_GCC_CONFIG_TLS=y
+```
+
+重新编译，这个问题就解决了，要么是龙芯提供的实现有问题，要么就是 alias 和 TLS 冲突，这里没有深究，不确定是什么问题。
+
+遇到的下一个问题是，找不到 `crti.o`：
+
+```shell
+[ALL  ]    /home/jiegec/x-tools/loongarch32r-unknown-linux-gnu/loongarch32r-unknown-linux-gnu/bin/ld: cannot find crti.o: No such file or directory
+[ERROR]    collect2: error: ld returned 1 exit status                                                                             [E
+```
+
+把命令抄下来，添加 --verbose 参数，会发现是因为 LIBRARY_ROOT 缺少 sysroot 下面的 usr/lib 路径，而它期望的路径是 sysrooot 下面的 lib32/sf 路径，所以出现这个问题。解决方法是，打开 MULTILIB 模式：
+
+```ini
+# fix gcc crt1.o not found
+CT_MULTILIB=y
+```
+
+到这里就解决了所有工具链方面的问题了，剩下是一两个 crosstool-ng 的小问题，在命令后面添加 `|| true` 以后绕过了。
+
 ## 虚实地址映射
 
 LoongArch 有两种虚实地址映射方法：
