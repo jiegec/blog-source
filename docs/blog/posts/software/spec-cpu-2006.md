@@ -586,7 +586,7 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 [龙芯 3A6000 新闻](https://www.ithome.com/0/709/460.htm)：
 
-- Loongson 3A6000: 155
+- Loongson 3A6000 4C 8T: 155
 
 [龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
 
