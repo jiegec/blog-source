@@ -587,3 +587,14 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 [龙芯 3A6000 新闻](https://www.ithome.com/0/709/460.htm)：
 
 - Loongson 3A6000: 155
+
+[龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
+
+- Intel i9-10850K 10C 20T: 328 349
+- AMD R5 5600G 6C 12T: 192 232 235 278
+- AMD R5 2600 6C 12T: 166 179 192 199
+- Hygon C86 3250 8C 16T: 173 197
+- Intel i5-6500 4C: 113
+- Phytium D2000 8C: 90.2
+- Zhaoxin KX-U6780A 8C: 82.9
+- Loongson 3A5000HV 4C: 81.2
