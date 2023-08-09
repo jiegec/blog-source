@@ -179,6 +179,10 @@ permalink: /open-source-contributions/
 - [Fix weight type in brain2 backend for issue 711](https://github.com/NeuralEnsemble/PyNN/pull/723)
 - [add missing __new__ for neuron 8.0.0, fixing issue #722](https://github.com/NeuralEnsemble/PyNN/pull/727)
 
+## qemu
+
+- [target/loongarch: Fix CSR.DMW0-3.VSEG check](https://github.com/qemu/qemu/commit/505aa8d8f29b79fcef77563bb4124208badbd8d4)
+
 ## rocket-chip
 
 - [Doc fixes and add comments to axi4 bundles](https://github.com/chipsalliance/rocket-chip/pull/2925)
