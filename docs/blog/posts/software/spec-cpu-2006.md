@@ -513,6 +513,8 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 - i9-13900K Raptor Lake（`-O2`）: 79.6
 - i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
+- i9-10980XE Cascade Lake（`-O2`）: 43.9
+- E5-2680 v3 Haswell（`-O2`）: 33.2
 - Kunpeng 920 TaiShan V110（`-O2`）: 23.3
 - Kunpeng 920 TaiShan V110（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 24.5
 
