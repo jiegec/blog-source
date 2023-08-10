@@ -531,6 +531,16 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 - R7 4800U Zen 2: 37.10
 - Amazon Graviton 2 Neoverse-N1: 29.99
 
+[Anandtech 的数据](https://www.anandtech.com/show/16252/mac-mini-apple-m1-tested/4)：
+
+- Apple M1: 69.40
+- R9 5950X Zen 3: 68.53
+- Apple A14: 63.34
+- i9-10900K Comet Lake: 58.58
+- Apple A13: 52.83
+- R9 3950X Zen 2: 50.10
+- R7 2700X Zen+: 39.01
+
 [Anandtech 的数据](https://www.anandtech.com/show/14694/amd-rome-epyc-2nd-gen/9)：
 
 - EPYC 7742 Zen 2: 39.25
