@@ -9,6 +9,10 @@ categories:
 
 # LoongArch 处理器
 
+整理市面上的 LoongArch 处理器以及相关产品。
+
+<!-- more -->
+
 ## 3A5000
 
 [主页](https://www.loongson.cn/product/show?id=10)
@@ -51,3 +55,7 @@ categories:
 [主页](https://www.loongson.cn/product/show?id=21)
 
 32 核 LA464
+
+## 3A6000
+
+4 核 8 线程 LA664
