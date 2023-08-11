@@ -320,6 +320,19 @@ cd tools/src
 运行的时候会遇到错误，可以参考 [Build SPEC CPU2006 in riscv64 linux](https://github.com/GQBBBB/GQBBBB.github.io/issues/10) 解决，riscv64 和 aarch64 的解决方法是类似的：
 
 1. 替换源代码下的几个 config.guess 和 config.sub（在 expat-2.0.1/conftools，make-3.82/config，rxp-1.5.0，specinvoke，specsum/build-aux，tar-1.25/build-aux，xz-5.0.0/build-aux 目录下），解决不认识 aarch64 target triple 的问题
+
+    ```shell
+    wget -O config.guess 'https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD'
+    wget -O config.sub 'https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD'
+    cp config.* expat-2.0.1/conftools/
+    cp config.* make-3.82/config/
+    cp config.* rxp-1.5.0/
+    cp config.* specinvoke/
+    cp config.* specsum/build-aux/
+    cp config.* tar-1.25/build-aux/
+    cp config.* xz-5.0.0/build-aux/
+    ```
+
 2. 修改 `make-3.82/glob/glob.c`，把 `# if _GNU_GLOB_INTERFACE_VERSION == GLOB_INTERFACE_VERSION` 改成 `# if _GNU_GLOB_INTERFACE_VERSION >= GLOB_INTERFACE_VERSION`，禁用 make 自带的 glob 实现，解决 alloca 和 stat 的问题
 
     ```diff
@@ -495,7 +508,9 @@ export SPEC_INSTALL_NOCHECK=1
 
 添加 `export SPEC_INSTALL_NOCHECK=1` 环境变量是因为修改了源码，md5 对不上，所以要跳过校验。
 
-在 AArch64 上跑 SPEC 的时候，可能会遇到 [Miscompare #7](https://www.spec.org/cpu2006/Docs/faq.html#Miscompare.07)，在编译选项里加上 `-fsigned-char` 即可：
+实测上述步骤在 POWER8 ppc64le 上也可以成功。
+
+在 AArch64 或者 PPC64LE 上跑 SPEC 的时候，可能会遇到 [Miscompare #7](https://www.spec.org/cpu2006/Docs/faq.html#Miscompare.07)，在编译选项里加上 `-fsigned-char` 即可：
 
 ```
 # fix compilation and miscompare
