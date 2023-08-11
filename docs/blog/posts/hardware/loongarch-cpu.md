@@ -66,3 +66,11 @@ categories:
 ## 3A6000
 
 4 核 8 线程 LA664
+
+## 其他
+
+- [2K2000](https://www.loongson.cn/product/show?id=20): 2 核 LA364
+- [2K1500](https://www.loongson.cn/product/show?id=19): 2 核 LA264
+- [2K1000LA](https://www.loongson.cn/product/show?id=8): 2 核 LA264
+- [2K0500](https://www.loongson.cn/product/show?id=9): 1 核 LA264
+- [1C103](https://www.loongson.cn/product/show?id=18): 1 核 LA132
