@@ -19,6 +19,15 @@ categories:
 
 4 核 LA464
 
+不同的版本：
+
+- 3A5000-HV: High Voltage, 2.5GHz
+- 3A5000-LL: 2.3GHz
+- 3B5000: Server, 2.3GHz
+- 3A5000M: Mobile, 2.0GHz
+- 3A5000-iHV: Industrial High Voltage, 1.5/2.0GHz
+- 3A5000-i: Industrial: 1.5GHz
+
 | 型号                                                             | 类型          | 桥片/显卡         | 内存 | 硬盘  | 价格 |
 |------------------------------------------------------------------|-------------|-------------------|------|-------|------|
 | [PN-L520A](https://item.jd.com/10074790246806.html)              | 台式机        | 7A2000            | 16GB | 512GB | 2699 |
@@ -47,6 +56,13 @@ categories:
 [主页](https://www.loongson.cn/product/show?id=15)
 
 16 核 LA464
+
+不同的版本：
+
+- 3C5000: 2.2GHz
+- 3C5000-LL: 2.0GHz
+- 3C5000L: 2.2GHz
+- 3C5000L-LL: 2.0GHz
 
 - <https://item.jd.com/100053674064.html> GDC-2000 两路 3C5000
 - <https://item.jd.com/100054670954.html> JL620-G3-00 两路 3C5000L
