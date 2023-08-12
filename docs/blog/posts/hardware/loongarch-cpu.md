@@ -59,10 +59,10 @@ categories:
 
 不同的版本：
 
-- 3C5000: 2.2GHz
-- 3C5000-LL: 2.0GHz
-- 3C5000L: 2.2GHz
-- 3C5000L-LL: 2.0GHz
+- 3C5000: 32MB L3 Cache, 2.2GHz
+- 3C5000-LL: 32MB L3 Cache, 2.0GHz
+- 3C5000L: 64MB L3 Cache, 2.2GHz
+- 3C5000L-LL: 64MB L3 Cache, 2.0GHz
 
 - <https://item.jd.com/100053674064.html> GDC-2000 两路 3C5000
 - <https://item.jd.com/100054670954.html> JL620-G3-00 两路 3C5000L
