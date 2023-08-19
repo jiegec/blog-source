@@ -18,7 +18,7 @@ categories:
 
 组装的第一步是购买各个配件，我买了如下的配件：
 
-1. 主板 + CPU：Loongson-3A6000-7A2000-1w-V0.1-EVB，暂未正式上市
+1. 主板 + CPU：Loongson-3A6000-7A2000-1w-V0.1-EVB（LS3A6000-7A2000-1w-EVB-V1.21），暂未正式上市
 2. 内存：Kingston HyperX HX426C16FB3/8 8GB，169 元
 3. 显卡: AMD RADEON RX550 4G 379 元
 4. 无线网卡: Intel AX200 79 元
@@ -41,9 +41,10 @@ categories:
 
 网上找到的 3A6000 支持的内存型号：
 
-1. 三星 M393A4G43AB3-CWEGY
-2. 紫光 SCC16GU03H2F1C-32AA
-3. 紫光 SCE08GU04APA-32
+1. 三星 M393A4G43AB3-CWEGY 32GB 2Rx8 PC4-3200AA-RE3-12-R80
+2. 紫光 SCC16GU03H2F1C-32AA 16GB 1Rx8 PC4-3200U-22-22-22
+3. 紫光 SCE08GU04APA-32 8GB 1Rx16 PC4-3200U-22-22-22
+4. 紫光 SCE16GU03BPB-32 16GB 1Rx8 PC-4-3200U-22-22-22
 
 网上找到的 3A5000 支持的内存型号：
 
@@ -52,12 +53,14 @@ categories:
 
 注：兼容性随 UEFI 固件版本和硬件版本不同可能不同，因此读者遇到不同的兼容性情况也是可能的。我目前使用的 UEFI 固件版本是 Loongson-UDK2018-V4.0.05420-stable202302。
 
-## 显卡兼容性
+### 显卡兼容性
 
 我测试的显卡：
 
 1. AMD RX550：可用
 2. AMD RX6400：不可用，见不到 BIOS 界面
+
+在我这里主板上的 HDMI 不工作，只有独显 AMD RX550 的 HDMI 可以工作，不确定是否和 4K 显示器有关。另外有网友表示主板上的 VGA 可以工作。
 
 ## Linux 发行版
 
@@ -72,7 +75,7 @@ categories:
 - Loongnix：没试过
 - Anolis OS：没试过
 
-既然买的盘比较大，就预留了多个系统分区的空间，然后保留一个大的数据分区。目前装了 AOSC OS。
+既然买的盘比较大，就预留了多个系统分区的空间，然后保留一个大的数据分区。目前装了 AOSC OS 和 LoongArchLinux。
 
 ## VSCode Remote
 
