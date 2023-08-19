@@ -1,8 +1,7 @@
 ---
 layout: post
 date: 2023-08-10
-tags: [loongson,loongarch,cpu,machine,diy]
-draft: true
+tags: [loongson,loongarch,cpu,machine,diy,ls3a6000]
 categories:
     - hardware
 ---
