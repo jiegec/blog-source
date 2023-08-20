@@ -109,3 +109,31 @@ export QEMU_LD_PREFIX=/path/to/prefix
 这样只有 vscode server 本身是用 qemu-aarch64-static 跑的，其他则没有影响。
 
 此外，code-server 也是可以用的，安装 node v16 和 npm，然后运行 code-server 安装脚本即可。
+
+## Benchmark
+
+在 AOSC 上跑一些测试软件的测试结果（冒号后多个数字为跑多次的结果），不一定准确：
+
+- p7zip `7z -mmt1 b` 17.04 输出最后一个值: 3681 3678 3680
+- p7zip `7z -mmt4 b` 17.04 输出最后一个值: 13998 13995 14038
+- p7zip `7z -mmt8 b` 17.04 输出最后一个值: 20585 20816 20407
+- Coremark v1.01 单线程（`make`）: 21134 21164 21161
+- Coremark v1.01 四线程（`make XCFLAGS="-DMULTITHREAD=4 -DUSE_PTHREAD"`）：83571 83629 83565
+- Coremark v1.01 八线程（`make XCFLAGS="-DMULTITHREAD=8 -DUSE_PTHREAD"`）：113111 113143 113250
+
+其中四线程的测试绑定到 `0,2,4,6` 核心。编译器不支持自动向量化，LSX/LASX 只有特定的汇编优化。
+
+网友的评测：
+
+- <https://www.bilibili.com/video/BV1gr4y1o7P8/>
+
+
+## Microbenchmark
+
+下面是我用 microbenchmark 方法测到的一些微架构数据，不一定准确：
+
+1. 主频：2500 MHz
+2. L1 缓存命中 Load To Use：1.2ns，3 周期
+3. L2 缓存命中 Load To Use：4.81ns，12 周期
+4. L3 缓存命中 Load To Use：17.63ns，44 周期
+
