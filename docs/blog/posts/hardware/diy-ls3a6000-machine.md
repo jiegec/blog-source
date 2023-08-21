@@ -127,6 +127,8 @@ export QEMU_LD_PREFIX=/path/to/prefix
 
 - <https://www.bilibili.com/video/BV1gr4y1o7P8/>
 
+官方发布：<https://mp.weixin.qq.com/s/Lm_6varu0ovntPGfVzeGLw>
+
 
 ## Microbenchmark
 
@@ -136,4 +138,13 @@ export QEMU_LD_PREFIX=/path/to/prefix
 2. L1 缓存命中 Load To Use：1.2ns，3 周期
 3. L2 缓存命中 Load To Use：4.81ns，12 周期
 4. L3 缓存命中 Load To Use：17.63ns，44 周期
+
+## 已知问题
+
+除了前面所述的内存条和显卡兼容性以外，还有以下已知问题：
+
+- AMD 显卡关屏久了以后，可能会 hang，怀疑是电源管理问题
+- 固件的 PCIe Above 4G 功能不可用
+- 固件的 ACPI PPTT 表内容有问题，据称已在新版固件中修复
+- 板载 HDMI 有问题，据称已在新版固件中修复
 
