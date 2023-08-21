@@ -134,10 +134,68 @@ export QEMU_LD_PREFIX=/path/to/prefix
 
 下面是我用 microbenchmark 方法测到的一些微架构数据，不一定准确：
 
+3A6000:
+
 1. 主频：2500 MHz
 2. L1 缓存命中 Load To Use：1.2ns，3 周期
 3. L2 缓存命中 Load To Use：4.81ns，12 周期
 4. L3 缓存命中 Load To Use：17.63ns，44 周期
+    1. add.w/d: 4 per cycle, 1 cycle latency
+    2. mul.w/d: 2 per cycle, 4 cycle latency
+    3. fadd.s/d: 4 per cycle, 3 cycle latency
+    4. fmul.s/d: 2 per cycle, 5 cycle latency
+    5. fmadd.s/d: 2 per cycle, 5 cycle latency
+    6. crc.w.b.w: 2 per cycle, 1 cycle latency
+    7. crc.w.h.w: 2 per cycle, 1 cycle latency
+    8. crc.w.w.w: 2 per cycle, 1 cycle latency
+    9. crc.w.d.w: 2 per cycle, 1 cycle latency
+    10. xvadd/vadd.d: 4 per cycle, 1 cycle latency
+    11. xvmul/vmul.d: 2 per cycle, 4 cycle latency
+    12. xvfadd/vfadd.d: 4 per cycle, 3 cycle latency
+    13. xvfmul/vfmul.d: 2 per cycle, 5 cycle latency
+
+3C5000:
+
+1. 主频：2200 MHz
+2. L1 缓存命中 Load To Use：1.82ns，4 周期
+3. L2 缓存命中 Load To Use：6.37ns，14 周期
+4. 指令吞吐/延迟：
+    1. add.w/d: 4 per cycle, 1 cycle latency
+    2. mul.w/d: 2 per cycle, 4 cycle latency
+    3. fadd.s/d: 2 per cycle, 5 cycle latency
+    4. fmul.s/d: 2 per cycle, 5 cycle latency
+    5. fmadd.s/d: 2 per cycle, 5 cycle latency
+    6. crc.w.b.w: 1/3.5 per cycle, 5 cycle latency
+    7. crc.w.h.w: 1/4.5 per cycle, 7 cycle latency
+    8. crc.w.w.w: 1/6.5 per cycle, 11 cycle latency
+    9. crc.w.d.w: 1/10.5 per cycle, 19 cycle latency
+    10. xvadd/vadd.d: 2 per cycle, 1 cycle latency
+    11. xvmul/vmul.d: 2 per cycle, 4 cycle latency
+    12. xvfadd/vfadd.d: 2 per cycle, 5 cycle latency
+    13. xvfmul/vfmul.d: 2 per cycle, 5 cycle latency
+
+对比：
+
+| Inst latency & throughput | 3A6000 @ 2.5 GHz     | 3C5000 @ 2.2 GHz     | Kunpeng 920 @ 2.6 GHz |
+|---------------------------|----------------------|----------------------|-----------------------|
+| 64b int add               | 4 per cyc, 1 cyc lat | 4 per cyc, 1 cyc lat | 3 per cyc, 1 cyc lat  |
+| 64b int mul               | 2 per cyc, 4 cyc lat | 2 per cyc, 4 cyc lat | 1 per cyc, 4 cyc lat  |
+| 64b fp add                | 4 per cyc, 3 cyc lat | 2 per cyc, 5 cyc lat | 2 per cyc, 4 cyc lat  |
+| 64b fp mul                | 2 per cyc, 5 cyc lat | 2 per cyc, 5 cyc lat | 2 per cyc, 5 cyc lat  |
+| 128b vec 64b int add      | 4 per cyc, 1 cyc lat | 2 per cyc, 1 cyc lat | 2 per cyc, 2 cyc lat  |
+| 128b vec 64b int mul      | 2 per cyc, 4 cyc lat | 2 per cyc, 4 cyc lat | N/A                   |
+| 128b vec 64b fp add       | 4 per cyc, 3 cyc lat | 2 per cyc, 5 cyc lat | 1 per cyc, 4 cyc lat  |
+| 128b vec 64b fp mul       | 2 per cyc, 5 cyc lat | 2 per cyc, 5 cyc lat | 1 per cyc, 5 cyc lat  |
+| 256b vec 64b int add      | 4 per cyc, 1 cyc lat | 2 per cyc, 1 cyc lat | N/A                   |
+| 256b vec 64b int mul      | 2 per cyc, 4 cyc lat | 2 per cyc, 4 cyc lat | N/A                   |
+| 256b vec 64b fp add       | 4 per cyc, 3 cyc lat | 2 per cyc, 5 cyc lat | N/A                   |
+| 256b vec 64b fp mul       | 2 per cyc, 5 cyc lat | 2 per cyc, 5 cyc lat | N/A                   |
+
+参考：
+
+- <https://www.7-cpu.com/cpu/Loongson_3A5000.html>
+- <https://chipsandcheese.com/2023/04/09/loongsons-3a5000-chinas-best-shot/>
+- <https://chipsandcheese.com/2023/02/26/loongsons-lsx-and-lasx-vector-extensions/>
 
 ## 已知问题
 
