@@ -485,3 +485,59 @@ ASM_PFX(HandleTlbRefill):
 
 比较有意思的是，csrwr 指令会把旧的 CSR 值写回到通用寄存器里，所以看起来名字是 write，其实是 swap。为了方便查表，还给用户态和内核态分别一个页表基地址：CSR.PGDL，CSR.PGDH，根据异常的高位判断要选择哪一个页表基地址。
 
+## 内核支持
+
+CPU：
+
+- SMT: [6.5](https://github.com/torvalds/linux/commit/f6f0c9a74a48448583c3cb0f3f067bc3fe0f13c6)
+- LSX/LASX: [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30)
+- CRC32 加速: [6.4](https://github.com/torvalds/linux/commit/2f1648220214d18168e55920c21014e71c2d5bbc)
+
+| 功能     | 3A5000                                                                                   | 3A6000                                                                                   |
+|----------|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| SMT      | N/A                                                                                      | [6.5](https://github.com/torvalds/linux/commit/f6f0c9a74a48448583c3cb0f3f067bc3fe0f13c6) |
+| LSX/LASX | [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30) | [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30) |
+
+桥片：
+
+- RTC(LOON0001): RTC_DRV_LOONGSON [6.5](https://github.com/torvalds/linux/commit/1b733a9ebc3d8011ca66ec6ff17f55a440358794)
+- GPIO(LOON0002): GPIO_LOONGSON_64BIT [6.4](https://github.com/torvalds/linux/commit/7944d3b7fe86067509751473aa917fdfd662d92c)
+- I2C(LOON0004): I2C_LS2X [6.3](https://github.com/torvalds/linux/commit/015e61f0bffd46600496e50d3b2298f51f6b11a8)
+- GMAC(0014:7a03): [5.14](https://github.com/torvalds/linux/commit/30bba69d7db40e732d6c0aa6d4890c60d717e314)
+- GNET(0014:7a13): [WIP](https://github.com/loongarchlinux/linux/commit/2a948c4b7bc5cc2689e2d0edfe83b4980b81b9ad)
+- EHCI(0014:7a14): ok
+- OHCI(0014:7a24): ok
+- XHCI(0014:7a34): ok
+- GPU1(0014:7a15): ?
+- GPU2(0014:7a25): ?
+- Display Controller 1(0014:7a06): [WIP](https://github.com/loongarchlinux/linux/commit/80451b416383082c715d60c6689fda71b5159634)
+- Display Controller 2(0014:7a36): [WIP](https://github.com/loongarchlinux/linux/commit/80451b416383082c715d60c6689fda71b5159634)
+- HD-Audio(0014:7a07): [6.5](https://github.com/torvalds/linux/commit/28bd137a3c8e105587ba8c55b68ef43b519b270f)
+- AC97(0014:7a17): ?
+- SATA(0014:7a[01]8): ok
+- PCIE(0014:7a[0-6]9): ok
+- SPI1(0014:7a0b): [WIP](https://github.com/loongarchlinux/linux/commit/be0359f602ec7d5c99c4c65ce1ee6ee0f7d1a7ec)
+- SPI2(0014:7a1b): [WIP](https://github.com/loongarchlinux/linux/commit/be0359f602ec7d5c99c4c65ce1ee6ee0f7d1a7ec)
+- LPC(0014:7a0c): ?
+
+| 功能                | 7A1000                                                                                         | 7A2000                                                                                         |
+|---------------------|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| RTC(LOON0001)       | [6.5](https://github.com/torvalds/linux/commit/1b733a9ebc3d8011ca66ec6ff17f55a440358794)       | [6.5](https://github.com/torvalds/linux/commit/1b733a9ebc3d8011ca66ec6ff17f55a440358794)       |
+| GPIO(LOON0002)      | N/A                                                                                            | [6.4](https://github.com/torvalds/linux/commit/7944d3b7fe86067509751473aa917fdfd662d92c)       |
+| I2C(LOON0004)       | [6.3](https://github.com/torvalds/linux/commit/015e61f0bffd46600496e50d3b2298f51f6b11a8)       | [6.3](https://github.com/torvalds/linux/commit/015e61f0bffd46600496e50d3b2298f51f6b11a8)       |
+| GMAC(0014:7a03)     | [5.14](https://github.com/torvalds/linux/commit/30bba69d7db40e732d6c0aa6d4890c60d717e314)      | N/A                                                                                            |
+| GNET(0014:7a13)     | N/A                                                                                            | [WIP](https://github.com/loongarchlinux/linux/commit/2a948c4b7bc5cc2689e2d0edfe83b4980b81b9ad) |
+| EHCI(0014:7a14)     | OK                                                                                             | OK                                                                                             |
+| OHCI(0014:7a24)     | OK                                                                                             | OK                                                                                             |
+| XHCI(0014:7a34)     | N/A                                                                                            | OK                                                                                             |
+| GPU1(0014:7a15)     | ?                                                                                              | N/A                                                                                            |
+| GPU2(0014:7a25)     | N/A                                                                                            | ?                                                                                              |
+| DC1(0014:7a06)      | [WIP](https://github.com/loongarchlinux/linux/commit/80451b416383082c715d60c6689fda71b5159634) | N/A                                                                                            |
+| DC2(0014:7a36)      | N/A                                                                                            | [WIP](https://github.com/loongarchlinux/linux/commit/80451b416383082c715d60c6689fda71b5159634) |
+| HDA(0014:7a07)      | [6.5](https://github.com/torvalds/linux/commit/28bd137a3c8e105587ba8c55b68ef43b519b270f)       | [6.5](https://github.com/torvalds/linux/commit/28bd137a3c8e105587ba8c55b68ef43b519b270f)       |
+| AC97(0014:7a17)     | ?                                                                                              | N/A                                                                                            |
+| SATA(0014:7a[01]8)  | OK                                                                                             | OK                                                                                             |
+| PCIE(0014:7a[0-6]9) | OK                                                                                             | OK                                                                                             |
+| SPI1(0014:7a0b)     | [WIP](https://github.com/loongarchlinux/linux/commit/be0359f602ec7d5c99c4c65ce1ee6ee0f7d1a7ec) | N/A                                                                                            |
+| SPI2(0014:7a1b)     | N/A                                                                                            | [WIP](https://github.com/loongarchlinux/linux/commit/be0359f602ec7d5c99c4c65ce1ee6ee0f7d1a7ec) |
+| LPC(0014:7a0c)      | ?                                                                                              | ?                                                                                              |
