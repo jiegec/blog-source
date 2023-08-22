@@ -514,6 +514,7 @@ CPU：
 - Display Controller 2(0014:7a36): [WIP](https://github.com/loongarchlinux/linux/commit/80451b416383082c715d60c6689fda71b5159634)
 - HD-Audio(0014:7a07): [6.5](https://github.com/torvalds/linux/commit/28bd137a3c8e105587ba8c55b68ef43b519b270f)
 - AC97(0014:7a17): ?
+- I2S(0014:7a27): ?
 - SATA(0014:7a[01]8): ok
 - PCIE(0014:7a[0-6]9): ok
 - SPI1(0014:7a0b): [WIP](https://github.com/loongarchlinux/linux/commit/be0359f602ec7d5c99c4c65ce1ee6ee0f7d1a7ec)
@@ -536,8 +537,31 @@ CPU：
 | DC2(0014:7a36)      | N/A                                                                                            | [WIP](https://github.com/loongarchlinux/linux/commit/80451b416383082c715d60c6689fda71b5159634) |
 | HDA(0014:7a07)      | [6.5](https://github.com/torvalds/linux/commit/28bd137a3c8e105587ba8c55b68ef43b519b270f)       | [6.5](https://github.com/torvalds/linux/commit/28bd137a3c8e105587ba8c55b68ef43b519b270f)       |
 | AC97(0014:7a17)     | ?                                                                                              | N/A                                                                                            |
+| I2S(0014:7a27)      | N/A                                                                                            | ?                                                                                              |
 | SATA(0014:7a[01]8)  | OK                                                                                             | OK                                                                                             |
 | PCIE(0014:7a[0-6]9) | OK                                                                                             | OK                                                                                             |
 | SPI1(0014:7a0b)     | [WIP](https://github.com/loongarchlinux/linux/commit/be0359f602ec7d5c99c4c65ce1ee6ee0f7d1a7ec) | N/A                                                                                            |
 | SPI2(0014:7a1b)     | N/A                                                                                            | [WIP](https://github.com/loongarchlinux/linux/commit/be0359f602ec7d5c99c4c65ce1ee6ee0f7d1a7ec) |
 | LPC(0014:7a0c)      | ?                                                                                              | ?                                                                                              |
+
+PCIe device id:
+
+- APB: 7a02
+- GMAC: 7a03
+- GNET: 7a13
+- EHCI: 7a14
+- OHCI: 7a24
+- XHCI: 7a34
+- GPU1: 7a15
+- GPU2: 7a15
+- DC1: 7a06
+- DC2: 7a36
+- HDA: 7a07
+- AC97: 7a17
+- I2S: 7a27
+- AHCI: 7a[01]8
+- SPI: 7a[01]b
+- LPC: 7a0c
+- RIO: 7a1d
+- DMA: 7a0f
+- IOMMU: 7a1f
