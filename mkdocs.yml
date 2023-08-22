@@ -34,6 +34,7 @@ plugins:
   - blog:
       post_url_format: "{categories}/{date}/{file}"
       blog_dir: .
+      post_dir: blog/posts
       archive_toc: true
       categories_toc: true
       blog_toc: true
