@@ -493,10 +493,11 @@ CPU：
 - LSX/LASX: [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30)
 - CRC32 加速: [6.4](https://github.com/torvalds/linux/commit/2f1648220214d18168e55920c21014e71c2d5bbc)
 
-| 功能     | 3A5000                                                                                   | 3A6000                                                                                   |
-|----------|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| SMT      | N/A                                                                                      | [6.5](https://github.com/torvalds/linux/commit/f6f0c9a74a48448583c3cb0f3f067bc3fe0f13c6) |
-| LSX/LASX | [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30) | [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30) |
+| 功能     | 3A5000                                                                                         | 3A6000                                                                                         |
+|----------|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| SMT      | N/A                                                                                            | [6.5](https://github.com/torvalds/linux/commit/f6f0c9a74a48448583c3cb0f3f067bc3fe0f13c6)       |
+| LSX/LASX | [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30)       | [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30)       |
+| LBT      | [WIP](https://github.com/loongarchlinux/linux/commit/833b4e93b2f9a86522e7ae1f92ba05812cb3a382) | [WIP](https://github.com/loongarchlinux/linux/commit/833b4e93b2f9a86522e7ae1f92ba05812cb3a382) |
 
 桥片：
 
