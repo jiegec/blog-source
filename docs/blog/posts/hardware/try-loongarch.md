@@ -523,7 +523,7 @@ CPU：
 | 功能                | 7A1000                                                                                         | 7A2000                                                                                         |
 |---------------------|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
 | RTC(LOON0001)       | [6.5](https://github.com/torvalds/linux/commit/1b733a9ebc3d8011ca66ec6ff17f55a440358794)       | [6.5](https://github.com/torvalds/linux/commit/1b733a9ebc3d8011ca66ec6ff17f55a440358794)       |
-| GPIO(LOON0002)      | N/A                                                                                            | [6.4](https://github.com/torvalds/linux/commit/7944d3b7fe86067509751473aa917fdfd662d92c)       |
+| GPIO(LOON0002)      | [6.4](https://github.com/torvalds/linux/commit/7944d3b7fe86067509751473aa917fdfd662d92c)       | [6.4](https://github.com/torvalds/linux/commit/7944d3b7fe86067509751473aa917fdfd662d92c)       |
 | I2C(LOON0004)       | [6.3](https://github.com/torvalds/linux/commit/015e61f0bffd46600496e50d3b2298f51f6b11a8)       | [6.3](https://github.com/torvalds/linux/commit/015e61f0bffd46600496e50d3b2298f51f6b11a8)       |
 | GMAC(0014:7a03)     | [5.14](https://github.com/torvalds/linux/commit/30bba69d7db40e732d6c0aa6d4890c60d717e314)      | N/A                                                                                            |
 | GNET(0014:7a13)     | N/A                                                                                            | [WIP](https://github.com/loongarchlinux/linux/commit/2a948c4b7bc5cc2689e2d0edfe83b4980b81b9ad) |
