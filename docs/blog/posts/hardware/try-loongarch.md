@@ -566,3 +566,36 @@ PCIe device id:
 - RIO: 7a1d
 - DMA: 7a0f
 - IOMMU: 7a1f
+
+## LSX/LASX 相关进展
+
+- GCC：WIP [Add Loongson SX/ASX instruction support to LoongArch target.](https://patchwork.ozlabs.org/project/gcc/list/?series=370124&state=%2A&archive=both)
+- LLVM:
+    - 18 [[LoongArch] Add LASX intrinsic support](https://github.com/llvm/llvm-project/commit/691f0d00b84f6ecaf8e341ef38256e939cca6b1e)
+    - 18 [[LoongArch] Add LSX intrinsic support](https://github.com/llvm/llvm-project/commit/53141b2fcfa20616970833e6513537d211116c05)
+    - 17 [[LoongArch] Support InlineAsm for LSX and LASX](https://github.com/llvm/llvm-project/commit/d25c79dc70008b835312e5cc7ef48b199fda3165)
+    - 17 [[LoongArch] Add definition for LASX instructions](https://github.com/llvm/llvm-project/commit/f3d18b9dc6f73755b58df5f06fcae992322aeaed)
+    - 17 [[LoongArch] Add definition for LSX instructions](https://github.com/llvm/llvm-project/commit/1aa3b64ed2781f064a40b0f9bd196a1265f50b3c)
+- Binutils:
+    - 2.41 [LoongArch: Add LSX and LASX instructions support](https://sourceware.org/pipermail/binutils/2023-June/127990.html)
+- Glibc:
+    - 2.39 [String acceleration](https://sourceware.org/pipermail/libc-alpha/2023-August/150671.html)
+- Linux:
+    - 6.5 [LoongArch: Add vector extensions support](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30)
+    - 6.6 [LoongArch: Add SIMD-optimized XOR routines](https://lore.kernel.org/linux-raid/20230801081335.523097-1-kernel@xen0n.name/)
+- OpenBLAS:
+    - 0.3.24 [LoongArch64: Add sgemm_kernel](https://github.com/xianyi/OpenBLAS/pull/4200)
+    - 0.3.24 [LoongArch64: Update dgemm kernel](https://github.com/xianyi/OpenBLAS/pull/4158)
+    - 0.3.24 [LoongArch64: Add dgemv_t_8_lasx.S and dgemv_n_8_lasx.S](https://github.com/xianyi/OpenBLAS/pull/4153)
+    - 0.3.20 [loongarch64: Optimize dgemm_kernel](https://github.com/xianyi/OpenBLAS/pull/3491)
+- OpenJPEG:
+    - WIP [Add loongarch 256-bit LASX SIMD optimization](https://github.com/uclouvain/openjpeg/pull/1458)
+- x264:
+    - WIP [loongarch: support LoongArch LSX and LASX optimization](https://code.videolan.org/videolan/x264/-/merge_requests/124)
+- OpenH264:
+    - [add simd optimizations and fix for loongarch](https://github.com/cisco/openh264/pull/3649)
+    - [Add LoongArch SIMD.](https://github.com/cisco/openh264/pull/3587)
+- OpenSSL:
+    - 3.1.0 [Add vpaes-loongarch64.pl module.](https://github.com/openssl/openssl/commit/ef917549f5867d269d359155ff67b8ccb5e66a76)
+- PCRE2:
+    - WIP [jit: Add LoongArch SX 128 bit SIMD Support.](https://github.com/PCRE2Project/pcre2/pull/290)

@@ -508,7 +508,7 @@ export SPEC_INSTALL_NOCHECK=1
 
 添加 `export SPEC_INSTALL_NOCHECK=1` 环境变量是因为修改了源码，md5 对不上，所以要跳过校验。
 
-实测上述步骤在 POWER8 ppc64le 上也可以成功。
+实测上述步骤在 POWER8 ppc64le 和 LoongArch64 上也可以成功。
 
 在 AArch64 或者 PPC64LE 上跑 SPEC 的时候，可能会遇到 [Miscompare #7](https://www.spec.org/cpu2006/Docs/faq.html#Miscompare.07)，在编译选项里加上 `-fsigned-char` 即可：
 
@@ -520,7 +520,7 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 ## 自己测的数据
 
-因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+/17000+ 秒。
+因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+/17000+ 秒，运行时间基本和分数成反比，乘积按 400000 估算。
 
 实测在 -Ofast 编译选项下，SPECfp 里的 gamess 和 bwaves 会失败，改成 -O3/-O2/-O1 以后 gamess 依然失败，只有不开 -O 或者 -O0 才能跑通 gamess。所以就不测 SPECfp 了，只测 SPECint。
 

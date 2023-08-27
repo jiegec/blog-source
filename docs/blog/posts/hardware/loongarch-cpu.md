@@ -64,6 +64,8 @@ categories:
 - 3C5000L: 64MB L3 Cache, 2.2GHz
 - 3C5000L-LL: 64MB L3 Cache, 2.0GHz
 
+3C5000L 是由四个 3A5000 芯片集成，而 3C5000 不是。
+
 - <https://item.jd.com/100053674064.html> GDC-2000 两路 3C5000
 - <https://item.jd.com/100054670954.html> JL620-G3-00 两路 3C5000L
 - <https://item.jd.com/100054668922.html> JL620-G3-01 两路 3C5000

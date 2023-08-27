@@ -75,7 +75,11 @@ categories:
 - Loongnix：没试过
 - Anolis OS：没试过
 
-既然买的盘比较大，就预留了多个系统分区的空间，然后保留一个大的数据分区。目前装了 AOSC OS 和 LoongArchLinux。
+既然买的盘比较大，就预留了多个系统分区的空间，然后保留一个大的数据分区。目前装了 AOSC OS、LoongArchLinux、Debian 和 Gentoo。
+
+目前 Debian 还缺很多包，但是可以手动 bootstrap 起来。我目前用的是 AOSC OS 的 Kernel，其余的部分是在 Debian 中从源码开始编译。中间会遇到各种循环依赖，需要通过 DEB_BUILD_PROFILES 来打破循环，很多包需要手动处理，先把一些难处理的包去掉，然后之后再重新打包。
+
+Gentoo 的话，按照官方的安装方法，只不过用 loongarch 的 stage3 tarball。目前遇到了一个小坑，就是 linux stable 6.4 内核遇到最新的 binutils 会有问题，表现是 Unsupport relocation type 65, please add its support(R_LARCH_B21)，这是因为缺了编译参数，导致 binutils 生成了 Linux 内核不支持的 relocation type。问题已经在 6.5 解决（[commit](https://github.com/torvalds/linux/commit/03c53eb90c0c61885b2175adf8675fb56df7f8db)）。可以用 sys-kernel/git-sources 来使用最新的 rc。
 
 ## VSCode Remote
 
@@ -112,6 +116,8 @@ export QEMU_LD_PREFIX=/path/to/prefix
 
 ## Benchmark
 
+### AOSC
+
 在 AOSC 上跑一些测试软件的测试结果（冒号后多个数字为跑多次的结果），不一定准确：
 
 - p7zip `7z -mmt1 b` 17.04 输出最后一个值: 3681 3678 3680
@@ -123,14 +129,13 @@ export QEMU_LD_PREFIX=/path/to/prefix
 
 其中四线程的测试绑定到 `0,2,4,6` 核心。编译器不支持自动向量化，LSX/LASX 只有特定的汇编优化。
 
-网友的评测：
+### 网友的评测
 
 - <https://www.bilibili.com/video/BV1gr4y1o7P8/>
 
 官方发布：<https://mp.weixin.qq.com/s/Lm_6varu0ovntPGfVzeGLw>
 
-
-## Microbenchmark
+### Microbenchmark
 
 下面是我用 microbenchmark 方法测到的一些微架构数据，不一定准确：
 
@@ -153,6 +158,10 @@ export QEMU_LD_PREFIX=/path/to/prefix
     11. xvmul/vmul.d: 2 per cycle, 4 cycle latency
     12. xvfadd/vfadd.d: 4 per cycle, 3 cycle latency
     13. xvfmul/vfmul.d: 2 per cycle, 5 cycle latency
+5. 双精度浮点性能：
+    1. 单核标量：2500 * 2 * 2 = 10 GFLOPS
+    2. 单核向量：2500 * 2 * 2 * 4 = 40 GFLOPS
+    3. 全核向量：4 * 40 = 160 GFLOPS
 
 3C5000:
 
