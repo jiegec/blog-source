@@ -34,10 +34,11 @@ categories:
 
 我测试的内存条：
 
-1. Kingston HyperX [HX426C16FB3/8](https://www.kingston.com/dataSheets/HX426C16FB3_8.pdf) 8GB DDR4-2666(PnP) 1Rx8：支持
-2. Kingston HyperX [KF432C16BB/8](https://www.kingston.com/dataSheets/KF432C16BB_8.pdf) 8GB DDR4-2400(JEDEC) 1Rx8：支持
+1. Kingston HyperX [HX426C16FB3/8](https://www.kingston.com/dataSheets/HX426C16FB3_8.pdf)(KHX2666C16/8G) 8GB DDR4-2666(PnP) 1Rx8：支持
+2. Kingston HyperX [KF432C16BB/8](https://www.kingston.com/dataSheets/KF432C16BB_8.pdf)(KF3200C16D4/8GX) 8GB DDR4-2400(JEDEC) 1Rx8：支持
 3. 金百达（KingBank）长鑫颗粒 DDR4 3200MHz 16GB U-DIMM 1.35V CL 16：不支持
 4. 紫光 SCC16GP02H1F1C-26V：不支持
+5. 紫光 SCC32GP12H1F1C-26V: 不支持
 
 网友表示在 3A6000 上可以工作的内存型号：
 
@@ -60,7 +61,9 @@ categories:
 1. AMD RX550：可用
 2. AMD RX6400：不可用，见不到 BIOS 界面
 
-在我这里主板上的 HDMI 不工作，只有独显 AMD RX550 的 HDMI 可以工作，不确定是否和 4K 显示器有关。另外有网友表示主板上的 VGA 可以工作。
+在我这里主板上的 HDMI 不工作，只有独显 AMD RX550 的 HDMI 可以工作，不确定是否和 4K 显示器有关。另外有网友表示主板上的 VGA 可以工作。固件版本是 Loongson-UDK2018-V4.0.05420-stable202302。
+
+UPDATE：更新固件到 Loongson-UDK2018-V4.0.05494-stable202305 以后，主板上的 HDMI 也工作了。
 
 ## Linux 发行版
 
@@ -86,6 +89,8 @@ Gentoo 的话，按照官方的安装方法，只不过用 loongarch 的 stage3 
 VSCode Remote Server 是闭源的，但是理论上可以用 lat 来对 nodejs 做二进制翻译。只需要魔改 `~/.vscode/extensions/ms-vscode-remote.remote-ssh-0.102.0/out/extension.js`（版本号可能不同），把里面对 x86_64 架构的判断，加上 loongarch64，也就是把 loongarch64 当成 x86_64 去处理，那么 VSCode Remote 就会下载 x86_64 的 binary 并运行，此时用 lat 就可以跑 server 了。
 
 按照这个方法实践了一下：QEMU 还没支持 LASX 指令（有 [patch](https://patchew.org/search?q=project%3AQEMU+LASX) 但是还没有合并），所以跑的时候会 SIGILL。真机 3A6000 上会在 lat 里面失败，因为我用的是新世界发行版，和旧世界发行版的 syscall 不兼容。或许用旧世界发行版可以用 lat 正常运行。
+
+UPDATE: 使用 LoongArchLinux 的新世界 lat 1.3.1，VSCode Remote Server 可以工作，但还有 BUG。
 
 也尝试了用 qemu user 去运行 x86 的 nodejs，但是遇到了 page size 不匹配的问题：16KB != 4KB，也没跑起来。
 
