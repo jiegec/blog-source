@@ -85,6 +85,11 @@ categories:
 
 4 核 8 线程 LA664
 
+根据 <http://basic.10jqka.com.cn/688047/interactive.html>:
+
+- ROB 项数达到 256 项
+- 四定点、四浮点、四访存共 12 个功能部件
+
 ## 其他
 
 - [2K2000](https://www.loongson.cn/product/show?id=20): 2 核 LA364
