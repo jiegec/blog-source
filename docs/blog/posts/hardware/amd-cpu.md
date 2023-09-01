@@ -51,7 +51,7 @@ Chagall:
 - [PRO 5975WX](https://www.amd.com/en/product/11791)
 - [PRO 5995WX](https://www.amd.com/en/product/11786)
 
-Cezanne 桌面:
+Cezanne 桌面：
 
 - [5300G](https://www.amd.com/en/product/11181)
 - [5300GE](https://www.amd.com/en/product/11196)
@@ -145,9 +145,9 @@ Ryzen Z1 系列：
 
 AMD 的 CPUID 分为三部分：Family，Model 和 Stepping，例如：
 
-- AMD EPYC 7001 Naples：Family=23(0x17)，Model=1(0x01)，Stepping=2(0x02)
-- AMD EPYC 7002 Rome：Family=23(0x17)，Model=49(0x31)，Stepping=0(0x00)
-- AMD Ryzen 7020U Mendocino：Family=23(0x17)，Model=160(0xa0)，Stepping=0(0x00)
+- AMD EPYC 7001 Naples: Family=23(0x17), Model=1(0x01), Stepping=2(0x02)
+- AMD EPYC 7002 Rome: Family=23(0x17), Model=49(0x31), Stepping=0(0x00)
+- AMD Ryzen 7020U Mendocino: Family=23(0x17), Model=160(0xa0), Stepping=0(0x00)
 
 可以在 [amd-ucode](https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/amd-ucode/README) 查阅最新 microcode 版本。
 

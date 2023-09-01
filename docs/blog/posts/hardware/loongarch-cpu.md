@@ -37,9 +37,9 @@ categories:
 | [EC-80G](https://item.jd.com/100029037278.html)                  | 台式机        | AMD R5 230        | 8GB  | 256GB | 7266 |
 | [ML5A-D01](https://www.eaecis.com/chanpinleixingfenlei/339.html) | 台式机        | 7A1000            | N/A  | N/A   | N/A  |
 | [ML5C-D04](https://www.eaecis.com/chanpinleixingfenlei/337.html) | 台式机        | 7A2000            | N/A  | N/A   | N/A  |
-| [TR11A2](https://item.jd.com/100043060855.html)                  | 台式机+显示器 | 独显              | 8GB  | 256GB | 5890 |
-| [TL630-V001-2](https://item.jd.com/100044512026.html)            | 台式机+显示器 | 独显              | 8GB  | 256GB | 6200 |
-| [JL630-V001](https://item.jd.com/100047587985.html)              | 台式机+显示器 | 独显              | 16GB | 512GB | 9999 |
+| [TR11A2](https://item.jd.com/100043060855.html)                  | 台式机 + 显示器 | 独显              | 8GB  | 256GB | 5890 |
+| [TL630-V001-2](https://item.jd.com/100044512026.html)            | 台式机 + 显示器 | 独显              | 8GB  | 256GB | 6200 |
+| [JL630-V001](https://item.jd.com/100047587985.html)              | 台式机 + 显示器 | 独显              | 16GB | 512GB | 9999 |
 | [GDC-1401](https://item.jd.com/100016595171.html)                | 笔记本        | 7A1000+AMD R5 340 | 8GB  | 256GB | 6880 |
 | [L860-T2](https://item.jd.com/100037403828.html)                 | 笔记本        | 独显              | 8GB  | 256GB | 6999 |
 | [L71](https://www.eaecis.com/chanpinleixingfenlei/343.html)      | 笔记本        | 独显              | N/A  | N/A   | N/A  |

@@ -20,8 +20,8 @@ categories:
 
 1. 主板 + CPU：Loongson-3A6000-7A2000-1w-V0.1-EVB（LS3A6000-7A2000-1w-EVB-V1.21），暂未正式上市
 2. 内存：Kingston HyperX HX426C16FB3/8 8GB，169 元
-3. 显卡: AMD RADEON RX550 4G 379 元
-4. 无线网卡: Intel AX200 79 元
+3. 显卡：AMD RADEON RX550 4G 379 元
+4. 无线网卡：Intel AX200 79 元
 5. 硬盘：致态 TiPlus5000 Gen3 1TB，369 元
 6. 机箱：爱国者 A15 ATX，100 元
 7. 电源：爱国者 DK 系列 500W，149 元
@@ -84,6 +84,21 @@ UPDATE：更新固件到 Loongson-UDK2018-V4.0.05494-stable202305 以后，主�
 
 Gentoo 的话，按照官方的安装方法，只不过用 loongarch 的 stage3 tarball。目前遇到了一个小坑，就是 linux stable 6.4 内核遇到最新的 binutils 会有问题，表现是 Unsupport relocation type 65, please add its support(R_LARCH_B21)，这是因为缺了编译参数，导致 binutils 生成了 Linux 内核不支持的 relocation type。问题已经在 6.5 解决（[commit](https://github.com/torvalds/linux/commit/03c53eb90c0c61885b2175adf8675fb56df7f8db)）。可以用 sys-kernel/git-sources 来使用最新的 rc。
 
+UPDATE: Linux 6.5 正式版出了，直接装 6.5 即可。
+
+NixOS 的话，可以先在 x86 上生成一个 bootstrap tarball，然后在 LoongArch64 上用这个 bootstrap tarball，见 [Add loongarch64 bootstrap tarball](https://github.com/NixOS/nixpkgs/commit/88448caa371228f35c0a6c46f908c59e67a13475)。需要一些手动操作，但 bootstrap tarball 配好了以后，就可以正常用 nixpkgs 装东西了。如果要生成 NixOS 的安装镜像，可以用 nixos-generator：
+
+```shell
+git clone git@github.com:nix-community/nixos-generators
+./nixos-generators/nixos-generate -I nixpkgs=/path/to/nixpkgs -f install-iso --system loongarch64-linux
+```
+
+如果想要进一步缩短 ISO 构建时间，可以修改 `nixos-generators/formats/install-iso.nix`，把 installation-cd-base 改成 installation-cd-minimal。也可以直接在已有的系统上装新的 NixOS：
+
+```shell
+nix build -L .#nixos-install-tools
+```
+
 ## VSCode Remote
 
 VSCode Remote Server 是闭源的，但是理论上可以用 lat 来对 nodejs 做二进制翻译。只需要魔改 `~/.vscode/extensions/ms-vscode-remote.remote-ssh-0.102.0/out/extension.js`（版本号可能不同），把里面对 x86_64 架构的判断，加上 loongarch64，也就是把 loongarch64 当成 x86_64 去处理，那么 VSCode Remote 就会下载 x86_64 的 binary 并运行，此时用 lat 就可以跑 server 了。
@@ -125,9 +140,9 @@ export QEMU_LD_PREFIX=/path/to/prefix
 
 在 AOSC 上跑一些测试软件的测试结果（冒号后多个数字为跑多次的结果），不一定准确：
 
-- p7zip `7z -mmt1 b` 17.04 输出最后一个值: 3681 3678 3680
-- p7zip `7z -mmt4 b` 17.04 输出最后一个值: 13998 13995 14038
-- p7zip `7z -mmt8 b` 17.04 输出最后一个值: 20585 20816 20407
+- p7zip `7z -mmt1 b` 17.04 输出最后一个值：3681 3678 3680
+- p7zip `7z -mmt4 b` 17.04 输出最后一个值：13998 13995 14038
+- p7zip `7z -mmt8 b` 17.04 输出最后一个值：20585 20816 20407
 - Coremark v1.01 单线程（`make`）: 21134 21164 21161
 - Coremark v1.01 四线程（`make XCFLAGS="-DMULTITHREAD=4 -DUSE_PTHREAD"`）：83571 83629 83565
 - Coremark v1.01 八线程（`make XCFLAGS="-DMULTITHREAD=8 -DUSE_PTHREAD"`）：113111 113143 113250

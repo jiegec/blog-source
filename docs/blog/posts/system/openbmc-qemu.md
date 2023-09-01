@@ -81,7 +81,7 @@ qemu-system-arm -m 1024 -M ast2600-evb -nographic -drive file=./obmc-phosphor-im
 
 和之前一样，可以通过 SSH，HTTPS 和 IPMI 访问，但是没有 WebUI，只有 redfish。进系统以后可以看到 uname 的架构变成了 armv7l。
 
-此时按照 [【OpenBMC 系列】4.启动流程 使用qume模拟ast2600-evb](https://blog.csdn.net/Datapad/article/details/125929179) 的文档，给 ast2600-evb target 加上 webui：
+此时按照 [【OpenBMC 系列】4.启动流程 使用 qume 模拟 ast2600-evb](https://blog.csdn.net/Datapad/article/details/125929179) 的文档，给 ast2600-evb target 加上 webui：
 
 进入 openbmc 目录，编辑 `build/evb-ast2600/conf/local.conf`，添加一行：
 

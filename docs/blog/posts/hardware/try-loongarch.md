@@ -491,7 +491,7 @@ CPU：
 
 - SMT: [6.5](https://github.com/torvalds/linux/commit/f6f0c9a74a48448583c3cb0f3f067bc3fe0f13c6)
 - LSX/LASX: [6.5](https://github.com/torvalds/linux/commit/616500232e632dba8b03981eeccadacf2fbf1c30)
-- CRC32 加速: [6.4](https://github.com/torvalds/linux/commit/2f1648220214d18168e55920c21014e71c2d5bbc)
+- CRC32 加速：[6.4](https://github.com/torvalds/linux/commit/2f1648220214d18168e55920c21014e71c2d5bbc)
 
 | 功能     | 3A5000                                                                                         | 3A6000                                                                                         |
 |----------|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
@@ -599,3 +599,17 @@ PCIe device id:
     - 3.1.0 [Add vpaes-loongarch64.pl module.](https://github.com/openssl/openssl/commit/ef917549f5867d269d359155ff67b8ccb5e66a76)
 - PCRE2:
     - WIP [jit: Add LoongArch SX 128 bit SIMD Support.](https://github.com/PCRE2Project/pcre2/pull/290)
+
+## 未来产品
+
+来源：http://roadshow.sseinfo.com/roadshowIndex.do?id=14977
+
+- 3B7000 是 8 个大核，是对 3B6000 的工艺升级。
+- 3C6000 预计还有 2-3 个月设计完成，2023 年流片。
+- 3B6000 预计 2024 H2 流片，3B6000 处理器核准备在 3A6000 的 LA664 基础上再优化一轮，8 核，内存接口准备升级到 DDR5。3B6000 是 8 核 16 线程。
+- 2K3000 预计 2024 H1 流片，集成 8 个 LA364 处理器核，内置自研 GPGPU，是单片 SOC 解决方案。
+- 3A6000 处理器四季度开发布会，整机企业同步发布整机产品。
+- 2P0500 打印机芯片 已经研制成功，该芯片及打印机产品将在今年四季度与 3A6000 同步发布。
+- 改进型 7A2000 与原 7A2000 兼容，预计比 3A6000 晚 3-6 月上市。
+- 独立显卡 2025 年上市，支持通用计算和 AI 计算的加速功能。
+- 新 ABI（新世界）内核的 Loongnix 的操作系统随开源 Debian 一起上线，最近花了很多功夫实现老 ABI（老世界）系统的应用在新 ABI 系统上兼容。

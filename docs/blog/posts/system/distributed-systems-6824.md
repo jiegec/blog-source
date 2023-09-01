@@ -323,7 +323,7 @@ GFS 的论文中采用的是第一种方法：`The master state is replicated fo
 
 ### 介绍
 
-[Raft](http://nil.csail.mit.edu/6.824/2022/papers/raft-extended.pdf)（[Lecture Notes](http://nil.csail.mit.edu/6.824/2022/notes/l-raft.txt)） 是一个分布式共识算法，对于一个 n 节点的系统，需要超过 n/2 个节点在线才可以工作。超过 n/2 的目的是防止网络分区，保证只有最多一个网络分区可以有进展。Raft 实现了一个 Replicated State Machine，也就是说维护一个分布式的状态机，只要保证初始状态一致，状态转移一致，那么状态机的当前状态也会一致。所以 Raft 的目标就是保证状态转移的历史一致。
+[Raft](http://nil.csail.mit.edu/6.824/2022/papers/raft-extended.pdf)（[Lecture Notes](http://nil.csail.mit.edu/6.824/2022/notes/l-raft.txt)）是一个分布式共识算法，对于一个 n 节点的系统，需要超过 n/2 个节点在线才可以工作。超过 n/2 的目的是防止网络分区，保证只有最多一个网络分区可以有进展。Raft 实现了一个 Replicated State Machine，也就是说维护一个分布式的状态机，只要保证初始状态一致，状态转移一致，那么状态机的当前状态也会一致。所以 Raft 的目标就是保证状态转移的历史一致。
 
 Raft 围绕着 leader 进行，需要首先选举出一个 leader，所有的请求都由 leader 处理。leader 接收到请求后，把请求发送给其他的节点，当有过半的节点记录了这个请求，就可以提交请求的内容到状态中。具体来说，请求过程如下：
 

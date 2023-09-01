@@ -374,7 +374,7 @@ cd tools/src
      }
     ```
 
-5. 修改 `tar-1.25/gnu/stdio.in.h` 和 `specsum/gnulib/stdio.in.h`，找到 `_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");` 一句，注释掉，解决 gets undefined 的问题（参考了 [CentOS下Git升级](https://blog.csdn.net/turbock/article/details/108851022)）
+5. 修改 `tar-1.25/gnu/stdio.in.h` 和 `specsum/gnulib/stdio.in.h`，找到 `_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");` 一句，注释掉，解决 gets undefined 的问题（参考了 [CentOS 下 Git 升级](https://blog.csdn.net/turbock/article/details/108851022)）
 
     ```diff
     @@ -159,7 +159,7 @@
@@ -388,7 +388,7 @@ cd tools/src
      # if @REPLACE_FOPEN@
     ```
 
-6. 修改 `buildtools`，在 perl 的 configure 命令中的 `-A ldflags` 附近，把 `-A libs=-lm -A ccflags=-fwrapv` 添加到命令中，解决找不到 math 函数的问题和 numconvert.t 测试失败的问题（参考 [https://serverfault.com/a/801997/323597](https://serverfault.com/questions/761966/building-old-perl-from-source-how-to-add-math-library) 和 [如何在Hifive Unmatched开发板上安装SPEC CPU 2006](https://zhuanlan.zhihu.com/p/441856175)）：
+6. 修改 `buildtools`，在 perl 的 configure 命令中的 `-A ldflags` 附近，把 `-A libs=-lm -A ccflags=-fwrapv` 添加到命令中，解决找不到 math 函数的问题和 numconvert.t 测试失败的问题（参考 [https://serverfault.com/a/801997/323597](https://serverfault.com/questions/761966/building-old-perl-from-source-how-to-add-math-library) 和 [如何在 Hifive Unmatched 开发板上安装 SPEC CPU 2006](https://zhuanlan.zhihu.com/p/441856175)）：
 
     ```diff
     @@ -355,7 +355,7 @@
@@ -402,7 +402,7 @@ cd tools/src
          setspecperllib
     ```
 
-7. 修改 `perl-5.12.3/Configure`，把判断 GCC 版本的 `1*` 都改成 `1.*`，解决 miniperl Segmentation fault 的问题（参考 [unmatched(riscv64)上编译,安装和移植SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）
+7. 修改 `perl-5.12.3/Configure`，把判断 GCC 版本的 `1*` 都改成 `1.*`，解决 miniperl Segmentation fault 的问题（参考 [unmatched(riscv64) 上编译，安装和移植 SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）
 
     ```diff
     @@ -4536,7 +4536,7 @@
@@ -443,7 +443,7 @@ cd tools/src
      '');;
     ```
 
-8. 修改 `perl-5.12.3/Configure`，在 `if $ok; then` 后面加上如下代码，解决 magic.t 测试失败的问题（参考 [如何在Hifive Unmatched开发板上安装SPEC CPU 2006](https://zhuanlan.zhihu.com/p/441856175) 和 [Tests fail with GCC 5.0 because Errno cannot obtain errno constants](https://github.com/Perl/perl5/issues/14491)）：
+8. 修改 `perl-5.12.3/Configure`，在 `if $ok; then` 后面加上如下代码，解决 magic.t 测试失败的问题（参考 [如何在 Hifive Unmatched 开发板上安装 SPEC CPU 2006](https://zhuanlan.zhihu.com/p/441856175) 和 [Tests fail with GCC 5.0 because Errno cannot obtain errno constants](https://github.com/Perl/perl5/issues/14491)）：
 
     ```
     elif echo 'Maybe "'"$cc"' -E -ftrack-macro-expansion=0" will work...'; \
@@ -482,7 +482,7 @@ cd tools/src
             $contains 'abc.*xyz' testcpp.out >/dev/null 2>&1 ; then
     ```
 
-9. 修改 `TimeDate-1.20/t/getdate.t` 的 `my $offset = Time::Local::timegm(0,0,0,1,0,70);` 为 `my $offset = Time::Local::timegm(0,0,0,1,0,1970);`，解决 `error running TimeDate-1.20 test suite` 报错（参考 [unmatched(riscv64)上编译,安装和移植SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）：
+9. 修改 `TimeDate-1.20/t/getdate.t` 的 `my $offset = Time::Local::timegm(0,0,0,1,0,70);` 为 `my $offset = Time::Local::timegm(0,0,0,1,0,1970);`，解决 `error running TimeDate-1.20 test suite` 报错（参考 [unmatched(riscv64) 上编译，安装和移植 SPEC CPU 2006](https://zhuanlan.zhihu.com/p/429399630)）：
 
     ```diff
     @@ -156,7 +156,7 @@
