@@ -78,7 +78,7 @@ UPDATE：更新固件到 Loongson-UDK2018-V4.0.05494-stable202305 以后，主�
 - Loongnix：没试过
 - Anolis OS：没试过
 
-既然买的盘比较大，就预留了多个系统分区的空间，然后保留一个大的数据分区。目前装了 AOSC OS、LoongArchLinux、Debian 和 Gentoo。
+既然买的盘比较大，就预留了多个系统分区的空间，然后保留一个大的数据分区。目前装了 AOSC OS、LoongArchLinux、Debian、Gentoo 和 NixOS。
 
 目前 Debian 还缺很多包，但是可以手动 bootstrap 起来。我目前用的是 AOSC OS 的 Kernel，其余的部分是在 Debian 中从源码开始编译。中间会遇到各种循环依赖，需要通过 DEB_BUILD_PROFILES 来打破循环，很多包需要手动处理，先把一些难处理的包去掉，然后之后再重新打包。
 
@@ -135,6 +135,17 @@ export QEMU_LD_PREFIX=/path/to/prefix
 这样只有 vscode server 本身是用 qemu-aarch64-static 跑的，其他则没有影响。
 
 此外，code-server 也是可以用的，安装 node v16 和 npm，然后运行 code-server 安装脚本即可。
+
+## 容器
+
+可以 podman 跑其他架构的容器，例如：
+
+```shell
+sudo podman run --arch x86_64 -it --rm debian:stable
+sudo podman run --arch arm64 -it --rm debian:stable
+```
+
+只要这个 image 有对应架构的版本，并且提前配好 binfmt，注意 binfmt 的 flags，建议设置为 POCF，其中比较重要的是 F，不然 binfmt 会在容器里找 binfmt 的 executable，自然就找不到了，会报错 `exec container process (missing dynamic library?)`。
 
 ## Benchmark
 
