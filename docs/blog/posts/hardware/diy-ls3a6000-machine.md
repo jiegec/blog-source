@@ -99,6 +99,8 @@ git clone git@github.com:nix-community/nixos-generators
 nix build -L .#nixos-install-tools
 ```
 
+这里面还有很多小的 trick，需要对 nixpkgs 做一些修改：<https://github.com/jiegec/nixpkgs/commits/loongarch64>。
+
 ## VSCode Remote
 
 VSCode Remote Server 是闭源的，但是理论上可以用 lat 来对 nodejs 做二进制翻译。只需要魔改 `~/.vscode/extensions/ms-vscode-remote.remote-ssh-0.102.0/out/extension.js`（版本号可能不同），把里面对 x86_64 架构的判断，加上 loongarch64，也就是把 loongarch64 当成 x86_64 去处理，那么 VSCode Remote 就会下载 x86_64 的 binary 并运行，此时用 lat 就可以跑 server 了。

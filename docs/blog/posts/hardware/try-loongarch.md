@@ -560,6 +560,7 @@ PCIe device id:
 - HDA: 7a07
 - AC97: 7a17
 - I2S: 7a27
+- HDMI: 7a37
 - AHCI: 7a[01]8
 - SPI: 7a[01]b
 - LPC: 7a0c
@@ -599,6 +600,8 @@ PCIe device id:
     - 3.1.0 [Add vpaes-loongarch64.pl module.](https://github.com/openssl/openssl/commit/ef917549f5867d269d359155ff67b8ccb5e66a76)
 - PCRE2:
     - WIP [jit: Add LoongArch SX 128 bit SIMD Support.](https://github.com/PCRE2Project/pcre2/pull/290)
+- libjpeg-turbo:
+    - WIP [LoongArch64 LSX and LASX SIMD implementation.](https://github.com/libjpeg-turbo/libjpeg-turbo/pull/689)
 
 ## 未来产品
 
