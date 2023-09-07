@@ -2,7 +2,6 @@
 layout: post
 date: 2023-08-10
 tags: [loongson,loongarch,cpu]
-draft: true
 categories:
     - hardware
 ---
