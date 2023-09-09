@@ -109,6 +109,8 @@ VSCode Remote Server 是闭源的，但是理论上可以用 lat 来对 nodejs �
 
 UPDATE: 使用 LoongArchLinux 的新世界 lat 1.3.1，VSCode Remote Server 可以工作，但还有 BUG。
 
+UPDATE: 使用 LoongArchLinux 的新世界 lat 1.4.3，VSCode Remote Server 可以正常工作，没有了之前的 BUG。
+
 也尝试了用 qemu user 去运行 x86 的 nodejs，但是遇到了 page size 不匹配的问题：16KB != 4KB，也没跑起来。
 
 另一个曲线救国的方法是，修改 extension.js 让 VSCode 认为是 AArch64，然后用 qemu-user 来跑。这次没有遇到 page size 的问题了：
