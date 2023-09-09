@@ -151,6 +151,8 @@ sudo podman run --arch arm64 -it --rm debian:stable
 
 ## Benchmark
 
+推荐阅读：[华为 VS 龙芯 国产CPU架构初步探测、对比与分析](https://zhuanlan.zhihu.com/p/654721485)
+
 ### AOSC
 
 在 AOSC 上跑一些测试软件的测试结果（冒号后多个数字为跑多次的结果），不一定准确：
