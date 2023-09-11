@@ -200,6 +200,16 @@ sudo podman run --arch arm64 -it --rm debian:stable
     2. 单核向量：2500 * 2 * 2 * 4 = 40 GFLOPS
     3. 全核向量：4 * 40 = 160 GFLOPS
 
+访存延迟与工作集大小的关系（使用 [jiegec/cpu-micro-benchmarks](https://github.com/jiegec/cpu-micro-benchmarks) 测试）：
+
+![](ls3a6000-memory-latency.png)
+
+主要分三段：
+
+1. <64KB: 命中 L1D，Latency 是 1.2 ns，3 周期。64KB 与 L1D 容量 64 KB 一致。
+2. <320KB: 命中 L2，Latency 是 4.8 ns，12 周期。320KB 等于 L1D 容量 64 KB 与 L2 容量 256 KB 总和，而不像很多微架构那样等于 L2 容量。
+3. <256MB: 命中 L3，Latency 是 17.6 ns，44 周期。256MB 不等于 L3 容量 16 MB，和缓存替换策略或预取器行为有关。
+
 3C5000:
 
 1. 主频：2200 MHz
