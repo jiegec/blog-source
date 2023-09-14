@@ -82,6 +82,12 @@ UPDATE：更新固件到 Loongson-UDK2018-V4.0.05494-stable202305 以后，主�
 
 目前 Debian 还缺很多包，但是可以手动 bootstrap 起来。我目前用的是 AOSC OS 的 Kernel，其余的部分是在 Debian 中从源码开始编译。中间会遇到各种循环依赖，需要通过 DEB_BUILD_PROFILES 来打破循环，很多包需要手动处理，先把一些难处理的包去掉，然后之后再重新打包。
 
+UPDATE: 现在已经有很多包可以用了。Revy 指出可以用 debootstrap 生成一个 rootfs：
+
+```shell
+debootstrap --no-check-gpg --arch=loong64 --variant=buildd --foreign --include=ca-certificates --extra-suites=unreleased unstable sid-loong64-sbuild http://mirror.sjtu.edu.cn/debian-ports
+```
+
 Gentoo 的话，按照官方的安装方法，只不过用 loongarch 的 stage3 tarball。目前遇到了一个小坑，就是 linux stable 6.4 内核遇到最新的 binutils 会有问题，表现是 Unsupport relocation type 65, please add its support(R_LARCH_B21)，这是因为缺了编译参数，导致 binutils 生成了 Linux 内核不支持的 relocation type。问题已经在 6.5 解决（[commit](https://github.com/torvalds/linux/commit/03c53eb90c0c61885b2175adf8675fb56df7f8db)）。可以用 sys-kernel/git-sources 来使用最新的 rc。
 
 UPDATE: Linux 6.5 正式版出了，直接装 6.5 即可。
