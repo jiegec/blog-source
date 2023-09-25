@@ -53,6 +53,8 @@ docker run -it --rm --gpus all debian nvidia-smi
 
 Podman Rootless 的官方文档在 <https://github.com/containers/podman/blob/main/docs/tutorials/rootless_tutorial.md>，相比 Docker，Podman Rootless 配置更加简单，不需要用户运行 install 脚本，和前文一样配置好依赖以后，直接运行 podman 即可。
 
+UPDATE: @Harry-Chen 建议：如果要解决 podman rootless 会保存很多份镜像在各个用户的 home 目录下的问题，可以设置全局的镜像路径，见 [Exploring additional image stores in Podman](https://www.redhat.com/sysadmin/image-stores-podman)，或者使用 FS（如 ZFS）的 Dedup 功能。
+
 ### GPU
 
 要在 Podman Rootless 中使用 NVIDIA GPU，也需要像上面 Docker 那样，修改配置 `no-cgroups=true`，然后按照 [Support for Container Device Interface](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/cdi-support.html) 配置 [Container Device Interface](https://github.com/cncf-tags/container-device-interface)：
