@@ -547,23 +547,25 @@ CPU：
 
 PCIe device id:
 
-- APB: 7a02
-- GMAC: 7a03
-- GNET: 7a13
+- CONF: 7a10, `linux/drivers/pci/controller/pci-loongson.c`
+- APB: 7a02, `linux/drivers/pci/controller/pci-loongson.c`
+- GMAC: 7a03, `linux/drivers/pci/controller/pci-loongson.c`
+- GNET: 7a13, `linux/drivers/pci/controller/pci-loongson.c`
+- DWC2: 7a04, `linux/drivers/usb/dwc2/params.c`
 - EHCI: 7a14
 - OHCI: 7a24
 - XHCI: 7a34
 - GPU1: 7a15
 - GPU2: 7a15
-- DC1: 7a06
-- DC2: 7a36
-- HDA: 7a07
+- DC1: 7a06, `linux/arch/loongarch/pci/pci.c`, `linux/drivers/pci/controller/pci-loongson.c`
+- DC2: 7a36, `linux/arch/loongarch/pci/pci.c`, `linux/drivers/pci/controller/pci-loongson.c`
+- HDA: 7a07, `linux/include/linux/pci_ids.h`
 - AC97: 7a17
-- I2S: 7a27
-- HDMI: 7a37
-- AHCI: 7a[01]8
-- SPI: 7a[01]b
-- LPC: 7a0c
+- I2S: 7a27, `linux/sound/soc/loongson/loongson_i2s_pci.c`
+- HDMI: 7a37, `linux/include/linux/pci_ids.h`, `linux/drivers/pci/controller/pci-loongson.c`
+- AHCI: 7a[01]8, `linux/drivers/pci/controller/pci-loongson.c`
+- SPI: 7a[01]b, `linux/drivers/spi/spi-loongson-pci.c`
+- LPC: 7a0c, `linux/drivers/pci/controller/pci-loongson.c`
 - RIO: 7a1d
 - DMA: 7a0f
 - IOMMU: 7a1f

@@ -85,7 +85,7 @@ UPDATE：更新固件到 Loongson-UDK2018-V4.0.05494-stable202305 以后，主�
 UPDATE: 现在已经有很多包可以用了。Revy 指出可以用 debootstrap 生成一个 rootfs：
 
 ```shell
-debootstrap --no-check-gpg --arch=loong64 --variant=buildd --foreign --include=ca-certificates --extra-suites=unreleased unstable sid-loong64-sbuild http://mirror.sjtu.edu.cn/debian-ports
+debootstrap --no-check-gpg --arch=loong64 --variant=buildd --foreign --include=ca-certificates,apt-transport-https --extra-suites=unreleased unstable sid-loong64-sbuild http://mirror.sjtu.edu.cn/debian-ports
 ```
 
 Gentoo 的话，按照官方的安装方法，只不过用 loongarch 的 stage3 tarball。目前遇到了一个小坑，就是 linux stable 6.4 内核遇到最新的 binutils 会有问题，表现是 Unsupport relocation type 65, please add its support(R_LARCH_B21)，这是因为缺了编译参数，导致 binutils 生成了 Linux 内核不支持的 relocation type。问题已经在 6.5 解决（[commit](https://github.com/torvalds/linux/commit/03c53eb90c0c61885b2175adf8675fb56df7f8db)）。可以用 sys-kernel/git-sources 来使用最新的 rc。
