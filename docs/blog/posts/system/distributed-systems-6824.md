@@ -407,7 +407,7 @@ Chain Replication 把节点串成一个链表，既然是链表，就有头节�
 Ceph 的论文 [RADOS: A Scalable, Reliable Storage Service for Petabyte-scale
 Storage Clusters](https://ceph.com/assets/pdfs/weil-rados-pdsw07.pdf) 里画了一个图，对比了上面两种方法和 Splay Replication：
 
-![](/images/replication.png)
+![](replication.png)
 
 第一种 Primary-copy 也就是 Primary/Backup 方法，写请求需要四个 RTT，等到 Backup 都写入完成告知 Primary 以后，Primary 就可以响应读请求了。第二种 Chain 也就是 Chain Replication 方法，写请求需要 N+1 个 RTT，由于写请求到达 Tail 的时候已经保证了写入的一致性，所以随时可以读，不需要等到写入完成。第三种 Splay 结合了以上两种办法。
 
