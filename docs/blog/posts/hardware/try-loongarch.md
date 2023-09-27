@@ -556,7 +556,7 @@ PCIe device id:
 - OHCI: 7a24
 - XHCI: 7a34
 - GPU1: 7a15
-- GPU2: 7a15
+- GPU2: 7a25
 - DC1: 7a06, `linux/arch/loongarch/pci/pci.c`, `linux/drivers/pci/controller/pci-loongson.c`
 - DC2: 7a36, `linux/arch/loongarch/pci/pci.c`, `linux/drivers/pci/controller/pci-loongson.c`
 - HDA: 7a07, `linux/include/linux/pci_ids.h`
