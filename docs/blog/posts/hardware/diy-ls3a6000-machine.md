@@ -155,6 +155,12 @@ sudo podman run --arch arm64 -it --rm debian:stable
 
 只要这个 image 有对应架构的版本，并且提前配好 binfmt，注意 binfmt 的 flags，建议设置为 POCF，其中比较重要的是 F，不然 binfmt 会在容器里找 binfmt 的 executable，自然就找不到了，会报错 `exec container process (missing dynamic library?)`。
 
+docker 打上简单的 patch 以支持 loong64 以后，也可以正常运行：
+
+```shell
+docker run -it --rm --platform arm64 debian
+```
+
 ## Benchmark
 
 推荐阅读：[华为 VS 龙芯 国产CPU架构初步探测、对比与分析](https://zhuanlan.zhihu.com/p/654721485)
