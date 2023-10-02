@@ -163,7 +163,7 @@ docker run -it --rm --platform arm64 debian
 
 ## Benchmark
 
-推荐阅读：[华为 VS 龙芯 国产CPU架构初步探测、对比与分析](https://zhuanlan.zhihu.com/p/654721485)
+推荐阅读：[华为 VS 龙芯 国产 CPU 架构初步探测、对比与分析](https://zhuanlan.zhihu.com/p/654721485)
 
 ### AOSC
 
