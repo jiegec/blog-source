@@ -30,7 +30,7 @@ categories:
 
 网络拓扑：
 
-![](/images/router_topo.png)
+![](router_topo.png)
 
 可以，这很玄学。
 
