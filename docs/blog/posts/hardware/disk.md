@@ -243,3 +243,31 @@ MiniLink 4/8X I/O Cable Assemblies
 
 - PCIe
 - SAS
+
+## 硬盘性能指标
+
+硬盘性能一般会看如下几个指标：
+
+1. 顺序读写性能，在指定的 block size 下，顺序读写的传输速度，单位通常是 MB/s
+2. 随机读写性能，在指定的 block size 下（一般是 4KB），随机地址读写的每秒读写操作次数，单位通常是 IOPS
+3. 延迟
+
+根据 [SSD vs HDD - Should You Buy a Solid State Drive or Hard Disk Drive?](https://www.buildcomputers.net/ssd-vs-hdd.html)，SSD 和 HDD 在顺序读写性能上的常见范围：
+
+- SSD: 300 ~ 500 MB/s
+- HDD: 100 ~ 160 MB/s
+
+SSD 和 HDD 在随机读写性能上的常见范围：
+
+- SSD: 20,000 ~ 100,000 IOPS
+- HDD: 75 ~ 100 IOPS
+
+可以看到，SSD 和 HDD 相比，顺序读写性能高，随机读写性能显著高。但实际上，这个数据有些过时了。
+
+下面看一些具体的例子：
+
+- [HDD TOSHIBA AL15SEB120N](https://toshiba.semicon-storage.com/ap-en/storage/product/data-center-enterprise/enterprise-performance/articles/al15sebxxex.html): 顺序读写性能 234.0 MB/s，延迟 2.86ms
+- [HDD SEAGATE ST10000NM0096](https://www.seagate.com/www-content/datasheets/pdfs/ent-cap-3-5-hdd-10tb-channelDS1863-5C-1608US-en_US.pdf): 顺序读写性能 254 MB/s，随机读 170 IOPS，随机写 370 IOPS，延迟 4.16ms
+- [SSD Ultrastar DC SS200](https://documents.westerndigital.com/content/dam/doc-library/en_us/assets/public/western-digital/product/data-center-drives/ultrastar-ssd-sas-series/data-sheet-ultrastar-dc-ss200.pdf): 顺序读 1,800 MB/s，顺序写 1,000 MB/s，随机读 250,000 IOPS，随机写 86,000 IOPS，延迟 100us
+- [SSD KIOXIA EXCERIA PRO NVMe SSD](https://apac.kioxia.com/en-apac/personal/ssd/exceria-pro.html): 顺序读 7,300 MB/s，顺序写 6,400 MB/s，随机读 800,000 IOPS，随机写 1,300,000 IOPS
+- [SSD SAMSUNG PM9A1](https://semiconductor.samsung.com/cn/ssd/pc-ssd/pm9a1/): 顺序读 7,000 MB/s，顺序写 5,200 MB/s，随机读 1,000,000 IOPS，随机写 850,000 IOPS
