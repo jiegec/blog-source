@@ -252,6 +252,13 @@ MiniLink 4/8X I/O Cable Assemblies
 2. 随机读写性能，在指定的 block size 下（一般是 4KB），随机地址读写的每秒读写操作次数，单位通常是 IOPS
 3. 延迟
 
+CrystalDiskInfo 术语：
+
+- SEQ1MQ8T1：顺序读写（SEQ），一次读写 1 MB（1M），队列深度是 8（Q8），单线程（T1）
+- SEQ128KQ32T1：顺序读写（SEQ），一次读写 128 KB（128K），队列深度是 32（Q32），单线程（T1）
+- RND4KQ32T16：随机读写（RND），一次读写 4KB（4K），队列深度是 32（Q32），16 线程（T16）
+- RND4KQ1T1：随机读写（RND），一次读写 4KB（4K），队列深度是 1（Q1），单线程（T1）
+
 根据 [SSD vs HDD - Should You Buy a Solid State Drive or Hard Disk Drive?](https://www.buildcomputers.net/ssd-vs-hdd.html)，SSD 和 HDD 在顺序读写性能上的常见范围：
 
 - SSD: 300 ~ 500 MB/s
