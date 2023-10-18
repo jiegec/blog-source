@@ -157,7 +157,7 @@ __host__​cudaError_t cudaLaunchKernel ( const void* func, dim3 gridDim, dim3 b
 /// \endcode
 ```
 
-Clang 会负责生成一个 `__cuda_module_ctor` 函数，放到可执行程序里面，并且把地址添加到 `.init_array` 中，这个 section 里面的函数地址会被 libc 在加载的时候调用，这也是 C++ 里全局类变量自动调用构造函数的实现方法。这个函数里面，首先调用 cudart 的 `__cudaRegisterFatBinary` 函数，把 fatbin 地址传递过去，这样 cudart 就知道了这个程序里打包的 fatbin，也就拿到了所有的 PTX 代码和 SASS 指令。接着还调用了 `__cuda_register_globals`，这也是 [Clang 生成的](https://github.com/llvm/llvm-project/blob/ab6d5fa3d0643e68d6ec40d9190f20fb14190ed1/clang/lib/CodeGen/CGCUDANV.cpp#L523)：
+Clang 会负责生成一个 `__cuda_module_ctor` 函数，放到可执行程序里面，并且把地址添加到 `.init_array` 中，这个 section 里面的函数地址会被 libc 在加载的时候调用，这也是 C++ 里全局类变量自动调用构造函数的实现方法。这个函数里面，首先调用 cudart 的 `__cudaRegisterFatBinary` 函数，把 fatbin 地址传递过去（注：实际上是一个[结构体](https://github.com/shinpei0208/gdev/blob/e328438f3cca32bd84ce64807e322673d4b66c40/cuda/runtime/ocelot/cuda/interface/cudaFatBinary.h#L138)），这样 cudart 就知道了这个程序里打包的 fatbin，也就拿到了所有的 PTX 代码和 SASS 指令。接着还调用了 `__cuda_register_globals`，这也是 [Clang 生成的](https://github.com/llvm/llvm-project/blob/ab6d5fa3d0643e68d6ec40d9190f20fb14190ed1/clang/lib/CodeGen/CGCUDANV.cpp#L523)：
 
 ```c++
 /// Creates a function that sets up state on the host side for CUDA objects that
