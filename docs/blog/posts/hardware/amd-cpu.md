@@ -75,14 +75,16 @@ Cezanne 桌面：
 
 ### Ryzen 7000
 
-| 代号         | 用途   | 核显  | 插槽          | 微架构 | 型号                                                               |
-|--------------|------|-------|---------------|--------|--------------------------------------------------------------------|
-| Raphael      | 桌面   | RDNA2 | AM5           | Zen 4  | 7950X(3D)/7945/7900(X(3D))/7800X3D/7745/7700(X)/7645/7600(X)/7500F |
-| Dragon Range | 笔记本 | RDNA2 | FL1           | Zen 4  | 7945HX(3D)/7845HX/7745HX/7645HX                                    |
-| Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 7940H(S)/7840H(S)/7840U/7640H(S)/7640U/7540U/7440U                 |
-| Rembrandt R  | 笔记本 | RDNA2 | FP7/FP7r2     | Zen 3+ | 7735H(S)/7736U/7735U/7535HS/7535U/7335U                            |
-| Barcelo R    | 笔记本 | GCN5  | FP6           | Zen 3  | 7730U/7530U/7330U                                                  |
-| Mendocino    | 笔记本 | RDNA2 | FT6           | Zen 2  | 7520U//7520C/7320U/7320C                                           |
+| 代号         | 用途   | 核显  | 插槽          | 微架构         | 型号                                                               |
+|--------------|------|-------|---------------|----------------|--------------------------------------------------------------------|
+| Storm Peak   | 工作站 | 无    | sTR5          | Zen 4          | 7995WX/7985WX/7980X/7975WX/7970X/7965WX/7060X/7955WX/7945WX        |
+| Raphael      | 桌面   | RDNA2 | AM5           | Zen 4          | 7950X(3D)/7945/7900(X(3D))/7800X3D/7745/7700(X)/7645/7600(X)/7500F |
+| Dragon Range | 笔记本 | RDNA2 | FL1           | Zen 4          | 7945HX(3D)/7845HX/7745HX/7645HX                                    |
+| Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4          | 7940H(S)/7840H(S)/7840U/7640H(S)/7640U/7540U                       |
+| Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2     | Zen 4 + Zen4 c | 7545U/7440U                                                        |
+| Rembrandt R  | 笔记本 | RDNA2 | FP7/FP7r2     | Zen 3+         | 7735H(S)/7736U/7735U/7535HS/7535U/7335U                            |
+| Barcelo R    | 笔记本 | GCN5  | FP6           | Zen 3          | 7730U/7530U/7330U                                                  |
+| Mendocino    | 笔记本 | RDNA2 | FT6           | Zen 2          | 7520U//7520C/7320U/7320C                                           |
 
 AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](https://www.anandtech.com/show/18718/amd-2023-ryzen-mobile-7000-cpus-unveiled-zen-4-phoenix-takes-point)：
 
@@ -124,6 +126,8 @@ Ryzen Z1 系列：
 - Barcelo R: [Barcelo-R Ryzen 5 7530U brings Zen 3 into the mix for the messy AMD Ryzen 7000 mobile APU lineup](https://www.notebookcheck.net/Barcelo-R-Ryzen-5-7530U-brings-Zen-3-into-the-mix-for-the-messy-AMD-Ryzen-7000-mobile-APU-lineup.662046.0.html)
 - Dragon Range: [AMD Announces Ryzen Mobile 7045 HX-Series CPUs, Up to 16-Cores and 5.4 GHz for Laptops](https://www.anandtech.com/show/18716/amd-announces-ryzen-7045-hx-series-cpus-for-laptops-up-to-16-cores-and-5-4-ghz)
 - Phoenix/Rembrandt R: [AMD Lays Out 2023 Ryzen Mobile 7000 CPUs: Top-to-Bottom Updates, New Zen 4 'Phoenix' CPU Takes Point](https://www.anandtech.com/show/18718/amd-2023-ryzen-mobile-7000-cpus-unveiled-zen-4-phoenix-takes-point)
+- Storm Peak: [AMD Launches The Ryzen Threadripper 7000 Series: Up To 96 Cores, DDR5 RDIMMs, PRO & HEDT CPUs](https://www.phoronix.com/review/amd-ryzen-threadripper-7000)
+- Storm Peak: [AMD Introduces New AMD Ryzen Threadripper 7000 Series Processors and Ryzen Threadripper PRO 7000 WX-Series Processors for the Ultimate Workstation](https://www.amd.com/en/newsroom/press-releases/2023-10-19-amd-introduces-new-amd-ryzen-threadripper-7000-ser.html)
 
 ## EPYC 系列
 
