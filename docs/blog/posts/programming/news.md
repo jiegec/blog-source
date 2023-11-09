@@ -1,8 +1,8 @@
 ---
 layout: post
 date: 2016-02-16
-tag: [security, ca, twitter, tips, vim, 360]
-category:
+tags: [security, ca, twitter, tips, vim]
+categories:
     - programming
 ---
 

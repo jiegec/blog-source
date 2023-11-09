@@ -2,7 +2,7 @@
 layout: post
 date: 2016-02-15
 tags: [coding, share, memo]
-category:
+categories:
     - programming
 ---
 

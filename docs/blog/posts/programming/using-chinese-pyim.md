@@ -2,7 +2,7 @@
 layout: post
 date: 2016-02-28
 tags: [emacs,chinese,pyim,pinyin]
-category:
+categories:
     - programming
 ---
 

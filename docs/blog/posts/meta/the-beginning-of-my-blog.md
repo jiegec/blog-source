@@ -1,8 +1,8 @@
 ---
 layout: post
 date: 2016-02-12
-tag: [meta]
-category:
+tags: [meta]
+categories:
     - meta
 ---
 This is the first blog here.

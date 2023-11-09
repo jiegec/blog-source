@@ -2,7 +2,7 @@
 layout: post
 date: 2016-02-24
 tags: [unix,nice,process,twitter]
-category:
+categories:
     - programming
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 date: 2016-02-21
 tags: [school,gdkoi,homework]
-category:
+categories:
     - others
 ---
 
