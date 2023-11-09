@@ -104,7 +104,7 @@ DRAM 有很多参数，以服务器上的内存 [MTA36ASF2G72PZ-2G3A3](https://i
 
 用 Micron 提供的 [Verilog Model](https://media-www.micron.com/-/media/client/global/documents/products/sim-model/dram/ddr4/ddr4_verilog_models.zip?rev=caf27a5eaf6b4a9f81eb894a874a4492) 进行仿真，可以看到如下的波形图：
 
-![](/images/ddr4_waveform.png)
+![](./ddr4_waveform.png)
 
 首先看第一个命令，ACT_n=0, ADDR=0x009C, CAS_n_A15=0, CKE=1->1, CS_n=0, RAS_n_A16=0, WE_n_A14=1，查阅标准可知这是 ACT(Bank Activate) 命令。接着第二个命令，ACT_n=1, ADDR=0x0400, CAS_n_A15=0, CKE=1->1, CS_n=0, RAS_n_A16=1, WE_n_A14=1, A10=1, 这是 RDA(Read with Auto Precharge) 命令。若干个周期后，读取的数据从 DQ 上输出，一共 8 个字节的数据。
 
@@ -153,7 +153,7 @@ Xilinx 的 Virtex Ultrascale Plus HBM FPGA 提供了 `1800 (MT/s) * 128 (bits/tr
 
 当然了，HBM 的高带宽的代价就是引脚数量很多。根据 [HBM3 JESD238A](https://www.jedec.org/system/files/docs/JESD238A.pdf)，每个 Channel 要 120 个 pin，一共 16 个 channel（HBM2 是 8 channel，每个 channel 128 位；HBM3 是 16 channel，每个 channel 64 位），然后还有其他的 52 个 pin，这些加起来就 1972 个 pin 了。所以一般在 Silicon Interposer 上连接，而不是传统的在 PCB 上走线（图源 [A 1.2V 20nm 307GB/s HBM DRAM with At-Speed Wafer-Level I/O Test Scheme and Adaptive Refresh Considering Temperature Distribution](https://picture.iczhiku.com/resource/ieee/WYifSuFTZuHLFcMV.pdf)）：
 
-![](/images/hbm_stack.png)
+![](./hbm_stack.png)
 
 所以在 HBM3 标准里，用 Microbump 来描述 HBM 的 pin。
 

@@ -107,7 +107,7 @@ SAS 涉及的物理接口比较多，下面举一个具体的例子：DELL SCv20
 
 它的背面：
 
-![](/images/scv2000.png)
+![](./scv2000.png)
 
 它有四个前端接口 Mini-SAS High Density (HD)，即 SFF-8644；两个后端接口 Mini-SAS，即 SFF-8088。
 
@@ -140,7 +140,7 @@ SAS 标准：
 
 Mini Multilane 4X Unshielded Connector Shell and Plug
 
-![](/images/sff8087.png)
+![](./sff8087.png)
 
 介绍：https://cs-electronics.com/sff-8087/
 
@@ -167,7 +167,7 @@ Mini SAS 4i 连接器就是 36 pin 的 SFF-8087，支持四路 SAS。i 表示用
 
 Mini Multilane 4X Shielded Connector Shell and Plug
 
-![](/images/sff8088.png)
+![](./sff8088.png)
 
 标准下载地址：https://members.snia.org/document/dl/25824
 
@@ -177,7 +177,7 @@ Mini SAS 4x 连接器就是 26 pin 的 SFF-8088，支持四路 SAS。用于 exte
 
 SFF-8482: Serial Attachment 2X Unshielded Connector (EIA-966)
 
-![](/images/sff8482.png)
+![](./sff8482.png)
 
 介绍：https://cs-electronics.com/sff-8482/
 
@@ -195,7 +195,7 @@ SFF-8482: Serial Attachment 2X Unshielded Connector (EIA-966)
 
 SFF-8614: Mini Multilane 4/8X Shielded Cage/Connector (HDsh)
 
-![](/images/sff8614.png)
+![](./sff8614.png)
 
 标准下载地址：https://members.snia.org/document/dl/25939
 
@@ -217,7 +217,7 @@ Multifunction 6X Unshielded Connector
 
 又称 U.2
 
-![](/images/sff8639.png)
+![](./sff8639.png)
 
 标准下载地址：https://members.snia.org/document/dl/26489
 
@@ -235,7 +235,7 @@ MiniLink 4/8X I/O Cable Assemblies
 
 又称 OCuLink 1.0
 
-![](/images/sff8611.png)
+![](./sff8611.png)
 
 标准下载地址：https://members.snia.org/document/dl/27937
 

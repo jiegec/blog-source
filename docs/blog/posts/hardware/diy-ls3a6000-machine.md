@@ -214,7 +214,7 @@ docker run -it --rm --platform arm64 debian
 
 访存延迟与工作集大小的关系（使用 [jiegec/cpu-micro-benchmarks](https://github.com/jiegec/cpu-micro-benchmarks) 测试）：
 
-![](ls3a6000-memory-latency.png)
+![](./ls3a6000-memory-latency.png)
 
 主要分三段：
 
