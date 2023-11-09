@@ -272,13 +272,13 @@ categories:
 
 读时序：
 
-![](/images/pl241_async_read.svg)
+![](./pl241_async_read.svg)
 
 它第一个周期设置了 `ce_n=0` 和 `addr`，等待一个周期后，设置 `oe_n=0`，再等待两个周期，得到数据。
 
 写时序：
 
-![](/images/pl241_async_write.svg)
+![](./pl241_async_write.svg)
 
 它第一个周期设置了 `ce_n=0` `addr` 和 `data`，等待一个周期后，设置 `we_n=0`，等待两个周期，再设置 `we_n=1`，这样就完成了写入。这和我们的实现是类似的：等待一个额外的周期，保证满足 `we_n` 下降时地址已经是稳定的。ARM 的文档里也写了如下的备注：
 
