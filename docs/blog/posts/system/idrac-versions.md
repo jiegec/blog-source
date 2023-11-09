@@ -35,11 +35,16 @@ categories:
 - 2.10.10.10 [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=fm1pc)，2015 年 3 月版本。
 - 2.30.30.30: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=5gchc)，2016 年 2 月版本，添加了 HTML5 virtual console 支持。
 - 2.60.60.60: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=cx8n2)，2018 年 6 月版本，添加了 virtual media over HTTP 支持。
+- 2.63.60.61: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=40t1c)，2019 年 5 月版本。
 - 2.70.70.70: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=dnh17)，2019 年 10 月版本。
 - 2.75.75.75: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=krcxx)，2020 年 6 月版本。
 - 2.75.100.75: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=dpv0r)，2021 年 1 月版本。
-- 2.80.80.80: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=vdd4r)，2021 年 5 月版本。
-- 2.84.84.84: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=g79dw)，2023 年 3 月版本。
+- 2.80.80.80: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=vdd4r)，2021 年 5 月版本。
+- 2.81.81.81: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=5hn4r)，2021 年 7 月版本。
+- 2.82.82.82: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=wgnhp)，2021 年 12 月版本。
+- 2.83.83.83: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=ddk5r)，2022 年 4 月版本。
+- 2.84.84.84: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=g79dw)，2023 年 3 月版本。
+- 2.85.85.85: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=j3jtj)，2023 年 10 月版本。
 
 ## iDRAC 9
 

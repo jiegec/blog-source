@@ -111,3 +111,19 @@ sudo apt install cuda-11-1
 那么 CUDA 就会安装到 /usr/local/cuda-11.1 目录下。如果想要用 nvcc，我们可以手动把它加到 PATH 环境变量中。
 
 CUDA 是可以多版本共存的，比如你可以把 CUDA 11.1 到 CUDA 11.7 一口气都装了。不过注意，CUDA 对 NVIDIA 驱动有版本要求，所以有一些可能会不满足 APT 的版本要求；同时，CUDA 对编译器版本有要求，所以如果系统还是 Ubuntu 16.04 或者 18.04，赶紧升级吧。
+
+
+## NVIDIA Container Toolkit
+
+安装方法：<https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#linux-distributions>
+
+命令：
+
+```shell
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
+  && \
+    sudo apt-get update
+```
