@@ -152,11 +152,11 @@ IEEE 802.3 Figure 36-4 中给了一个例子，就是在发送一段数据的时
 
 1000BASE-X 在 802.3 Clause 36 中定义，它的层级是这样的：
 
-![](/images/1000basex.png)
+![](./1000basex.png)
 
 它支持三种不同的介质，对应了三个 PMD 层，也就是 LX、SX 和 CX。这些体现在设备上，其实就是不同的 SFP 模块。SFP 模块实际上就是图中的 PMD 层，SFP 接口上连接的是 1000BASE-X 的 PCS/PMA，这也就是为什么说在带有 SFP 的 FPGA 上，Xilinx 的 IP 叫做 1G/2.5G Ethernet PCS/PMA。在这里，PCS 和 PMA 层在 FPGA 内部通过 IP 实现，通过 PCB 连接到 SFP 上，光模块就是 PMD 层。见下图：
 
-![](/images/xilinx_pcs_pma.png)
+![](./xilinx_pcs_pma.png)
 
 左边通过 GMII 连接到内部的 MAC，右边连接到 SFP 上，通过光模块，连接到光纤。这里光模块只需要负责光电转换。另一种比较常见的形式，就是 MAC 在 FPGA 内部，PHY（包括 PCS/PMA/PMD）都在 FPGA 外部，此时 FPGA IO 上就是各种 MII。
 
@@ -179,7 +179,7 @@ IEEE 802.3 Figure 36-4 中给了一个例子，就是在发送一段数据的时
 
 在 IEEE 802.3ab-1999 中定义，具体位置是 Clause 40。
 
-![](/images/1000baset.png)
+![](./1000baset.png)
 
 物理层往上通过 GMII 连接 MAC，往下通过 MDI 连接其他网络设备。物理层又包括 PCS 和 PMA。
 

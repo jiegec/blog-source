@@ -83,23 +83,23 @@ $ SoapySDRUtil --probe
 
 接着，就可以在 GRC(GNURadio Companion) 中从 RTL-SDR 读取数据了。首先，我按照 [Guided Tutorial Hardware Considerations](https://wiki.gnuradio.org/index.php/Guided_Tutorial_Hardware_Considerations) 的方法进行分析，可以看到哪些频率上有信号：
 
-![](/images/rtlsdr-analyze.png)
+![](./rtlsdr-analyze.png)
 
 图中的参数：
 
 - Sample Rate: 3.2MHz，这里要取比较大，如果太小可能找不到信号
 
-![](/images/rtlsdr-analyze-waterfall.png)
+![](./rtlsdr-analyze-waterfall.png)
 
 可以看到在 100.6MHz 附近有比较明显的信号，查询了一下，这对应了北京新闻广播 FM100.6，确实是一个 FM 广播电台。通过修改中心频率，还可以找到附近的 FM97.4 音乐广播和 FM 103.9 交通广播。
 
-![](/images/rtlsdr-analyze-waterfall-fm974.png)
+![](./rtlsdr-analyze-waterfall-fm974.png)
 
 ## 收听 FM 广播
 
 找到频率以后，就可以进行 FM 解调了。我继续按照 [FM Demod](https://wiki.gnuradio.org/index.php/FM_Demod) 的方法进行搭建，由于我用的是 RTL-SDR，考虑到它支持的采样率，我选取了 2.88MHz 采样率，经过一个 1/10 的 Rational Resampler 变成 288KHz 采样率，再进行 FM 解调，最后得到 `288KHz / 6 = 48KHz` 的音频，然后保存在 WAV 文件中：
 
-![](/images/rtlsdr-fm.png)
+![](./rtlsdr-fm.png)
 
 图中的参数：
 
