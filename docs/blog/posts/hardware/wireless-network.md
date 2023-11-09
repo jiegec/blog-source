@@ -22,11 +22,11 @@ categories:
 
 802.11 MAC 层的帧格式，如 802.11-1997 Figure 12：
 
-![](/images/80211_mac.png)
+![](./80211_mac.png)
 
 前两个字节 Frame Control 的定义如 802.11-1997 Figure 13：
 
-![](/images/80211_frame_control.png)
+![](./80211_frame_control.png)
 
 根据 Type 和 Subtype 字段决定了帧的类型，如管理（Management）帧，控制（Control）帧和数据（Data）帧。
 
@@ -48,7 +48,7 @@ categories:
 
 HR-DSSS 工作在 2.4 GHz 频段上，常用的是 13 个 channel，中心频率从 2412 MHz 到 2472 MHz 不等，呈等差数列，公差是 5 MHz。HR-DSSS 会占用 22MHz 的频谱，从中心频率减 11 MHz 到中心频率加 11 MHz，所以相邻 channel 会有干扰，见下图（取自 [Wikipedia](https://en.wikipedia.org/wiki/IEEE_802.11)）
 
-![](/images/80211_channels.png)
+![](./80211_channels.png)
 
 这就是为什么通常会把 2.4GHz 无线路由器的 channel 固定为 1、6 或 11。
 
@@ -85,7 +85,7 @@ HR-DSSS 工作在 2.4 GHz 频段上，常用的是 13 个 channel，中心频率
 
 OFDM 的核心思想就是采用多个载波信号，这些载波信号的频率呈等差数列，同时保证各载波相互正交，这样就提高了数据传输速率。为了保证正交，相邻载波信号的频率的差要满足 $\Delta{f} = k / T_U$，其中 k 是正整数，$T_U$ 是每个 symbol 的时间（引用 [wikipedia](https://zh.wikipedia.org/zh-cn/%E6%AD%A3%E4%BA%A4%E9%A0%BB%E5%88%86%E5%A4%8D%E7%94%A8#%E6%AD%A3%E4%BA%A4)）。下面是 802.11 标准中的 OFDM PHY 的组成：
 
-![](/images/ofdm_circuit.png)
+![](./ofdm_circuit.png)
 
 图中的缩写：
 

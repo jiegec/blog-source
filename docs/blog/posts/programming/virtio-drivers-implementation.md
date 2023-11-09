@@ -53,9 +53,9 @@ name "virtio-rng-device", bus virtio-bus
 
 基于此，写了一个简单的以太网帧的解析，ARP 的回复和 ping 的回复（直接修改 `ECHO_REQUEST` 为 `ECHO_REPLY` 然后更新 CHECKSUM），实现了最基本的 ping：
 
-![](/images/arping.png)
+![](./arping.png)
 
-![](/images/ping.jpg)
+![](./ping.jpg)
 
 ## 显卡驱动
 

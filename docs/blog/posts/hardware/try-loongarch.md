@@ -48,7 +48,7 @@ qemu-system-loongarch64 \
 
 启动后，可以正常看到 Xfce4 的界面，用 loongarch:loongarch 登录：
 
-![](/images/loongarchlinux.png)
+![](./loongarchlinux.png)
 
 如果不想用 UI，可以先在虚拟机里启动 SSHD，再打开 SSH 转发：
 

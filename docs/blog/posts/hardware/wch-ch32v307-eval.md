@@ -16,7 +16,7 @@ categories:
 
 收到的盒子里有一个 [CH32V307 评估板](http://special.wch.cn/zh_cn/RISCV_MCU_Index/)，和一个 [WCH-Link](http://www.wch.cn/products/WCH-Link.html)，相关资料可以在 [官网](http://www.wch.cn/products/CH32V307.html) 或者 [openwch/ch32v307](https://github.com/openwch/ch32v307) 下载。在说明书中有如下的图示：
 
-![](/images/ch32v307.png)
+![](./ch32v307.png)
 
 板子自带的跳线帽不是很多，建议自备一些，或者用杜邦线替代。比较重要的是 WCH-Link 子板上 CH549 和 CH2V307 连接的几个信号，和下面 BOOT0/1 的选择。
 

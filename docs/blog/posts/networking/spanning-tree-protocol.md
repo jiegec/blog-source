@@ -125,7 +125,7 @@ STP 解决了环路的问题，使得网络管理员在设计拓扑的时候，�
 
 针对这个场景，厂商提供了不同的解决方案，这里以 Cisco 的 vPC 作为一个例子来介绍。vPC 就是虚拟的 Port Channel 的意思，Port Channel 就是链路聚合，把两个交换机之间的多条链路当成一个用；Virtual Port Channel(vPC) 则是把 Port Channel 扩展到了跨交换机，二对一，一部分链路连到 Switch 1，剩下的链路连到 Switch 2，但是从外面看过来，等价于只有一个交换机：
 
-![](vpc.png)
+![](./vpc.png)
 
 来源：[Port Channels and vPCs](https://www.ciscopress.com/articles/article.asp?p=3150966&seqNum=2)
 
