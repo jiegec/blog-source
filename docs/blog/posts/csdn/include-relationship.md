@@ -10,7 +10,7 @@ categories:
 
 迁移自本人在 CSDN 上的博客：https://blog.csdn.net/build7601/article/details/37343993
 
-![](/images/20140706162823328.png)
+![](./20140706162823328.png)
 
 最左边是 expat，上面 zlib，左下角 mxml，中间最恶心的是 lua，右边的是 jpeg。
 

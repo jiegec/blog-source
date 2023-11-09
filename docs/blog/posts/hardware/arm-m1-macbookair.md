@@ -18,7 +18,7 @@ categories:
 
 从外观来看，一切都和 Intel MBA 一样，包装上也看不出区别，模具也是一样的。
 
-![](/images/arm_mac_1.png)
+![](./arm_mac_1.png)
 
 进了系统才能看得出区别。预装的系统是 macOS Big Sur 11.0，之后手动更新到了目前最新的 11.0.1。
 
@@ -57,7 +57,7 @@ $ file /bin/bash
 
 唯一能看出区别的，就是在 Activity Monitor 可以看到架构的区别：
 
-![](/images/arm_mac_2.png)
+![](./arm_mac_2.png)
 
 实际体验的时候，其实没有什么感觉。默认情况下，在 Terminal 下打开的是 ARM64 架构的，如果要切换的话，只需要：
 

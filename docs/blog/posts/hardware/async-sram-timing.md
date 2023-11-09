@@ -33,7 +33,7 @@ categories:
 
 首先我们来看看异步 SRAM 的接口。下文中，采用 [IS61WV102416BLL-10TLI](https://www.issi.com/WW/pdf/61WV102416ALL.pdf) 和 [AS7C34098A-10TCN](https://www.alliancememory.com/wp-content/uploads/pdf/sram/fa/Alliance%C2%A0Memory_4M%C2%A0Fast_SRAM_AS7C34098A_Sep2021_v2.3.pdf) 作为例子：
 
-![](/images/sram.png)
+![](./sram.png)
 
 可以看到，它有 20 位的地址，16 位的数据，若干个控制信号，同时只能进行读或者写（简称 `1RW`）。它没有时钟信号，所以是异步 SRAM。
 
@@ -45,11 +45,11 @@ categories:
 
 首先来看一下比较简单的读时序：
 
-![](/images/sram_read.png)
+![](./sram_read.png)
 
 可以看到地址和数据的关系：首先是地址需要稳定 $t_{RC}$ 的时间，那么数据合法的范围是地址稳定的初始时刻加上 $t_{AA}$，到地址稳定的结束时刻加上 $t_{OH}$。我们再来看一下这几个时间的范围：
 
-![](/images/sram_read_param.png)
+![](./sram_read_param.png)
 
 首先可以看到读周期时间 $t_{RC}$ 至少是 10ns，这对应了型号中最后的数字，这表示了这个 SRAM 最快的读写速度。比较有意思的是 $t_{AA}$ 最多是 10ns，刚好和 $t_{RC}$ 的最小值相等。
 
@@ -111,7 +111,7 @@ categories:
 5. FPGA 的输入引脚到内部寄存器输入端的延迟：$T_{IOPI}=1.26ns$
 6. FPGA 内部寄存器的 setup 时间：$T_{AS}=0.07\mathrm{ns}$
 
-![](/images/sram_read_diagram.drawio.png)
+![](./sram_read_diagram.drawio.png)
 
 上面的一些数据可以从 [Artix-7 FPGA Datasheet](https://docs.xilinx.com/v/u/en-US/ds181_Artix_7_Data_Sheet) 里查到，取的是速度等级 `-3` 的数据，IO 标准是 `LVCMOS33`。其中寄存器到 FPGA 输入输出引脚的延迟，实际上由两部分组成：从寄存器到 IOB（IO Block）的延迟，以及 IOB 到 FPGA 输入输出引脚的延迟。我们把地址寄存器的输出作为地址输出，这样 Vivado 就会把寄存器放到 IOB，于是可以忽略寄存器到 IOB 的延迟，详情可以阅读文档 [Successfully packing a register into an IOB with Vivado](https://support.xilinx.com/s/article/66668?language=en_US)。
 
@@ -170,7 +170,7 @@ categories:
 
 接下来再看看写时序。写时序涉及的信号更多，更加复杂一些，但好处是信号都是从 FPGA 到 SRAM，因此考虑延迟的时候会比较简单，比如上面读时序中需要考虑从 FPGA 到 SRAM 的地址，再从 SRAM 到 FPGA 的数据的路径。时序图如下：
 
-![](/images/sram_write.png)
+![](./sram_write.png)
 
 这个写的时序图，从时间顺序来看有这么几件事情按顺序发生：
 
@@ -181,7 +181,7 @@ categories:
 
 这些数据的范围如下：
 
-![](/images/sram_write_timing.png)
+![](./sram_write_timing.png)
 
 根据上面的分析，还是先考虑一个 500MHz 的 SRAM 控制器。控制器要写入的话，可以按照如下的顺序操作：
 

@@ -481,7 +481,7 @@ static const struct acpi_device_id acpi_ipmi_match[] = {
 
 查阅 IPMI 标准文档，可以看到 KCS(Keyboard Controller Style) Interface 下，操作系统通过两个 IO Port 来访问 BMC：
 
-![](/images/ipmi_kcs.png)
+![](./ipmi_kcs.png)
 
 图中的 `base` 就是上面 ACPI 表记录的 `IDTP=0x0CA2`，`base+1` 就是 ACPI 表记录的 `ICDP=0x0CA3`。结合寄存器的用途，可以猜测 IDTP 是 IPMI Data Transfer Port 的缩写，因为这个 Port 对应的是 `Data_In` 和 `Data_Out`；ICDP 是 IPMI Command Data Port 的缩写。
 
@@ -834,7 +834,7 @@ PCI: MMCONFIG at [mem 0x60000000-0x6fffffff] reserved in E820
 
 有了这个信息以后，就可以计算出要访问 Configuration Space 时 MMIO 的地址了：
 
-![](/images/pcie_ecam.png)
+![](./pcie_ecam.png)
 
 ### 相关文档
 
@@ -1390,7 +1390,7 @@ Method (DVNT, 2, NotSerialized)
 
 ACPI 定义的 Power State：
 
-![](/images/acpi_power.png)
+![](./acpi_power.png)
 
 - G0-G3: 全局状态，G0 表示正在工作
 - S0-S5：睡眠状态，S0 表示正在工作，S5 表示关机
