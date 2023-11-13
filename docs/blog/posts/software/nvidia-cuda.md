@@ -23,28 +23,29 @@ categories:
 
 可以通过 apt show cuda-runtime-x-x 找到：
 
-- cuda 12.2 >= 535
-- cuda 12.1 >= 530
-- cuda 12.0 >= 525
-- cuda 11.8 >= 520
-- cuda 11.7 >= 515
-- cuda 11.6 >= 510
-- cuda 11.5 >= 495
-- cuda 11.4 >= 470
-- cuda 11.3 >= 465
-- cuda 11.2 >= 460
-- cuda 11.1 >= 455
-- cuda 11.0 >= 450
+- cuda 12.3 >= 545 (Release Notes: 525)
+- cuda 12.2 >= 535 (Release Notes: 525)
+- cuda 12.1 >= 530 (Release Notes: 525)
+- cuda 12.0 >= 525 (Release Notes: 525)
+- cuda 11.8 >= 520 (Release Notes: 450)
+- cuda 11.7 >= 515 (Release Notes: 450)
+- cuda 11.6 >= 510 (Release Notes: 450)
+- cuda 11.5 >= 495 (Release Notes: 450)
+- cuda 11.4 >= 470 (Release Notes: 450)
+- cuda 11.3 >= 465 (Release Notes: 450)
+- cuda 11.2 >= 460 (Release Notes: 450)
+- cuda 11.1 >= 455 (Release Notes: 450)
+- cuda 11.0 >= 450 (Release Notes: 450)
 - cuda 10.2 >= 440
 - cuda 10.1 >= 418
 - cuda 10.0 >= 410
 - cuda 9.2 >= 396
-- cuda 9.1 >= 387
+- cuda 9.1 >= 390
 - cuda 9.0 >= 384
 
 使用 nvidia-smi 看到的 CUDA 版本，通常就是这个驱动在上表里对应的 CUDA 版本，例如内核驱动版本是 470 的话，看到的 CUDA 版本就是 11.4。
 
-不过，实际上兼容的版本会更多一些：[官方文档](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html) 里面写了 CUDA 11.x 可以兼容 NVIDIA >= 450。
+实际上兼容的驱动版本会比 APT 宣称的更多一些：[官方文档](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html) 里面写了 CUDA 11.x 可以兼容 NVIDIA >= 450。
 
 ## CUDA 版本和 GCC/Clang 版本兼容性
 
@@ -95,9 +96,11 @@ categories:
 sudo rmmod nvidia_uvm nvidia_drm nvidia_modeset nvidia && sudo modprobe nvidia
 ```
 
-如果发现 rmmod 失败，可以 `lsof /dev/nvidiactl` 查看谁在占用。DGX 上需要停止：
+如果发现 rmmod 失败，可以 `lsof /dev/nvidiactl` 查看谁在占用。DGX OS 上需要停止：
 
 ```bash
 sudo systemctl stop nvsm.service
 sudo systemctl stop nvidia-dcgm.service 
 ```
+
+除了 `/dev/nvidia*` 可能被占用以外，还需要用 lsof 检查 `/dev/dri/render*`。
