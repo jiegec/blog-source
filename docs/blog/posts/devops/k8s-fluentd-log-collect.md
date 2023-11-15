@@ -24,7 +24,7 @@ categories:
 由于 log server 不由 k8s 管理，所以按照[官网](https://docs.fluentd.org/installation/install-by-deb)的方式手动安装：
 
 ```shell
-$ curl -L https://toolbelt.treasuredata.com/sh/install-debian-buster-td-agent4.sh | sh
+curl -fsSL https://toolbelt.treasuredata.com/sh/install-debian-bookworm-fluent-package5.sh | sh
 ```
 
 然后，编辑配置 `/etc/td-agent/td-agent.conf`：
