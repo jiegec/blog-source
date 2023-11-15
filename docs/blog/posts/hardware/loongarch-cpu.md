@@ -89,6 +89,15 @@ categories:
 - ROB 项数达到 256 项
 - 四定点、四浮点、四访存共 12 个功能部件
 
+开发板：
+
+- XA612A0
+- XA61200
+
+台式机：
+
+- [PN-L530A](https://item.m.jd.com/product/10090990632336.html)
+
 ## 其他
 
 - [2K2000](https://www.loongson.cn/product/show?id=20): 2 核 LA364
