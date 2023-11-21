@@ -21,7 +21,8 @@ categories:
 - [A FIRST PEEK AT CHINA’S SUNWAY EXASCALE SUPERCOMPUTER](https://www.nextplatform.com/2021/02/10/a-sneak-peek-at-chinas-sunway-exascale-supercomputer/)
 - [THE NITTY GRITTY OF THE SUNWAY EXASCALE SYSTEM NETWORK AND STORAGE](https://www.nextplatform.com/2021/03/10/the-nitty-gritty-of-the-sunway-exascale-system-network-and-storage/)
 - [Sunway supercomputer architecture towards exascale computing: analysis and practice](https://www.sciengine.com/publisher/scp/journal/SCIS/64/4/10.1007/s11432-020-3104-7?slug=fulltext)
-- [https://chipsandcheese.com/2023/11/20/chinas-newish-sw26010-pro-supercomputer-at-sc23/](China’s New(ish) SW26010-Pro Supercomputer at SC23)
+- [China’s New(ish](https://chipsandcheese.com/2023/11/20/chinas-newish-sw26010-pro-supercomputer-at-sc23/)
+- [5 ExaFlop/s HPL-MxP Benchmark with Linear Scalability on the 40-Million-Core Sunway Supercomputer](https://dl.acm.org/doi/abs/10.1145/3581784.3607030)
 
 ## SW26010
 
