@@ -21,6 +21,7 @@ categories:
 - [A FIRST PEEK AT CHINA’S SUNWAY EXASCALE SUPERCOMPUTER](https://www.nextplatform.com/2021/02/10/a-sneak-peek-at-chinas-sunway-exascale-supercomputer/)
 - [THE NITTY GRITTY OF THE SUNWAY EXASCALE SYSTEM NETWORK AND STORAGE](https://www.nextplatform.com/2021/03/10/the-nitty-gritty-of-the-sunway-exascale-system-network-and-storage/)
 - [Sunway supercomputer architecture towards exascale computing: analysis and practice](https://www.sciengine.com/publisher/scp/journal/SCIS/64/4/10.1007/s11432-020-3104-7?slug=fulltext)
+- [https://chipsandcheese.com/2023/11/20/chinas-newish-sw26010-pro-supercomputer-at-sc23/](China’s New(ish) SW26010-Pro Supercomputer at SC23)
 
 ## SW26010
 
@@ -48,11 +49,11 @@ CPE：16KB L1I，无 DCache，有 64KB 可重构局部数据存储器（SPM scra
 
 28nm 工艺流片，芯片 die 面积超过 500 mm^2，峰值功耗 292.7W，峰值能效比达 10.559 GFLOPS∕W（HPL 6.05 GFLOPS/W）。
 
-## SW26010P(SW26016pro)
+## SW26010-Pro
 
-SW26010P 是升级版 SW26010，目前信息还比较少，从上面的论文里可以推断出的区别：
+SW26010-Pro 是升级版 SW26010，升级的内容在于：
 
-1. 每个 node 从 4 个 core group 升级到 6 个，一共有 `6 * (8 * 8 + 1) = 390` 个核心。峰值双精度浮点性能 `6 * 8 * 8 * 11.6 + 6 * 23.2 = 4.5936 TFlops`。SIMD 宽度扩展到 512 位，但可能没有增加双精度浮点计算部件：单精度浮点性能 14 TFlops，半精度浮点性能 53 TFlops。
+1. 每个 node 从 4 个 core group 升级到 6 个，一共有 `6 * (8 * 8 + 1) = 390` 个核心。频率也提高了，MPE 频率 2.1GHz，CPE 频率 2.25 GHz。SIMD 宽度扩展到 512 位。
 2. 每个 MC 连接了 16 GB DDR4 内存，带宽是 `128 bit * 3200 MT/s = 51.2 GB/s`；单节点总内存 96 GB，总内存带宽 `51.2 * 6 = 307.2 GB/s`。
 3. 每个 CPE 的局部存储（LDM）从 64KB 升级到 256KB。
 4. CPE 之间的通信可以通过 RMA 进行，而之前的 SW26010 只能在同一行/列之间进行寄存器通信。
