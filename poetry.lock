@@ -221,13 +221,13 @@ test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mock", "mypy", "pre
 
 [[package]]
 name = "idna"
-version = "3.4"
+version = "3.6"
 description = "Internationalized Domain Names in Applications (IDNA)"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
-    {file = "idna-3.4.tar.gz", hash = "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"},
+    {file = "idna-3.6-py3-none-any.whl", hash = "sha256:c05567e9c24a6b9faaa835c4821bad0590fbb9d5779e7caa6e1cc4978e7eb24f"},
+    {file = "idna-3.6.tar.gz", hash = "sha256:9ecdbbd083b06798ae1e86adcbfe8ab1479cf864e4ee30fe4e46a003d12491ca"},
 ]
 
 [[package]]
@@ -404,13 +404,13 @@ pytz = "*"
 
 [[package]]
 name = "mkdocs-material"
-version = "9.4.10"
+version = "9.4.13"
 description = "Documentation that simply works"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mkdocs_material-9.4.10-py3-none-any.whl", hash = "sha256:207c4ebc07faebb220437d2c626edb0c9760c82ccfc484500bd3eb30dfce988c"},
-    {file = "mkdocs_material-9.4.10.tar.gz", hash = "sha256:421adedaeaa461dcaf55b8d406673934ade3d4f05ed9819e4cc7b4ee1d646a62"},
+    {file = "mkdocs_material-9.4.13-py3-none-any.whl", hash = "sha256:61507bd83a56e54a2d7761e42cd8e3d8f9d9f66d7f281f4246b636bc8f9bd16c"},
+    {file = "mkdocs_material-9.4.13.tar.gz", hash = "sha256:9627d4e590bca220d7ea26a7b2a7629f2c3fcecceae796944d75d40c26539700"},
 ]
 
 [package.dependencies]
@@ -433,13 +433,13 @@ recommended = ["mkdocs-minify-plugin (>=0.7,<1.0)", "mkdocs-redirects (>=1.2,<2.
 
 [[package]]
 name = "mkdocs-material-extensions"
-version = "1.3"
+version = "1.3.1"
 description = "Extension pack for Python Markdown and MkDocs Material."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mkdocs_material_extensions-1.3-py3-none-any.whl", hash = "sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc"},
-    {file = "mkdocs_material_extensions-1.3.tar.gz", hash = "sha256:f0446091503acb110a7cab9349cbc90eeac51b58d1caa92a704a81ca1e24ddbd"},
+    {file = "mkdocs_material_extensions-1.3.1-py3-none-any.whl", hash = "sha256:adff8b62700b25cb77b53358dad940f3ef973dd6db797907c49e3c2ef3ab4e31"},
+    {file = "mkdocs_material_extensions-1.3.1.tar.gz", hash = "sha256:10c9511cea88f568257f960358a467d12b970e1f7b2c0e5fb2bb48cab1928443"},
 ]
 
 [[package]]
@@ -482,7 +482,7 @@ wavedrom = ">=2.0.3"
 type = "git"
 url = "https://github.com/jiegec/mkdocs-wavedrom-plugin.git"
 reference = "HEAD"
-resolved_reference = "e53408e3386aff5b839900cabeb51442fb985e40"
+resolved_reference = "4a4916742559281538353fbe3de331418c8878c7"
 
 [[package]]
 name = "packaging"
@@ -533,13 +533,13 @@ test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.4)", "pytest-co
 
 [[package]]
 name = "pygments"
-version = "2.17.1"
+version = "2.17.2"
 description = "Pygments is a syntax highlighting package written in Python."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pygments-2.17.1-py3-none-any.whl", hash = "sha256:1b37f1b1e1bff2af52ecaf28cc601e2ef7077000b227a0675da25aef85784bc4"},
-    {file = "pygments-2.17.1.tar.gz", hash = "sha256:e45a0e74bf9c530f564ca81b8952343be986a29f6afe7f5ad95c5f06b7bdf5e8"},
+    {file = "pygments-2.17.2-py3-none-any.whl", hash = "sha256:b27c2826c47d0f3219f29554824c30c5e8945175d888647acd804ddd04af846c"},
+    {file = "pygments-2.17.2.tar.gz", hash = "sha256:da46cec9fd2de5be3a8a784f434e4c4ab670b4ff54d605c4c2717e9d49c4c367"},
 ]
 
 [package.extras]
@@ -548,17 +548,17 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pymdown-extensions"
-version = "10.4"
+version = "10.5"
 description = "Extension pack for Python Markdown."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pymdown_extensions-10.4-py3-none-any.whl", hash = "sha256:cfc28d6a09d19448bcbf8eee3ce098c7d17ff99f7bd3069db4819af181212037"},
-    {file = "pymdown_extensions-10.4.tar.gz", hash = "sha256:bc46f11749ecd4d6b71cf62396104b4a200bad3498cb0f5dad1b8502fe461a35"},
+    {file = "pymdown_extensions-10.5-py3-none-any.whl", hash = "sha256:1f0ca8bb5beff091315f793ee17683bc1390731f6ac4c5eb01e27464b80fe879"},
+    {file = "pymdown_extensions-10.5.tar.gz", hash = "sha256:1b60f1e462adbec5a1ed79dac91f666c9c0d241fa294de1989f29d20096cfd0b"},
 ]
 
 [package.dependencies]
-markdown = ">=3.2"
+markdown = ">=3.5"
 pyyaml = "*"
 
 [package.extras]
@@ -772,13 +772,13 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "setuptools"
-version = "69.0.0"
+version = "69.0.2"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "setuptools-69.0.0-py3-none-any.whl", hash = "sha256:eb03b43f23910c5fd0909cb677ad017cd9531f493d27f8b3f5316ff1fb07390e"},
-    {file = "setuptools-69.0.0.tar.gz", hash = "sha256:4c65d4f7891e5b046e9146913b87098144de2ca2128fbc10135b8556a6ddd946"},
+    {file = "setuptools-69.0.2-py3-none-any.whl", hash = "sha256:1e8fdff6797d3865f37397be788a4e3cba233608e9b509382a2777d25ebde7f2"},
+    {file = "setuptools-69.0.2.tar.gz", hash = "sha256:735896e78a4742605974de002ac60562d286fa8051a7e2299445e8e8fbb01aa6"},
 ]
 
 [package.extras]
