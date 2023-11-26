@@ -142,3 +142,4 @@ document$.subscribe(() => {
 
 1. 设置 site_url，保证 sitemap 正常生成
 2. 保证代码中不会出现非 javascript 的 `<script>` tag，如 wavedrom 和 math/tex
+3. 如果涉及到需要用 javascript 动态渲染的内容，需要在 `document$` 上注册回调以重新渲染新页面
