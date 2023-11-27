@@ -384,3 +384,21 @@ switch (config) # ntp server x.x.x.x
 ```
 # ntp server x.x.x.x
 ```
+
+### 配置 Trunk
+
+```
+# config terminal
+(config)# interface ethernet 1/1
+(config-if)# switchport mode trunk
+(config-if)# switchport trunk allowed vlan 12-34
+```
+
+### 配置 Access
+
+```
+# config terminal
+(config)# interface ethernet 1/1
+(config-if)# switchport mode access
+(config-if)# switchport access vlan 1234
+```
