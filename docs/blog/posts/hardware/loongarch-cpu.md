@@ -106,3 +106,9 @@ categories:
 - [2K1000LA](https://www.loongson.cn/product/show?id=8): 2 核 LA264
 - [2K0500](https://www.loongson.cn/product/show?id=9): 1 核 LA264
 - [1C103](https://www.loongson.cn/product/show?id=18): 1 核 LA132
+
+## 固件
+
+- <https://github.com/loongson/Firmware>
+- <https://gitee.com/loongson/Firmware>
+- <https://gitea.whlug.cn/3A6000/3A6000>
