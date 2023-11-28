@@ -98,6 +98,7 @@ categories:
 台式机：
 
 - [PN-L530A](https://item.jd.com/10090990632336.html): 16GB+512GB，2699 元
+- [EC-80G](https://item.jd.com/100076186619.html): 8GB+256GB+独显，4699 元
 
 ## 其他
 
