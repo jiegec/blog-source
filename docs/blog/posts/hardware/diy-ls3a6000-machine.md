@@ -59,11 +59,13 @@ categories:
 我测试的显卡：
 
 1. AMD RX550：可用
-2. AMD RX6400：不可用，见不到 BIOS 界面
+2. AMD RX6400：~~不可用，见不到 BIOS 界面~~ 更新固件并关闭 GPU Emulation 后，在 BIOS 不可用，但是可以进 Linux 以后用
 
 在我这里主板上的 HDMI 不工作，只有独显 AMD RX550 的 HDMI 可以工作，不确定是否和 4K 显示器有关。另外有网友表示主板上的 VGA 可以工作。固件版本是 Loongson-UDK2018-V4.0.05420-stable202302。
 
-UPDATE：更新固件到 Loongson-UDK2018-V4.0.05494-stable202305 以后，主板上的 HDMI 也工作了。
+UPDATE：更新固件到 Loongson-UDK2018-V4.0.05494-stable202305 以后，主板上的 HDMI 也工作了：具体地讲，是在 VGA 下方的 HDMI。
+
+UPDATE：更新固件到 UDK2018-3A6000-7A2000_EVB_V4.0.05634_prestable2311dbg.fd 以后，关闭 GPU Emulation 选项，AMD RX6400 也可用了，只不过在固件的时候，还是会输出到主板上的 HDMI，见 [3A6000: Add EVB_XA61200 Board Support](https://github.com/loongson/Firmware/pull/79)。
 
 ## Linux 发行版
 
