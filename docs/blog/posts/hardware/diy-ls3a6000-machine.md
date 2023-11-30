@@ -67,6 +67,14 @@ UPDATE：更新固件到 Loongson-UDK2018-V4.0.05494-stable202305 以后，主�
 
 UPDATE：更新固件到 UDK2018-3A6000-7A2000_EVB_V4.0.05634_prestable2311dbg.fd 以后，关闭 GPU Emulation 选项，AMD RX6400 也可用了，只不过在固件的时候，还是会输出到主板上的 HDMI，见 [3A6000: Add EVB_XA61200 Board Support](https://github.com/loongson/Firmware/pull/79)。
 
+备注：已知的固件版本：
+
+- V4.0.05420-stable202302：预装版本
+- V4.0.05494-stable202305：修复了主板上的 HDMI 的问题，修复了 ACPI PPTT 表
+- V4.0.05569-stable202308：见于 [gitea whlug](https://gitea.whlug.cn/3A6000/3A6000/releases)
+- V4.0.05634-stable202308：添加 GPU Emu Disable 选项以解决 AMD RX6400 的问题
+
+
 ## Linux 发行版
 
 目前查到的支持 LoongArch 的发行版有：

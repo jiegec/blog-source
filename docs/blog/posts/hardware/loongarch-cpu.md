@@ -85,6 +85,10 @@ categories:
 
 4 核 8 线程 LA664
 
+![](3a6000.png)
+
+来源：[龙芯中科2023年半年度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=14977)
+
 根据 <http://basic.10jqka.com.cn/688047/interactive.html>:
 
 - ROB 项数达到 256 项
@@ -99,6 +103,18 @@ categories:
 
 - [PN-L530A](https://item.jd.com/10090990632336.html): 16GB+512GB，2999 元
 - [EC-80G](https://item.jd.com/100076186619.html): 8GB+256GB+独显，4699 元
+
+## 3C6000
+
+![](3c6000.png)
+
+来源：[龙芯中科2023年第三季度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=16536)
+
+## 2K3000
+
+![](2k3000.png)
+
+来源：[龙芯中科2023年第三季度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=16536)
 
 ## 其他
 
