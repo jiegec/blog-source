@@ -117,6 +117,12 @@ nix build -L .#nixos-install-tools
 
 这里面还有很多小的 trick，需要对 nixpkgs 做一些修改：<https://github.com/jiegec/nixpkgs/commits/loongarch64>。
 
+## VSCode
+
+VSCode 官方大概率是不会出 loongarch 版本的，但是自己可以编译一个。目前运行 VSCode 的主要障碍是 Electron。Electron 的上游化还在进行，但现在也有一些打了 patch 的 Electron 可用，例如 LoongArchLinux 的[源](https://mirrors.wsyu.edu.cn/loongarch/archlinux/laur/os/loong64/)里提供了 electron22 和 [electron17-bin](https://github.com/loongarchlinux/laur/tree/main/electron17-bin)。LoongArchLinux 的源里也提供了一个[比较老的 vscode 1.67.0 版本](https://mirrors.wsyu.edu.cn/loongarch/archlinux/laur/os/loong64/visual-studio-code-bin-1.67.0-1-loong64.pkg.tar.zst)（对应的 [PKGBUILD](https://github.com/loongarchlinux/laur/tree/main/visual-studio-code-bin)）。有群友已经用 electron22 把 vscode 1.84.2 跑起来了。
+
+Chrome 的情况和 VSCode 类似，核心其实都是 Chromium 内核的移植。LoongArchLinux 的源里也提供了一份 [Chromium 102.0.5005.63](https://mirrors.wsyu.edu.cn/loongarch/archlinux/laur/os/loong64/chromium-snapshot-bin-102.0.5005.63.r1-1-loong64.pkg.tar.zst)。Firefox 则已经能比较容易地跑起来。
+
 ## VSCode Remote
 
 VSCode Remote Server 是闭源的，但是理论上可以用 lat 来对 nodejs 做二进制翻译。只需要魔改 `~/.vscode/extensions/ms-vscode-remote.remote-ssh-0.102.0/out/extension.js`（版本号可能不同），把里面对 x86_64 架构的判断，加上 loongarch64，也就是把 loongarch64 当成 x86_64 去处理，那么 VSCode Remote 就会下载 x86_64 的 binary 并运行，此时用 lat 就可以跑 server 了。
