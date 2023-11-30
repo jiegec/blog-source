@@ -119,7 +119,7 @@ nix build -L .#nixos-install-tools
 
 ## VSCode
 
-VSCode 官方大概率是不会出 loongarch 版本的，但是自己可以编译一个。目前运行 VSCode 的主要障碍是 Electron。Electron 的上游化还在进行，但现在也有一些打了 patch 的 Electron 可用，例如 LoongArchLinux 的[源](https://mirrors.wsyu.edu.cn/loongarch/archlinux/laur/os/loong64/)里提供了 electron22 和 [electron17-bin](https://github.com/loongarchlinux/laur/tree/main/electron17-bin)。LoongArchLinux 的源里也提供了一个[比较老的 vscode 1.67.0 版本](https://mirrors.wsyu.edu.cn/loongarch/archlinux/laur/os/loong64/visual-studio-code-bin-1.67.0-1-loong64.pkg.tar.zst)（对应的 [PKGBUILD](https://github.com/loongarchlinux/laur/tree/main/visual-studio-code-bin)）。有群友已经用 electron22 把 vscode 1.84.2 跑起来了。
+VSCode 官方大概率是不会出 loongarch 版本的，但是自己可以编译一个。目前运行 VSCode 的主要障碍是 Electron。Electron 的上游化还在进行，但现在也有一些打了 patch 的 Electron 可用，例如 LoongArchLinux 的[源](https://mirrors.wsyu.edu.cn/loongarch/archlinux/laur/os/loong64/)里提供了 electron22 和 [electron17-bin](https://github.com/loongarchlinux/laur/tree/main/electron17-bin)。LoongArchLinux 的源里也提供了一个[比较老的 vscode 1.67.0 版本](https://mirrors.wsyu.edu.cn/loongarch/archlinux/laur/os/loong64/visual-studio-code-bin-1.67.0-1-loong64.pkg.tar.zst)（对应的 [PKGBUILD](https://github.com/loongarchlinux/laur/tree/main/visual-studio-code-bin)）。有群友已经用 electron22 把 vscode 1.84.2 跑起来了：[LiarOnce/vscodium-electron-loong64](https://github.com/LiarOnce/vscodium-electron-loong64)。
 
 Chrome 的情况和 VSCode 类似，核心其实都是 Chromium 内核的移植。LoongArchLinux 的源里也提供了一份 [Chromium 102.0.5005.63](https://mirrors.wsyu.edu.cn/loongarch/archlinux/laur/os/loong64/chromium-snapshot-bin-102.0.5005.63.r1-1-loong64.pkg.tar.zst)。Firefox 则已经能比较容易地跑起来。
 
