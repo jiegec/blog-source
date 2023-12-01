@@ -177,6 +177,35 @@ docker 打上简单的 patch 以支持 loong64 以后，也可以正常运行：
 docker run -it --rm --platform arm64 debian
 ```
 
+## Loong Arch Linux 上 XRDP 兼容性问题
+
+在 Loong Arch Linux 上运行 XRDP，可能会遇到启动黑屏的问题。它的问题有两个：
+
+1. `/etc/xrdp/sesman.ini` 中，应该指定 Xorg 的完整路径，把 `param=Xorg` 改成 `param=/usr/lib/Xorg`。这在 [xrdp AUR](https://aur.archlinux.org/packages/xrdp) 下面的讨论里可以看到。
+2. 在 `/usr/share/X11/xorg.conf.d` 中，如果有 `10-modeset.conf`，它会导致 xrdp 启动的 Xorg 尝试打开 virtual console，但是因为不是 root 用户，所以会失败；即使按照上面的方法添加了 `-configdir /` 参数也没有用，因为 `/usr/share/X11/xorg.conf.d` 是全局的配置目录，不受 `-configdir` 选项影响。解决办法是把 10-modeset.conf 改名，或者挪到其他地方。但是要小心是否会影响本机 root 自己的 X11 服务启动。
+
+其中 `10-modeset.conf` 的内容如下：
+
+```conf
+Section "Device"
+        Identifier "Generic Kernel Modesetting Device"
+        Driver "modesetting"
+        Option "kmsdev" "/dev/dri/card0"
+        Option "ShadowFB" "true"
+EndSection
+```
+
+这个文件由 `xorg-server` 包安装：
+
+```shell
+$ pacman -F 10-modeset.conf
+extra/xorg-server 21.1.8-3 (xorg) [installed]
+    usr/share/X11/xorg.conf.d/10-modeset.conf
+```
+
+是从 [10-modeset.conf](https://github.com/loongarchlinux/extra/blob/main/xorg-server/10-modeset.conf) 安装而来。modesetting Driver 的文档见 [MODESETTING(4)](https://man.archlinux.org/man/modesetting.4)。[设置这个](https://github.com/loongarchlinux/extra/commit/663460b1aa7a16e1c9ecd0342ef648c0961ae130#diff-2edba23ba1fb0b9b5e1666b4728c32c84dd3073c5e3771199e9d55846a4cdc6a)应该是为了 7A2000 的 GPU：`# fix modesetting driver for loongson and gsgpu`，但是误伤了 xrdp。
+
+
 ## Benchmark
 
 推荐阅读：[华为 VS 龙芯 国产 CPU 架构初步探测、对比与分析](https://zhuanlan.zhihu.com/p/654721485)
