@@ -99,10 +99,22 @@ categories:
 - XA612A0: 3A6000 + 7A2000
 - XA61200: 3A6000 + 7A2000
 
+主板：
+
+- [DL37](https://item.jd.com/10092331777554.html) [官网](https://www.eaecis.com/cp_92/963.html)
+- [龙芯俱乐部](https://item.taobao.com/item.htm?id=743837636202)
+
 台式机：
 
-- [PN-L530A](https://item.jd.com/10090990632336.html): 16GB+512GB，2999 元
+- [PN-L530A](https://item.jd.com/10090990632336.html) [官网](https://pnxc.cn/Products-Center/12/262.html): 16GB+512GB，2999 元
 - [EC-80G](https://item.jd.com/100076186619.html): 8GB+256GB+独显，4699 元
+- [DL37-D05](https://item.jd.com/10092330519232.html) [官网](https://www.eaecis.com/cp_94/960.html)
+- [龙芯俱乐部](https://item.taobao.com/item.htm?id=746096291480)
+- [F918](https://item.taobao.com/item.htm?id=747648718264) [天猫](https://detail.tmall.com/item.htm?id=745565351633)
+
+笔记本：
+
+- [NL38-N09](https://item.jd.com/10092331328613.html) [官网](https://www.eaecis.com/cp_95/962.html)
 
 ## 3C6000
 
