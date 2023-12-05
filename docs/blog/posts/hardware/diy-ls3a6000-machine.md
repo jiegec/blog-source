@@ -34,11 +34,13 @@ categories:
 
 我测试的内存条：
 
-1. Kingston HyperX [HX426C16FB3/8](https://www.kingston.com/dataSheets/HX426C16FB3_8.pdf)(KHX2666C16/8G) 8GB DDR4-2666(PnP) 1Rx8：支持
-2. Kingston HyperX [KF432C16BB/8](https://www.kingston.com/dataSheets/KF432C16BB_8.pdf)(KF3200C16D4/8GX) 8GB DDR4-2400(JEDEC) 1Rx8：支持
-3. 金百达（KingBank）长鑫颗粒 DDR4 3200MHz 16GB U-DIMM 1.35V CL 16：不支持
-4. 紫光 SCC16GP02H1F1C-26V：不支持
-5. 紫光 SCC32GP12H1F1C-26V: 不支持
+1. Kingston HyperX [HX426C16FB3/8](https://www.kingston.com/dataSheets/HX426C16FB3_8.pdf)(KHX2666C16/8G) 8GB DDR4-2666(PnP) 1Rx8：支持，能达到 2600 MT/s
+2. Kingston HyperX [KF432C16BB/8](https://www.kingston.com/dataSheets/KF432C16BB_8.pdf)(KF3200C16D4/8GX) 8GB DDR4-2400(JEDEC) 1Rx8：支持，能达到 2400 MT/s
+3. 金百达（KingBank）长鑫颗粒 DDR4 3200MHz（实际是 MT/s，JEDEC 2666）16GB U-DIMM 1.35V CL 16：~~不支持~~ 固件 V4.0.05634 支持，能达到 2600 MT/s
+4. 紫光 SCC16GP02H1F1C-26V 16GB 2666 ECC：不支持
+5. 紫光 SCC32GP12H1F1C-26V 32GB 2666 ECC: 不支持
+
+关于 2600 MT/s vs 2666 MT/s 的问题：从 Memory PLL 来看，是 100 MHz 的频率通过 PLL 得到 1300 MHz，确实是 2600 MT/s，不过当成 2666 来用也是一样的。
 
 网友表示在 3A6000 上可以工作的内存型号：
 
