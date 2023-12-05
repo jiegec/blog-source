@@ -36,7 +36,7 @@ categories:
 
 1. Kingston HyperX [HX426C16FB3/8](https://www.kingston.com/dataSheets/HX426C16FB3_8.pdf)(KHX2666C16/8G) 8GB DDR4-2666(PnP) 1Rx8：支持，能达到 2600 MT/s
 2. Kingston HyperX [KF432C16BB/8](https://www.kingston.com/dataSheets/KF432C16BB_8.pdf)(KF3200C16D4/8GX) 8GB DDR4-2400(JEDEC) 1Rx8：支持，能达到 2400 MT/s
-3. 金百达（KingBank）长鑫颗粒 DDR4 3200MHz（实际是 MT/s，JEDEC 2666）16GB U-DIMM 1.35V CL 16：~~不支持~~ 固件 V4.0.05634 支持，能达到 2600 MT/s
+3. [金百达（KingBank）长鑫颗粒 DDR4 3200MHz（实际是 MT/s，JEDEC 2666）16GB U-DIMM 1.35V CL 16](https://www.kingbank.com/cn/h-pd-11.html)：~~不支持~~ 固件 V4.0.05634 支持，能达到 2600 MT/s
 4. 紫光 SCC16GP02H1F1C-26V 16GB 2666 ECC：不支持
 5. 紫光 SCC32GP12H1F1C-26V 32GB 2666 ECC: 不支持
 
