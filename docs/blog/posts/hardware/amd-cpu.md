@@ -102,6 +102,12 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 - Bracelo R: 7030, Mainstream Thin & Light
 - Mendocino: 7020, Everyday Computing
 
+### Ryzen 8000
+
+| 代号       | 用途   | 核显  | 插槽          | 微架构 | 型号                                                       |
+|------------|------|-------|---------------|--------|------------------------------------------------------------|
+| Hawk Point | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 8945HS/8845HS/8840HS/8840U/8645HS/8640HS/8640U/8540U/8440U |
+
 ### Z1
 
 Ryzen Z1 系列：
@@ -128,6 +134,7 @@ Ryzen Z1 系列：
 - Phoenix/Rembrandt R: [AMD Lays Out 2023 Ryzen Mobile 7000 CPUs: Top-to-Bottom Updates, New Zen 4 'Phoenix' CPU Takes Point](https://www.anandtech.com/show/18718/amd-2023-ryzen-mobile-7000-cpus-unveiled-zen-4-phoenix-takes-point)
 - Storm Peak: [AMD Launches The Ryzen Threadripper 7000 Series: Up To 96 Cores, DDR5 RDIMMs, PRO & HEDT CPUs](https://www.phoronix.com/review/amd-ryzen-threadripper-7000)
 - Storm Peak: [AMD Introduces New AMD Ryzen Threadripper 7000 Series Processors and Ryzen Threadripper PRO 7000 WX-Series Processors for the Ultimate Workstation](https://www.amd.com/en/newsroom/press-releases/2023-10-19-amd-introduces-new-amd-ryzen-threadripper-7000-ser.html)
+- Hawk Point: [AMD Extends Mobile PC Leadership with AMD Ryzen™ 8040 Series Processors and Makes Ryzen™ AI Software Widely Available, Advancing the AI PC Era](https://ir.amd.com/news-events/press-releases/detail/1172/amd-extends-mobile-pc-leadership-with-amd-ryzen-8040)
 
 ## EPYC 系列
 

@@ -106,6 +106,7 @@ categories:
 
 台式机：
 
+- [ZKL360-TF](https://item.jd.com/10092886566388.html)：16GB+1024GB，2699 元
 - [PN-L530A](https://item.jd.com/10090990632336.html) [官网](https://pnxc.cn/Products-Center/12/262.html): 16GB+512GB，2999 元
 - [EC-80G](https://item.jd.com/100076186619.html): 8GB+256GB+独显，4699 元
 - [DL37-D05](https://item.jd.com/10092330519232.html) [官网](https://www.eaecis.com/cp_94/960.html)
