@@ -105,7 +105,7 @@ this value.
 这是软件做法，有没有硬件做法呢？答案是，有，可以参考 [What problem does cache coloring solve?](https://cs.stackexchange.com/a/32302) 和 [Designing a Virtual Memory System for the SHMAC Research Infrastructure](https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/2467634) 第 3.7 节。这里列出来几种比较好理解的方法：
 
 1. 缓存缺失的时候，去其他 set 里寻找匹配，如果发现了，就把数据挪到当前的 virtual index 对应的位置。这个方法复杂点在于需要去其他 set 里寻找可能的匹配。
-2. 在 L2 缓存中记录缓存行对应的 virtual index，缓存缺失的时候，去询问 L2，L2 发现有 alias 的情况，告诉 L1 缓存，让他去指定的 set 里寻找数据，并且迁移。这个方法的好处是不需要像第一种方法那样去寻找可能的匹配，而是让 L2 去记录信息。缺点就是需要记录更多信息，另外要求 L2 缓存需要是 inclusive 的。
+2. 在 L2 缓存中记录缓存行对应的 virtual index，缓存缺失的时候，去询问 L2，L2 发现有 alias 的情况，告诉 L1 缓存，让他去指定的 set 里寻找数据，并且迁移。这个方法的好处是不需要像第一种方法那样去寻找可能的匹配，而是让 L2 去记录信息。缺点就是需要记录更多信息，另外要求 L2 缓存需要是 inclusive 的。见 [XiangShan Cache 别名问题](https://xiangshan-doc.readthedocs.io/zh-cn/latest/huancun/cache_alias/)
 
 此外还有一些比较复杂的方法，建议阅读上面的参考论文。
 
@@ -114,4 +114,4 @@ this value.
 ## 参考
 
 - [Page Colouring on ARMv6 (and a bit on ARMv7)](https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/page-colouring-on-armv6-and-a-bit-on-armv7)
-- [浅谈现代处理器实现超大 L1 Cache 的方式](https://blog.cyyself.name/why-the-big-l1-cache-is-so-hard/)
+- 推荐阅读：[浅谈现代处理器实现超大 L1 Cache 的方式](https://blog.cyyself.name/why-the-big-l1-cache-is-so-hard/)
