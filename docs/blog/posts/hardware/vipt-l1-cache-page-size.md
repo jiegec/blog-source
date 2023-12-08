@@ -114,3 +114,4 @@ this value.
 ## 参考
 
 - [Page Colouring on ARMv6 (and a bit on ARMv7)](https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/page-colouring-on-armv6-and-a-bit-on-armv7)
+- [浅谈现代处理器实现超大 L1 Cache 的方式](https://blog.cyyself.name/why-the-big-l1-cache-is-so-hard/)

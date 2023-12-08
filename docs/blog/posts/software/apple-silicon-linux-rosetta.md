@@ -10,11 +10,11 @@ categories:
 
 ## 背景
 
-最近需要跑某个 x86 only 且需要 GUI 的程序，以往都是跑在远程 Linux/Windows 机器上再远程桌面去使用。最近看到了一些比较成熟的在 macOS 上跑 Linux 虚拟机 + Rosetta 的办法（[M1 MacでVivadoが動いた！](https://qiita.com/jin0g/items/692fde40cd895b81f39e)），因此记录下来。
+最近需要跑某个 x86 only 且需要 GUI 的程序，以往都是跑在远程 Linux/Windows 机器上再远程桌面去使用。最近看到了一些比较成熟的在 macOS 上跑 Linux 虚拟机 + Rosetta 的办法（[M1 Mac で Vivado が動いた！](https://qiita.com/jin0g/items/692fde40cd895b81f39e)），因此记录下来。
 
 <!-- more -->
 
-本文参考了很多 [M1 MacでVivadoが動いた！](https://qiita.com/jin0g/items/692fde40cd895b81f39e) 的内容。
+本文参考了很多 [M1 Mac で Vivado が動いた！](https://qiita.com/jin0g/items/692fde40cd895b81f39e) 的内容。
 
 ## 安装 lima 和 xquartz
 

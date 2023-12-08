@@ -16,7 +16,7 @@ categories:
 
 文档：[Intro to Package Maintenance: Basics](https://wiki.aosc.io/developer/packaging/basics/)
 
-用 ciel 工具克隆软件源+在容器中构建。创建一个打包环境：
+用 ciel 工具克隆软件源 + 在容器中构建。创建一个打包环境：
 
 ```shell
 ciel new

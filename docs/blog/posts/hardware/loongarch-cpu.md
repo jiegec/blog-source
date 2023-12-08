@@ -87,7 +87,7 @@ categories:
 
 ![](3a6000.png)
 
-来源：[龙芯中科2023年半年度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=14977)
+来源：[龙芯中科 2023 年半年度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=14977)
 
 根据 <http://basic.10jqka.com.cn/688047/interactive.html>:
 
@@ -121,13 +121,13 @@ categories:
 
 ![](3c6000.png)
 
-来源：[龙芯中科2023年第三季度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=16536)
+来源：[龙芯中科 2023 年第三季度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=16536)
 
 ## 2K3000
 
 ![](2k3000.png)
 
-来源：[龙芯中科2023年第三季度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=16536)
+来源：[龙芯中科 2023 年第三季度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=16536)
 
 ## 其他
 
