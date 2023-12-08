@@ -43,7 +43,7 @@ VIPT（Virtual Index Physical Tag）是 L1 数据缓存常用的技术，利用�
 
 毕竟比较大的 L1 数据缓存对性能是有帮助的，当然了，太大了也会导致 Load To Use 延迟增加，可能得不偿失。
 
-当然了，L2 L3 等缓存就没有这个限制了，毕竟都是用的物理地址，不涉及 VIPT。
+当然了，L2 L3 等缓存就没有这个限制了，毕竟通常是采用物理地址，不涉及 VIPT。
 
 这时候你可能要说了，等等！为啥有一些处理器不符合这个规则：
 
@@ -102,7 +102,14 @@ this value.
 
 因此，在使用共享内存的时候，不要忘记了对齐到 `SHMLBA`，它不一定是页表的大小。
 
-这是软件做法，有没有硬件做法呢？答案是，有，可以参考 [What problem does cache coloring solve?](https://cs.stackexchange.com/a/32302)。
+这是软件做法，有没有硬件做法呢？答案是，有，可以参考 [What problem does cache coloring solve?](https://cs.stackexchange.com/a/32302) 和 [Designing a Virtual Memory System for the SHMAC Research Infrastructure](https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/2467634) 第 3.7 节。这里列出来几种比较好理解的方法：
+
+1. 缓存缺失的时候，去其他 set 里寻找匹配，如果发现了，就把数据挪到当前的 virtual index 对应的位置。这个方法复杂点在于需要去其他 set 里寻找可能的匹配。
+2. 在 L2 缓存中记录缓存行对应的 virtual index，缓存缺失的时候，去询问 L2，L2 发现有 alias 的情况，告诉 L1 缓存，让他去指定的 set 里寻找数据，并且迁移。这个方法的好处是不需要像第一种方法那样去寻找可能的匹配，而是让 L2 去记录信息。缺点就是需要记录更多信息，另外要求 L2 缓存需要是 inclusive 的。
+
+此外还有一些比较复杂的方法，建议阅读上面的参考论文。
+
+因此 VIPT 也可以不受实际的页大小的限制，但是为了解决 aliasing 的问题，需要在软件上或者硬件上找补。
 
 ## 参考
 
