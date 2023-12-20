@@ -11,11 +11,12 @@ categories:
 一直对 Linux 的启动很感兴趣，但对 initrd 和 initramfs 等概念不大了解，于是上网找了资料，自己成功地看到了现象。
 
 参考资料：
-[Build and boot a minimal Linux system with qemu](http://www.kaizou.org/2016/09/boot-minimal-linux-qemu/)
-[Custom Initramfs](https://wiki.gentoo.org/wiki/Custom_Initramfs)
-[initramfs vs initrd](https://dazdaztech.wordpress.com/2013/04/04/initrd-vs-initramfs/)
-[ramfs, rootfs and initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt)
-[The Kernel Newbie Corner: "initrd" and "initramfs"-- What's Up With That?](https://www.linux.com/learn/kernel-newbie-corner-initrd-and-initramfs-whats)
+
+- [Build and boot a minimal Linux system with qemu](http://www.kaizou.org/2016/09/boot-minimal-linux-qemu/)
+- [Custom Initramfs](https://wiki.gentoo.org/wiki/Custom_Initramfs)
+- [initramfs vs initrd](https://dazdaztech.wordpress.com/2013/04/04/initrd-vs-initramfs/)
+- [ramfs, rootfs and initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt)
+- [The Kernel Newbie Corner: "initrd" and "initramfs"-- What's Up With That?](https://www.linux.com/learn/kernel-newbie-corner-initrd-and-initramfs-whats)
 
 具体步骤：
 ```shell

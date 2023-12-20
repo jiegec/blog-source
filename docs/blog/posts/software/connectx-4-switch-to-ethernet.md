@@ -14,7 +14,7 @@ categories:
 
 ## 切换方法
 
-在 [Using mlxconfig](https://docs.nvidia.com/networking/display/MFTv4110/Using+mlxconfig) 文档中，写了如何切换网卡为 Infiniband 模式：
+在 [Using mlxconfig](https://docs.nvidia.com/networking/display/mftv422/using+mlxconfig) 文档中，写了如何切换网卡为 Infiniband 模式：
 
 ```shell
 $ mlxconfig -d /dev/mst/mt4103_pci_cr0 set LINK_TYPE_P1=1 LINK_TYPE_P2=1

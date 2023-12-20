@@ -274,5 +274,5 @@ object AddPrefix {
 
 Chisel3 生成 Verilog/System Verilog 的时候会进行一些优化。如果想要关闭这些优化，可以使用：
 
-1. [dontTouch annotation](https://www.chisel-lang.org/chisel3/docs/cookbooks/naming.html)
+1. [dontTouch annotation](https://www.chisel-lang.org/docs/cookbooks/naming)
 2. 添加命令行参数：`--preserve-values=[none/named/all]`，见 [FIRRTL Dialect Rationale](https://circt.llvm.org/docs/Dialects/FIRRTL/RationaleFIRRTL/)

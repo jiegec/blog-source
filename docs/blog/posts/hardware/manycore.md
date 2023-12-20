@@ -10,7 +10,7 @@ categories:
 
 ## 参考文档
 
-- [Intel® Many Integrated Core Architecture (Intel® MIC Architecture) - Advanced](https://www.intel.com/content/www/us/en/architecture-and-technology/many-integrated-core/intel-many-integrated-core-architecture.html)
+- [Intel® Many Integrated Core Architecture (Intel® MIC Architecture) - Advanced](https://openlab-mu-internal.web.cern.ch/02_Press_Corner/Spotlights/Spotlights_items/Copies_of_Spotlights_items/2011/ManyIntegratedCore(MIC)ArchitectureAdvanced.pdf)
 - [Intel® Xeon Phi coprocessor (codename Knights Corner)](https://ieeexplore.ieee.org/abstract/document/7476487)
 - [https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7453080](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7453080)
 - [Knights Landing (KNL): 2nd Generation Intel® Xeon Phi™ Processor](https://www.alcf.anl.gov/files/HC27.25.710-Knights-Landing-Sodani-Intel.pdf)

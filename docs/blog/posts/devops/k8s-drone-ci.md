@@ -105,7 +105,7 @@ steps:
 
 参考文档：
 
-[Drone provider: GitHub](provider)
+[Drone provider: GitHub](https://docs.drone.io/server/provider/github/)
 
 [Drone helm chart](https://github.com/drone/charts/blob/master/charts/drone/docs/install.md)
 

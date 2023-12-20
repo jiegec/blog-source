@@ -14,7 +14,7 @@ categories:
 2. 发现了一个蛮少见的编码标准 AVS2，才发现是中国主导的 [编码器](https://github.com/pkuvcl/xavs2)
 3. linux.org 的 DNS 被篡改了，认准 kernel.org 即可
 4. 一个处理器的电路的在线可视化 [ARM1 visualized](https://www.theregister.co.uk/2015/11/28/arm1_visualized/)
-5. WASM 家庭现已加入 Nginx [链接](https://www.wasmjit.org/blog/nginx-on-wasmjit.html)
+5. WASM 家庭现已加入 Nginx [链接](https://hub.packtpub.com/now-you-can-run-nginx-on-wasmjit-on-all-posix-systems/)
 6. 用 .bat 编写汇编语言 [mnnip/BOOTSTRA](https://github.com/mniip/BOOTSTRA/tree/master/BATAS#batas)
 7. Gitlab 挺香的，兹瓷 git-lfs，还可以自己给自己的项目配一个 ci runner
 8. LaTeX 的 subfigure 之间如果有空行，就真的换了一行，所以同一行的 subfigure 不要换行
