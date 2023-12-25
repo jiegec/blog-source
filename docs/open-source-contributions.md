@@ -19,8 +19,7 @@ permalink: /open-source-contributions/
 
 ## aosc-os-abbs
 
-- [etckeeper: new, 1.18.20](https://github.com/AOSC-Dev/aosc-os-abbs/pull/4495)
-- [lsof: update to 4.98.0](https://github.com/AOSC-Dev/aosc-os-abbs/pull/4494)
+- [pull requests by jiegec](https://github.com/AOSC-Dev/aosc-os-abbs/pulls?q=is%3Apr+author%3Ajiegec)
 
 ## aws-cdk
 
@@ -29,6 +28,11 @@ permalink: /open-source-contributions/
 ## bandersnatch
 
 - [Skip downloading based on file size and upload time instead of sha256sum](https://github.com/pypa/bandersnatch/pull/822)
+
+## binutils
+
+- [as: Add new estimated reciprocal instructions in LoongArch v1.1](https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=cd51849c90e8fd13779bec69f5d4c7aadf03a532)
+- [as: Add new atomic instructions in LoongArch v1.1](https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=9ff4752d0f6d46ca0f7d275ea07e05790ac8dd1d)
 
 ## cargo
 
@@ -58,6 +62,10 @@ permalink: /open-source-contributions/
 ## FreeBSD
 
 - [Add kf_file_nlink field to kf_file and populate it](https://reviews.freebsd.org/D38169)
+
+## gcc
+
+- [LoongArch: extend.texi: Fix typos in LSX intrinsics](https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=84ad1b5303dcfd95161f78add68b0b6b013536a5)
 
 ## gpaw
 
@@ -94,6 +102,14 @@ permalink: /open-source-contributions/
 
 - [driver/linux: use the pin API added in Linux 5.6](https://gitlab.inria.fr/knem/knem/-/commit/fa80cec4970514a6388fe165cc0c4167fd813228)
 
+## litedram
+
+- [Add support for clam shell topology](https://github.com/enjoy-digital/litedram/pull/332)
+
+## litex
+
+- [Add support for clam shell topology](https://github.com/enjoy-digital/litex/pull/1673)
+
 ## legacy-homebrew
 
 - [emscripten 1.35.9](https://github.com/Homebrew/legacy-homebrew/pull/46005)
@@ -115,6 +131,17 @@ permalink: /open-source-contributions/
 
 ## Nixpkgs
 
+- [hdf5_1_10: 1.10.9 -> 1.10.11](https://github.com/NixOS/nixpkgs/pull/268889)
+- [glibc: use libutil.a when libutil.so.1 is unavailable](https://github.com/NixOS/nixpkgs/pull/254334)
+- [boost183: init at 1.83.0](https://github.com/NixOS/nixpkgs/pull/253144)
+- [dhcpcd: 9.4.1 -> 10.0.3](https://github.com/NixOS/nixpkgs/pull/253129)
+- [ifrextractor-rs: init at 1.5.1](https://github.com/NixOS/nixpkgs/pull/248689)
+- [mucommander: 1.2.0-1 -> 1.3.0-1](https://github.com/NixOS/nixpkgs/pull/246596)
+- [copilot-cli: 1.28.0 -> 1.29.0](https://github.com/NixOS/nixpkgs/pull/246594)
+- [cbmc: 5.87.0 -> 5.88.1](https://github.com/NixOS/nixpkgs/pull/246593)
+- [cbmc: 5.76.1 -> 5.86.0](https://github.com/NixOS/nixpkgs/pull/241120)
+- [spark2014: do not hardcode gnat12 version](https://github.com/NixOS/nixpkgs/pull/238663)
+- [flashrom: unbreak darwin](https://github.com/NixOS/nixpkgs/pull/230794)
 - [circt: 1.34.0 -> 1.37.0](https://github.com/NixOS/nixpkgs/pull/224621)
 - [mucommander: 1.1.0-1 -> 1.2.0-1](https://github.com/NixOS/nixpkgs/pull/224304)
 - [copilot-cli: 1.26.0 -> 1.27.0](https://github.com/NixOS/nixpkgs/pull/224303)
@@ -181,6 +208,12 @@ permalink: /open-source-contributions/
 
 ## qemu
 
+- [Lower TCG vector ops to LSX](https://patchew.org/QEMU/20230908022302.180442-1-c@jia.je/)
+- [target/loongarch: fix ASXE flag conflict](https://patchew.org/QEMU/20230930112837.1871691-1-c@jia.je/)
+- [linux-user/elfload: Enable LSX/LASX in HWCAP for LoongArch](https://patchew.org/QEMU/20231001085315.1692667-1-c@jia.je/)
+- [hw/loongarch: Fix ACPI processor id off-by-one error](https://patchew.org/QEMU/20230820105658.99123-2-c@jia.je/)
+- [Add la32 & va32 support for loongarch64-softmmu](https://patchew.org/QEMU/20230809083258.1787464-1-c@jia.je/)
+- [target/loongarch: Split fcc register to fcc0-7 in gdbstub](https://patchew.org/QEMU/20230808054315.3391465-1-c@jia.je/)
 - [target/loongarch: Fix CSR.DMW0-3.VSEG check](https://github.com/qemu/qemu/commit/505aa8d8f29b79fcef77563bb4124208badbd8d4)
 
 ## rocket-chip
