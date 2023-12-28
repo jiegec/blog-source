@@ -129,12 +129,31 @@ categories:
 
 来源：[龙芯中科 2023 年第三季度业绩说明会](https://roadshow.sseinfo.com/roadshowIndex.do?id=16536)
 
+## 2K2000
+
+[2K2000](https://www.loongson.cn/product/show?id=20): 2 核 LA364
+
+- [GM7-3002](https://www.taobao.com/list/item/744723394450.htm)
+- [龙芯2K2000全国产化工控机](http://www.chaec.com.cn/lx2k1000aqyypt/226.html)
+
+## 2K1500
+
+[2K1500](https://www.loongson.cn/product/show?id=19): 2 核 LA264
+
+## 2K1000LA
+
+[2K1000LA](https://www.loongson.cn/product/show?id=8): 2 核 LA264
+
+- [开发板](https://ic-item.jd.com/10075817807406.html)
+
+## 2K0500
+
+[2K0500](https://www.loongson.cn/product/show?id=9): 1 核 LA264
+
+- [开发板](https://ic-item.jd.com/10087557916057.html)
+
 ## 其他
 
-- [2K2000](https://www.loongson.cn/product/show?id=20): 2 核 LA364
-- [2K1500](https://www.loongson.cn/product/show?id=19): 2 核 LA264
-- [2K1000LA](https://www.loongson.cn/product/show?id=8): 2 核 LA264
-- [2K0500](https://www.loongson.cn/product/show?id=9): 1 核 LA264
 - [1C103](https://www.loongson.cn/product/show?id=18): 1 核 LA132
 
 ## 固件
