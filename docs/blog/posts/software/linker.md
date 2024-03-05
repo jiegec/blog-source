@@ -100,7 +100,7 @@ __attribute__ ((visibility ("hidden"))) int hidden_function() {}
     3. 非 const 变量，如果初始化了，放在 .data section
     4. 函数放在 .text section
 
-关于 COMMON 符号的详细内容，建议阅读 [All about COMMON symbols - MaskRay](https://maskray.me/blog/2022-02-06-all-about-common-symbols) 和 [COMMON 符号](/software/2022/07/11/archive-common-linking/)。
+关于 COMMON 符号的详细内容，建议阅读 [All about COMMON symbols - MaskRay](https://maskray.me/blog/2022-02-06-all-about-common-symbols) 和 [COMMON 符号](./archive-common-linking.md)。
 
 ## 链接
 
