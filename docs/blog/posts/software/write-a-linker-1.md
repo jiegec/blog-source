@@ -267,3 +267,10 @@ $ objdump -S helloworld_asm
 实现的过程中，灵活运用 readelf 和 objdump 等工具，确认自己输出的 ELF 文件内容是正确的。如果实现成功，就可以执行生成的可执行文件，成功打印 `Hello world！`。
 
 这个过程我用 Rust 完成了实现，使用了现成的 ELF 读写库 `object`，链接器部分的代码量大概是 200 行。
+
+## 参考
+
+最后给出一些文档，可供实现时参考：
+
+- [Tool Interface Standard (TIS) Executable and Linking Format (ELF) Specification](https://refspecs.linuxfoundation.org/elf/elf.pdf)
+- [System V Application Binary Interface AMD64 Architecture Processor Supplement Draft Version 0.99.6](https://refspecs.linuxbase.org/elf/x86_64-abi-0.99.pdf)
