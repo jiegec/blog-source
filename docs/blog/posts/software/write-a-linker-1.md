@@ -257,10 +257,12 @@ $ objdump -S helloworld_asm
      2. ELF program header：让 ELF Loader 知道有哪些 Segment 要加载
      3. section data：各个 section 的内容，由于 section 需要保证对齐，因此中间需要填一些额外的零字节
      4. ELF section header：保存 section header，记录了 section 的信息
-4. 而加载到内存里的时候，就是直接大段地连续地加载到内存中，所以可以提前计算好各个部分的地址。例如要把 ELF 加载到 0x400000，那就把 file header 和 program header 放在开头，然后因为 segment 需要对齐到页的边界，例如对齐到 0x1000（4 KB），那就把连续的相同访问权限的 section 放到一个 segment 内，然后第一个 segment 放到 0x401000，往后再对齐再放下一个 segment，依此类推，直到把所有 segment 都放下为止。
+4. 而加载到内存里的时候，就是直接大段地连续地加载到内存中，所以可以提前计算好各个部分的地址。例如要把 ELF 加载到 0x400000，那就把 file header 和 program header 放在开头，然后因为 segment 需要对齐到页的边界 [^1] ，例如对齐到 0x1000（4 KB），那就把连续的相同访问权限的 section 放到一个 segment 内，然后第一个 segment 放到 0x401000，往后再对齐再放下一个 segment，依此类推，直到把所有 segment 都放下为止。
 5. 计算好各个部分的地址以后，就可以知道各个 section 和 symbol 在最终的内存里会处于什么地址了。此时就按照 relocation 的要求进行计算（例如前面出现过的 `R_X86_64_32S` 就是后写入 64 位的地址的低 32 位，并且检查它符号扩展后等于原来 64 位的地址，如果检查失败，就会得到大家熟悉的 `relocation truncated to fit` 错误），直接把计算结果填入到数据中。由于目前只考虑最简单的情况，不涉及到动态重定向，所以可执行文件里所有重定向都会被链接器完成。
 6. 针对可执行文件，还需要生成 segment 放到 program header 里。简单粗暴的办法，就是整个文件直接映射到内存的 0x400000，设置权限为 read + write + execute。更精细的做法，则是把不同类型的数据按照合适的权限映射，例如 .rodata 放到 read only 的 segment 里，.text 放到 read + execute 的 segment 里。
 6. 再按照前面所述的流程，按照预计好的布局，把 ELF 的内容写到文件里。
+
+[^1]: 这是为了在加载 ELF 时可以直接 mmap，而不需要立即把文件内容读取到内存里；更进一步，mmap 是允许多个虚拟页映射到同一个物理页上的，所以允许一些出现一些“不对齐”的情况，得以节省因为对齐而浪费的空间。对于这个话题的进一步了解，建议阅读 [Exploring the section layout in linker output](https://maskray.me/blog/2023-12-17-exploring-the-section-layout-in-linker-output)。
 
 这里还有一些细节没有交代，例如 section string table (.shstrtab) 的维护等等。如果只是为了跑起来，符号表都可以直接删掉不要。
 
