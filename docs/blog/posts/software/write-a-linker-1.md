@@ -218,6 +218,7 @@ Program Headers:
 可以看到，它指示内核从文件的三个偏移处加载三个部分内容到内存里，分别是文件头、.text 段以及 .rodata 段。加载完以后，内核从头部里写的入口地址开始执行，就可以把程序跑起来。这时候再去看汇编，可以发现链接后的代码从 0x4001000 开始，并且直接把 .rodata 的地址写到了指令的立即数之中：
 
 ```shell
+# objdump -S: Display assembly and intermix source code with disassembly
 $ objdump -S helloworld_asm.o
 0000000000000000 <_start>:
    0:   48 c7 c7 01 00 00 00    mov    $0x1,%rdi
