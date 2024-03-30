@@ -8,6 +8,10 @@ permalink: /series/
 
 下面列举了我的博客里的一些系列文章。
 
+## 开发一个链接器
+
+[#write-a-linker](/tags/#write-a-linker)
+
 ## 教学系列
 
 [#teaching](/tags/#teaching)

@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2024-03-30
-tags: [linux,linker,elf]
+tags: [linux,linker,elf,write-a-linker]
 categories:
     - software
 ---
