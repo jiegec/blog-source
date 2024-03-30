@@ -134,7 +134,7 @@ categories:
 [2K2000](https://www.loongson.cn/product/show?id=20): 2 核 LA364
 
 - [GM7-3002](https://www.taobao.com/list/item/744723394450.htm)
-- [龙芯2K2000全国产化工控机](http://www.chaec.com.cn/lx2k1000aqyypt/226.html)
+- [龙芯 2K2000 全国产化工控机](http://www.chaec.com.cn/lx2k1000aqyypt/226.html)
 
 ## 2K1500
 
