@@ -32,7 +32,7 @@ categories:
 #
 # for syscall numbers look in /usr/include/asm/unistd_64.h
 # for examples look at http://99-bottles-of-beer.net/language-assembler-(amd64)-933.html
-# for insipration look at http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html
+# for inspiration look at http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html
 
     .section .rodata
 hello:
@@ -46,7 +46,7 @@ _start:
     mov     $1, %rdi
     mov     $hello, %rsi
     mov     $13, %rdx
-    mov     $1, %rax 
+    mov     $1, %rax
     syscall
 
     # _exit(0)
@@ -54,6 +54,34 @@ _start:
     mov     $60, %rax
     syscall
 ```
+
+??? question "这段汇编做了什么？"
+
+    这段汇编要实现的是向标准输出打印 `Hello world!\n`，但为了避免引入 C 标准库（libc），只能直接进行系统调用来完成打印。在 Linux 中，向标准输出打印，实际上就是向标准输出对应的 file handle（简称 fd，通常约定标准输入 stdin 是 0，标准输出 stdout 是 1，标准错误输出 stderr 是 2）写入要打印的内容。而这个需要通过调用 `write` syscall 来实现。
+
+    知道这一点以后，就要去查找 Linux 的 [write syscall](https://man7.org/linux/man-pages/man2/write.2.html) 的文档。文档告诉你，第一个参数是 `fd`，第二个参数 `buf` 指向要写入的数据，第三个参数 `count` 是要写入的数据的长度。结合上面的内容，为了打印 `Hello world!\n`，实际上要完成的相当于是 C 代码中的 `write(1, hello, 13)`，其中 1 就是 stdout 的 fd，`hello` 指向保存 `Hello world!\n` 字符串的地址，13 是字符串的长度。那么接下来就要研究，如何用汇编调用 syscall。
+
+    接下来，要知道在 amd64 Linux 下，如何用汇编调用 syscall。首先找到 [amd64 Linux syscall 调用约定](https://www.ucw.cz/~hubicka/papers/abi/node33.html#features)，它告诉我们：
+
+    1. syscall 编号保存在 rax 寄存器中
+    2. syscall 的参数按顺序，依次保存在 rdi, rsi, rdx, r10, r8, r9 寄存器中
+    3. 用 syscall 指令调用 syscall
+    3. syscall 的返回值也会保存在 rax 寄存器中
+
+    既然要调用 `write(1, hello, 13)`，那就按照上面的要求，设置 `rdi=1`、`rsi=hello` 和 `rdx=13`，最后在 [amd64 Linux syscall table](https://filippo.io/linux-syscall-table/) 中找到 `write` syscall 的编号是 1，所以设置 `rax=1`。到这里，调用 `write` syscall 的所有准备任务都已经完成，调用 `syscall` 指令即可完成系统调用。这样就完成了一次 `Hello world!\n` 的打印：
+
+    ```asm
+    # write(1, hello, 13)
+    mov     $1, %rdi
+    mov     $hello, %rsi
+    mov     $13, %rdx
+    mov     $1, %rax
+    syscall
+    ```
+
+    后面 `exit(0)` 的系统调用也是类似的，不再赘述。代码中写 `_exit(0)` 是为了和 C 标准库中的 `exit(0)` 做区分：前者直接退出程序（只会结束当前线程，但是由于当前进程只有一个线程，所以整个进程都结束了），而后者会做一些清理工作，见 [_exit manpage](https://man7.org/linux/man-pages/man2/exit.2.html)。
+
+
 
 由于是汇编代码，所以直接调用汇编器生成 ELF .o 文件，然后观察它的内容：
 
