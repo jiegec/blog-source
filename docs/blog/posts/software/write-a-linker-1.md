@@ -86,7 +86,18 @@ _start:
 由于是汇编代码，所以直接调用汇编器生成 ELF .o 文件，然后观察它的内容：
 
 ```shell
+# Use assembler (GNU as) to assemble
 $ as helloworld_asm.s -o helloworld_asm.o
+# readelf -a, --all: Equivalent to: -h -l -S -s -r -d -V -A -I
+#         -h, --file-header: Display the ELF file header
+#         -l, --program-headers: Display the program headers
+#         -S, --section-headers: Display the sections' header
+#         -s, --syms: Display the symbol table
+#         -r, --relocs: Display the relocations (if present)
+#         -d, --dynamic: Display the dynamic section (if present)
+#         -V, --version-info: Display the version sections (if present)
+#         -A, --arch-specific: Display architecture specific information (if any)
+#         -I, --histogram: Display histogram of bucket list lengths
 $ readelf -a helloworld_asm.o
 # Output is shown below
 ```
@@ -168,6 +179,7 @@ Symbol table '.symtab' contains 4 entries:
 下面我们要实现一个最简单的链接器，就把这一个 ELF .o 生成一个可执行文件。可以先让现有的 ld 链接出来，看看它的最终效果是什么样的：
 
 ```shell
+# Use ld (GNU ld.bfd) to link
 $ ld helloworld_asm.o -o helloworld_asm
 $ readelf -a helloworld_asm
 # Output is shown below

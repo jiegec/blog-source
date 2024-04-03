@@ -107,8 +107,10 @@ _start:
 调用 GNU as 分别汇编两个文件然后链接，程序可以正常运行：
 
 ```shell
+# Use assembler (GNU as) to assemble
 $ as main.s -o main.o
 $ as printer.s -o printer.o
+# Use ld (GNU ld.bfd) to link
 $ ld main.o printer.o -o helloworld
 $ ./helloworld
 Hello world!
@@ -118,7 +120,8 @@ Hello world!
 
 首先观察 `main.s` 经过汇编得到的 `main.o`，看它是怎么调用 `print` 和 `exit` 函数的：
 
-```asm
+```shell
+# objdump -S: Display assembly and intermix source code with disassembly
 $ objdump -S main.o
 
 main.o:     file format elf64-x86-64
@@ -138,6 +141,7 @@ Disassembly of section .text:
 正好 `objdump` 可以帮我们显示出 relocation，只需要添加 `-r` 参数：
 
 ```shell
+# objdump -r, --reloc: Display the relocation entries in the file
 $ objdump -S -r main.o
 
 main.o:     file format elf64-x86-64
@@ -187,7 +191,7 @@ relocation 的情况分析完了，我们学习到汇编器在遇到外部函数
 
 此时再看 `printer.o` 的反汇编结果：
 
-```asm
+```shell
 $ objdump -S -r printer.o
 
 printer.o:     file format elf64-x86-64
@@ -212,7 +216,7 @@ Disassembly of section .text:
 
 不出意外，两个函数都出现了，同时也出现了上一篇博客中提到的 `R_X86_64_32S` 的 relocation 类型。仔细观察，会发现这个 relocation 的地址是 `0xa`，而不是 `mov` 指令的地址 `0x7`，聪明的你应该已经观察出来：`mov` 指令前三个字节表示了这是一条 `mov` 指令，目的寄存器是 `%rsi`，后四个字节就是要 `mov` 的立即数，所以 relocation 直接指向了后四个字节的地址。链接器不需要反汇编，不需要知道这是一条 `mov` 指令，只管找 relocation 往里填。
 
-关于两个 `.o` 文件分析得差不多了，接下来看最后得到的可执行文件：
+关于两个 `.o` 文件分析得差不多了，接下来看最后运行 `ld main.o printer.o -o helloworld` 得到的可执行文件：
 
 ```asm
 
