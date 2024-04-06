@@ -27,6 +27,8 @@ categories:
 
 ## 分析
 
+### 拆分代码
+
 输入只有一个 ELF object（.o）文件的时候，这个 object 文件里需要的所有东西都只能由这个 object 自己来提供，所以比较好实现。但如果要输入多个 ELF object 文件，此时可能会出现需要依赖的情况。首先回忆一下之前学习的 C/C++ 的内容，在编写代码的时候，经常会把声明（declaration）放到头文件（.h）里，实现（definition）放在源文件（.c/cpp）：这样可以在 `A.cpp` 中调用 `B.cpp` 里的函数，不会出现大家经常遇到的 `duplicate symbol` 错误。那么这是怎么实现的呢？
 
 我们首先在汇编语言中模拟这个场景。首先回顾一下上一篇博客中用汇编实现的 Hello World 例子：
@@ -115,6 +117,8 @@ $ ld main.o printer.o -o helloworld
 $ ./helloworld
 Hello world!
 ```
+
+### 观察对象文件
 
 这时候我们就要探究，汇编器和链接器是如何协作，使得 `main.s` 中的代码可以调用 `printer.s` 中的函数。当然了，在这里我们用的是汇编语言，汇编器遇到不存在的函数名就会认为是外部函数。如果是 C/C++ 语言，则要先在 `main.c` 中声明这两个函数（或者 `#include` 了一个声明了这两个函数的头文件）再调用（比较老的 C 标准允许不声明直接调用，但这是不推荐的）。
 
@@ -216,6 +220,8 @@ Disassembly of section .text:
 
 不出意外，两个函数都出现了，同时也出现了上一篇博客中提到的 `R_X86_64_32S` 的 relocation 类型。仔细观察，会发现这个 relocation 的地址是 `0xa`，而不是 `mov` 指令的地址 `0x7`，聪明的你应该已经观察出来：`mov` 指令前三个字节表示了这是一条 `mov` 指令，目的寄存器是 `%rsi`，后四个字节就是要 `mov` 的立即数，所以 relocation 直接指向了后四个字节的地址。链接器不需要反汇编，不需要知道这是一条 `mov` 指令，只管找 relocation 往里填。
 
+### 观察可执行文件
+
 关于两个 `.o` 文件分析得差不多了，接下来看最后运行 `ld main.o printer.o -o helloworld` 得到的可执行文件：
 
 ```asm
@@ -248,6 +254,8 @@ Disassembly of section .text:
 1. `_start` 函数里函数调用的指令 `call print` 和 `call exit` 已经被链接器修复，`print` 函数内引用 `hello` 字符串地址也正确被填写
 2. 来自两个 `.o` 文件的代码段 `.text` 的内容被拼接起来，得到了输出的 ELF 里的 `.text` 段内容；类似地，`printer.o` 里面的只读数据段 `.rodata` 的内容也复制到了输出的 ELF 中，地址是 `0x402000`
 3. 虽然 `objdump` 参数里写了 `-r`，要求 `objdump` 显示代码中的 relocation，但是链接器已经完成了所有 relocation 的计算并更新了对应的数，因此输出的 ELF 里就没有 relocation 了。在未来的博客中，我们会看到，可执行文件里也可以有 relocation
+
+### 小结
 
 按照这些观察，我们可以得出，为了支持第二版的链接器，也就是支持两个或者更多个 .o 文件的链接的静态链接器，需要做的额外工作：
 
