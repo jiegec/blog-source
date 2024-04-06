@@ -304,7 +304,7 @@ Dynamic section at offset 0x2f40 contains 7 entries:
 表示这个动态库向动态链接器提供了一些会在动态链接中用到的信息：
 
 1. `HASH`：`.hash` section 的地址
-2. `GNU_HASH`：`.gnu2hash` section 的地址
+2. `GNU_HASH`：`.gnu.hash` section 的地址
 3. `STRTAB`: `.dynstr` section 的地址
 4. `SYMTAB`: `.dynsym` section 的地址
 5. `STRSZ`: `.dynstr` section 的大小
