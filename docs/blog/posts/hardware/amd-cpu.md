@@ -109,6 +109,12 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 | Hawk Point | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 8945HS/8845HS/8840HS/8840U/8645HS/8640HS/8640U/8540U/8440U |
 | Phoenix    | 桌面   | RDNA3 | AM5           | Zen 4  | 8700G/8600G/8500G/8300G                                    |
 
+### Ryzen 0000
+
+| 代号          | 用途 | 核显  | 插槽 | 微架构 | 型号                    |
+|---------------|----|-------|------|--------|-------------------------|
+| Granite Ridge | 桌面 | RDNA2 | AM5  | Zen 5  | 9950X/9900X/9700X/9600X |
+
 ### Z1
 
 Ryzen Z1 系列：
@@ -138,6 +144,8 @@ Ryzen Z1 系列：
 - Hawk Point: [AMD Extends Mobile PC Leadership with AMD Ryzen™ 8040 Series Processors and Makes Ryzen™ AI Software Widely Available, Advancing the AI PC Era](https://ir.amd.com/news-events/press-releases/detail/1172/amd-extends-mobile-pc-leadership-with-amd-ryzen-8040)
 - Hawk Point: [AMD Expands Commercial AI PC Portfolio to Deliver Leadership Performance Across Professional Mobile and Desktop Systems](https://ir.amd.com/news-events/press-releases/detail/1190/amd-expands-commercial-ai-pc-portfolio-to-deliver)
 - Phoenix: [AMD Reveals Next-Gen Desktop Processors for Extreme PC Gaming and Creator Performance](https://www.amd.com/en/newsroom/press-releases/2024-1-8-amd-reveals-next-gen-desktop-processors-for-extrem.html)
+- Granite Ridge: [AMD Unveils Ryzen 9000 CPUs For Desktop, Zen 5 Takes Center Stage at Computex 2024](https://www.anandtech.com/show/21415/amd-unveils-ryzen-9000-cpus-for-desktop-zen-5-takes-center-stage-at-computex-2024)
+
 
 ## EPYC 系列
 
