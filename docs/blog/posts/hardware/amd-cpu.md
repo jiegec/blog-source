@@ -108,6 +108,7 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 |------------|------|-------|---------------|--------|------------------------------------------------------------|
 | Hawk Point | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 8945HS/8845HS/8840HS/8840U/8645HS/8640HS/8640U/8540U/8440U |
 | Phoenix    | 桌面   | RDNA3 | AM5           | Zen 4  | 8700G/8600G/8500G/8300G                                    |
+| Phoenix    | 桌面   | 无    | AM5           | Zen 4  | 8700F/8400F                                                      |
 
 ### Ryzen 9000
 
@@ -127,6 +128,12 @@ Ryzen Z1 系列：
 
 - [Ryzen Z1](https://www.amd.com/en/product/13226)
 - [Ryzen Z1 Extreme](https://www.amd.com/en/product/13221)
+
+### 核显
+
+- AMD Radeon™ 890M: RDNA 3.5
+- AMD Radeon™ 740M/760M/780M: RDNA 3
+- AMD Radeon™ 610M/660M/680M: RDNA 2
 
 ### 参考资料
 
