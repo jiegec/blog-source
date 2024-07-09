@@ -506,7 +506,29 @@ second_target:
 15. B4 xor T1
 16. B3 xor T0
 
-并且每个 taken branch 会使得 PHR 左移 2 位。这就验证了论文里 Figure 4(b) 的结果。
+并且每个 taken branch 会使得 PHR 左移 2 位。这就验证了 Half&Half 论文里 Figure 4(b) 的结果。Indirector 论文里提供了三种微架构的 PHR 更新规则：
+
+![](indirector_phr_update.png)
+
+在 [Reading privileged memory with a side-channel](https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html) 里可以看到 Haswell 架构的 PHR（文章里写的是 BHB）更新方法：
+
+```cpp
+void bhb_update(uint58_t *bhb_state, unsigned long src, unsigned long dst) {
+  // B19 B18 B17 B16 B13 B12 B9 B8 B5 B4 B15+T5 B14+T4 B11+T3 B10+T2 B7+T1 B6+T0
+  *bhb_state <<= 2;
+  *bhb_state ^= (dst & 0x3f);
+  *bhb_state ^= (src & 0xc0) >> 6;
+  *bhb_state ^= (src & 0xc00) >> (10 - 2);
+  *bhb_state ^= (src & 0xc000) >> (14 - 4);
+  *bhb_state ^= (src & 0x30) << (6 - 4);
+  *bhb_state ^= (src & 0x300) << (8 - 8);
+  *bhb_state ^= (src & 0x3000) >> (12 - 10);
+  *bhb_state ^= (src & 0x30000) >> (16 - 12);
+  *bhb_state ^= (src & 0xc0000) >> (18 - 14);
+}
+```
+
+不过 Haswell 架构的 PHR 的位数，Half&Half 与 Reading privileged memory with a side-channel 的结果对不上，前者认为是 93x2，后者认为是 29x2。
 
 
 ### 其他测试
