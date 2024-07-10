@@ -528,7 +528,11 @@ void bhb_update(uint58_t *bhb_state, unsigned long src, unsigned long dst) {
 }
 ```
 
-不过 Haswell 架构的 PHR 的位数，Half&Half 与 Reading privileged memory with a side-channel 的结果对不上，前者认为是 93x2，后者认为是 29x2。
+这和 Half&Half 论文里的 Figure 14 也是一致的：
+
+![](haswell_phr_footprint.png)
+
+不过 Haswell 架构的 PHR 的位数，Half&Half 与 Reading privileged memory with a side-channel 的结果对不上，前者认为是 93x2，后者认为是 29x2。我在 Broadwell 和 Ivy Bridge EP 架构的处理器上测出来都是 93 个分支。
 
 
 ### 其他测试
