@@ -33,3 +33,29 @@ categories:
 - [Mac mini (2023) - Technical Specifications](https://support.apple.com/kb/SP891?viewlocale=en_US&locale=en_US)
 - [Mac Studio (2022) - Technical Specifications](https://support.apple.com/kb/SP865?locale=en_US)
 - [Mac Studio (2023) - Technical Specifications](https://support.apple.com/kb/SP894?locale=en_US)
+
+/proc/cpuinfo:
+
+Apple M1 Firestorm:
+
+```
+Features        : fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint
+CPU implementer : 0x61
+CPU architecture: 8
+CPU variant     : 0x1
+CPU part        : 0x023
+CPU revision    : 1
+```
+
+Apple M1 Icestorm:
+
+```
+Features        : fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint
+CPU implementer : 0x61
+CPU architecture: 8
+CPU variant     : 0x1
+CPU part        : 0x022
+CPU revision    : 1
+```
+
+See also: https://github.com/util-linux/util-linux/blob/198e920aa24743ef6ace4e07cf6237de527f9261/sys-utils/lscpu-arm.c#L200.
