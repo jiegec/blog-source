@@ -530,6 +530,7 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
+- i9-14900K Raptor Lake（`-O2`）: 87.2
 - i9-13900K Raptor Lake（`-O2`）: 79.6
 - i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
 - i9-12900KS Alder Lake（`-O2`）: 74.4
