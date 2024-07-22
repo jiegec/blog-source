@@ -28,6 +28,8 @@ SPEC CPU 2006 分 int 和 fp 两种，又分不同的模式（见 [Q15. What is 
 1. base：所有测例都用同样的优化选项
 2. peak：不同测例可以用不同的优化选项
 
+spec cpu int 2006 有 12 个 benchmark，spec cpu fp 2006 有 17 个 benchmark。
+
 ## 安装
 
 首先需要获取一份 cpu2006-1.2.iso 文件，md5 可以在 [官网](https://www.spec.org/md5sums.html) 上查到。在 Linux 环境下，mount 这个 iso 并运行里面的 install.sh：
@@ -530,6 +532,7 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 - i9-13900K Raptor Lake（`-O2`）: 79.6
 - i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
+- i9-12900KS Alder Lake（`-O2`）: 74.4
 - i9-10980XE Cascade Lake（`-O2`）: 43.9
 - E5-2680 v3 Haswell（`-O2`）: 33.2
 - POWER8NVL（`-O2`）: 26.5
