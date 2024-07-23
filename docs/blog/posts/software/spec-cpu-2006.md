@@ -531,6 +531,7 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
 - i9-14900K Raptor Lake（`-O2`）: 87.2
+- i9-14900K Raptor Lake（`-O3`）: 91.9
 - i9-13900K Raptor Lake（`-O2`）: 79.6
 - i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
 - i9-12900KS Alder Lake（`-O2`）: 74.4
@@ -539,6 +540,11 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 - POWER8NVL（`-O2`）: 26.5
 - Kunpeng 920 TaiShan V110（`-O2`）: 23.3
 - Kunpeng 920 TaiShan V110（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 24.5
+
+下面贴出自己测的数据（SPECint2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。
+
+- i9-14900K Raptor Lake（`-O3`）: 12.1
+- i9-12900KS Alder Lake（`-O3`）: 10.5
 
 ## 网上的数据
 
