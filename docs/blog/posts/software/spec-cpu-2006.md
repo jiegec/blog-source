@@ -21,7 +21,7 @@ SPEC CPU 2006 分 int 和 fp 两种，又分不同的模式（见 [Q15. What is 
 1. speed：跑单进程，看看单进程多少时间能完成，测试完成单个任务的时间；不开 OpenMP，但是编译器可以自动并行化（ICC）
 2. rate：跑多进程，看看单位时间内能跑多少个任务，测试完成多个任务的吞吐量
 
-注：SPEC CPU 2017 稍有不同，speed 允许开 OpenMP，rate 除了 xz 以外不允许开 OpenMP。
+注：SPEC CPU 2017 稍有不同，speed 允许开 OpenMP，rate 除了 xz 以外不允许开 OpenMP。比单核性能，要么用单线程的 speed（speed 要求单进程），要么用单 copy 的 rate（rate 要求单线程）。
 
 根据编译选项的不同，分为（见 [Q14. What is the difference between a "base" metric and a "peak" metric?](https://www.spec.org/cpu2006/Docs/readme1st.html#Q14)）：
 
