@@ -545,6 +545,7 @@ PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 
 - i9-14900K Raptor Lake（`-O3`）: 12.1
 - i9-12900KS Alder Lake（`-O3`）: 10.5
+- Kunpeng 920 TaiShan V110（`-O3`）: 3.65
 
 ## 网上的数据
 
