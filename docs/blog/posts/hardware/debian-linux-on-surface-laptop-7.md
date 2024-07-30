@@ -49,3 +49,5 @@ initrd  /boot/initrd.img-6.11.0-rc1-00043-g94ede2a3e913
 ```
 
 这样搞完，Debian 系统就正常起来了！
+
+本文也发到了 Reddit 上：https://www.reddit.com/r/SurfaceLinux/comments/1efmyb3/managed_to_install_baremetal_linux_on_snapdragon/
