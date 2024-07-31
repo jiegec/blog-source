@@ -51,3 +51,9 @@ initrd  /boot/initrd.img-6.11.0-rc1-00043-g94ede2a3e913
 这样搞完，Debian 系统就正常起来了！
 
 本文也发到了 Reddit 上：https://www.reddit.com/r/SurfaceLinux/comments/1efmyb3/managed_to_install_baremetal_linux_on_snapdragon/
+
+UPDATE:
+
+1. 不知道为啥，无线网卡忽然被 rfkill 了，没有找到原因，Windows 里可以继续正常使用
+2. CPUFreq 驱动已经有 patch：[[PATCH V6 0/5] qcom: x1e80100: Enable CPUFreq](https://patchew.org/linux/20240612124056.39230-1-quic._5Fsibis@quicinc.com/)，打上即可自动调频
+3. 内置的键盘的问题修好了，需要额外的补丁，见 https://github.com/jiegec/linux/tree/surface-laptop-7。
