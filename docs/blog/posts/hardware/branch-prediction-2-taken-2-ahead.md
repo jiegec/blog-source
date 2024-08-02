@@ -42,7 +42,7 @@ categories:
 
 在论文 Multiple-Block Ahead Branch Predictors 中可以看到另一种更优雅的做法：已知 A 和 B，用 A 去预测 C，用 B 去预测 D。此时分支预测的就是间隔一次以后的目的地址，而不是直接的目的地址，这样的设计下，BTB 等结构需要变成双端口，这样才能同时预测两个分支：A 和 B。预测出 C 和 D 以后，再用同样的办法去预测 E 和 F，这样持续下去。当然论文设计的比这里讲的更复杂一点，具体细节见论文。
 
-我们不知道 ARM 具体如何实现的 2-taken，但是可以猜想它做了一些限制，例如虽然两个分支都是 taken，但是可能对偏移、地址有一些限制。Intel 的 Golden Cove 架构也实现了 2-taken。
+我们不知道 ARM 具体如何实现的 2-taken，但是可以猜想它做了一些限制，例如虽然两个分支都是 taken，但是可能对偏移、地址有一些限制。Intel 的 Golden Cove 架构，AMD 的 Zen 4 架构也实现了 2-taken。
 
 虽然做了 2-taken，只是分支预测的带宽增加了，每个周期可以预测更多的分支。但前面也提到了，分支预测器是生产者，指令缓存是消费者，生产者的性能提升了，那么消费者的性能也要相应提升才是。但是指令缓存是一片很大的 SRAM，功耗和时序都比较麻烦，所以改起来比较困难。如果单纯增加指令缓存一次取指的宽度，例如 8 字节提升到 16 字节，对于分支密度低的情况比较有效，但如果分支很多，那么这样效果也不会很好，要提升性能，就要考虑双端口，每个周期从两个不同的地址取指。这就是 Zen 5 做的事情。
 
@@ -63,3 +63,4 @@ Zen 5 除了 2-taken 以外，还实现了 2-ahead，也就是每个周期可以
 - [The Cortex-A77 µarch: Added ALUs & Better Load/Stores](https://www.anandtech.com/show/14384/arm-announces-cortexa77-cpu-ip/3)
 - [Multiple-Block Ahead Branch Predictors](https://dl.acm.org/doi/pdf/10.1145/237090.237169)
 - [Popping the Hood on Golden Cove](https://chipsandcheese.com/2021/12/02/popping-the-hood-on-golden-cove/)
+- [AMD Zen 4 Ryzen 9 7950X and Ryzen 5 7600X Review: Retaking The High-End](https://www.anandtech.com/show/17585/amd-zen-4-ryzen-9-7950x-and-ryzen-5-7600x-review-retaking-the-high-end/8)
