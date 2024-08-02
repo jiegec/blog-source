@@ -57,6 +57,8 @@ Zen 5 除了 2-taken 以外，还实现了 2-ahead，也就是每个周期可以
 - [Zen 5’s 2-Ahead Branch Predictor Unit: How a 30 Year Old Idea Allows for New Tricks](https://chipsandcheese.com/2024/07/26/zen-5s-2-ahead-branch-predictor-unit-how-30-year-old-idea-allows-for-new-tricks/)
 - [Arm's New Cortex-A78 and Cortex-X1 Microarchitectures: An Efficiency and Performance Divergence - Anandtech](https://www.anandtech.com/show/15813/arm-cortex-a78-cortex-x1-cpu-ip-diverging/2)
 - [AMD Zen 5 Technical Deep Dive](https://www.techpowerup.com/review/amd-zen-5-technical-deep-dive/3.html)
+- [AMD Zen 5 Architecture Reveal: A Ryzen 9000 And Ryzen AI 300 Deep Dive](https://hothardware.com/reviews/amd-ryzen-ai-zen-5-architecture-overview)
+- [AMD deep-dives Zen 5 architecture — Ryzen 9000 and AI 300 benchmarks, RDNA 3.5 GPU, XDNA 2, and more](https://www.tomshardware.com/pc-components/cpus/amd-deep-dives-zen-5-ryzen-9000-and-strix-point-cpu-rdna-35-gpu-and-xdna-2-architectures/4)
 - [Optimizations Enabled by a Decoupled Front-End Architecture](https://cseweb.ucsd.edu/~calder/papers/UCSD-CS00-645.pdf)
 - [The Cortex-A77 µarch: Added ALUs & Better Load/Stores](https://www.anandtech.com/show/14384/arm-announces-cortexa77-cpu-ip/3)
 - [Multiple-Block Ahead Branch Predictors](https://dl.acm.org/doi/pdf/10.1145/237090.237169)
