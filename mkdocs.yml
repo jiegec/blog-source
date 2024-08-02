@@ -24,6 +24,7 @@ nav:
   - 开源: open-source-contributions.md
   - 标签: tags.md
   - 知识库: "/kb/"
+  - CPU: "/cpu/"
   - 系列: series.md
   - 项目: projects/README.md
   - 工具: tools.md
