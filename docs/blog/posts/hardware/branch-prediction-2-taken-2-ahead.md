@@ -44,7 +44,20 @@ categories:
 
 我们不知道 ARM 具体如何实现的 2-taken，但是可以猜想它做了一些限制，例如虽然两个分支都是 taken，但是可能对偏移、地址有一些限制，例如要求在同一个 cacheline 内。Intel 的 Golden Cove 架构，AMD 的 Zen 4 架构也实现了 2-taken，都有或多或少类似的限制。因此，可以用 2-taken 表示限制比较多的每个周期可以预测 2 个 taken 的算法，而用 2-ahead 表示更加通用的预测 2 个 taken 的算法。
 
-虽然做了 2-taken，只是分支预测的带宽增加了，每个周期可以预测更多的分支。但前面也提到了，分支预测器是生产者，指令缓存是消费者，生产者的性能提升了，那么消费者的性能也要相应提升才是。但是指令缓存是一片很大的 SRAM，功耗和时序都比较麻烦，所以改起来比较困难。如果单纯增加指令缓存一次取指的宽度，例如 8 字节提升到 16 字节，对于分支密度低的情况比较有效，但如果分支很多，那么这样效果也不会很好，要提升性能，就要考虑双端口，每个周期从两个不同的地址取指。这就是 Zen 5 做的事情。
+即使做了 2-taken 的预测器支持，也未必可以每周期执行 2 个 taken 分支，例如 AMD 在论文 [AMD Next-Generation “Zen 4” Core and 4th Gen AMD EPYC Server CPUs](https://ieeexplore.ieee.org/document/10466769) 是这么表述 Zen 4 的 2-taken 实现的：
+
+> To better feed the wide execution engine, AMD has implemented several front-end
+> bandwidth improvements on “Zen 4.” One is the ability to predict and dispatch up
+> to two taken branches per cycle. While the Instruction Cache (I-Cache) or
+> Operation Cache (Op Cache) fetch limits the sustained fetch bandwidth to one
+> taken branch per cycle, predicting two taken branches per cycle allows the
+> branch predictor to run ahead more often and compensate for existing branch
+> prediction stall cycles. Dispatching up to two taken branches per cycle, and
+> optimizations of the integer scheduler assignment allow “Zen 4” to fill the
+> out-of-order part of the machine faster once a dispatch (allocation) stall has
+> been resolved.
+
+也就是说，虽然做了 2-taken/2-ahead，只是分支预测的带宽增加了，每个周期可以预测更多的分支，但这还不够。前面也提到了，分支预测器是生产者，指令缓存是消费者，生产者的性能提升了，那么消费者的性能也要相应提升才是。但是指令缓存是一片很大的 SRAM，功耗和时序都比较麻烦，所以改起来比较困难。如果单纯增加指令缓存一次取指的宽度，例如 8 字节提升到 16 字节，对于分支密度低的情况比较有效，但如果分支很多，那么这样效果也不会很好，要提升性能，就要考虑双端口，每个周期从两个不同的地址取指。这就是 Zen 5 做的事情。
 
 ## 2-fetch
 
@@ -64,3 +77,4 @@ Zen 5 除了 2-taken 以外，还实现了 2-fetch，也就是每个周期可以
 - [Multiple-Block Ahead Branch Predictors](https://dl.acm.org/doi/pdf/10.1145/237090.237169)
 - [Popping the Hood on Golden Cove](https://chipsandcheese.com/2021/12/02/popping-the-hood-on-golden-cove/)
 - [AMD Zen 4 Ryzen 9 7950X and Ryzen 5 7600X Review: Retaking The High-End](https://www.anandtech.com/show/17585/amd-zen-4-ryzen-9-7950x-and-ryzen-5-7600x-review-retaking-the-high-end/8)
+- [AMD Next-Generation “Zen 4” Core and 4th Gen AMD EPYC Server CPUs](https://ieeexplore.ieee.org/document/10466769)
