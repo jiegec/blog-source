@@ -42,9 +42,14 @@ categories:
 
 在论文 Multiple-Block Ahead Branch Predictors 中可以看到一种更通用做法，称为 2-ahead：已知 A 和 B，用 A 去预测 C，用 B 去预测 D。此时分支预测的就是间隔一次以后的目的地址，而不是直接的目的地址，这样的设计下，BTB 等结构需要变成双端口，这样才能同时预测两个分支：A 和 B。预测出 C 和 D 以后，再用同样的办法去预测 E 和 F，这样持续下去。当然论文设计的比这里讲的更复杂一点，具体细节见论文。
 
-我们不知道 ARM 具体如何实现的 2-taken，但是可以猜想它做了一些限制，例如虽然两个分支都是 taken，但是可能对偏移、地址有一些限制，例如要求在同一个 cacheline 内。Intel 的 Golden Cove 架构，AMD 的 Zen 4 架构也实现了 2-taken，都有或多或少类似的限制。因此，可以用 2-taken 表示限制比较多的每个周期可以预测 2 个 taken 的算法，而用 2-ahead 表示更加通用的预测 2 个 taken 的算法。
+我们不知道 ARM 具体如何实现的 2-taken，但是可以猜想它做了一些限制，例如虽然两个分支都是 taken，但是可能对偏移、地址有一些限制，例如要求在同一个 cacheline 内。Intel 的 Golden Cove 架构，AMD 的 Zen 4 架构也实现了 2-taken，都有或多或少类似的限制。[Chips and Cheese](https://chipsandcheese.com/2023/10/08/zen-5s-leaked-slides/) 是这么描述 Intel 和 ARM 的 2-taken 支持的：
 
-即使做了 2-taken 的预测器支持，也未必可以每周期执行 2 个 taken 分支，例如 AMD 在论文 [AMD Next-Generation “Zen 4” Core and 4th Gen AMD EPYC Server CPUs](https://ieeexplore.ieee.org/document/10466769) 是这么表述 Zen 4 的 2-taken 实现的：
+> Rocket Lake could unroll small loops within its loop buffer, turning taken
+> branches into not-taken ones from the fetch perspective. Arm’s Neoverse N2 and
+> Cortex X2 can also sustain two taken branches per cycle by using a 64 entry
+> nano-BTB.
+
+因此，可以用 2-taken 表示限制比较多的每个周期可以预测 2 个 taken 的算法，而用 2-ahead 表示更加通用的预测 2 个 taken 的算法。即使做了 2-taken 的预测器支持，也未必可以每周期执行 2 个 taken 分支，例如 AMD 在论文 [AMD Next-Generation “Zen 4” Core and 4th Gen AMD EPYC Server CPUs](https://ieeexplore.ieee.org/document/10466769) 是这么表述 Zen 4 的 2-taken 实现的：
 
 > To better feed the wide execution engine, AMD has implemented several front-end
 > bandwidth improvements on “Zen 4.” One is the ability to predict and dispatch up
