@@ -54,6 +54,21 @@ ROB 实际上就是一个循环队列，队列头尾指针之间就是正在执�
 
 这种方法中，ROB 的大小成为了一个新的瓶颈，因为每条在正在执行的指令都需要在 ROB 中记录一份。不过好处是实现了精确异常。
 
+Pentium III 采用的就是这种方法，在 [The Microarchitecture of the Pentium4 Processor](https://courses.cs.washington.edu/courses/cse378/10au/lectures/Pentium4Arch.pdf) 中是这么描述的：
+
+> It allocates the data result registers and the ROB entries as a single, wide
+> entity with a data and a status field. The ROB data field is used to store the
+> data result value of the uop, and the ROB status field is used to track the
+> status of the uop as it is executing in the machine. These ROB entries are
+> allocated and deallocated sequentially and are pointed to by a sequence number
+> that indicates the relative age of these entries.  Upon retirement, the result
+> data is physically copied from the ROB data result field into the separate
+> Retirement Register File (RRF). The RAT points to the current version of each of
+> the architectural registers such as EAX.  This current register could be in the
+> ROB or in the RRF.
+
+这和上面描述的方法是一致的：ROB 会存指令的结果，RAT 记录每个架构寄存器对应的 ROB 或者 RRF 的表项，指令从 ROB 提交时，指令的结果会从 ROB 复制到 RRF 上，同时更新 RAT。而 Intel 在 NetBurst 微架构把实现换成了下面要讲的方法。
+
 ## Explicit Register Renaming
 
 上面两种设计都是采用的 Implicit Register Renaming 的方法，第一种方法重命名到了保留站，第二种方法重命名到了 ROB。还有一种设计，把寄存器编号映射到物理的寄存器。把 ISA 中的寄存器称为架构寄存器（比如 32 个通用寄存器），CPU 中实际的寄存器称为物理寄存器，物理寄存器一般会比架构寄存器多很多（一两百个甚至更多）。
@@ -82,7 +97,7 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 	returns new physical registers to the free lists by restoring their read
 	pointers.
 
-和 @CircuitCoder 讨论并参考 [BOOM 文档](https://docs.boom-core.org/en/latest/sections/reorder-buffer.html#parameterization-rollback-versus-single-cycle-reset) 后发现，另一种办法是记录一个 Committed Map Table，也就是，只有当 ROB Head 的指令被 Commit 的时候，才更新 Committed Map Table，可以认为是顺序执行的寄存器映射表。当发生异常的时候，把 Committed Map Table 覆盖到 Register Map Table 上。这样需要的周期比较少，但是时序可能比较差。
+和 @CircuitCoder 讨论并参考 [BOOM 文档](https://docs.boom-core.org/en/latest/sections/reorder-buffer.html#parameterization-rollback-versus-single-cycle-reset) 后发现，另一种办法是记录一个 Committed Map Table，也就是，只有当 ROB Head 的指令被 Commit 的时候，才更新 Committed Map Table，可以认为是顺序执行的寄存器映射表。当发生异常的时候，把 Committed Map Table 覆盖到 Register Map Table 上。这样需要的周期比较少，但是时序可能比较差。从 [The Microarchitecture of the Pentium4 Processor](https://courses.cs.washington.edu/courses/cse378/10au/lectures/Pentium4Arch.pdf) 的图 5 来看，Pentium 4 也是采用这种实现方法，分别维护 Frontend RAT 和 Retirement RAT。
 
 ## Implicit Renaming(ROB) 和 Explicit Renaming 的比较
 
