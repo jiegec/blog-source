@@ -60,7 +60,11 @@ A 核心上的程序要进行 Read a（表示读取 a 地址的数据，下面�
 
 可以看到，可能是先完成所有 A 核心上的访存，再完成 B 核心上的访存（Ra Wa Rb Wb），也可能反过来，先完成 B 核心上的访存，再完成 A 核心上的访存（Rb Wb Ra Wa），也可能两个核心的访存交错进行（例如 Ra Rb Wa Wb）。它们都满足一个条件：Ra 一定在 Wa 之前，Rb 一定在 Wb 之前，也就是说，Ra 一定在 Wa 之前的这种 program order 在内存子系统上的执行顺序 memory order 里也一定会保证。
 
-这种内存模型就是 Sequential Consistency (简称 SC)，它的性质就是遵循 program order，从每个核心来看，代码怎么写的就怎么跑，不做重排，而来自不同核心的访存之间的顺序不做要求。根据这个性质，我们就可以分析软件的行为，判断它是否可能出现特定的结果。下面举一个例子：
+这种内存模型就是 Sequential Consistency (简称 SC)，它的性质就是遵循 program order，从每个核心来看，代码怎么写的就怎么跑，不做重排，而来自不同核心的访存之间的顺序不做要求。下面是 SC 模型的图示（图源 [A Tutorial Introduction to the ARM and POWER Relaxed Memory Model](https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/test7.pdf)）：
+
+![](memory_model_and_memory_ordering_sc.png)
+
+根据这个性质，我们就可以分析软件的行为，判断它是否可能出现特定的结果。下面举一个例子：
 
 假如有两个线程，A 线程要给 B 线程传输数据，两个线程分别跑在两个核心上。为了传输数据，A 把数据放在内存地址 x 里，为了标记数据准备完成，另外在内存地址 y 放了一个标记，0 表示数据还没准备好，1 表示数据准备好了。那么 A 要传输数据的时候，要做的事情就是：
 
@@ -168,7 +172,105 @@ Histogram (3 states)
 3. Ry1 -> Rx0: P1 上的 program order，并且是两个 Read 之间的 program order，所以是 PodRR（Pod = program order，RR = read to read）
 4. Rx0 -> Wx1: memory 上的读后写，并且分别在 P1 和 P0 上执行，所以是 Fre（Fr = from read，读在前，写在后，箭头从 R 指向 W，e = external，表示读和写在两个核上）
 
-于是我们就用 `PodWW Rfe PodRR Fre` 描述了这四组顺序关系，diycross7 工具就根据这四组顺序关系，生成了汇编程序，这个汇编程序会用到这些顺序关系，那么在处理器上执行，就可以判断在处理器的内存模型下，这个环是否可能打破，反例是否可能存在。
+于是我们就用 `PodWW Rfe PodRR Fre` 描述了这四组顺序关系，diycross7 工具就根据这四组顺序关系，生成了汇编程序，这个汇编程序会用到这些顺序关系，那么在处理器上执行，就可以判断在处理器的内存模型下，这个环是否可能打破，反例是否可能存在。通过这种描述方法，我们可以设计出各种各样的 Litmus test，测试和分析不同的代码在各种处理器的内存模型下，会有怎样的表现。
+
+### Store Buffer
+
+暂时先不讲内存模型，先讲讲处理器在访存上的一个重要的优化：Store Buffer。对于乱序执行处理器来说，预测执行是有限度的，因为如果预测错误了，需要回滚到正确的状态，这也意味着，有副作用的指令不能简单地预测执行：例如在一段操作系统内核的代码里，需要根据用户的输入决定电脑要关机还是重启：
+
+```c
+if (shutdown) {
+    do_shutdown();
+} else {
+    do_reboot();
+}
+```
+
+假如处理器实现了分支预测，预测 `shutdown == true`，接着预测执行了 `do_shutdown`，如果处理器真的预测执行了关机操作，那么电脑就直接关机了，都没有来得及确认是不是要关机。例如实际上可能 `shutdown == false`，应该执行的是 `do_reboot`，本来是重启的，却变成了关机。所以预测执行遇到这种带有副作用（side effect）的指令，需要单独处理。
+
+一个简单的办法就是要求所有带有副作用的指令顺序执行，只有前面的所有指令执行完了，有副作用的指令才可以执行，因为此时不可能回滚到更早的指令了。但是有副作用的指令很多，通常认为 Store 指令都有副作用，如果考虑到侧信道攻击和安全性，可能连 Load 指令都有副作用，因为它会改变 Cache 的状态；如果要访问外设，那么 Load 和 Store 都有副作用。在乱序处理器上，就是只允许有副作用的指令在 Reorder Buffer（ROB）头部，才可以执行。但如果遇到了缓存缺失，这个时间就会很长，一直堵住 ROB，影响性能。
+
+为了解决这个问题，针对写入内存的 Store 指令，虽然它有副作用，但通常认为缓存写入是不会失败的，所以不用担心写入失败的问题，所以可以把这些 Store 指令放在一个队列里面，这个队列称为 Store Buffer。从 ROB 提交的 Store 指令会放到 Store Buffer 里面，此时可以认为 Store 指令完成了提交，Store 指令从 ROB 中删除，不再堵塞后面的其他指令。Store Buffer 队列里的 Store 指令会按顺序把数据写入缓存，这时候再遇到缓存缺失，影响也比较小。
+
+当然了，由于 Store Buffer 里的数据还没写入缓存，缓存里的数据不一定是最新的，所以后续 Load 指令读取数据时，不仅要从缓存中读取，还要查询 Store Buffer，如果缓存和 Store Buffer 都有数据，要以 Store Buffer 为准。这样实现以后，从单线程程序的角度来看，行为没有变化。但是多线程程序就遇到了一个新问题：
+
+- A 核心向 x 地址写入 1，从 y 地址读取数据
+- B 核心向 y 地址写入 1，从 x 地址读取数据
+- A 核心从 y 地址读取数据，因为 A 没有写入 y 地址，所以 A 从缓存中读取 y 地址的数据；同时 B 核心从 x 地址读取数据，同理 B 也从缓存中读取 x 地址的数据
+- 两个核心写入数据的指令进入了各自核心的 Store Buffer，但是还没写入缓存；因此 A 和 B 从缓存中读取的数据都是 0
+
+用程序来表达，就是：
+
+A 核心：
+
+- Wx1: *x = 1
+- Ry0: r1 = *y
+
+B 核心：
+
+- Wy1: *y = 1
+- Rx0: r2 = *x
+
+你可能会想，这怎么可能？明明两边都是先写后读，怎么结果却好像是先读后写？如果我们继续按照 SC 模型的规定来寻找顺序关系：
+
+- program order：Wx1 -> Ry0, Wy1 -> Rx0
+- coherence：Ry0 -> Wy1，Rx0 -> Wx1
+
+出现了环：Wx1 -> Ry0 -> Wy1 -> Rx0 -> Wx1，说明这个结果在 SC 模型下不可能成立。但如果我们在 x86 机器上真的跑一下这个测试：
+
+```shell
+diycross7 -arch X86 -name SB-X86 PodWR Fre PodWR Fre
+litmus7 SB-X86.litmus
+```
+
+这里的 `PodWR Fre PodWR Fre` 是这么来的：
+
+- Wx1 -> Ry0: PodWR, program order, write to read
+- Ry0 -> Wy1: Fre, from-read, external
+- Wy1 -> Rx0: PodWR, program order, write to read
+- Rx0 -> Wx1: Fre, from-read, external
+
+diycross7 命令生成了下面的汇编：
+
+```asm
+ P0          | P1          ;
+ MOV [x],$1  | MOV [y],$1  ;
+ MOV EAX,[y] | MOV EAX,[x] ;
+exists (0:EAX=0 /\ 1:EAX=0)
+```
+
+运行 litmus7 得到如下的结果：
+
+```
+Histogram (4 states)
+540   *>0:EAX=0; 1:EAX=0;
+499697:>0:EAX=1; 1:EAX=0;
+499760:>0:EAX=0; 1:EAX=1;
+3     :>0:EAX=1; 1:EAX=1;
+Ok
+```
+
+你会发现在 x86 机器上真的出现了这个结果：从 x 和 y 读出来的数据都是 0。这就说明 x86 机器实现的并不是 SC 的内存模型。在 SC 模型下，这段代码的四个顺序关系成环，使得不存在 x 和 y 读出来都为 0 的情况；现在确实观察到了读出来 x 和 y 都为 0 的情况，说明这个环被断开了，有的边不再成立。
+
+回想前面提到的 Store Buffer 的硬件实现，问题出现在，x 和 y 处于不同的地址，A 核心读取 y 时，直接通过缓存读取数据，此时从缓存的视角来看，先看到了 A 核心读取 y，后看到了 A 核心写入了 x，这和指令的顺序不同。也就是 PodWR（Program order write to read）这条边不再成立了，这种情况下，从核外的视角看，程序的先 Store 后 Load，可能被重排为先 Load 后 Store。这也说明 x86 的处理器做了 Store Buffer 的硬件实现。在优化性能的同时，也切实改变了内存模型。
+
+### X86-TSO
+
+依托 Store Buffer，我们可以构建出一个新的内存模型：在每个核心和内存子系统之间，多了一个 Store Buffer，Store 指令会先进入 Store Buffer，再进入内存子系统。当 Load 指令和 Store Buffer 中的 Store 指令有数据相关时，会从 Store Buffer 中取数据，如果不相关，或者不完全相关（例如只有一部分重合），则会从内存子系统中取数据，此时从内存子系统的角度来看，就发生了 Load 提前于 Store 执行的重排。这个模型被称为 [X86-TSO](https://dl.acm.org/doi/10.1145/1785414.1785443)（图源 [A Tutorial Introduction to the ARM and POWER Relaxed Memory Model](https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/test7.pdf)）：
+
+![](memory_model_and_memory_ordering_x86_tso.png)
+
+需要注意的是，X86-TSO 模型是在 [2010 年的论文 x86-TSO: a rigorous and usable programmer's model for x86 multiprocessors](https://dl.acm.org/doi/10.1145/1785414.1785443)中由学术界对现有 x86 处理器的内存模型的总结，但 Intel 和 AMD 在他们的文档中没有直接采用这个模型，而是给出了各种各样的规则。但实践中，可以认为 x86 处理器用的就是这个模型，从各自 litmus 测试中，也没有发现理论和实际不一致的地方。
+
+这里的 TSO 的全称是 Total Store Order，意思是针对 Store 指令（只有离开 Store Buffer 进入缓存的才算），有一个全局的顺序。内存子系统会处理来自不同核心的 Store，但会保证 Store 有一个先后顺序，并且所有核心会看到同一个顺序。这个概念有些时候还会被称为 Multi-copy Atomic，字面意思是当一个 Store 被其他核心看到时，所有核心都会“同时”看到，不会说一部分核先看到，另一部分核后看到。
+
+从 TSO 的字面意思来说，并没有提到 Load 可以被重排到 Store 之前，是 X86 的 TSO 实现了这种重排。不过平常也不会专门去区分这件事情，提到 TSO，大家想到的都是 X86 的 TSO，也就是 X86-TSO 模型。
+
+总结一下，X86-TSO 模型的规定就是如下几点：
+
+- Total Store Order：所有核心会观察到相同的全局的 Store 顺序
+- Load 可以被重排到 Store 之前
+- Load 会从 Store Buffer 和缓存两个地方取数据
 
 ## 参考文献
 
