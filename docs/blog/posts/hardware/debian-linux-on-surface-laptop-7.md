@@ -54,6 +54,8 @@ initrd  /boot/initrd.img-6.11.0-rc1-00043-g94ede2a3e913
 
 UPDATE:
 
-1. 不知道为啥，无线网卡忽然被 rfkill 了，没有找到原因，Windows 里可以继续正常使用
-2. CPUFreq 驱动已经有 patch：[[PATCH V6 0/5] qcom: x1e80100: Enable CPUFreq](https://patchew.org/linux/20240612124056.39230-1-quic._5Fsibis@quicinc.com/)，打上即可自动调频
-3. 内置的键盘的问题修好了，需要额外的补丁，见 https://github.com/jiegec/linux/tree/surface-laptop-7。
+1. (2024-07-31 更新) 不知道为啥，无线网卡忽然被 rfkill 了，没有找到原因，Windows 里可以继续正常使用
+2. (2024-07-31 更新) CPUFreq 驱动已经有 patch：[[PATCH V6 0/5] qcom: x1e80100: Enable CPUFreq](https://patchew.org/linux/20240612124056.39230-1-quic._5Fsibis@quicinc.com/)，打上即可自动调频
+3. (2024-07-31 更新) 内置的键盘的问题修好了，需要额外的补丁，见 https://github.com/jiegec/linux/tree/surface-laptop-7。
+4. (2024-09-05 更新) 上游合并了 Surface Laptop 7 (Romulus 13/15) 的 Device Tree (`arch/arm64/boot/dts/qcom/x1e80100-microsoft-romulus13.dts`)，内置的键盘也直接支持了，直接用上游的 Device Tree 即可启动，见 https://github.com/jiegec/linux/tree/surface-laptop-7-next，估计 6.12 就有正式支持了
+5. (2024-09-05 更新) 更新 Mesa 到 24.2.1 ，显卡加速也工作了
