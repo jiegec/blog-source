@@ -14,7 +14,7 @@ categories:
 
 <!-- more -->
 
-## CPU 微架构中的内存模型和内存序
+## 内存模型
 
 对于处理器核心来说，如何实现访存指令，对性能的影响是十分显著的。最基础的硬件实现方法，就是串行地完成每一条 Load 和 Store 指令，每一条访存指令执行完，才能开始执行下一条访存指令。但如果正在执行的访存指令 A 遇到了缓存缺失，需要等待缓存的回填，由于硬件只实现了串行执行，在 A 之后未来要执行的访存指令 B 又必须等待 A 的完成，耗费的时间就会比较长。
 
@@ -256,7 +256,7 @@ Ok
 
 ### X86-TSO
 
-依托 Store Buffer，我们可以构建出一个新的内存模型：在每个核心和内存子系统之间，多了一个 Store Buffer，Store 指令会先进入 Store Buffer，再进入内存子系统。当 Load 指令和 Store Buffer 中的 Store 指令有数据相关时，会从 Store Buffer 中取数据，如果不相关，或者不完全相关（例如只有一部分重合），则会从内存子系统中取数据，此时从内存子系统的角度来看，就发生了 Load 提前于 Store 执行的重排。这个模型被称为 [X86-TSO](https://dl.acm.org/doi/10.1145/1785414.1785443)（图源 [A Tutorial Introduction to the ARM and POWER Relaxed Memory Model](https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/test7.pdf)）：
+依托 Store Buffer，我们可以构建出一个新的内存模型：在每个核心和内存子系统之间，多了一个 Store Buffer，Store 指令会先进入 Store Buffer，再进入内存子系统。当 Load 指令和 Store Buffer 中的 Store 指令有数据相关时，会从 Store Buffer 中取数据，如果不相关，或者不完全相关（例如只有一部分重合），则会从内存子系统中取数据，此时从内存子系统的角度来看，就发生了 Load 提前于 Store 执行的重排。这个模型被称为 [X86-TSO](https://dl.acm.org/doi/10.1145/1785414.1785443)（图源 [A Primer on Memory Consistency and Cache Coherence, Second Edition](https://link.springer.com/book/10.1007/978-3-031-01764-3)）：
 
 ![](memory_model_and_memory_ordering_x86_tso.png)
 
@@ -271,6 +271,140 @@ Ok
 - Total Store Order：所有核心会观察到相同的全局的 Store 顺序
 - Load 可以被重排到 Store 之前
 - Load 会从 Store Buffer 和缓存两个地方取数据
+
+对比 SC 和 X86-TSO 模型：
+
+- X86-TSO 模型允许 Load 被重排到 Store 之前
+- Store Buffer 测试下，SC 禁止重排，X86-TSO 允许重排
+- Message Passing 测试下，SC 和 X86-TSO 都禁止重排
+
+### Weak/Relaxed Memory Model
+
+在 X86 以外的指令集架构，经常可以看到另外一种内存模型，一般称为 Weak Memory Model 或者 Relaxed Memory Model。怎么个 Weak 法呢？就是硬件想重排就重排，当然了，是在保证核内视角正确的前提下。回想前面 SC 模型和 X86-TSO 模型，它们对于 Load 和 Store 之间重排的要求是：
+
+- 先 Load 后 Load：SC 和 X86-TSO 不允许重排
+- 先 Load 后 Store：SC 和 X86-TSO 不允许重排
+- 先 Store 后 Load：SC 不允许重排，X86-TSO 允许重排
+- 先 Store 后 Store：SC 和 X86-TSO 不允许重排
+
+既然 Weak 了，那就自由到底：全都允许重排。如果用户不想重排，那再加合适的 fence 或 barrier 指令，阻止不想要的重排。在这个内存模型下，每个核心可以在向内存子系统读写前，对自己的读写进行重排（图源 [A Primer on Memory Consistency and Cache Coherence, Second Edition](https://link.springer.com/book/10.1007/978-3-031-01764-3)）：
+
+![](memory_model_and_memory_ordering_weak.png)
+
+这意味着什么呢？前面出现过 Message Passing 的例子，结论是 MP 测试的情况在 SC 和 X86-TSO 场景下都被禁止。但如果我们在一个具有 Weak Memory Model 的机器上运行：
+
+```shell
+# P0:
+# 1. Wx1
+# 2. Wy1
+# P1:
+# 1. Ry1
+# 2. Rx0
+# orders:
+# Wx1 -> Wy1: PodWW
+# Wy1 -> Ry1: Rfe
+# Ry1 -> Rx0: PodRR
+# Rx0 -> Wx1: Fre
+diycross7 -arch AArch64 -name MP-AArch64 PodWW Rfe PodRR Fre
+litmus7 MP-AArch64.litmus # MP = Message Passing
+```
+
+会发现虽然概率比较低，但确实会出现 y=1，x=0 的情况：
+
+```
+Histogram (4 states)
+500000:>1:X1=0; 1:X3=0;
+1     *>1:X1=1; 1:X3=0;
+1     :>1:X1=0; 1:X3=1;
+499998:>1:X1=1; 1:X3=1;
+```
+
+既然在实际的 ARM 机器上测出来这种情况，说明 PodWW 或者 PodRR 至少有一个出现了重排，打破了环。
+
+更进一步，SC 和 X86-TSO 都要求有 Total Store Order（Multi-copy Atomic）：所有核心会看到统一的 Store 顺序。有要求，就可以舍弃，部分 Weak Memory Model 也不要求这一点，这个时候，内存模型就好像每个核心都有自己的一份内存，这些内存之间会互相传播 Store 以保证缓存一致性，但是有的核心可能先看到，有的核心可能后看到（图源 [A Tutorial Introduction to the ARM and POWER Relaxed Memory Model](https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/test7.pdf)）：
+
+![](memory_model_and_memory_ordering_weak_2.png)
+
+这一点可以在 IRIW（全称 Independent Read of Independent Write；准确地说，为了排除 PodRR 重排的情况，要用 IRIW+addrs 或者加 barrier）Litmus 测试中看到。简单来说，IRIW 测试中，有两个核心负责写入，两个核心负责读，如果这两个核心观察到了不同的写入顺序，说明没有 Total Store Order（Multi-copy Atomic）：写入传播到不同核心的顺序可能打乱。
+
+## 内存序
+
+### 指令集
+
+既然 X86-TSO 已经出现了一种可能的重排情况：Load 被重排到 Store 之前，假如我们不希望出现这种重排，怎么办？各个指令集都提供了一些 fence 或者 barrier 指令，可以阻止各种类型的重排。以 x86 为例：
+
+- sfence: store fence，保证 sfence 之前的 store 都完成（globally visible，得写到缓存里才算）之后，才开始 sfence 之后的 store
+- lfence: load fence，保证 lfence 之前的 load 都完成（globally visible）之后，才开始 lfence 之后的 load
+- mfence: memory fence, 保证 mfence 之前的 load 和 store 都完成（globally visible）之后，才开始 mfence 之后的 load 和 store
+
+这其中常用的其实就是 mfence：前面提到 X86-TSO 允许 Load 被重排到 Store 之前，为了阻止这一点，lfence 和 sfence 都不够，因为 lfence 管的是 Load 被重排到 Load 之前，sfence 管的是 Store 被重排到 Store 之前。mfence 则可以：在 Store 后面紧挨着一条 mfence 指令，那么 mfence 之后的 Load 指令就无法被重排到 Store 之前：
+
+1. store
+2. mfence
+3. load
+
+所以如果要在 x86 上运行按照 SC 内存模型编写的程序，为了保证正确性，需要在每个 Store 后面加一条 mfence 指令。
+
+再来看看对于 ARMv8 这种具有 Weak/Relaxed Memory Model 的架构，指令集提供了哪些指令来避免重排：
+
+- DMB：相当于 x86 的 mfence，保证 DMB 后的 Load 和 Store 不会重排到 DMB 之前，DMB 前的 Load 和 Store 也不会重排到 DMB 之后
+- Load Acquire：对 Load 指令添加 Acquire 语义，保证 Load Acquire 之后的 Load/Store 不会被重排到 Load  Acquire 之前
+- Store Release：对 Release 指令添加 Release 语义，保证 Store Release 之前的 Load/Store 不会被重排到 Store Release 之前
+
+看到 Acquire 和 Release，你可能会觉得这个说法有点熟悉：在锁里面，获得锁可以说 Lock 或者说 Acquire；释放锁可以说 Unlock 或者说 Release。事实上，Load Acquire 和 Store Release 正好就可以用在 Lock 和 Unlock 的场合：
+
+```c
+lock(); // Load Acquire
+y = x + 1;
+unlock(); // Store Release
+```
+
+在临界区中读取 x，肯定希望是在持有锁的前提下进行 Load，也就是说 Load x 不能被重排到 `lock()` 之前，也不能被重排到 `unlock()` 之后；同理在临界区中写入 y，肯定也是希望在持有锁的前提下进行 Store，也就是说 Store y 不能被重排到 `lock()` 之前或 `unlock()` 之后。为了避免这个重排，在一头一尾分别加上 Acquire 和 Release 标记，就可以保证临界区内的 Load/Store 都是在持有锁的情况下进行。
+
+除了锁以外，这个模式也可以用来实现正确的 Message Passing，原来的 Message Passing 实现是：
+
+P0:
+
+1. *x = 1
+2. *y = 1
+
+P1:
+
+1. r1 = *y
+2. r2 = *x
+
+这里会有 Store-Store 重排以及 Load-Load 重排的风险，加上 Load Acquire 和 Store Release 以后：
+
+P0:
+
+1. *x = 1
+2. *y = 1 (Store Release)
+
+P1:
+
+1. r1 = *y (Load Acquire)
+2. r2 = *x
+
+这样就避免了重排，P1 可以观察到正确的结果。
+
+此外，Acquire 和 Release 标记也可以添加到原子指令上，毕竟原子指令其实就是 Load + Store。相比 Fence，Acquire 和 Release 是单向的，只影响前面的指令，或者只影响后面的指令，而 Fence 通常是两个方向都阻止，不许前面的排到后面，也不许后面的排到前面。
+
+### 软件
+
+从上面的分析可见，不同的处理器和指令集使用了不同的内存模型，提供了不同的指令来控制乱序重排，但是对于软件开发者来说，会希望尽量用一套通用的 API 来控制乱序重排，可以兼容各种指令集，不用去记忆每个处理器用的是什么内存模型，不用去知道哪些指令可以用来解决哪些重排。
+
+这个 API 在很多编程语言中都有，C 的 stdatomic.h，C++ 的 std::memory_order，Rust 的 std::sync::atomic::Ordering 等等。它们对各种处理器的内存序进行了进一步的抽象，并且在编译的时候，由编译器或标准库把这些抽象的内存序翻译成实际的指令。以 C++ 的抽象为例，有如下几种内存序（图源 [cppreference](https://en.cppreference.com/w/cpp/atomic/memory_order)）：
+
+![](memory_model_and_memory_ordering_order.png)
+
+其中比较重要的 acquire 和 release，其实就是上面提到的 Load Acquire 和 Store Release。最后的 seq_cst，就对应了 Sequential Consistency（SC）模型，要模拟 SC 模型的行为。
+
+由于 C++ 可以被编译到不同的指令集架构，所以这些 memory order 在编译的时候，会变成对应的指令，也可能由于内存模型保证了不出现对应的乱序，不需要生成额外的指令。以 X86 为例子：
+
+- Load Acquire：防止 Load 之后的 Load/Store 指令被重排到 Load 之前，因为 X86-TSO 阻止了 Load-Load 和 Load-Store（先 Load 后 Store） 重排，所以不需要额外的指令
+- Store Release：防止 Store 之前的 Load/Store 指令被重排到 Store 之后，因为 X86-TSO 阻止了 Load-Store 和 Store-Store 重排，所以不需要额外的指令
+
+完整的对应关系，建议阅读 [C/C++11 mappings to processors](https://www.cl.cam.ac.uk/~pes20/cpp/cpp0xmappings.html)。
 
 ## 参考文献
 
