@@ -349,7 +349,7 @@ Histogram (4 states)
 
 - DMB：相当于 x86 的 mfence，保证 DMB 后的 Load 和 Store 不会重排到 DMB 之前，DMB 前的 Load 和 Store 也不会重排到 DMB 之后
 - Load Acquire：对 Load 指令添加 Acquire 语义，保证 Load Acquire 之后的 Load/Store 不会被重排到 Load  Acquire 之前
-- Store Release：对 Release 指令添加 Release 语义，保证 Store Release 之前的 Load/Store 不会被重排到 Store Release 之前
+- Store Release：对 Release 指令添加 Release 语义，保证 Store Release 之前的 Load/Store 不会被重排到 Store Release 之后
 
 看到 Acquire 和 Release，你可能会觉得这个说法有点熟悉：在锁里面，获得锁可以说 Lock 或者说 Acquire；释放锁可以说 Unlock 或者说 Release。事实上，Load Acquire 和 Store Release 正好就可以用在 Lock 和 Unlock 的场合：
 
