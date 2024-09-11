@@ -213,7 +213,7 @@ B 核心：
 
 你可能会想，这怎么可能？明明两边都是先写后读，怎么结果却好像是先读后写？如果我们继续按照 SC 模型的规定来寻找顺序关系：
 
-- program order：Wx1 -> Ry0, Wy1 -> Rx0
+- program order: Wx1 -> Ry0, Wy1 -> Rx0
 - coherence：Ry0 -> Wy1，Rx0 -> Wx1
 
 出现了环：Wx1 -> Ry0 -> Wy1 -> Rx0 -> Wx1，说明这个结果在 SC 模型下不可能成立。但如果我们在 x86 机器上真的跑一下这个测试：
@@ -401,7 +401,7 @@ P1:
 
 由于 C++ 可以被编译到不同的指令集架构，所以这些 memory order 在编译的时候，会变成对应的指令，也可能由于内存模型保证了不出现对应的乱序，不需要生成额外的指令。以 X86 为例子：
 
-- Load Acquire：防止 Load 之后的 Load/Store 指令被重排到 Load 之前，因为 X86-TSO 阻止了 Load-Load 和 Load-Store（先 Load 后 Store） 重排，所以不需要额外的指令
+- Load Acquire：防止 Load 之后的 Load/Store 指令被重排到 Load 之前，因为 X86-TSO 阻止了 Load-Load 和 Load-Store（先 Load 后 Store）重排，所以不需要额外的指令
 - Store Release：防止 Store 之前的 Load/Store 指令被重排到 Store 之后，因为 X86-TSO 阻止了 Load-Store 和 Store-Store 重排，所以不需要额外的指令
 
 完整的对应关系，建议阅读 [C/C++11 mappings to processors](https://www.cl.cam.ac.uk/~pes20/cpp/cpp0xmappings.html)。

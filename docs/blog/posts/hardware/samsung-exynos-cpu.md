@@ -18,7 +18,7 @@ ISCA 2020 的一篇文章 [Evolution of the Samsung Exynos CPU Microarchitecture
 
 文章 Chapter IV 讲述了 Exynos 系列微架构的分支预测器实现。Exynos 微架构用的是 [Scaled Hashed Perceptron](https://ieeexplore.ieee.org/document/903263) 分支方向预测器，这个分支预测器的提出者 Daniel A. Jiménez 也在这篇论文的作者列表中。现在采用基于 Perceptron 的分支预测器的处理器不多，AMD 的 Zen 1 用了，Zen 2 是 Perceptron 加 TAGE，Zen 3 以后就只有 TAGE 了。
 
-除了方向预测器，还需要有 BTB 来识别分支以及记录分支的目的地址。为了性能，每个周期都要预测至少一个分支，所以一般会有一个 0-bubble 的 BTB，在这里叫 uBTB（microBTB，用 u 代替希腊字母 μ）。但也因为时序的限制，不会做的太大。为了支持有更大的容量，通常还会有更大的，延迟也更长的 BTB，在这里叫 mBTB（Main BTB），最大的是 L2 BTB，还有后面会讲到处理边界情况的 vBTB。同理，分支预测器也有容量和延迟的双重考虑，设置不同大小和容量的分支预测器，也可能会分多级，和 0-bubble uBTB 配对的 LHP（Local History Perception） 以及 1-2 bubble mBTB 配对的完整的 SHP（Scaled Hashed Perception）。此外还有 RAS（Return Address Stack）负责函数返回地址的预测。
+除了方向预测器，还需要有 BTB 来识别分支以及记录分支的目的地址。为了性能，每个周期都要预测至少一个分支，所以一般会有一个 0-bubble 的 BTB，在这里叫 uBTB（microBTB，用 u 代替希腊字母 μ）。但也因为时序的限制，不会做的太大。为了支持有更大的容量，通常还会有更大的，延迟也更长的 BTB，在这里叫 mBTB（Main BTB），最大的是 L2 BTB，还有后面会讲到处理边界情况的 vBTB。同理，分支预测器也有容量和延迟的双重考虑，设置不同大小和容量的分支预测器，也可能会分多级，和 0-bubble uBTB 配对的 LHP（Local History Perception）以及 1-2 bubble mBTB 配对的完整的 SHP（Scaled Hashed Perception）。此外还有 RAS（Return Address Stack）负责函数返回地址的预测。
 
 首先从 Exynos 最早的分支预测器设计开始。一开始设计的时候，就考虑到要支持 2 prediction/clock 的场景，前提是第一个分支是 not taken 的。例如有两条分支指令，第一条是条件分支指令，如果第一条分支 taken，那就以第一条分支的结果为准；如果第一条分支 not taken，那就应该以第二条分支的结果为准。这样可以在比较低的开销的前提下，一个周期预测两条分支指令，提高分支预测的性能，如果不做这个优化的话，需要先预测第一条分支，预测完，再去预测第二条分支。论文中指出，对于这种需要预测 2 个分支的场景，有 60% 的情况是第一条分支 taken，24% 情况是第一条分支 not taken 并且第二条分支 taken，两个都 not taken 的情况占 16%。那么后 40% 的情况就可以得到性能提升。这个优化还是挺常见的，例如[香山南湖架构](https://raw.githubusercontent.com/OpenXiangShan/XiangShan-doc/main/slides/20220825-RVSC-%E9%A6%99%E5%B1%B1%E5%A4%84%E7%90%86%E5%99%A8%E5%89%8D%E7%AB%AF%E5%8F%96%E6%8C%87%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B.pdf)做了这个优化，而且虽然可以 2 predictions/cycle，但实际上只有一个 Fetch Packet，也最多 1 taken prediction/cycle。
 
@@ -48,6 +48,8 @@ SHP，也就是那个最大的 Perceptron 预测器，包含了 8 个表，每�
 
 这个图中没有绘制 uBTB 内部的结构，uBTB 负责给出初始的预测，到 B1 阶段，从 B1 开始，会经过两条流水线，上面的流水线是 mBTB + SHP 负责更精确的预测，下面的流水线是查询 ITLB + 读取 ICache。上面说 2-bubble 的 mBTB，实际上就是从 B1 得到 Fetch Window，B2 读取 mBTB 和 SHP 的权重，等到 B3 完成之后才可以计算出结果，判断是 taken 还是 not taken，如果预测的结果和 uBTB 预测不一致，就需要刷流水，从 B1 重新开始：B1 B2 B3 B1 B2 B3，三个周期一个 taken branch。
 
+图中也可以看到 vBTB 在 B4，所以如果一个 cacheline 有超过 8 个 branch，那么在预测这些溢出到 vBTB 中的分支时，需要额外的两个周期：B1 B2 B3 B4 B3，五个周期一个 taken branch。
+
 Exynos M3 继续改进了分支预测器。首先是 uBTB 的图的容量翻倍，添加了针对无条件分支的容量。为了加速总是跳转的条件分支指令，当 mBTB 检测到总是跳转的条件分支指令时，提前一个周期得到结果，也就是上图中 B3 到 B1 的连线，没有经过权重计算，直接刷 B1：B1 B2 B1 B2，两个周期一个 taken branch，1-bubble，在论文里叫做 1AT（1-bubble Always Taken）。Exynos M3 还翻倍了 SHP 的行的个数，也翻倍了 L2 BTB 容量。
 
 Exynos M4 继续翻倍了 L2 BTB 容量，减少了 L2 BTB refill 到 mBTB 的延迟，带宽翻倍。这个优化主要是针对分支比较多，mBTB 存不下的程序。
@@ -65,3 +67,54 @@ Exynos M5 增加了 Empty Line Optimization 优化：检测没有分支的缓存
 右边是最后的 ZAT/ZOT 0-bubble 实现，它在 mBTB 中记录了后续两个分支的地址，例如 X 在 mBTB 中记录了 A 和 B 的地址。当 B3 发现 X 要跳转的时候，刷流水线，在接下来的两个周期里分别给 B1 提供了 A 和 B 的地址。当 A 到达 B2 时，A 在 mBTB 里记录了 B 和 C 的地址，于是把 C 的地址转发到下一个周期的 B1，依此类推，B2 的 B 得到了 D 的地址，B2 的 C 得到了 E 的地址，这样实现了每个周期一个 taken branch。通过记录两跳的地址和避免分支预测（把 Always Taken 和 Often Taken 都预测为 Taken），两个周期给出两个地址，减少两个周期的 bubble。
 
 这时候就相当于有两个 0-bubble 预测器了，mBTB 有 0-bubble 能力，uBTB 也有，所以 Exynos M5 减少了 uBTB 的容量，换取更大的 mBTB 的预测器容量：SHP 的表数量翻倍，GHR 历史长度增加。
+
+虽然 mBTB 在特定情况下可以做到 0-bubble，但是如果总是需要纠正预测错误，就会回退到三个周期一条分支的性能。为了解决这个问题，Exynos M5 引入了 Mispredict Recovery Buffer（MRB）：针对比较难预测的分支，记录它后续最可能执行的三次 fetch 的地址，如果命中了 MRB，那就直接从 MRB 中按顺序用三个周期把这三次 fetch 的地址放到 B1，然后流水线去验证这三个 fetch 地址是否正确，节省了重复的 B3 到 B1 的重定向时间。这个思路有点像大模型的推测生成：用比较短的时间预测（在这里是直接用 MRB 记下来了）出一个本来是串行的过程的结果，然后再用流水线或者并行的方式去验证结果是否正确。利用的性质都是，串行生成慢，但是验证结果却比较快。
+
+Exynos M6 扩大了 mBTB 容量，针对间接跳转指令做了更多的优化，主要是考虑应用程序会出现一个间接跳转会跳转到上百个不同的目的地址这种模式，之前的 VPC 方法是 O(n) 的，n 是可能的目的地址的个数，n 小的时候比较好，n 大了就很慢了。
+
+Exynos M6 的办法是，针对这些目的地址特别多的间接跳转指令，设计单独的存储，不去占用 vBTB 的空间，这个空间是 Indirect target storage，采用 4 路组相连，一共 256 个 set。经常出现的目的地址还是和之前一样，放在 mBTB 中，但是对于剩下的目的地址，则是放到 Indirect target storage 中，根据最近的 indirect branch target 计算出 Index 和 Tag，去 Indirect target storage 中寻找，其实这个就和 ITTAGE 里的一个 table 有点类似了。
+
+最后论文总结了 Exynos 从 M1 到 M6 的各级分支预测器的存储面积开销，基本每一代都有所增加，既有 MPKI 的减少（M6 相比 M1 在 SPECint2006 上 MPKI 减少 25.6%），又有预测性能的提升。
+
+## 分支预测安全
+
+有意思的，论文也提到了分支预测的安全问题，主要是避免跨上下文的分支预测器注入攻击。核心思路是，给每个上下文生成一个随机数（`CONTEXT_HASH`），然后把随机数异或到 BTB 保存的目的地址里面去，在从 BTB 读出来目的地址使用之前，要再次异或同一个随机数。那么如果是读取了来自同一个上下文的 BTB entry，通过两次异或可以得到正确的原始数据；如果是读取了来自不同上下文的 BTB entry，由于随机数不同，最后会得到随机的数据。当然了，前提是这些随机数不能被攻击者得到，对软件是不可见的。
+
+## uOP Cache
+
+Exynos M1 到 M4 没有 uOP Cache，所有指令都需要经过取指和译码，得到 uOP。从 Exynos M5 开始引入了 uOP Cache，会缓存译码后的 uOP。Exynos M5 的 uOP Cache 最多可以保存 384 个 uOP，每个 entry 可以保存 6 个 uOP，一个周期提供一个 entry。一个 uOP Cache Entry 中的 uOP 来自连续的指令，以分支指令作为结尾。下面是论文给出的一个例子：
+
+![](./samsung-exynos-cpu-uop.png)
+
+这段指令的入口在第一个缓存行的最后，从 I0 开始，执行 I0 I1 I2 I3，I3 是一条分支指令，因此 uOP 的 entry 到此结束，记录了 I0-I3 译码后的 uOP，这里 I2 指令被译码成了两条 uOP，于是这个 entry 就是 U0 U1 U2A U2B U3 这五个 uOP。I3 跳转到了 I4，I4 紧接着又是一条分支指令 I5，所以 uOP 的 entry 到这里结束，记录 I4 和 I5 译码后的 uOP：U4 和 U5。后面依此类推。
+
+那么什么时候 uOP Cache 启用呢？论文中提到了一个状态机：
+
+1. FilterMode：当 uBTB 在学习分支之间的关系时，也在检查这段代码能否放到 uOP Cache 里，如果可以的话，转移到 BuildMode
+2. BuildMode：开始把译码得到的 uOP 保存到 uOP Cache 内部，同时和 uBTB 学习到的图进行比对，当图中大部分的边对应的指令都已经被 uOP Cache 学习到，说明 uOP Cache 已经捕捉了大部分需要的指令，进入 FetchMode
+3. FetchMode：指令缓存和译码部件被关闭，节省功耗，所有指令都从 uOP Cache 提供；此时如果 uBTB 的准确率很高，mBTB 也可以关掉，进一步节省功耗。当 uOP Cache 命中率降低，切换回 FilterMode
+
+这种设计还是比较常见的，uOP Cache 和 Decoder 不会同时工作，而是二选一，根据 uOP Cache 的命中率来决定谁来工作。然后进一步为了避免 uOP Cache 填充的功耗，如果 uBTB 发现这些代码放不下 uOP Cache 中，就不填充 uOP Cache 了，这就是 FilterMode 的设计的意义。
+
+## L1 数据预取
+
+L1 数据预取器会检测不同的 stride，在虚拟地址上，跟踪访存的历史，为了方便识别访存的序列，由于访存是可以乱序执行的，它会进行重排，使得访存模式的识别看到就是程序的顺序。为了验证预取是否正确，在预取的同时，也会把这些预取的地址记录下来，放在 Confirmation Queue 中，和未来的 load 地址做比对。如果预取器和未来的 load 匹配的比例很高，说明预取器很准确，可以继续让他预取。如果准确率较低，为了避免浪费内存带宽，就会停止预取。
+
+除了 strided 访存模式，Exynos M3 还引入了 Spatial Memory Stream 预取器，它会跟踪一个区间的第一次 cache miss 和后续的 miss，当再次遇到第一次 cache miss 的地址时，预取后续可能会出现 miss 的地址。
+
+## L2/L3 缓存
+
+为了减少数据的重复，L3 缓存和 L1/L2 是 exclusive 的关系，数据是互斥的，要么存在 L3 里，要么存在 L1/L2 里，要么都不存。
+
+Exynos M4 针对 L2 缓存引入了 Buddy Prefetcher：如果一个缓存行缺失了，那就把它相邻的下一个缓存行也预取进来。
+
+## 访存延迟
+
+Exynos 系列的 load to use latency 通常情况下是 4 cycle，但针对 load to load 的情况，也就是前一个 load 的结果，作为后一个 load 的基地址的情况，从 Exynos M4 开始可以做到 3 cycle 的 load to use latency，这在论文中叫做 cascading load。这个 4 cycle 减到 3 cycle 的特性在苹果，高通和 Intel（E-core）的 CPU 中都有看到。
+
+## 小结
+
+虽然 Exynos 系列微架构的芯片没有新的演进了，但是也非常感谢这些作者慷慨地介绍了他们这些年优化微架构的努力，提供了很多有价值的信息。从作者信息也可以看到，当时开发 Exynos 的团队成员，在团队解散以后，去的基本也是有自研核的公司：Sifive，Centaur，ARM，AMD，Nuvia。
+
+由于本人对 DCache 以及 Prefetch 部分缺乏深入了解，所以这部分的介绍比较少，有兴趣的读者建议参考原文。
+
