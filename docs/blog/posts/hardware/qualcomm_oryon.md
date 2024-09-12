@@ -146,6 +146,14 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 - Retirement 8 uOps/cycle
 - Reorder Buffer is 650+ uOps
 
+为了测试 ROB 的大小，设计了一个循环，循环开始是 8 条串行的 fsqrt 指令，每条指令需要 13 个周期，由于数据依赖，一共需要 8*13=104 个周期完成。之后是若干条 NOP 指令，当 NOP 指令比较少时，循环的时候取决于 fsqrt 指令的时间，一次循环大约需要 104 个周期；当 NOP 指令数量过多，填满了 ROB 以后，就会导致 ROB 无法保存下一次循环的 fsqrt 指令，性能出现下降。测试结果如下：
+
+![](./qualcomm_oryon_rob.png)
+
+当 NOP 数量达到 676 时，性能开始急剧下滑，而执行 676 条 NOP 只需要 676/8=84.5 个周期，小于 104 个周期，说明瓶颈不在执行 NOP 上，而是因为 ROB 被填满，导致后续的 fsqrt 指令无法及时执行。因此认为 Oryon 的 ROB 大小在 680+。
+
+没有观察到类似 Firestorm 的 Coalesced ROB 的设计。
+
 ### Load Store Unit + L1 DCache
 
 官方信息：
