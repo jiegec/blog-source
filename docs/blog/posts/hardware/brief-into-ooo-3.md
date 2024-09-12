@@ -50,7 +50,9 @@ categories:
 
 比较有意思的是，这个优化是完全由硬件来做的，而不是编译器。当然了，如果编译器要做的前提是硬件支持这类标量的条件执行指令，虽然 Zicond 扩展确实提供了类似的功能，很多 RISC-V 实现还没有实现 Zicond。硬件上做的话，就不需要扩展指令集，直接在前端进行识别，当发现这种 Short Forward Branch 时，把分支指令本身改成一条 set-flag 指令，然后把分支到跳转目的地这一段的指令改为条件执行。这样就不需要进行分支预测了，无论原来的分支是否跳转，后续的这些指令都会进入流水线，看起来做了更多的事情，但很多时候反而比错误的分支预测还要快。
 
-这个优化思路在 Intel 的专利 [Converting conditional short forward branches to computationally equivalent predicated instructions](https://patents.google.com/patent/US9367314B2/en) 也有阐述，不知道这个优化有没有实际加到 Intel 的处理器当中。
+这个优化思路在 Intel 的专利 [Converting conditional short forward branches to computationally equivalent predicated instructions](https://patents.google.com/patent/US9367314B2/en) 也有阐述，不知道这个优化有没有实际加到 Intel 的处理器当中。专利的图 6 很好地用 X86 的指令阐述了这个优化：
+
+![](./brief-into-ooo-3-intel.png)
 
 那么这样的指令序列在实际的程序里出现的多吗？论文 [The Effects of Predicated Execution on Branch Prediction](http://ieeexplore.ieee.org/document/717459/) 分析了这个问题，结论是还真不少。当然了，这篇论文主要的论点是，指令集应该引入各种条件执行指令，这样编译器就可以利用现有处理器的条件执行指令来优化，没有去讨论纯硬件的实现方法。
 
@@ -102,4 +104,4 @@ target:
 - 如果 Fetch Group 内有一个要跳转的分支指令会 Forward 跳转到同一个 Fetch Group 内部，原来的做法是从分支指令的目的地址再 Fetch 一次，但既然是同一个 Fetch Group，Fetch 分支指令的同时，已经把从分支的目的地址开始的指令取进来了，跳过中间的指令，把两段指令拼接起来，可以省下重新 Fetch 一次的时间。
 - 如果 Fetch Group 内有一条 call 指令，在原来的做法里，call 指令之后的指令就被丢弃了，等到未来 return 回来的时候，再重新 Fetch 一次；专利里的做法是，在 call 的时候，把 call 指令之后的指令保存下来，当未来 return 回来的时候，不再重新 Fetch，而是取出保存下来的 call 指令之后的指令，这样就节省了重新 Fetch 一次的时间。
 
-因此它的目的主要是解决重复 Fetch 的能耗问题。
+因此它的目的主要是解决重复 Fetch 的能耗问题，而不是分支预测错误率高的问题。
