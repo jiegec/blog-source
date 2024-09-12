@@ -57,6 +57,12 @@ categories:
 
 官方信息：256-entry 8-way L1 ITLB，支持 4KB 和 64KB 的页表大小
 
+构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
+
+![](./qualcomm_oryon_itlb.png)
+
+可以看到 256 Page 出现了明显的拐点，对应的就是 256 的 L1 ITLB 容量。
+
 ### Decode
 
 官方信息：8 inst/cycle decoded
