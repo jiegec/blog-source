@@ -16,6 +16,8 @@ categories:
 
 本文主要讨论乱序执行的部分。
 
+<!-- more -->
+
 ## 经典 Tomasulo
 
 参考 [Stanford 教材](https://people.eecs.berkeley.edu/~pattrsn/252F96/Lecture04.pdf)

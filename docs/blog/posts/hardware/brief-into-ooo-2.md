@@ -16,6 +16,8 @@ categories:
 
 本文主要讨论访存的部分。
 
+<!-- more -->
+
 ## 内存访问
 
 内存访问是一个比较复杂的操作，它涉及到缓存、页表、内存序等问题。在乱序执行中，要尽量优化内存访问对其他指令的延迟的影响，同时也要保证正确性。这里参考的是 [BOOM 的 LSU 设计](https://docs.boom-core.org/en/latest/sections/load-store-unit.html)。
