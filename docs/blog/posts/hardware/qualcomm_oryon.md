@@ -105,6 +105,18 @@ categories:
 
 官方信息：400+ registers Integer pool, 400+ registers Vector pool
 
+为了测试物理寄存器堆的大小，一般会用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。测试结果见下图：
+
+![](./qualcomm_oryon_prf.png)
+
+- 32b/64b int：测试 32/64 位整数寄存器的数量，拐点在 362-374
+- fp：测试浮点寄存器的数量，拐点在 362-372
+- flags：测试 NZCV 寄存器的数量，拐点在 119-126
+
+可见整数和浮点数都能提供大约 360+ 个寄存器用于乱序执行，加上用于保存架构寄存器的至少 32 个寄存器，加起来和高通宣称的 400+ 是比较一致的。整数和浮点个数测出来一样，可能是这两个寄存器堆大小一样，也可能是整数和浮点放同一个寄存器堆中。经过混合整数和浮点指令测试，认为这两个寄存器堆并不共享。
+
+NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARMv8 指令集大部分指不像 X86 那样会修改 NZCV。
+
 ### Reservation Stations
 
 官方信息：
@@ -124,7 +136,7 @@ categories:
 在循环中重复下列指令多次，测量 CPI，得到如下结果：
 
 - `add x0, x0, 1`：CPI = 6.0，说明可以 6 ALU/cycle
-- `cbnz xzr, target;target:`：CPI = 2.0，说明可以 2 Branch/cycle
+- `cbnz xzr, target;target:`：CPI = 2.0，说明可以 2 Branch/cycle，注意这里是 not taken 分支
 - `mul x0, x1, x2`：CPI = 2.0，说明可以 2 Multiply/cycle
 
 ### Reorder Buffer
