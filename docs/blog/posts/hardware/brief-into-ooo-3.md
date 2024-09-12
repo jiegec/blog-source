@@ -6,7 +6,7 @@ categories:
     - hardware
 ---
 
-# 浅谈乱序执行 CPU（三）
+# 浅谈乱序执行 CPU（三：前端）
 
 本文的内容已经整合到[知识库](/kb/hardware/ooo_cpu.html)中。
 

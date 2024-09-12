@@ -121,7 +121,7 @@ categories:
 
 可见整数和浮点数都能提供大约 360+ 个寄存器用于乱序执行，加上用于保存架构寄存器的至少 32 个寄存器，加起来和高通宣称的 400+ 是比较一致的。整数和浮点个数测出来一样，可能是这两个寄存器堆大小一样，也可能是整数和浮点放同一个寄存器堆中。经过混合整数和浮点指令测试，认为这两个寄存器堆并不共享。
 
-NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARMv8 指令集大部分指不像 X86 那样会修改 NZCV。
+NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARMv8 指令集大部分指令不像 X86 那样会修改 NZCV。
 
 ### Reservation Stations
 
@@ -183,6 +183,20 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 可以看到 224 Page 出现了明显的拐点，对应的就是 224 的 L1 DTLB 容量。从每个 page 一个指针改成每 32 page 一个指针并注意对齐尽量保证 Index 为 0，此时 L1 DTLB 容量降为 7，说明 L1 DTLB 是 7 路组相连结构，这些页被映射到了相同的 Set 当中：
 
 ![](./qualcomm_oryon_dtlb_7.png)
+
+命中 L1 DTLB 时每条 Load 指令是 3 cycle，意味着高通实现了 3 cycle 的 pointer chasing load to use latency，这个特性在苹果，Exynos M-series 和 Intel 的 E-core 中也可以看到，针对这个优化的讨论，详见 [浅谈乱序执行 CPU（二：访存）](./brief-into-ooo-2.md) 的 Load Pipeline 小节。在其他场景下，依然是 4 cycle 的 load to use latency。
+
+针对 Load Store 带宽，实测每个周期可以完成：
+
+- 4x 128b Load
+- 3x 128b Load + 1x 128b Store
+- 2x 128b Load + 2x 128b Store
+- 1x 128b Load + 2x 128b Store
+- 2x 128b Store
+
+如果把每条指令的访存位宽从 128b 改成 256b，带宽不变，指令吞吐减半。
+
+也就是说最大的读带宽是 64B/cyc，最大的写带宽是 32B/cyc，二者不能同时达到。
 
 ### MMU
 
