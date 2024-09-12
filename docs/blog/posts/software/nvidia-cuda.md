@@ -23,6 +23,9 @@ categories:
 
 可以通过 apt show cuda-runtime-x-x 找到：
 
+- cuda 12.6 >= 560 (Release Notes: 525)
+- cuda 12.5 >= 555 (Release Notes: 525)
+- cuda 12.4 >= 550 (Release Notes: 525)
 - cuda 12.3 >= 545 (Release Notes: 525)
 - cuda 12.2 >= 535 (Release Notes: 525)
 - cuda 12.1 >= 530 (Release Notes: 525)
@@ -45,7 +48,7 @@ categories:
 
 使用 nvidia-smi 看到的 CUDA 版本，通常就是这个驱动在上表里对应的 CUDA 版本，例如内核驱动版本是 470 的话，看到的 CUDA 版本就是 11.4。
 
-实际上兼容的驱动版本会比 APT 宣称的更多一些：[官方文档](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html) 里面写了 CUDA 11.x 可以兼容 NVIDIA >= 450。
+实际上兼容的驱动版本会比 APT 宣称的更多一些：[官方文档](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html) 里面写了 CUDA 11.x 可以兼容 NVIDIA >= 450，CUDA 12.x 可以兼容 NVIDIA >= 525。
 
 ## CUDA 版本和 GCC/Clang 版本兼容性
 
@@ -70,6 +73,7 @@ categories:
 
 可以在 `nvcc --help` 搜索 gpu-architecture 找到：
 
+- cuda 12.1 sm_50 to sm_90a
 - cuda 12.0 sm_50 to sm_90a
 - cuda 11.8 sm_35 to sm_90
 - cuda 11.4 sm_35 to sm_87
