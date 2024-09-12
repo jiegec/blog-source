@@ -16,6 +16,12 @@ categories:
 
 本文主要讨论乱序执行的部分。
 
+本系列的所有文章：
+
+- [浅谈乱序执行 CPU（一：乱序）](./brief-into-ooo.md)
+- [浅谈乱序执行 CPU（二：访存）](./brief-into-ooo-2.md)
+- [浅谈乱序执行 CPU（三：前端）](./brief-into-ooo-3.md)
+
 <!-- more -->
 
 ## 经典 Tomasulo
