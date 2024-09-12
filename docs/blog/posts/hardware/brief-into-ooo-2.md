@@ -14,6 +14,8 @@ categories:
 
 之前写过一个[浅谈乱序执行 CPU](brief-into-ooo.md)，随着学习的深入，内容越来越多，页面太长，因此把后面的一部分内容独立出来，变成了这篇博客文章。之后也许会有（三）（四）等等。
 
+本文主要讨论访存的部分。
+
 ## 内存访问
 
 内存访问是一个比较复杂的操作，它涉及到缓存、页表、内存序等问题。在乱序执行中，要尽量优化内存访问对其他指令的延迟的影响，同时也要保证正确性。这里参考的是 [BOOM 的 LSU 设计](https://docs.boom-core.org/en/latest/sections/load-store-unit.html)。
@@ -145,113 +147,6 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 那么，如果 Load 的地址需要比较长的时间去计算，但实际上又是可以预测的，那就可以通过 Load Address Prediction 的方法，来提升性能。
 
-## 精确异常 vs 非精确异常
-
-精确异常是指发生异常的指令之前的指令都完成，之后的没有执行。一般来说，实现方式是完成异常指令之前的所有指令，并撤销异常指令之后的指令的作用。非精确异常则是不保证这个性质，[网上资料](http://bwrcs.eecs.berkeley.edu/Classes/cs152/lectures/lec12-exceptions.pdf) 说，这种情况下硬件实现更简单，但是软件上处理比较困难。
-
-一个非精确异常的例子是 [Alpha](https://courses.cs.washington.edu/courses/cse548/99wi/other/alphahb2.pdf)，在章节 4.7.6.1 中提到，一些浮点计算异常可能是非精确的，并且说了一句：`In general, it is not feasible to fix up the result value or to continue from the trap.`。同时给出了一些条件，只有当指令序列满足这些条件的时候，异常才是可以恢复的。还有一段描述，摘录在这里：
-
-	Alpha lets the software implementor determine the precision of
-	arithmetic traps.  With the Alpha architecture, arithmetic traps (such
-	as overflow and underflow) are imprecise—they can be delivered an
-	arbitrary number of instructions after the instruction that triggered
-	the trap. Also, traps from many different instructions can be reported
-	at once. That makes implementations that use pipelining and multiple
-	issue substantially easier to build.  However, if precise arithmetic
-	exceptions are desired, trap barrier instructions can be explicitly
-	inserted in the program to force traps to be delivered at specific
-	points.
-
-具体来说，在 [Reference Manual](http://www.bitsavers.org/pdf/dec/alpha/Sites_AlphaAXPArchitectureReferenceManual_2ed_1995.pdf) 中第 5.4.1 章节，可以看到当触发 Arithmetic Trap 的时候，会进入 Kernel 的 entArith 函数，并提供参数：a0 表示 exception summary，a1 表示 register write mask。exception summary 可以用来判断发生了什么类型的 exception，比如 integer overflow，inexact result 等等。一个比较特别的 exception 类型是 software completion。第二个参数表示的是触发异常的指令（一个或多个）会写入哪些寄存器（64 位，低 32 位对应整数寄存器，高 32 位对应浮点寄存器），然后保存下来的 PC 值为最后一条执行的指令的下一个地址，从触发异常的第一条指令到最后一条指令就是 trap shadow，这部分指令可能执行了一部分，没有执行一部分，一部分执行结果是错误的。
-
-Linux 处理代码在 `arch/alpha/kernel/traps.c` 的 `do_entArith` 函数中。首先判断，如果是 software completion，那就要进行处理；否则直接 SIGFPE 让程序自己处理或者退出。如果是精确异常，那就对 PC-4 进行浮点模拟；如果是非精确异常，就从 trap shadow 的最后一条指令开始往前搜索，并同时记录遇到的指令写入的寄存器，如果发现指令的写入的寄存器已经覆盖了 register write mask，就说明找到了 trap shadow 的开头，则模拟这条指令，然后从下一条开始重新执行。具体代码如下：
-
-```cpp
-long
-alpha_fp_emul_imprecise (struct pt_regs *regs, unsigned long write_mask)
-{
-	unsigned long trigger_pc = regs->pc - 4;
-	unsigned long insn, opcode, rc, si_code = 0;
-
-	/*
-	 * Turn off the bits corresponding to registers that are the
-	 * target of instructions that set bits in the exception
-	 * summary register.  We have some slack doing this because a
-	 * register that is the target of a trapping instruction can
-	 * be written at most once in the trap shadow.
-	 *
-	 * Branches, jumps, TRAPBs, EXCBs and calls to PALcode all
-	 * bound the trap shadow, so we need not look any further than
-	 * up to the first occurrence of such an instruction.
-	 */
-	while (write_mask) {
-		get_user(insn, (__u32 __user *)(trigger_pc));
-		opcode = insn >> 26;
-		rc = insn & 0x1f;
-
-		switch (opcode) {
-		      case OPC_PAL:
-		      case OPC_JSR:
-		      case 0x30 ... 0x3f:	/* branches */
-			goto egress;
-
-		      case OPC_MISC:
-			switch (insn & 0xffff) {
-			      case MISC_TRAPB:
-			      case MISC_EXCB:
-				goto egress;
-
-			      default:
-				break;
-			}
-			break;
-
-		      case OPC_INTA:
-		      case OPC_INTL:
-		      case OPC_INTS:
-		      case OPC_INTM:
-			write_mask &= ~(1UL << rc);
-			break;
-
-		      case OPC_FLTC:
-		      case OPC_FLTV:
-		      case OPC_FLTI:
-		      case OPC_FLTL:
-			write_mask &= ~(1UL << (rc + 32));
-			break;
-		}
-		if (!write_mask) {
-			/* Re-execute insns in the trap-shadow.  */
-			regs->pc = trigger_pc + 4;
-			si_code = alpha_fp_emul(trigger_pc);
-			goto egress;
-		}
-		trigger_pc -= 4;
-	}
-
-egress:
-	return si_code;
-}
-```
-
-ARM 架构也有 imprecise asynchronous external abort：
-
-	Normally, external aborts are rare. An imprecise asynchronous external
-	abort is likely to be fatal to the process that is running. An example
-	of an event that might cause an external abort is an uncorrectable
-	parity or ECC failure on a Level 2 Memory structure.
-	
-	Because imprecise asynchronous external aborts are normally fatal to the
-	process that caused them, ARM recommends that implementations make
-	external aborts precise wherever possible.
-
-不过这更多是因为内存的无法预知的错误，这种时候机器直接可以拿去维修了。
-
-[文章](https://community.arm.com/developer/ip-products/processors/f/cortex-a-forum/5056/can-anyone-provide-an-example-of-asynchronous-exceptions) 提到了两个 precise/imprecise async/sync的例子：
-
-1. 外部中断是异步的，同时也是 precise 的。
-2. 对于一个 Write-allocate 的缓存，如果程序写入一个不存在的物理地址，那么写入缓存的时候不会出现错误，但当这个 cache line 被写入到总线上的时候，就会触发异常，这个异常是异步并且非精确的，因为之前触发这个异常的指令可能已经完成很久了。这种时候这个进程也大概率没救了，直接 SIGBUS 退出。
-
 ## 处理器前端
 
 再来分析一下乱序执行 CPU 的前端部分。以 RISC-V 为例，指令长度有 4 字节或者 2 字节两种，其中 2 字节属于压缩指令集。如何正确并高效地进行取指令译码？
@@ -264,19 +159,13 @@ ARM 架构也有 imprecise asynchronous external abort：
 
 比较容易做预测更新和恢复的是全局分支历史，可以维护两个 GHR（Global History Register），一个是目前取指令最新的，一个是提交的最新的。在预测的时候，用 GHR 去找对应的 2-bit 状态，然后把预测结果更新到 GHR 上。在预测失败的时候，把 GHR 恢复为提交的状态。如果要支持一个 Fetch Packet 中有多个分支，可以让 GHR 对应若干个 2-bit 状态，分别对应相应位置上的分支的状态，当然这样面积也会增加很多。
 
-## 处理器/内存仿真模型
+## 缓存/内存仿真模型
 
-最后列举一下科研里常用的一些处理器/内存仿真模型：
+最后列举一下科研里常用的一些缓存/内存仿真模型：
 
-- gem5: [论文 The gem5 Simulator: Version 20.0+](https://arxiv.org/abs/2007.03152) [代码](https://gem5.googlesource.com/public/gem5)
 - DRAMSim2: [论文 DRAMSim2: A Cycle Accurate Memory System Simulator](https://user.eng.umd.edu/~blj/papers/cal10-1.pdf) [代码](https://github.com/umd-memsys/DRAMSim2)
 - DRAMsim3: [论文 DRAMsim3: A Cycle-Accurate, Thermal-Capable DRAM Simulator](https://ieeexplore.ieee.org/document/8999595) [代码](https://github.com/umd-memsys/DRAMsim3)
 - DRAMSys4.0：[论文 DRAMSys4.0: A Fast and Cycle-Accurate SystemC/TLM-Based DRAM Simulator](https://link.springer.com/chapter/10.1007/978-3-030-60939-9_8) [4.0 代码](https://github.com/tukl-msd/DRAMSys/releases/tag/v4.0) [5.0 代码](https://github.com/tukl-msd/DRAMSys/releases/tag/v5.0)
 - CACTI: [论文 CACTI 2.0: An Integrated Cache Timing and Power Model](https://www.hpl.hp.com/research/cacti/cacti2.pdf) [代码](https://github.com/HewlettPackard/cacti)
 - McPAT: [论文 McPAT: An integrated power, area, and timing modeling framework for multicore and manycore architectures](https://ieeexplore.ieee.org/document/5375438) [代码](https://github.com/HewlettPackard/mcpat)
-- Multi2Sim: [论文 Multi2Sim: A simulation framework for CPU-GPU computing](https://ieeexplore.ieee.org/document/7842946) [代码](https://github.com/Multi2Sim/multi2sim)
 - Ramulator: [论文 Ramulator: A Fast and Extensible DRAM Simulator](https://users.ece.cmu.edu/~omutlu/pub/ramulator_dram_simulator-ieee-cal15.pdf) [代码](https://github.com/CMU-SAFARI/ramulator)
-- Scarab: [代码](https://github.com/hpsresearchgroup/scarab)
-- Sniper: [论文 Sniper: exploring the level of abstraction for scalable and accurate parallel multi-core simulation](https://dl.acm.org/doi/abs/10.1145/2063384.2063454) [官网](https://snipersim.org/w/The_Sniper_Multi-Core_Simulator) [仓库](https://github.com/snipersim/snipersim)
-- ZSim: [论文 ZSim: fast and accurate microarchitectural simulation of thousand-core systems](https://people.csail.mit.edu/sanchez/papers/2013.zsim.isca.pdf) [代码](https://github.com/s5z/zsim)
-- PTLsim: [论文 PTLsim: A Cycle Accurate Full System x86-64 Microarchitectural Simulator](https://ieeexplore.ieee.org/document/4211019)
