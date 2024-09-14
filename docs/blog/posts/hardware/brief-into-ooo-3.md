@@ -38,7 +38,7 @@ categories:
 
 除了记录条件分支的跳与不跳以外，通常还可以维护 taken branch 的地址，记录这样的分支历史的 GHR 就叫做 PHR（Path History Register）。
 
-目前比较主流的分支预测算法就是 TAGE 了：维护多个表，每个表采取的历史长度不同，呈几何级数，使得需要比较短的历史就可以预测的分支可以更快的预热，需要比较长的历史才能预测的分支也可以有较好的准确度。
+目前比较主流的分支预测算法就是 [TAGE](https://inria.hal.science/hal-03408381/document) 了：维护多个表，每个表采取的历史长度不同，呈几何级数，使得需要比较短的历史就可以预测的分支可以更快的预热，需要比较长的历史才能预测的分支也可以有较好的准确度。比较有意思的是 TAGE 的表项分配和替换的算法，useful counter 和 altpred 的设计，以及 USE_ALT_ON_NA 的优化。为了预测间接分支，可以把目的地址放到 TAGE 的表项里，把预测方向变为预测目的地址，这种预测间接分支的 TAGE 就叫做 ITTAGE。部分实现还会给 TAGE 添加 Statistical Corrector 或者 Loop Predictor。这些算法基本统治了当今高性能的处理器设计。
 
 我在博客 [三星 Exynos CPU 微架构学习笔记](./samsung-exynos-cpu.md) 中详细分析了 Exynos 微架构的前端设计，建议感兴趣的读者阅读。
 
