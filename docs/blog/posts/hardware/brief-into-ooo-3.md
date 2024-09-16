@@ -135,9 +135,9 @@ mov 0(%rsp), %rdi
 
 不过，这个方法也有一个问题：假如没有跳转的分支，怎么办？如果遇到一大段没有分支的指令，似乎就只能用上 3-wide decode，那么这很容易成为一个瓶颈。Tremont 没有解决这个问题，建议用户在这种情况下插入一些 jmp 指令。
 
-Intel 在 Tremont 的下一代 Gracemont 微架构中改进了这个瓶颈。既然插入一些 jmp 指令可以解决这个问题，如果由硬件自动插入一些伪 jmp 指令，也解决了同样的问题，这就是 Gracemont 的解决思路：
+Intel 在 Tremont 的下一代 Gracemont 微架构中缓解了这个瓶颈。既然插入一些 jmp 指令可以解决这个问题，如果由硬件自动插入一些伪 jmp 指令，也解决了同样的问题，这就是 Gracemont 的解决思路：
 
-> Gracemont microarchitecture addresses this bottleneck by introducing a hardware load-balancer. When the hard- ware detects long basic blocks, additional toggle points can be created based on internal heuristics. These toggle points are added to the predictors, thus guiding the machine to toggle within the basic block.
+> Gracemont microarchitecture addresses this bottleneck by introducing a hardware load-balancer. When the hardware detects long basic blocks, additional toggle points can be created based on internal heuristics. These toggle points are added to the predictors, thus guiding the machine to toggle within the basic block.
 
 也就是说，硬件会检测这种长的连续指令块（例如连续 32 条指令都没有一个跳转的指令），适时插入一些 toggle point（例如插到第 24 条指令后面），也就是前面说的伪 jmp 指令，这条指令并不存在，而是在分支预测器中做标记，那么未来执行的时候，就可以利用上两条 Decode Pipeline 了：
 
