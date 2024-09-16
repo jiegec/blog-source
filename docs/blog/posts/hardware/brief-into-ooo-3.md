@@ -106,3 +106,49 @@ target:
 - 如果 Fetch Group 内有一条 call 指令，在原来的做法里，call 指令之后的指令就被丢弃了，等到未来 return 回来的时候，再重新 Fetch 一次；专利里的做法是，在 call 的时候，把 call 指令之后的指令保存下来，当未来 return 回来的时候，不再重新 Fetch，而是取出保存下来的 call 指令之后的指令，这样就节省了重新 Fetch 一次的时间。
 
 因此它的目的主要是解决重复 Fetch 的能耗问题，而不是分支预测错误率高的问题。
+
+### Clustered Decode
+
+推荐阅读：[解码簇二三事（一）：为什么？&加料！](https://zhuanlan.zhihu.com/p/720301269)
+
+Intel 的 E 核从 Tremont 微架构开始实现了 Clustered Decode，从 Goldmont Plus 微架构的传统的 3-wide decode，变成了两条 3-wide decode 的流水线，加起来实现 6-wide decode 的效果。但是这两个流水线怎么协同工作呢？
+
+Intel 在 [Software Optimization Manual](https://cdrdv2-public.intel.com/671488/248966-046A-software-optimization-manual.pdf) 中是这么描述的：
+
+> Tremont microarchitecture has a 32B predict pipeline that feeds dual 3-wide decode clusters capable of 6 instruction decode per cycle. Each cluster can access a banked 32KB instruction cache at 16B/cycle for a maximum of 32B/cycle.
+
+ICache 分成两个 bank，两个 bank 可以同时访问，每个 bank 提供 16B/cycle 的带宽，对应两个 decode pipeline。由于不同的 bank 可以用不同的地址的访问，这意味着这两次访问可以访问不同 cacheline 内的指令，这正好对应了指令流里有跳转的情况：
+
+假如有一段指令（下面的指令流 A），最后一条指令会跳转到另一个地址（下面的 1: label），分支预测器在看到这个模式后，就可以让两个 decode cluster 分别处理跳转前的代码（指令流 A 内的 `dec + jne`）和跳转后的代码（指令流 B 内的 `mov`）：
+
+```asm
+# instruction stream A
+dec %rsi
+jne 1f
+
+# instruction stream B
+1:
+mov 0(%rsp), %rdi
+```
+
+这样就在保持硬件实现比较简单的前提下，实现了比较宽的 decode width（Intel 原文：`Whereas increasing decode width in a traditional fashion for x86 requires exponential resources and triggers efficiency loss, clustering allows for x86 decode to be built with linear resources and little efficiency loss.`）。这对于 x86 来说是比较难提升的，因为指令是变长的，如果不知道指令从哪里开始，译码将会十分复杂而且串行。可以看到 ARM 阵营的高性能处理器在 decode width 上有一定的领先，也是因为 ARMv8 是定长指令集。
+
+不过，这个方法也有一个问题：假如没有跳转的分支，怎么办？如果遇到一大段没有分支的指令，似乎就只能用上 3-wide decode，那么这很容易成为一个瓶颈。Tremont 没有解决这个问题，建议用户在这种情况下插入一些 jmp 指令。
+
+Intel 在 Tremont 的下一代 Gracemont 微架构中改进了这个瓶颈。既然插入一些 jmp 指令可以解决这个问题，如果由硬件自动插入一些伪 jmp 指令，也解决了同样的问题，这就是 Gracemont 的解决思路：
+
+> Gracemont microarchitecture addresses this bottleneck by introducing a hardware load-balancer. When the hard- ware detects long basic blocks, additional toggle points can be created based on internal heuristics. These toggle points are added to the predictors, thus guiding the machine to toggle within the basic block.
+
+也就是说，硬件会检测这种长的连续指令块（例如连续 32 条指令都没有一个跳转的指令），适时插入一些 toggle point（例如插到第 24 条指令后面），也就是前面说的伪 jmp 指令，这条指令并不存在，而是在分支预测器中做标记，那么未来执行的时候，就可以利用上两条 Decode Pipeline 了：
+
+> If there are no natural toggle points (i.e., taken branches) within 32 uops, the hardware will insert a toggle point on the instruction after or corresponding to the 24th uop of the stream. As inserted toggle points consume resources in the predictor, it typically doesn't insert immediately but rather marks the location of the instruction in a table of addresses. If the same inserted toggle point is marked a second time, it allocates this location into the predictor.
+
+此外，为了解决变长指令集的译码问题，还有一个优化：在 ICache 中标记每条指令的边界，这样译码的时候，就可以快速寻找到指令边界，从指令边界并行地进行译码，而不用先判断第一条指令有多长，再找到第二条指令在哪，再判断第二条指令有多长，再去找第三条指令。不过这个信息怎么来呢？
+
+一种方法是在 ICache 中进行预译码（Pre-decode），当 ICache 在 refill 的时候，就进行一定的译码，把指令边界标记出来。但 x86 的指令从不同位置开始译码，得到的结果是不一样的，也因为这一点 ROP 攻击在 x86 上比较容易实现。这对于预译码也带来了困难，不知道从哪个字节开始执行。
+
+另一种方法是等到译码的时候，先检查一下有没有指令边界的信息，如果没有，临时耗费两个周期来进行预译码的操作，把指令边界标记出来，把结果写入 ICache 中。由于此时已经从分支预测器知道了指令执行的起始地址，所以得到的结果更加精确。这个方法在 Gracemont 中采用，叫做 On Demand Instruction Length Decoder（OD-ILD），顾名思义，它的译码结果是指令的长度，也就得到了指令的边界信息：
+
+> Instead of a second level predecode cache, the Gracemont microarchitecture introduces an “on-demand” instruction length decoder (OD-ILD). This block is typically only active when new instruction bytes are brought into the instruction cache from a miss. When this happens, two extra cycles are added to the fetch pipeline in order to generate predecode bits on the fly.
+
+Intel 在 Skymont 这一代 E-core 微架构在大大拓宽后端的同时，把 Decode 从两条 3-wide pipeline 改成了三条 3-wide pipeline，那么怎么把这三条 Decode pipeline 喂满，是继续延续上面的思路，只不过插入更多的 toggle point，还是有一些新的设计，让我们拭目以待。
