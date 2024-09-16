@@ -151,4 +151,6 @@ Intel 在 Tremont 的下一代 Gracemont 微架构中缓解了这个瓶颈。既
 
 > Instead of a second level predecode cache, the Gracemont microarchitecture introduces an “on-demand” instruction length decoder (OD-ILD). This block is typically only active when new instruction bytes are brought into the instruction cache from a miss. When this happens, two extra cycles are added to the fetch pipeline in order to generate predecode bits on the fly.
 
+这个方法在 Intel 的专利 [Circuitry and methods for power efficient generation of length markers for a variable length instruction set](https://patents.google.com/patent/US20220100516A1/en) 有比较详细的描述。
+
 Intel 在 Skymont 这一代 E-core 微架构在大大拓宽后端的同时，把 Decode 从两条 3-wide pipeline 改成了三条 3-wide pipeline，那么怎么把这三条 Decode pipeline 喂满，是继续延续上面的思路，只不过插入更多的 toggle point，还是有一些新的设计，让我们拭目以待。
