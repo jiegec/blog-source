@@ -406,6 +406,8 @@ P1:
 
 完整的对应关系，建议阅读 [C/C++11 mappings to processors](https://www.cl.cam.ac.uk/~pes20/cpp/cpp0xmappings.html)。
 
+编译器的优化可能会对内存序产生一些意料之外的影响，推荐阅读 Linux 内核的 [LINUX KERNEL MEMORY BARRIERS](https://www.kernel.org/doc/Documentation/memory-barriers.txt) 文档。
+
 ## 参考文献
 
 - [A Tutorial Introduction to the ARM and POWER Relaxed Memory Model](https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/test7.pdf)

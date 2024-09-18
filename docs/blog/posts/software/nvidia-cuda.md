@@ -54,6 +54,7 @@ categories:
 
 可以在 cuda/include/crt/host_config.h 文件里找到：
 
+- cuda 12.6: gcc <= 13, 3.2 < clang < 19
 - cuda 12.1: gcc <= 12, 3.2 < clang < 16
 - cuda 12.0: gcc <= 12, 3.2 < clang < 15
 - cuda 11.8: gcc <= 11, 3.2 < clang < 15
