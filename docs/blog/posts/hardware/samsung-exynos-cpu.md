@@ -56,7 +56,7 @@ Exynos M4 继续翻倍了 L2 BTB 容量，减少了 L2 BTB refill 到 mBTB 的�
 
 Exynos M5 增加了 Empty Line Optimization 优化：检测没有分支的缓存行，如果确认缓存行没有分支，那就不用预测里面的分支了，可以节省功耗。
 
-为了进一步优化 taken branch 的吞吐，在 mBTB 中记录分支的目的地址时，不仅记录在分支本身所在的 mBTB entry 中，还要记录在这条分支的前序分支的 mBTB entry 中：例如 A 跳转到 B，B 跳转到 C，经典的实现是用 A 的地址查询 B，用 B 的地址查询 C；而 Exynos M5 的设计是，可以用 A 查询 B 和 C。不过这里要求 B 的跳转是 always-taken 或者 often-taken，因为并没有对第二条分支做预测，而是预测它一定会跳。通过这样的方法，可以在 2-bubble 的预测器的实现下，实现 1 taken branch/cycle 的吞吐，等效于一个 0-bubble 的预测器。下面是论文中对 mBTB 从 2-bubble 到 1-bubble 最终到 0-bubble 的变化的对比图：
+为了进一步优化 taken branch 的吞吐，在 mBTB 中记录分支的目的地址时，不仅记录在分支本身所在的 mBTB entry 中，还要记录在这条分支的前序分支的 mBTB entry 中：例如 A 跳转到 B，B 跳转到 C，经典的实现是用 A 的地址找到 A 的 BTB entry，entry 中记录了 A 目的地址是 B，接着用 B 的地址找到 B 的 BTB entry，entry 中记录了 B 的目的地址是 C；而 Exynos M5 的设计是，C 的目的地址，不仅要记录在 B 的 BTB entry 中，还要记录在 A 的 BTB entry 中。不过这里要求 B 的跳转是 always-taken 或者 often-taken，因为并没有对第二条分支做预测，而是预测它一定会跳。通过这样的方法，可以在 2-bubble 的预测器的实现下，实现 1 taken branch/cycle 的吞吐，等效于一个 0-bubble 的预测器。下面是论文中对 mBTB 从 2-bubble 到 1-bubble 最终到 0-bubble 的变化的对比图：
 
 ![](./samsung-exynos-cpu-mbtb.png)
 
