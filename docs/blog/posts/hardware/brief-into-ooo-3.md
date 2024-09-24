@@ -154,3 +154,25 @@ Intel 在 Tremont 的下一代 Gracemont 微架构中缓解了这个瓶颈。既
 这个方法在 Intel 的专利 [Circuitry and methods for power efficient generation of length markers for a variable length instruction set](https://patents.google.com/patent/US20220100516A1/en) 有比较详细的描述。
 
 Intel 在 Skymont 这一代 E-core 微架构在大大拓宽后端的同时，把 Decode 从两条 3-wide pipeline 改成了三条 3-wide pipeline，那么怎么把这三条 Decode pipeline 喂满，是继续延续上面的思路，只不过插入更多的 toggle point，还是有一些新的设计，让我们拭目以待。
+
+### BTB Organization
+
+BTB 的目的是在分支预测阶段，提供哪些指令是分支指令，以及这些分支指令的目的地址的信息。那么 BTB 是怎么保存这些信息的呢？论文 [Branch Target Buffer Organizations](https://dl.acm.org/doi/pdf/10.1145/3613424.3623774) 总结了几种常见的 BTB 组织方法：
+
+1. 第一种方法：I-BTB，Instruction BTB，对于每个可能出现分支指令的地址，都进行一次 BTB 查询，看看这个地址是不是有分支指令。以 ARMv8 为例，指令都是 4 字节，假如要对 32 字节的块进行预测，那么就要对这 32 字节的 8 个 4 字节都进行一次 BTB 查询，得到每一个位置上的分支信息。x86 的话每个字节都可能是一条分支指令，用这样的方法需要查询的次数过多。
+2. 第二种方法：R-BTB，Region BTB，对于每个对齐的块，记录这个块内的有限条分支的信息，例如对每个对齐到 32 字节的块，记录最多 4 条分支。这样 BTB 查询的次数会比较少，但如果一个块内分支太多，会出现存不下的情况。
+3. 第三种方法：B-BTB，Block BTB，记录的是从某个 PC 开始连续的一段指令，这段指令不能有多于 n 条分支，并且不能多于 m 条指令或 m 个字节。这种方法在分支很密集的情况下，会用多个 BTB entry 保存这些分支。此外也比较方便做 2 predictions/cycle：同时预测两个条件分支，如果第一个分支不跳转，那就用第二个分支的结果。但同一个分支可能重复保存在多个 BTB entry 中，因为入口 PC 可能不同。
+
+下面看一些例子，例如 AMD 在 [Software Optimization Guide for AMD EPYC™ 7003 Processors](https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/software-optimization-guides/56665.zip) 中有如下表述：
+
+> Each BTB entry includes information for branches and their targets. Each BTB
+> entry can hold up to two branches if the last bytes of the branches reside in the same 64-byte aligned
+> cache line and the first branch is a conditional branch.
+
+这和上面所说的 B-BTB 是类似的，如果两条分支在同一个 64B 对齐的 cacheline 内，并且第一条分支是条件分支，就可以保存在同一个 BTB entry 内。换句话说，一个 BTB entry 可以保存 1 到 2 条分支。
+
+香山[南湖微架构](https://raw.githubusercontent.com/OpenXiangShan/XiangShan-doc/main/slides/20220825-RVSC-%E9%A6%99%E5%B1%B1%E5%A4%84%E7%90%86%E5%99%A8%E5%89%8D%E7%AB%AF%E5%8F%96%E6%8C%87%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B.pdf)也采用了类似的[B-BTB 设计](https://docs.xiangshan.cc/zh-cn/latest/frontend/bp/)，下面是香山微架构文档的截图：
+
+![](./brief-into-ooo-3-ftb.png)
+
+推荐阅读：[现代分支预测：从学术界到工业界](https://blog.eastonman.com/blog/2023/12/modern-branch-prediction-from-academy-to-industry/)
