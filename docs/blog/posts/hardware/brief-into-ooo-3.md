@@ -175,4 +175,15 @@ BTB 的目的是在分支预测阶段，提供哪些指令是分支指令，以�
 
 ![](./brief-into-ooo-3-ftb.png)
 
+如果程序里有很多经常或者总是跳转的分支，那么上面这种 B-BTB 设计就有一些浪费，因为找不到很多条件分支+分支的组合，即使找到了，如果条件分支总是跳转，那么第二条分支就浪费了。为了解决这个问题，AMD 在 [Software Optimization Guide for the AMD Zen4 Microarchitecture](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/software-optimization-guides/57647.zip) 中提到一种解决方案：
+
+> Each BTB entry can hold up to two branches, and two pair cases are supported:
+> • A conditional branch followed by another branch with both branches having their last byte in the
+> same 64 byte aligned cacheline.
+> • A direct branch (excluding CALLs) followed by a branch ending within the 64 byte aligned
+> cacheline containing the target of the first branch.
+> Predicting with BTB pairs allows two fetches to be predicted in one prediction cycle.
+
+可以看到第一种情况就是前面 Zen 3 的模式，一个 cacheline 内，条件分支+分支；第二种情况就是新的设计，它可以记录两条分支指令，第二条分支指令和第一条分支指令的目的地址在同一个 cacheline 中，也就是一个 BTB 记录两条分支指令，第一条跳到第二条，第二条再跳转，在这种情况下，可以一个周期给出两个 Fetch Bundle，也就是 2 taken predictions/cycle。
+
 推荐阅读：[现代分支预测：从学术界到工业界](https://blog.eastonman.com/blog/2023/12/modern-branch-prediction-from-academy-to-industry/)
