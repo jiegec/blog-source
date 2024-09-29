@@ -187,3 +187,15 @@ AMD 的 CPUID 分为三部分：Family，Model 和 Stepping，例如：
 可以在 [amd-ucode](https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/amd-ucode/README) 查阅最新 microcode 版本。
 
 修复 EPYC 7002 Rome 的 [Zenbleed](https://github.com/google/security-research/security/advisories/GHSA-v6wh-rxpg-cmm8) 漏洞的 microcode 版本是 [0x0830107a](https://lore.kernel.org/linux-firmware/20230719191757.3210370-1-john.allen@amd.com/)。
+
+## Intel
+
+- [Kaby Lake: Core ix-7xxx](https://ark.intel.com/content/www/us/en/ark/products/codename/82879/products-formerly-kaby-lake.html)
+- [Coffee Lake: Core ix-8xxx/ix-9xxx](https://ark.intel.com/content/www/us/en/ark/products/codename/97787/products-formerly-coffee-lake.html)
+- [Ice Lake: Core ix-10xxx](https://ark.intel.com/content/www/us/en/ark/products/codename/74979/products-formerly-ice-lake.html)
+- [Comet Lake: Core ix-10xxx](https://ark.intel.com/content/www/us/en/ark/products/codename/90354/products-formerly-comet-lake.html)
+- [Tiger Lake: Core ix-11xxx](https://ark.intel.com/content/www/us/en/ark/products/codename/88759/products-formerly-tiger-lake.html)
+- [Alder Lake: Core ix-12xxx](https://ark.intel.com/content/www/us/en/ark/products/codename/147470/products-formerly-alder-lake.html)
+- [Raptor Lake: Core ix-13xxx/ix-14xxx](https://ark.intel.com/content/www/us/en/ark/products/codename/215599/products-formerly-raptor-lake.html)
+- [Meteor Lake: Core Ultra 1xx](https://ark.intel.com/content/www/us/en/ark/products/codename/90353/products-formerly-meteor-lake.html)
+- [Lunar Lake: Core Ultra 2xx](https://ark.intel.com/content/www/us/en/ark/products/codename/213792/products-formerly-lunar-lake.html)
