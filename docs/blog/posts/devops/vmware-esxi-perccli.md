@@ -174,13 +174,15 @@ TR=Transport Ready
 
 ## 相关软件下载
 
-可以在[这里](https://www.broadcom.com/products/storage/raid-controllers/megaraid-9660-16i)寻找 StorCLI 版本。
+可以在[这里](https://www.broadcom.com/products/storage/raid-controllers/megaraid-9660-16i)和[这里](https://www.broadcom.com/support/download-search?dk=storcli)寻找 StorCLI 版本。
 
 StorCLI：
 
-- 008.0005.0000.0010 Feb 22, 2023 [008.0005.0000.0010_StorCLI.zip](https://docs.broadcom.com/docs/1232743171)，注：不支持旧型号
+- 007.3007.0000.0000 May 16, 2024 [007.3007.0000.0000_MR7.30_Storcli.zip](https://docs.broadcom.com/docs-and-downloads/007.3007.0000.0000_MR7.30_Storcli.zip)
 - 007.1613.0000.0000 Oct 29, 2020 [007.1613.0000.0000_Unified_StorCLI.zip](https://docs.broadcom.com/docs/007.1613.0000.0000_Unified_StorCLI.zip)
 - 007.1506.0000.0000 Aug 11, 2020 [StorCLI_MR7.15.zip](https://downloadcenter.intel.com/download/30286/StorCLI-Standalone-Utility) 
+- 008.0010.0000.0010 Jun 14, 2024 [008.0010.0000.0010_MR8.10_Storcli2.zip](https://docs.broadcom.com/docs-and-downloads/008.0010.0000.0010_MR8.10_Storcli2.zip)，注：不支持旧型号
+- 008.0005.0000.0010 Feb 22, 2023 [008.0005.0000.0010_StorCLI.zip](https://docs.broadcom.com/docs/1232743171)，注：不支持旧型号
 - 1.15.12 Apr 23, 2015 [MR_SAS_StorCLI_6-7-1-15-12-SCGCQ00852539.zip](https://docs.broadcom.com/docs/12354905)
 - 1.15.05 Jan 22, 2015 [1-15-05_StorCLI.zip](https://docs.broadcom.com/docs/12354804)
 
