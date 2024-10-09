@@ -29,11 +29,12 @@ categories:
 
 ## SPEC CPU 2017
 
-下面贴出自己测的数据（SPECint2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。
+下面贴出自己测的数据（SPECint2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。运行时间基本和分数成反比，乘积按 100000 估算。
 
 - i9-14900K Raptor Lake（`-O3`）: 12.1
-- i9-12900KS Alder Lake（`-O3`）: 10.5
-- Kunpeng 920 TaiShan V110（`-O3`）: 3.65
+- i9-12900KS Alder Lake（`-O3`）: 10.5 10.9
+- i9-10980XE Cascade Lake（`-O3`）: 7.18
+- Kunpeng 920 TaiShan V110（`-O3`）: 3.65 3.62
 
 注：SPEC INT 2017 不开 OpenMP 单线程 speed 测试等价为 rate-1。
 
