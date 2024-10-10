@@ -165,7 +165,7 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 有没有什么办法改进呢？能否只读一个 Way 的 Tag 和数据？这就需要引入 Way Prediction，这在论文 [Way-Predicting Set-Associative Cache for High Performance and Low Energy Consumption](https://ieeexplore.ieee.org/document/799456) 中提出，它的思路是，引入一个预测器，预测这次访问会命中哪个 Way，然后第一个周期只读这一个 Way 的 Tag 和数据，如果 Tag 命中了，数据也有了，这样功耗和性能都是比较好的。不过如果预测错了，第二个周期就需要把其他几个 Way 的 Tag 和数据读出来，再比较一次：
 
-![](./brief-into-ooo-2-way-prediction.png.png)
+![](./brief-into-ooo-2-way-prediction.png)
 
 （图源 [Way-Predicting Set-Associative Cache for High Performance and Low Energy Consumption](https://ieeexplore.ieee.org/document/799456)）
 
