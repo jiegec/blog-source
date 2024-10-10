@@ -295,3 +295,15 @@ cd /mnt && . ./shrc && runcpu intspeed
 # fp speed
 ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 ```
+
+## 固定频率方法
+
+可以尝试用 cpupower frequency-set 来固定频率，但是一些平台不支持，还可能有 Linux 内无法关闭的 Boost。
+
+对于 AMD CPU，在 Linux 下无法很好地固定 CPU 的频率，而是要去 BIOS 中进行设置。以 [ASUS 为例](https://dlcdnets.asus.com.cn/pub/ASUS/mb/13MANUAL/PRIME_PROART_TUF_GAMING_AMD_AM5_Series_BIOS_EM_WEB_EN.pdf?model=PRIME%20X670-P%20WIFI-CSM)，需要的设置如下：
+
+1. 进入 Ai Tweaker Menu
+2. 修改 CPU Core Ratio，把 Auto 改成需要的频率倍数（例如 BCLK 100MHz，要 4.3 GHz 那么 Ratio 就是 43）
+3. 关闭 Core Performance Boost
+
+进入 Linux 后，用 `cpupower frequency-info` 验证：`current CPU frequency: 4.29 GHz (asserted by call to kernel)` 是否和预期频率一致并且不变
