@@ -1,14 +1,12 @@
 ---
-layout: post
-date: 2023-08-02
-tags: [benchmark]
-categories:
-    - software
+layout: page
+date: 1970-01-01
+permalink: /benchmark/
 ---
 
 # 性能测试
 
-## SPEC CPU 2006
+## SPEC INT 2006 Speed
 
 因为 GCC 没有自动并行化，所以都是单核运行。运行时间基本和分数成反比，乘积按 400000 估算。
 
@@ -66,7 +64,101 @@ CXXPORTABILITY = -DSPEC_CPU_LINUX
 CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
 ```
 
-## SPEC CPU 2017
+### 网上的数据
+
+只考虑单核，不考虑 ICC 的自动多线程并行化。
+
+[Anandtech 的数据](https://www.anandtech.com/show/16084/intel-tiger-lake-review-deep-dive-core-11th-gen/8)：
+
+- i9-10900K Comet Lake: 58.76
+- R9 3950X Zen 2: 50.02
+- R7 4800U Zen 2: 37.10
+- Amazon Graviton 2 Neoverse-N1: 29.99
+
+[Anandtech 的数据](https://www.anandtech.com/show/16252/mac-mini-apple-m1-tested/4)：
+
+- Apple M1: 69.40
+- R9 5950X Zen 3: 68.53
+- Apple A14: 63.34
+- i9-10900K Comet Lake: 58.58
+- Apple A13: 52.83
+- R9 3950X Zen 2: 50.10
+- R7 2700X Zen+: 39.01
+
+[Anandtech 的数据](https://www.anandtech.com/show/14694/amd-rome-epyc-2nd-gen/9)：
+
+- EPYC 7742 Zen 2: 39.25
+- EPYC 7601 Zen 1: 31.45
+
+[Baikal 的数据](https://www.163.com/dy/article/IB0CL7PU0511838M.html):
+
+- Baikal-S：19
+- Kunpeng 920: 26
+
+[龙芯 3A6000 新闻](https://www.ithome.com/0/709/460.htm)：
+
+- Loongson 3A6000: 43.1
+
+[龙芯 3A6000](https://www.bilibili.com/video/BV1am4y1x71V/):
+
+- Loongson 3A6000: 43.1
+- Intel Core i3-10100: 42.5
+- Hygon 3250: 39
+- Kirin 990: 26.4
+- Zhaoxin KX6780A: 20.5
+- Phytium FT-D2000: 15.4
+- Pangu M900: 12.4
+
+[在龙芯 3A5000 上测试 SPEC CPU 2006](https://zhuanlan.zhihu.com/p/393600027):
+
+- Loongson 3A5000: 26.6
+
+[龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
+
+- Intel i9-10850K: 62.5
+- AMD R5 5600G: 48.2 59.9
+- AMD R5 2600: 36.1 40.5
+- Intel i5-6500: 40.1
+- Hygon C86 3250: 30.5
+- Loongson 3A5000HV: 26.5
+- Zhaoxin KX-U6780A: 15.5
+- Phytium D2000: 15.3
+
+
+## SPEC INT 2006 Rate
+
+### 网上的数据
+
+[Kunpeng 920 官方数据](https://www.hisilicon.com/en/products/Kunpeng/Huawei-Kunpeng/Huawei-Kunpeng-920)：
+
+- Kunpeng 920 64 Cores: >930
+
+[夏晶的数据](https://www.zhihu.com/question/308299017/answer/592860614)：
+
+- AMD Zen 2 64 Cores: ~1200
+- Intel Skylake 8180 v5 28 Cores: ~750
+- Cavium TX2 32 Cores: ~750
+- AMD Zen 1 7601 32 Cores: ~700
+- Qualcomm 2400 48 Cores: ~650
+- Phytium FT2000 64 Cores: ~600
+- Intel Skylake 6148 v5 20 Cores: ~550
+
+[龙芯 3A6000 新闻](https://www.ithome.com/0/709/460.htm)：
+
+- Loongson 3A6000 4C 8T: 155
+
+[龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
+
+- Intel i9-10850K 10C 20T: 328 349
+- AMD R5 5600G 6C 12T: 192 232 235 278
+- AMD R5 2600 6C 12T: 166 179 192 199
+- Hygon C86 3250 8C 16T: 173 197
+- Intel i5-6500 4C: 113
+- Phytium D2000 8C: 90.2
+- Zhaoxin KX-U6780A 8C: 82.9
+- Loongson 3A5000HV 4C: 81.2
+
+## SPEC INT 2017 Speed/Rate-1
 
 下面贴出自己测的数据（SPECint2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。运行时间基本和分数成反比，乘积按 100000 估算。
 
@@ -160,100 +252,28 @@ intrate,intspeed=base: # flags for integer base
 
 如果在 ARM64 上，把 -DSPEC_LINUX_X64 替换为 -DSPEC_LINUX_AARCH64，其余内容不变。
 
-## 网上的数据
+### 网上的数据
 
-### SPEC INT 2006 Speed
+[SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
 
-只考虑单核，不考虑 ICC 的自动多线程并行化。
+- 9950X: 12.6
+- M3 Pro: 11.8
+- 13900K: 11.5
+- M2 Pro: 10.3
+- M2: 9.95
+- HX 370: 9.64
+- 258V: 9.46
+- M1 Max: 9.2
+- 5950X: 9.15
+- 3A6000: 4.29
 
-[Anandtech 的数据](https://www.anandtech.com/show/16084/intel-tiger-lake-review-deep-dive-core-11th-gen/8)：
+[高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
 
-- i9-10900K Comet Lake: 58.76
-- R9 3950X Zen 2: 50.02
-- R7 4800U Zen 2: 37.10
-- Amazon Graviton 2 Neoverse-N1: 29.99
-
-[Anandtech 的数据](https://www.anandtech.com/show/16252/mac-mini-apple-m1-tested/4)：
-
-- Apple M1: 69.40
-- R9 5950X Zen 3: 68.53
-- Apple A14: 63.34
-- i9-10900K Comet Lake: 58.58
-- Apple A13: 52.83
-- R9 3950X Zen 2: 50.10
-- R7 2700X Zen+: 39.01
-
-[Anandtech 的数据](https://www.anandtech.com/show/14694/amd-rome-epyc-2nd-gen/9)：
-
-- EPYC 7742 Zen 2: 39.25
-- EPYC 7601 Zen 1: 31.45
-
-[Baikal 的数据](https://www.163.com/dy/article/IB0CL7PU0511838M.html):
-
-- Baikal-S：19
-- Kunpeng 920: 26
-
-[龙芯 3A6000 新闻](https://www.ithome.com/0/709/460.htm)：
-
-- Loongson 3A6000: 43.1
-
-[龙芯 3A6000](https://www.bilibili.com/video/BV1am4y1x71V/):
-
-- Loongson 3A6000: 43.1
-- Intel Core i3-10100: 42.5
-- Hygon 3250: 39
-- Kirin 990: 26.4
-- Zhaoxin KX6780A: 20.5
-- Phytium FT-D2000: 15.4
-- Pangu M900: 12.4
-
-[在龙芯 3A5000 上测试 SPEC CPU 2006](https://zhuanlan.zhihu.com/p/393600027):
-
-- Loongson 3A5000: 26.6
-
-[龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
-
-- Intel i9-10850K: 62.5
-- AMD R5 5600G: 48.2 59.9
-- AMD R5 2600: 36.1 40.5
-- Intel i5-6500: 40.1
-- Hygon C86 3250: 30.5
-- Loongson 3A5000HV: 26.5
-- Zhaoxin KX-U6780A: 15.5
-- Phytium D2000: 15.3
-
-### SPEC INT 2006 Rate
-
-[Kunpeng 920 官方数据](https://www.hisilicon.com/en/products/Kunpeng/Huawei-Kunpeng/Huawei-Kunpeng-920)：
-
-- Kunpeng 920 64 Cores: >930
-
-[夏晶的数据](https://www.zhihu.com/question/308299017/answer/592860614)：
-
-- AMD Zen 2 64 Cores: ~1200
-- Intel Skylake 8180 v5 28 Cores: ~750
-- Cavium TX2 32 Cores: ~750
-- AMD Zen 1 7601 32 Cores: ~700
-- Qualcomm 2400 48 Cores: ~650
-- Phytium FT2000 64 Cores: ~600
-- Intel Skylake 6148 v5 20 Cores: ~550
-
-[龙芯 3A6000 新闻](https://www.ithome.com/0/709/460.htm)：
-
-- Loongson 3A6000 4C 8T: 155
-
-[龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
-
-- Intel i9-10850K 10C 20T: 328 349
-- AMD R5 5600G 6C 12T: 192 232 235 278
-- AMD R5 2600 6C 12T: 166 179 192 199
-- Hygon C86 3250 8C 16T: 173 197
-- Intel i5-6500 4C: 113
-- Phytium D2000 8C: 90.2
-- Zhaoxin KX-U6780A 8C: 82.9
-- Loongson 3A5000HV 4C: 81.2
-
-### SPEC INT 2017
-
-- [SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017)
-- [SPEC 测试汇总 by JamesAslan](https://zhuanlan.zhihu.com/p/648420842)
+- 7700X: 10.35
+- 5950X: 8.45
+- 13700K: 9.81
+- 12700K: 9.13
+- 8 Gen 2: 6.58
+- M2: 8.40
+- M1: 7.40
+- Oryon: 8.19

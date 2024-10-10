@@ -29,6 +29,7 @@ nav:
   - 项目: projects/README.md
   - 工具: tools.md
   - 订阅: "/feed.xml"
+  - SPEC: benchmark.md
 
 plugins:
   - tags:
