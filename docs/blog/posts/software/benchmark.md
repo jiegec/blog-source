@@ -10,7 +10,7 @@ categories:
 
 ## SPEC CPU 2006
 
-因为 GCC 没有自动并行化，所以都是单核运行。跑一次测试要 5000+/17000+ 秒，运行时间基本和分数成反比，乘积按 400000 估算。
+因为 GCC 没有自动并行化，所以都是单核运行。运行时间基本和分数成反比，乘积按 400000 估算。
 
 实测在 -Ofast 编译选项下，SPECfp 里的 gamess 和 bwaves 会失败，改成 -O3/-O2/-O1 以后 gamess 依然失败，只有不开 -O 或者 -O0 才能跑通 gamess。所以就不测 SPECfp 了，只测 SPECint。
 
@@ -27,6 +27,45 @@ categories:
 - Kunpeng 920 TaiShan V110（`-O2`）: 23.3
 - Kunpeng 920 TaiShan V110（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 24.5
 
+配置：
+
+```
+# match spec result standard
+reportable = yes
+# skip peak
+basepeak = yes
+# show live output
+teeout = yes
+
+# optimization flags for base
+default=base=default=default:
+COPTIMIZE = -O3 -fgnu89-inline -fcommon -fno-strict-aliasing
+CXXOPTIMIZE = -O3 -fpermissive --std=c++98 -fno-strict-aliasing
+FOPTIMIZE = -O3 -std=legacy -fno-strict-aliasing
+
+# specify compilers
+default=default=default=default:
+CC = /usr/bin/gcc
+CXX = /usr/bin/g++
+FC = /usr/bin/gfortran
+
+# fix compilation
+default=base=default=default:
+PORTABILITY = -DSPEC_CPU_LP64
+
+400.perlbench=default=default=default:
+CPORTABILITY = -DSPEC_CPU_LINUX_X64
+
+462.libquantum=default=default=default:
+CPORTABILITY = -DSPEC_CPU_LINUX
+
+483.xalancbmk=default=default=default:
+CXXPORTABILITY = -DSPEC_CPU_LINUX
+
+481.wrf=default=default=default:
+CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
+```
+
 ## SPEC CPU 2017
 
 下面贴出自己测的数据（SPECint2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。运行时间基本和分数成反比，乘积按 100000 估算。
@@ -38,6 +77,88 @@ categories:
 - Kunpeng 920 TaiShan V110（`-O3`）: 3.65 3.62
 
 注：SPEC INT 2017 不开 OpenMP 单线程 speed 测试等价为 rate-1。
+
+配置：
+
+```
+# match spec result standard
+reportable = yes
+# skip peak
+basepeak = yes
+# show live output
+teeout = yes
+# speedup compilation
+makeflags = --jobs=16
+
+# compilers
+%ifndef %{gcc_dir}
+%define gcc_dir /usr
+%endif
+
+default:
+   preENV_LD_LIBRARY_PATH  = %{gcc_dir}/lib64/:%{gcc_dir}/lib/:/lib64
+   SPECLANG                = %{gcc_dir}/bin/
+   CC                      = $(SPECLANG)gcc -std=c99
+   CXX                     = $(SPECLANG)g++
+   FC                      = $(SPECLANG)gfortran
+   # How to say "Show me your version, please"
+   CC_VERSION_OPTION       = -v
+   CXX_VERSION_OPTION      = -v
+   FC_VERSION_OPTION       = -v
+
+# portability flags
+default:
+   EXTRA_PORTABILITY = -DSPEC_LP64
+500.perlbench_r,600.perlbench_s:  #lang='C'
+   PORTABILITY    = -DSPEC_LINUX_X64
+
+521.wrf_r,621.wrf_s:  #lang='F,C'
+   CPORTABILITY  = -DSPEC_CASE_FLAG
+   FPORTABILITY  = -fconvert=big-endian
+
+523.xalancbmk_r,623.xalancbmk_s:  #lang='CXX'
+   PORTABILITY   = -DSPEC_LINUX
+
+526.blender_r:  #lang='CXX,C'
+   PORTABILITY   = -funsigned-char -DSPEC_LINUX
+
+527.cam4_r,627.cam4_s:  #lang='F,C'
+   PORTABILITY   = -DSPEC_CASE_FLAG
+
+628.pop2_s:  #lang='F,C'
+   CPORTABILITY    = -DSPEC_CASE_FLAG
+   FPORTABILITY    = -fconvert=big-endian
+
+intspeed,fpspeed:
+   EXTRA_OPTIMIZE = -fopenmp -DSPEC_OPENMP
+fpspeed:
+   #
+   # 627.cam4 needs a big stack; the preENV will apply it to all
+   # benchmarks in the set, as required by the rules.
+   #
+   preENV_OMP_STACKSIZE = 120M
+
+default=base:         # flags for all base
+   OPTIMIZE       = -O3
+   # -std=c++13 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
+   CXXOPTIMIZE    = -std=c++03
+   # -fallow-argument-mismatch required for https://www.spec.org/cpu2017/Docs/benchmarks/521.wrf_r.html
+   FOPTIMIZE      = -fallow-argument-mismatch
+
+intrate,intspeed=base: # flags for integer base
+   EXTRA_COPTIMIZE = -fno-strict-aliasing
+   LDCFLAGS        = -z muldefs
+# Notes about the above
+#  - 500.perlbench_r/600.perlbench_s needs -fno-strict-aliasing.
+#  - 502.gcc_r/602.gcc_s             needs -fgnu89-inline or -z muldefs
+#  - For 'base', all benchmarks in a set must use the same options.
+#  - Therefore, all base benchmarks get the above.  See:
+#       www.spec.org/cpu2017/Docs/runrules.html#BaseFlags
+#       www.spec.org/cpu2017/Docs/benchmarks/500.perlbench_r.html
+#       www.spec.org/cpu2017/Docs/benchmarks/502.gcc_r.html
+```
+
+如果在 ARM64 上，把 -DSPEC_LINUX_X64 替换为 -DSPEC_LINUX_AARCH64，其余内容不变。
 
 ## 网上的数据
 
