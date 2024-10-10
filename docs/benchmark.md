@@ -14,55 +14,16 @@ permalink: /benchmark/
 
 下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
-- i9-14900K Raptor Lake（`-O2`）: 87.2
 - i9-14900K Raptor Lake（`-O3`）: 91.9
-- i9-13900K Raptor Lake（`-O2`）: 79.6
+- i9-14900K Raptor Lake（`-O2`）: 87.2
 - i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
+- i9-13900K Raptor Lake（`-O2`）: 79.6
 - i9-12900KS Alder Lake（`-O2`）: 74.4
 - i9-10980XE Cascade Lake（`-O2`）: 43.9
 - E5-2680 v3 Haswell（`-O2`）: 33.2
 - POWER8NVL（`-O2`）: 26.5
-- Kunpeng 920 TaiShan V110（`-O2`）: 23.3
 - Kunpeng 920 TaiShan V110（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 24.5
-
-配置：
-
-```
-# match spec result standard
-reportable = yes
-# skip peak
-basepeak = yes
-# show live output
-teeout = yes
-
-# optimization flags for base
-default=base=default=default:
-COPTIMIZE = -O3 -fgnu89-inline -fcommon -fno-strict-aliasing
-CXXOPTIMIZE = -O3 -fpermissive --std=c++98 -fno-strict-aliasing
-FOPTIMIZE = -O3 -std=legacy -fno-strict-aliasing
-
-# specify compilers
-default=default=default=default:
-CC = /usr/bin/gcc
-CXX = /usr/bin/g++
-FC = /usr/bin/gfortran
-
-# fix compilation
-default=base=default=default:
-PORTABILITY = -DSPEC_CPU_LP64
-
-400.perlbench=default=default=default:
-CPORTABILITY = -DSPEC_CPU_LINUX_X64
-
-462.libquantum=default=default=default:
-CPORTABILITY = -DSPEC_CPU_LINUX
-
-483.xalancbmk=default=default=default:
-CXXPORTABILITY = -DSPEC_CPU_LINUX
-
-481.wrf=default=default=default:
-CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
-```
+- Kunpeng 920 TaiShan V110（`-O2`）: 23.3
 
 ### 网上的数据
 
@@ -164,13 +125,80 @@ CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
 
 - i9-14900K Raptor Lake（`-O3`）: 12.1
 - i9-12900KS Alder Lake（`-O3`）: 10.5 10.9
-- i9-10980XE Cascade Lake（`-O3`）: 7.18
 - X1E-80-100 X Elite（`-O3`）: 7.99
+- i9-10980XE Cascade Lake（`-O3`）: 7.18
 - Kunpeng 920 TaiShan V110（`-O3`）: 3.65 3.62
 
 注：SPEC INT 2017 不开 OpenMP 单线程 speed 测试等价为 rate-1。
 
-配置：
+### 网上的数据
+
+[SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
+
+- 9950X: 12.6
+- M3 Pro: 11.8
+- 13900K: 11.5
+- M2 Pro: 10.3
+- M2: 9.95
+- HX 370: 9.64
+- 258V: 9.46
+- M1 Max: 9.2
+- 5950X: 9.15
+- 3A6000: 4.29
+
+[高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
+
+- 7700X: 10.35
+- 13700K: 9.81
+- 12700K: 9.13
+- 5950X: 8.45
+- M2: 8.40
+- Oryon: 8.19
+- M1: 7.40
+- 8 Gen 2: 6.58
+
+## SPEC 运行配置
+
+SPEC 2006:
+
+```
+# match spec result standard
+reportable = yes
+# skip peak
+basepeak = yes
+# show live output
+teeout = yes
+
+# optimization flags for base
+default=base=default=default:
+COPTIMIZE = -O3 -fgnu89-inline -fcommon -fno-strict-aliasing
+CXXOPTIMIZE = -O3 -fpermissive --std=c++98 -fno-strict-aliasing
+FOPTIMIZE = -O3 -std=legacy -fno-strict-aliasing
+
+# specify compilers
+default=default=default=default:
+CC = /usr/bin/gcc
+CXX = /usr/bin/g++
+FC = /usr/bin/gfortran
+
+# fix compilation
+default=base=default=default:
+PORTABILITY = -DSPEC_CPU_LP64
+
+400.perlbench=default=default=default:
+CPORTABILITY = -DSPEC_CPU_LINUX_X64
+
+462.libquantum=default=default=default:
+CPORTABILITY = -DSPEC_CPU_LINUX
+
+483.xalancbmk=default=default=default:
+CXXPORTABILITY = -DSPEC_CPU_LINUX
+
+481.wrf=default=default=default:
+CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
+```
+
+SPEC 2017:
 
 ```
 # match spec result standard
@@ -251,29 +279,3 @@ intrate,intspeed=base: # flags for integer base
 ```
 
 如果在 ARM64 上，把 -DSPEC_LINUX_X64 替换为 -DSPEC_LINUX_AARCH64，其余内容不变。
-
-### 网上的数据
-
-[SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
-
-- 9950X: 12.6
-- M3 Pro: 11.8
-- 13900K: 11.5
-- M2 Pro: 10.3
-- M2: 9.95
-- HX 370: 9.64
-- 258V: 9.46
-- M1 Max: 9.2
-- 5950X: 9.15
-- 3A6000: 4.29
-
-[高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
-
-- 7700X: 10.35
-- 5950X: 8.45
-- 13700K: 9.81
-- 12700K: 9.13
-- 8 Gen 2: 6.58
-- M2: 8.40
-- M1: 7.40
-- Oryon: 8.19
