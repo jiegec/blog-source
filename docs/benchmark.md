@@ -157,6 +157,28 @@ permalink: /benchmark/
 - M1: 7.40
 - 8 Gen 2: 6.58
 
+## SPEC FP 2017 Speed/Rate-1
+
+下面贴出自己测的数据（SPECfp2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。运行时间基本和分数成反比，乘积按 500000 估算。
+
+- i9-14900K Raptor Lake（`-O3`）: 12.8
+- i9-12900KS Alder Lake（`-O3`）: 13.1
+
+注：SPEC FP 2017 不开 OpenMP 单线程 speed 测试等价为 rate-1。
+
+### 网上的数据
+
+[高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
+
+- 13700K: 14.56
+- Oryon: 14.20
+- 7700X: 13.97
+- 12700K: 13.70
+- M2: 12.64
+- 5950X: 11.86
+- M1: 11.20
+- 8 Gen 2: 9.91
+
 ## SPEC 运行配置
 
 SPEC 2006:
