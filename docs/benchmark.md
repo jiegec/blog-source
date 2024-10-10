@@ -198,6 +198,13 @@ CXXPORTABILITY = -DSPEC_CPU_LINUX
 CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
 ```
 
+运行方式：
+
+```shell
+# int speed
+cd /mnt && . ./shrc && runspec int
+```
+
 SPEC 2017:
 
 ```
@@ -279,3 +286,12 @@ intrate,intspeed=base: # flags for integer base
 ```
 
 如果在 ARM64 上，把 -DSPEC_LINUX_X64 替换为 -DSPEC_LINUX_AARCH64，其余内容不变。
+
+运行方式：
+
+```shell
+# int speed
+cd /mnt && . ./shrc && runcpu intspeed
+# fp speed
+ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
+```
