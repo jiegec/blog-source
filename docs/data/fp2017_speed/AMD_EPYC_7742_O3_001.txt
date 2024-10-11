@@ -1,0 +1,47 @@
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks      Threads  Run Time     Ratio      Threads  Run Time     Ratio
+--------------- -------  ---------  ---------    -------  ---------  ---------
+603.bwaves_s          1       2430      24.3   S
+603.bwaves_s          1       2425      24.3   *
+603.bwaves_s          1       2423      24.4   S
+607.cactuBSSN_s       1       2061       8.09  S
+607.cactuBSSN_s       1       2212       7.54  S
+607.cactuBSSN_s       1       2149       7.76  *
+619.lbm_s             1        952       5.50  *
+619.lbm_s             1        952       5.50  S
+619.lbm_s             1        953       5.49  S
+621.wrf_s             1       1512       8.75  S
+621.wrf_s             1       1505       8.79  S
+621.wrf_s             1       1506       8.78  *
+627.cam4_s            1       1847       4.80  *
+627.cam4_s            1       1847       4.80  S
+627.cam4_s            1       1851       4.79  S
+628.pop2_s            1       2070       5.73  S
+628.pop2_s            1       2050       5.79  S
+628.pop2_s            1       2057       5.77  *
+638.imagick_s         1       5409       2.67  *
+638.imagick_s         1       5431       2.66  S
+638.imagick_s         1       5408       2.67  S
+644.nab_s             1       2968       5.89  *
+644.nab_s             1       2969       5.89  S
+644.nab_s             1       2968       5.89  S
+649.fotonik3d_s       1        895      10.2   S
+649.fotonik3d_s       1        892      10.2   S
+649.fotonik3d_s       1        893      10.2   *
+654.roms_s            1       2314       6.80  S
+654.roms_s            1       2265       6.95  S
+654.roms_s            1       2287       6.88  *
+=================================================================================
+603.bwaves_s          1       2425      24.3   *
+607.cactuBSSN_s       1       2149       7.76  *
+619.lbm_s             1        952       5.50  *
+621.wrf_s             1       1506       8.78  *
+627.cam4_s            1       1847       4.80  *
+628.pop2_s            1       2057       5.77  *
+638.imagick_s         1       5409       2.67  *
+644.nab_s             1       2968       5.89  *
+649.fotonik3d_s       1        893      10.2   *
+654.roms_s            1       2287       6.88  *
+ Est. SPECspeed(R)2017_fp_base           6.99
+ Est. SPECspeed(R)2017_fp_peak                                         Not Run

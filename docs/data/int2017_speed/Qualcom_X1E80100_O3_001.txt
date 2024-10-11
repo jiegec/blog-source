@@ -1,0 +1,47 @@
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks      Threads  Run Time     Ratio      Threads  Run Time     Ratio
+--------------- -------  ---------  ---------    -------  ---------  ---------
+600.perlbench_s       1      228         7.77  *
+600.perlbench_s       1      241         7.35  S
+600.perlbench_s       1      201         8.85  S
+602.gcc_s             1      322        12.4   S
+602.gcc_s             1      264        15.1   S
+602.gcc_s             1      289        13.8   *
+605.mcf_s             1      430        11.0   S
+605.mcf_s             1      409        11.6   *
+605.mcf_s             1      373        12.7   S
+620.omnetpp_s         1      386         4.22  *
+620.omnetpp_s         1      408         4.00  S
+620.omnetpp_s         1      378         4.31  S
+623.xalancbmk_s       1      171         8.30  *
+623.xalancbmk_s       1      180         7.86  S
+623.xalancbmk_s       1      170         8.32  S
+625.x264_s            1       84.4      20.9   *
+625.x264_s            1       83.1      21.2   S
+625.x264_s            1      100        17.6   S
+631.deepsjeng_s       1      344         4.16  *
+631.deepsjeng_s       1      384         3.73  S
+631.deepsjeng_s       1      305         4.69  S
+641.leela_s           1      347         4.92  S
+641.leela_s           1      275         6.21  *
+641.leela_s           1      235         7.27  S
+648.exchange2_s       1       99.4      29.6   S
+648.exchange2_s       1      147        20.0   S
+648.exchange2_s       1      116        25.3   *
+657.xz_s              1     3460         1.79  *
+657.xz_s              1     3233         1.91  S
+657.xz_s              1     3568         1.73  S
+=================================================================================
+600.perlbench_s       1      228         7.77  *
+602.gcc_s             1      289        13.8   *
+605.mcf_s             1      409        11.6   *
+620.omnetpp_s         1      386         4.22  *
+623.xalancbmk_s       1      171         8.30  *
+625.x264_s            1       84.4      20.9   *
+631.deepsjeng_s       1      344         4.16  *
+641.leela_s           1      275         6.21  *
+648.exchange2_s       1      116        25.3   *
+657.xz_s              1     3460         1.79  *
+ Est. SPECspeed(R)2017_int_base          7.99
+ Est. SPECspeed(R)2017_int_peak                                        Not Run

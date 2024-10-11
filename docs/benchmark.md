@@ -127,10 +127,10 @@ TODO
 
 - i9-14900K Raptor Lake（`-O3`）: [12.1](./data/int2017_speed/Intel_Core_i9-14900K_O3_001.txt)
 - i9-12900KS Alder Lake（`-O3`）: [10.5](./data/int2017_speed/Intel_Core_i9-12900KS_O3_001.txt) [10.9](./data/int2017_speed/Intel_Core_i9-12900KS_O3_002.txt)
-- X1E-80-100 X Elite（`-O3`）: 7.99
-- i9-10980XE Cascade Lake（`-O3`）: 7.18
-- 7742 Zen 2（`-O3`）: 5.55
-- Kunpeng 920 TaiShan V110（`-O3`）: 3.65 3.62
+- X1E-80-100 X Elite（`-O3`）: [7.99](./data/int2017_speed/Qualcom_X1E80100_O3_001.txt)
+- i9-10980XE Cascade Lake（`-O3`）: [7.18](./data/int2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
+- 7742 Zen 2（`-O3`）: [5.55](./data/int2017_speed/AMD_EPYC_7742_O3_001.txt)
+- Kunpeng 920 TaiShan V110（`-O3`）: [3.65](./data/int2017_speed/Kunpeng-920_O3_001.txt) [3.62](./data/int2017_speed/Kunpeng-920_O3_002.txt)
 
 注：SPEC INT 2017 单线程 OpenMP 下 speed 测试约等于 rate-1，虽然启用了 OpenMP，但仅允许单线程。
 
@@ -176,9 +176,9 @@ TODO
 运行时间基本和分数成反比，乘积按 500000 估算。
 
 - i9-14900K Raptor Lake（`-O3`）: [12.8](./data/fp2017_speed/Intel_Core_i9-14900K_O3_001.txt)
-- i9-12900KS Alder Lake（`-O3`）: 13.1
-- i9-10980XE Cascade Lake（`-O3`）: 6.20
-- 7742 Zen 2（`-O3`）: 6.99
+- i9-12900KS Alder Lake（`-O3`）: [13.1](./data/fp2017_speed/Intel_Core_i9-12900KS_O3_001.txt)
+- 7742 Zen 2（`-O3`）: [6.99](./data/fp2017_speed/AMD_EPYC_7742_O3_001.txt)
+- i9-10980XE Cascade Lake（`-O3`）: [6.20](./data/fp2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
 
 注：SPEC FP 2017 单线程 OpenMP 下 speed 测试不等价为 rate-1，因为跑的测试不同。
 
