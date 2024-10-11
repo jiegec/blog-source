@@ -12,13 +12,13 @@ permalink: /benchmark/
 
 下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
-- i9-14900K Raptor Lake（`-O3`）: 91.9
-- i9-14900K Raptor Lake（`-O2`）: 87.2
-- i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
-- i9-13900K Raptor Lake（`-O2`）: 79.6
-- i9-12900KS Alder Lake（`-O2`）: 74.4
-- i9-10980XE Cascade Lake（`-O2`）: 43.9
-- E5-2680 v3 Haswell（`-O2`）: 33.2
+- Intel Core i9-14900K Raptor Lake（`-O3`）: 91.9
+- Intel Core i9-14900K Raptor Lake（`-O2`）: 87.2
+- Intel Core i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
+- Intel Core i9-13900K Raptor Lake（`-O2`）: 79.6
+- Intel Core i9-12900KS Alder Lake（`-O2`）: 74.4
+- Intel Core i9-10980XE Cascade Lake（`-O2`）: 43.9
+- Intel Xeon E5-2680 v3 Haswell（`-O2`）: 33.2
 - POWER8NVL（`-O2`）: 26.5
 - Kunpeng 920 TaiShan V110（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 24.5
 - Kunpeng 920 TaiShan V110（`-O2`）: 23.3
@@ -29,25 +29,25 @@ permalink: /benchmark/
 
 [Anandtech 的数据](https://www.anandtech.com/show/16084/intel-tiger-lake-review-deep-dive-core-11th-gen/8)：
 
-- i9-10900K Comet Lake: 58.76
-- R9 3950X Zen 2: 50.02
-- R7 4800U Zen 2: 37.10
+- Intel Core i9-10900K Comet Lake: 58.76
+- AMD Ryzen 3950X Zen 2: 50.02
+- AMD Ryzen 4800U Zen 2: 37.10
 - Amazon Graviton 2 Neoverse-N1: 29.99
 
 [Anandtech 的数据](https://www.anandtech.com/show/16252/mac-mini-apple-m1-tested/4)：
 
 - Apple M1: 69.40
-- R9 5950X Zen 3: 68.53
+- AMD Ryzen 5950X Zen 3: 68.53
 - Apple A14: 63.34
-- i9-10900K Comet Lake: 58.58
+- Intel Core i9-10900K Comet Lake: 58.58
 - Apple A13: 52.83
-- R9 3950X Zen 2: 50.10
-- R7 2700X Zen+: 39.01
+- AMD Ryzen 3950X Zen 2: 50.10
+- AMD Ryzen 2700X Zen+: 39.01
 
 [Anandtech 的数据](https://www.anandtech.com/show/14694/amd-rome-epyc-2nd-gen/9)：
 
-- EPYC 7742 Zen 2: 39.25
-- EPYC 7601 Zen 1: 31.45
+- AMD EPYC 7742 Zen 2: 39.25
+- AMD EPYC 7601 Zen 1: 31.45
 
 [Baikal 的数据](https://www.163.com/dy/article/IB0CL7PU0511838M.html):
 
@@ -74,10 +74,10 @@ permalink: /benchmark/
 
 [龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
 
-- Intel i9-10850K: 62.5
-- AMD R5 5600G: 48.2 59.9
-- AMD R5 2600: 36.1 40.5
-- Intel i5-6500: 40.1
+- Intel Core i9-10850K: 62.5
+- AMD Ryzen 5600G: 48.2 59.9
+- AMD Ryzen 2600: 36.1 40.5
+- Intel Core i5-6500: 40.1
 - Hygon C86 3250: 30.5
 - Loongson 3A5000HV: 26.5
 - Zhaoxin KX-U6780A: 15.5
@@ -110,11 +110,11 @@ TODO
 
 [龙芯、海光、飞腾、兆芯同桌对比性能力求公平](https://zhuanlan.zhihu.com/p/627627813):
 
-- Intel i9-10850K 10C 20T: 328 349
-- AMD R5 5600G 6C 12T: 192 232 235 278
-- AMD R5 2600 6C 12T: 166 179 192 199
+- Intel Core i9-10850K 10C 20T: 328 349
+- AMD Ryzen 5600G 6C 12T: 192 232 235 278
+- AMD Ryzen 2600 6C 12T: 166 179 192 199
 - Hygon C86 3250 8C 16T: 173 197
-- Intel i5-6500 4C: 113
+- Intel Core i5-6500 4C: 113
 - Phytium D2000 8C: 90.2
 - Zhaoxin KX-U6780A 8C: 82.9
 - Loongson 3A5000HV 4C: 81.2
@@ -125,11 +125,11 @@ TODO
 
 运行时间基本和分数成反比，乘积按 100000 估算。
 
-- i9-14900K Raptor Lake（`-O3`）: [12.1](./data/int2017_speed/Intel_Core_i9-14900K_O3_001.txt)
-- i9-12900KS Alder Lake（`-O3`）: [10.5](./data/int2017_speed/Intel_Core_i9-12900KS_O3_001.txt) [10.9](./data/int2017_speed/Intel_Core_i9-12900KS_O3_002.txt)
-- X1E-80-100 X Elite（`-O3`）: [7.99](./data/int2017_speed/Qualcom_X1E80100_O3_001.txt)
-- i9-10980XE Cascade Lake（`-O3`）: [7.18](./data/int2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
-- 7742 Zen 2（`-O3`）: [5.55](./data/int2017_speed/AMD_EPYC_7742_O3_001.txt)
+- Intel Core i9-14900K Raptor Lake（`-O3`）: [12.1](./data/int2017_speed/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-12900KS Alder Lake（`-O3`）: [10.5](./data/int2017_speed/Intel_Core_i9-12900KS_O3_001.txt) [10.9](./data/int2017_speed/Intel_Core_i9-12900KS_O3_002.txt)
+- Qualcomm X1E-80-100 X Elite（`-O3`）: [7.99](./data/int2017_speed/Qualcom_X1E80100_O3_001.txt)
+- Intel Core i9-10980XE Cascade Lake（`-O3`）: [7.18](./data/int2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
+- AMD EPYC 7742 Zen 2（`-O3`）: [5.55](./data/int2017_speed/AMD_EPYC_7742_O3_001.txt)
 - Kunpeng 920 TaiShan V110（`-O3`）: [3.65](./data/int2017_speed/Kunpeng-920_O3_001.txt) [3.62](./data/int2017_speed/Kunpeng-920_O3_002.txt)
 
 注：SPEC INT 2017 单线程 OpenMP 下 speed 测试约等于 rate-1，虽然启用了 OpenMP，但仅允许单线程。
@@ -140,34 +140,34 @@ TODO
 
 运行时间基本和分数成反比，乘积按 50000 估算。
 
-- i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
-- i9-12900KS Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
+- Intel Core i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-12900KS Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 
 ### 网上的数据
 
 [SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
 
-- 9950X: 12.6
-- M3 Pro: 11.8
-- 13900K: 11.5
-- M2 Pro: 10.3
-- M2: 9.95
-- HX 370: 9.64
-- 258V: 9.46
-- M1 Max: 9.2
-- 5950X: 9.15
-- 3A6000: 4.29
+- AMD Ryzen 9950X: 12.6
+- Apple M3 Pro: 11.8
+- Intel Core 13900K: 11.5
+- Apple M2 Pro: 10.3
+- Apple M2: 9.95
+- AMD HX 370: 9.64
+- Intel Core Ultra 258V: 9.46
+- Apple M1 Max: 9.2
+- AMD Ryzon 5950X: 9.15
+- Loongson 3A6000: 4.29
 
 [高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
 
-- 7700X: 10.35
-- 13700K: 9.81
-- 12700K: 9.13
-- 5950X: 8.45
-- M2: 8.40
-- Oryon: 8.19
-- M1: 7.40
-- 8 Gen 2: 6.58
+- AMD Ryzen 7700X: 10.35
+- Intel Core 13700K: 9.81
+- Intel Core 12700K: 9.13
+- AMD Ryzen 5950X: 8.45
+- Apple M2: 8.40
+- Qualcomm X1E80100: 8.19
+- Apple M1: 7.40
+- Qualcomm 8 Gen 2 Cortex-X3: 6.58
 
 ## SPEC FP 2017 Speed
 
@@ -175,10 +175,10 @@ TODO
 
 运行时间基本和分数成反比，乘积按 500000 估算。
 
-- i9-14900K Raptor Lake（`-O3`）: [12.8](./data/fp2017_speed/Intel_Core_i9-14900K_O3_001.txt)
-- i9-12900KS Alder Lake（`-O3`）: [13.1](./data/fp2017_speed/Intel_Core_i9-12900KS_O3_001.txt)
-- 7742 Zen 2（`-O3`）: [6.99](./data/fp2017_speed/AMD_EPYC_7742_O3_001.txt)
-- i9-10980XE Cascade Lake（`-O3`）: [6.20](./data/fp2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
+- Intel Core i9-14900K Raptor Lake（`-O3`）: [12.8](./data/fp2017_speed/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-12900KS Alder Lake（`-O3`）: [13.1](./data/fp2017_speed/Intel_Core_i9-12900KS_O3_001.txt)
+- AMD EPYC 7742 Zen 2（`-O3`）: [6.99](./data/fp2017_speed/AMD_EPYC_7742_O3_001.txt)
+- Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.20](./data/fp2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
 
 注：SPEC FP 2017 单线程 OpenMP 下 speed 测试不等价为 rate-1，因为跑的测试不同。
 
@@ -192,14 +192,14 @@ TODO
 
 [高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
 
-- 13700K: 14.56
-- Oryon: 14.20
-- 7700X: 13.97
-- 12700K: 13.70
-- M2: 12.64
-- 5950X: 11.86
-- M1: 11.20
-- 8 Gen 2: 9.91
+- Intel Core 13700K: 14.56
+- Qualcomm X1E80100: 14.20
+- AMD Ryzen 7700X: 13.97
+- Intel Core 12700K: 13.70
+- Apple M2: 12.64
+- AMD Ryzen 5950X: 11.86
+- Apple M1: 11.20
+- Qualcomm 8 Gen 2 Cortex-X3: 9.91
 
 ## SPEC 运行配置
 
