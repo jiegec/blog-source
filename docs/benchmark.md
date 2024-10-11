@@ -10,8 +10,6 @@ permalink: /benchmark/
 
 因为 GCC 没有自动并行化，所以都是单核运行。运行时间基本和分数成反比，乘积按 400000 估算。
 
-实测在 -Ofast 编译选项下，SPECfp 里的 gamess 和 bwaves 会失败，改成 -O3/-O2/-O1 以后 gamess 依然失败，只有不开 -O 或者 -O0 才能跑通 gamess。所以就不测 SPECfp 了，只测 SPECint。
-
 下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
 - i9-14900K Raptor Lake（`-O3`）: 91.9
@@ -88,6 +86,8 @@ permalink: /benchmark/
 
 ## SPEC INT 2006 Rate
 
+TODO
+
 ### 网上的数据
 
 [Kunpeng 920 官方数据](https://www.hisilicon.com/en/products/Kunpeng/Huawei-Kunpeng/Huawei-Kunpeng-920)：
@@ -119,9 +119,11 @@ permalink: /benchmark/
 - Zhaoxin KX-U6780A 8C: 82.9
 - Loongson 3A5000HV 4C: 81.2
 
-## SPEC INT 2017 Speed/Rate-1
+## SPEC INT 2017 Speed
 
-下面贴出自己测的数据（SPECint2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。运行时间基本和分数成反比，乘积按 100000 估算。
+下面贴出自己测的数据（SPECint2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。
+
+运行时间基本和分数成反比，乘积按 100000 估算。
 
 - i9-14900K Raptor Lake（`-O3`）: 12.1
 - i9-12900KS Alder Lake（`-O3`）: 10.5 10.9
@@ -130,7 +132,16 @@ permalink: /benchmark/
 - 7742 Zen 2（`-O3`）: 5.55
 - Kunpeng 920 TaiShan V110（`-O3`）: 3.65 3.62
 
-注：SPEC INT 2017 不开 OpenMP 单线程 speed 测试等价为 rate-1。
+注：SPEC INT 2017 单线程 OpenMP 下 speed 测试约等于 rate-1，虽然启用了 OpenMP，但仅允许单线程。
+
+## SPEC INT 2017 Rate-1
+
+下面贴出自己测的数据（SPECint2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
+
+运行时间基本和分数成反比，乘积按 50000 估算。
+
+- i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3.txt)
+- i9-12900KS Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3.txt)
 
 ### 网上的数据
 
@@ -158,14 +169,24 @@ permalink: /benchmark/
 - M1: 7.40
 - 8 Gen 2: 6.58
 
-## SPEC FP 2017 Speed/Rate-1
+## SPEC FP 2017 Speed
 
-下面贴出自己测的数据（SPECfp2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。运行时间基本和分数成反比，乘积按 500000 估算。
+下面贴出自己测的数据（SPECfp2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。
+
+运行时间基本和分数成反比，乘积按 500000 估算。
 
 - i9-14900K Raptor Lake（`-O3`）: 12.8
 - i9-12900KS Alder Lake（`-O3`）: 13.1
+- i9-10980XE Cascade Lake（`-O3`）: 6.20
+- 7742 Zen 2（`-O3`）: 6.99
 
-注：SPEC FP 2017 不开 OpenMP 单线程 speed 测试等价为 rate-1。
+注：SPEC FP 2017 单线程 OpenMP 下 speed 测试不等价为 rate-1，因为跑的测试不同。
+
+## SPEC FP 2017 Rate-1
+
+下面贴出自己测的数据（SPECfp2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
+
+运行时间基本和分数成反比，乘积按 500000 估算。
 
 ### 网上的数据
 
