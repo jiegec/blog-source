@@ -127,6 +127,7 @@ permalink: /benchmark/
 - i9-12900KS Alder Lake（`-O3`）: 10.5 10.9
 - X1E-80-100 X Elite（`-O3`）: 7.99
 - i9-10980XE Cascade Lake（`-O3`）: 7.18
+- 7742 Zen 2（`-O3`）: 5.55
 - Kunpeng 920 TaiShan V110（`-O3`）: 3.65 3.62
 
 注：SPEC INT 2017 不开 OpenMP 单线程 speed 测试等价为 rate-1。
