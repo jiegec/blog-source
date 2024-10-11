@@ -1,0 +1,47 @@
+                       Estimated                       Estimated
+                Base     Base       Base        Peak     Peak       Peak
+Benchmarks      Thrds  Run Time     Ratio       Thrds  Run Time     Ratio
+-------------- ------  ---------  ---------    ------  ---------  ---------   
+600.perlbench_s      1      121        14.7   S                                 
+600.perlbench_s      1      129        13.7   *                                 
+600.perlbench_s      1      136        13.1   S                                 
+602.gcc_s           1      212        18.8   S                                 
+602.gcc_s           1      224        17.8   *                                 
+602.gcc_s           1      235        16.9   S                                 
+605.mcf_s           1      305        15.5   S                                 
+605.mcf_s           1      333        14.2   *                                 
+605.mcf_s           1      347        13.6   S                                 
+620.omnetpp_s       1      130        12.6   S                                 
+620.omnetpp_s       1      175         9.33  *                                 
+620.omnetpp_s       1      186         8.75  S                                 
+623.xalancbmk_s      1      111        12.8   S                                 
+623.xalancbmk_s      1      117        12.1   *                                 
+623.xalancbmk_s      1      122        11.6   S                                 
+625.x264_s          1       90.6      19.5   S                                 
+625.x264_s          1       95.9      18.4   *                                 
+625.x264_s          1       97.2      18.2   S                                 
+631.deepsjeng_s      1      180         7.98  S                                 
+631.deepsjeng_s      1      197         7.29  S                                 
+631.deepsjeng_s      1      195         7.34  *                                 
+641.leela_s         1      219         7.81  S                                 
+641.leela_s         1      229         7.44  S                                 
+641.leela_s         1      219         7.78  *                                 
+648.exchange2_s      1       88.1      33.4   *                                 
+648.exchange2_s      1       92.4      31.8   S                                 
+648.exchange2_s      1       88.1      33.4   S                                 
+657.xz_s            1     1248         4.95  *                                 
+657.xz_s            1     1358         4.55  S                                 
+657.xz_s            1     1241         4.98  S                                 
+==============================================================================
+600.perlbench_s      1      129        13.7   *                                 
+602.gcc_s           1      224        17.8   *                                 
+605.mcf_s           1      333        14.2   *                                 
+620.omnetpp_s       1      175         9.33  *                                 
+623.xalancbmk_s      1      117        12.1   *                                 
+625.x264_s          1       95.9      18.4   *                                 
+631.deepsjeng_s      1      195         7.34  *                                 
+641.leela_s         1      219         7.78  *                                 
+648.exchange2_s      1       88.1      33.4   *                                 
+657.xz_s            1     1248         4.95  *                                 
+ Est. SPECspeed2017_int_base           12.1
+ Est. SPECspeed2017_int_peak                                        Not Run
