@@ -12,8 +12,8 @@ permalink: /benchmark/
 
 下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
-- Intel Core i9-14900K Raptor Lake（`-O3`）: 91.9
-- Intel Core i9-14900K Raptor Lake（`-O2`）: 87.2
+- Intel Core i9-14900K Raptor Lake（`-O3`）: [91.9](./data/int2006_speed/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-14900K Raptor Lake（`-O2`）: [87.2](./data/int2006_speed/Intel_Core_i9-14900K_O2_001.txt)
 - Intel Core i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
 - Intel Core i9-13900K Raptor Lake（`-O2`）: 79.6
 - Intel Core i9-12900KS Alder Lake（`-O2`）: 74.4
@@ -191,6 +191,7 @@ TODO
 运行时间基本和分数成反比，乘积按 1e5 估算。
 
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - Qualcomm X1E80100 X Elite（`-O3`）: [13.2](./data/fp2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.92](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 
