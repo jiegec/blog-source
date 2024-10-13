@@ -146,6 +146,7 @@ TODO
 - Qualcomm X1E80100 X Elite（`-O3`）: [7.98](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.25](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
+- Kunpeng 920 TaiShan V110（`-O3`）: [3.08](./data/int2017_rate1/Kunpeng-920_O3_001.txt)
 
 ### 网上的数据
 
@@ -196,6 +197,7 @@ TODO
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - Qualcomm X1E80100 X Elite（`-O3`）: [13.2](./data/fp2017_rate1/Qualcom_X1E80100_O3_001.txt)
+- AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [7.14](./data/fp2017_rate1/AMD_EPYC_7742_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.92](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 

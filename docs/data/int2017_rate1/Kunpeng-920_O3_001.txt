@@ -1,0 +1,46 @@
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1        539       2.96  S
+500.perlbench_r       1        535       2.98  S
+500.perlbench_r       1        537       2.97  *
+502.gcc_r             1        396       3.57  S
+502.gcc_r             1        399       3.55  *
+502.gcc_r             1        401       3.53  S
+505.mcf_r             1        675       2.39  *
+505.mcf_r             1        735       2.20  S
+505.mcf_r             1        619       2.61  S
+520.omnetpp_r         1        928       1.41  S
+520.omnetpp_r         1        920       1.43  *
+520.omnetpp_r         1        745       1.76  S
+523.xalancbmk_r       1        520       2.03  *
+523.xalancbmk_r       1        544       1.94  S
+523.xalancbmk_r       1        519       2.03  S
+525.x264_r            1        273       6.42  *
+525.x264_r            1        273       6.42  S
+525.x264_r            1        274       6.40  S
+531.deepsjeng_r       1        361       3.18  *
+531.deepsjeng_r       1        357       3.21  S
+531.deepsjeng_r       1        361       3.17  S
+541.leela_r           1        546       3.03  *
+541.leela_r           1        547       3.03  S
+541.leela_r           1        545       3.04  S
+548.exchange2_r       1        309       8.47  S
+548.exchange2_r       1        309       8.47  *
+548.exchange2_r       1        311       8.43  S
+557.xz_r              1        541       2.00  *
+557.xz_r              1        559       1.93  S
+557.xz_r              1        535       2.02  S
+=================================================================================
+500.perlbench_r       1        537       2.97  *
+502.gcc_r             1        399       3.55  *
+505.mcf_r             1        675       2.39  *
+520.omnetpp_r         1        920       1.43  *
+523.xalancbmk_r       1        520       2.03  *
+525.x264_r            1        273       6.42  *
+531.deepsjeng_r       1        361       3.18  *
+541.leela_r           1        546       3.03  *
+548.exchange2_r       1        309       8.47  *
+557.xz_r              1        541       2.00  *
+ SPECrate(R)2017_int_base                3.08
+ SPECrate(R)2017_int_peak                                              Not Run
