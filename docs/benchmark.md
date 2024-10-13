@@ -142,6 +142,7 @@ TODO
 
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_002.txt)
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [9.60](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_002.txt)
+- AMD Ryzen 5 7500F Zen 4（`-O3`）: [8.73](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - Qualcomm X1E80100 X Elite（`-O3`）: [7.98](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.25](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
@@ -182,6 +183,7 @@ TODO
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [13.1](./data/fp2017_speed/Intel_Core_i9-12900KS_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [6.99](./data/fp2017_speed/AMD_EPYC_7742_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.20](./data/fp2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
+- Kunpeng 920 TaiShan V110（`-O3`）: [2.57](./data/fp2017_speed/Kunpeng-920_O3_001.txt)
 
 注：SPEC FP 2017 单线程 OpenMP 下 speed 测试不等价为 rate-1，因为跑的测试不同。
 
