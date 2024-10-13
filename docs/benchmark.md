@@ -159,7 +159,7 @@ TODO
 - AMD HX 370 Strix Point Zen 5: 9.64
 - Intel Core Ultra 258V Lunar Lake Lion Cove+Skymont: 9.46
 - Apple M1 Max Firestorm+Icestorm: 9.2
-- AMD Ryzon 5950X Zen 3: 9.15
+- AMD Ryzen 5950X Zen 3: 9.15
 - Loongson 3A6000 LA664: 4.29
 
 [高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
