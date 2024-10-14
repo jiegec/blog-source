@@ -1,0 +1,58 @@
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1       1056       9.50  S
+503.bwaves_r          1       1055       9.50  *
+503.bwaves_r          1       1037       9.67  S
+507.cactuBSSN_r       1        434       2.92  *
+507.cactuBSSN_r       1        434       2.92  S
+507.cactuBSSN_r       1        433       2.92  S
+508.namd_r            1        382       2.48  S
+508.namd_r            1        382       2.49  *
+508.namd_r            1        379       2.51  S
+510.parest_r          1        951       2.75  *
+510.parest_r          1        954       2.74  S
+510.parest_r          1        943       2.78  S
+511.povray_r          1        697       3.35  *
+511.povray_r          1        698       3.35  S
+511.povray_r          1        697       3.35  S
+519.lbm_r             1        413       2.55  S
+519.lbm_r             1        476       2.22  *
+519.lbm_r             1        512       2.06  S
+521.wrf_r             1        730       3.07  S
+521.wrf_r             1        733       3.06  *
+521.wrf_r             1        734       3.05  S
+526.blender_r         1        471       3.23  S
+526.blender_r         1        472       3.22  *
+526.blender_r         1        473       3.22  S
+527.cam4_r            1        604       2.90  *
+527.cam4_r            1        604       2.90  S
+527.cam4_r            1        605       2.89  S
+538.imagick_r         1        663       3.75  S
+538.imagick_r         1        663       3.75  *
+538.imagick_r         1        664       3.75  S
+544.nab_r             1        723       2.33  *
+544.nab_r             1        721       2.33  S
+544.nab_r             1        726       2.32  S
+549.fotonik3d_r       1        816       4.78  *
+549.fotonik3d_r       1        846       4.61  S
+549.fotonik3d_r       1        781       4.99  S
+554.roms_r            1        683       2.33  S
+554.roms_r            1        689       2.31  S
+554.roms_r            1        687       2.31  *
+=================================================================================
+503.bwaves_r          1       1055       9.50  *
+507.cactuBSSN_r       1        434       2.92  *
+508.namd_r            1        382       2.49  *
+510.parest_r          1        951       2.75  *
+511.povray_r          1        697       3.35  *
+519.lbm_r             1        476       2.22  *
+521.wrf_r             1        733       3.06  *
+526.blender_r         1        472       3.22  *
+527.cam4_r            1        604       2.90  *
+538.imagick_r         1        663       3.75  *
+544.nab_r             1        723       2.33  *
+549.fotonik3d_r       1        816       4.78  *
+554.roms_r            1        687       2.31  *
+ SPECrate(R)2017_fp_base                 3.21
+ SPECrate(R)2017_fp_peak                                               Not Run
