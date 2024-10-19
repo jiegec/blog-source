@@ -174,6 +174,24 @@ TODO
 - Apple M1 Firestorm+Icestorm: 7.40
 - Qualcomm 8 Gen 2 Cortex-X3: 6.58
 
+[Running SPEC CPU2017 on Chinese CPUs, and More](https://old.chipsandcheese.com/2024/10/18/running-spec-cpu2017-on-chinese-cpus-and-more/)
+
+- AMD Ryzen 9 7950X3D Non-VCache: 10.5
+- Intel Core Ultra 7 258V Lion Cove: 9.37
+- Intel Core Ultra 7 115H Redwood Cove: 7.6
+- Intel Core Ultra 7 258V Skymont: 5.92
+- Intel Core Ultra 7 115H Crestmont: 5.88
+- Intel Core i5-6600K Skylake: 5.65
+- Loongson 3A6000: 4.27
+- Mediatek Genio 1200 Cortex A78: 3.8
+- AMD FX-8150: 3.5
+- Intel Core Ultra 7 115H Low Power Crestmont: 3.32
+- Loongson 3A5000: 2.93
+- Intel Celeron J4125 Goldmont Plus: 2.43
+- Zhaoxin KaiXian KX-6640MA: 2.07
+- Amlogic S922X Cortex A73: 1.77
+- Mediatek Genio 1200 Cortex A55: 1.19
+
 ## SPEC FP 2017 Speed
 
 下面贴出自己测的数据（SPECfp2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。
@@ -214,6 +232,24 @@ TODO
 - AMD Ryzen 5950X Zen 3: 11.86
 - Apple M1 Firestorm+Icestorm: 11.20
 - Qualcomm 8 Gen 2 Cortex-X3: 9.91
+
+[Running SPEC CPU2017 on Chinese CPUs, and More](https://old.chipsandcheese.com/2024/10/18/running-spec-cpu2017-on-chinese-cpus-and-more/)
+
+- AMD Ryzen 9 7950X3D Non-VCache: 15.4
+- Intel Core Ultra 7 258V Lion Cove: 13.9
+- Intel Core Ultra 7 115H Redwood Cove: 12
+- Intel Core Ultra 7 258V Skymont: 7.94
+- Intel Core Ultra 7 115H Crestmont: 6.86
+- Intel Core i5-6600K Skylake: 7.92
+- Loongson 3A6000: 5.49
+- Mediatek Genio 1200 Cortex A78: 5.09
+- Intel Core Ultra 7 115H Low Power Crestmont: 4.32
+- AMD FX-8150: 3.63
+- Loongson 3A5000: 3.38
+- Intel Celeron J4125 Goldmont Plus: 2.45
+- Zhaoxin KaiXian KX-6640MA: 1.97
+- Amlogic S922X Cortex A73: 2.01
+- Mediatek Genio 1200 Cortex A55: 1.01
 
 ## SPEC 运行配置
 
