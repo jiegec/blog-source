@@ -312,13 +312,9 @@ teeout = yes
 makeflags = --jobs=16
 
 # compilers
-%ifndef %{gcc_dir}
-%define gcc_dir /usr
-%endif
-
 default:
-   preENV_LD_LIBRARY_PATH  = %{gcc_dir}/lib64/:%{gcc_dir}/lib/:/lib64
-   SPECLANG                = %{gcc_dir}/bin/
+   preENV_LD_LIBRARY_PATH  = /usr/lib64:/usr/lib:/lib64
+   SPECLANG                = /usr/bin/
    CC                      = $(SPECLANG)gcc -std=c99
    CXX                     = $(SPECLANG)g++
    FC                      = $(SPECLANG)gfortran
@@ -327,14 +323,30 @@ default:
    CXX_VERSION_OPTION      = -v
    FC_VERSION_OPTION       = -v
 
+# perf: use runcpu --define perf=1 --noreportable to enable
+%if %{perf} eq "1"
+default:
+   command_add_redirect = 1
+# bind to core if requested
+%ifdef %{bindcore}
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,branches,branch-misses -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+%else
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,branches,branch-misses -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+%endif
+%endif
+
 # portability flags
 default:
    EXTRA_PORTABILITY = -DSPEC_LP64
 500.perlbench_r,600.perlbench_s:  #lang='C'
+%if %{machine} eq "x86_64"
    PORTABILITY    = -DSPEC_LINUX_X64
+%else
+   PORTABILITY    = -DSPEC_LINUX_AARCH64
+%endif
 
 521.wrf_r,621.wrf_s:  #lang='F,C'
-   CPORTABILITY  = -DSPEC_CASE_FLAG
+   CPORTABILITY  = -DSPEC_CASE_FLAG 
    FPORTABILITY  = -fconvert=big-endian
 
 523.xalancbmk_r,623.xalancbmk_s:  #lang='CXX'
@@ -354,12 +366,12 @@ intspeed,fpspeed:
    EXTRA_OPTIMIZE = -fopenmp -DSPEC_OPENMP
 fpspeed:
    #
-   # 627.cam4 needs a big stack; the preENV will apply it to all
-   # benchmarks in the set, as required by the rules.
+   # 627.cam4 needs a big stack; the preENV will apply it to all 
+   # benchmarks in the set, as required by the rules.  
    #
    preENV_OMP_STACKSIZE = 120M
 
-default=base:         # flags for all base
+default=base:         # flags for all base 
    OPTIMIZE       = -O3
    # -std=c++13 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
    CXXOPTIMIZE    = -std=c++03
@@ -372,14 +384,12 @@ intrate,intspeed=base: # flags for integer base
 # Notes about the above
 #  - 500.perlbench_r/600.perlbench_s needs -fno-strict-aliasing.
 #  - 502.gcc_r/602.gcc_s             needs -fgnu89-inline or -z muldefs
-#  - For 'base', all benchmarks in a set must use the same options.
+#  - For 'base', all benchmarks in a set must use the same options.   
 #  - Therefore, all base benchmarks get the above.  See:
-#       www.spec.org/cpu2017/Docs/runrules.html#BaseFlags
+#       www.spec.org/cpu2017/Docs/runrules.html#BaseFlags  
 #       www.spec.org/cpu2017/Docs/benchmarks/500.perlbench_r.html
 #       www.spec.org/cpu2017/Docs/benchmarks/502.gcc_r.html
 ```
-
-如果在 ARM64 上，把 -DSPEC_LINUX_X64 替换为 -DSPEC_LINUX_AARCH64，其余内容不变。
 
 运行方式：
 
