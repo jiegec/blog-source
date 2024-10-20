@@ -6,6 +6,109 @@ permalink: /benchmark/
 
 # 性能测试
 
+## SPEC INT 2017 Rate-1
+
+下面贴出自己测的数据（SPECint2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
+
+运行时间（秒）基本和分数成反比，乘积按 5e4 估算。
+
+- Intel Core i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_003.txt)
+- Intel Core i9-12900KS Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [9.60](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_002.txt) [9.54](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_003.txt)
+- AMD Ryzen 5 7500F Zen 4（`-O3`）: [8.73](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
+- Qualcomm X1E80100 X Elite（`-O3`）: [7.98](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt) [7.69](./data/int2017_rate1/Qualcom_X1E80100_O3_002.txt)
+- Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.25](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt) [6.17](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_002.txt)
+- AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
+- Kunpeng 920 TaiShan V110（`-O3`）: [3.08](./data/int2017_rate1/Kunpeng-920_O3_001.txt) [3.17](./data/int2017_rate1/Kunpeng-920_O3_002.txt)
+
+### 网上的数据
+
+[SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
+
+- AMD Ryzen 9950X Zen 5: 12.6
+- Apple M3 Pro: 11.8
+- Intel Core 13900K Raptor Lake: 11.5
+- Apple M2 Pro: 10.3
+- Apple M2: 9.95
+- AMD HX 370 Strix Point Zen 5: 9.64
+- Intel Core Ultra 258V Lunar Lake Lion Cove+Skymont: 9.46
+- Apple M1 Max Firestorm+Icestorm: 9.2
+- AMD Ryzen 5950X Zen 3: 9.15
+- Loongson 3A6000 LA664: 4.29
+
+[高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
+
+- AMD Ryzen 7700X Zen 4: 10.35
+- Intel Core 13700K Raptor Lake: 9.81
+- Intel Core 12700K Alder Lake: 9.13
+- AMD Ryzen 5950X Zen 3: 8.45
+- Apple M2 Avalanche+Blizzard: 8.40
+- Qualcomm X1E80100 Oryon: 8.19
+- Apple M1 Firestorm+Icestorm: 7.40
+- Qualcomm 8 Gen 2 Cortex-X3: 6.58
+
+[Running SPEC CPU2017 on Chinese CPUs, and More](https://old.chipsandcheese.com/2024/10/18/running-spec-cpu2017-on-chinese-cpus-and-more/)
+
+- AMD Ryzen 9 7950X3D Non-VCache: 10.5
+- Intel Core Ultra 7 258V Lion Cove: 9.37
+- Intel Core Ultra 7 115H Redwood Cove: 7.6
+- Intel Core Ultra 7 258V Skymont: 5.92
+- Intel Core Ultra 7 115H Crestmont: 5.88
+- Intel Core i5-6600K Skylake: 5.65
+- Loongson 3A6000: 4.27
+- Mediatek Genio 1200 Cortex A78: 3.8
+- AMD FX-8150: 3.5
+- Intel Core Ultra 7 115H Low Power Crestmont: 3.32
+- Loongson 3A5000: 2.93
+- Intel Celeron J4125 Goldmont Plus: 2.43
+- Zhaoxin KaiXian KX-6640MA: 2.07
+- Amlogic S922X Cortex A73: 1.77
+- Mediatek Genio 1200 Cortex A55: 1.19
+
+## SPEC FP 2017 Rate-1
+
+下面贴出自己测的数据（SPECfp2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
+
+运行时间基本和分数成反比，乘积按 1e5 估算。
+
+- Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
+- Qualcomm X1E80100 X Elite（`-O3`）: [13.2](./data/fp2017_rate1/Qualcom_X1E80100_O3_001.txt)
+- AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
+- AMD EPYC 7742 Zen 2（`-O3`）: [7.14](./data/fp2017_rate1/AMD_EPYC_7742_O3_001.txt)
+- Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.92](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
+- Kunpeng 920 TaiShan V110（`-O3`）: [3.21](./data/fp2017_rate1/Kunpeng-920_O3_001.txt)
+
+### 网上的数据
+
+[高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
+
+- Intel Core 13700K Raptor Lake: 14.56
+- Qualcomm X1E80100 Oryon: 14.20
+- AMD Ryzen 7700X Zen 4: 13.97
+- Intel Core 12700K Alder Lake: 13.70
+- Apple M2 Avalanche+Blizzard: 12.64
+- AMD Ryzen 5950X Zen 3: 11.86
+- Apple M1 Firestorm+Icestorm: 11.20
+- Qualcomm 8 Gen 2 Cortex-X3: 9.91
+
+[Running SPEC CPU2017 on Chinese CPUs, and More](https://old.chipsandcheese.com/2024/10/18/running-spec-cpu2017-on-chinese-cpus-and-more/)
+
+- AMD Ryzen 9 7950X3D Non-VCache: 15.4
+- Intel Core Ultra 7 258V Lion Cove: 13.9
+- Intel Core Ultra 7 115H Redwood Cove: 12
+- Intel Core Ultra 7 258V Skymont: 7.94
+- Intel Core Ultra 7 115H Crestmont: 6.86
+- Intel Core i5-6600K Skylake: 7.92
+- Loongson 3A6000: 5.49
+- Mediatek Genio 1200 Cortex A78: 5.09
+- Intel Core Ultra 7 115H Low Power Crestmont: 4.32
+- AMD FX-8150: 3.63
+- Loongson 3A5000: 3.38
+- Intel Celeron J4125 Goldmont Plus: 2.45
+- Zhaoxin KaiXian KX-6640MA: 1.97
+- Amlogic S922X Cortex A73: 2.01
+- Mediatek Genio 1200 Cortex A55: 1.01
+
 ## SPEC INT 2006 Speed
 
 因为 GCC 没有自动并行化，所以都是单核运行。运行时间基本和分数成反比，乘积按 400000 估算。
@@ -134,64 +237,6 @@ TODO
 
 注：SPEC INT 2017 单线程 OpenMP 下 speed 测试按理说约等于 rate-1，前者虽然启用了 OpenMP，但仅允许单线程。不过实测下来还是不太一样。
 
-## SPEC INT 2017 Rate-1
-
-下面贴出自己测的数据（SPECint2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
-
-运行时间（秒）基本和分数成反比，乘积按 5e4 估算。
-
-- Intel Core i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_003.txt)
-- Intel Core i9-12900KS Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [9.60](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_002.txt) [9.54](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_003.txt)
-- AMD Ryzen 5 7500F Zen 4（`-O3`）: [8.73](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
-- Qualcomm X1E80100 X Elite（`-O3`）: [7.98](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt) [7.69](./data/int2017_rate1/Qualcom_X1E80100_O3_002.txt)
-- Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.25](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt) [6.17](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_002.txt)
-- AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
-- Kunpeng 920 TaiShan V110（`-O3`）: [3.08](./data/int2017_rate1/Kunpeng-920_O3_001.txt) [3.17](./data/int2017_rate1/Kunpeng-920_O3_002.txt)
-
-### 网上的数据
-
-[SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
-
-- AMD Ryzen 9950X Zen 5: 12.6
-- Apple M3 Pro: 11.8
-- Intel Core 13900K Raptor Lake: 11.5
-- Apple M2 Pro: 10.3
-- Apple M2: 9.95
-- AMD HX 370 Strix Point Zen 5: 9.64
-- Intel Core Ultra 258V Lunar Lake Lion Cove+Skymont: 9.46
-- Apple M1 Max Firestorm+Icestorm: 9.2
-- AMD Ryzen 5950X Zen 3: 9.15
-- Loongson 3A6000 LA664: 4.29
-
-[高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
-
-- AMD Ryzen 7700X Zen 4: 10.35
-- Intel Core 13700K Raptor Lake: 9.81
-- Intel Core 12700K Alder Lake: 9.13
-- AMD Ryzen 5950X Zen 3: 8.45
-- Apple M2 Avalanche+Blizzard: 8.40
-- Qualcomm X1E80100 Oryon: 8.19
-- Apple M1 Firestorm+Icestorm: 7.40
-- Qualcomm 8 Gen 2 Cortex-X3: 6.58
-
-[Running SPEC CPU2017 on Chinese CPUs, and More](https://old.chipsandcheese.com/2024/10/18/running-spec-cpu2017-on-chinese-cpus-and-more/)
-
-- AMD Ryzen 9 7950X3D Non-VCache: 10.5
-- Intel Core Ultra 7 258V Lion Cove: 9.37
-- Intel Core Ultra 7 115H Redwood Cove: 7.6
-- Intel Core Ultra 7 258V Skymont: 5.92
-- Intel Core Ultra 7 115H Crestmont: 5.88
-- Intel Core i5-6600K Skylake: 5.65
-- Loongson 3A6000: 4.27
-- Mediatek Genio 1200 Cortex A78: 3.8
-- AMD FX-8150: 3.5
-- Intel Core Ultra 7 115H Low Power Crestmont: 3.32
-- Loongson 3A5000: 2.93
-- Intel Celeron J4125 Goldmont Plus: 2.43
-- Zhaoxin KaiXian KX-6640MA: 2.07
-- Amlogic S922X Cortex A73: 1.77
-- Mediatek Genio 1200 Cortex A55: 1.19
-
 ## SPEC FP 2017 Speed
 
 下面贴出自己测的数据（SPECfp2017，Estimated，speed，base，单线程），不保证满足 SPEC 的要求，仅供参考。
@@ -205,51 +250,6 @@ TODO
 - Kunpeng 920 TaiShan V110（`-O3`）: [2.57](./data/fp2017_speed/Kunpeng-920_O3_001.txt)
 
 注：SPEC FP 2017 单线程 OpenMP 下 speed 测试不等价为 rate-1，因为跑的测试不同。
-
-## SPEC FP 2017 Rate-1
-
-下面贴出自己测的数据（SPECfp2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
-
-运行时间基本和分数成反比，乘积按 1e5 估算。
-
-- Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
-- Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
-- Qualcomm X1E80100 X Elite（`-O3`）: [13.2](./data/fp2017_rate1/Qualcom_X1E80100_O3_001.txt)
-- AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
-- AMD EPYC 7742 Zen 2（`-O3`）: [7.14](./data/fp2017_rate1/AMD_EPYC_7742_O3_001.txt)
-- Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.92](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
-- Kunpeng 920 TaiShan V110（`-O3`）: [3.21](./data/fp2017_rate1/Kunpeng-920_O3_001.txt)
-
-### 网上的数据
-
-[高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
-
-- Intel Core 13700K Raptor Lake: 14.56
-- Qualcomm X1E80100 Oryon: 14.20
-- AMD Ryzen 7700X Zen 4: 13.97
-- Intel Core 12700K Alder Lake: 13.70
-- Apple M2 Avalanche+Blizzard: 12.64
-- AMD Ryzen 5950X Zen 3: 11.86
-- Apple M1 Firestorm+Icestorm: 11.20
-- Qualcomm 8 Gen 2 Cortex-X3: 9.91
-
-[Running SPEC CPU2017 on Chinese CPUs, and More](https://old.chipsandcheese.com/2024/10/18/running-spec-cpu2017-on-chinese-cpus-and-more/)
-
-- AMD Ryzen 9 7950X3D Non-VCache: 15.4
-- Intel Core Ultra 7 258V Lion Cove: 13.9
-- Intel Core Ultra 7 115H Redwood Cove: 12
-- Intel Core Ultra 7 258V Skymont: 7.94
-- Intel Core Ultra 7 115H Crestmont: 6.86
-- Intel Core i5-6600K Skylake: 7.92
-- Loongson 3A6000: 5.49
-- Mediatek Genio 1200 Cortex A78: 5.09
-- Intel Core Ultra 7 115H Low Power Crestmont: 4.32
-- AMD FX-8150: 3.63
-- Loongson 3A5000: 3.38
-- Intel Celeron J4125 Goldmont Plus: 2.45
-- Zhaoxin KaiXian KX-6640MA: 1.97
-- Amlogic S922X Cortex A73: 2.01
-- Mediatek Genio 1200 Cortex A55: 1.01
 
 ## SPEC 运行配置
 
