@@ -90,14 +90,14 @@ def plot_perf(file_name, key, display):
     for i, name in enumerate(names):
         x_data = np.arange(len(benchmarks)) + width * (len(names) - i - 1)
         y_data = []
-        for bench in benchmarks:
+        for bench in reversed(benchmarks):
             y_data.append(mean(data[name][f"{bench}/{key}"]))
         rects = ax.barh(x_data, y_data, width, label=name)
         ax.bar_label(rects, padding=3)
         max_value = max(max_value, max(y_data))
 
     ax.set_xlim(0, max_value * 1.5)
-    ax.set_yticks(np.arange(len(benchmarks)) + width * (len(names) - 1) / 2, benchmarks)
+    ax.set_yticks(np.arange(len(benchmarks)) + width * (len(names) - 1) / 2, reversed(benchmarks))
     ax.legend()
     ax.set_title(f"SPEC INT 2017 Rate-1 Estimated {display}")
     plt.savefig(f"int2017_rate1_{file_name}.png", bbox_inches="tight")
