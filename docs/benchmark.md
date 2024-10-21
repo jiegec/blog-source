@@ -74,6 +74,18 @@ permalink: /benchmark/
 - Amlogic S922X Cortex A73: 1.77
 - Mediatek Genio 1200 Cortex A55: 1.19
 
+[Running SPEC CPU2017 at Chips and Cheese?](https://old.chipsandcheese.com/2024/09/19/running-spec-cpu2017-at-chips-and-cheese/)
+
+- AMD Ryzen 9 9950X: 11.9
+- AMD Ryzen 9 7950X3D Non-VCache: 10.5
+- AMD Ryzen 9 7950X3D VCache: 10.5
+- Intel Core Ultra 7 115H Redwood Cove: 7.58
+- Intel Core Ultra 7 115H Crestmont: 5.34
+- AMD Ryzen 9 3950X 3.5GHz: 5.28
+- Ampere Altra: 3.98
+- AmpereOne: 3.94
+- AMD FX-8159: 3.46
+
 ## SPEC FP 2017 Rate-1
 
 下面贴出自己测的数据（SPECfp2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
@@ -118,6 +130,18 @@ permalink: /benchmark/
 - Amlogic S922X Cortex A73: 2.01
 - Zhaoxin KaiXian KX-6640MA: 1.97
 - Mediatek Genio 1200 Cortex A55: 1.01
+
+[Running SPEC CPU2017 at Chips and Cheese?](https://old.chipsandcheese.com/2024/09/19/running-spec-cpu2017-at-chips-and-cheese/)
+
+- AMD Ryzen 9 9950X: 19.8
+- AMD Ryzen 9 7950X3D Non-VCache: 15.3
+- AMD Ryzen 9 7950X3D VCache: 12.7
+- Intel Core Ultra 7 115H Redwood Cove: 11.2
+- AMD Ryzen 9 3950X 3.5GHz: 7.26
+- Intel Core Ultra 7 115H Crestmont: 5.83
+- Ampere Altra: 5.62
+- AmpereOne: 4.29
+- AMD FX-8159: 3.47
 
 ## SPEC INT 2006 Speed
 
