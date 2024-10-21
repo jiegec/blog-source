@@ -1,0 +1,116 @@
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        591      17.0   S
+503.bwaves_r          1        589      17.0   S
+503.bwaves_r          1        591      17.0   *
+507.cactuBSSN_r       1        366       3.46  S
+507.cactuBSSN_r       1        363       3.49  S
+507.cactuBSSN_r       1        363       3.48  *
+508.namd_r            1        426       2.23  S
+508.namd_r            1        426       2.23  S
+508.namd_r            1        426       2.23  *
+510.parest_r          1        641       4.08  S
+510.parest_r          1        645       4.06  S
+510.parest_r          1        643       4.07  *
+511.povray_r          1        830       2.81  *
+511.povray_r          1        824       2.83  S
+511.povray_r          1        844       2.77  S
+519.lbm_r             1        338       3.12  S
+519.lbm_r             1        339       3.11  *
+519.lbm_r             1        340       3.10  S
+521.wrf_r             1        494       4.53  S
+521.wrf_r             1        494       4.53  *
+521.wrf_r             1        503       4.46  S
+526.blender_r         1        440       3.46  *
+526.blender_r         1        441       3.45  S
+526.blender_r         1        439       3.47  S
+527.cam4_r            1        440       3.98  *
+527.cam4_r            1        446       3.92  S
+527.cam4_r            1        431       4.06  S
+538.imagick_r         1        863       2.88  *
+538.imagick_r         1        861       2.89  S
+538.imagick_r         1        865       2.87  S
+544.nab_r             1        539       3.12  *
+544.nab_r             1        539       3.12  S
+544.nab_r             1        541       3.11  S
+549.fotonik3d_r       1        484       8.04  S
+549.fotonik3d_r       1        486       8.01  S
+549.fotonik3d_r       1        486       8.02  *
+554.roms_r            1        429       3.70  S
+554.roms_r            1        428       3.72  *
+554.roms_r            1        426       3.73  S
+=================================================================================
+503.bwaves_r          1        591      17.0   *
+507.cactuBSSN_r       1        363       3.48  *
+508.namd_r            1        426       2.23  *
+510.parest_r          1        643       4.07  *
+511.povray_r          1        830       2.81  *
+519.lbm_r             1        339       3.11  *
+521.wrf_r             1        494       4.53  *
+526.blender_r         1        440       3.46  *
+527.cam4_r            1        440       3.98  *
+538.imagick_r         1        863       2.88  *
+544.nab_r             1        539       3.12  *
+549.fotonik3d_r       1        486       8.02  *
+554.roms_r            1        428       3.72  *
+ Est. SPECrate(R)2017_fp_base            4.05
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+503.bwaves_r: instructions = 2.22876e+12
+503.bwaves_r: ipc = 1.49
+503.bwaves_r: misprediction rate (%) = 2.00
+503.bwaves_r: mpki = 0.92
+507.cactuBSSN_r: instructions = 1.46424e+12
+507.cactuBSSN_r: ipc = 1.59
+507.cactuBSSN_r: misprediction rate (%) = 0.27
+507.cactuBSSN_r: mpki = 0.05
+508.namd_r: instructions = 2.5827e+12
+508.namd_r: ipc = 2.39
+508.namd_r: misprediction rate (%) = 4.33
+508.namd_r: mpki = 0.71
+510.parest_r: instructions = 3.29092e+12
+510.parest_r: ipc = 2.02
+510.parest_r: misprediction rate (%) = 2.15
+510.parest_r: mpki = 2.91
+511.povray_r: instructions = 3.46042e+12
+511.povray_r: ipc = 1.63
+511.povray_r: misprediction rate (%) = 2.30
+511.povray_r: mpki = 3.60
+519.lbm_r: instructions = 1.77979e+12
+519.lbm_r: ipc = 2.07
+519.lbm_r: misprediction rate (%) = 0.62
+519.lbm_r: mpki = 0.04
+521.wrf_r: instructions = 1.96863e+12
+521.wrf_r: ipc = 1.57
+521.wrf_r: misprediction rate (%) = 1.45
+521.wrf_r: mpki = 1.26
+526.blender_r: instructions = 1.77622e+12
+526.blender_r: ipc = 1.59
+526.blender_r: misprediction rate (%) = 2.68
+526.blender_r: mpki = 4.64
+527.cam4_r: instructions = 1.81738e+12
+527.cam4_r: ipc = 1.63
+527.cam4_r: misprediction rate (%) = 1.45
+527.cam4_r: mpki = 1.72
+538.imagick_r: instructions = 4.90984e+12
+538.imagick_r: ipc = 2.25
+538.imagick_r: misprediction rate (%) = 0.75
+538.imagick_r: mpki = 0.72
+544.nab_r: instructions = 1.9402e+12
+544.nab_r: ipc = 1.42
+544.nab_r: misprediction rate (%) = 2.65
+544.nab_r: mpki = 3.02
+549.fotonik3d_r: instructions = 1.53446e+12
+549.fotonik3d_r: ipc = 1.26
+549.fotonik3d_r: misprediction rate (%) = 1.20
+549.fotonik3d_r: mpki = 0.26
+554.roms_r: instructions = 1.63818e+12
+554.roms_r: ipc = 1.52
+554.roms_r: misprediction rate (%) = 0.44
+554.roms_r: mpki = 0.31
+997.specrand_fr: instructions = 5.05988e+08
+997.specrand_fr: ipc = 1.92
+997.specrand_fr: misprediction rate (%) = 1.27
+997.specrand_fr: mpki = 2.57
