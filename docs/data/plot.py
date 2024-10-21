@@ -52,5 +52,5 @@ for x, y in enumerate(y_data):
 
 ax.set_xlim(0, 15)
 ax.barh(x_data, y_data)
-ax.set_title("SPEC INT 2017 Rate-1 Estimated")
-plt.savefig("int2017_rate1.png", bbox_inches="tight")
+ax.set_title("SPEC INT 2017 Rate-1 Estimated Score")
+plt.savefig("int2017_rate1_score.png", bbox_inches="tight")
