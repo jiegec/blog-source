@@ -27,7 +27,7 @@ def parse_data():
         parts = name.split("_")
         core = " ".join(parts[:-2])
         flag = parts[-2]
-        index = parts[-1]
+        # index = parts[-1]
         name = f"{core} ({flag})"
 
         # parse
@@ -77,7 +77,7 @@ def plot_score():
 def plot_perf(file_name, key, display):
     # plot perf data
     plt.cla()
-    fig, ax = plt.subplots(figsize=(5, 15))
+    _, ax = plt.subplots(figsize=(5, 15))
 
     names = []
     for name in data:
@@ -96,7 +96,7 @@ def plot_perf(file_name, key, display):
         y_data.insert(0, round(geometric_mean(y_data), 2))
         rects = ax.barh(x_data, y_data, width, label=name)
         ax.bar_label(rects, padding=3)
-        max_value = max(max_value, max(y_data))
+        max_value = max(max_value, *y_data)
 
     ax.set_xlim(0, max_value * 1.5)
     ax.set_yticks(
