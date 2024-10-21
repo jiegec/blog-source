@@ -87,7 +87,7 @@ def plot_mpki():
     names = sorted(names)
     width = 1 / (len(names) + 1)
     for i, name in enumerate(names):
-        x_data = np.arange(len(benchmarks)) + width * i
+        x_data = np.arange(len(benchmarks)) + width * (len(names) - i - 1)
         y_data = []
         for bench in benchmarks:
             y_data.append(mean(data[name][f"{bench}/mpki"]))
