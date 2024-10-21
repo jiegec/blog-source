@@ -1,4 +1,5 @@
 #!/bin/sh
+cd docs/data && poetry run python3 plot.py && cd ../../
 DEPLOY=true poetry run mkdocs build
 rm -rf ../jiegec.github.io/*
 cp -r site/* ../jiegec.github.io/
