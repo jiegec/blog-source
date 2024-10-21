@@ -136,3 +136,4 @@ for flavor in ["int", "fp"]:
     plot_perf(flavor, "mpki", "mpki", "MPKI")
     plot_perf(flavor, "ipc", "ipc", "IPC")
     plot_perf(flavor, "mispred", "misprediction", "Branch Misprediction Rate (%)")
+    plot_perf(flavor, "freq", "clock", "Clock Freq (MHz)")
