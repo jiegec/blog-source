@@ -92,7 +92,16 @@ permalink: /benchmark/
 
 运行时间基本和分数成反比，乘积按 1e5 估算。
 
+![](./data/fp2017_rate1_score.png)
+
+![](./data/fp2017_rate1_mpki.png)
+
+![](./data/fp2017_rate1_ipc.png)
+
+![](./data/fp2017_rate1_mispred.png)
+
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
+- AMD Ryzen 9 9950X Zen 5（`-O3`）: [15.8](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - Qualcomm X1E80100 X Elite（`-O3`）: [13.2](./data/fp2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)

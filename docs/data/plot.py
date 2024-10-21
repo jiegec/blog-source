@@ -31,7 +31,7 @@ benchmarks_fp_rate = [
     "521.wrf_r",
     "526.blender_r",
     "527.cam4_r",
-    "538.imagick_r ",
+    "538.imagick_r",
     "544.nab_r",
     "549.fotonik3d_r",
     "554.roms_r",
