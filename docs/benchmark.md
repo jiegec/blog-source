@@ -107,16 +107,16 @@ permalink: /benchmark/
 - Intel Core Ultra 7 258V Lion Cove: 13.9
 - Intel Core Ultra 7 115H Redwood Cove: 12
 - Intel Core Ultra 7 258V Skymont: 7.94
-- Intel Core Ultra 7 115H Crestmont: 6.86
 - Intel Core i5-6600K Skylake: 7.92
+- Intel Core Ultra 7 115H Crestmont: 6.86
 - Loongson 3A6000: 5.49
 - Mediatek Genio 1200 Cortex A78: 5.09
 - Intel Core Ultra 7 115H Low Power Crestmont: 4.32
 - AMD FX-8150: 3.63
 - Loongson 3A5000: 3.38
 - Intel Celeron J4125 Goldmont Plus: 2.45
-- Zhaoxin KaiXian KX-6640MA: 1.97
 - Amlogic S922X Cortex A73: 2.01
+- Zhaoxin KaiXian KX-6640MA: 1.97
 - Mediatek Genio 1200 Cortex A55: 1.01
 
 ## SPEC INT 2006 Speed
