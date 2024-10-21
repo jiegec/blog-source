@@ -94,7 +94,7 @@ def plot_score(flavor):
 def plot_perf(flavor, file_name, key, display):
     # plot perf data
     plt.cla()
-    _, ax = plt.subplots(figsize=(5, 15))
+    _, ax = plt.subplots(figsize=(5, 20))
 
     names = []
     for name in data:

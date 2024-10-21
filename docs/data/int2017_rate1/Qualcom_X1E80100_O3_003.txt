@@ -1,0 +1,88 @@
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1      219         7.28  S
+500.perlbench_r       1      204         7.79  *
+500.perlbench_r       1      186         8.58  S
+502.gcc_r             1      163         8.67  S
+502.gcc_r             1      177         8.01  *
+502.gcc_r             1      184         7.71  S
+505.mcf_r             1      186         8.67  S
+505.mcf_r             1      187         8.66  *
+505.mcf_r             1      214         7.57  S
+520.omnetpp_r         1      379         3.46  *
+520.omnetpp_r         1      575         2.28  S
+520.omnetpp_r         1      327         4.01  S
+523.xalancbmk_r       1      169         6.24  S
+523.xalancbmk_r       1      166         6.38  *
+523.xalancbmk_r       1      165         6.38  S
+525.x264_r            1       74.2      23.6   S
+525.x264_r            1       84.7      20.7   *
+525.x264_r            1      110        15.9   S
+531.deepsjeng_r       1      182         6.31  S
+531.deepsjeng_r       1      182         6.31  S
+531.deepsjeng_r       1      182         6.31  *
+541.leela_r           1      234         7.07  *
+541.leela_r           1      275         6.02  S
+541.leela_r           1      234         7.08  S
+548.exchange2_r       1      116        22.5   *
+548.exchange2_r       1      276         9.48  S
+548.exchange2_r       1      116        22.5   S
+557.xz_r              1      359         3.01  S
+557.xz_r              1      406         2.66  S
+557.xz_r              1      400         2.70  *
+=================================================================================
+500.perlbench_r       1      204         7.79  *
+502.gcc_r             1      177         8.01  *
+505.mcf_r             1      187         8.66  *
+520.omnetpp_r         1      379         3.46  *
+523.xalancbmk_r       1      166         6.38  *
+525.x264_r            1       84.7      20.7   *
+531.deepsjeng_r       1      182         6.31  *
+541.leela_r           1      234         7.07  *
+548.exchange2_r       1      116        22.5   *
+557.xz_r              1      400         2.70  *
+ Est. SPECrate(R)2017_int_base           7.63
+ Est. SPECrate(R)2017_int_peak                                         Not Run
+
+500.perlbench_r: instructions = 2.79036e+12
+500.perlbench_r: ipc = 3.95
+500.perlbench_r: misprediction rate (%) = 0.61
+500.perlbench_r: mpki = 1.12
+502.gcc_r: instructions = 1.05255e+12
+502.gcc_r: ipc = 2.33
+502.gcc_r: misprediction rate (%) = 1.48
+502.gcc_r: mpki = 3.53
+505.mcf_r: instructions = 9.19365e+11
+505.mcf_r: ipc = 1.24
+505.mcf_r: misprediction rate (%) = 6.91
+505.mcf_r: mpki = 16.89
+520.omnetpp_r: instructions = 1.09033e+12
+520.omnetpp_r: ipc = 0.96
+520.omnetpp_r: misprediction rate (%) = 3.21
+520.omnetpp_r: mpki = 6.64
+523.xalancbmk_r: instructions = 1.10553e+12
+523.xalancbmk_r: ipc = 1.66
+523.xalancbmk_r: misprediction rate (%) = 0.35
+523.xalancbmk_r: mpki = 1.02
+525.x264_r: instructions = 1.51214e+12
+525.x264_r: ipc = 5.17
+525.x264_r: misprediction rate (%) = 1.49
+525.x264_r: mpki = 1.04
+531.deepsjeng_r: instructions = 1.75898e+12
+531.deepsjeng_r: ipc = 2.42
+531.deepsjeng_r: misprediction rate (%) = 3.41
+531.deepsjeng_r: mpki = 4.82
+541.leela_r: instructions = 2.06383e+12
+541.leela_r: ipc = 2.20
+541.leela_r: misprediction rate (%) = 7.87
+541.leela_r: mpki = 12.65
+548.exchange2_r: instructions = 2.1283e+12
+548.exchange2_r: ipc = 5.36
+548.exchange2_r: misprediction rate (%) = 1.58
+548.exchange2_r: mpki = 2.15
+557.xz_r: instructions = 1.82304e+12
+557.xz_r: ipc = 1.59
+557.xz_r: misprediction rate (%) = 3.74
+557.xz_r: mpki = 6.45
