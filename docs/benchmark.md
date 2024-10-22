@@ -112,6 +112,7 @@ permalink: /benchmark/
 
 ![](./data/fp2017_rate1_freq.png)
 
+- AMD Ryzen 9 9950X Zen 5（`-O3 -march=native`）: [17.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_003.txt)
 - AMD Ryzen 9 9950X Zen 5（`-O3`）: [15.8](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [14.1](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_002.txt)
@@ -122,6 +123,8 @@ permalink: /benchmark/
 - Intel Xeon E5-2680 v4 Broadwell（`-O3`）: [4.96](./data/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - AMD EPYC 7551 Zen 1（`-O3`）: [4.05](./data/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - Kunpeng 920 TaiShan V110（`-O3`）: [3.21](./data/fp2017_rate1/Kunpeng-920_O3_001.txt)
+
+SPEC FP 2017 Rate-1 结果受 `-march=native` 影响很明显。
 
 ### 网上的数据
 
