@@ -110,7 +110,3 @@ Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
 554.roms_r: ipc = 2.18
 554.roms_r: misprediction rate (%) = 0.20
 554.roms_r: mpki = 0.15
-997.specrand_fr: instructions = 5.77129e+08
-997.specrand_fr: ipc = 3.90
-997.specrand_fr: misprediction rate (%) = 0.47
-997.specrand_fr: mpki = 0.93
