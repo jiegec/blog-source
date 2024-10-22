@@ -1,3 +1,5 @@
+Built with GCC 12.2.0 from Debian Bookworm
+
                        Estimated                       Estimated
                  Base     Base        Base        Peak     Peak        Peak
 Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
