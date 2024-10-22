@@ -397,9 +397,9 @@ default:
    command_add_redirect = 1
 # bind to core if requested
 %ifdef %{bindcore}
-   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,branches,branch-misses -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,branches,branch-misses,task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
 %else
-   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,branches,branch-misses -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,branches,branch-misses,task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
 %endif
 %endif
 
@@ -440,7 +440,11 @@ fpspeed:
    preENV_OMP_STACKSIZE = 120M
 
 default=base:         # flags for all base 
+%if %{native} eq "1"
+   OPTIMIZE       = -O3 -march=native
+%else
    OPTIMIZE       = -O3
+%endif
    # -std=c++13 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
    CXXOPTIMIZE    = -std=c++03
    # -fallow-argument-mismatch required for https://www.spec.org/cpu2017/Docs/benchmarks/521.wrf_r.html
