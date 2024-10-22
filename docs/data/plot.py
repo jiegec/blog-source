@@ -89,7 +89,7 @@ def plot_score(flavor):
     ax.set_xlim(0, max(y_data) * 1.5)
     ax.barh(x_data, y_data)
     ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated Score")
-    plt.savefig(f"{flavor}2017_rate1_score.png", bbox_inches="tight")
+    plt.savefig(f"{flavor}2017_rate1_score.svg", bbox_inches="tight")
 
 
 def plot_perf(flavor, file_name, key, display):
@@ -123,7 +123,7 @@ def plot_perf(flavor, file_name, key, display):
     )
     ax.legend()
     ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated {display}")
-    plt.savefig(f"{flavor}2017_rate1_{file_name}.png", bbox_inches="tight")
+    plt.savefig(f"{flavor}2017_rate1_{file_name}.svg", bbox_inches="tight")
 
 
 for flavor in ["int", "fp"]:

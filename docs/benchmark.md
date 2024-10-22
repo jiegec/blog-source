@@ -12,15 +12,15 @@ permalink: /benchmark/
 
 运行时间（秒）基本和分数成反比，乘积按 5e4 估算。
 
-![](./data/int2017_rate1_score.png)
+![](./data/int2017_rate1_score.svg)
 
-![](./data/int2017_rate1_mpki.png)
+![](./data/int2017_rate1_mpki.svg)
 
-![](./data/int2017_rate1_ipc.png)
+![](./data/int2017_rate1_ipc.svg)
 
-![](./data/int2017_rate1_mispred.png)
+![](./data/int2017_rate1_mispred.svg)
 
-![](./data/int2017_rate1_freq.png)
+![](./data/int2017_rate1_freq.svg)
 
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_003.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_004.txt)
 - AMD Ryzen 9 9950X Zen 5（`-O3`）: [10.8](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [10.9](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt) [10.9](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_003.txt) [11.0](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_004.txt)
@@ -102,15 +102,15 @@ permalink: /benchmark/
 
 运行时间基本和分数成反比，乘积按 1e5 估算。
 
-![](./data/fp2017_rate1_score.png)
+![](./data/fp2017_rate1_score.svg)
 
-![](./data/fp2017_rate1_mpki.png)
+![](./data/fp2017_rate1_mpki.svg)
 
-![](./data/fp2017_rate1_ipc.png)
+![](./data/fp2017_rate1_ipc.svg)
 
-![](./data/fp2017_rate1_mispred.png)
+![](./data/fp2017_rate1_mispred.svg)
 
-![](./data/fp2017_rate1_freq.png)
+![](./data/fp2017_rate1_freq.svg)
 
 - AMD Ryzen 9 9950X Zen 5（`-O3 -march=native`）: [17.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_003.txt)
