@@ -95,7 +95,7 @@ def plot_score(flavor):
 def plot_perf(flavor, file_name, key, display):
     # plot perf data
     plt.cla()
-    _, ax = plt.subplots(figsize=(5, 20))
+    _, ax = plt.subplots(figsize=(5, 21))
 
     names = []
     for name in data:
@@ -106,20 +106,22 @@ def plot_perf(flavor, file_name, key, display):
     width = 1 / (len(names) + 1)
     max_value = 0
     for i, name in enumerate(names):
-        x_data = np.arange(len(benchmarks) + 1) + width * (len(names) - i - 1)
+        x_data = np.arange(len(benchmarks) + 2) + width * (len(names) - i - 1)
         y_data = []
         for bench in reversed(benchmarks):
             y_data.append(mean(data[name][f"{bench}/{key}"]))
         # geomean
         y_data.insert(0, round(geometric_mean(y_data), 2))
+        # average
+        y_data.insert(0, round(mean(y_data), 2))
         rects = ax.barh(x_data, y_data, width, label=name)
         ax.bar_label(rects, padding=3)
         max_value = max(max_value, *y_data)
 
     ax.set_xlim(0, max_value * 1.5)
     ax.set_yticks(
-        np.arange(len(benchmarks) + 1) + width * (len(names) - 1) / 2,
-        ["geomean"] + list(reversed(benchmarks)),
+        np.arange(len(benchmarks) + 2) + width * (len(names) - 1) / 2,
+        ["average", "geomean"] + list(reversed(benchmarks)),
     )
     ax.legend()
     ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated {display}")
