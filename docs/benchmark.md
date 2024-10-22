@@ -90,6 +90,12 @@ permalink: /benchmark/
 - AmpereOne: 3.94
 - AMD FX-8159: 3.46
 
+[The AMD Ryzen 9 9950X and Ryzen 9 9900X Review: Flagship Zen 5 Soars - and Stalls](https://www.anandtech.com/show/21524/the-amd-ryzen-9-9950x-and-ryzen-9-9900x-review/5)
+
+- AMD Ryzen 9 9950X Zen 5: 10.95
+- Intel Core i9-14900K Raptor Lake: 10.94
+- AMD Ryzen 9 7950X Zen 4: 9.88
+
 ## SPEC FP 2017 Rate-1
 
 下面贴出自己测的数据（SPECfp2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
@@ -159,6 +165,12 @@ permalink: /benchmark/
 - Ampere Altra: 5.62
 - AmpereOne: 4.29
 - AMD FX-8159: 3.47
+
+[The AMD Ryzen 9 9950X and Ryzen 9 9900X Review: Flagship Zen 5 Soars - and Stalls](https://www.anandtech.com/show/21524/the-amd-ryzen-9-9950x-and-ryzen-9-9900x-review/5)
+
+- AMD Ryzen 9 9950X Zen 5: 17.72
+- Intel Core i9-14900K Raptor Lake: 16.90
+- AMD Ryzen 9 7950X Zen 4: 14.26
 
 ## SPEC INT 2006 Speed
 
