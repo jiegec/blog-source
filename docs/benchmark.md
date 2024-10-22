@@ -321,7 +321,7 @@ TODO
 
 ## SPEC 运行配置
 
-SPEC 2006:
+### SPEC 2006
 
 ```
 # match spec result standard
@@ -367,7 +367,7 @@ CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
 cd /mnt && . ./shrc && runspec int
 ```
 
-SPEC 2017:
+### SPEC 2017
 
 ```
 # match spec result standard
@@ -434,16 +434,22 @@ intspeed,fpspeed:
    EXTRA_OPTIMIZE = -fopenmp -DSPEC_OPENMP
 fpspeed:
    #
-   # 627.cam4 needs a big stack; the preENV will apply it to all 
-   # benchmarks in the set, as required by the rules.  
+   # 627.cam4 needs a big stack; the preENV will apply it to all
+   # benchmarks in the set, as required by the rules.
    #
    preENV_OMP_STACKSIZE = 120M
 
-default=base:         # flags for all base 
-%if %{native} eq "1"
-   OPTIMIZE       = -O3 -march=native
+default=base:         # flags for all base
+%if %{fast} eq "1"
+   OPTIMIZE       = -Ofast
 %else
    OPTIMIZE       = -O3
+%endif
+%if %{native} eq "1"
+   OPTIMIZE       = -march=native
+%endif
+%if %{lto} eq "1"
+   OPTIMIZE       = -flto
 %endif
    # -std=c++13 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
    CXXOPTIMIZE    = -std=c++03
@@ -451,16 +457,17 @@ default=base:         # flags for all base
    FOPTIMIZE      = -fallow-argument-mismatch
 
 intrate,intspeed=base: # flags for integer base
-   EXTRA_COPTIMIZE = -fno-strict-aliasing
-   LDCFLAGS        = -z muldefs
+   EXTRA_COPTIMIZE = -fno-strict-aliasing -fgnu89-inline -fcommon
 # Notes about the above
-#  - 500.perlbench_r/600.perlbench_s needs -fno-strict-aliasing.
+#  - 500.perlbench_r/600.perlbench_s needs -fno-strict-aliasing
 #  - 502.gcc_r/602.gcc_s             needs -fgnu89-inline or -z muldefs
-#  - For 'base', all benchmarks in a set must use the same options.   
+#  - 525.x264_r/625.x264_s           needs -fcommon
+#  - For 'base', all benchmarks in a set must use the same options.
 #  - Therefore, all base benchmarks get the above.  See:
-#       www.spec.org/cpu2017/Docs/runrules.html#BaseFlags  
-#       www.spec.org/cpu2017/Docs/benchmarks/500.perlbench_r.html
-#       www.spec.org/cpu2017/Docs/benchmarks/502.gcc_r.html
+#       https://www.spec.org/cpu2017/Docs/runrules.html#BaseFlags
+#       https://www.spec.org/cpu2017/Docs/benchmarks/500.perlbench_r.html
+#       https://www.spec.org/cpu2017/Docs/benchmarks/502.gcc_r.html
+#       https://www.spec.org/cpu2017/Docs/benchmarks/525.x264_r.html
 ```
 
 运行方式：
