@@ -32,7 +32,7 @@ permalink: /benchmark/
 - AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt) [4.66](./data/int2017_rate1/AMD_EPYC_7742_O3_002.txt)
 - Intel Xeon E5-2680 v4 Broadwell（`-O3`）: [4.02](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Kunpeng 920 TaiShan V110（`-O3`）: [3.08](./data/int2017_rate1/Kunpeng-920_O3_001.txt) [3.17](./data/int2017_rate1/Kunpeng-920_O3_002.txt)
-- AMD EPYC 7551 Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- AMD EPYC 7551 Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt) [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_002.txt)
 
 ### 网上的数据
 
