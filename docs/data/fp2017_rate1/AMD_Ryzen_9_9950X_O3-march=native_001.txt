@@ -1,4 +1,4 @@
-Built with GCC 12.2.0 from Debian Bookworm
+Built with GCC 12.2.0 from Debian Bookworm with -O3 -march=native
 
                        Estimated                       Estimated
                  Base     Base        Base        Peak     Peak        Peak
