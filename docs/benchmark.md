@@ -106,6 +106,11 @@ Qualcomm X1E80100 上，负载不一定会调度到有 Boost 的核上，因此�
 - Intel Core i9-14900K Raptor Lake: 10.94
 - AMD Ryzen 9 7950X Zen 4: 9.88
 
+[Snapdragon X Elite Qualcomm Oryon CPU Design and Architecture Hot Chips 2024](https://www.servethehome.com/snapdragon-x-elite-qualcomm-oryon-cpu-design-and-architecture-hot-chips-2024-arm/)
+
+- Qualcomm X Elite Oryon on Linux: 10.64
+- Qualcomm X Elite Oryon on Windows: 10.64
+
 ## SPEC FP 2017 Rate-1
 
 下面贴出自己测的数据（SPECfp2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
@@ -188,6 +193,11 @@ SPEC FP 2017 Rate-1 结果受 `-march=native` 影响很明显，特别是有 AVX
 - AMD Ryzen 9 9950X Zen 5: 17.72
 - Intel Core i9-14900K Raptor Lake: 16.90
 - AMD Ryzen 9 7950X Zen 4: 14.26
+
+[Snapdragon X Elite Qualcomm Oryon CPU Design and Architecture Hot Chips 2024](https://www.servethehome.com/snapdragon-x-elite-qualcomm-oryon-cpu-design-and-architecture-hot-chips-2024-arm/)
+
+- Qualcomm X Elite Oryon on Linux: 17.77
+- Qualcomm X Elite Oryon on Windows: 16.66
 
 ## SPEC INT 2006 Speed
 
