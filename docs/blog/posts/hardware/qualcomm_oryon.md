@@ -37,6 +37,10 @@ categories:
 
 下面分各个模块分别记录官方提供的信息，以及实测的结果。读者可以对照已有的第三方评测理解。
 
+## Benchmark
+
+Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark.md)。
+
 ## 前端
 
 ### 取指

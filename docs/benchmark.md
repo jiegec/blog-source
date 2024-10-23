@@ -38,7 +38,7 @@ permalink: /benchmark/
 
 SPEC INT 2017 Rate-1 结果受 `-flto` 影响很明显。
 
-Qualcomm X1E80100 上，负载不一定会调度到有 Boost 的核上，因此需要手动绑核。没有 Boost 的核心会跑在 3.4 GHz，Boost 的核心最高可以达到 4.3 GHz，平均下来也能达到 4.0 GHz。
+Qualcomm X1E80100 上，负载不一定会调度到有 Boost 的核上，因此需要手动绑核。没有 Boost 的核心会跑在 3.4 GHz，Boost 的核心最高可以达到 4.0 GHz。
 
 ### 网上的数据
 
