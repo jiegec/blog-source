@@ -115,7 +115,7 @@ def plot_perf(flavor, file_name, key, display):
         # average
         y_data.insert(0, round(mean(y_data), 2))
         rects = ax.barh(x_data, y_data, width, label=name)
-        ax.bar_label(rects, labels=[f"{y:.2f} {name}" for y in y_data], padding=3)
+        ax.bar_label(rects, labels=[f"{y:.3g} {name}" for y in y_data], padding=3)
         max_value = max(max_value, *y_data)
 
     ax.set_xlim(0, max_value * 2.0)
