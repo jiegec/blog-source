@@ -168,7 +168,7 @@ for i in $(seq 0 31); do sudo turbostat -c $i -n 1 2 --interval 1 2>&1 | grep MS
 2. 设置 `prefcore_ranking` 为 `highest_perf`: [`WRITE_ONCE(cpudata->prefcore_ranking, cppc_perf.highest_perf)`](https://github.com/torvalds/linux/blob/c2ee9f594da826bea183ed14f2cc029c719bf4da/drivers/cpufreq/amd-pstate.c#L402)
 3. 运行过程中，如果发现 `highest_perf` 出现变化，也更新到调度器的优先级当中：[`sched_set_itmt_core_prio((int)cur_high, cpu);`](https://github.com/torvalds/linux/blob/master/drivers/cpufreq/amd-pstate.c#L822)
 
-剩下的就和 Intel 一样了。至于为什么调度器轮流从两个 CCD 取优先级最高的核心调度，应该是调度器考虑了这些核心的拓扑，进行了负载均衡，尽量保证每个 CCD 上的负载相当。
+剩下的就和 Intel 一样了。至于为什么调度器轮流从两个 CCD 取优先级最高的核心调度，应该是调度器考虑了这些核心的拓扑，进行了负载均衡，尽量保证每个 CCD 上的负载相当。这样的设计在 9950X 这种对称的架构上没啥问题，但如果是 Strix Point 这种混合 Zen5 和 Zen5c 的情况，如果还像这样，就会在 Zen5 和 Zen5c 之间来回调度，这样就不太合适了：应该先调度 Zen5，再调度 Zen5c。完整的讨论见 [谈谈 Linux 与 ITMT 调度器与多簇处理器](https://blog.hjc.im/thoughts-on-linux-preferred-cores-and-multi-ccx.html)。
 
 而我们知道 Linux 的 cpufreq 设置了不同的 governor，例如 performance 和 powersave。那么它们是怎么映射到 Min/Max/Desired Perf 的呢？通过阅读代码，可以发现：
 
