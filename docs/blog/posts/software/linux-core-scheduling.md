@@ -148,7 +148,7 @@ for i in $(seq 0 31); do sudo turbostat -c $i -n 1 2 --interval 1 2>&1 | grep MS
 
 ### ACPI CPPC
 
-接下来，查看 ACPI 的 CPPC 信息保存了什么。[CPPC](https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html?highlight=cppc#collaborative-processor-performance-control) 全称是 Collaborative Processor Performance Control，是对已有的 P State 的改进，原来的 P State 是分立的几个配置，可选项比较少，CPPC 对性能做了抽象，每个核心可以有 Highest Performance，Nominal Performance，Lowest Nonlinear Performance 和 Lowest Performance 这几个值，性能可以在这些值之间浮动。简单来说，Highest 对应单核 Boost 到的最高性能，Nominal 对应全核能达到的性能，Lowest 对应最低频下的性能，Lowest Nonlinear 代表性能功耗比线性的界限，往下性能核功耗是线性的，往上性能功耗比会下降。OS 可以设定想要的性能范围：Minimum 和 Maximum Perf，也可以指定一个想要的性能 Desired Performance。当然了，硬件也不一定能够达到 Highest Perf，当前能保证达到的最高性能叫做 Guaranteed Perf。此外还有 Energy Performance Preference (EPP)，OS 告诉硬件，我想要能效还是性能。
+接下来，查看 ACPI 的 CPPC 信息保存了什么。[CPPC](https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html?highlight=cppc#collaborative-processor-performance-control) 全称是 Collaborative Processor Performance Control，是对已有的 P State 的改进，原来的 P State 是分立的几个配置，可选项比较少，CPPC 对性能做了抽象，每个核心可以有 Highest Performance，Nominal Performance，Lowest Nonlinear Performance 和 Lowest Performance 这几个值，性能可以在这些值之间浮动。简单来说，Highest 对应单核 Boost 到的最高性能，Nominal 对应全核能达到的性能，Lowest 对应最低频下的性能，Lowest Nonlinear 代表性能功耗比线性的界限，往下性能核功耗是线性的，往上性能功耗比会下降。OS 可以设定想要的性能范围：Minimum 和 Maximum Perf，也可以指定一个想要的性能 Desired Performance。当然了，硬件也不一定能够达到 Highest Perf，当前能保证达到的最高性能叫做 Guaranteed Perf。此外还有 Energy Performance Preference (EPP)，OS 告诉硬件，我想要能效还是性能，最小的 0 表示性能，最大的 255 表示能效。
 
 简单来说，硬件告诉 OS 五个值：Highest Perf，Nominal Perf，Lowest Nonlinear Perf，Lowest Perf 和 Guaranteed Perf，OS 通过三个值告诉硬件，我想要什么样的性能：Min Perf，Max Perf，Desired Perf，以及性能和功耗哪个更看重：EPP。
 
@@ -159,6 +159,8 @@ for i in $(seq 0 31); do sudo turbostat -c $i -n 1 2 --interval 1 2>&1 | grep MS
 ![](linux-core-scheduling-cppc-1.png)
 
 ![](linux-core-scheduling-cppc-2.png)
+
+在更早的 AMD 处理器中，没有这些 MSR，而是通过 MMIO 来控制，这些信息记录在 ACPI CPPC 当中。
 
 通过比对 `/sys/devices/system/cpu/cpu*/acpi_cppc/highest_perf` 和 `/sys/devices/system/cpu/cpu*/cpufreq/amd_pstate_prefcore_ranking`，我们会发现它们是一样的，说明 amd-pstate 驱动做的事情和 itmt 类似，根据 ACPI 的 Highest Perf 信息（或者从 MSR 0xC001_02B0 读出 Highest Perf），设置 Preferred Core Ranking 以及调度器的优先级。阅读代码，可以看到它确实是这么做的：
 
@@ -177,10 +179,20 @@ for i in $(seq 0 31); do sudo turbostat -c $i -n 1 2 --interval 1 2>&1 | grep MS
 
 下面给出几个例子，其中 Highest Perf 为 166，Nominal Perf 为 124，Lowest Perf 为 18：
 
-1. performance + boost=1：Min = 166, Max = 166
+1. performance + boost=1: Min = 166, Max = 166
 2. performance + boost=0: Min = 124, Max = 124
-3. powersave + boost=1：Min = 18, Max = 166
+3. powersave + boost=1: Min = 18, Max = 166
 4. powersave + boost=0: Min = 18, Max = 124
+
+而其他由 Linux 实现变频的 governor：schedutil 和 ondemand，会通过 Desired Perf 来实现。
+
+amd-pstate 支持三个[运行模式](https://www.phoronix.com/news/AMD-P-State-Guided-Auto)：
+
+1. active(默认): 软件就设置一下要性能还是能耗（通过 performance/powersave governor 和 EPP `/sys/devices/system/cpu/cpufreq/policy0/energy_performance_preference`），其他的都交给硬件自动调整
+2. guided：软件设置一个最低和最高的性能，其他都交给硬件
+3. passive：软件来负责调频，结果通过 Desired Perf 告诉硬件
+
+这里说的 active 和 passive 是从硬件的角度出发的，而不是 OS。
 
 ### Qualcomm
 
