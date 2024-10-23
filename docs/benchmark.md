@@ -447,10 +447,10 @@ default=base:         # flags for all base
    OPTIMIZE       = -O3
 %endif
 %if %{native} eq "1"
-   OPTIMIZE       = -march=native
+   OPTIMIZE       += -march=native
 %endif
 %if %{lto} eq "1"
-   OPTIMIZE       = -flto
+   OPTIMIZE       += -flto
 %endif
    # -std=c++13 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
    CXXOPTIMIZE    = -std=c++03
