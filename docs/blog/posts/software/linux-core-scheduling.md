@@ -148,7 +148,9 @@ for i in $(seq 0 31); do sudo turbostat -c $i -n 1 2 --interval 1 2>&1 | grep MS
 
 ### ACPI CPPC
 
-接下来，查看 ACPI 的 CPPC 信息保存了什么。[CPPC](https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html?highlight=cppc#collaborative-processor-performance-control) 全称是 Collaborative Processor Performance Control，是对已有的 P State 的改进，原来的 P State 是分立的几个配置，可选项比较少，CPPC 对性能做了抽象，每个核心可以有 Highest Performance，Nominal Performance，Lowest Nonlinear Performance 和 Lowest Performance 这几个值，性能可以在这些值之间浮动。简单来说，Highest 对应单核 Boost 到的最高性能，Nominal 对应全核能达到的性能，Lowest 对应最低频下的性能，Lowest Nonlinear 代表性能功耗比线性的界限，往下性能核功耗是线性的，往上性能功耗比会下降。OS 可以设定想要的性能范围：Minimum 和 Maximum Perf，也可以指定一个想要的性能 Desired Performance。当然了，硬件也不一定能够达到 Highest Perf，当前能保证达到的最高性能叫做 Guaranteed Perf。
+接下来，查看 ACPI 的 CPPC 信息保存了什么。[CPPC](https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html?highlight=cppc#collaborative-processor-performance-control) 全称是 Collaborative Processor Performance Control，是对已有的 P State 的改进，原来的 P State 是分立的几个配置，可选项比较少，CPPC 对性能做了抽象，每个核心可以有 Highest Performance，Nominal Performance，Lowest Nonlinear Performance 和 Lowest Performance 这几个值，性能可以在这些值之间浮动。简单来说，Highest 对应单核 Boost 到的最高性能，Nominal 对应全核能达到的性能，Lowest 对应最低频下的性能，Lowest Nonlinear 代表性能功耗比线性的界限，往下性能核功耗是线性的，往上性能功耗比会下降。OS 可以设定想要的性能范围：Minimum 和 Maximum Perf，也可以指定一个想要的性能 Desired Performance。当然了，硬件也不一定能够达到 Highest Perf，当前能保证达到的最高性能叫做 Guaranteed Perf。此外还有 Energy Performance Preference (EPP)，OS 告诉硬件，我想要能效还是性能。
+
+简单来说，硬件告诉 OS 五个值：Highest Perf，Nominal Perf，Lowest Nonlinear Perf，Lowest Perf 和 Guaranteed Perf，OS 通过三个值告诉硬件，我想要什么样的性能：Min Perf，Max Perf，Desired Perf，以及性能和功耗哪个更看重：EPP。
 
 ### AMD CPPC
 
@@ -165,6 +167,20 @@ for i in $(seq 0 31); do sudo turbostat -c $i -n 1 2 --interval 1 2>&1 | grep MS
 3. 运行过程中，如果发现 `highest_perf` 出现变化，也更新到调度器的优先级当中：[`sched_set_itmt_core_prio((int)cur_high, cpu);`](https://github.com/torvalds/linux/blob/master/drivers/cpufreq/amd-pstate.c#L822)
 
 剩下的就和 Intel 一样了。至于为什么调度器轮流从两个 CCD 取优先级最高的核心调度，应该是调度器考虑了这些核心的拓扑，进行了负载均衡，尽量保证每个 CCD 上的负载相当。
+
+而我们知道 Linux 的 cpufreq 设置了不同的 governor，例如 performance 和 powersave。那么它们是怎么映射到 Min/Max/Desired Perf 的呢？通过阅读代码，可以发现：
+
+1. powersave 对应的配置是：Min Perf 设置为 Lowest/Lowest Nonlinear Perf，Max Perf 设置为 Highest/Nominal Perf
+2. performance 对应的配置是：Min Perf 和 Max Perf 都设置为 Highest/Nominal Perf
+
+如果启用 boost（`echo 1 > /sys/devices/system/cpu/cpufreq/policy0/boost`），那就把 Max Perf 设置到 Highest Perf；如果不启用 Boost，就设置到 Nominal Perf。
+
+下面给出几个例子，其中 Highest Perf 为 166，Nominal Perf 为 124，Lowest Perf 为 18：
+
+1. performance + boost=1：Min = 166, Max = 166
+2. performance + boost=0: Min = 124, Max = 124
+3. powersave + boost=1：Min = 18, Max = 166
+4. powersave + boost=0: Min = 18, Max = 124
 
 ### Qualcomm
 
