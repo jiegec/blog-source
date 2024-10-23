@@ -27,7 +27,7 @@ permalink: /benchmark/
 - AMD Ryzen 9 9950X Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
 - Intel Core i9-14900K Raptor Lake（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt)
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_003.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_004.txt)
-- AMD Ryzen 9 9950X Zen 5（`-O3`）: [10.8](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [10.9](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt) [10.9](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_003.txt) [11.0](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_004.txt)
+- AMD Ryzen 9 9950X Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-12900KS Alder Lake（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [9.60](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_002.txt) [9.54](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_003.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [8.73](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
