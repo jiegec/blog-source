@@ -94,13 +94,13 @@ def plot_score(flavor):
 
 def plot_perf(flavor, file_name, key, display):
     # plot perf data
-    plt.cla()
-    _, ax = plt.subplots(figsize=(5, 21))
-
     names = []
     for name in data:
         if f"{benchmarks[0]}/{key}" in data[name]:
             names.append(name)
+
+    plt.cla()
+    _, ax = plt.subplots(figsize=(6, len(names) * 3))
 
     names = sorted(names)
     width = 1 / (len(names) + 1)
@@ -115,15 +115,14 @@ def plot_perf(flavor, file_name, key, display):
         # average
         y_data.insert(0, round(mean(y_data), 2))
         rects = ax.barh(x_data, y_data, width, label=name)
-        ax.bar_label(rects, padding=3)
+        ax.bar_label(rects, labels=[f"{y:.2f} {name}" for y in y_data], padding=3)
         max_value = max(max_value, *y_data)
 
-    ax.set_xlim(0, max_value * 1.5)
+    ax.set_xlim(0, max_value * 2.0)
     ax.set_yticks(
         np.arange(len(benchmarks) + 2) + width * (len(names) - 1) / 2,
         ["average", "geomean"] + list(reversed(benchmarks)),
     )
-    ax.legend()
     ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated {display}")
     plt.savefig(f"{flavor}2017_rate1_{file_name}.svg", bbox_inches="tight")
 
