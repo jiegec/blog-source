@@ -60,7 +60,7 @@ def parse_data(flavor):
             if found_delim and "*" in line:
                 benchmark = parts[0]
                 ratio = float(parts[3])
-                data[name][benchmark].append(ratio)
+                data[name][f"{benchmark}/ratio"].append(ratio)
             if found_delim and f"SPECrate(R)2017_{flavor}_base" in line:
                 ratio = float(parts[-1])
                 data[name]["all"].append(ratio)
@@ -140,3 +140,4 @@ for flavor in ["int", "fp"]:
     plot_perf(flavor, "mispred", "misprediction", "Branch Misprediction Rate (%)")
     plot_perf(flavor, "freq", "clock", "Clock Freq (MHz)")
     plot_perf(flavor, "inst", "instructions", "Instructions")
+    plot_perf(flavor, "ratio", "ratio", "Ratio")
