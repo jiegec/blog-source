@@ -34,7 +34,7 @@ permalink: /benchmark/
 - Qualcomm X1E80100 Boost @ 4.0 GHz X Elite（`-O3`）: [8.60](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - Qualcomm X1E80100 Non-boost @ 3.4 GHz X Elite（`-O3`）: [7.56](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.25](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt) [6.17](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_002.txt) [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_003.txt)
-- Intel Xeon Platinum 8358P Ice Lake（`-O3`）: [5.59](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt) [4.66](./data/int2017_rate1/AMD_EPYC_7742_O3_002.txt) [4.67](./data/int2017_rate1/AMD_EPYC_7742_O3_003.txt)
 - Intel Xeon E5-2680 v4 Broadwell（`-O3`）: [4.02](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt) [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_002.txt)
 - Intel Xeon E5-2680 v3 Haswell（`-O3`）: [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
