@@ -25,11 +25,11 @@ permalink: /benchmark/
 ![](./data/int2017_rate1_freq.svg)
 
 - AMD Ryzen 9 9950X Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
-- Intel Core i9-14900K Raptor Lake（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
-- Intel Core i9-14900K Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_003.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_004.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_003.txt) [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_004.txt)
 - AMD Ryzen 9 9950X Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
-- Intel Core i9-12900KS Alder Lake（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
-- Intel Core i9-12900KS Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [9.60](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_002.txt) [9.54](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_003.txt)
+- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
+- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [9.64](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [9.60](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_002.txt) [9.54](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_003.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [8.73](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - Qualcomm X1E80100 Boost @ 4.0 GHz X Elite（`-O3`）: [8.60](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - Qualcomm X1E80100 Non-boost @ 3.4 GHz X Elite（`-O3`）: [7.56](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt)
@@ -38,7 +38,7 @@ permalink: /benchmark/
 - AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt) [4.66](./data/int2017_rate1/AMD_EPYC_7742_O3_002.txt) [4.67](./data/int2017_rate1/AMD_EPYC_7742_O3_003.txt)
 - Intel Xeon E5-2680 v4 Broadwell（`-O3`）: [4.02](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt) [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_002.txt)
 - Intel Xeon E5-2680 v3 Haswell（`-O3`）: [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
-- Kunpeng 920 TaiShan V110（`-O3`）: [3.08](./data/int2017_rate1/Kunpeng-920_O3_001.txt) [3.17](./data/int2017_rate1/Kunpeng-920_O3_002.txt) [3.18](./data/int2017_rate1/Kunpeng-920_O3_003.txt)
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.08](./data/int2017_rate1/Kunpeng-920_O3_001.txt) [3.17](./data/int2017_rate1/Kunpeng-920_O3_002.txt) [3.18](./data/int2017_rate1/Kunpeng-920_O3_003.txt)
 - AMD EPYC 7551 Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt) [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_002.txt)
 
 注：
@@ -46,7 +46,7 @@ permalink: /benchmark/
 1. SPEC INT 2017 Rate-1 结果受 `-flto` 影响很明显。
 2. 在部分处理器上，Linux 不能保证程序被调度到性能最高的核心上，例如：
       1. Qualcomm X1E80100 上，负载不一定会调度到有 Boost 的核上，因此需要手动绑核。没有 Boost 的核心会跑在 3.4 GHz，Boost 的核心最高可以达到 4.0 GHz，对应 14% 的性能提升。具体地讲，它有三个 Cluster，0-3 是没有 Boost 的 Cluster，4-7 和 8-11 每个 Cluster 中可以有一个核心 Boost 到 4.0 GHz，也就是说，最多有两个核达到 4.0 GHz，这两个核需要分别位于 4-7 和 8-11 两个 Cluster 当中。如果一个 Cluster 有两个或者以上的核有负载，那么他们都只有 3.4 GHz。
-      2. AMD Ryzen 9 9950X 不同核能够达到的最大频率不同，目前 Linux（6.11）的调度算法不一定可以保证跑到最大频率 5.75 GHz 上，可能会飘到频率低一些（5.45 GHz 左右）的核心上，因此需要绑核心，详见 [Linux 大小核的调度算法探究](./blog/posts/software/linux-core-scheduling.md) 以及 [谈谈 Linux 与 ITMT 调度器与多簇处理器](https://blog.hjc.im/thoughts-on-linux-preferred-cores-and-multi-ccx.html)。
+      2. AMD Ryzen 9 9950X 不同核能够达到的最大频率不同，目前 Linux（6.11）的调度算法不一定可以保证跑到最大频率 5.75 GHz 上，可能会飘到频率低一些（5.45 GHz 左右）的核心上，损失 4% 的性能，因此需要绑核心，详见 [Linux 大小核的调度算法探究](./blog/posts/software/linux-core-scheduling.md) 以及 [谈谈 Linux 与 ITMT 调度器与多簇处理器](https://blog.hjc.im/thoughts-on-linux-preferred-cores-and-multi-ccx.html)。
 3. 对于服务器 CPU，默认设置可能没有打开 C6 State，此时单核不一定能 Boost 到宣称的最高频率，需要进 BIOS 打开 C6 State，使得空闲的核心进入低功耗模式，才能发挥出最高的 Boost 频率。
 
 ### 网上的数据
