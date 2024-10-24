@@ -98,13 +98,16 @@ def plot_score_per_ghz(flavor):
         if f"{benchmarks[0]}/clock" in data[name]:
             names.append(name)
 
-    x_data = sorted(names, key=lambda x: mean(data[x]["all"]))
+    x_data = names
     y_data = []
     for x in x_data:
         freq = []
         for bench in benchmarks:
             freq.append(mean(data[x][f"{bench}/clock"]) / 1000)
         y_data.append(mean(data[x]["all"]) / mean(freq))
+
+    # sort by y: https://stackoverflow.com/a/9764364/2148614
+    y_data, x_data = (list (t) for t in zip(*sorted(zip(y_data, x_data))))
 
     plt.cla()
     _, ax = plt.subplots()
