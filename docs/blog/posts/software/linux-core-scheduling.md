@@ -53,6 +53,8 @@ $ cat /sys/devices/system/cpu/cpufreq/policy12/scaling_max_freq
 
 可以看到，官方宣传的最高 Turbo 频率是 6 GHz，但实际上只有两个 P 核可以达到。
 
+但并非所有平台在默认情况下都能达到宣称的最高频率的。例如在 Dell R730 上，Xeon E5-2680 v4 默认情况下只能达到 2.9 GHz 的 Boost 频率，但按照 Intel 官网，这个 CPU 的 Boost 最高可以达到 3.3 GHz。当然了，2.9 GHz 是全核能够达到的 Boost，3.3 GHz 只能少数的核达到，而服务器场景下，大多时间是跑多核负载，限制到 2.9 GHz 也可以理解。如果想要 3.3 GHz，就需要进 BIOS 设置，把调频交给 OS，C-State 也全部放开，这样就可以实现 3.3 GHz 了。
+
 ### AMD
 
 在 AMD Ryzen 9 9950X 上进行类似的实验，这个 CPU 有 16 个核，0 核和 16 核对应一个物理核，其他依此类推，0-7 是一个 CCD，8-15 是另一个 CCD，得到的结果如下：
