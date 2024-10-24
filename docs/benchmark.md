@@ -35,7 +35,7 @@ permalink: /benchmark/
 - Qualcomm X1E80100 Non-boost @ 3.4 GHz X Elite（`-O3`）: [7.56](./data/int2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.25](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt) [6.17](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_002.txt) [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_003.txt)
 - Intel Xeon Platinum 8358P Ice Lake（`-O3`）: [5.59](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
-- AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt) [4.66](./data/int2017_rate1/AMD_EPYC_7742_O3_002.txt)
+- AMD EPYC 7742 Zen 2（`-O3`）: [4.79](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt) [4.66](./data/int2017_rate1/AMD_EPYC_7742_O3_002.txt) [4.67](./data/int2017_rate1/AMD_EPYC_7742_O3_003.txt)
 - Intel Xeon E5-2680 v4 Broadwell（`-O3`）: [4.02](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Kunpeng 920 TaiShan V110（`-O3`）: [3.08](./data/int2017_rate1/Kunpeng-920_O3_001.txt) [3.17](./data/int2017_rate1/Kunpeng-920_O3_002.txt) [3.18](./data/int2017_rate1/Kunpeng-920_O3_003.txt)
 - AMD EPYC 7551 Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt) [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_002.txt)
@@ -131,10 +131,10 @@ AMD Ryzen 9 9950X 不同核能够达到的最大频率不同，目前 Linux（6.
 
 ![](./data/fp2017_rate1_freq.svg)
 
-- AMD Ryzen 9 9950X Zen 5（`-O3 -march=native`）: [17.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
+- AMD Ryzen 9 9950X Zen 5（`-O3 -march=native`）: [17.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
 - Intel Core i9-14900K Raptor Lake（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
+- AMD Ryzen 9 9950X Zen 5（`-O3`）: [16.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_003.txt)
-- AMD Ryzen 9 9950X Zen 5（`-O3`）: [15.8](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [14.1](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_002.txt)
 - Qualcomm X1E80100 X Elite（`-O3`）: [13.2](./data/fp2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
