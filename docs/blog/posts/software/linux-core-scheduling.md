@@ -95,7 +95,29 @@ $ cat /sys/devices/system/cpu/cpufreq/policy12/scaling_max_freq
 7. 找第一个 CCD 分数第四高的核：3
 8. 找第二个 CCD 分数第四高的核：10
 
-说明它的逻辑是，轮流从两个 CCD 中取出一个分数尽量高的核去分配负载。
+说明它的逻辑是，轮流从两个 CCD 中取出一个分数尽量高的核去分配负载。实际测下来，分数高的核也确实能够 Boost 到更高的频率：
+
+```shell
+$ for i in $(seq 0 15); do echo -n "$i:" && numactl -C $i perf stat -e cycles,task-clock stress --cpu 1 --timeout 1s 2>&1 | grep GHz && sleep 1; done
+0:     5,700,258,748      cycles:u                         #    5.717 GHz
+1:     5,642,814,521      cycles:u                         #    5.659 GHz
+2:     5,648,004,395      cycles:u                         #    5.665 GHz
+3:     5,663,175,321      cycles:u                         #    5.680 GHz
+4:     5,687,251,660      cycles:u                         #    5.704 GHz
+5:     5,667,947,179      cycles:u                         #    5.685 GHz
+6:     5,595,919,881      cycles:u                         #    5.613 GHz
+7:     5,599,885,078      cycles:u                         #    5.617 GHz
+8:     5,424,861,894      cycles:u                         #    5.441 GHz
+9:     5,427,318,403      cycles:u                         #    5.443 GHz
+10:     5,422,689,654      cycles:u                         #    5.439 GHz
+11:     5,425,760,950      cycles:u                         #    5.442 GHz
+12:     5,418,583,254      cycles:u                         #    5.435 GHz
+13:     5,425,842,189      cycles:u                         #    5.442 GHz
+14:     5,375,985,781      cycles:u                         #    5.392 GHz
+15:     5,377,887,646      cycles:u                         #    5.394 GHz
+```
+
+分数高的可以冲到 5.7 GHz，分数低一些的就只能到 5.4 GHz 了。
 
 ### Qualcomm
 
