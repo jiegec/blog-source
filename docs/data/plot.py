@@ -91,6 +91,32 @@ def plot_score(flavor):
     ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated Score")
     plt.savefig(f"{flavor}2017_rate1_score.svg", bbox_inches="tight")
 
+def plot_score_per_ghz(flavor):
+    # plot score per ghz data
+    names = []
+    for name in data:
+        if f"{benchmarks[0]}/clock" in data[name]:
+            names.append(name)
+
+    x_data = sorted(names, key=lambda x: mean(data[x]["all"]))
+    y_data = []
+    for x in x_data:
+        freq = []
+        for bench in benchmarks:
+            freq.append(mean(data[x][f"{bench}/clock"]) / 1000)
+        y_data.append(mean(data[x]["all"]) / mean(freq))
+
+    plt.cla()
+    _, ax = plt.subplots()
+
+    for x, y in enumerate(y_data):
+        ax.text(y, x, f"{y:.2f}")
+
+    ax.set_xlim(0, max(y_data) * 1.5)
+    ax.barh(x_data, y_data)
+    ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated Score/GHz")
+    plt.savefig(f"{flavor}2017_rate1_score_per_ghz.svg", bbox_inches="tight")
+
 
 def plot_perf(flavor, file_name, key, display):
     # plot perf data
@@ -135,6 +161,7 @@ for flavor in ["int", "fp"]:
         benchmarks = benchmarks_fp_rate
     parse_data(flavor)
     plot_score(flavor)
+    plot_score_per_ghz(flavor)
     plot_perf(flavor, "mpki", "mpki", "MPKI")
     plot_perf(flavor, "ipc", "ipc", "IPC")
     plot_perf(flavor, "mispred", "misprediction", "Branch Misprediction Rate (%)")

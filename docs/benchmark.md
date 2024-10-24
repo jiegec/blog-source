@@ -14,6 +14,8 @@ permalink: /benchmark/
 
 ![](./data/int2017_rate1_score.svg)
 
+![](./data/int2017_rate1_score_per_ghz.svg)
+
 ![](./data/int2017_rate1_ratio.svg)
 
 ![](./data/int2017_rate1_mpki.svg)
@@ -39,7 +41,7 @@ permalink: /benchmark/
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [4.35](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon E5-2680 v3 @ 3.0 GHz Haswell（`-O3`）: [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.18](./data/int2017_rate1/Kunpeng-920_O3_001.txt)
-- AMD EPYC 7551 Zen 1 @ 2.5 GHz（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
 
 注：
 
@@ -123,6 +125,8 @@ permalink: /benchmark/
 运行时间基本和分数成反比，乘积按 1e5 估算。
 
 ![](./data/fp2017_rate1_score.svg)
+
+![](./data/fp2017_rate1_score_per_ghz.svg)
 
 ![](./data/fp2017_rate1_ratio.svg)
 
