@@ -138,10 +138,10 @@ permalink: /benchmark/
 
 ![](./data/fp2017_rate1_freq.svg)
 
-- AMD Ryzen 9 9950X Zen 5（`-O3 -march=native`）: [17.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
-- Intel Core i9-14900K Raptor Lake（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
-- AMD Ryzen 9 9950X Zen 5（`-O3`）: [16.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
-- Intel Core i9-14900K Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_003.txt)
+- AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -march=native`）: [17.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
+- AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [16.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_003.txt)
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [14.1](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_002.txt)
 - Qualcomm X1E80100 X Elite（`-O3`）: [13.2](./data/fp2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
@@ -149,7 +149,7 @@ permalink: /benchmark/
 - AMD EPYC 7742 Zen 2（`-O3`）: [7.14](./data/fp2017_rate1/AMD_EPYC_7742_O3_001.txt) [7.14](./data/fp2017_rate1/AMD_EPYC_7742_O3_002.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [7.12](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.92](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt) [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_002.txt) [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_003.txt)
-- Intel Xeon E5-2680 v4 Broadwell（`-O3`）: [4.96](./data/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
+- Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [5.44](./data/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - AMD EPYC 7551 Zen 1（`-O3`）: [4.05](./data/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - Kunpeng 920 TaiShan V110（`-O3`）: [3.21](./data/fp2017_rate1/Kunpeng-920_O3_001.txt)
 
