@@ -52,6 +52,15 @@ permalink: /benchmark/
       2. AMD Ryzen 9 9950X 不同核能够达到的最大频率不同，目前 Linux（6.11）的调度算法不一定可以保证跑到最大频率 5.75 GHz 上，可能会飘到频率低一些（5.45 GHz 左右）的核心上，损失 4% 的性能，因此需要绑核心，详见 [Linux 大小核的调度算法探究](./blog/posts/software/linux-core-scheduling.md) 以及 [谈谈 Linux 与 ITMT 调度器与多簇处理器](https://blog.hjc.im/thoughts-on-linux-preferred-cores-and-multi-ccx.html)。
 3. 对于服务器 CPU，默认设置可能没有打开 C6 State，此时单核不一定能 Boost 到宣称的最高频率，需要进 BIOS 打开 C6 State，使得空闲的核心进入低功耗模式，才能发挥出最高的 Boost 频率。
 
+x86 平台的分支预测准确率由高到低：
+
+1. Zen 5(9950X): MPKI=4.33
+2. Zen 2(7752): MPKI=4.62
+3. Ice Lake(8358P)/Alder Lake(12900KS)/Raptor Lake(14900K): MPKI=4.71
+4. Skylake(D-2146NT)/Cascade Lake(10980XE): MPKI=5.34
+5. Zen 1(7551): MPKI=5.72
+6. Haswell(E5-2680 v3)/Broadwell(E5-2680 v4): MPKI=5.81
+
 ### 网上的数据
 
 [SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
