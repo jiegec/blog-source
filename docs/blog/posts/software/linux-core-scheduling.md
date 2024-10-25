@@ -224,7 +224,7 @@ amd-pstate 支持三个[运行模式](https://www.phoronix.com/news/AMD-P-State-
 
 arm64 架构没有实现 arch_asym_cpu_priority 函数，因此用的不是上述 Intel/AMD 的机制，而是在 Device Tree 中用 [capacity-dmips-mhz](https://www.kernel.org/doc/Documentation/devicetree/bindings/arm/cpu-capacity.txt) 标记每个核心的性能，但是 X Elite 的 DTS 没有记录这个信息，因此 Linux 内核也就无法合理地调度了。因此一个可能的解决办法是，给后两个 Cluster 的一个核设置更高的 capacity-dmips-mhz，其他的核心都设置成一样。但其实通常来说，对于同一个核来说，提高频率以后，DMIPS/MHz 反而是下降的，内核用 DMIPS/MHz 这个指标，主要是用来区分大小核，而不是用来判断有没有 Boost。
 
-实际尝试了一下，给 4 和 8 这两个核标记更高的 capacity-dmips-mhz，现在跑单核或双核负载可以自动跑到 4.0 GHz 上了。表现在 Geekbench 6 上，就是单核性能 2452 分到 2892 分的区别。 
+实际尝试了一下，给 4 和 8 这两个核标记更高的 capacity-dmips-mhz，现在跑单核或双核负载可以自动跑到 4.0 GHz 上了。表现在 Geekbench 6 上，就是单核性能 2452 分到 2892 分的区别。修改的内容已经提交：[[PATCH] arm64: dts: qcom: x1e80100: Add performance hint for boost clock](https://lore.kernel.org/lkml/20241025031257.6284-2-c@jia.je/)，不过合并的概率不大，毕竟不是什么优雅的解决办法。
 
 ## 小结
 
