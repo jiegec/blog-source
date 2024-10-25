@@ -152,7 +152,7 @@ x86 平台的分支预测准确率（Average）由高到低：
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [16.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_002.txt) [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_003.txt)
-- Intel Core i9-12900KS Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [14.1](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_002.txt)
+- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [14.2](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt) [14.1](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_002.txt) [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_003.txt)
 - Qualcomm X1E80100 X Elite（`-O3`）: [13.2](./data/fp2017_rate1/Qualcom_X1E80100_O3_001.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
