@@ -55,7 +55,7 @@ permalink: /benchmark/
 x86 平台的分支预测准确率由高到低：
 
 1. Zen 5(9950X): MPKI=4.33
-2. Zen 2(7752): MPKI=4.62
+2. Zen 2(7742): MPKI=4.62
 3. Ice Lake(8358P)/Alder Lake(12900KS)/Raptor Lake(14900K): MPKI=4.71
 4. Skylake(D-2146NT)/Cascade Lake(10980XE): MPKI=5.34
 5. Zen 1(7551): MPKI=5.72
