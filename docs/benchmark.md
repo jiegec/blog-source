@@ -525,6 +525,13 @@ cd /mnt && . ./shrc && runcpu intspeed
 ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 ```
 
+## 浮点峰值性能
+
+- Intel Skylake/Ice Lake: 32 DP FLOP/cycle w/ AVX512F
+- AMD Zen 2: 16 DP FLOP/cycle w/ FMA
+- Intel Haswell/Broadwell: 16 DP FLOP/cycle w/ FMA
+- AMD Zen 1: 8 DP FLOP/cycle w/ FMA
+
 ## 固定频率方法
 
 可以尝试用 cpupower frequency-set 来固定频率，但是一些平台不支持，还可能有 Linux 内无法关闭的 Boost。设置频率后，用 `cpupower frequency-info` 验证：`current CPU frequency: 4.29 GHz (asserted by call to kernel)` 是否和预期频率一致并且不变。
