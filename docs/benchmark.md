@@ -527,10 +527,15 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 浮点峰值性能
 
-- Intel Skylake/Ice Lake: 32 DP FLOP/cycle w/ AVX512F
-- AMD Zen 2: 16 DP FLOP/cycle w/ FMA
-- Intel Haswell/Broadwell: 16 DP FLOP/cycle w/ FMA
-- AMD Zen 1: 8 DP FLOP/cycle w/ FMA
+| 微架构            | DP FLOP/cycle | SP FLOP/cycle | 指令集  |
+|-------------------|---------------|---------------|---------|
+| Skylake/Ice Lake  | 32            | 64            | AVX512F |
+| Golden Cove       | 16            | 32            | FMA     |
+| Zen 2/3           | 16            | 32            | FMA     |
+| Haswell/Broadwell | 16            | 32            | FMA     |
+| Gracemont         | 8             | 16            | FMA     |
+| Zen 1             | 8             | 16            | FMA     |
+| TSV110            | 4             | 16            | ASIMD   |
 
 ## 固定频率方法
 
