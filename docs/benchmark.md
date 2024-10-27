@@ -527,15 +527,15 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 浮点峰值性能
 
-| uArch                         | DP FLOP/cycle | SP FLOP/cycle | ISA     |
-|-------------------------------|---------------|---------------|---------|
-| Skylake/Ice Lake/Cascade Lake | 32            | 64            | AVX512F |
-| Golden Cove                   | 16            | 32            | FMA     |
-| Zen 2/3                       | 16            | 32            | FMA     |
-| Haswell/Broadwell             | 16            | 32            | FMA     |
-| Gracemont                     | 8             | 16            | FMA     |
-| Zen 1                         | 8             | 16            | FMA     |
-| TSV110                        | 4             | 16            | ASIMD   |
+| uArch              | DP FLOP/cycle | SP FLOP/cycle | ISA     |
+|--------------------|---------------|---------------|---------|
+| Skylake/Sunny Cove | 32            | 64            | AVX512F |
+| Golden Cove        | 16            | 32            | FMA     |
+| Zen 2/3            | 16            | 32            | FMA     |
+| Haswell/Broadwell  | 16            | 32            | FMA     |
+| Gracemont          | 8             | 16            | FMA     |
+| Zen 1              | 8             | 16            | FMA     |
+| TSV110             | 4             | 16            | ASIMD   |
 
 ## 固定频率方法
 
