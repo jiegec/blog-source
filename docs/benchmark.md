@@ -165,7 +165,7 @@ x86 平台的分支预测准确率（Average）由高到低：
 - Intel Xeon E5-2680 v3 @ 3.3 GHz Haswell（`-O3`）: [5.15](./data/fp2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [5.00](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
 - AMD EPYC 7551 Zen 1（`-O3`）: [4.05](./data/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
-- Kunpeng 920 TaiShan V110（`-O3`）: [3.21](./data/fp2017_rate1/Kunpeng-920_O3_001.txt)
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.20](./data/fp2017_rate1/Kunpeng-920_O3_001.txt)
 
 SPEC FP 2017 Rate-1 结果受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。
 
