@@ -536,6 +536,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 | Haswell/Broadwell  | 16            | 32            | FMA     |
 | Oryon              | 16            | 32            | ASIMD   |
 | Firestorm          | 16            | 32            | ASIMD   |
+| LA464/LA664        | 16            | 32            | LASX    |
 | Gracemont          | 8             | 16            | FMA     |
 | Zen 1              | 8             | 16            | FMA     |
 | TSV110             | 4             | 16            | ASIMD   |
