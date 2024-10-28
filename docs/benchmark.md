@@ -529,9 +529,10 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 | uArch              | DP FLOP/cycle | SP FLOP/cycle | ISA     |
 |--------------------|---------------|---------------|---------|
+| Zen 5              | 32            | 64            | AVX512F |
 | Skylake/Sunny Cove | 32            | 64            | AVX512F |
 | Golden Cove        | 16            | 32            | FMA     |
-| Zen 2/3            | 16            | 32            | FMA     |
+| Zen 2/3/4          | 16            | 32            | FMA     |
 | Haswell/Broadwell  | 16            | 32            | FMA     |
 | Oryon              | 16            | 32            | ASIMD   |
 | Firestorm          | 16            | 32            | ASIMD   |
