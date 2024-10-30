@@ -41,9 +41,9 @@ permalink: /benchmark/
 
 服务器平台：
 
-- AMD EPYC 9R14 Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
+- AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
-- AMD EPYC 7742 Zen 2（`-O3`）: [4.67](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [4.67](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [4.35](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon E5-2680 v3 @ 3.0 GHz Haswell（`-O3`）: [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [3.96](./data/int2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
@@ -163,19 +163,19 @@ x86 平台的分支预测准确率（Average）由高到低：
 - Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [13.9](./data/fp2017_rate1/m_X1E80100_O3_001.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
-- Intel Core i9-10980XE Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
-- Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
+- Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
+- Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 
 服务器平台：
 
-- AMD EPYC 7742 Zen 2（`-O3`）: [7.12](./data/fp2017_rate1/AMD_EPYC_7742_O3_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [7.12](./data/fp2017_rate1/AMD_EPYC_7742_O3_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3 -march=native`）: [7.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3-march=native_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [7.12](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3 -march=native`）: [5.48](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3-march=native_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [5.44](./data/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon E5-2680 v3 @ 3.3 GHz Haswell（`-O3`）: [5.15](./data/fp2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [5.00](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
-- AMD EPYC 7551 Zen 1（`-O3`）: [3.47](./data/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.47](./data/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.20](./data/fp2017_rate1/Kunpeng-920_O3_001.txt)
 
 SPEC FP 2017 Rate-1 结果受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。
