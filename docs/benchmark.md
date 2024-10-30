@@ -62,11 +62,13 @@ permalink: /benchmark/
 x86 平台的分支预测准确率（Average）由高到低：
 
 1. Zen 5(9950X): MPKI=4.33 Mispred=2.45%
-2. Zen 2(7742): MPKI=4.62 Mispred=2.62%
-3. Ice Lake(8358P)/Alder Lake(12900KS)/Raptor Lake(14900K): MPKI=4.71 Mispred=2.68%
-4. Skylake(D-2146NT)/Cascade Lake(10980XE): MPKI=5.34 Mispred=3.04%
-5. Zen 1(7551): MPKI=5.72 Mispred=3.26%
-6. Haswell(E5-2680 v3)/Broadwell(E5-2680 v4): MPKI=5.84 Mispred=3.27%
+2. Zen 4(9R14): MPKI=4.38 Mispred=2.48%
+3. Zen 4c(9754): MPKI=4.51 Mispred=2.55%
+4. Zen 2(7742): MPKI=4.62 Mispred=2.62%
+5. Ice Lake(8358P)/Alder Lake(12900KS)/Raptor Lake(14900K): MPKI=4.71 Mispred=2.68%
+6. Skylake(D-2146NT)/Cascade Lake(10980XE): MPKI=5.34 Mispred=3.04%
+7. Zen 1(7551): MPKI=5.72 Mispred=3.26%
+8. Haswell(E5-2680 v3)/Broadwell(E5-2680 v4): MPKI=5.84 Mispred=3.27%
 
 ### 网上的数据
 

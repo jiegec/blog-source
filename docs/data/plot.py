@@ -56,6 +56,10 @@ def parse_data(flavor):
             parts = line.strip().split(" ")
             parts = list(filter(lambda s: len(s) > 0, parts))
 
+            # end
+            if line.strip() == "System Info:":
+                break
+
             # ratio
             if found_delim and "*" in line:
                 benchmark = parts[0]
