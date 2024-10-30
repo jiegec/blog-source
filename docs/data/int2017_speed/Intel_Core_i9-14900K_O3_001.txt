@@ -47,3 +47,8 @@ Benchmarks      Thrds  Run Time     Ratio       Thrds  Run Time     Ratio
 657.xz_s            1     1248         4.95  *                                 
  Est. SPECspeed2017_int_base           12.1
  Est. SPECspeed2017_int_peak                                        Not Run
+
+System Info:
+CPU Name: Intel Core i9-14900K
+Enabled: 24 cores, 1 chip, 2 threads/core
+Memory: 2x Gloway International Co Ltd VGM5UX64C32BG-DTACWN 32 GB 2 rank 6400
