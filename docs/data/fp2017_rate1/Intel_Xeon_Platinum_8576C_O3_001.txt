@@ -1,0 +1,67 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        234      42.8   S
+503.bwaves_r          1        235      42.8   *
+503.bwaves_r          1        235      42.7   S
+507.cactuBSSN_r       1        159       7.98  S
+507.cactuBSSN_r       1        159       7.97  *
+507.cactuBSSN_r       1        159       7.96  S
+508.namd_r            1        198       4.79  S
+508.namd_r            1        199       4.78  S
+508.namd_r            1        199       4.78  *
+510.parest_r          1        350       7.48  S
+510.parest_r          1        350       7.48  S
+510.parest_r          1        350       7.48  *
+511.povray_r          1        301       7.76  S
+511.povray_r          1        301       7.76  *
+511.povray_r          1        300       7.78  S
+519.lbm_r             1        193       5.47  S
+519.lbm_r             1        193       5.47  *
+519.lbm_r             1        194       5.44  S
+521.wrf_r             1        319       7.01  *
+521.wrf_r             1        319       7.01  S
+521.wrf_r             1        320       7.01  S
+526.blender_r         1        239       6.37  S
+526.blender_r         1        239       6.37  *
+526.blender_r         1        240       6.35  S
+527.cam4_r            1        224       7.81  *
+527.cam4_r            1        225       7.79  S
+527.cam4_r            1        224       7.81  S
+538.imagick_r         1        463       5.37  S
+538.imagick_r         1        466       5.33  *
+538.imagick_r         1        466       5.33  S
+544.nab_r             1        258       6.53  S
+544.nab_r             1        258       6.53  *
+544.nab_r             1        258       6.53  S
+549.fotonik3d_r       1        268      14.5   S
+549.fotonik3d_r       1        268      14.5   S
+549.fotonik3d_r       1        268      14.5   *
+554.roms_r            1        210       7.56  S
+554.roms_r            1        210       7.56  *
+554.roms_r            1        210       7.58  S
+=================================================================================
+503.bwaves_r          1        235      42.8   *
+507.cactuBSSN_r       1        159       7.97  *
+508.namd_r            1        199       4.78  *
+510.parest_r          1        350       7.48  *
+511.povray_r          1        301       7.76  *
+519.lbm_r             1        193       5.47  *
+521.wrf_r             1        319       7.01  *
+526.blender_r         1        239       6.37  *
+527.cam4_r            1        224       7.81  *
+538.imagick_r         1        466       5.33  *
+544.nab_r             1        258       6.53  *
+549.fotonik3d_r       1        268      14.5   *
+554.roms_r            1        210       7.56  *
+ Est. SPECrate(R)2017_fp_base            8.14
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+
+System Info:
+CPU Name: INTEL XEON PLATINUM 8576C
+Enabled: 1 core, 1 chip, 2 threads/core
+Memory: 1x Red Hat Not Specified 8 GB
