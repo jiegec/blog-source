@@ -108,3 +108,8 @@ Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
 557.xz_r: ipc = 2.01
 557.xz_r: misprediction rate (%) = 3.16
 557.xz_r: mpki = 4.85
+
+System Info:
+CPU Name: AMD Ryzen 9 9950X
+Enabled: 16 cores, 1 chip, 2 threads/core
+Memory: 2x Kingston KF552C40-32 32 GB 2 rank 4800
