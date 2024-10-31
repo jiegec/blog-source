@@ -1,0 +1,66 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        274      36.6   S
+503.bwaves_r          1        274      36.6   *
+503.bwaves_r          1        273      36.7   S
+507.cactuBSSN_r       1        240       5.28  S
+507.cactuBSSN_r       1        239       5.31  *
+507.cactuBSSN_r       1        237       5.33  S
+508.namd_r            1        216       4.39  S
+508.namd_r            1        216       4.40  *
+508.namd_r            1        216       4.40  S
+510.parest_r          1        384       6.81  S
+510.parest_r          1        384       6.82  *
+510.parest_r          1        381       6.86  S
+511.povray_r          1        358       6.52  S
+511.povray_r          1        361       6.47  *
+511.povray_r          1        362       6.45  S
+519.lbm_r             1        175       6.02  S
+519.lbm_r             1        174       6.04  S
+519.lbm_r             1        175       6.03  *
+521.wrf_r             1        250       8.96  S
+521.wrf_r             1        247       9.06  S
+521.wrf_r             1        249       8.99  *
+526.blender_r         1        265       5.75  S
+526.blender_r         1        254       5.99  S
+526.blender_r         1        259       5.89  *
+527.cam4_r            1        223       7.84  S
+527.cam4_r            1        223       7.83  *
+527.cam4_r            1        224       7.80  S
+538.imagick_r         1        504       4.93  S
+538.imagick_r         1        503       4.95  S
+538.imagick_r         1        503       4.94  *
+544.nab_r             1        281       5.99  S
+544.nab_r             1        283       5.95  S
+544.nab_r             1        281       5.98  *
+549.fotonik3d_r       1        247      15.8   S
+549.fotonik3d_r       1        244      16.0   S
+549.fotonik3d_r       1        244      16.0   *
+554.roms_r            1        239       6.64  S
+554.roms_r            1        239       6.64  *
+554.roms_r            1        239       6.66  S
+=================================================================================
+503.bwaves_r          1        274      36.6   *
+507.cactuBSSN_r       1        239       5.31  *
+508.namd_r            1        216       4.40  *
+510.parest_r          1        384       6.82  *
+511.povray_r          1        361       6.47  *
+519.lbm_r             1        175       6.03  *
+521.wrf_r             1        249       8.99  *
+526.blender_r         1        259       5.89  *
+527.cam4_r            1        223       7.83  *
+538.imagick_r         1        503       4.94  *
+544.nab_r             1        281       5.98  *
+549.fotonik3d_r       1        244      16.0   *
+554.roms_r            1        239       6.64  *
+ Est. SPECrate(R)2017_fp_base            7.63
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+System Info:
+CPU Name: AMD EPYC 7K83
+Enabled: 1 core, 1 chip, 2 threads/core
+Memory: 1x Smdbmds Not Specified 4 GB
