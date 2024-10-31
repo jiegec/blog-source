@@ -1,0 +1,54 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1        336       4.74  S
+500.perlbench_r       1        336       4.74  *
+500.perlbench_r       1        316       5.04  S
+502.gcc_r             1        232       6.11  S
+502.gcc_r             1        237       5.96  S
+502.gcc_r             1        236       6.01  *
+505.mcf_r             1        296       5.45  *
+505.mcf_r             1        295       5.47  S
+505.mcf_r             1        304       5.32  S
+520.omnetpp_r         1        433       3.03  *
+520.omnetpp_r         1        401       3.27  S
+520.omnetpp_r         1        449       2.92  S
+523.xalancbmk_r       1        252       4.18  *
+523.xalancbmk_r       1        248       4.26  S
+523.xalancbmk_r       1        263       4.02  S
+525.x264_r            1        186       9.40  *
+525.x264_r            1        184       9.51  S
+525.x264_r            1        187       9.38  S
+531.deepsjeng_r       1        295       3.88  S
+531.deepsjeng_r       1        286       4.00  S
+531.deepsjeng_r       1        288       3.97  *
+541.leela_r           1        401       4.13  *
+541.leela_r           1        400       4.14  S
+541.leela_r           1        403       4.11  S
+548.exchange2_r       1        165      15.9   S
+548.exchange2_r       1        164      15.9   *
+548.exchange2_r       1        164      16.0   S
+557.xz_r              1        373       2.89  *
+557.xz_r              1        359       3.01  S
+557.xz_r              1        384       2.81  S
+=================================================================================
+500.perlbench_r       1        336       4.74  *
+502.gcc_r             1        236       6.01  *
+505.mcf_r             1        296       5.45  *
+520.omnetpp_r         1        433       3.03  *
+523.xalancbmk_r       1        252       4.18  *
+525.x264_r            1        186       9.40  *
+531.deepsjeng_r       1        288       3.97  *
+541.leela_r           1        401       4.13  *
+548.exchange2_r       1        164      15.9   *
+557.xz_r              1        373       2.89  *
+ Est. SPECrate(R)2017_int_base           5.18
+ Est. SPECrate(R)2017_int_peak                                         Not Run
+
+System Info:
+CPU Name: AMD EPYC 7K83
+Enabled: 1 core, 1 chip, 2 threads/core
+Memory: 1x Smdbmds Not Specified 4 GB
