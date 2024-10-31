@@ -1,0 +1,55 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1        256       6.22  *
+500.perlbench_r       1        254       6.27  S
+500.perlbench_r       1        256       6.21  S
+502.gcc_r             1        200       7.07  S
+502.gcc_r             1        200       7.07  *
+502.gcc_r             1        201       7.06  S
+505.mcf_r             1        320       5.05  S
+505.mcf_r             1        322       5.02  *
+505.mcf_r             1        324       5.00  S
+520.omnetpp_r         1        236       5.57  *
+520.omnetpp_r         1        235       5.58  S
+520.omnetpp_r         1        236       5.56  S
+523.xalancbmk_r       1        236       4.47  S
+523.xalancbmk_r       1        236       4.47  *
+523.xalancbmk_r       1        237       4.46  S
+525.x264_r            1        181       9.65  *
+525.x264_r            1        181       9.65  S
+525.x264_r            1        181       9.67  S
+531.deepsjeng_r       1        286       4.00  S
+531.deepsjeng_r       1        286       4.00  S
+531.deepsjeng_r       1        286       4.00  *
+541.leela_r           1        443       3.74  S
+541.leela_r           1        443       3.74  *
+541.leela_r           1        442       3.74  S
+548.exchange2_r       1        179      14.7   S
+548.exchange2_r       1        179      14.6   *
+548.exchange2_r       1        179      14.6   S
+557.xz_r              1        337       3.20  S
+557.xz_r              1        336       3.21  *
+557.xz_r              1        335       3.22  S
+=================================================================================
+500.perlbench_r       1        256       6.22  *
+502.gcc_r             1        200       7.07  *
+505.mcf_r             1        322       5.02  *
+520.omnetpp_r         1        236       5.57  *
+523.xalancbmk_r       1        236       4.47  *
+525.x264_r            1        181       9.65  *
+531.deepsjeng_r       1        286       4.00  *
+541.leela_r           1        443       3.74  *
+548.exchange2_r       1        179      14.6   *
+557.xz_r              1        336       3.21  *
+ Est. SPECrate(R)2017_int_base           5.72
+ Est. SPECrate(R)2017_int_peak                                         Not Run
+
+
+System Info:
+CPU Name: INTEL XEON PLATINUM 8576C
+Enabled: 1 core, 1 chip, 2 threads/core
+Memory: 1x Red Hat Not Specified 8 GB
