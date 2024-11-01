@@ -26,13 +26,16 @@ permalink: /benchmark/
 
 ![](./data/int2017_rate1_freq.svg)
 
-桌面平台：
+桌面平台（LTO）：
 
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
+- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
+
+桌面平台：
+
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [8.73](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - Qualcomm X1E80100 Boost @ 4.0 GHz X Elite（`-O3`）: [8.60](./data/int2017_rate1/Qualcomm_X1E80100_Boost_O3_001.txt)
@@ -480,7 +483,7 @@ default:
 %endif
 
 521.wrf_r,621.wrf_s:  #lang='F,C'
-   CPORTABILITY  = -DSPEC_CASE_FLAG 
+   CPORTABILITY  = -DSPEC_CASE_FLAG
    FPORTABILITY  = -fconvert=big-endian
 
 523.xalancbmk_r,623.xalancbmk_s:  #lang='CXX'
