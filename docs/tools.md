@@ -37,6 +37,7 @@ permalink: /tools/
 1. 在线运行 TAC 代码 https://jia.je/online_tac_vm/
 1. 在线编译 Decaf https://jia.je/online_decaf/
 1. 在线解码登机牌信息 BCBP https://jia.je/decode-bcbp/
+1. IEEE 754 等浮点格式转换 https://jia.je/floating/
 
 ## 调试工具
 
