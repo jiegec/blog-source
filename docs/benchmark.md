@@ -77,6 +77,12 @@ x86 平台的分支预测准确率（Average）由高到低：
 7. Zen 1(7551): MPKI=5.72 Mispred=3.26%
 8. Haswell(E5-2680 v3)/Broadwell(E5-2680 v4): MPKI=5.84 Mispred=3.27%
 
+ARM64 平台的分支预测准确率（Average）由高到低：
+
+1. Firestorm(M1): MPKI=4.67 Mispred=2.55%
+2. Oryon(X1E80100): MPKI=5.44 Mispred=2.97%
+3. TSV110(Kunpeng-920): MPKI=7.28 Mispred=3.95%
+
 ### 网上的数据
 
 [SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
