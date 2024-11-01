@@ -502,7 +502,7 @@ default:
 %endif
 
 521.wrf_r,621.wrf_s:  #lang='F,C'
-   CPORTABILITY  = -DSPEC_CASE_FLAG
+   CPORTABILITY  = -DSPEC_CASE_FLAG 
    FPORTABILITY  = -fconvert=big-endian
 
 523.xalancbmk_r,623.xalancbmk_s:  #lang='CXX'
@@ -528,8 +528,8 @@ fpspeed:
    preENV_OMP_STACKSIZE = 120M
 
 default=base:         # flags for all base
-%if %{fast} eq "1"
-   OPTIMIZE       = -Ofast
+%ifdef %{optflags}
+   OPTIMIZE       = %{optflags}
 %else
    OPTIMIZE       = -O3
 %endif
@@ -545,9 +545,9 @@ default=base:         # flags for all base
    FOPTIMIZE      = -fallow-argument-mismatch
 
 intrate,intspeed=base: # flags for integer base
-   EXTRA_COPTIMIZE = -fno-strict-aliasing -fgnu89-inline -fcommon
+   EXTRA_COPTIMIZE = -fno-strict-aliasing -fno-unsafe-math-optimizations -fno-finite-math-only -fgnu89-inline -fcommon
 # Notes about the above
-#  - 500.perlbench_r/600.perlbench_s needs -fno-strict-aliasing
+#  - 500.perlbench_r/600.perlbench_s needs -fno-strict-aliasing, -fno-unsafe-math-optimizations and -fno-finite-math-only
 #  - 502.gcc_r/602.gcc_s             needs -fgnu89-inline or -z muldefs
 #  - 525.x264_r/625.x264_s           needs -fcommon
 #  - For 'base', all benchmarks in a set must use the same options.
