@@ -58,7 +58,7 @@ permalink: /benchmark/
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [4.35](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon E5-2680 v3 @ 3.0 GHz Haswell（`-O3`）: [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [3.96](./data/int2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
-- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.18](./data/int2017_rate1/Kunpeng-920_O3_001.txt)
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.18](./data/int2017_rate1/Kunpeng_920_O3_001.txt)
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
 
 注：
@@ -85,7 +85,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 1. Firestorm(M1): MPKI=4.67 Mispred=2.55%
 2. Oryon(X1E80100): MPKI=5.44 Mispred=2.97%
 3. Neoverse V1(Graviton 3): MPKI=5.55 Mispred=3.03%
-4. TSV110(Kunpeng-920): MPKI=7.28 Mispred=3.95%
+4. TSV110(Kunpeng 920): MPKI=7.28 Mispred=3.95%
 
 ### 网上的数据
 
@@ -209,7 +209,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Intel Xeon E5-2680 v3 @ 3.3 GHz Haswell（`-O3`）: [5.15](./data/fp2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [5.00](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.47](./data/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
-- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.20](./data/fp2017_rate1/Kunpeng-920_O3_001.txt)
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.20](./data/fp2017_rate1/Kunpeng_920_O3_001.txt)
 
 SPEC FP 2017 Rate-1 结果受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。
 
@@ -391,7 +391,7 @@ TODO
 - Qualcomm X1E80100 X Elite（`-O3`）: [7.99](./data/int2017_speed/Qualcomm_X1E80100_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [7.18](./data/int2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [5.55](./data/int2017_speed/AMD_EPYC_7742_O3_001.txt)
-- Kunpeng 920 TaiShan V110（`-O3`）: [3.65](./data/int2017_speed/Kunpeng-920_O3_001.txt) [3.62](./data/int2017_speed/Kunpeng-920_O3_002.txt)
+- Kunpeng 920 TaiShan V110（`-O3`）: [3.65](./data/int2017_speed/Kunpeng_920_O3_001.txt) [3.62](./data/int2017_speed/Kunpeng_920_O3_002.txt)
 
 注：SPEC INT 2017 单线程 OpenMP 下 speed 测试按理说约等于 rate-1，前者虽然启用了 OpenMP，但仅允许单线程。不过实测下来还是不太一样。
 
@@ -405,7 +405,7 @@ TODO
 - Intel Core i9-12900KS Alder Lake（`-O3`）: [13.1](./data/fp2017_speed/Intel_Core_i9-12900KS_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [6.99](./data/fp2017_speed/AMD_EPYC_7742_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.20](./data/fp2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
-- Kunpeng 920 TaiShan V110（`-O3`）: [2.57](./data/fp2017_speed/Kunpeng-920_O3_001.txt)
+- Kunpeng 920 TaiShan V110（`-O3`）: [2.57](./data/fp2017_speed/Kunpeng_920_O3_001.txt)
 
 注：SPEC FP 2017 单线程 OpenMP 下 speed 测试不等价为 rate-1，因为跑的测试不同。
 
