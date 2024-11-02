@@ -539,7 +539,7 @@ default=base:         # flags for all base
 %if %{lto} eq "1"
    OPTIMIZE       += -flto
 %endif
-   # -std=c++13 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
+   # -std=c++03 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
    CXXOPTIMIZE    = -std=c++03
    # -fallow-argument-mismatch required for https://www.spec.org/cpu2017/Docs/benchmarks/521.wrf_r.html
    FOPTIMIZE      = -fallow-argument-mismatch
