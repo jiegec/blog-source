@@ -49,7 +49,7 @@ permalink: /benchmark/
 服务器平台：
 
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
-- Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.80](./data/int2017_rate1/Yitian_710_O3_001.txt)
+- T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.80](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 - Intel Xeon Platinum 8576C Emerald Rapids（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3`）: [5.32](./data/int2017_rate1/AMD_EPYC_9754_O3_001.txt)
