@@ -49,6 +49,7 @@ permalink: /benchmark/
 服务器平台：
 
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
+- Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.80](./data/int2017_rate1/Yitian_710_O3_001.txt)
 - Intel Xeon Platinum 8576C Emerald Rapids（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3`）: [5.32](./data/int2017_rate1/AMD_EPYC_9754_O3_001.txt)
@@ -83,9 +84,10 @@ x86 平台的分支预测准确率（Average）由高到低：
 ARM64 平台的分支预测准确率（Average）由高到低：
 
 1. Firestorm(M1): MPKI=4.67 Mispred=2.55%
-2. Oryon(X1E80100): MPKI=5.44 Mispred=2.97%
-3. Neoverse V1(Graviton 3): MPKI=5.55 Mispred=3.03%
-4. TSV110(Kunpeng 920): MPKI=7.28 Mispred=3.95%
+2. Neoverse N2(Yitian 710): MPKI=5.28 Mispred=2.89%
+3. Oryon(X1E80100): MPKI=5.44 Mispred=2.97%
+4. Neoverse V1(Graviton 3): MPKI=5.55 Mispred=3.03%
+5. TSV110(Kunpeng 920): MPKI=7.28 Mispred=3.95%
 
 ### 网上的数据
 
