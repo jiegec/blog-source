@@ -84,7 +84,8 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 
 1. Firestorm(M1): MPKI=4.67 Mispred=2.55%
 2. Oryon(X1E80100): MPKI=5.44 Mispred=2.97%
-3. TSV110(Kunpeng-920): MPKI=7.28 Mispred=3.95%
+3. Neoverse V1(Graviton 3): MPKI=5.55 Mispred=3.03%
+4. TSV110(Kunpeng-920): MPKI=7.28 Mispred=3.95%
 
 ### 网上的数据
 
