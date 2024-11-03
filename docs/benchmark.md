@@ -14,17 +14,29 @@ permalink: /benchmark/
 
 ![](./data/int2017_rate1_score.svg)
 
-![](./data/int2017_rate1_score_per_ghz.svg)
+??? note "分数/GHz"
 
-![](./data/int2017_rate1_ratio.svg)
+    ![](./data/int2017_rate1_score_per_ghz.svg)
 
-![](./data/int2017_rate1_mpki.svg)
+??? note "每项分数"
 
-![](./data/int2017_rate1_ipc.svg)
+    ![](./data/int2017_rate1_ratio.svg)
 
-![](./data/int2017_rate1_mispred.svg)
+??? note "IPC"
 
-![](./data/int2017_rate1_freq.svg)
+    ![](./data/int2017_rate1_ipc.svg)
+
+??? note "分支预测 MPKI"
+
+    ![](./data/int2017_rate1_mpki.svg)
+
+??? note "分支预测错误率"
+
+    ![](./data/int2017_rate1_mispred.svg)
+
+??? note "频率"
+
+    ![](./data/int2017_rate1_freq.svg)
 
 ### 原始数据
 
@@ -169,17 +181,29 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 
 ![](./data/fp2017_rate1_score.svg)
 
-![](./data/fp2017_rate1_score_per_ghz.svg)
+??? note "分数/GHz"
 
-![](./data/fp2017_rate1_ratio.svg)
+    ![](./data/fp2017_rate1_score_per_ghz.svg)
 
-![](./data/fp2017_rate1_mpki.svg)
+??? note "每项分数"
 
-![](./data/fp2017_rate1_ipc.svg)
+    ![](./data/fp2017_rate1_ratio.svg)
 
-![](./data/fp2017_rate1_mispred.svg)
+??? note "IPC"
 
-![](./data/fp2017_rate1_freq.svg)
+    ![](./data/fp2017_rate1_ipc.svg)
+
+??? note "分支预测 MPKI"
+
+    ![](./data/fp2017_rate1_mpki.svg)
+
+??? note "分支预测错误率"
+
+    ![](./data/fp2017_rate1_mispred.svg)
+
+??? note "频率"
+
+    ![](./data/fp2017_rate1_freq.svg)
 
 ### 原始数据
 
