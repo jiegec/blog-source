@@ -41,7 +41,7 @@ permalink: /benchmark/
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - AMD Ryzen 5 7500F @ 5.0 GHz Zen 4（`-O3`）: [9.51](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
-- Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [8.60](./data/int2017_rate1/Qualcomm_X1E80100_O3_001.txt)
+- Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [8.31](./data/int2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 - Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [7.77](./data/int2017_rate1/Apple_M1_O3_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3`）: [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 
@@ -86,14 +86,14 @@ x86 平台的分支预测准确率（Average）由高到低：
 
 ARM64 平台的分支预测准确率（Average）由高到低：
 
-1. Firestorm(M1): MPKI=4.67 Mispred=2.55%
-6. TSV110(Kunpeng 920): MPKI=6.36 Mispred=3.49%
+1. Oryon(X1E80100): MPKI=4.56 Mispred=2.50%
+2. Firestorm(M1): MPKI=4.67 Mispred=2.55%
+3. TSV110(Kunpeng 920): MPKI=6.36 Mispred=3.49%
 
 TODO:
 
 2. Neoverse V2(Graviton 4): MPKI=5.08 Mispred=2.79%
 3. Neoverse N2(Yitian 710): MPKI=5.28 Mispred=2.89%
-4. Oryon(X1E80100): MPKI=5.44 Mispred=2.97%
 5. Neoverse N1(Ampere Altra)/Neoverse V1(Graviton 3): MPKI=5.54 Mispred=3.03%
 
 ### 网上的数据
