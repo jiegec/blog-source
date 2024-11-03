@@ -33,7 +33,7 @@ permalink: /benchmark/
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
-- Qualcomm X1E80100 Boost @ 4.0 GHz X Elite（`-O3 -flto`）: [8.63](./data/int2017_rate1/Qualcomm_X1E80100_Boost_O3-flto_001.txt)
+- Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto`）: [8.63](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto_001.txt)
 
 桌面平台：
 
@@ -41,9 +41,8 @@ permalink: /benchmark/
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - AMD Ryzen 5 7500F @ 5.0 GHz Zen 4（`-O3`）: [9.51](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
-- Qualcomm X1E80100 Boost @ 4.0 GHz X Elite（`-O3`）: [8.60](./data/int2017_rate1/Qualcomm_X1E80100_Boost_O3_001.txt)
+- Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [8.60](./data/int2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 - Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [7.77](./data/int2017_rate1/Apple_M1_O3_001.txt)
-- Qualcomm X1E80100 Non-boost @ 3.4 GHz X Elite（`-O3`）: [7.56](./data/int2017_rate1/Qualcomm_X1E80100_Non-boost_O3_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3`）: [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 
 服务器平台：
