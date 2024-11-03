@@ -85,7 +85,7 @@ def plot_score(flavor):
         y_data.append(mean(data[x]["all"]))
 
     plt.cla()
-    _, ax = plt.subplots()
+    _, ax = plt.subplots(figsize=(6, len(y_data) * 0.3))
 
     for x, y in enumerate(y_data):
         ax.text(y, x, f"{y:.2f}")
@@ -114,7 +114,7 @@ def plot_score_per_ghz(flavor):
     y_data, x_data = (list (t) for t in zip(*sorted(zip(y_data, x_data))))
 
     plt.cla()
-    _, ax = plt.subplots()
+    _, ax = plt.subplots(figsize=(6, len(y_data) * 0.3))
 
     for x, y in enumerate(y_data):
         ax.text(y, x, f"{y:.2f}")
