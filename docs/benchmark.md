@@ -47,7 +47,7 @@ permalink: /benchmark/
 
 服务器平台：
 
-- AWS Graviton 4 @ 2.75 GHz Neoverse V2（`-O3`）: [6.59](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt)
+- AWS Graviton 4 @ 2.75 GHz Neoverse V2（`-O3`）: [6.80](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.80](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 - Intel Xeon Platinum 8576C Emerald Rapids（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
@@ -86,13 +86,13 @@ x86 平台的分支预测准确率（Average）由高到低：
 
 ARM64 平台的分支预测准确率（Average）由高到低：
 
-1. Oryon(X1E80100): MPKI=4.56 Mispred=2.50%
-2. Firestorm(M1): MPKI=4.67 Mispred=2.55%
-3. TSV110(Kunpeng 920): MPKI=6.36 Mispred=3.49%
+1. Neoverse V2(Graviton 4): MPKI=4.34 Mispred=2.39%
+2. Oryon(X1E80100): MPKI=4.56 Mispred=2.50%
+3. Firestorm(M1): MPKI=4.67 Mispred=2.55%
+4. TSV110(Kunpeng 920): MPKI=6.36 Mispred=3.49%
 
 TODO:
 
-2. Neoverse V2(Graviton 4): MPKI=5.08 Mispred=2.79%
 3. Neoverse N2(Yitian 710): MPKI=5.28 Mispred=2.89%
 5. Neoverse N1(Ampere Altra)/Neoverse V1(Graviton 3): MPKI=5.54 Mispred=3.03%
 
