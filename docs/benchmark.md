@@ -40,7 +40,7 @@ permalink: /benchmark/
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
-- AMD Ryzen 5 7500F Zen 4（`-O3`）: [8.73](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
+- AMD Ryzen 5 7500F Zen 4（`-O3`）: [9.51](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - Qualcomm X1E80100 Boost @ 4.0 GHz X Elite（`-O3`）: [8.60](./data/int2017_rate1/Qualcomm_X1E80100_Boost_O3_001.txt)
 - Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [7.77](./data/int2017_rate1/Apple_M1_O3_001.txt)
 - Qualcomm X1E80100 Non-boost @ 3.4 GHz X Elite（`-O3`）: [7.56](./data/int2017_rate1/Qualcomm_X1E80100_Non-boost_O3_001.txt)
@@ -76,13 +76,14 @@ permalink: /benchmark/
 x86 平台的分支预测准确率（Average）由高到低：
 
 1. Zen 5(9950X): MPKI=4.33 Mispred=2.45%
-2. Zen 4(9R14): MPKI=4.38 Mispred=2.48%
+2. Zen 4 Server(9R14): MPKI=4.38 Mispred=2.48%
 3. Zen 4c(9754): MPKI=4.51 Mispred=2.55%
-4. Zen 2(7742): MPKI=4.62 Mispred=2.62%
-5. Ice Lake(8358P)/Alder Lake(12900KS)/Raptor Lake(14900K): MPKI=4.71 Mispred=2.68%
-6. Skylake(D-2146NT)/Cascade Lake(10980XE): MPKI=5.34 Mispred=3.04%
-7. Zen 1(7551): MPKI=5.72 Mispred=3.26%
-8. Haswell(E5-2680 v3)/Broadwell(E5-2680 v4): MPKI=5.84 Mispred=3.27%
+4. Zen 4 Desktop(7500F): MPKI=4.53 Mispred=2.57%
+5. Zen 2(7742): MPKI=4.62 Mispred=2.62%
+6. Ice Lake(8358P)/Alder Lake(12900KS)/Raptor Lake(14900K): MPKI=4.71 Mispred=2.68%
+7. Skylake(D-2146NT)/Cascade Lake(10980XE): MPKI=5.34 Mispred=3.04%
+8. Zen 1(7551): MPKI=5.72 Mispred=3.26%
+9. Haswell(E5-2680 v3)/Broadwell(E5-2680 v4): MPKI=5.84 Mispred=3.27%
 
 ARM64 平台的分支预测准确率（Average）由高到低：
 
