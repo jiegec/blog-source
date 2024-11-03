@@ -494,13 +494,17 @@ default:
 
 # perf: use runcpu --define perf=1 --noreportable to enable
 %if %{perf} eq "1"
+# override branch-misses counter if necessary
+%ifndef %{branchmisses}
+%define branchmisses branch-misses
+%endif
 default:
    command_add_redirect = 1
 # bind to core if requested
 %ifdef %{bindcore}
-   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,branches,branch-misses,task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,branches,%{branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
 %else
-   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,branches,branch-misses,task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,branches,%{branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
 %endif
 %endif
 
