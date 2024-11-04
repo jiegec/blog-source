@@ -610,20 +610,20 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 浮点峰值性能
 
-| uArch              | DP FLOP/cycle | SP FLOP/cycle | ISA     |
-|--------------------|---------------|---------------|---------|
-| Zen 5              | 32            | 64            | AVX512F |
-| Skylake/Sunny Cove | 32            | 64            | AVX512F |
-| Golden Cove        | 16            | 32            | FMA     |
-| Zen 4              | 16            | 32            | AVX512F |
-| Zen 2/3            | 16            | 32            | FMA     |
-| Haswell/Broadwell  | 16            | 32            | FMA     |
-| Oryon              | 16            | 32            | ASIMD   |
-| Firestorm          | 16            | 32            | ASIMD   |
-| LA464/LA664        | 16            | 32            | LASX    |
-| Gracemont          | 8             | 16            | FMA     |
-| Zen 1              | 8             | 16            | FMA     |
-| TSV110             | 4             | 16            | ASIMD   |
+| uArch               | DP FLOP/cycle | SP FLOP/cycle | ISA     |
+|---------------------|---------------|---------------|---------|
+| Zen 5               | 32            | 64            | AVX512F |
+| Skylake/Sunny Cove  | 32            | 64            | AVX512F |
+| Golden Cove         | 16            | 32            | FMA     |
+| Zen 4               | 16            | 32            | AVX512F |
+| Zen 2/3             | 16            | 32            | FMA     |
+| Haswell/Broadwell   | 16            | 32            | FMA     |
+| Oryon               | 16            | 32            | ASIMD   |
+| Firestorm/Avalanche | 16            | 32            | ASIMD   |
+| LA464/LA664         | 16            | 32            | LASX    |
+| Gracemont           | 8             | 16            | FMA     |
+| Zen 1               | 8             | 16            | FMA     |
+| TSV110              | 4             | 16            | ASIMD   |
 
 ## 固定频率方法
 
