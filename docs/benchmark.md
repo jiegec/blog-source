@@ -623,6 +623,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 | LA464/LA664         | 16            | 32            | LASX    |
 | Gracemont           | 8             | 16            | FMA     |
 | Zen 1               | 8             | 16            | FMA     |
+| Icestorm            | 8             | 16            | ASIMD   |
 | TSV110              | 4             | 16            | ASIMD   |
 
 ## 固定频率方法
