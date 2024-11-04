@@ -621,6 +621,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 | Oryon               | 16            | 32            | ASIMD     |
 | Firestorm/Avalanche | 16            | 32            | ASIMD     |
 | LA464/LA664         | 16            | 32            | LASX      |
+| Neoverse V2         | 16            | 32            | SVE(128b) |
 | Neoverse N2         | 8             | 16            | SVE(128b) |
 | Gracemont           | 8             | 16            | FMA       |
 | Zen 1               | 8             | 16            | FMA       |
