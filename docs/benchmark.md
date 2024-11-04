@@ -171,7 +171,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 [Snapdragon X Elite Qualcomm Oryon CPU Design and Architecture Hot Chips 2024](https://www.servethehome.com/snapdragon-x-elite-qualcomm-oryon-cpu-design-and-architecture-hot-chips-2024-arm/)
 
 - Qualcomm X Elite Oryon on Linux: 10.64
-- Qualcomm X Elite Oryon on Windows: 10.64
+- Qualcomm X Elite Oryon on Windows: 9.70
 
 ## SPEC FP 2017 Rate-1
 
