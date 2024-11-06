@@ -35,7 +35,7 @@ categories:
 - [Snapdragon X Elite](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-x-elite)
 - [Qualcomm Oryon CPU](https://www.qualcomm.com/products/technology/processors/oryon)
 
-下面分各个模块分别记录官方提供的信息，以及实测的结果。读者可以对照已有的第三方评测理解。
+下面分各个模块分别记录官方提供的信息，以及实测的结果。读者可以对照已有的第三方评测理解。官方信息与实测结果一致的数据会加粗。
 
 ## Benchmark
 
@@ -45,19 +45,9 @@ Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 ### 取指
 
-官方信息：取指可以达到每周期最多 16 指令
+官方信息：取指可以达到每周期最多 **16** 指令
 
-### L1 ICache
-
-官方信息：192KB 6-way L1 ICache, Fetches up to 16 instructions per cycle
-
-为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
-
-![](./qualcomm_oryon_fetch_bandwidth.png)
-
-可以看到 footprint 在 192 KB 之前时可以达到 8 IPC，之后则快速降到 2 IPC，这里的 192 KB 就对应了 L1 ICache 的容量。
-
-虽然 Fetch 可以每周期 16 条指令，也就是一条 64B 的缓存行，由于后端的限制，只能观察到 8 的 IPC。为了测试实际的 Fetch 宽度，参考 [如何测量真正的取指带宽（I-fetch width） - JamesAslan](https://zhuanlan.zhihu.com/p/720136752) 构造了测试。
+为了测试实际的 Fetch 宽度，参考 [如何测量真正的取指带宽（I-fetch width） - JamesAslan](https://zhuanlan.zhihu.com/p/720136752) 构造了测试。
 
 其原理是当 Fetch 要跨页的时候，由于两个相邻页可能映射到不同的物理地址，如果要支持单周期跨页取指，需要查询两次 ITLB，或者 ITLB 需要把相邻两个页的映射存在一起。这个场景一般比较少，处理器很少会针对这种特殊情况做优化，但也不是没有。经过测试，把循环放在两个页的边界上，发现 Oryon 微架构遇到跨页的取指时确实会拆成两个周期来进行。在此基础上，构造一个循环，循环的第一条指令放在第一个页的最后四个字节，其余指令放第二个页上，那么每次循环的取指时间，就是一个周期（读取第一个页内的指令）加上第二个页内指令需要 Fetch 的周期数，多的这一个周期就足以把 Fetch 宽度从后端限制中区分开，实验结果如下：
 
@@ -67,9 +57,19 @@ Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 为了确认这个瓶颈是由取指造成的，又构造了一组实验，把循环的所有指令都放到一个页中，这个时候 Fetch 不再成为瓶颈（图中 aligned），两个曲线的对比可以明确地得出上述结论。
 
+### L1 ICache
+
+官方信息：**192KB** 6-way L1 ICache
+
+为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
+
+![](./qualcomm_oryon_fetch_bandwidth.png)
+
+可以看到 footprint 在 192 KB 之前时可以达到 8 IPC，之后则快速降到 2 IPC，这里的 192 KB 就对应了 L1 ICache 的容量。虽然 Fetch 可以每周期 16 条指令，也就是一条 64B 的缓存行，由于后端的限制，只能观察到 8 的 IPC。
+
 ### L1 ITLB
 
-官方信息：256-entry 8-way L1 ITLB，支持 4KB 和 64KB 的页表大小
+官方信息：**256-entry** 8-way L1 ITLB，支持 4KB 和 64KB 的页表大小
 
 构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
 
@@ -83,7 +83,7 @@ Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 ### Return Stack
 
-官方信息：50-entry return stack
+官方信息：**50-entry** return stack
 
 构造不同深度的调用链，测试每次调用花费的平均时间，得到下面的图：
 
@@ -97,7 +97,7 @@ Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 ### BTB
 
-官方信息：2K+ entry BTB
+官方信息：**2K+** entry BTB
 
 构造大量的无条件分支指令（B 指令），BTB 需要记录这些指令的目的地址，那么如果分支数量超过了 BTB 的容量，性能会出现明显下降。当把大量 B 指令紧密放置，也就是每 4 字节一条 B 指令时：
 
@@ -149,9 +149,9 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 
 官方信息：
 
-- Up to 6 ALU/cycle
-- Up to 2 Branch/cycle
-- Up to 2 multiply/MLA per cycle
+- Up to **6** ALU/cycle
+- Up to **2** Branch/cycle
+- Up to **2** multiply/MLA per cycle
 
 在循环中重复下列指令多次，测量 CPI，得到如下结果：
 
@@ -178,8 +178,8 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 
 官方信息：
 
-- 96KB 6-way L1 DCache
-- 224-entry 7-way L1 DTLB, supports 4KB and 64KB translation granules
+- **96KB** 6-way L1 DCache
+- **224-entry** 7-way L1 DTLB, supports 4KB and 64KB translation granules
 - Up to 4 Load-Store operations per cycle
 - 192 entry Load Queue, 56 entry Store Queue
 - Full 64B/cycle for both fills and evictions to L2 cache
