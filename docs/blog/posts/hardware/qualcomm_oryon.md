@@ -183,7 +183,7 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 官方信息：
 
 - **96KB** 6-way L1 DCache
-- **224-entry** 7-way L1 DTLB, supports 4KB and 64KB translation granules
+- **224-entry** **7-way** L1 DTLB, supports 4KB and 64KB translation granules
 - Up to 4 Load-Store operations per cycle
 - 192 entry Load Queue, 56 entry Store Queue
 - Full 64B/cycle for both fills and evictions to L2 cache
@@ -198,7 +198,7 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 
 ![](./qualcomm_oryon_dtlb.png)
 
-可以看到 224 Page 出现了明显的拐点，对应的就是 224 的 L1 DTLB 容量。从每个 page 一个指针改成每 32 page 一个指针并注意对齐尽量保证 Index 为 0，此时 L1 DTLB 容量降为 7，说明 L1 DTLB 是 7 路组相连结构，这些页被映射到了相同的 Set 当中：
+可以看到 224 Page 出现了明显的拐点，对应的就是 224 的 L1 DTLB 容量。从每个 page 一个指针改成每 32 page 一个指针并注意对齐尽量保证 Index 为 0，此时 L1 DTLB 容量降为 7，说明 L1 DTLB 是 7 路组相连结构，32 个 Set，Index 位是 VA[16:12]，这些页被映射到了相同的 Set 当中：
 
 ![](./qualcomm_oryon_dtlb_7.png)
 
@@ -212,9 +212,19 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 - 1x 128b Load + 2x 128b Store
 - 2x 128b Store
 
-如果把每条指令的访存位宽从 128b 改成 256b，带宽不变，指令吞吐减半。
+如果把每条指令的访存位宽从 128b 改成 256b，读写带宽不变，指令吞吐减半。
 
 也就是说最大的读带宽是 64B/cyc，最大的写带宽是 32B/cyc，二者不能同时达到。
+
+不太确定的是高通官方的表述里 `Up to 4 Load-Store operations per cycle` 对于 4 Store ops per cycle 以什么方式成立，因为从 IPC 来看，只能达到 2 Store Per Cycle。
+
+考虑到 L1 DCache 需要单周期支持 4 条 Load 指令，如果要用单读口的 SRAM，一般的做法是设计 4 个 Bank，每个 Bank 对应一组 SRAM。为了测试 Bank 的粒度，使用不同跨步（Stride）的 Load，观察 IPC：
+
+- Stride=1B/2B/4B/8B/16B/32B/64B 时 IPC=4
+- Stride=128B 时 IPC=2
+- Stride=256B 时 IPC=1
+
+当多个 Load 访问同一个 Cache Line 时，这些 Load 可以同时进行，极限情况下用 4 条 128b Load 可以做到一个周期把整个 64B Cache Line 都读出来；Stride=128B 时，IPC 砍半，说明只有一半的 Bank 得到了利用，进一步 Stride=256B 时，IPC=1，说明只有一个 Bank 被用上。那么 L1 DCache 的组织方式应该是 4 个 Bank，Bank Index 对应 PA[7:6]，也就是连续的四个 64B Cache Line 会被映射到四个 Bank 上。当多个 Load 被映射到同一个 Bank 且访问的不是同一个 Cache Line 时，会出现性能损失。
 
 ### MMU
 
