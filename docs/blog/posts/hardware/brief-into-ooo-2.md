@@ -166,6 +166,15 @@ Load 的起始地址等于 Store 的起始地址或者正好在中间。
 
 小于或等于 4 字节的 Load 只能从一个 Store 中获取数据。
 
+再看看更早的 ARM 核心，ARM Cortex-A78 Core Software Optimization Guide 中的描述：
+
+> Load start address should align with the start or middle address of the older store. This does not apply to LDPs that load 2 32b registers or LDRDs
+> Loads of size greater than 8 bytes can get the data forwarded from a maximum of 2 stores. If
+there are 2 stores, then each store should forward to either first or second half of the load
+> Loads of size less than or equal to 8 bytes can get their data forwarded from only 1 store
+
+因此 X925 相比 A78 的主要区别是，8 bytes Load 也可以从多个 Store 中转发数据了。
+
 ## Load Address Prediction
 
 Prefetch 是一个常见的优化手段，根据访存模式，提前把数据预取到缓存当中。不过最终数据还是要通过访存指令把数据从缓存中读取到寄存器中，那么能否更进一步，把数据预取到寄存器中呢？这实际上就相当于，我需要预测 Load 指令要读取的地址，这样才能提前把数据读到寄存器当中。
