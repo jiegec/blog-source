@@ -181,6 +181,12 @@ Register Renaming 把物理寄存器重命名为架构寄存器，那么 [Memory
 
 具体做法是，在 Memory Dependency Predictor 的基础上，还把 Store 写入的数据保存到 Value File 当中。当预测 Load 会从某个 Store 取数据时，就从 Value File 中取出对应的数据，提早执行依赖 Load 结果的指令。
 
+这个优化在苹果的专利中被称为 Zero cycle load：[Zero cycle load](https://patentimages.storage.googleapis.com/5a/65/51/67a1261bfaea1d/US9996348.pdf) 和 [Zero cycle load bypass](https://patentimages.storage.googleapis.com/a5/70/5d/34916db6fc4244/US20210173654A1.pdf):
+
+> a destination operand of the load is renamed with a same
+> physical register identifier used for a source operand of the
+> store. Also, the data of the store is bypassed to the load.
+
 ## Load Address Prediction
 
 Prefetch 是一个常见的优化手段，根据访存模式，提前把数据预取到缓存当中。不过最终数据还是要通过访存指令把数据从缓存中读取到寄存器中，那么能否更进一步，把数据预取到寄存器中呢？这实际上就相当于，我需要预测 Load 指令要读取的地址，这样才能提前把数据读到寄存器当中。
