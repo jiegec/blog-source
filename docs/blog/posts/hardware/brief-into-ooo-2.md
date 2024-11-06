@@ -152,6 +152,20 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 当然了，这是很老的微架构了。
 
+再看看 ARM 的公版核，从 ARM Cortex-X925 Core Software Optimization Guide 中可以看到这样的描述：
+
+> Load start address should align with the start or middle address of the older store.
+
+Load 的起始地址等于 Store 的起始地址或者正好在中间。
+
+> Loads of size greater than 8 bytes can get the data forwarded from a maximum of 2 stores. If there are 2 stores, then each store should forward to either first or second half of the load.
+
+大于 8 字节的 Load 最多可以从两个 Store 中转发数据，此时每个 Store 分别贡献一半，例如两个 Store 分别写入 8 个字节，然后 Load 把 16 个字节读出来。
+
+> Loads of size less than or equal to 4 bytes can get their data forwarded from only 1 store
+
+小于或等于 4 字节的 Load 只能从一个 Store 中获取数据。
+
 ## Load Address Prediction
 
 Prefetch 是一个常见的优化手段，根据访存模式，提前把数据预取到缓存当中。不过最终数据还是要通过访存指令把数据从缓存中读取到寄存器中，那么能否更进一步，把数据预取到寄存器中呢？这实际上就相当于，我需要预测 Load 指令要读取的地址，这样才能提前把数据读到寄存器当中。
