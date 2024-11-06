@@ -69,13 +69,15 @@ Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 ### L1 ITLB
 
-官方信息：**256-entry** 8-way L1 ITLB，支持 4KB 和 64KB 的页表大小
+官方信息：**256-entry** **8-way** L1 ITLB，支持 4KB 和 64KB 的页表大小
 
 构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
 
 ![](./qualcomm_oryon_itlb.png)
 
-可以看到 256 Page 出现了明显的拐点，对应的就是 256 的 L1 ITLB 容量。
+可以看到 256 Page 出现了明显的拐点，对应的就是 256 的 L1 ITLB 容量。注意要避免 ICache 和 BTB 的容量成为瓶颈，把 B 指令分布在不同的 Cache Line 和 BTB entry 上。
+
+如果每两个 page 放一条 B 指令，容量减小到 128 Page；进一步把 B 指令放得更加稀疏，最终在每 32 个 page 放一条 B 指令时，容量减到 8 Page，之后不再减小。说明 L1 ITLB 是 32 Set 8 Way，Index 是 PC[16:12]。这是页表大小为 4KB 的情况，64KB 没有测试，预计是类似的。
 
 ### Decode
 
