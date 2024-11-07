@@ -41,4 +41,56 @@ Neoverse V2 (AWS Graviton 4) 的性能测试结果见 [SPEC](../../../benchmark.
 
 ## 前端
 
+### Branch Predictor
+
+官方信息：Two predicted branches per cycle, nanoBTB + two level main BTB, 8 table 2 way TAGE direction predictor
+
+### L1 ICache
+
+官方信息：64KB, 4-way set associative, VIPT behaving as PIPT, 64B cacheline, PLRU replacement policy
+
+### MOP Cache
+
+官方信息：1536 macro-operations, 4-way skewed associative, VIVT behaving as PIPT, NRU replacement policy, 8 MOP/cycle
+
+### L1 ITLB
+
+官方信息：Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity, Fully associative, 48 entries
+
+### Decode
+
+官方信息：6-wide Decode
+
 ## 后端
+
+### 计算单元
+
+官方信息：6x ALU, 2x Branch, 4x 128b SIMD
+
+### Load Store Unit
+
+官方信息：2 Load/Store Pipe + 1 Load Pipe
+
+### Reorder Buffer
+
+官方信息：320 MOP ROB, 8-wide retire
+
+### L1 DCache
+
+官方信息：64KB, 4-way set associative, VIPT behaving as PIPT, 64B cacheline, ECC protected, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 3×128-bit read paths and 2×128-bit write paths for the vector execute pipeline
+
+### L1 DTLB
+
+官方信息：Caches entries at the 4KB, 16KB, 64KB, 2MB or 512MB granularity, Fully associative, 48 entries
+
+### L2 Unified TLB
+
+官方信息：Shared by instructions and data, 8-way set associative, 2048 entries
+
+### L2 Cache
+
+官方信息：1MB or 2MB, 8-way set associative, 4 banks, PIPT, ECC protected, 64B cacheline, 10 cycle load-to-use, 128 B/cycle
+
+### SVE
+
+官方信息：128b SVE vector length
