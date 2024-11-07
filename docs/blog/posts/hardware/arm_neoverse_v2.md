@@ -201,3 +201,12 @@ slowdown = 2.14x
 ### SVE
 
 官方信息：128b SVE vector length
+
+在 Linux 下查看 `/proc/sys/abi/sve_default_vector_length` 的内容，得到 SVE 宽度为 16 字节，也就是 128b。
+
+实测发现 Neoverse V2 每周期最多可以执行 4 条 ASIMD 或 SVE 的浮点 FMA 指令，也就是说，每周期浮点峰值性能：
+
+- 单精度：`128/32*2*4=32` FLOP per cycle
+- 双精度：`128/64*2*4=16` FLOP per cycle
+
+与 Zen 2-4、Oryon、Firestorm、LA464、Haswell 等微架构看齐，但不及 Zen 5、Skylake 等通过 AVX512 提供的峰值浮点性能。
