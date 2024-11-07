@@ -156,6 +156,10 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 
 官方信息：320 MOP ROB, 8-wide retire
 
+把两个串行的 fsqrt 序列放在循环的头和尾，中间用 NOP 填充，如果 ROB 足够大，可以在执行开头串行的 fsqrt 序列时，同时执行结尾串行的 fsqrt 序列，此时性能是最优的。如果 ROB 不够大，那么会观察到性能下降。由于 Neoverse V2 执行 NOP 可以达到接近 12 的 IPC，所以只需要很少的 fsqrt 就足够生成足够的延迟。
+
+通过测试，发现在大约 640 条 NOP 时出现性能下降，而 Neoverse V2 实现了 Instruction Fusion，两条 NOP 指令算做一条 uOP，同时也是一条 MOP，因此 640 条 NOP 对应 320 MOP 的 ROB 大小。极限情况下，320 MOP 可以存 640 uOP，但是实际上比较难达到，很容易受限于其他结构。
+
 ### L1 DCache
 
 官方信息：**64KB**, 4-way set associative, **VIPT behaving as PIPT**, 64B cacheline, ECC protected, RRIP replacement policy, **4×64-bit read paths** and **4×64-bit write** paths for the integer execute pipeline, **3×128-bit read paths** and **2×128-bit** write paths for the vector execute pipeline
