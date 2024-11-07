@@ -131,11 +131,22 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 
 ### Load Store Unit
 
-官方信息：2 Load/Store Pipe + 1 Load Pipe, Reduce bandwidth or incur additional latency for:
+官方信息：**2 Load/Store Pipe + 1 Load Pipe**, Reduce bandwidth or **incur additional latency** for:
 
 1. Load operations that cross a cache-line (64-byte) boundary.
 2. Quad-word load operations that are not 4B aligned.
 3. Store operations that cross a 32B boundary.
+
+经过测试，一个周期内可以最多完成如下的 Load/Store 指令：
+
+- 3x 64b Load
+- 2x 64b Load + 1x 64b Store
+- 1x 64b Load + 2x 64b Store
+- 2x 64b Store
+
+这个性能符合 2 LS + 1 LD pipe 的设计。
+
+经过测试，当 Load 指令没有跨越缓存行时，load to use 延迟是 4 cycle；当 Load 指令跨过 64B 缓存行边界时，load to use 延迟增加到 5 cycle。
 
 ### Move Elimination
 
@@ -148,6 +159,8 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 ### L1 DCache
 
 官方信息：64KB, 4-way set associative, VIPT behaving as PIPT, 64B cacheline, ECC protected, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 3×128-bit read paths and 2×128-bit write paths for the vector execute pipeline
+
+经过测试，L1 DCache 的 load to use latency 是 4 cycle，没有针对 pointer chasing 做 3 cycle 的优化。
 
 ### L1 DTLB
 
