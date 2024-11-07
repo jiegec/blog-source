@@ -57,7 +57,17 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 
 ### L1 ICache
 
-官方信息：64KB, 4-way set associative, VIPT behaving as PIPT, 64B cacheline, PLRU replacement policy
+官方信息：**64KB**, 4-way set associative, VIPT behaving as PIPT, 64B cacheline, PLRU replacement policy
+
+为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
+
+![](./arm_neoverse_v2_fetch_bandwidth.png)
+
+开始有一段 IPC 接近 12，此时指令由 MOP Cache 提供，由于连续的两条 NOP 可以被融合成一个 uOP，因此可以突破 8 的限制，但为什么是 12 还需要进一步研究。
+
+当指令超出 MOP Cache 容量后，指令走 ICache + Decode，此时可以达到 6 的 IPC，与 6-wide 的 Decode Width 吻合。当 footprint 超出 64 KB 时，IPC 下降，对应了 64KB 的 L1 ICache 容量。
+
+超出 L1 ICache 容量后，可以达到 4 的 IPC，说明 L2 Cache 可以提供每周期 16 字节的取指带宽。
 
 ### MOP Cache
 
@@ -66,6 +76,18 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 ### L1 ITLB
 
 官方信息：Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity, Fully associative, 48 entries
+
+构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
+
+![](./arm_neoverse_v2_itlb.png)
+
+可以看到 48 Page 出现了明显的拐点，对应的就是 48 的 L1 ITLB 容量。此后性能降低到 7 CPI，此时对应了 L2 Unified TLB 的延迟。
+
+进一步增加 Page 数量，发现在大约 1000 个页的时候，时间从 7 cycle 逐渐上升：
+
+![](./arm_neoverse_v2_itlb_l2.png)
+
+考虑到 L2 Unified TLB 一共有 2048 个 Entry，猜测它限制了 ITLB 能使用的 L2 TLB 的容量只有 2048 的一半，也就是 1024 项。超出 1024 项以后，需要 Page Table Walker 进行地址翻译。
 
 ### Decode
 
@@ -77,7 +99,7 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 
 官方信息：up to 8 MOPs per cycle and up to 16 uOPs per cycle
 
-### Store to Load Forwardin
+### Store to Load Forwarding
 
 官方信息：
 
@@ -85,6 +107,17 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 > • Load start address should align with the start or middle address of the older store
 > • Loads of size greater than or equal to 8 bytes can get the data forwarded from a maximum of 2 stores. If there are 2 stores, then each store should forward to either first or second half of the load
 > • Loads of size less than or equal to 4 bytes can get their data forwarded from only 1 store
+
+经过实际测试，如下的情况可以成功转发：
+
+- 对地址 x 的 64b Store 转发到对地址 y 的 64b Load，要求 y=x-4 或 y=x 或 y=x+4
+- 对地址 x 的 64b Store 转发到对地址 y 的 32b Load，要求 y=x 或 y=x+4
+- 对地址 x 的 32b Store 转发到对地址 y 的 64b Load，要求 y=x 或 y=x-4
+- 对地址 x 的 32b Store 和对地址 x+4 的 32b Store 转发到对地址 y 的 64b Load，要求 y=x-4 或 y=x-4 或 y=x+4
+- 不支持 16b Store 转发到 64b Load
+- 不支持 8b Store 转发到 64b Load
+
+和官方的描述是比较符合的，只考虑了全部转发、转发前半和转发后半的场景。对地址本身的对齐没有要求，甚至在跨缓存行边界时也可以转发，只是对 Load 和 Store 的相对位置有要求。
 
 ### 计算单元
 
