@@ -63,13 +63,34 @@ Neoverse V2 (AWS Graviton 4) 的性能测试结果见 [SPEC](../../../benchmark.
 
 ## 后端
 
+### Dispatch
+
+官方信息：up to 8 MOPs per cycle and up to 16 uOPs per cycle
+
+### Store to Load Forwardin
+
+官方信息：
+
+> The Neoverse V2 core allows data to be forwarded from store instructions to a load instruction with the restrictions mentioned below:
+> • Load start address should align with the start or middle address of the older store
+> • Loads of size greater than or equal to 8 bytes can get the data forwarded from a maximum of 2 stores. If there are 2 stores, then each store should forward to either first or second half of the load
+> • Loads of size less than or equal to 4 bytes can get their data forwarded from only 1 store
+
 ### 计算单元
 
 官方信息：6x ALU, 2x Branch, 4x 128b SIMD
 
 ### Load Store Unit
 
-官方信息：2 Load/Store Pipe + 1 Load Pipe
+官方信息：2 Load/Store Pipe + 1 Load Pipe, Reduce bandwidth or incur additional latency for:
+
+1. Load operations that cross a cache-line (64-byte) boundary.
+2. Quad-word load operations that are not 4B aligned.
+3. Store operations that cross a 32B boundary.
+
+### Move Elimination
+
+官方信息：特定情况下这些指令可以被优化：mov reg, 0; mov reg, zero; mov vreg, 0; mov reg, reg;mov vreg, vreg
 
 ### Reorder Buffer
 
