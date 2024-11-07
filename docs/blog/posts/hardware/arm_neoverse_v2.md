@@ -182,7 +182,13 @@ slowdown = 2.14x
 
 ### L1 DTLB
 
-官方信息：Caches entries at the 4KB, 16KB, 64KB, 2MB or 512MB granularity, Fully associative, 48 entries
+官方信息：Caches entries at the 4KB, 16KB, 64KB, 2MB or 512MB granularity, Fully associative, **48** entries. A miss in the L1 data TLB and a hit in the L2 TLB has a 6-cycle penalty compared to a hit in the L1 data TLB.
+
+用 pointer chasing 的方法测试 L1 DTLB 容量，指针分布在不同的 page 上，使得 DTLB 成为瓶颈：
+
+![](./arm_neoverse_v2_l1dtlb.png)
+
+可以看到 48 Page 出现了明显的拐点，对应的就是 48 的 L1 DTLB 容量。超出容量后，需要额外的 5 cycle 的 latency 访问 L2 Unified TLB。
 
 ### L2 Unified TLB
 
