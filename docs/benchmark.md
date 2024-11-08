@@ -105,7 +105,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 3. Neoverse N2(Yitian 710): MPKI=4.66 Mispred=2.57%
 4. Firestorm(M1): MPKI=4.67 Mispred=2.55%
 5. Neoverse V1(Graviton 3)/Cortex X1C(8cx Gen3 P Core): MPKI=4.75 Mispred=2.62%
-6. Neoverse N1(Ampere Altra): MPKI=5.06 Mispred=2.79%
+6. Neoverse N1(Ampere Altra)/Cortex A78C(8cx Gen3 E Core): MPKI=5.06 Mispred=2.79%
 7. TSV110(Kunpeng 920): MPKI=6.36 Mispred=3.49%
 
 ### 网上的数据
