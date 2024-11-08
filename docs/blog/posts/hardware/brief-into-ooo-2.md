@@ -270,6 +270,8 @@ Constant Verification Unit 类似一个小的针对 Load Value Prediction 的 L0
 
 ARM 公版核从 Cortex-A78/Cortex-X1/Neoverse-V1 开始引入的 Correlated Miss Caching (CMC) 预取器就是一种 Temporal Prefetcher，它可以明显降低 pointer chasing 的延迟，此时再用 pointer chasing 测出来的缓存容量和延迟可能就不准了。
 
+在 Golden Cove 上进行测试，它的 L1 DCache 大小是 48KB，如果用随机的 pointer chasing 方式访存，可以观察到在 48KB 之内是 5 cycle latency，在 L2 Cache 范围内是 16 cycle latency。但如果把 pointer chasing 的访存模式改成比较有规律的模式，比如按 64B、128B、192B 或者 256B 的跳步进行，可以观察到，即使超过了 L1 DCache 的容量，还是可以做到大约 5-8 cycle 的 latency。
+
 ## 缓存/内存仿真模型
 
 最后列举一下科研里常用的一些缓存/内存仿真模型：
