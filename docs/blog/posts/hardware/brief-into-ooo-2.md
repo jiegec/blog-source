@@ -263,10 +263,10 @@ Constant Verification Unit 类似一个小的针对 Load Value Prediction 的 L0
 Intel 的处理器通过 MSR 1A4H 可以配置各个预取器：
 
 - the L2 hardware prefetcher, which fetches additional lines of code or data into the L2 cache.
-- the L2 adjacent cache line prefetcher, which fetches the cache line that comprises a cache line pair (128 bytes).
-- the L2 Adaptive Multipath Probability (AMP) prefetcher.
-- the L1 data cache prefetcher, which fetches the next cache line into L1 data cache.
-- the L1 data cache IP prefetcher, which uses sequential load history (based on instruction pointer of previous loads) to determine whether to prefetch additional lines
+- the L2 adjacent cache line prefetcher, which fetches the cache line that comprises a cache line pair (128 bytes). 这和 AMD 的 Up/Down Prefetcher 应该是一个意思
+- the L2 Adaptive Multipath Probability (AMP) prefetcher. 这个应该属于 Spatial Prefetcher
+- the L1 data cache prefetcher, which fetches the next cache line into L1 data cache. 这个应该属于 Next Line Prefetcher
+- the L1 data cache IP prefetcher, which uses sequential load history (based on instruction pointer of previous loads) to determine whether to prefetch additional lines.
 
 接下来介绍 Spatial Prefetching 和 Temporal Prefetching。
 
@@ -281,6 +281,8 @@ Intel 的处理器通过 MSR 1A4H 可以配置各个预取器：
 ARM 公版核从 Cortex-A78/Cortex-X1/Neoverse-V1 开始引入的 Correlated Miss Caching (CMC) 预取器就是一种 Temporal Prefetcher，它可以明显降低 pointer chasing 的延迟，此时再用随机 pointer chasing 测出来的缓存容量和延迟可能就不准了。没有配备 CMC Prefetcher 的 ARM 公版核，当 footprint 超出 L2 时，随机 pointer chasing 测试可以观察到明显的延迟上升，而配备了 CMC Prefetcher 后，footprint 需要到接近 L3 才能看到明显的延迟上升。
 
 在 Golden Cove 上进行测试，它的 L1 DCache 大小是 48KB，如果用随机的 pointer chasing 方式访存，可以观察到在 48KB 之内是 5 cycle latency，在 L2 Cache 范围内是 16 cycle latency。但如果把 pointer chasing 的访存模式改成比较有规律的模式，比如按 64B、128B、192B、256B 直至 512B 的跳步进行，可以观察到，即使超过了 L1 DCache 的容量，还是可以做到大约 5-8 cycle 的 latency。这就是 L1 Prefetcher 在起作用。
+
+如果我们通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，关闭 L1 data cache IP prefetcher，再在 0 号核心上重新跑上面的测试，就可以看到 L2 Cache 的范围内的性能退化到了 16 Cycle，和随机 pointer chasing 一样。关闭其他的 prefetcher 则没有这个现象，说明正是 L1 data cache IP prefetcher 实现了针对 L1 的 Stride Prefetcher。
 
 ## 缓存/内存仿真模型
 
