@@ -274,7 +274,15 @@ Intel 的处理器通过 MSR 1A4H 可以配置各个预取器：
 
 一种 Spatial Prefetcher 实现是 Spatial Memory Streaming (SMS)。它的做法是，把内存分成很多个相同大小的 Region，当缓存出现缺失时，创建一个 Region，记录这次访存指令的 PC 以及访存的地址相对 Region 的偏移，然后开始跟踪这个 Region 内哪些数据被读取了，直到这个 Region 的数据被换出 Cache，就结束记录，把信息保存下来。以上面的 0、256 和 320 为例子，访问 0 时出现缓存缺失，那就创建一个 Region，然后把 256 和 320 这两个偏移记下来。当同一条访存指令又出现缺失，并且偏移和之前一样时，根据之前保存的信息，把 Region 里曾经读过的地址预取一遍，按上面的例子，也就是 256 和 320。这里的核心是只匹配偏移而不是完整的地址，忽略了地址的高位，最后预取的时候，也是拿新的导致缓存缺失的地址去加偏移，自然而然实现了平移。
 
-另一种 Spatial Prefetcher 实现是 Variable length delta prefetcher (VLDP)，它的思路是，对访存序列求差分，即用第 k 次访存地址减去第 k-1 次访存地址，得到 Delta 序列，然后对当前的 Delta 序列，预测下一个 Delta，那么预取的地址，就是 Delta 加上最后一次访存的地址。从 Intel 的专利 [Systems and methods for adaptive multipath probability (amp) prefetcher](https://patents.google.com/patent/US20190138451) 来看，它的 AMP Prefetcher 实现思路和 VLDP 类似。
+另一种 Spatial Prefetcher 实现是 Variable length delta prefetcher (VLDP)，它的思路是，对访存序列求差分，即用第 k 次访存地址减去第 k-1 次访存地址，得到 Delta 序列，然后对当前的 Delta 序列，预测下一个 Delta，那么预取的地址，就是 Delta 加上最后一次访存的地址。从 Intel 的专利 [Systems and methods for adaptive multipath probability (amp) prefetcher](https://patents.google.com/patent/US20190138451) 来看，它的 AMP Prefetcher 实现思路和 VLDP 类似，专利中给出了一个例子：
+
+- 假如程序对某个物理页的访存模式是：0, 2, 4, 16, 15
+- 求差分，得到：+2, +2, +12, -1
+- 那么 AMP 预测器要做的就是：
+	- 无历史时，预测第一个差分值：N/A -> +2
+	- 第一个差分是 +2 时，预测第二个差分值：+2 -> +2
+	- 已知前两个差分时，预测第三个差分值：+2, +2 -> +12
+	- 已知前三个差分时，预测第四个差分值：+2, +2, +12 -> -1
 
 不过 Spatial Prefetcher 遇到动态分配的不连续的数据结构就犯了难（比如链表和树），因为数据在内存里的分布比较随机，而且还有各种指针，要访问的数据之间的偏移大概率是不同的。这时候就需要 [Temporal Prefetcher](https://www.sciencedirect.com/science/article/pii/S0065245821000796)，它的思路是跟踪缓存缺失的历史，如果发现当前缺失的地址在历史中曾经出现过，那就预取在历史中紧随其后的几次缓存缺失。比如链表节点按顺序是 A、B 和 C，第一次访问时，按照 A B C 的顺序出现缓存缺失，这些缺失被记录在历史当中；未来如果再次访问 A，预取器在历史中找到 A 的位置，发现其后的缓存缺失为 B 和 C，那就对它们进行预取。就好像预取器自己存了一份链表，提前去查后继的节点，也可以说是 Record and Replay 思想的实践。
 
