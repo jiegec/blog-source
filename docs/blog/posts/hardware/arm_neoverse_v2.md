@@ -71,7 +71,23 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 
 ### MOP Cache
 
-官方信息：1536 macro-operations, 4-way skewed associative, VIVT behaving as PIPT, NRU replacement policy, 8 MOP/cycle
+官方信息：**1536 macro-operations**, 4-way skewed associative, VIVT behaving as PIPT, NRU replacement policy, **8 MOP/cycle**
+
+因为 MOP Cache 的带宽比 Decode 高，为了测试出 MOP Cache 的规格，需要构造指令序列，使其可以达到 8 MOP/cycle 的 IPC，如果走的是 Instruction Fetch + Decode，则达不到这个 IPC。但是 Neoverse V2 的 Dispatch 有比较明确的限制：
+
+> The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle, with the following limitations on the number of µOPs of each type that may be simultaneously dispatched.
+> Up to 4 µOPs utilizing the S（单周期整数）or B（分支）pipelines
+> Up to 4 µOPs utilizing the M（多周期整数）pipelines
+> Up to 2 µOPs utilizing the M0（多周期整数）pipelines
+> Up to 2 µOPs utilizing the V0（浮点/向量） pipeline
+> Up to 2 µOPs utilizing the V1（浮点/向量） pipeline
+> Up to 6 µOPs utilizing the L（访存）pipelines
+
+考虑到这个限制，使用 4 条 add 指令，4 条 fadd 指令为一组，不断重复。通过测试，这样的指令序列确实可以达到 8 的 IPC。当指令个数增加到超出 MOP Cache 容量时，将会观察到性能的下降：
+
+![](./arm_neoverse_v2_mop_cache.png)
+
+拐点出现在 192 个指令组，此时达到 MOP Cache 的容量瓶颈，`192*8=1536`，正好是 MOP Cache 的容量。
 
 ### L1 ITLB
 
