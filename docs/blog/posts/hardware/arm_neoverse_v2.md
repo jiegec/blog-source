@@ -143,7 +143,14 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 
 ### 计算单元
 
-官方信息：6x ALU, 2x Branch, 4x 128b SIMD
+官方信息：6x ALU, **2x Branch**, **4x 128b SIMD**
+
+实测以下指令的吞吐：
+
+- int add: 4 IPC，受到 Dispatch 限制：`Up to 4 µOPs utilizing the S（单周期整数）or B（分支）pipelines`
+- int mul: 2 IPC，对应两个 Multi Cycle 单元
+- int not taken branch: 2 IPC，对应两个 Branch 单元
+- asimd fadd double: 4 IPC，对应四个 FP/ASIMD 单元
 
 ### Load Store Unit
 
