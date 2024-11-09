@@ -175,6 +175,13 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Qualcomm X Elite Oryon on Linux: 10.64
 - Qualcomm X Elite Oryon on Windows: 9.70
 
+[ARM Cortex X1 微架构评测（上）：向山进发](https://zhuanlan.zhihu.com/p/619033328)
+
+- Zen 3 @ 4.95 GHz: 8.4
+- Firestorm @ 3.0 GHz: 7.4
+- Cortex X1 @ 3.0 GHz: 5.7
+- Cortex A78 @ 2.4 GHz: 3.9
+
 ## SPEC FP 2017 Rate-1
 
 下面贴出自己测的数据（SPECfp2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。总运行时间基本和分数成反比，乘积按 1e5 估算。
@@ -308,6 +315,14 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 
 - Qualcomm X Elite Oryon on Linux: 17.77
 - Qualcomm X Elite Oryon on Windows: 16.66
+
+[ARM Cortex X1 微架构评测（上）：向山进发](https://zhuanlan.zhihu.com/p/619033328)
+
+- Zen 3 @ 4.95 GHz: 11.9
+- Firestorm @ 3.0 GHz: 11.2
+- Cortex X1 @ 3.0 GHz: 8.9
+- Cortex A78 @ 2.4 GHz: 5.9
+
 
 ## SPEC INT 2006 Speed
 
