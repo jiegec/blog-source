@@ -223,6 +223,18 @@ slowdown = 2.14x
 
 因此验证了 L1 DCache 采用的是 VIPT，并做了针对 alias 的正确性处理。如果是 PIPT，那么 L1 DCache 会发现这两个页对应的是相同的物理地址，性能不会下降，也不需要频繁的 refill。
 
+进一步尝试研究 Neoverse V2 的 L1 DCache 的构造，为了支持每周期 3 条 Load 指令，L1 DCache 通常会分 Bank，每个 Bank 都有自己的读口。如果 Load 分布到不同的 Bank 上，各 Bank 可以同时读取，获得更高的性能；如果 Load 命中相同的 Bank，但是访问的 Bank 内地址不同，就只能等到下一个周期再读取。为了测试 Bank 的构造，设计一系列以不同的固定 stride 间隔的 Load 指令，观察 Load 的 IPC：
+
+- Stride=1B/2B/4B/8B/16B/32B: IPC=3
+- Stride=64B: IPC=2
+- Stride=128B/256B/512B: IPC=1
+
+Stride=64B 时出现性能下降，说明此时出现了 Bank Conflict，进一步到 Stride=128B 时，只能达到 1 的 IPC，说明此时所有的 Load 都命中了同一个 Bank，并且是串行读取。根据这个现象，认为 Neoverse V2 的 L1 DCache 组织方式是：
+
+- 一共有两个 Bank，Bank Index 是 VA[6]
+- 每个 Bank 每周期可以从一个缓存行读取数据，支持多个 Load 访问同一个缓存行
+- 如果多个 Load 访问同一个 Bank 的不同缓存行，只能一个周期完成一个 Load
+
 ### L1 DTLB
 
 官方信息：Caches entries at the 4KB, 16KB, 64KB, 2MB or 512MB granularity, Fully associative, **48** entries. A miss in the L1 data TLB and a hit in the L2 TLB has a 6-cycle penalty compared to a hit in the L1 data TLB.
