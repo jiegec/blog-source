@@ -168,9 +168,18 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 
 官方信息：特定情况下这些指令可以被优化：mov reg, 0; mov reg, zero; mov vreg, 0; mov reg, reg;mov vreg, vreg
 
+实际测试，各种模式的 IPC 如下：
+
+- mov reg, 0: IPC 6
+- mov vreg, 0: IPC 6
+- mov reg, reg: 无依赖链时 IPC 4
+- mov vreg, vreg: 无依赖链时 IPC 3.6
+
+虽然做了优化，但算不上很快。
+
 ### Reorder Buffer
 
-官方信息：320 MOP ROB, 8-wide retire
+官方信息：**320 MOP** ROB, 8-wide retire
 
 把两个串行的 fsqrt 序列放在循环的头和尾，中间用 NOP 填充，如果 ROB 足够大，可以在执行开头串行的 fsqrt 序列时，同时执行结尾串行的 fsqrt 序列，此时性能是最优的。如果 ROB 不够大，那么会观察到性能下降。由于 Neoverse V2 执行 NOP 可以达到接近 12 的 IPC，所以只需要很少的 fsqrt 就足够生成足够的延迟。
 
@@ -198,7 +207,7 @@ baseline = 1520692165 cycles, 1200 refills
 slowdown = 2.14x
 ```
 
-因此猜测 L1 DCache 采用的是 VIPT，并做了针对 alias 的正确性处理。如果是 PIPT，那么 L1 DCache 会发现这两个页对应的是相同的物理地址，性能不会下降，也不需要频繁的 refill。
+因此验证了 L1 DCache 采用的是 VIPT，并做了针对 alias 的正确性处理。如果是 PIPT，那么 L1 DCache 会发现这两个页对应的是相同的物理地址，性能不会下降，也不需要频繁的 refill。
 
 ### L1 DTLB
 
