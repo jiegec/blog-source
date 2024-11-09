@@ -75,13 +75,14 @@ ARM 公版核微架构既有 MOP 的概念，又有 uOP 的概念。uOP 主要�
 
 因为 MOP Cache 的带宽比 Decode 高，为了测试出 MOP Cache 的规格，需要构造指令序列，使其可以达到 8 MOP/cycle 的 IPC，如果走的是 Instruction Fetch + Decode，则达不到这个 IPC。但是 Neoverse V2 的 Dispatch 有比较明确的限制：
 
-> The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle, with the following limitations on the number of µOPs of each type that may be simultaneously dispatched.
-> Up to 4 µOPs utilizing the S（单周期整数）or B（分支）pipelines
-> Up to 4 µOPs utilizing the M（多周期整数）pipelines
-> Up to 2 µOPs utilizing the M0（多周期整数）pipelines
-> Up to 2 µOPs utilizing the V0（浮点/向量） pipeline
-> Up to 2 µOPs utilizing the V1（浮点/向量） pipeline
-> Up to 6 µOPs utilizing the L（访存）pipelines
+The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle, with the following limitations on the number of µOPs of each type that may be simultaneously dispatched.
+
+- Up to 4 µOPs utilizing the S（单周期整数）or B（分支）pipelines
+- Up to 4 µOPs utilizing the M（多周期整数）pipelines
+- Up to 2 µOPs utilizing the M0（多周期整数）pipelines
+- Up to 2 µOPs utilizing the V0（浮点/向量） pipeline
+- Up to 2 µOPs utilizing the V1（浮点/向量） pipeline
+- Up to 6 µOPs utilizing the L（访存）pipelines
 
 考虑到这个限制，使用 4 条 add 指令，4 条 fadd 指令为一组，不断重复。通过测试，这样的指令序列确实可以达到 8 的 IPC。当指令个数增加到超出 MOP Cache 容量时，将会观察到性能的下降：
 
@@ -126,10 +127,11 @@ Return Stack 记录了最近的函数调用链，call 时压栈，return 时弹�
 
 官方信息：
 
-> The Neoverse V2 core allows data to be forwarded from store instructions to a load instruction with the restrictions mentioned below:
-> • Load start address should align with the start or middle address of the older store
-> • Loads of size greater than or equal to 8 bytes can get the data forwarded from a maximum of 2 stores. If there are 2 stores, then each store should forward to either first or second half of the load
-> • Loads of size less than or equal to 4 bytes can get their data forwarded from only 1 store
+The Neoverse V2 core allows data to be forwarded from store instructions to a load instruction with the restrictions mentioned below:
+
+- Load start address should align with the start or middle address of the older store
+- Loads of size greater than or equal to 8 bytes can get the data forwarded from a maximum of 2 stores. If there are 2 stores, then each store should forward to either first or second half of the load
+- Loads of size less than or equal to 4 bytes can get their data forwarded from only 1 store
 
 经过实际测试，如下的情况可以成功转发：
 
@@ -142,7 +144,7 @@ Return Stack 记录了最近的函数调用链，call 时压栈，return 时弹�
 | 32b Store  | {0,2}   | {0,2}    | {0}      | {-4,0}   |
 | 64b Store  | {0,4}   | {0,4}    | {0,4}    | {-4,0,4} |
 
-- 对地址 x 的 32b Store 和对地址 x+4 的 32b Store 转发到对地址 y 的 64b Load，要求 y=x-4 或 y=x 或 y=x+4
+一个 Load 需要转发两个 Store 的数据的情况：对地址 x 的 32b Store 和对地址 x+4 的 32b Store 转发到对地址 y 的 64b Load，要求 y=x-4 或 y=x 或 y=x+4
 
 和官方的描述是比较符合的，只考虑了全部转发、转发前半和转发后半的三种场景。特别地，针对常见的 64b Load，支持 y-x=-4。同时也支持前半和后半来自两个不同的 Store。对地址本身的对齐没有要求，甚至在跨缓存行边界时也可以转发，只是对 Load 和 Store 的相对位置有要求。
 
