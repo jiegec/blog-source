@@ -1,4 +1,5 @@
 #!/bin/sh
+# remember to update .github/workflows/deploy.yml if you change this
 cd docs/data && poetry run python3 plot.py && cd ../../
 DEPLOY=true poetry run mkdocs build
 rm -rf ../jiegec.github.io/*
