@@ -180,6 +180,19 @@ The Neoverse V2 core allows data to be forwarded from store instructions to a lo
 
 经过测试，当 Load 指令没有跨越缓存行时，load to use 延迟是 4 cycle；当 Load 指令跨过 64B 缓存行边界时，load to use 延迟增加到 5 cycle。
 
+### Memory Dependency Predictor
+
+为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之前在内存上的依赖。参考 [Store-to-Load Forwarding and Memory Disambiguation in x86 Processors](https://blog.stuffedcow.net/2014/01/x86-memory-disambiguation/) 的方法，构造两个指令模式，分别在地址和数据上有依赖：
+
+- 数据依赖，地址无依赖：`str x3, [x1]` 和 `ldr x3, [x2]`
+- 地址依赖，数据无依赖：`str x2, [x1]` 和 `ldr x1, [x2]`
+
+初始化时，`x1` 和 `x2` 指向同一个地址，重复如上的指令模式，观察到多少条 `ldr` 指令时会出现性能下降：
+
+![](./arm_neoverse_v2_memory_dependency_predictor.png)
+
+有意思的是，地址依赖的阈值是 40，而数据依赖没有阈值。
+
 ### Move Elimination
 
 官方信息：特定情况下这些指令可以被优化：mov reg, 0; mov reg, zero; mov vreg, 0; mov reg, reg;mov vreg, vreg
