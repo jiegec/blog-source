@@ -1,3 +1,6 @@
+# learned from:
+# https://stackoverflow.com/questions/64374179/how-to-push-to-another-repository-in-github-actions
+# https://stackoverflow.com/questions/71361539/github-action-test-if-a-commit-containing-a-specific-word-was-previously-made
 name: Deploy GitHub Pages to external repository
 
 on:

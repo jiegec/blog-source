@@ -40,6 +40,7 @@ benchmarks_fp_rate = [
 
 def parse_data(flavor):
     for f in glob.glob(f"{flavor}2017_rate1/*.txt"):
+        print(f"Processing {f}")
         name = f.split("/")[-1].split(".")[0]
         parts = name.split("_")
         core = " ".join(parts[:-2])
