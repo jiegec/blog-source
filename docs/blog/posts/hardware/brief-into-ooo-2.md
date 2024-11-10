@@ -138,7 +138,37 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 ## Memory Dependence Predictor
 
-在 Load 指令要执行时，在它之前的 Store 指令可能还没有执行，此时如果要提前执行 Load，可能会读取到错误的数据。但是如果要等待 Load 之前的所有 Store 指令都就绪再执行 Load，性能会受限。因此处理器可以设计一个 Memory Dependence Predictor，预测 Load 和哪些 Store 会有数据依赖，如果有依赖，那就要等待依赖的 Store 完成，再去执行 Load；如果没有依赖，那就可以大胆提前执行 Load，当然了，为了保证正确性，Store 执行的时候，也要去看是否破坏了提前执行的 Load。
+在 Load 指令要执行时，在它之前的 Store 指令可能还没有执行，此时如果要提前执行 Load，可能会读取到错误的数据。但是如果要等待 Load 之前的所有 Store 指令都就绪再执行 Load，性能会受限。因此处理器可以设计一个 Memory Dependence Predictor，预测 Load 和哪些 Store 会有数据依赖，如果有依赖，那就要等待依赖的 Store 完成，再去执行 Load；如果没有依赖，那就可以大胆提前执行 Load，当然了，为了保证正确性，Store 执行的时候，也要去看是否破坏了提前执行的 Load。总之，Memory Dependency Predictor 的目的是，找到一个尽量早的时间去执行 Load 指令，同时避免回滚。
+
+一个实现方法叫做 [Store Set](https://dl.acm.org/doi/pdf/10.1145/279361.279378)。Store Set 是相对 Load 说的，指的是一个 Load 依赖过的所有的 Store 的集合。如果一个 Load 的 Store Set 内的所有的 Store 都执行完了，那么这个 Load 就可以提前执行了，不用考虑别的 Store 指令。
+
+当然了，一开始并不知道 Load 依赖哪些 Store，所以 Store Set 是空的，此时 Load 可能会提前执行。当发现执行顺序错误，需要回滚时，就把导致回滚的 Store 添加到对应 Load 的 Store Set 当中。
+
+具体到硬件实现上，怎么去维护 Store Set 就是一个问题，因为 Store Set 可能会很大，同一个 Store 也可能会出现在很多个 Load 的 Store Set 当中。上述论文提出了一种硬件上的简化方式：
+
+1. 每个 Store 只能出现在一个 Store Set 当中，这个 Store Set 可以由多个 Load 共享。
+2. 执行 Load 之前，为了保证 Store Set 中的 Store 指令都完成执行，要求这些 Store 指令按照一定的顺序完成，那么 Load 只用等待 Store Set 内的最后一条 Store 指令，而不用考虑 Store Set 内所有 Store 指令完成。
+
+具体到硬件上，有两个表来维护这些信息：首先是 Store Set Identifier Table (SSIT)，这个表实现了 Load/Store 指令 PC 到 Store Set ID 的映射。通过 SSIT，就可以知道 Load 的 Store Set 是哪个 ID，哪些 Store 在这个 Store Set 当中。第二个表是 Last Fetched Store Table (LFST)，它记录了这个 Store Set 中最晚被取指的 Store 指令。
+
+前面提到，为了简化依赖的检查，同一个 Store Set 内的 Store 指令需要按照顺序执行，那么 Load 只需要依赖 Store Set 的最后一条 Store 指令。这个就是通过 LFST 来实现的：
+
+- 每个 Store 首先根据 SSIT 找到自己的 Store Set ID，再用 Store Set ID 访问 LFST，如果里面已经有更早的 Store，那就要依赖这个更早的 Store；同时也会更新 LFST，把自己写进去。
+- 同理 Load 也会根据 SSIT 找到 Store ID，用 Store Set ID 反问 LFST，去依赖最晚的 Store。
+- 如果 Store 已经被执行（准确地说，Issue），自然后续的 Load 也不用等待它了，如果 LFST 记录的还是这条 Store，它就可以从 LFST 中清除掉。
+
+下面引用论文中的一个例子。假如一开始 SSIT 和 LFST 都是空的，此时所有的 Load 指令的 Store Set 都是空的，预测为提前执行。此时一条 Load 指令和一条 Store 指令出现了执行顺序错误，这时候硬件会分配一个 Store Set ID，写入到 SSIT 中分别对应 Load 和 Store 的位置，这样就把 Load 和 Store 关联到了同一个 Store Set 当中。
+
+未来 Store 再次被取指时，Store 通过 SSIT 找到自己的 Store Set ID，再读取 LFST，发现同一个 Store Set 内没有更早的 Store 指令，那么不创建额外的依赖，只是把自己写入到 LFST 当中。当 Load 再次被取指时，通过 SSIT 找到 Load 的 Store Set ID，再读取 LFST，发现 LFST 记录了 Store 指令的信息，那么在调度时，这个 Load 就要依赖这个 Store。
+
+如果是一条 Load 依赖两条 Store，那么按照上面的规律，三条指令在 SSIT 中都映射到同一个 Store Set ID，第二条 Store 依赖第一条 Store，Load 依赖第二条 Store。
+
+这个机制自然支持了多个 Load 依赖同一个 Store Set，只要给它们设置相同的 Store Set ID 即可。但缺点是，每条 Store 都只能在一个 Store Set 当中，有时候会出现这么一种情况：
+
+- Load A 的 Store Set 是 Store X, Store Y
+- Load B 的 Store Set 是 Store Z
+
+此时出现了 Load A 和 Store Z 之间的顺序错误，但是 Store Z 和 Load A 属于不同的 Store Set。为了解决这个问题，需要引入 Store Set 合并机制：如果一条 Store 要同时出现在两个 Store Set 当中，那就把这两个 Store Set 合并成一个：Load A、Load B 的 Store Set 都是 Store X、Store Y 和 Store Z。代价是可能引入了一些假的依赖。
 
 ## Store to Load Forwarding
 
