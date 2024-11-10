@@ -140,6 +140,8 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 在 Load 指令要执行时，在它之前的 Store 指令可能还没有执行，此时如果要提前执行 Load，可能会读取到错误的数据。但是如果要等待 Load 之前的所有 Store 指令都就绪再执行 Load，性能会受限。因此处理器可以设计一个 Memory Dependence Predictor，预测 Load 和哪些 Store 会有数据依赖，如果有依赖，那就要等待依赖的 Store 完成，再去执行 Load；如果没有依赖，那就可以大胆提前执行 Load，当然了，为了保证正确性，Store 执行的时候，也要去看是否破坏了提前执行的 Load。总之，Memory Dependency Predictor 的目的是，找到一个尽量早的时间去执行 Load 指令，同时避免回滚。
 
+[Alpha 21264](https://ieeexplore.ieee.org/document/755465) 使用了一种简单的方法 Load Wait Table 来解决这个问题：对于那些出现过顺序违例的 Load 指令，打上一个标记，那么未来这个 Load 都要等到在它之前的所有 Store 执行才能执行。这个标记的方法也很简单，维护 Load 指令的 PC 到单 bit 的映射。
+
 一个实现方法叫做 [Store Set](https://dl.acm.org/doi/pdf/10.1145/279361.279378)。Store Set 是相对 Load 说的，指的是一个 Load 依赖过的所有的 Store 的集合。如果一个 Load 的 Store Set 内的所有的 Store 都执行完了，那么这个 Load 就可以提前执行了，不用考虑别的 Store 指令。
 
 当然了，一开始并不知道 Load 依赖哪些 Store，所以 Store Set 是空的，此时 Load 可能会提前执行。当发现执行顺序错误，需要回滚时，就把导致回滚的 Store 添加到对应 Load 的 Store Set 当中。
