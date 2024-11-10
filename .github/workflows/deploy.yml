@@ -1,8 +1,7 @@
 name: Deploy GitHub Pages to external repository
 
 on:
-  https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
-   push:
+  push:
      branches: [ "master" ]
 
 jobs:
