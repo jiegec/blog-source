@@ -3,6 +3,10 @@ import glob
 from collections import defaultdict
 from statistics import mean, geometric_mean
 import numpy as np
+import os
+
+# reproducibility
+os.environ["SOURCE_DATE_EPOCH"] = "0"
 
 # name -> key -> list[float]
 data = defaultdict(lambda: defaultdict(list))
