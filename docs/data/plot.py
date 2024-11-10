@@ -1,3 +1,4 @@
+import matplotlib as mpl
 from matplotlib import pyplot as plt
 import glob
 from collections import defaultdict
@@ -6,6 +7,8 @@ import numpy as np
 import os
 
 # reproducibility
+# https://github.com/matplotlib/matplotlib/issues/27831
+mpl.rcParams["svg.hashsalt"] = "fixed-salt"
 os.environ["SOURCE_DATE_EPOCH"] = "0"
 
 # name -> key -> list[float]
