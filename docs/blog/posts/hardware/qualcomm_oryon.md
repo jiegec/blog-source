@@ -188,11 +188,15 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 - 192 entry Load Queue, 56 entry Store Queue
 - Full 64B/cycle for both fills and evictions to L2 cache
 
+#### L1 DCache 容量
+
 构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
 
 ![](./qualcomm_oryon_l1dc.png)
 
 可以看到 96KB 出现了明显的拐点，对应的就是 96KB 的 L1 DCache 容量。
+
+#### L1 DTLB 容量
 
 用类似的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈：
 
@@ -203,6 +207,8 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 ![](./qualcomm_oryon_dtlb_7.png)
 
 命中 L1 DTLB 时每条 Load 指令是 3 cycle，意味着高通实现了 3 cycle 的 pointer chasing load to use latency，这个特性在苹果，Exynos M-series 和 Intel 的 E-core 中也可以看到，针对这个优化的讨论，详见 [浅谈乱序执行 CPU（二：访存）](./brief-into-ooo-2.md) 的 Load Pipeline 小节。在其他场景下，依然是 4 cycle 的 load to use latency。
+
+#### Load/Store 带宽
 
 针对 Load Store 带宽，实测每个周期可以完成：
 
@@ -216,6 +222,8 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 
 不太确定的是高通官方的表述里 `Up to 4 Load-Store operations per cycle` 对于 4 Store ops per cycle 以什么方式成立，因为从 IPC 来看，只能达到 2 Store Per Cycle。
 
+#### L1 DCache 分 Bank
+
 考虑到 L1 DCache 需要单周期支持 4 条 Load 指令，如果要用单读口的 SRAM，一般的做法是设计 4 个 Bank，每个 Bank 对应一组 SRAM。为了测试 Bank 的粒度，使用不同跨步（Stride）的 Load，观察 IPC：
 
 - Stride=1B/2B/4B/8B/16B/32B/64B 时 IPC=4
@@ -223,6 +231,8 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 - Stride=256B 时 IPC=1
 
 当多个 Load 访问同一个 Cache Line 时，这些 Load 可以同时进行，极限情况下用 4 条 128b Load 可以做到一个周期把整个 64B Cache Line 都读出来；Stride=128B 时，IPC 砍半，说明只有一半的 Bank 得到了利用，进一步 Stride=256B 时，IPC=1，说明只有一个 Bank 被用上。那么 L1 DCache 的组织方式应该是 4 个 Bank，Bank Index 对应 PA[7:6]，也就是连续的四个 64B Cache Line 会被映射到四个 Bank 上。当多个 Load 被映射到同一个 Bank 且访问的不是同一个 Cache Line 时，会出现性能损失。
+
+#### VIPT
 
 在 4KB page 的情况下，96KB 6-way 的 L1 DCache 不满足 VIPT 的 Index 全在页内偏移的条件（详见 [VIPT 与缓存大小和页表大小的关系](./vipt-l1-cache-page-size.md)），此时要么改用 PIPT，要么在 VIPT 的基础上处理 alias 的问题。为了测试这一点，参考 [浅谈现代处理器实现超大 L1 Cache 的方式](https://blog.cyyself.name/why-the-big-l1-cache-is-so-hard/) 的测试方法，用 shm 构造出两个 4KB 虚拟页映射到同一个物理页的情况，然后在两个虚拟页之间 copy，发现相比在同一个虚拟页内 copy 有显著的性能下降，并且产生了大量的 L1 DCache Refill：
 
@@ -233,6 +243,19 @@ slowdown = 6.79x
 ```
 
 因此猜测 L1 DCache 采用的是 VIPT，并做了针对 alias 的正确性处理。如果是 PIPT，那么 L1 DCache 会发现这两个页对应的是相同的物理地址，性能不会下降，也不需要频繁的 refill。
+
+#### Memory Dependency Predictor
+
+为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之前在内存上的依赖。参考 [Store-to-Load Forwarding and Memory Disambiguation in x86 Processors](https://blog.stuffedcow.net/2014/01/x86-memory-disambiguation/) 的方法，构造两个指令模式，分别在地址和数据上有依赖：
+
+- 数据依赖，地址无依赖：`str x3, [x1]` 和 `ldr x3, [x2]`
+- 地址依赖，数据无依赖：`str x2, [x1]` 和 `ldr x1, [x2]`
+
+初始化时，`x1` 和 `x2` 指向同一个地址，重复如上的指令模式，观察到多少条 `ldr` 指令时会出现性能下降：
+
+![](./qualcomm_oryon_memory_dependency_predictor.png)
+
+有意思的是，两种模式出现了不同的阈值，地址依赖的阈值是 64，而数据依赖的阈值是 96。
 
 ### MMU
 
