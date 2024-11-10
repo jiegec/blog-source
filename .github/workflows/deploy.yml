@@ -18,7 +18,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           key: ${{ github.ref }}
-          path: .cache
+          path: /home/runner/.cache
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
