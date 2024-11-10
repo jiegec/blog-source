@@ -142,7 +142,7 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 [Alpha 21264](https://ieeexplore.ieee.org/document/755465) 使用了一种简单的方法 Load Wait Table 来解决这个问题：对于那些出现过顺序违例的 Load 指令，打上一个标记，那么未来这个 Load 都要等到在它之前的所有 Store 执行才能执行。这个标记的方法也很简单，维护 Load 指令的 PC 到单 bit 的映射。香山处理器有对应的[实现](https://github.com/OpenXiangShan/XiangShan/blob/dd16cea72b92bcf8a87750b14458be82fda5cfff/src/main/scala/xiangshan/mem/mdp/WaitTable.scala#L27)。
 
-一个实现方法叫做 [Store Set](https://dl.acm.org/doi/pdf/10.1145/279361.279378)。Store Set 是相对 Load 说的，指的是一个 Load 依赖过的所有的 Store 的集合。如果一个 Load 的 Store Set 内的所有的 Store 都执行完了，那么这个 Load 就可以提前执行了，不用考虑别的 Store 指令。
+另一个实现方法叫做 [Store Set](https://dl.acm.org/doi/pdf/10.1145/279361.279378)。Store Set 是相对 Load 说的，指的是一个 Load 依赖过的所有的 Store 的集合。如果一个 Load 的 Store Set 内的所有的 Store 都执行完了，那么这个 Load 就可以提前执行了，不用考虑别的 Store 指令。
 
 当然了，一开始并不知道 Load 依赖哪些 Store，所以 Store Set 是空的，此时 Load 可能会提前执行。当发现执行顺序错误，需要回滚时，就把导致回滚的 Store 添加到对应 Load 的 Store Set 当中。
 
@@ -172,7 +172,7 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 此时出现了 Load A 和 Store Z 之间的顺序错误，但是 Store Z 和 Load A 属于不同的 Store Set。为了解决这个问题，需要引入 Store Set 合并机制：如果一条 Store 要同时出现在两个 Store Set 当中，那就把这两个 Store Set 合并成一个：Load A、Load B 的 Store Set 都是 Store X、Store Y 和 Store Z。代价是可能引入了一些假的依赖。
 
-香山处理器也[实现](https://github.com/OpenXiangShan/XiangShan/blob/dd16cea72b92bcf8a87750b14458be82fda5cfff/src/main/scala/xiangshan/mem/mdp/StoreSet.scala)了 Store Set 算法的变种。
+香山处理器也[实现](https://github.com/OpenXiangShan/XiangShan/blob/dd16cea72b92bcf8a87750b14458be82fda5cfff/src/main/scala/xiangshan/mem/mdp/StoreSet.scala)了 Store Set 算法的变种，其区别可以参考香山的[访存依赖预测](https://docs.xiangshan.cc/zh-cn/latest/memory/mdp/mdp/)文档。
 
 ## Store to Load Forwarding
 
