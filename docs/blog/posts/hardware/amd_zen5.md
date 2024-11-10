@@ -39,6 +39,24 @@ AMD 一向公开得比较大方，关于 Zen 5 的信息有：
 
 AMD Zen 5 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
+## MOP vs uOP
+
+MOP = Macro operation, uOP = Micro operation
+
+AMD 的文档里是这么说的：
+
+> The processor implements AMD64 instruction set by means of macro-ops (the primary units of
+work managed by the processor) and micro-ops (the primitive operations executed in the
+processor's execution units).
+> Instructions are marked as fast path single (one macro-op), fast path double (two macro-ops), or
+microcode (greater than two macro-ops). Macro ops can normally contain up to two micro-ops.
+
+一条指令可以分成若干个 MOP（比如 REP MOVS 会拆成很多个 MOP），一个 MOP 可以继续细分为 uOP（比如 store 拆分成 store data 和 store address；把内存的值加到寄存器上的 add 指令拆分成 load 和 add）。Dispatch 的单位是 MOP，ROB 保存的也是 MOP。与 Zen3/Zen4 不同，Op Cache 保存的不是 MOP，而是 Fused Instructions，这个 Fusion 来自于 Branch Fusion 或 MOV + ALU Fusion。Fusion 相当于把多条指令合成了一个，减少了 MOP 的数量。
+
+MOP 到 uOP 的拆分需要等到 Scheduler 中才进行，Scheduler 输入 MOP，输出 uOP，也就是说最终给到执行单元的是 uOP。
+
+和 ARM 公版核的 MOP/uOP 对比，其实是很类似的：uOP 是执行单元看到的指令粒度，MOP 是维护精确异常的指令粒度。
+
 ## 前端
 
 ### 取指
@@ -51,7 +69,7 @@ AMD Zen 5 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 ### Op Cache
 
-官方信息：64 set, 16 way, 6 inst/entry, 供指 2x6 inst/cycle
+官方信息：64 set, 16 way, 6 (fused) inst/entry, 供指 2x6 (fused) inst/cycle
 
 ### L1 ICache
 
