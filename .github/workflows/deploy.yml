@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # for git history
+          submodules: recursive # for projects
       - uses: actions/cache@v4
         with:
           key: ${{ github.ref }}
