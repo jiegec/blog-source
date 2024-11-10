@@ -255,3 +255,5 @@ wsl --system
 就可以看到它里面确实跑了一个 Xwayland，并且和 WSL2 Linux 拥有同样的 IP 地址：这说明它们共享了同一个 network namespace，但其他是独立的，甚至你还可以在 CBL-Mariner 看到你在 WSL2 Linux 里面的进程，就好像你运行了一个 `docker run --net=host` 的容器一样。
 
 关于 WSL2 System Distro 的讨论，推荐阅读：<https://unix.stackexchange.com/a/732459/144358>，你甚至可以自己构建一个：[Building the WSLg System Distro](https://github.com/microsoft/WSLG/blob/main/CONTRIBUTING.md#building-the-wslg-system-distro)，并且替换掉自带的 WSLg System Distro。
+
+注：根据评论区 Pierre J 提醒，除了 System Distro，外面还有一层 CBL-Mariner，通过 `wsl --debug-shell` 可以进入，这真的是容器套娃了。
