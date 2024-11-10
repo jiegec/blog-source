@@ -19,6 +19,9 @@ jobs:
         with:
           key: ${{ github.ref }}
           path: .cache
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13' 
       - uses: Gr1N/setup-poetry@v9
       - run: poetry install
       - run: cd docs/data && poetry run python3 plot.py
