@@ -147,6 +147,19 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 官方信息：支持 xor/sub/cmp/sbb/vxorp/vandnp/vpcmpgt/vpandn/vpxor/vpsub 的 Zeroing Idiom，支持 pcmpeq/vpcmpeq 的 Ones Idiom，支持 mov/movsxd/xchg/(v)vmovap/(v)movdp/(v)movup 的 Zero Cycle Move。
 
+实测下来，以下指令序列的 IPC 为：
+
+- 有依赖链的 mov r, r：7 IPC
+- 没有依赖的 mov r, r：7 IPC
+- xor r, r, r：7 IPC
+- sub r, r, r：7 IPC
+- 有依赖链的 mov vr, vr：6 IPC
+- 没有依赖的 mov vr, vr：6 IPC
+- xor vr, vr, vr：6 IPC
+- mov r, imm：6 IPC
+
+其中 r 表示整数寄存器，vr 表示浮点/向量寄存器。总体来说还是做的比较完善的。
+
 ## 后端
 
 ### Dispatch
@@ -159,7 +172,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### Register File
 
-官方信息：240-entry integer physical register file, 192-entry flag physical register file
+官方信息：240-entry(40 per thread for architectural) integer physical register file, 192-entry flag physical register file
 
 ### L1 DCache
 
@@ -168,6 +181,30 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 ### Load Store Unit
 
 官方信息：每周期最多四个内存操作。每周期最多四个读，其中最多两个 128b/256b/512b 读；每周期最多两个写，其中最多一个 512b 写。load to use latency，整数是 4-5 个周期，浮点是 7-8 个周期。跨越 64B 边界的读会有额外的一个周期的延迟。
+
+#### 吞吐
+
+实测 Zen 5 每个周期可以完成如下的访存操作：
+
+- 4x 32b Load: 1 cycle
+- 4x 64b Load: 1 cycle
+- 2x 128b Load: 1 cycle
+- 2x 256b Load: 1 cycle
+- 2x 32b Store: 1 cycle
+- 2x 64b Store: 1 cycle
+- 2x 128b Store: 1 cycle
+- 2x 256b Store: 1 cycle
+- 1x 64b Load + 2x 64b Store: 1 cycle
+- 2x 64b Load + 2x 64b Store: 1 cycle
+- 3x 64b Load + 1x 64b Store: 1 cycle
+- 1x 128b Load + 2x 128b Store: 1 cycle
+- 2x 128b Load + 1x 128b Store: 1 cycle
+
+简单来说，每周期支持 4 个 64b 的 Load/Store，其中 Store 最多两条。一个 128b 的 Load 相当于两个 64b，对应 IPC 减半。
+
+#### 延迟
+
+构造串行的 load 链，观察到多数情况下 load to use latency 是 4 个周期，在跨越 64B 边界时，会增加一个周期变成 5 个周期。此外，如果涉及到 index 计算（即 `offset(base, index, shift)`），也会增加一个周期。
 
 ### L1 DTLB
 
