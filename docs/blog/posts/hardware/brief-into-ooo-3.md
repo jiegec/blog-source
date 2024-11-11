@@ -202,3 +202,12 @@ BTB 的目的是在分支预测阶段，提供哪些指令是分支指令，以�
 - Data Array：记录函数 B 和 C 的地址
 
 当前端通过分支预测，预测到要执行函数 A，那么就通过 A 的地址去查询 Tag Array，找到匹配，并且发现其 Index 等于 1；那么接着用 Index 访问 Data Array，取出第一个函数的地址，也就是 B，那就预取 B。当函数 B 被调用的时候，更新 Index 为 2，表示函数 B 已经被调用，下一个要被调用的是 C。当函数 B 返回的时候，用 Index 访问 Data Array，得到函数 C 的地址，预取 C。如果说 Call Graph 是个图，那么 Tag Array 和 Data Array 就组成了邻接表。
+
+苹果的专利 [Callgraph Signature Prefetch](https://patentimages.storage.googleapis.com/4d/f2/31/acf69ce6f289ff/US10642618.pdf) 使用了类似的思想，不过在维护 Call Graph 的方式上不同：上面的论文是通过显式的方法记录 Call Graph，每个函数调用了哪些函数，而专利中，参考了分支预测记录分支历史的方法，把最近的 call 和 return 地址压缩记录下来，通过 hash 得到 Signature，再用 Signature 去查询 Prefetch Table，相当于在拿最近若干次调用和返回的历史来预测下一次 call 的地址。Prefetch Table 的每个 Entry 记录了这些信息：
+
+- Signature：记录了这个 Entry 对应的 Signature，即最近函数调用的压缩表示；实际可能实现为全相连，也可能是组相连，通过 tag 匹配
+- Address：要预取的指令地址；专利中还谈到了 Address 的压缩，即把 Address 的高位单独存放在一个 Address Table 中，那么 Prefetch Table 的 Entry 记录了 Address Table 的 Index 以及低位 Offset，需要预取时，再从 Address Table 读取高位，拼接起来
+- Counter：给从 Address 开始的若干个缓存行维护 Saturating Counter，用来判断是否要进行预取
+- Order：用来维护 Replacement Policy 所需要的信息
+
+那么前端要做的事情就是，根据分支预测去更新 Signature，根据 Signature 查询 Prefetch Table，如果有命中，根据 Counter 的大小决定是否要预取，从 Address 开始预取哪些数据。
