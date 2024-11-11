@@ -42,7 +42,7 @@ categories:
 
 我在博客 [三星 Exynos CPU 微架构学习笔记](./samsung-exynos-cpu.md) 中详细分析了 Exynos 微架构的前端设计，建议感兴趣的读者阅读。
 
-### Short Forward Branch
+## Short Forward Branch
 
 论文 [SonicBOOM: The 3rd Generation Berkeley Out-of-Order Machine](https://carrv.github.io/2020/papers/CARRV2020_paper_15_Zhao.pdf) 提到了一个有意思的优化：Short Forward Branch。它面对的场景是一些小的 if 语句，在 if 的条件满足时，执行少量的指令。正常来说，这样的代码会被编译成一个 Forward 的分支，被跳过的就是 if 条件满足时要执行的代码对应的指令。如果分支比较好预测，那现有的分支预测器就可以得到很好的性能，但如果分支不好预测，例如它会依赖数据的值，并且具有一定的随机性，这时候性能就会下降。为了解决这个问题，可以用条件执行来代替分支：把分支指令替换为比较指令，然后根据比较的结果来条件执行本来可能会被跳过的指令。下面是论文中给的例子，说的比较的清晰：
 
@@ -107,7 +107,7 @@ target:
 
 因此它的目的主要是解决重复 Fetch 的能耗问题，而不是分支预测错误率高的问题。
 
-### Clustered Decode
+## Clustered Decode
 
 推荐阅读：[解码簇二三事（一）：为什么？&加料！](https://zhuanlan.zhihu.com/p/720301269)
 
@@ -155,7 +155,7 @@ Intel 在 Tremont 的下一代 Gracemont 微架构中缓解了这个瓶颈。既
 
 Intel 在 Skymont 这一代 E-core 微架构在大大拓宽后端的同时，把 Decode 从两条 3-wide pipeline 改成了三条 3-wide pipeline，那么怎么把这三条 Decode pipeline 喂满，是继续延续上面的思路，只不过插入更多的 toggle point，还是有一些新的设计，让我们拭目以待。
 
-### BTB Organization
+## BTB Organization
 
 BTB 的目的是在分支预测阶段，提供哪些指令是分支指令，以及这些分支指令的目的地址的信息。那么 BTB 是怎么保存这些信息的呢？论文 [Branch Target Buffer Organizations](https://dl.acm.org/doi/pdf/10.1145/3613424.3623774) 总结了几种常见的 BTB 组织方法：
 
@@ -187,3 +187,18 @@ BTB 的目的是在分支预测阶段，提供哪些指令是分支指令，以�
 可以看到第一种情况就是前面 Zen 3 的模式，一个 cacheline 内，条件分支 + 分支；第二种情况就是新的设计，它可以记录两条分支指令，第二条分支指令和第一条分支指令的目的地址在同一个 cacheline 中，也就是一个 BTB 记录两条分支指令，第一条跳到第二条，第二条再跳转，在这种情况下，可以一个周期给出两个 Fetch Bundle，也就是 2 taken predictions/cycle。论文中这种设计叫做 MB-BTB。
 
 推荐阅读：[现代分支预测：从学术界到工业界](https://blog.eastonman.com/blog/2023/12/modern-branch-prediction-from-academy-to-industry/)
+
+## Instruction Prefetcher
+
+随着程序的指令 footprint 增大，除了增大 L1 ICache 容量，也需要实现合理的 Instruction Prefetcher，把指令预取到 L1 ICache 当中。对于 Decoupled Frontend，目前比较常见的方法是使用 Fetch Directed Intruction Prefetching(FDIP)，利用 Decoupled Frontend 里分支预测可以在取指之前跑得更远的特性，使用分支预测的地址来进行预取。对于 Coupled Frontend，预测和取指紧密相连，FDIP 的方法就不好用了，需要寻找其他的方法。
+
+一种方法是 Call Graph Prefetching(CGP)，来自论文 [Call graph prefetching for database applications](https://ieeexplore.ieee.org/abstract/document/903270)。从名字也可以看出，它针对的是数据库场景，而这个场景下，代码的规模很大，更加容易出现 ICache Miss。
+
+它的核心思路是，维护一个 Call Graph History Cache(CGHC) 来记录程序执行的调用图，根据历史信息来预取未来可能会执行的函数的指令，这针对的是频繁的函数调用；针对函数体比较大的情况，函数调用的比例比较小，利用 Next N-Line Prefetching，也就是在 miss 的时候把连续的几条缓存行预取进来。
+
+那么这个 Call Graph History Cache 是怎么维护函数调用的呢？它记录了两个 Array：Tag Array 和 Data Array。Tag Array 记录的是函数的入口地址，以及在这个函数内执行到了第几个函数（Index）；Data Array 则记录了被该函数调用的函数的入口地址，最多八个。例如函数 A 会调用函数 B 和 C，那么 CGHC 会保存这么一条记录：
+
+- Tag Array：记录函数 A 的入口地址以及 Index，Index 初始化为 1
+- Data Array：记录函数 B 和 C 的地址
+
+当前端通过分支预测，预测到要执行函数 A，那么就通过 A 的地址去查询 Tag Array，找到匹配，并且发现其 Index 等于 1；那么接着用 Index 访问 Data Array，取出第一个函数的地址，也就是 B，那就预取 B。当函数 B 被调用的时候，更新 Index 为 2，表示函数 B 已经被调用，下一个要被调用的是 C。当函数 B 返回的时候，用 Index 访问 Data Array，得到函数 C 的地址，预取 C。如果说 Call Graph 是个图，那么 Tag Array 和 Data Array 就组成了邻接表。
