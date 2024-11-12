@@ -209,6 +209,14 @@ there are 2 stores, then each store should forward to either first or second hal
 
 因此 X925 相比 A78 的主要区别是，8 bytes Load 也可以从多个 Store 中转发数据了。
 
+下面是在几款处理器上实测 Store to Load Forwarding 在各种访存模式下能否转发以及转发的条件：
+
+| uArch                                   | 1 ld + 1 st                | 1 ld + 2 st       | 1 ld + 4 st |
+|-----------------------------------------|----------------------------|-------------------|-------------|
+| [AMD Zen5](./amd_zen5.md)               | st 完全包含 ld             | 不支持            | 不支持      |
+| [ARM Neoverse V2](./arm_neoverse_v2.md) | 地址相同或差出半个 st 宽度 | ld 和 st 地址相同 | 不支持      |
+| [Qualcomm Oryon](./qualcomm_oryon.md)   | overlap 即可               | ld 地址对齐到 4B  | 不支持      |
+
 ## Memory Renaming
 
 Register Renaming 把物理寄存器重命名为架构寄存器，那么 [Memory Renaming: Fast, Early and Accurate Processing of Memory Communication](https://link.springer.com/article/10.1023/A:1018734923512) 类似地把内存重命名为寄存器。具体地，如果发现某个 Load 的数据总是来自于某个 Store，按照先前的做法，要等 Store 先执行，然后 Load 从 Store Queue 中拿到 Store 的结果，更进一步，不如直接把 Load 的目的寄存器复制为 Store 的源数据寄存器，相当于把内存重命名成了寄存器，Load 变成了简单的寄存器的 Move。
