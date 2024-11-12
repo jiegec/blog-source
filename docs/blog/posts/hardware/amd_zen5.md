@@ -64,6 +64,8 @@ MOP 到 uOP 的拆分需要等到 Scheduler 中才进行，Scheduler 输入 MOP�
 
 官方信息：64 set, 16 way, 6 (fused) inst/entry, 供指 2x6 (fused) inst/cycle
 
+#### 开启/关闭
+
 AMD 在 UEFI 固件中提供了关闭 Op Cache 的设置，因此我们可以测试在 Op Cache 开启/关闭不同情况下的性能。通过进一步研究，发现固件的 Op Cache 关闭设置，实际上对应了 MSR[0xc0011021] 的 bit 5：初始情况下，MSR[0xc0011021] 的值为 0x20000000000040，如果进入固件关闭 Op Cache，可以观察到 MSR[0xc0011021] 变成了 0x20000000000060。实际上，Op Cache 可以在进入 Linux 后动态开启/关闭（感谢 David Huang 在博客中提供的信息）：
 
 ```shell
@@ -75,6 +77,32 @@ sudo wrmsr -p 0 0xc0011021 0x20000000000040
 ```
 
 因此开关 Op Cache 不需要重启进固件了。
+
+#### 容量
+
+Zen 5 的 Op Cache 每个 entry 是 6 (fused) inst，为了测出 Op Cache 的容量，以及确认保存的是 fused inst，利用 MOV + ALU Fusion 来构造指令序列：
+
+```asm
+# rsi = rdi
+mov %rdi, %rsi
+# rsi += rdx
+add %rdx, %rsi
+```
+
+这两条指令满足 Zen 5 的 MOV + ALU Fusion 要求，硬件上融合成一个 `rsi = rdx + rdi` 的操作。做这个融合也是因为 x86 指令集缺少 3 地址指令，当然未来 APX 会补上这个缺失。实测发现，这样的指令序列可以达到 12 的 IPC，正好 Zen 5 的 ALU 有 6 个，也就是每周期执行 6 条融合后的指令，和 12 IPC 是吻合的。12 的 IPC 可以一直维持到 36KB 的 footprint，这里的 mov 和 add 指令都是 3 字节，换算下来 36KB 对应 `36*1024/6=6144` 个 fused instruction，正好 `64*16*6=6144`，对上了。关掉 Op Cache 后，性能下降到 4 IPC，对应了 Decode 宽度，同时也说明 Decode 的 4 Wide 对应的是指令，而不是融合后的指令。
+
+#### 吞吐
+
+接下来要测试 Op Cache 能否单周期给单个线程提供 2 个 entry 的吞吐。由于每个 entry 最多可以有 6 (fused) inst，加起来是 12，而 dispatch 只有 8 MOP/cycle，因此退而求其次，不要求用完 entry 的 6 条指令，而是用 jmp 指令来提前结束 entry：
+
+```asm
+# rsi = rdi
+mov %rdi, %rsi
+jmp 2f
+2:
+```
+
+重复上述指令，发现在 5KB 之前都可以达到 4 的 IPC，之后则下降到 2 IPC，说明 5KB 时用满了 Op Cache。这里的 mov 指令是 3 字节，jmp 指令是 2 字节，也就是说 5KB 对应上述指令模式重复了 1024 次，此时 Op Cache 用满了容量，正好 Op Cache 也是 `64*16=1024` 个 entry，印证了 Op Cache 的 entry 会被 jmp 提前结束，在上述的指令模式下，entry 不会跨越 jmp 指令记录后面的指令，每个 entry 只有两条指令。那么 4 IPC 证明了 Op Cache 可以每周期提供 2 entry，相比 Decode 只能每周期给单线程提供 4 条指令明显要快。
 
 ### 取指
 
