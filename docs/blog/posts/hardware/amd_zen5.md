@@ -250,7 +250,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### Load Store Unit
 
-官方信息：每周期最多四个内存操作。每周期最多四个读，其中最多两个 128b/256b/512b 读；每周期最多两个写，其中最多一个 512b 写。load to use latency，整数是 4-5 个周期，浮点是 7-8 个周期。跨越 64B 边界的读会有额外的一个周期的延迟。
+官方信息：每周期最多四个内存操作。每周期最多四个读，其中最多两个 128b/256b/512b 读；每周期最多两个写，其中最多一个 512b 写。load to use latency，整数是 4-5 个周期，浮点是 7-8 个周期。跨越 64B 边界的读会有额外的一个周期的延迟。支持 Store to load forwarding，要求先前的 store 包括了 load 的所有字节，不要求对齐。
 
 #### 吞吐
 
@@ -275,6 +275,25 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 #### 延迟
 
 构造串行的 load 链，观察到多数情况下 load to use latency 是 4 个周期，在跨越 64B 边界时，会增加一个周期变成 5 个周期。此外，如果涉及到 index 计算（即 `offset(base, index, shift)`），也会增加一个周期。
+
+#### Store to Load Forwarding
+
+经过实际测试，如下的情况可以成功转发：
+
+对地址 x 的 Store 转发到对地址 y 的 Load 成功时 y-x 的取值范围：
+
+| Store\Load | 8b Load | 16b Load | 32b Load | 64b Load |
+|------------|---------|----------|----------|----------|
+| 8b Store   | {0}     | {}       | {}       | {}       |
+| 16b Store  | [0,1]   | {0}      | {}       | {}       |
+| 32b Store  | [0,3]   | [0,2]    | {0}      | {}       |
+| 64b Store  | [0,7]   | [0,6]    | [0,4]    | {0}      |
+
+可以看到，Zen 5 在 Store 完全包含 Load 的情况下都可以转发，没有额外的对齐要求。但当 Load 和 Store 只有部分重合时，就无法转发。两个连续的 32 位的 Store 和一个 64 位的 Load 重合也不能转发。
+
+可见 Zen 5 的 Store to Load Forwarding 实现比较粗暴，只允许 Load 从单个完全包含 Load 的 Store 中转发数据。
+
+成功转发时 8 cycle，有 Overlap 但转发失败时 14-15 cycle。
 
 ### L1 DTLB
 
