@@ -33,6 +33,7 @@ AMD 一向公开得比较大方，关于 Zen 5 的信息有：
 - [AMD’s Ryzen 9950X: Zen 5 on Desktop](https://chipsandcheese.com/2024/08/14/amds-ryzen-9950x-zen-5-on-desktop/)
 - [Discussing AMD’s Zen 5 at Hot Chips 2024](https://chipsandcheese.com/2024/09/15/discussing-amds-zen-5-at-hot-chips-2024/)
 - [Zen 5 补充测试 (1/2): 更多微架构细节](https://blog.hjc.im/zen-5-more-details-1.html)
+- [Zen5's AVX512 Teardown + More...](http://www.numberworld.org/blogs/2024_8_7_zen5_avx512_teardown/)
 
 下面分各个模块分别记录官方提供的信息，以及实测的结果。读者可以对照已有的第三方评测理解。官方信息与实测结果一致的数据会加粗。
 
@@ -231,7 +232,17 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### Register File
 
-官方信息：240-entry(40 per thread for architectural) integer physical register file, 192-entry flag physical register file
+官方信息：240-entry(40 per thread for architectural) integer physical register file, 192-entry flag physical register file, 384-entry 512b vector register file
+
+为了测试物理寄存器堆大小，构造一个循环，循环开头和结尾各是一个长延迟的操作，由于 Zen 5 没有实现 temporal prefetcher，使用的是 pointer chasing load。然后在两个长延迟的操作中间穿插不同的指令类型，从而测出对应的物理寄存器堆可供预测执行的寄存器数量：
+
+![](./amd_zen5_rf.png)
+
+整数方面使用 lea 指令来消耗整数物理寄存器而不消耗 flags 寄存器，此时无论是 32 位还是 64 位寄存器，供预测执行的寄存器数都有 200 个，和官方的信息吻合：`200+40=240`，说明超线程在没有负载的时候，不会占用整数物理寄存器堆，这在 AMD 的文档中叫做 Watermarked：`Resource entries are assigned on demand`。356 个 flags 寄存器超过了官方宣传的 192 的大小，猜测做了一些优化，测到的并非 flags 寄存器堆大小。
+
+浮点方面，测得 430 个供预测执行的浮点寄存器，超过了官方宣传的 384 个 512 位浮点寄存器。考虑到 Zen5 引入了在 Rename 之前的 96-entry Non-Scheduling Queue(NSQ)，在 NSQ 中的指令还没有经过重命名，因此不消耗物理寄存器：`384+96=480`，再去掉至少 32 个架构寄存器 zmm0-zmm31，和观察到的 430 是比较接近的。
+
+针对浮点寄存器，Zen5 的不同平台的设计不完全一样，上面的测试是在 9950X 上进行的，其他平台的测试以及分析见 [Zen5's AVX512 Teardown + More...](http://www.numberworld.org/blogs/2024_8_7_zen5_avx512_teardown/#vector_register_file)。
 
 ### L1 DCache
 
