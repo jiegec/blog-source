@@ -291,7 +291,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 可以看到，Zen 5 在 Store 完全包含 Load 的情况下都可以转发，没有额外的对齐要求。但当 Load 和 Store 只有部分重合时，就无法转发。两个连续的 32 位的 Store 和一个 64 位的 Load 重合也不能转发。
 
-可见 Zen 5 的 Store to Load Forwarding 实现比较粗暴，只允许 Load 从单个完全包含 Load 的 Store 中转发数据。
+可见 Zen 5 的 Store to Load Forwarding 实现比较粗暴，只允许 Load 从单个完全包含 Load 的 Store 中转发数据。和 [Neoverse V2](./arm_neoverse_v2.md) 相比，Zen 5 对 Load 在 Store 内的偏移没有要求，但也不允许 Load 和 Store 只有一部分覆盖，也不支持一个 Load 从两个或更多的 Store 中获取数据。
 
 成功转发时 8 cycle，有 Overlap 但转发失败时 14-15 cycle。
 

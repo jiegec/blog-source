@@ -144,9 +144,11 @@ The Neoverse V2 core allows data to be forwarded from store instructions to a lo
 | 32b Store  | {0,2}   | {0,2}    | {0}      | {-4,0}   |
 | 64b Store  | {0,4}   | {0,4}    | {0,4}    | {-4,0,4} |
 
-一个 Load 需要转发两个 Store 的数据的情况：对地址 x 的 32b Store 和对地址 x+4 的 32b Store 转发到对地址 y 的 64b Load，要求 y=x-4 或 y=x 或 y=x+4
+一个 Load 需要转发两个 Store 的数据的情况：对地址 x 的 32b Store 和对地址 x+4 的 32b Store 转发到对地址 y 的 64b Load，在 Overlap 的情况下，要求 y=x，也就是恰好前半来自第一个 Store，后半来自第二个 Store。
 
 和官方的描述是比较符合的，只考虑了全部转发、转发前半和转发后半的三种场景。特别地，针对常见的 64b Load，支持 y-x=-4。同时也支持前半和后半来自两个不同的 Store。对地址本身的对齐没有要求，甚至在跨缓存行边界时也可以转发，只是对 Load 和 Store 的相对位置有要求。
+
+和 [Zen 5](./amd_zen5.md) 相比，Neoverse V2 对 Store 和 Load 的相对位置有额外的要求（开头或正中央），但支持了 Store 和 Load 只有一部分覆盖的情况，也允许一个 Load 从两个 Store 中取得数据。
 
 从性能上，可以转发时 5 Cycle，有 Overlap 但无法转发时 10.5 Cycle。
 
