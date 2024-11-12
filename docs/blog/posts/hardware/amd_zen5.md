@@ -62,7 +62,7 @@ MOP 到 uOP 的拆分需要等到 Scheduler 中才进行，Scheduler 输入 MOP�
 
 ### Op Cache
 
-官方信息：64 set, 16 way, 6 (fused) inst/entry, 供指 2x6 (fused) inst/cycle
+官方信息：64 set, 16 way, **1024 entry**, **6 (fused) inst/entry**, 供指 **2 entry/cycle**
 
 #### 开启/关闭
 
@@ -106,7 +106,7 @@ jmp 2f
 
 ### 取指
 
-官方信息：每周期共 64B，可以取两个 32B 对齐的指令块
+官方信息：每周期共 64B，可以取**两个** 32B 对齐的指令块
 
 为了测试取指，需要关掉 Op Cache，但由于 Decode 瓶颈太明显，不容易测出取指的性能，例如是否一个周期可以给单线程取两个 32B 对齐的指令块。目前通过实测可以知道，在关闭 Op Cache 的情况下，测试循环体跨越 64B 缓存行边界的情况，指令模式见下：
 
@@ -121,7 +121,7 @@ jne 1b
 
 ### Decode
 
-官方信息：2x 4-wide Decode Pipeline
+官方信息：2x **4-wide** decode pipeline, **one pipeline per thread**
 
 AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一个，意味着单线程情况下，无法做到 8-wide Decode，而 4-wide Decode 又太窄了点，因此 Op Cache 的命中率就显得很重要。
 
@@ -162,13 +162,27 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 官方信息：32KB, 8-way set associative
 
+为了测试 L1 ICache 的容量，需要关闭 Op Cache，但由于 Decode 的限制，即使 footprint 大于 L1 ICache 容量，IPC 依然没有变化，针对这个现象，猜测 L1 ICache 的预取在起作用，并且 L2 Cache 到 L1 ICache 的 Refill 带宽不小于 Decode 带宽，导致瓶颈在 Decode。
+
 ### L1 ITLB
 
-官方信息：64-entry, fully associative
+官方信息：**64-entry**, fully associative
+
+为了测试 L1 ITLB 的容量，构造 jmp 序列，每个 jmp 在一个单独的页中，在关闭 Op Cache 的情况下观察 jmp 的性能：
+
+![](./amd_zen5_itlb.png)
+
+可以看到明显的 64 pages 的拐点，对应了 64 entry 的 L1 ITLB。
 
 ### L2 ITLB
 
-官方信息：2048-entry, 8-way set associative
+官方信息：**2048-entry**, 8-way set associative L2 ITLB
+
+继续沿用测试 L1 ITLB 的方式，把页的数量提高到 2000+，在关闭 Op Cache 的情况下得到以下测试结果：
+
+![](./amd_zen5_l2itlb.png)
+
+可以看到明显的 2048 pages 的拐点，对应了 2048 entry 的 L2 ITLB。
 
 ### BTB
 
@@ -176,7 +190,13 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### Return Address Stack
 
-官方信息：52-entry per thread
+官方信息：**52-entry** per thread
+
+构造不同深度的调用链，测试每次调用花费的时间，在关闭 Op Cache 的情况下得到如下测试结果：
+
+![](./amd_zen5_ras.png)
+
+可以看到 52 的拐点，对应的就是 Return Address Stack 的大小。
 
 ### Indirect Target Predictor
 
