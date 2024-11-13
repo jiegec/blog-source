@@ -234,7 +234,15 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### ROB
 
-官方信息：224-entry per thread
+官方信息：**224-entry per thread**, 1-2 MOP per entry
+
+把两个独立的 long latency pointer chasing load 放在循环的头和尾，中间用 NOP 填充，当 NOP 填满了 ROB，第二个 pointer chasing load 无法提前执行，导致性能下降。测试结果如下：
+
+![](./amd_zen5_rob.png)
+
+当 NOP 指令达到 446 条时出现性能突变，此时应该是触发了 Zen 5 的每个 entry 保存两个 MOP 的条件，因此 446 条 NOP 指令对应 223 个 entry，加上循环开头的 load 指令，正好把循环尾部的 load 拦在了 ROB 外面，导致性能下降。
+
+说明单线程可以访问到的 ROB 容量是 224 entry。
 
 ### Register File
 
