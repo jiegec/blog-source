@@ -157,13 +157,17 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 - Cycle 7: Window 112-143, Decode 125, 130, 135
 - Cycle 8: Window 128-159, Decode 140, 145, 150, 155
 
-这个规律延续下去，平均下来就是 3.2 IPC。总之，4-wide 以及 16B 的限制，应该说是很小的。
+这个规律延续下去，平均下来就是 3.2 IPC。
+
+根据这个猜想，Decode 从两个连续的 IBQ entry 译码最多四条指令，是没有 16B 的限制的，但 IBQ 每周期只能弹出一个 entry，而不允许每周期弹出两个，这才导致了 16B 的吞吐。总之，4-wide 以及 16B 的限制，应该说是很小的。
 
 ### L1 ICache
 
-官方信息：32KB, 8-way set associative
+官方信息：**32KB**, 8-way set associative
 
 为了测试 L1 ICache 的容量，需要关闭 Op Cache，但由于 Decode 的限制，即使 footprint 大于 L1 ICache 容量，IPC 依然没有变化，针对这个现象，猜测 L1 ICache 的预取在起作用，并且 L2 Cache 到 L1 ICache 的 Refill 带宽不小于 Decode 带宽，导致瓶颈在 Decode。
+
+因此，为了测试 L1 ICache 的容量，构造一个 jmp 序列，以 4B 位间距排布，观察到在关闭 Op Cache 的情况下，在 8192 条 jmp 指令之前可以做到 1 CPI，之后逐渐提升到 1.5 CPI，正好 8192 对应了 `8192*4=32768` 也就是 32KB L1 ICache 的容量限制。
 
 ### L1 ITLB
 
@@ -188,6 +192,8 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 ### BTB
 
 官方信息：16K-entry L1 BTB, 8K-entry L2 BTB
+
+因为 L1 ICache 只有 32KB，而 L1 BTB 有 16K entry，每个 entry 最多能保存两条分支指令，因此多数情况下，首先遇到的是 L1 ICache 的瓶颈，而不是 L1 BTB 的瓶颈。
 
 ### Return Address Stack
 
@@ -246,7 +252,13 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### L1 DCache
 
-官方信息：48KB, 12-way set associative
+官方信息：**48KB**, 12-way set associative
+
+使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+
+![](./amd_zen5_l1dc.png)
+
+可以观察到明显的 48KB 的拐点，命中 L1 DCache 时 load to use latency 是 4，命中 L2 时增大到了 14。
 
 ### Load Store Unit
 
@@ -310,7 +322,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### L2 Cache
 
-官方信息：16-way set associative, inclusive, 1MB, >= 14 cycle load to use latency
+官方信息：16-way set associative, inclusive, 1MB, **>= 14 cycle load to use latency**
 
 ### L3 Cache
 
