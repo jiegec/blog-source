@@ -295,6 +295,11 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 成功转发时 8 cycle，有 Overlap 但转发失败时 14-15 cycle。
 
+小结：Zen 5 的 Store to Load Forwarding：
+
+- 1 ld + 1 st: 要求 st 包含 ld
+- 1 ld + 2+ st: 不支持
+
 ### L1 DTLB
 
 官方信息：96-entry, fully associative

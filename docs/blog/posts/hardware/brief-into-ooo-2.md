@@ -219,7 +219,7 @@ there are 2 stores, then each store should forward to either first or second hal
 | Apple Firestorm                         | Yes         | Yes [6]     | Yes         |
 
 - [1]: 要求 st 完全包含 ld
-- [2]: 要求地址相同或差出半个 st 宽度
+- [2]: 要求 ld 和 st 地址相同或差出半个 st 宽度
 - [3]: 要求 ld 和 st 地址相同
 - [4]: 要求不跨越 64B 边界
 - [5]: 要求 ld 对齐到 4B 边界且不跨越 64B 边界

@@ -152,6 +152,12 @@ The Neoverse V2 core allows data to be forwarded from store instructions to a lo
 
 从性能上，可以转发时 5 Cycle，有 Overlap 但无法转发时 10.5 Cycle。
 
+小结：ARM Neoverse V2 的 Store to Load Forwarding：
+
+- 1 ld + 1 st: 要求 ld 和 st 地址相同或差出半个 st 宽度
+- 1 ld + 2 st: 要求 ld 和 st 地址相同
+- 1 ld + 4 st: 不支持
+
 ### 计算单元
 
 官方信息：6x ALU, **2x Branch**, **4x 128b SIMD**

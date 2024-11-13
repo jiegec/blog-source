@@ -280,6 +280,12 @@ slowdown = 6.79x
 
 成功转发时 9 cycle，有 Overlap 但转发失败时 17-23 cycle，跨缓存行时要 40+ cycle。
 
+小结：Qualcomm Oryon 的 Store to Load Forwarding：
+
+- 1 ld + 1 st: 要求不跨越 64B 边界
+- 1 ld + 2 st: 要求 ld 对齐到 4B 边界且不跨越 64B 边界
+- 1 ld + 4 st: 不支持
+
 ### MMU
 
 官方信息：
