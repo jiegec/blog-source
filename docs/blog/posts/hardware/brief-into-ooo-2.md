@@ -204,8 +204,8 @@ Load 的起始地址等于 Store 的起始地址或者正好在中间。
 
 > Load start address should align with the start or middle address of the older store. This does not apply to LDPs that load 2 32b registers or LDRDs
 > Loads of size greater than 8 bytes can get the data forwarded from a maximum of 2 stores. If
-there are 2 stores, then each store should forward to either first or second half of the load
-> Loads of size less than or equal to 8 bytes can get their data forwarded from only 1 store
+there are 2 stores, then each store should forward to either first or second half of the load.
+> Loads of size less than or equal to 8 bytes can get their data forwarded from only 1 store.
 
 因此 X925 相比 A78 的主要区别是，8 bytes Load 也可以从多个 Store 中转发数据了。
 
@@ -213,17 +213,17 @@ there are 2 stores, then each store should forward to either first or second hal
 
 | uArch                                   | 1 ld + 1 st | 1 ld + 2 st | 1 ld + 4 st |
 |-----------------------------------------|-------------|-------------|-------------|
-| [AMD Zen5](./amd_zen5.md)               | Yes [^1]    | No          | No          |
-| [ARM Neoverse V2](./arm_neoverse_v2.md) | Yes [^2]    | Yes [^3]    | No          |
-| [Qualcomm Oryon](./qualcomm_oryon.md)   | Yes [^4]    | Yes [^5]    | No          |
-| Apple Firestorm                         | Yes         | Yes [^6]    | Yes         |
+| [AMD Zen5](./amd_zen5.md)               | Yes [1]     | No          | No          |
+| [ARM Neoverse V2](./arm_neoverse_v2.md) | Yes [2]     | Yes [3]     | No          |
+| [Qualcomm Oryon](./qualcomm_oryon.md)   | Yes [4]     | Yes [5]     | No          |
+| Apple Firestorm                         | Yes         | Yes [6]     | Yes         |
 
-[^1]: 要求 st 完全包含 ld
-[^2]: 要求地址相同或差出半个 st 宽度
-[^3]: 要求 ld 和 st 地址相同
-[^4]: 要求不跨越 64B 边界
-[^5]: 要求 ld 对齐到 4B 边界且不跨越 64B 边界
-[^6]: 要求不跨越 64B 边界
+- [1]: 要求 st 完全包含 ld
+- [2]: 要求地址相同或差出半个 st 宽度
+- [3]: 要求 ld 和 st 地址相同
+- [4]: 要求不跨越 64B 边界
+- [5]: 要求 ld 对齐到 4B 边界且不跨越 64B 边界
+- [6]: 要求不跨越 64B 边界
 
 ## Memory Renaming
 
