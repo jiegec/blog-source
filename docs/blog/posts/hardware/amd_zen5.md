@@ -258,7 +258,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ![](./amd_zen5_l1dc.png)
 
-可以观察到明显的 48KB 的拐点，命中 L1 DCache 时 load to use latency 是 4，命中 L2 时增大到了 14。
+可以观察到明显的 48KB 的拐点，命中 L1 DCache 时 load to use latency 是 4 cycle，命中 L2 时增大到了 14 cycle。
 
 ### Load Store Unit
 
@@ -315,6 +315,12 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 ### L1 DTLB
 
 官方信息：96-entry, fully associative
+
+使用不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
+
+![](./amd_zen5_l1dtlb.png)
+
+可以观察到明显的 96 page 的拐点，命中 L1 DTLB 时 load to use latency 是 4 cycle，命中 L2 DTLB 时增大到了 11 cycle。
 
 ### L2 DTLB
 
