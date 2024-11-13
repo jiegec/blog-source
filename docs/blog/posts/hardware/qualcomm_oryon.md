@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2024-09-01
-tags: [cpu,oryon,qualcomm,xelite,performance]
+tags: [cpu,oryon,qualcomm,xelite,performance,uarch-review]
 categories:
     - hardware
 ---

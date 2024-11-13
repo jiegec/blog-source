@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2024-11-11
-tags: [cpu,amd,ryzen,zen5,performance]
+tags: [cpu,amd,ryzen,zen5,performance,uarch-review]
 categories:
     - hardware
 ---

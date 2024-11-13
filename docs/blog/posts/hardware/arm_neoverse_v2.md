@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2024-11-07
-tags: [cpu,arm,neoverse,performance]
+tags: [cpu,arm,neoverse,performance,uarch-review]
 categories:
     - hardware
 ---
