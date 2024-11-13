@@ -286,6 +286,26 @@ slowdown = 6.79x
 - 1 ld + 2 st: 要求 ld 对齐到 4B 边界且不跨越 64B 边界
 - 1 ld + 4 st: 不支持
 
+#### Load to use latency
+
+Oryon 的 Load to use latency 针对 pointer chasing 场景做了优化，在下列的场景下可以达到 3 cycle:
+
+- `ldr x0, [x0]`: load 结果转发到基地址，无偏移
+- `ldr x0, [x0, 8]`：load 结果转发到基地址，有立即数偏移
+- `ldr x0, [x0, x1]`：load 结果转发到基地址，有寄存器偏移
+- `ldp x0, x1, [x0]`：load pair 的第一个目的寄存器转发到基地址，无偏移
+
+在下列场景下 Load to use latency 则是 4 cycle：
+
+- load 的目的寄存器作为 alu 的源寄存器（下称 load to alu latency）
+- `ldr x0, [sp, x0, lsl #3]`：load 结果转发到 index
+
+在下列场景下 Load to use latency 则是 5 cycle：
+
+- `ldp x1, x0, [x0]`：load pair 的第二个目的寄存器转发到基地址，无偏移
+
+比较奇怪的是 `ldr x0, [x0]` 在跨越 8B 边界时的行为，load to load latency 退化为 6 cycle，load to alu latency 则是 4 cycle。Apple Firestorm 则没有这个问题，在跨越 8B 边界甚至 64B 边界时，实现了 4 cycle load to load latency 和 4 cycle load to alu latency。
+
 ### MMU
 
 官方信息：
