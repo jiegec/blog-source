@@ -226,11 +226,11 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 其中 r 表示整数寄存器，vr 表示浮点/向量寄存器。总体来说还是做的比较完善的。
 
-## 后端
-
 ### Dispatch
 
 官方信息：8 MOP/cycle, up to 2 taken branches/cycle
+
+## 后端
 
 ### ROB
 
@@ -341,3 +341,14 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 ### L3 Cache
 
 官方信息：16-way set associative, exclusive
+
+### 执行单元
+
+官方信息：Zen 5 的后端有 6 条 ALU 流水线，4 条访存流水线，4 条 512 位宽向量流水线（其中 2 条支持 FMA），2 条向量访存流水线
+
+实测发现 Zen 5 每周期最多可以执行 2 条 AVX512 的浮点 FMA 指令，也就是说，每周期浮点峰值性能：
+
+- 单精度：`512/32*2*2=64` FLOP per cycle
+- 双精度：`512/64*2*2=32` FLOP per cycle
+
+通过 512 位的浮点 datapath，终于达到了第一梯队的浮点峰值性能。
