@@ -211,11 +211,19 @@ there are 2 stores, then each store should forward to either first or second hal
 
 下面是在几款处理器上实测 Store to Load Forwarding 在各种访存模式下能否转发以及转发的条件：
 
-| uArch                                   | 1 ld + 1 st                | 1 ld + 2 st       | 1 ld + 4 st |
-|-----------------------------------------|----------------------------|-------------------|-------------|
-| [AMD Zen5](./amd_zen5.md)               | st 完全包含 ld             | 不支持            | 不支持      |
-| [ARM Neoverse V2](./arm_neoverse_v2.md) | 地址相同或差出半个 st 宽度 | ld 和 st 地址相同 | 不支持      |
-| [Qualcomm Oryon](./qualcomm_oryon.md)   | overlap 即可               | ld 地址对齐到 4B  | 不支持      |
+| uArch                                   | 1 ld + 1 st | 1 ld + 2 st | 1 ld + 4 st |
+|-----------------------------------------|-------------|-------------|-------------|
+| [AMD Zen5](./amd_zen5.md)               | Yes [^1]    | No          | No          |
+| [ARM Neoverse V2](./arm_neoverse_v2.md) | Yes [^2]    | Yes [^3]    | No          |
+| [Qualcomm Oryon](./qualcomm_oryon.md)   | Yes [^4]    | Yes [^5]    | No          |
+| Apple Firestorm                         | Yes         | Yes [^6]    | Yes         |
+
+[^1]: 要求 st 完全包含 ld
+[^2]: 要求地址相同或差出半个 st 宽度
+[^3]: 要求 ld 和 st 地址相同
+[^4]: 要求不跨越 64B 边界
+[^5]: 要求 ld 对齐到 4B 边界且不跨越 64B 边界
+[^6]: 要求不跨越 64B 边界
 
 ## Memory Renaming
 
