@@ -2,7 +2,6 @@
 layout: post
 date: 2024-11-11
 tags: [cpu,amd,ryzen,zen5,performance]
-draft: true
 categories:
     - hardware
 ---
