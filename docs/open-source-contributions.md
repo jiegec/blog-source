@@ -13,6 +13,7 @@ permalink: /open-source-contributions/
 我主要参与如下开源项目的维护：
 
 - [lsof-org/lsof](https://github.com/lsof-org/lsof)
+- [AOSC-Dev](https://github.com/AOSC-Dev)
 - [NixOS/nixpkgs](https://github.com/nixos/nixpkgs)
 - [canokeys](https://github.com/canokeys)
 - [nfcim](https://github.com/nfcim)
