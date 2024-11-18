@@ -42,7 +42,7 @@ permalink: /benchmark/
 
 桌面平台（LTO + Jemalloc）：
 
-- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
 
