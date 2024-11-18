@@ -662,3 +662,15 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 1. 关闭 Core performance boost
 2. 读取当前的 pstate 设置
 3. 修改当前 pstate 的 FID，也就修改了频率
+
+## CPU 型号
+
+下面给出测试的各 CPU 型号的官网链接：
+
+- [AMD Ryzen 5 7500F](https://www.amd.com/en/products/processors/desktops/ryzen/7000-series/amd-ryzen-5-7500f.html): Max Boost Clock 5.0 GHz
+- [AMD Ryzen 9 9950X](https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x.html): Max Boost Clock 5.7 GHz
+- [Intel Core i9-10980XE](https://www.intel.com/content/www/us/en/products/sku/198017/intel-core-i910980xe-extreme-edition-processor-24-75m-cache-3-00-ghz/specifications.html): Max Boost Clock 4.8 GHz
+- [Intel Core i9-12900KS](https://www.intel.com/content/www/us/en/products/sku/225916/intel-core-i912900ks-processor-30m-cache-up-to-5-50-ghz/specifications.html): Max Boost Clock 5.5 GHz
+- [Intel Core i9-14900K](https://www.intel.com/content/www/us/en/products/sku/236773/intel-core-i9-processor-14900k-36m-cache-up-to-6-00-ghz/specifications.html): Max Boost Clock 6.0 GHz
+- [Qualcomm X Elite](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-x-elite)
+- [Qualcomm 8cx Gen3](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-mobile-compute-platforms/snapdragon-8cx-gen-3-compute-platform)
