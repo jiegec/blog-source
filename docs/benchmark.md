@@ -42,6 +42,7 @@ permalink: /benchmark/
 
 桌面平台（LTO + Jemalloc）：
 
+- AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto -ljemalloc`）: [12.9](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
@@ -83,7 +84,7 @@ permalink: /benchmark/
 
 注：
 
-1. SPEC INT 2017 Rate-1 结果受 `-flto`（分数 +4%）和 `-ljemalloc`（分数 +4%）影响很明显。`-Ofast` 和 `-O3` 区别很小，`-march=native` 影响很小。
+1. SPEC INT 2017 Rate-1 结果受 `-flto`（分数 +4%）和 `-ljemalloc`（分数 +4-10%）影响很明显。`-Ofast` 和 `-O3` 区别很小，`-march=native` 影响很小。
 2. 在部分处理器上，Linux 不能保证程序被调度到性能最高的核心上，例如：
       1. Qualcomm X1E80100 上，负载不一定会调度到有 Boost 的核上，因此需要手动绑核。没有 Boost 的核心会跑在 3.4 GHz，Boost 的核心最高可以达到 4.0 GHz，对应 14% 的性能提升。具体地讲，它有三个 Cluster，0-3 是没有 Boost 的 Cluster，4-7 和 8-11 每个 Cluster 中可以有一个核心 Boost 到 4.0 GHz，也就是说，最多有两个核达到 4.0 GHz，这两个核需要分别位于 4-7 和 8-11 两个 Cluster 当中。如果一个 Cluster 有两个或者以上的核有负载，那么他们都只有 3.4 GHz。
       2. AMD Ryzen 9 9950X 不同核能够达到的最大频率不同，目前 Linux（6.11）的调度算法不一定可以保证跑到最大频率 5.75 GHz 上，可能会飘到频率低一些（5.45 GHz 左右）的核心上，损失 4% 的性能，因此需要绑核心，详见 [Linux 大小核的调度算法探究](./blog/posts/software/linux-core-scheduling.md) 以及 [谈谈 Linux 与 ITMT 调度器与多簇处理器](https://blog.hjc.im/thoughts-on-linux-preferred-cores-and-multi-ccx.html)。
