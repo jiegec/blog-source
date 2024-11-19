@@ -40,7 +40,7 @@ FREEZE_VERSION=0
 > reboot
 ```
 
-重启以后，可以用 `vcgencmd bootloader_config` 查看当前的启动配置，看是否正确地更新了启动配置。比较重要的是 BOOT_ORDER，`0x12` 表示先尝试网络启动，再尝试 SD 卡启动。
+重启以后，可以用 `vcgencmd bootloader_config` 查看当前的启动配置，看是否正确地更新了启动配置。比较重要的是 [BOOT_ORDER](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#BOOT_ORDER)，`0x12` 表示先尝试网络启动，再尝试 SD 卡启动。
 
 ## 路由器配置
 
