@@ -1,0 +1,54 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 5.10.0-182.0.0.95.r2220_156.hce2.aarch64
+
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1        333       4.78  S
+500.perlbench_r       1        324       4.91  *
+500.perlbench_r       1        316       5.04  S
+502.gcc_r             1        234       6.04  *
+502.gcc_r             1        235       6.04  S
+502.gcc_r             1        233       6.09  S
+505.mcf_r             1        298       5.43  S
+505.mcf_r             1        298       5.43  S
+505.mcf_r             1        298       5.43  *
+520.omnetpp_r         1        399       3.29  S
+520.omnetpp_r         1        391       3.35  *
+520.omnetpp_r         1        375       3.50  S
+523.xalancbmk_r       1        242       4.36  S
+523.xalancbmk_r       1        245       4.32  *
+523.xalancbmk_r       1        245       4.31  S
+525.x264_r            1        160      10.9   S
+525.x264_r            1        161      10.9   *
+525.x264_r            1        161      10.9   S
+531.deepsjeng_r       1        246       4.66  S
+531.deepsjeng_r       1        245       4.68  *
+531.deepsjeng_r       1        244       4.71  S
+541.leela_r           1        398       4.16  S
+541.leela_r           1        393       4.21  S
+541.leela_r           1        394       4.20  *
+548.exchange2_r       1        173      15.1   *
+548.exchange2_r       1        174      15.1   S
+548.exchange2_r       1        173      15.1   S
+557.xz_r              1        405       2.66  S
+557.xz_r              1        381       2.83  S
+557.xz_r              1        393       2.75  *
+=================================================================================
+500.perlbench_r       1        324       4.91  *
+502.gcc_r             1        234       6.04  *
+505.mcf_r             1        298       5.43  *
+520.omnetpp_r         1        391       3.35  *
+523.xalancbmk_r       1        245       4.32  *
+525.x264_r            1        161      10.9   *
+531.deepsjeng_r       1        245       4.68  *
+541.leela_r           1        394       4.20  *
+548.exchange2_r       1        173      15.1   *
+557.xz_r              1        393       2.75  *
+ SPECrate(R)2017_int_base                5.39
+ SPECrate(R)2017_int_peak                                              Not Run
+
+
+System Info:
+CPU Name: -
+Enabled: -1 cores, number of chips enabled chips
