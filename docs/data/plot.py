@@ -115,10 +115,10 @@ def plot_score(flavor):
     for optflag in optflags:
         for i, x in enumerate(x_data):
             if x.split("(")[1].removesuffix(")") == optflag:
-                if i > 0:
-                    # found delimiter
-                    ax.axhline(i - 0.5)
+                # found delimiter
+                ax.axhline(i - 0.5)
                 break
+    ax.axhline(len(x_data) - 0.5)
     plt.savefig(f"{flavor}2017_rate1_score.svg", bbox_inches="tight")
 
 
