@@ -105,7 +105,7 @@ def plot_score(flavor):
     _, ax = plt.subplots(figsize=(6, len(y_data) * 0.3))
 
     for x, y in enumerate(y_data):
-        ax.text(y, x, f"{y:.2f}")
+        ax.text(y, x, f"{y:.2f}", verticalalignment="center")
 
     ax.set_xlim(0, max(y_data) * 1.5)
     ax.barh(x_data, y_data)
@@ -117,7 +117,7 @@ def plot_score(flavor):
             if x.split("(")[1].removesuffix(")") == optflag:
                 if i > 0:
                     # found delimiter
-                    ax.axhline(i - 0.45)
+                    ax.axhline(i - 0.5)
                 break
     plt.savefig(f"{flavor}2017_rate1_score.svg", bbox_inches="tight")
 
@@ -144,7 +144,7 @@ def plot_score_per_ghz(flavor):
     _, ax = plt.subplots(figsize=(6, len(y_data) * 0.3))
 
     for x, y in enumerate(y_data):
-        ax.text(y, x, f"{y:.2f}")
+        ax.text(y, x, f"{y:.2f}", verticalalignment="center")
 
     ax.set_xlim(0, max(y_data) * 1.5)
     ax.barh(x_data, y_data)
