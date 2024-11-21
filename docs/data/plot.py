@@ -44,6 +44,8 @@ benchmarks_fp_rate = [
     "554.roms_r",
 ]
 
+optflags = ["O3", "O3 -flto", "O3 -flto -ljemalloc", "O3 -march=native"]
+
 
 def parse_data(flavor):
     for f in glob.glob(f"{flavor}2017_rate1/*.txt"):
@@ -85,9 +87,16 @@ def parse_data(flavor):
                 data[name][f"{benchmark}/{key}"].append(value)
 
 
+def compute_key(x):
+    # sort by opt flags first, then score
+    optflags = x.split("(")[1].removesuffix(")")
+    score = mean(data[x]["all"])
+    return optflags, score
+
+
 def plot_score(flavor):
     # plot score data
-    x_data = sorted(data.keys(), key=lambda x: mean(data[x]["all"]))
+    x_data = sorted(data.keys(), key=compute_key)
     y_data = []
     for x in x_data:
         y_data.append(mean(data[x]["all"]))
@@ -101,7 +110,17 @@ def plot_score(flavor):
     ax.set_xlim(0, max(y_data) * 1.5)
     ax.barh(x_data, y_data)
     ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated Score")
+
+    # add horizontal lines for each opt flag
+    for optflag in optflags:
+        for i, x in enumerate(x_data):
+            if x.split("(")[1].removesuffix(")") == optflag:
+                if i > 0:
+                    # found delimiter
+                    ax.axhline(i - 0.45)
+                break
     plt.savefig(f"{flavor}2017_rate1_score.svg", bbox_inches="tight")
+
 
 def plot_score_per_ghz(flavor):
     # plot score per ghz data
@@ -119,7 +138,7 @@ def plot_score_per_ghz(flavor):
         y_data.append(mean(data[x]["all"]) / mean(freq))
 
     # sort by y: https://stackoverflow.com/a/9764364/2148614
-    y_data, x_data = (list (t) for t in zip(*sorted(zip(y_data, x_data))))
+    y_data, x_data = (list(t) for t in zip(*sorted(zip(y_data, x_data))))
 
     plt.cla()
     _, ax = plt.subplots(figsize=(6, len(y_data) * 0.3))
