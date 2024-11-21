@@ -16,6 +16,8 @@ categories:
 xf86OpenConsole: Cannot open virtual console 1 (Permission denied)
 ```
 
+2024 年注：一些比较新的发行版上携带的 xrdp 已经没有这个问题，此外不要忘记安装 xorgxrdp。
+
 ## 解决方法
 
 XRDP 作者在 [issue #2010](https://github.com/neutrinolabs/xrdp/issues/2010#issuecomment-942561105) 中提到了解决方法：
