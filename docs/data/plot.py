@@ -44,7 +44,7 @@ benchmarks_fp_rate = [
     "554.roms_r",
 ]
 
-optflags = ["O3", "O3 -flto", "O3 -flto -ljemalloc", "O3 -march=native"]
+opt_flags = ["O3", "O3 -flto", "O3 -flto -ljemalloc", "O3 -march=native"]
 
 
 def parse_data(flavor):
@@ -87,11 +87,15 @@ def parse_data(flavor):
                 data[name][f"{benchmark}/{key}"].append(value)
 
 
+def get_opt_flags(name):
+    return name.split("(")[1].removesuffix(")")
+
+
 def compute_key(x):
     # sort by opt flags first, then score
-    optflags = x.split("(")[1].removesuffix(")")
+    opt_flags = get_opt_flags(x)
     score = mean(data[x]["all"])
-    return optflags, score
+    return opt_flags, score
 
 
 def plot_score(flavor):
@@ -112,9 +116,9 @@ def plot_score(flavor):
     ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated Score")
 
     # add horizontal lines for each opt flag
-    for optflag in optflags:
+    for opt_flag in opt_flags:
         for i, x in enumerate(x_data):
-            if x.split("(")[1].removesuffix(")") == optflag:
+            if get_opt_flags(x) == opt_flag:
                 # found delimiter
                 ax.axhline(i - 0.5)
                 break
@@ -137,8 +141,16 @@ def plot_score_per_ghz(flavor):
             freq.append(mean(data[x][f"{bench}/clock"]) / 1000)
         y_data.append(mean(data[x]["all"]) / mean(freq))
 
-    # sort by y: https://stackoverflow.com/a/9764364/2148614
-    y_data, x_data = (list(t) for t in zip(*sorted(zip(y_data, x_data))))
+    # sort by opt flags first, then y: https://stackoverflow.com/a/9764364/2148614
+    y_data, x_data = (
+        list(t)
+        for t in zip(
+            *sorted(
+                zip(y_data, x_data),
+                key=lambda arg: (get_opt_flags(arg[1]), arg[0]),
+            )
+        )
+    )
 
     plt.cla()
     _, ax = plt.subplots(figsize=(6, len(y_data) * 0.3))
@@ -149,6 +161,16 @@ def plot_score_per_ghz(flavor):
     ax.set_xlim(0, max(y_data) * 1.5)
     ax.barh(x_data, y_data)
     ax.set_title(f"SPEC {flavor.upper()} 2017 Rate-1 Estimated Score/GHz")
+
+    # add horizontal lines for each opt flag
+    for opt_flag in opt_flags:
+        for i, x in enumerate(x_data):
+            if get_opt_flags(x) == opt_flag:
+                # found delimiter
+                ax.axhline(i - 0.5)
+                break
+    ax.axhline(len(x_data) - 0.5)
+
     plt.savefig(f"{flavor}2017_rate1_score_per_ghz.svg", bbox_inches="tight")
 
 
