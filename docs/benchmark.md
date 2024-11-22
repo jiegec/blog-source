@@ -661,7 +661,9 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 | Firestorm/Avalanche  | 16            | 32            | ASIMD     |
 | LA464/LA664          | 16            | 32            | LASX      |
 | Neoverse V2          | 16            | 32            | SVE(128b) |
+| Neoverse V1          | 16            | 32            | SVE(256b) |
 | Neoverse N2          | 8             | 16            | SVE(128b) |
+| Neoverse N1          | 8             | 16            | ASIMD     |
 | Cortex X1/Cortex A78 | 8             | 16            | ASIMD     |
 | Gracemont            | 8             | 16            | FMA       |
 | Zen 1                | 8             | 16            | FMA       |
