@@ -86,6 +86,7 @@ permalink: /benchmark/
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.10](./data/int2017_rate1/Kunpeng_920_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc1 @ 2.6 GHz（`-O3`）: [3.03](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc1_O3_001.txt)
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- Intel Xeon E5-2603 v4 @ 1.7 GHz Broadwell（`-O3`）: [2.48](./data/int2017_rate1/Intel_Xeon_E5-2603_v4_O3_001.txt)
 
 注：
 
@@ -680,5 +681,6 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - [Intel Core i9-10980XE](https://www.intel.com/content/www/us/en/products/sku/198017/intel-core-i910980xe-extreme-edition-processor-24-75m-cache-3-00-ghz/specifications.html): Max Boost Clock 4.8 GHz
 - [Intel Core i9-12900KS](https://www.intel.com/content/www/us/en/products/sku/225916/intel-core-i912900ks-processor-30m-cache-up-to-5-50-ghz/specifications.html): Max Boost Clock 5.5 GHz
 - [Intel Core i9-14900K](https://www.intel.com/content/www/us/en/products/sku/236773/intel-core-i9-processor-14900k-36m-cache-up-to-6-00-ghz/specifications.html): Max Boost Clock 6.0 GHz
-- [Qualcomm X Elite](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-x-elite)
+- [Intel Xeon E5-2603 v4](https://www.intel.com/content/www/us/en/products/sku/92993/intel-xeon-processor-e52603-v4-15m-cache-1-70-ghz/specifications.html)
 - [Qualcomm 8cx Gen3](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-mobile-compute-platforms/snapdragon-8cx-gen-3-compute-platform)
+- [Qualcomm X Elite](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-x-elite)
