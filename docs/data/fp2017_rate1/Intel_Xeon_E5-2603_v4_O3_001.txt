@@ -1,0 +1,146 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.1.0-18-amd64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        747      13.4   S
+503.bwaves_r          1        747      13.4   *
+503.bwaves_r          1        747      13.4   S
+507.cactuBSSN_r       1        520       2.44  S
+507.cactuBSSN_r       1        522       2.42  S
+507.cactuBSSN_r       1        521       2.43  *
+508.namd_r            1        527       1.80  S
+508.namd_r            1        527       1.80  *
+508.namd_r            1        530       1.79  S
+510.parest_r          1        803       3.26  S
+510.parest_r          1        803       3.26  *
+510.parest_r          1        804       3.26  S
+511.povray_r          1        846       2.76  *
+511.povray_r          1        842       2.77  S
+511.povray_r          1        852       2.74  S
+519.lbm_r             1        544       1.94  S
+519.lbm_r             1        548       1.92  S
+519.lbm_r             1        544       1.94  *
+521.wrf_r             1        777       2.88  S
+521.wrf_r             1        776       2.89  *
+521.wrf_r             1        772       2.90  S
+526.blender_r         1        546       2.79  S
+526.blender_r         1        559       2.73  S
+526.blender_r         1        557       2.73  *
+527.cam4_r            1        555       3.15  S
+527.cam4_r            1        557       3.14  *
+527.cam4_r            1        559       3.13  S
+538.imagick_r         1       1083       2.30  S
+538.imagick_r         1       1082       2.30  *
+538.imagick_r         1       1082       2.30  S
+544.nab_r             1        659       2.55  *
+544.nab_r             1        658       2.56  S
+544.nab_r             1        660       2.55  S
+549.fotonik3d_r       1        620       6.28  *
+549.fotonik3d_r       1        620       6.29  S
+549.fotonik3d_r       1        625       6.23  S
+554.roms_r            1        519       3.06  *
+554.roms_r            1        518       3.07  S
+554.roms_r            1        520       3.06  S
+=================================================================================
+503.bwaves_r          1        747      13.4   *
+507.cactuBSSN_r       1        521       2.43  *
+508.namd_r            1        527       1.80  *
+510.parest_r          1        803       3.26  *
+511.povray_r          1        846       2.76  *
+519.lbm_r             1        544       1.94  *
+521.wrf_r             1        776       2.89  *
+526.blender_r         1        557       2.73  *
+527.cam4_r            1        557       3.14  *
+538.imagick_r         1       1082       2.30  *
+544.nab_r             1        659       2.55  *
+549.fotonik3d_r       1        620       6.28  *
+554.roms_r            1        519       3.06  *
+ Est. SPECrate(R)2017_fp_base            3.14
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+503.bwaves_r: time (ms) = 746681
+503.bwaves_r: clock freq (MHz) = 1699.90
+503.bwaves_r: instructions = 2.22958e+12
+503.bwaves_r: ipc = 1.76
+503.bwaves_r: misprediction rate (%) = 0.14
+503.bwaves_r: mpki = 0.06
+507.cactuBSSN_r: time (ms) = 520842
+507.cactuBSSN_r: clock freq (MHz) = 1699.91
+507.cactuBSSN_r: instructions = 1.46239e+12
+507.cactuBSSN_r: ipc = 1.65
+507.cactuBSSN_r: misprediction rate (%) = 0.09
+507.cactuBSSN_r: mpki = 0.02
+508.namd_r: time (ms) = 527784
+508.namd_r: clock freq (MHz) = 1699.93
+508.namd_r: instructions = 2.58236e+12
+508.namd_r: ipc = 2.88
+508.namd_r: misprediction rate (%) = 4.45
+508.namd_r: mpki = 0.73
+510.parest_r: time (ms) = 803138
+510.parest_r: clock freq (MHz) = 1699.93
+510.parest_r: instructions = 3.27866e+12
+510.parest_r: ipc = 2.40
+510.parest_r: misprediction rate (%) = 2.20
+510.parest_r: mpki = 2.98
+511.povray_r: time (ms) = 846356
+511.povray_r: clock freq (MHz) = 1699.93
+511.povray_r: instructions = 3.45958e+12
+511.povray_r: ipc = 2.40
+511.povray_r: misprediction rate (%) = 0.69
+511.povray_r: mpki = 1.08
+519.lbm_r: time (ms) = 544941
+519.lbm_r: clock freq (MHz) = 1699.93
+519.lbm_r: instructions = 1.77961e+12
+519.lbm_r: ipc = 1.92
+519.lbm_r: misprediction rate (%) = 0.41
+519.lbm_r: mpki = 0.03
+521.wrf_r: time (ms) = 774802
+521.wrf_r: clock freq (MHz) = 1699.91
+521.wrf_r: instructions = 1.96964e+12
+521.wrf_r: ipc = 1.50
+521.wrf_r: misprediction rate (%) = 1.16
+521.wrf_r: mpki = 1.01
+526.blender_r: time (ms) = 553804
+526.blender_r: clock freq (MHz) = 1699.91
+526.blender_r: instructions = 1.77536e+12
+526.blender_r: ipc = 1.89
+526.blender_r: misprediction rate (%) = 3.22
+526.blender_r: mpki = 5.57
+527.cam4_r: time (ms) = 557166
+527.cam4_r: clock freq (MHz) = 1699.91
+527.cam4_r: instructions = 1.81971e+12
+527.cam4_r: ipc = 1.92
+527.cam4_r: misprediction rate (%) = 1.56
+527.cam4_r: mpki = 1.88
+538.imagick_r: time (ms) = 1.08196e+06
+538.imagick_r: clock freq (MHz) = 1699.96
+538.imagick_r: instructions = 4.9082e+12
+538.imagick_r: ipc = 2.67
+538.imagick_r: misprediction rate (%) = 0.75
+538.imagick_r: mpki = 0.72
+544.nab_r: time (ms) = 659009
+544.nab_r: clock freq (MHz) = 1699.93
+544.nab_r: instructions = 1.94041e+12
+544.nab_r: ipc = 1.73
+544.nab_r: misprediction rate (%) = 2.71
+544.nab_r: mpki = 3.08
+549.fotonik3d_r: time (ms) = 621530
+549.fotonik3d_r: clock freq (MHz) = 1699.94
+549.fotonik3d_r: instructions = 1.53406e+12
+549.fotonik3d_r: ipc = 1.45
+549.fotonik3d_r: misprediction rate (%) = 0.50
+549.fotonik3d_r: mpki = 0.11
+554.roms_r: time (ms) = 518670
+554.roms_r: clock freq (MHz) = 1699.92
+554.roms_r: instructions = 1.6377e+12
+554.roms_r: ipc = 1.86
+554.roms_r: misprediction rate (%) = 0.42
+554.roms_r: mpki = 0.30
+
+System Info:
+CPU Name: Intel Xeon E5-2603 v4
+Enabled: 12 cores, 2 chips
+Memory: 2x 002C00B3002C 18ASF1G72PZ-2G1A2 8 GB 1 rank 2133, configured at 1866
