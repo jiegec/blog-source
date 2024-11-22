@@ -68,7 +68,7 @@ permalink: /benchmark/
 
 服务器平台（LTO + Jemalloc）：
 
-- AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [7.48](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
+- AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.48](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
 
 服务器平台：
 
