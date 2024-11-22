@@ -80,6 +80,7 @@ permalink: /benchmark/
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.39](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3`）: [5.32](./data/int2017_rate1/AMD_EPYC_9754_O3_001.txt)
 - AMD EPYC 7K83 Zen 3（`-O3`）: [5.18](./data/int2017_rate1/AMD_EPYC_7K83_O3_001.txt)
+- AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3`）: [5.53](./data/int2017_rate1/AWS_Graviton_3E_O3_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3`）: [5.10](./data/int2017_rate1/AWS_Graviton_3_O3_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [4.67](./data/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
 - Ampere Altra @ 3.0 GHz Neoverse N1（`-O3`）: [4.41](./data/int2017_rate1/Ampere_Altra_O3_001.txt)
