@@ -262,6 +262,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [8.75](./data/fp2017_rate1/AWS_Graviton_4_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [8.19](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 - Intel Xeon Platinum 8576C Emerald Rapids（`-O3`）: [8.14](./data/fp2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
+- AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3`）: [8.10](./data/fp2017_rate1/AWS_Graviton_3E_O3_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3`）: [7.80](./data/fp2017_rate1/AWS_Graviton_3_O3_001.txt)
 - AMD EPYC 7K83 Zen 3（`-O3`）: [7.63](./data/fp2017_rate1/AMD_EPYC_7K83_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [7.63](./data/fp2017_rate1/T-Head_Yitian_710_O3_001.txt)
