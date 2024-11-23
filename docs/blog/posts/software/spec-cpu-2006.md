@@ -521,3 +521,40 @@ export SPEC_INSTALL_NOCHECK=1
 int=default=default=default:
 PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 ```
+
+SPEC CPU 2017 基本类似，下面给出需要运行的命令：
+
+```shell
+# https://gist.github.com/cyyself/4cee148ad11081dde7b938e3584b4536
+wget -O config.guess 'https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD'
+wget -O config.sub 'https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD'
+cp config.* /mnt/tools/src/expat-2.1.0/conftools/
+cp config.* /mnt/tools/src/make-4.2.1/config/
+cp config.* /mnt/tools/src/rxp-1.5.0/
+cp config.* /mnt/tools/src/specinvoke/
+cp config.* /mnt/tools/src/specsum/build-aux/
+cp config.* /mnt/tools/src/tar-1.28/build-aux/
+cp config.* /mnt/tools/src/xz-5.2.2/build-aux/
+# fix glob impl
+# https://github.com/GQBBBB/GQBBBB.github.io/issues/10
+# http://git.savannah.gnu.org/cgit/make.git/patch/?id=48c8a116a914a325a0497721f5d8b58d5bba34d4
+sed -i 's/_GNU_GLOB_INTERFACE_VERSION ==/_GNU_GLOB_INTERFACE_VERSION >=/' /mnt/tools/src/make-4.2.1/glob/glob.c
+# fix missing test_driver.pl
+# https://bugs.gentoo.org/613772
+# http://git.savannah.gnu.org/cgit/make.git/commit/tests/run_make_tests.pl?id=d9d4e06084a4c7da480bd49a3487aadf6ba77b54
+sed -i 's/require "test_driver.pl";/use FindBin;\nuse lib "$FindBin::Bin";\n\0/' /mnt/tools/src/make-4.2.1/tests/run_make_tests.pl
+# fix wildcard test sigsegv
+# https://lore.kernel.org/all/20200122223655.2569-1-sno@netbsd.org/T/
+# http://git.savannah.gnu.org/cgit/make.git/commit/?id=193f1e81edd6b1b56b0eb0ff8aa4b41c7b4257b4
+sed -i 's/gl->gl_stat = local_stat;/gl->gl_lstat = lstat;\n\0/' /mnt/tools/src/make-4.2.1/dir.c
+# missing include ctype.h for isxdigit
+sed -i 's/#include "xfreopen.h"/#include <ctype.h>\n\0/' /mnt/tools/src/specsum/src/md5sum.c
+# fix gcc version detection
+sed -i 's/1\*)/1.\*)/g' /mnt/tools/src/perl-5.24.0/Configure
+# fix gettime test
+sed -i 's/timegm(0,0,0,1,0,70)/timegm(0,0,0,1,0,1970)/g' /mnt/tools/src/TimeDate-2.30/t/getdate.t
+# fix re.o generated instead of re.so
+sed -i 's/main/int main/g' /mnt/tools/src/perl-5.24.0/hints/linux.sh
+# build tools
+cd /mnt && echo 'y' | SKIPTOOLSINTRO=1 FORCE_UNSAFE_CONFIGURE=1 MAKEFLAGS=-j16 ./tools/src/buildtools
+```
