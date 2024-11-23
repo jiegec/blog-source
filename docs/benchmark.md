@@ -69,10 +69,11 @@ permalink: /benchmark/
 服务器平台（LTO + Jemalloc）：
 
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.48](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
+- AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3 -flto -ljemalloc`）: [6.17](./data/int2017_rate1/AWS_Graviton_3E_O3-flto-ljemalloc_001.txt)
 
 服务器平台（LTO）：
 
-- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [4.99](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [4.99](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
 
 服务器平台：
 
