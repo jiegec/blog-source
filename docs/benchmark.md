@@ -70,6 +70,10 @@ permalink: /benchmark/
 
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.48](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
 
+服务器平台（LTO）：
+
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [4.99](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
+
 服务器平台：
 
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [6.80](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt) [7.00](./data/int2017_rate1/AWS_Graviton_4_O3_002.txt)
