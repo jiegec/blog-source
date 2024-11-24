@@ -645,6 +645,11 @@ intrate,intspeed=base: # flags for integer base
 #       https://www.spec.org/cpu2017/Docs/benchmarks/500.perlbench_r.html
 #       https://www.spec.org/cpu2017/Docs/benchmarks/502.gcc_r.html
 #       https://www.spec.org/cpu2017/Docs/benchmarks/525.x264_r.html
+
+fprate,fpspeed=base: # flags for fp base
+   EXTRA_COPTIMIZE = -Wno-error=implicit-int
+# Notes about the above
+#  - 527.cam4_r,627.cam4_s needs -Wno-error=implicit-int
 ```
 
 运行方式：
