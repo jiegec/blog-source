@@ -50,6 +50,7 @@ permalink: /benchmark/
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3 -flto -ljemalloc`）: [10.4](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto-ljemalloc_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto -ljemalloc`）: [9.25](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto-ljemalloc_001.txt)
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
 
