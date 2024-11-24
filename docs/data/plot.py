@@ -44,7 +44,13 @@ benchmarks_fp_rate = [
     "554.roms_r",
 ]
 
-opt_flags = ["O3", "O3 -flto", "O3 -flto -ljemalloc", "O3 -march=native"]
+opt_flags = [
+    "O3",
+    "O3 -flto",
+    "O3 -flto -ljemalloc",
+    "O3 -march=native",
+    "O3 -march=native -flto -ljemalloc",
+]
 
 
 def parse_data(flavor):
