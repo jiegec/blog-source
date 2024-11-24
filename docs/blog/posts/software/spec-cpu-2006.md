@@ -558,3 +558,5 @@ sed -i 's/main/int main/g' /mnt/tools/src/perl-5.24.0/hints/linux.sh
 # build tools
 cd /mnt && echo 'y' | SKIPTOOLSINTRO=1 FORCE_UNSAFE_CONFIGURE=1 MAKEFLAGS=-j16 ./tools/src/buildtools
 ```
+
+官方文档：[Building the SPEC CPU®2017 Toolset](https://www.spec.org/cpu2017/Docs/tools-build.html)
