@@ -92,6 +92,7 @@ permalink: /benchmark/
 - Ampere Altra @ 3.0 GHz Neoverse N1（`-O3`）: [4.41](./data/int2017_rate1/Ampere_Altra_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [4.35](./data/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - AMD EPYC 7H12 @ 3.3 GHz Zen 2（`-O3`）: [4.23](./data/int2017_rate1/AMD_EPYC_7H12_O3_001.txt)
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.18](./data/int2017_rate1/Loongson_3C6000_O3_001.txt)
 - Intel Xeon E5-2680 v3 @ 3.0 GHz Haswell（`-O3`）: [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [3.96](./data/int2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.10](./data/int2017_rate1/Kunpeng_920_O3_001.txt)
