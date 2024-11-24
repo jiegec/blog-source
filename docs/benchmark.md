@@ -42,7 +42,7 @@ permalink: /benchmark/
 
 桌面平台（`-march=native` + LTO + Jemalloc）：
 
-- Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native -flto -ljemalloc`）: [9.31](./data/int2017_rate1/Qualcomm_X1E80100_O3-march=native-flto-ljemalloc_001.txt)
+- Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native -flto -ljemalloc`）: [9.43](./data/int2017_rate1/Qualcomm_X1E80100_O3-march=native-flto-ljemalloc_001.txt)
 
 桌面平台（LTO + Jemalloc）：
 
