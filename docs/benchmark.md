@@ -64,6 +64,7 @@ permalink: /benchmark/
 - Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [7.77](./data/int2017_rate1/Apple_M1_O3_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3`）: [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Qualcomm 8cx Gen3 P Core @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt)
 - Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
 
 服务器平台（`-march=native` + LTO + Jemalloc）：
