@@ -66,6 +66,10 @@ permalink: /benchmark/
 - Qualcomm 8cx Gen3 P Core @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
 - Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
 
+服务器平台（`-march=native` + LTO + Jemalloc）：
+
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -march=native -flto -ljemalloc`）: [4.65](./data/int2017_rate1/Loongson_3C6000_O3-march=native-flto-ljemalloc_001.txt)
+
 服务器平台（LTO + Jemalloc）：
 
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.48](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
