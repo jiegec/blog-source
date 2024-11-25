@@ -190,7 +190,11 @@ BTB 的目的是在分支预测阶段，提供哪些指令是分支指令，以�
 
 ## Instruction Prefetcher
 
-随着程序的指令 footprint 增大，除了增大 L1 ICache 容量，也需要实现合理的 Instruction Prefetcher，把指令预取到 L1 ICache 当中。对于 Decoupled Frontend，目前比较常见的方法是使用 Fetch Directed Intruction Prefetching(FDIP)，利用 Decoupled Frontend 里分支预测可以在取指之前跑得更远的特性，使用分支预测的地址来进行预取。对于 Coupled Frontend，预测和取指紧密相连，FDIP 的方法就不好用了，需要寻找其他的方法。
+随着程序的指令 footprint 增大，除了增大 L1 ICache 容量，也需要实现合理的 Instruction Prefetcher，把指令预取到 L1 ICache 当中。对于 Decoupled Frontend，目前比较常见的方法是使用 [Fetch Directed Intruction Prefetching(FDIP)](https://ieeexplore.ieee.org/document/809439)，利用 Decoupled Frontend 里分支预测可以在取指之前跑得更远的特性，使用分支预测的地址来进行预取。具体地，Decoupled Frontend 会把分支预测得到的地址写入 Fetch Target Queue(FTQ)，这些地址由 ICache 来消费。与此同时，FTQ 中的地址也会用于指令预取，结构如论文中的图 1：
+
+![](./brief-into-ooo-3-fdip.png)
+
+对于 Coupled Frontend，预测和取指紧密相连，FDIP 的方法就不好用了，需要寻找其他的方法。
 
 一种方法是 Call Graph Prefetching(CGP)，来自论文 [Call graph prefetching for database applications](https://ieeexplore.ieee.org/abstract/document/903270)。从名字也可以看出，它针对的是数据库场景，而这个场景下，代码的规模很大，更加容易出现 ICache Miss。
 
