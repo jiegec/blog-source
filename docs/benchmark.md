@@ -156,7 +156,10 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Intel Core Ultra 258V Lunar Lake Lion Cove+Skymont: 9.46
 - Apple M1 Max Firestorm+Icestorm: 9.2
 - AMD Ryzen 5950X Zen 3: 9.15
+- Kunpeng 920 TSV120: 6.00
 - Loongson 3A6000 LA664: 4.29
+- Phytium D3000 FTC862: 4.24
+- Loongson 3A5000 LA464: 3.04
 
 [高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
 
@@ -177,7 +180,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Intel Core Ultra 7 258V Skymont: 5.92
 - Intel Core Ultra 7 115H Crestmont: 5.88
 - Intel Core i5-6600K Skylake: 5.65
-- Loongson 3A6000: 4.27
+- Loongson 3A6000 LA664: 4.27
 - Mediatek Genio 1200 Cortex A78: 3.8
 - AMD FX-8150: 3.5
 - Intel Core Ultra 7 115H Low Power Crestmont: 3.32
@@ -329,11 +332,11 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Intel Core Ultra 7 258V Skymont: 7.94
 - Intel Core i5-6600K Skylake: 7.92
 - Intel Core Ultra 7 115H Crestmont: 6.86
-- Loongson 3A6000: 5.49
+- Loongson 3A6000 LA664: 5.49
 - Mediatek Genio 1200 Cortex A78: 5.09
 - Intel Core Ultra 7 115H Low Power Crestmont: 4.32
 - AMD FX-8150: 3.63
-- Loongson 3A5000: 3.38
+- Loongson 3A5000 LA464: 3.38
 - Intel Celeron J4125 Goldmont Plus: 2.45
 - Amlogic S922X Cortex A73: 2.01
 - Zhaoxin KaiXian KX-6640MA: 1.97
