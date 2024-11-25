@@ -281,6 +281,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -march=native`）: [8.87](./data/fp2017_rate1/AWS_Graviton_4_O3-march=native_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3 -march=native`）: [7.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3-march=native_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3 -march=native`）: [5.48](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3-march=native_001.txt)
+- Loongson 3C5000 @ 2.2 GHz LA464（`-O3 -march=native`）: [2.99](./data/fp2017_rate1/Loongson_3C5000_O3-march=native_001.txt)
 
 服务器平台：
 
