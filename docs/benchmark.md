@@ -260,6 +260,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.70](./data/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 
 桌面平台：
 
