@@ -6,6 +6,10 @@ permalink: /benchmark/
 
 # 性能测试
 
+## 测试环境
+
+下列测试大部分都在 Debian Bookworm 中完成，少数（例如 LoongArch）架构使用的是 Debian sid。使用的编译器默认是对应发行版在运行测试时的 GCC，其中主要是 GCC 12.2.0。
+
 ## SPEC INT 2017 Rate-1
 
 下面贴出自己测的数据（SPECint2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。总运行时间（秒）基本和分数成反比，乘积按 5e4 估算。
