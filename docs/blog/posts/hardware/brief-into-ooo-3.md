@@ -215,3 +215,13 @@ BTB 的目的是在分支预测阶段，提供哪些指令是分支指令，以�
 - Order：用来维护 Replacement Policy 所需要的信息
 
 那么前端要做的事情就是，根据分支预测去更新 Signature，根据 Signature 查询 Prefetch Table，如果有命中，根据 Counter 的大小决定是否要预取，从 Address 开始预取哪些数据。
+
+## Championship Branch Prediction
+
+针对分支方向预测，曾经办过 5 届的 Championship Branch Prediction 竞赛，最后一次是 2016 年的 CBP-5，网站是 [Championship Branch Prediction (CBP-5)](https://jilp.org/cbp2016/)。其文件可以从下列地址得到：
+
+- https://web.archive.org/web/20220814115014/http://hpca23.cse.tamu.edu/cbp2016/cbp2016.final.tar.gz
+- https://web.archive.org/web/20190907061905/http://hpca23.cse.tamu.edu/cbp2016/MD5SUM.txt
+- https://drive.google.com/drive/folders/1VAdmqdOEFLvnRKkQQidxvGJA_C6S2RWo 来自 https://github.com/craymichael/CBP-16-Simulation
+
+后续还有一些论文也是在 CBP2016 的环境下进行的测试。
