@@ -121,6 +121,8 @@ $ for i in $(seq 0 15); do echo -n "$i:" && numactl -C $i perf stat -e cycles,ta
 
 分数高的可以冲到 5.7 GHz，分数低一些的就只能到 5.4 GHz 了。
 
+注：根据 David Huang 提供的信息，AMD 的 Linux 内核维护者已经提交 [Patch](https://lore.kernel.org/lkml/20241203201129.31957-1-mario.limonciello@amd.com/) 来修改这个行为，使得进程尽量调度到分数更高的核，无论它在哪个 CCD。这样一来，即使不绑核，也可以保证单核负载会稳定跑在频率最高的核上。
+
 ### Qualcomm
 
 最后再看一下 Qualcomm X1E80100 平台，这个平台有三个 Cluster：0-3，4-7 和 8-11 是三个 Cluster。其中后两个 Cluster 的每个 Cluster 可以支持其中一个核心从 3.4 GHz Boost 到 4.0 GHz，加起来就是最多两个核心 Boost 到 4.0 GHz。打上 [cpufreq](https://patchew.org/linux/20240612124056.39230-1-quic._5Fsibis@quicinc.com/) 的补丁后，内核通过 scmi 接口得到了这些信息：
