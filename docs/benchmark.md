@@ -114,7 +114,7 @@ permalink: /benchmark/
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.10](./data/int2017_rate1/Kunpeng_920_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc1 @ 2.6 GHz（`-O3`）: [3.03](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc1_O3_001.txt)
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
-- Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.51](./data/int2017_rate1/Loongson_3C5000_O3_001.txt)
+- Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data/int2017_rate1/Loongson_3C5000_O3_001.txt)
 - Intel Xeon E5-2603 v4 @ 1.7 GHz Broadwell（`-O3`）: [2.48](./data/int2017_rate1/Intel_Xeon_E5-2603_v4_O3_001.txt)
 
 注：
