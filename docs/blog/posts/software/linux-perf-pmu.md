@@ -31,7 +31,7 @@ categories:
 
 如果想要在用户态频繁地读取性能计数器（cap_user_rdpmc），避免频繁进入内核的开销，也可以在用户态中直接读取性能计数器 PMCCNTR_EL0/PMEVCNTR<n>_EL0：内核在 PMUSERENR_EL0 中进行相应的权限配置即可。v3.9 或更高版本的 PMU 实现允许按照每个 counter 的粒度来控制用户态是否允许访问（PMUACR）。
 
-LoongArch 也是类似的，接口更简单：它只有通用性能计数器，有如下的 csr 来配置各个性能计数器：
+LoongArch 也是类似的，其接口更简单：它只有通用性能计数器，有如下的 csr 来配置各个性能计数器：
 
 1. 性能计数器的值：perfcntr<n>
 2. 性能计数器的配置：perfctrl<n>，有如下字段：
@@ -44,14 +44,14 @@ LoongArch 也是类似的，接口更简单：它只有通用性能计数器，�
 
 在 Linux 内核中，负责控制 ARMv8 性能计数接口的代码在 [arm_pmuv3.c](https://github.com/torvalds/linux/blob/master/drivers/perf/arm_pmuv3.c) 当中。根据这个硬件接口，可以预想到，如果要对一段程序观察它在某个计数器上的取值，需要：
 
-1. 分配一个性能计数器，可能是 Cycle 计数器或者通用性能计数器：对应 armv8pmu_get_event_idx 函数，先分配 Cycle 计数器，再从剩下的通用性能计数器中找到一个空闲的
-2. 配置并启用该性能计数器，对应 armv8pmu_enable_event 函数：
-    1. 把事件类型写入到 PMEVTYPER<n>_EL0 中，对应 armv8pmu_write_event_type 函数
-    2. 启用事件对应的溢出中断，写入 PMINTENSET_EL1，对应 armv8pmu_enable_event_irq 函数
-    3. 事件开始计数，写入 PMCNTENSET_EL0，对应 armv8pmu_enable_event_counter 函数
-3. 在程序开始前，从 PMEVCNTR<n>_EL0 读取一次计数器的当前取值，对应 armv8pmu_read_counter 函数
+1. 分配一个性能计数器，可能是 Cycle 计数器或者通用性能计数器：对应 [armv8pmu_get_event_idx](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L938) 函数，先分配 Cycle 计数器，再从剩下的通用性能计数器中找到一个空闲的
+2. 配置并启用该性能计数器，对应 [armv8pmu_enable_event](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L796) 函数：
+    1. 把事件类型写入到 PMEVTYPER<n>_EL0 中，对应 [armv8pmu_write_event_type](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L629) 函数
+    2. 启用事件对应的溢出中断，写入 PMINTENSET_EL1，对应 [armv8pmu_enable_event_irq](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L714) 函数
+    3. 事件开始计数，写入 PMCNTENSET_EL0，对应 [armv8pmu_enable_event_counter](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L675) 函数
+3. 在程序开始前，从 PMEVCNTR<n>_EL0 读取一次计数器的当前取值，对应 [armv8pmu_read_counter](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L566) 函数
 4. 在程序结束时，再读取一次计数器的当前取值，和程序开始时的值求差
-5. 为了解决溢出的问题：配置中断，在溢出时会进入中断处理代码，统计溢出次数，计入差值的高位，对应 armv8pmu_handle_irq 函数
+5. 为了解决溢出的问题：配置中断，在溢出时会进入中断处理代码，统计溢出次数，计入差值的高位，对应 [armv8pmu_handle_irq](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L840) 函数
 
 ## Perf 子系统
 
