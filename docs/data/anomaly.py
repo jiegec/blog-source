@@ -21,4 +21,8 @@ for flavor in ["int", "fp"]:
                     if times[1] / times[0] > 1.1:
                         print(f"Anomaly found in {f}: {times} {line}")
                     times = []
+                
+                ratio = float(parts[3])
+                if ratio < 1.0:
+                    print(f"Anomaly found in {f}: {ratio} {line}")
 
