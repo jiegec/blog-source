@@ -15,7 +15,9 @@ categories:
 
 <!-- more -->
 
-## 硬件
+## PMU
+
+### 硬件
 
 支撑性能分析的背后是硬件提供的机制，最常用的就是性能计数器：硬件会提供一些可以配置的性能计数器，在对应的硬件事件触发是，更新这些计数器，然后再由程序读取计数器的值并统计。下面以 ARMv8 为例，分析一下硬件提供的性能计数的接口：
 
@@ -40,7 +42,7 @@ LoongArch 也是类似的，其接口更简单：它只有通用性能计数器�
     3. IE：是否启用溢出中断
 3. misc.rpcntl3：允许用户态程序读取性能计数器
 
-## 内核驱动
+### 内核驱动
 
 在 Linux 内核中，负责控制 ARMv8 性能计数接口的代码在 [arm_pmuv3.c](https://github.com/torvalds/linux/blob/master/drivers/perf/arm_pmuv3.c) 当中。根据这个硬件接口，可以预想到，如果要对一段程序观察它在某个计数器上的取值，需要：
 
@@ -53,7 +55,7 @@ LoongArch 也是类似的，其接口更简单：它只有通用性能计数器�
 4. 在程序结束时，再读取一次计数器的当前取值，和程序开始时的值求差
 5. 为了解决溢出的问题：配置中断，在溢出时会进入中断处理代码，统计溢出次数，计入差值的高位，对应 [armv8pmu_handle_irq](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L840) 函数
 
-## Perf 子系统
+### Perf 子系统
 
 除了由单独的架构相关的内核驱动负责配置硬件以外，还需要由 Perf 子系统来处理来自用户的 perf 使用。具体地，内核驱动会注册一个 `struct pmu` 给 Perf 子系统，实现这些函数：
 
@@ -81,7 +83,7 @@ TODO: cap_user_rdpmc
 
 TODO: thread/process context switch
 
-## 虚拟化
+### 虚拟化
 
 在虚拟化场景下，依然希望虚拟机内的 OS 可以有性能计数器可以用，同时宿主机上也可能希望获取虚拟机的性能计数器信息。
 
@@ -95,7 +97,7 @@ TODO: thread/process context switch
 2. 再给每个虚拟机（guest）维护一份性能计数器的上下文，此时为了访问虚拟机的 csr，要访问 gcsr(guest csr)：用 [kvm_save_guest_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L66) 保存，用 [kvm_restore_guest_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L80)
 3. 当虚拟机（guest）因为各种原因回到了 VMM，就要进行[上下文切换](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L94)，保存虚拟机的性能计数器，恢复宿主机的性能计数器；同理，进入虚拟机时，再次进行[上下文切换](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L113)，保存宿主机的性能计数器，恢复虚拟机的性能计数器
 
-## SPE
+## ARMv8 SPE
 
 除了 PMU 以外，ARMv8 平台还定义了 SPE(Statistical Profiling Extension)，它的做法是基于采样的：硬件上每过一段时间，采样一个操作，比如正在执行的指令，正在进行的访存；采样得到的操作的详细信息会写入到内存当中，由内核驱动准备好的一段空间。空间满的时候，会发中断通知内核并让内核重新分配空间。
 
