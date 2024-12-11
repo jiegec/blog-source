@@ -187,6 +187,26 @@ TNT packet 的定义在 [Intel® 64 and IA-32 Architectures Software Developer M
 
 ![](linux-perf-pmu-intel-tnt.png)
 
+由于 Intel PT 的数据量很大，它和 SPE 类似，也是在内存中保存 trace 信息。
+
+## Intel LBR
+
+Intel LBR(Last Branch Record) 机制记录了处理器最近若干次控制流转移，比如 taken branch。它记录的数量很小，信息直接保存在 MSR 当中，而不是像前面的 SPE 和 Intel PT 那样，需要在内存中记录信息。
+
+LBR 在 perf 中，主要用来跟踪 call stack：设置 LBR，只记录 call 指令，并且打开 call-stack 模式，那么 LBR 记录的就是当前的 call stack，perf 可以利用这个信息来找到当前函数的调用链，虽然有长度限制。除了 lbr 以外，perf 还支持利用 fp(frame pointer) 或 dwarf(调试信息) 来[寻找调用链](https://man7.org/linux/man-pages/man1/perf-record.1.html)：
+
+```
+--call-graph
+    Setup and enable call-graph (stack chain/backtrace)
+    recording, implies -g. Default is "fp" (for user space).
+
+    Valid options are "fp" (frame pointer), "dwarf" (DWARF's CFI -
+    Call Frame Information) or "lbr" (Hardware Last Branch Record
+    facility).
+```
+
+和 Intel PT 相比，它记录的信息较少，但实现上也更简单，开销更小。
+
 ## 参考
 
 - [Arm Architecture Reference Manual for A-profile architecture](https://developer.arm.com/documentation/ddi0487/latest/)
