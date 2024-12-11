@@ -19,7 +19,7 @@ categories:
 
 ### 硬件
 
-支撑性能分析的背后是硬件提供的机制，最常用的就是性能计数器：硬件会提供一些可以配置的性能计数器，在对应的硬件事件触发是，更新这些计数器，然后再由程序读取计数器的值并统计。下面以 ARMv8 为例，分析一下硬件提供的性能计数的接口：
+支撑性能分析的背后是硬件提供的机制，最常用的就是性能计数器：硬件会提供一些可以配置的性能计数器，在对应的硬件事件触发是，更新这些计数器，然后再由程序读取计数器的值并统计。下面以 ARM 为例，分析一下硬件提供的性能计数的接口：
 
 1. Cycle 计数器：Cycle Counter Register(PMCCNTR_EL0) 和 Cycle Count Filter Register(PMCCFILTR_EL0)，其中后者控制前者在什么特权态下会进行计数
 2. 最多 31 个通用性能计数器：
@@ -44,7 +44,7 @@ LoongArch 也是类似的，其接口更简单：它只有通用性能计数器�
 
 ### 内核驱动
 
-在 Linux 内核中，负责控制 ARMv8 性能计数接口的代码在 [arm_pmuv3.c](https://github.com/torvalds/linux/blob/master/drivers/perf/arm_pmuv3.c) 当中。根据这个硬件接口，可以预想到，如果要对一段程序观察它在某个计数器上的取值，需要：
+在 Linux 内核中，负责控制 ARM 性能计数接口的代码在 [arm_pmuv3.c](https://github.com/torvalds/linux/blob/master/drivers/perf/arm_pmuv3.c) 当中。根据这个硬件接口，可以预想到，如果要对一段程序观察它在某个计数器上的取值，需要：
 
 1. 分配一个性能计数器，可能是 Cycle 计数器或者通用性能计数器：对应 [armv8pmu_get_event_idx](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L938) 函数，先分配 Cycle 计数器，再从剩下的通用性能计数器中找到一个空闲的
 2. 配置并启用该性能计数器，对应 [armv8pmu_enable_event](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/drivers/perf/arm_pmuv3.c#L796) 函数：
@@ -77,11 +77,7 @@ void (*read)			(struct perf_event *event);
 
 可见在内核里，PMU 计数器的抽象是 `struct perf_event`，这个是架构无关的，根据用户态程序通过 `perf_event_open` 构造出来的；内核驱动就会根据这个 `struct perf_event` 去进行实际的硬件计数器的配置。例如用户程序在 `struct perf_event_attr` 里设置 `exclude_kernel = 1`，就会传到 `struct perf_event` 当中，最后在相应的内核驱动中，变成硬件性能计数器配置里，计数时忽略内核所在特权态的配置。
 
-TODO: sampling
-
-TODO: cap_user_rdpmc
-
-TODO: thread/process context switch
+`perf record` 是基于采样实现的：当性能计数器溢出（一般是 Cycle 计数器）的时候，触发中断进入内核，此时由软件来收集被打断的程序的上下文信息，收集完成后再回到被打断的程序继续执行。
 
 ### 虚拟化
 
@@ -223,11 +219,11 @@ BTS 每个 entry 占用 24 字节，包括 8 字节的 Last Branch From 和 8 �
 
 Intel PEBS(Processor Event Based Sampling) 是一种硬件的采样方法，顾名思义，当处理器触发某些事件时，自动进行一次采样。这个事件，实际上就是某个性能计数器溢出。本来，性能计数器溢出的时候，应该触发中断，让内核维护性能计数器的真实值（例如硬件实现了 32 位计数器，但内核维护的是 64 位）；但在 PEBS 中，这个性能计数器的溢出事件被用来触发硬件的采样：计数溢出的时候，会捕捉当前的处理器状态（PC、访存地址和延迟、通用寄存器和浮点寄存器的值、时钟周期计数和 LBR 信息），把状态写入到内存中的缓冲区，并自动把性能计数器设为指定的复位值。当内存中的缓冲区满的时候，才会触发中断，让内核来处理 PEBS 生成的数据，并分配新的空间。
 
-和基于软件的采样相比，PEBS 可以精细地根据性能计数器来决定采样的频率，例如每 1000 条指令采样一次，每 1000 个周期采样一次，甚至每 1000 次缓存缺失采样一次。具体做法是，把对应的性能计数器的复位值设置为最大值减 1000，那么每次溢出触发 PEBS 采样以后，性能计数器会被设置为最大值减 1000，等性能计数器增加 1000 以后，再次溢出，触发 PEBS 采样，如此循环。
+PEBS 可以精细地根据性能计数器来决定采样的频率，例如每 1000 条指令采样一次，每 1000 个周期采样一次，甚至每 1000 次缓存缺失采样一次。具体做法是，把对应的性能计数器的复位值设置为最大值减 1000，那么每次溢出触发 PEBS 采样以后，性能计数器会被设置为最大值减 1000，等性能计数器增加 1000 以后，再次溢出，触发 PEBS 采样，如此循环。
 
-## ARMv8 BRBE
+## ARM BRBE
 
-ARMv8 平台定义了 BRBE(Branch Record Buffer Extension)，它和 Intel LBR 类似，也是在 System Register 中记录最近若干条跳转的分支的信息。它会记录 taken branch 的这些信息：
+ARM 平台定义了 BRBE(Branch Record Buffer Extension)，它和 Intel LBR 类似，也是在 System Register 中记录最近若干条跳转的分支的信息。它会记录 taken branch 的这些信息：
 
 1. 源地址
 2. 目的地址
@@ -238,11 +234,11 @@ ARMv8 平台定义了 BRBE(Branch Record Buffer Extension)，它和 Intel LBR �
 
 不跳转的条件分支指令就不记录。和 LBR 类似，它也支持根据分支类型过滤，因此也可以用于 call graph 的抓取。
 
-## ARMv8 SPE
+## ARM SPE
 
-ARMv8 平台定义了 SPE(Statistical Profiling Extension)，它的做法是基于采样的：硬件上每过一段时间，采样一个操作，比如正在执行的指令；采样得到的操作的详细信息会写入到内存当中，由内核驱动准备好的一段空间。空间满的时候，会发中断通知内核并让内核重新分配空间。
+ARM 平台定义了 SPE(Statistical Profiling Extension)，它的做法是基于采样的：硬件上每过一段时间，采样一个操作，比如正在执行的指令；采样得到的操作的详细信息会写入到内存当中，由内核驱动准备好的一段空间。空间满的时候，会发中断通知内核并让内核重新分配空间。
 
-`perf record` 在默认参数下的工作原理和 SPE 有点像，都是定时打断程序并采样，但 `perf record` 是基于软件的方式，而 SPE 是硬件采样，同时可以提供更多的微架构信息（延迟，访存地址，是否命中 TLB，分支跳转与否等等）。
+`perf record` 在默认参数下的工作原理和 SPE 有点像，都是定时打断程序并采样：但 `perf record` 是在程序被打断后，由软件来收集信息；而 SPE 是由硬件采样，可以提供更多的微架构信息（延迟，访存地址，是否命中 TLB，分支跳转与否等等）。
 
 SPE 的内核驱动实现在 [arm_spe_pmu.c](https://github.com/torvalds/linux/blob/f92f4749861b06fed908d336b4dee1326003291b/drivers/perf/arm_spe_pmu.c#L754) 当中；它做的事情是，在内存中分配好缓冲区，启动 SPE，并且在 SPE 触发中断时，进行缓冲区的维护；同时缓冲区中的数据会通过 [perf ring buffer (aka perf aux)](https://docs.kernel.org/userspace-api/perf_ring_buffer.html) 传递给用户态的程序，具体数据的解析是由用户态的程序完成的。如果用 perf 工具，那么这个解析和展示的工作就是由 perf 完成的。
 
@@ -252,4 +248,3 @@ SPE 和 Intel PEBS 比较类似，不过它没有和性能计数器耦合起来�
 
 - [Arm Architecture Reference Manual for A-profile architecture](https://developer.arm.com/documentation/ddi0487/latest/)
 - [LoongArch Reference Manual Volume 1: Basic Architecture](https://loongson.github.io/LoongArch-Documentation/LoongArch-Vol1-EN.html)
-
