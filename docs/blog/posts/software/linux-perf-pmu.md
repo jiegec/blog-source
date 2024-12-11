@@ -83,7 +83,17 @@ TODO: thread/process context switch
 
 ## 虚拟化
 
-TODO: kvm
+在虚拟化场景下，依然希望虚拟机内的 OS 可以有性能计数器可以用，同时宿主机上也可能希望获取虚拟机的性能计数器信息。
+
+一种方法是以纯软件的方法去实现性能计数器，比如 [QEMU 的 TCG 模式](https://github.com/qemu/qemu/blob/1cf9bc6eba7506ab6d9de635f224259225f63466/target/arm/helper.c#L996)，可以模拟出一个以固定频率运行的处理器的 Cycle 计数器，但实际上就是拿时间除以频率，是假的性能计数器；此外还能模拟出 Instruction 计数器，因为 QEMU 在做指令翻译的时候，可以顺带记录下执行的指令数；而微架构相关的性能计数器就没法靠这个来实现了。
+
+另一种方法则是在硬件虚拟化的基础上，让虚拟机享受到性能计数器。不过为了安全性，宿主机可以获取虚拟机的性能计数器，但反过来，虚拟机的性能计数器不应该得到宿主机的信息。
+
+目前 LoongArch KVM 已经支持性能计数器的虚拟化，下面来看它是怎么做的：
+
+1. 给宿主机（host）维护一份性能计数器的上下文，用 [kvm_save_host_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L35) 保存，用 [kvm_restore_host_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L50) 恢复
+2. 再给每个虚拟机（guest）维护一份性能计数器的上下文，此时为了访问虚拟机的 csr，要访问 gcsr(guest csr)：用 [kvm_save_guest_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L66) 保存，用 [kvm_restore_guest_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L80)
+3. 当虚拟机（guest）因为各种原因回到了 VMM，就要进行[上下文切换](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L94)，保存虚拟机的性能计数器，恢复宿主机的性能计数器；同理，进入虚拟机时，再次进行[上下文切换](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L113)，保存宿主机的性能计数器，恢复虚拟机的性能计数器
 
 ## 参考
 
