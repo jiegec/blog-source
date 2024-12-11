@@ -177,6 +177,14 @@ test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df51146
 2. 循环 10 次：0x113e(main+0x15) 跳转到 0x1136(main+0xd)
 3. 最终 在 0x1146(main+0x1d) return 回到 __libc_start_call_main 函数
 
+如果要看 Intel PT 到底生成了什么数据，可以用 `perf script -D` 显示。例如要记录分支跳转还是不跳转的历史，用的是如下的 TNT(Taken/Not Taken) packet：
+
+![](linux-perf-pmu-intel-pt-dump.png)
+
+TNT packet 的定义在 [Intel® 64 and IA-32 Architectures Software Developer Manuals](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) 中给出：
+
+![](linux-perf-pmu-intel-tnt.png)
+
 ## 参考
 
 - [Arm Architecture Reference Manual for A-profile architecture](https://developer.arm.com/documentation/ddi0487/latest/)
