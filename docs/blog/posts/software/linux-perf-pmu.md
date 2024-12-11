@@ -17,7 +17,7 @@ categories:
 
 ## 硬件
 
-支撑性能分析的背后是硬件自己的性能计数器，硬件会提供一些可以配置的性能计数器，在对应的硬件事件触发是，更新这些计数器，然后再由程序读取计数器的值并统计。下面以 ARMv8 为例，分析一下硬件提供的性能计数的接口：
+支撑性能分析的背后是硬件提供的机制，最常用的就是性能计数器：硬件会提供一些可以配置的性能计数器，在对应的硬件事件触发是，更新这些计数器，然后再由程序读取计数器的值并统计。下面以 ARMv8 为例，分析一下硬件提供的性能计数的接口：
 
 1. Cycle 计数器：Cycle Counter Register(PMCCNTR_EL0) 和 Cycle Count Filter Register(PMCCFILTR_EL0)，其中后者控制前者在什么特权态下会进行计数
 2. 最多 31 个通用性能计数器：
@@ -94,6 +94,88 @@ TODO: thread/process context switch
 1. 给宿主机（host）维护一份性能计数器的上下文，用 [kvm_save_host_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L35) 保存，用 [kvm_restore_host_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L50) 恢复
 2. 再给每个虚拟机（guest）维护一份性能计数器的上下文，此时为了访问虚拟机的 csr，要访问 gcsr(guest csr)：用 [kvm_save_guest_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L66) 保存，用 [kvm_restore_guest_pmu](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L80)
 3. 当虚拟机（guest）因为各种原因回到了 VMM，就要进行[上下文切换](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L94)，保存虚拟机的性能计数器，恢复宿主机的性能计数器；同理，进入虚拟机时，再次进行[上下文切换](https://github.com/torvalds/linux/blob/7cb1b466315004af98f6ba6c2546bb713ca3c237/arch/loongarch/kvm/vcpu.c#L113)，保存宿主机的性能计数器，恢复虚拟机的性能计数器
+
+## SPE
+
+除了 PMU 以外，ARMv8 平台还定义了 SPE(Statistical Profiling Extension)，它的做法是基于采样的：硬件上每过一段时间，采样一个操作，比如正在执行的指令，正在进行的访存；采样得到的操作的详细信息会写入到内存当中，由内核驱动准备好的一段空间。空间满的时候，会发中断通知内核并让内核重新分配空间。
+
+`perf record` 的工作原理和 SPE 有点像，但它是基于软件的方式，也是定时打断程序并采样。但 SPE 可以提供更多的微架构信息（延迟，访存地址，是否命中 TLB，分支跳转与否等等）。
+
+SPE 的内核驱动实现在 [arm_spe_pmu.c](https://github.com/torvalds/linux/blob/f92f4749861b06fed908d336b4dee1326003291b/drivers/perf/arm_spe_pmu.c#L754) 当中；它做的事情是，在内存中分配好缓冲区，启动 SPE，并且在 SPE 触发中断时，进行缓冲区的维护；同时缓冲区中的数据会通过 [perf ring buffer (aka perf aux)](https://docs.kernel.org/userspace-api/perf_ring_buffer.html) 传递给用户态的程序，具体数据的解析是由用户态的程序完成的。如果用 perf 工具，那么这个解析和展示的工作就是由 perf 完成的。
+
+## Intel PT
+
+Intel PT 是 Intel 平台上跟踪指令流的机制，它可以记录这些信息：
+
+1. 页表的修改
+2. 时钟周期
+3. 分支跳转
+4. 功耗状态变化
+
+perf 工具也是支持用 Intel PT 进行跟踪的：[perf-intel-pt(1) — Linux manual page](https://www.man7.org/linux/man-pages/man1/perf-intel-pt.1.html)，下面的命令用 Intel PT 跟踪一条命令的执行过程，并显示出它生成的跟踪信息：
+
+```shell
+perf record -e intel_pt//u ls
+# itrace: instruction trace
+# i: instructions events
+# y: cycles events
+# b: branches events
+# x: transactions events
+# w: ptwrite events
+# p: power events
+# e: error events
+perf script --itrace=iybxwpe
+```
+
+比如写一个循环 10 次的代码：
+
+```cpp
+int main() {
+  for (int i = 0; i < 10; i++) {
+  }
+}
+```
+
+对应的汇编：
+
+```asm
+0000000000001129 <main>:
+    1129:       55                      push   %rbp
+    112a:       48 89 e5                mov    %rsp,%rbp
+    112d:       c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+    1134:       eb 04                   jmp    113a <main+0x11>
+    1136:       83 45 fc 01             addl   $0x1,-0x4(%rbp)
+    113a:       83 7d fc 09             cmpl   $0x9,-0x4(%rbp)
+    113e:       7e f6                   jle    1136 <main+0xd>
+    1140:       b8 00 00 00 00          mov    $0x0,%eax
+    1145:       5d                      pop    %rbp
+    1146:       c3                      ret
+```
+
+按照上述方法，可以看到它生成了各个分支跳转的信息：
+
+```log
+test1 3772291 [006] 1693209.504363:          1     branches:u:      7311943d6248 __libc_start_call_main+0x78 (/usr/lib/x86_64-linux-gnu/libc.so.6) =>     5b4f1df51129 main+0x0 (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df51134 main+0xb (/home/jiegec/test1) =>     5b4f1df5113a main+0x11 (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df5113e main+0x15 (/home/jiegec/test1) =>     5b4f1df51136 main+0xd (/home/jiegec/test1)
+test1 3772291 [006] 1693209.504363:          1     branches:u:      5b4f1df51146 main+0x1d (/home/jiegec/test1) =>     7311943d624a __libc_start_call_main+0x7a (/usr/lib/x86_64-linux-gnu/libc.so.6)
+```
+
+通过这个信息，就可以还原出程序执行了哪些代码：
+
+1. __libc_start_call_main 调用 main 函数，到入口 0x1129(main+0x0)
+2. 从 0x1134(main+0xb) 跳转到 0x113a(main+0x11)
+2. 循环 10 次：0x113e(main+0x15) 跳转到 0x1136(main+0xd)
+3. 最终 在 0x1146(main+0x1d) return 回到 __libc_start_call_main 函数
 
 ## 参考
 
