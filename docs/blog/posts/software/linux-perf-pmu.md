@@ -244,6 +244,19 @@ SPE 的内核驱动实现在 [arm_spe_pmu.c](https://github.com/torvalds/linux/b
 
 SPE 和 Intel PEBS 比较类似，不过它没有和性能计数器耦合起来，它就是数指令数。
 
+## ARM ARM
+
+ARM 除了提供性能计数单元（PMU）以外，还提供了 AMU（Activity Monitor Unit）。它和 PMU 很类似，也是有一些性能计数器，但 AMU 在计数器溢出的时候不会触发中断，所以它并不是拿来观察某个程序的性能怎么样，而是观察系统整体的状态，比如时钟频率，IPC 等等。
+
+目前 AMU 的主要用途是在内核的调度器上：调度器需要估计一段时间内做了多少单位的任务，需要知道 CPU 的频率，比如频率高，就认为它做了更多的任务。之前的做法是让调度器通过 cpufreq 读取当前的 CPU 频率，但由于 CPU 的频率会不断变化，这样读取到的频率是一个瞬时功率，不能代表一段时间的平均值，就会带来误差。
+
+为了获取一段时间内的平均频率，[amu_scale_freq_tick](https://github.com/torvalds/linux/blob/f92f4749861b06fed908d336b4dee1326003291b/arch/arm64/kernel/topology.c#L153) 函数就使用了 AMU 的两个计数器：
+
+1. Processor Cycle 计数器：记录核心的周期数，也就是以 CPU 频率自增的计数器
+2. Constant Cycle 计数器：以固定频率（而非 CPU 频率）自增的计数器
+
+通过记录一段时间内两个计数器的变化量，将两个变化量做除法，就可以得到一个正比于这段时间内 CPU 的平均频率的值，交给调度器。
+
 ## 参考
 
 - [Arm Architecture Reference Manual for A-profile architecture](https://developer.arm.com/documentation/ddi0487/latest/)
