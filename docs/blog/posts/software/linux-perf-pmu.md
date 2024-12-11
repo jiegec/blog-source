@@ -2,7 +2,6 @@
 layout: post
 date: 2024-12-10
 tags: [linux,perf,pmu,arm,aarch64]
-draft: true
 categories:
     - software
 ---
