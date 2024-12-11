@@ -261,3 +261,5 @@ ARM 除了提供性能计数单元（PMU）以外，还提供了 AMU（Activity 
 
 - [Arm Architecture Reference Manual for A-profile architecture](https://developer.arm.com/documentation/ddi0487/latest/)
 - [LoongArch Reference Manual Volume 1: Basic Architecture](https://loongson.github.io/LoongArch-Documentation/LoongArch-Vol1-EN.html)
+- [perf: Linux profiling with performance counters](https://perfwiki.github.io/main/)
+- [Perf tools support for Intel® Processor Trace](https://perfwiki.github.io/main/perf-tools-support-for-intel-processor-trace/)
