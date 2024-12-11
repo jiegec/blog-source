@@ -221,6 +221,27 @@ Intel PEBS(Processor Event Based Sampling) 是一种硬件的采样方法，顾�
 
 PEBS 可以精细地根据性能计数器来决定采样的频率，例如每 1000 条指令采样一次，每 1000 个周期采样一次，甚至每 1000 次缓存缺失采样一次。具体做法是，把对应的性能计数器的复位值设置为最大值减 1000，那么每次溢出触发 PEBS 采样以后，性能计数器会被设置为最大值减 1000，等性能计数器增加 1000 以后，再次溢出，触发 PEBS 采样，如此循环。
 
+AMD 也有类似的机制，叫做 IBS(Instruction Based Sampling)。IBS 没有和 PMU 绑定起来，而是数指令数或数周期。推荐阅读论文 [Precise Event Sampling on AMD Versus Intel: Quantitative and Qualitative Comparison](https://ieeexplore.ieee.org/document/10068807)，它深入比较了 AMD IBS 和 Intel PEBS 的差异。
+
+如果要启用 PEBS 或 IBS，在 `perf record` 指令事件时，追加 `:p`：
+
+```
+The p modifier can be used for specifying how precise the instruction address should be. The p modifier can be specified
+multiple times:
+
+    0 - SAMPLE_IP can have arbitrary skid
+    1 - SAMPLE_IP must have constant skid
+    2 - SAMPLE_IP requested to have 0 skid
+    3 - SAMPLE_IP must have 0 skid, or uses randomization to avoid
+        sample shadowing effects.
+
+For Intel systems precise event sampling is implemented with PEBS which supports up to precise-level 2, and precise level 3 for some special cases.
+
+On AMD systems it is implemented using IBS OP (up to precise-level 2).
+```
+
+详细信息见 [perf-list(1) — Linux manual page](https://man7.org/linux/man-pages/man1/perf-list.1.html)。
+
 ## ARM BRBE
 
 ARM 平台定义了 BRBE(Branch Record Buffer Extension)，它和 Intel LBR 类似，也是在 System Register 中记录最近若干条跳转的分支的信息。它会记录 taken branch 的这些信息：
@@ -242,7 +263,7 @@ ARM 平台定义了 SPE(Statistical Profiling Extension)，它的做法是基于
 
 SPE 的内核驱动实现在 [arm_spe_pmu.c](https://github.com/torvalds/linux/blob/f92f4749861b06fed908d336b4dee1326003291b/drivers/perf/arm_spe_pmu.c#L754) 当中；它做的事情是，在内存中分配好缓冲区，启动 SPE，并且在 SPE 触发中断时，进行缓冲区的维护；同时缓冲区中的数据会通过 [perf ring buffer (aka perf aux)](https://docs.kernel.org/userspace-api/perf_ring_buffer.html) 传递给用户态的程序，具体数据的解析是由用户态的程序完成的。如果用 perf 工具，那么这个解析和展示的工作就是由 perf 完成的。
 
-SPE 和 Intel PEBS 比较类似，不过它没有和性能计数器耦合起来，它就是数指令数。
+SPE 和 AMD IBS 类似，也是数指令数；和 Intel PEBS 不同，它没有和性能计数器耦合起来。
 
 ## ARM ARM
 
@@ -263,3 +284,4 @@ ARM 除了提供性能计数单元（PMU）以外，还提供了 AMU（Activity 
 - [LoongArch Reference Manual Volume 1: Basic Architecture](https://loongson.github.io/LoongArch-Documentation/LoongArch-Vol1-EN.html)
 - [perf: Linux profiling with performance counters](https://perfwiki.github.io/main/)
 - [Perf tools support for Intel® Processor Trace](https://perfwiki.github.io/main/perf-tools-support-for-intel-processor-trace/)
+- [Precise Event Sampling on AMD Versus Intel: Quantitative and Qualitative Comparison](https://ieeexplore.ieee.org/document/10068807)
