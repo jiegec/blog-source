@@ -205,7 +205,32 @@ LBR 在 perf 中，主要用来跟踪 call stack：设置 LBR，只记录 call �
     facility).
 ```
 
-和 Intel PT 相比，它记录的信息较少，但实现上也更简单，开销更小。
+和 Intel PT 相比，它记录的信息较少，但实现上也更简单，开销更小。而且 LBR 只会记录跳转的分支，不会记录没跳转的分支，此外就是记录的分支数有上限。
+
+## Intel BTS
+
+较早的 Intel 处理器没有实现 Intel PT，但考虑到 LBR 记录的历史长度限制，基于 LBR 做了一个把 LBR 信息保存到内存里的技术，叫做 Branch Trace Store。perf 也支持[基于 BTS](https://github.com/torvalds/linux/blob/master/tools/perf/Documentation/intel-bts.txt) 来记录分支历史：
+
+```shell
+# record
+sudo perf record --per-thread -e intel_bts//u ls
+# display trace
+sudo perf script
+# dump raw data
+sudo perf script -D
+```
+
+BTS 每个 entry 占用 24 字节，包括 8 字节的 Last Branch From 和 8 字节的 Last Branch To，还有 8 字节记录了分支预测正确还是错误（图源 [Intel® 64 and IA-32 Architectures Software Developer Manuals](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)）：
+
+![](linux-perf-pmu-intel-bts.png)
+
+和 LBR 一样，BTS 只记录跳转的分支，不记录没跳转的分支。
+
+## Intel PEBS
+
+Intel PEBS(Processor Event Based Sampling) 是一种硬件的采样方法，顾名思义，当处理器触发某些事件时，自动进行一次采样。这个事件，实际上就是某个性能计数器溢出。本来，性能计数器溢出的时候，应该触发中断，让内核维护性能计数器的真实值（例如硬件实现了 32 位计数器，但内核维护的是 64 位）；但在 PEBS 中，这个性能计数器的溢出事件被用来触发硬件的采样：计数溢出的时候，会捕捉当前的处理器状态（PC、访存地址和延迟、通用寄存器和浮点寄存器的值、时钟周期计数和 LBR 信息），把状态写入到内存中的缓冲区，并自动把性能计数器设为指定的复位值。当内存中的缓冲区满的时候，才会触发中断，让内核来处理 PEBS 生成的数据，并分配新的空间。
+
+和基于软件的采样相比，PEBS 可以精细地根据性能计数器来决定采样的频率，例如每 1000 条指令采样一次，每 1000 个周期采样一次，甚至每 1000 次缓存缺失采样一次。具体做法是，把对应的性能计数器的复位值设置为最大值减 1000，那么每次溢出触发 PEBS 采样以后，性能计数器会被设置为最大值减 1000，等性能计数器增加 1000 以后，再次溢出，触发 PEBS 采样，如此循环。
 
 ## 参考
 
