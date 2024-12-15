@@ -1,5 +1,8 @@
 Built with Clang 15.0.4 from DevEco Studio 5.0.1 and Flang 20.0.0 from LLVM APT on HarmonyOS NEXT 5.0.0.113 with -O3 -flto
 
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
 =================================================================================
 500.perlbench_r       1        454       3.51  *
 502.gcc_r             1        271       5.23  *
@@ -13,4 +16,3 @@ Built with Clang 15.0.4 from DevEco Studio 5.0.1 and Flang 20.0.0 from LLVM APT 
 557.xz_r              1        554       1.95  *
  Est. SPECrate(R)2017_int_base           3.97
  Est. SPECrate(R)2017_int_peak                                         Not Run
- 
