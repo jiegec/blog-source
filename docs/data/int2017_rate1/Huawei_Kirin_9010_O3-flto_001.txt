@@ -1,0 +1,16 @@
+Built with Clang 15.0.4 from DevEco Studio 5.0.1 and Flang 20.0.0 from LLVM APT on HarmonyOS NEXT 5.0.0.113 with -O3 -flto
+
+=================================================================================
+500.perlbench_r       1        454       3.51  *
+502.gcc_r             1        271       5.23  *
+505.mcf_r             1        399       4.05  *
+520.omnetpp_r         1        525       2.50  *
+523.xalancbmk_r       1        341       3.10  *
+525.x264_r            1        158      11.08  *
+531.deepsjeng_r       1        381       3.01  *
+541.leela_r           1        699       2.37  *
+548.exchange2_r       1        237      11.05  *
+557.xz_r              1        554       1.95  *
+ Est. SPECrate(R)2017_int_base           3.97
+ Est. SPECrate(R)2017_int_peak                                         Not Run
+ 

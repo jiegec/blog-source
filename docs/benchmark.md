@@ -8,7 +8,11 @@ permalink: /benchmark/
 
 ## 测试环境
 
-下列测试大部分都在 Debian Bookworm 中完成，少数（例如 LoongArch）架构使用的是 Debian sid。使用的编译器默认是对应发行版在运行测试时的 GCC，其中主要是 GCC 12.2.0。
+测试环境如下：
+
+1. 大部分测试：Debian Bookworm, GCC 12.2.0
+2. LoongArch 测试：Debian sid, GCC 14.2.0
+3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.0.0
 
 ## SPEC INT 2017 Rate-1
 
@@ -117,6 +121,10 @@ permalink: /benchmark/
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.06](./data/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data/int2017_rate1/Loongson_3C5000_O3_001.txt)
 - Intel Xeon E5-2603 v4 @ 1.7 GHz Broadwell（`-O3`）: [2.48](./data/int2017_rate1/Intel_Xeon_E5-2603_v4_O3_001.txt)
+
+手机平台（LTO）：
+
+- Huawei Kirin 9010 @ 2.3 GHz （`-O3 -flto`）: [3.97](./data/int2017_rate1/Huawei_Kirin_9010_O3-flto_001.txt)
 
 注：
 
