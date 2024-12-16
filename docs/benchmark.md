@@ -323,6 +323,10 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.13](./data/fp2017_rate1/Kunpeng_920_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data/fp2017_rate1/Loongson_3C5000_O3_001.txt)
 
+手机平台（LTO）：
+
+- Huawei Kirin 9010 @ 2.3 GHz （`-O3 -flto`）: [5.93](./data/fp2017_rate1/Huawei_Kirin_9010_O3-flto_001.txt)
+
 注：
 
 1. SPEC FP 2017 Rate-1 结果受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。
