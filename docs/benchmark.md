@@ -12,7 +12,7 @@ permalink: /benchmark/
 
 1. 大部分测试：Debian Bookworm, GCC 12.2.0
 2. LoongArch 测试：Debian sid, GCC 14.2.0
-3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.0.0
+3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.0.0，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)
 
 ## SPEC INT 2017 Rate-1
 
@@ -124,7 +124,7 @@ permalink: /benchmark/
 
 手机平台（LTO）：
 
-- Huawei Kirin 9010 @ 2.3 GHz （`-O3 -flto`）: [3.97](./data/int2017_rate1/Huawei_Kirin_9010_O3-flto_001.txt)
+- Huawei Kirin 9010 @ 2.3 GHz （`-O3 -flto`）: [3.99](./data/int2017_rate1/Huawei_Kirin_9010_O3-flto_001.txt)
 
 注：
 
