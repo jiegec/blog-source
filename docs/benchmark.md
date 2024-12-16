@@ -14,6 +14,22 @@ permalink: /benchmark/
 2. LoongArch 测试：Debian sid, GCC 14.2.0
 3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.0.0，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)
 
+注意事项：
+
+1. 分数只有在编译器和编译选项相同时可以用来比较相同指令集的不同处理器的性能，即可以在固定 GCC 版本和编译选项下，通过测试结果比较：
+   1. AMD64 指令集的 Intel 和 AMD 处理器的性能
+   2. ARM64 指令集的 Apple、ARM、Huawei 和 Qualcomm 处理器的性能
+   3. LoongArch 不同处理器的性能
+2. 即使是相同硬件，如下因素都可能对测试结果产生显著的影响：
+   1. 不同编译器（例如同等编译选型下 GCC 通常比 Clang 快）
+   2. 不同编译器版本（通常新版本比旧版本快，但也有反例）
+   3. 不同编译选项（是否开 LTO，是否设置 -march=native）
+   4. 不同的内存分配器实现（libc 自带或 jemalloc）
+   5. 不同的标准库实现（比如 glibc 还是 musl）
+   6. 不同的调频、调度或绑核测策略
+
+如果您需要引用本文的测试结果，请保证您对以上注意事项有充分的理解。
+
 ## SPEC INT 2017 Rate-1
 
 下面贴出自己测的数据（SPECint2017，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。总运行时间（秒）基本和分数成反比，乘积按 5e4 估算。
