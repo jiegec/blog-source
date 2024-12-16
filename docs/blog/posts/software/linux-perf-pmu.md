@@ -264,7 +264,7 @@ SPE 的内核驱动实现在 [arm_spe_pmu.c](https://github.com/torvalds/linux/b
 
 SPE 和 AMD IBS 类似，也是数指令数；和 Intel PEBS 不同，它没有和性能计数器耦合起来。
 
-## ARM ARM
+## ARM AMU
 
 ARM 除了提供性能计数单元（PMU）以外，还提供了 AMU（Activity Monitor Unit）。它和 PMU 很类似，也是有一些性能计数器，但 AMU 在计数器溢出的时候不会触发中断，所以它并不是拿来观察某个程序的性能怎么样，而是观察系统整体的状态，比如时钟频率，IPC 等等。
 
