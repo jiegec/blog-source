@@ -111,18 +111,18 @@ categories:
 
 实际上，现在已经有很多现成的 Microbenchmark，以及一些记录了 Microbenchmark 的文档：
 
-- https://www.agner.org/optimize/
-- https://github.com/clamchowder/Microbenchmarks/
-- https://github.com/JamesAslan/MicroArchBench
-- https://github.com/name99-org/AArch64-Explore
-- https://github.com/jiegec/cpu-micro-benchmarks
+- <https://www.agner.org/optimize/>
+- <https://github.com/clamchowder/Microbenchmarks/>
+- <https://github.com/JamesAslan/MicroArchBench>
+- <https://github.com/name99-org/AArch64-Explore>
+- <https://github.com/jiegec/cpu-micro-benchmarks>
 
 以及一些用 Microbenchmark 做逆向并公开的网站：
 
-- https://chipsandcheese.com
-- Anandtech（可惜不再更新）
-- https://blog.hjc.im/
-- https://www.zhihu.com/people/jamesaslan
+- <https://chipsandcheese.com>
+- <https://www.anandtech.com>（可惜不再更新）
+- <https://blog.hjc.im/>
+- <https://www.zhihu.com/people/jamesaslan>
 - 本博客
 
 如果你想要去逆向某个微架构的某个部件，但不知道怎么做，不妨在上面这些网站上寻找一下，是不是已经有现成的实现了。
