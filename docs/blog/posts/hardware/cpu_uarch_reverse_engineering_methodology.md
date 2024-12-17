@@ -80,12 +80,12 @@ categories:
 
 1. 时间：最通用，所有平台都可以用，在程序前后各记一次时间，取差
 2. 性能计数器：使用起来比较麻烦，有时需要 root 权限，或者硬件相关信息不公开，又或者硬件就没有实现对应的性能计数器。各平台性能计数器可用情况：
-    1. Windows：可用，有现成 API
-    2. macOS：可用，有逆向出来的私有框架 API
-    3. Linux：可用，有现成 API
+    1. Windows：可用，有现成 [API](https://learn.microsoft.com/en-us/windows/win32/perfctrs/performance-counters-portal)
+    2. macOS：可用，[有逆向出来的私有框架 API](https://gist.github.com/ibireme/173517c208c7dc333ba962c1f0d67d12)
+    3. Linux：可用，[有现成 API](https://man7.org/linux/man-pages/man2/perf_event_open.2.html)
     4. iOS：目前仅可通过 XCode 使用，不好用
-    5. Android：需要 root 或通过 adb shell 使用，比较麻烦
-    6. HarmonyOS NEXT：不可用
+    5. Android：需要 root 或通过 adb shell 使用，比较麻烦，[API](https://man7.org/linux/man-pages/man2/perf_event_open.2.html) 和 Linux 一样
+    6. HarmonyOS NEXT：没找到方案
 
 虽然测时间最简单也最通用，但它会受到频率波动的限制，如果在运行测试的时候，频率剧烈变化（特别是手机平台），引入了大量噪声，就会导致有效信息被淹没在噪声当中。
 
