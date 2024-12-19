@@ -83,13 +83,15 @@ categories:
     1. Windows：可用，有现成 [API](https://learn.microsoft.com/en-us/windows/win32/perfctrs/performance-counters-portal)
     2. macOS：可用，[有逆向出来的私有框架 API](https://gist.github.com/ibireme/173517c208c7dc333ba962c1f0d67d12)
     3. Linux：可用，[有现成 API](https://man7.org/linux/man-pages/man2/perf_event_open.2.html)
-    4. iOS：目前仅可通过 XCode 使用，不好用
+    4. iOS：在 iOS 外可以通过 Xcode Instruments 访问所有 PMU，但不方便自动化；在 iOS 内只能通过 [PROC_PIDTHREADCOUNTS](https://github.com/Androp0v/PowerMetricsKit/blob/3be0fd2d61785d848a32b6f5ea59aacad7739909/Sources/SampleThreads/sample_threads.c#L23) 获得周期数和指令数
     5. Android：需要 root 或通过 adb shell 使用，比较麻烦，[API](https://man7.org/linux/man-pages/man2/perf_event_open.2.html) 和 Linux 一样
     6. HarmonyOS NEXT：没找到方案
 
 虽然测时间最简单也最通用，但它会受到频率波动的限制，如果在运行测试的时候，频率剧烈变化（特别是手机平台），引入了大量噪声，就会导致有效信息被淹没在噪声当中。
 
 其中性能计数器是最为精确的，虽然使用起来较为麻烦，但也确实支撑了很多更深入的 CPU 微架构的逆向。希望硬件厂商看到这篇文章，不要为了避免逆向把性能计数器藏起来：因为它对于应用的性能分析真的很有用。具体怎么用性能计数器，可以参考一些现成的 Microbenchmark 框架。
+
+在有异构核的处理器上，为了保证测试的是预期微架构的核心，一般还会配合绑核，绑核在除了 macOS 和 iOS 以外的系统都可以直接指定绑哪个核心，而 macOS 和 iOS 只能通过指定 QoS 来建议调度器调度到 P 核还是 E核，首先是不能确定是哪个 P 核或哪个 E 核，其次这只是个建议，并非强制。
 
 ## 套路
 
