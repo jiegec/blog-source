@@ -64,7 +64,7 @@ hw.perflevel0.l1icachesize: 196608
 hw.perflevel1.l1icachesize: 131072
 ```
 
-为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
+为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 nop 和最后的分支指令组成。观察在不同 footprint 大小下 Firestorm 的 IPC：
 
 ![](./apple_m1_firestorm_fetch_bandwidth.png)
 
@@ -77,6 +77,18 @@ hw.perflevel1.l1icachesize: 131072
 可以看到 footprint 在 128 KB 之前时可以达到 4 IPC，之后则快速降到 2.10 IPC，这里的 128 KB 就对应了 Icestorm 的 L1 ICache 的容量。虽然 Fetch 可以每周期 8 条指令，由于后端的限制，只能观察到 4 的 IPC。
 
 ### L1 ITLB
+
+构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈，在 Firestorm 上进行测试：
+
+![](./apple_m1_firestorm_itlb.png)
+
+从 1 Cycle 到 3 Cycle 的增加是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 13 Cycle，则对应了 192 项的 L1 ITLB 容量。
+
+在 Icestorm 上重复实验：
+
+![](./apple_m1_icestorm_itlb.png)
+
+只有一个拐点，在 128 个页时，性能从 1 Cycle 下降到 8 Cycle，意味 L1 ITLB 容量是 128 项。
 
 ### Decode
 
@@ -127,11 +139,13 @@ hw.perflevel1.l1dcachesize: 65536
 
 ### L2 Cache
 
-官方信息：通过 sysctl 可以看到，Firestorm 具有 12MB L2 Cache，Icestorm 具有 4MB L2 Cache：
+官方信息：通过 sysctl 可以看到，4 个 Firestorm 核心共享一个 12MB L2 Cache，4 个 Icestorm 核心共享一个 4MB L2 Cache：
 
 ```
 hw.perflevel0.l2cachesize: 12582912
+hw.perflevel0.cpusperl2: 4
 hw.perflevel1.l2cachesize: 4194304
+hw.perflevel1.cpusperl2: 4
 ```
 
 ### Memory
