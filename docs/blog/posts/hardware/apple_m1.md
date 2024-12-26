@@ -1,5 +1,6 @@
 ---
 layout: post
+draft: true
 date: 2024-12-26
 tags: [cpu,firestorm,icestorm,apple,m1,performance,uarch-review]
 categories:
@@ -10,7 +11,7 @@ categories:
 
 ## 背景
 
-虽然 Apple M1 已经是 2020 年的处理器，但它对苹果自研芯片来说是一个里程碑，考虑到 X Elite 处理器的 Oryon 微架构和 Apple M1 性能核 Firestorm 微架构的相似性，还是测试一下这个 Firestorm+Icestorm 微架构在各个方面的表现。
+虽然 Apple M1 已经是 2020 年的处理器，但它对苹果自研芯片来说是一个里程碑，考虑到 X Elite 处理器的 Oryon 微架构和 Apple M1 性能核 Firestorm 微架构的相似性，还是测试一下这个 Firestorm + Icestorm 微架构在各个方面的表现。
 
 <!-- more -->
 
@@ -76,6 +77,64 @@ hw.perflevel1.l1icachesize: 131072
 
 可以看到 footprint 在 128 KB 之前时可以达到 4 IPC，之后则快速降到 2.10 IPC，这里的 128 KB 就对应了 Icestorm 的 L1 ICache 的容量。虽然 Fetch 可以每周期 8 条指令，由于后端的限制，只能观察到 4 的 IPC。
 
+### BTB
+
+#### Firestorm
+
+构造大量的无条件分支指令（B 指令），BTB 需要记录这些指令的目的地址，那么如果分支数量超过了 BTB 的容量，性能会出现明显下降。当把大量 B 指令紧密放置，也就是每 4 字节一条 B 指令时：
+
+![](./apple_m1_firestorm_btb_4b.png)
+
+可见在 1024 个分支之内可以达到 1 的 CPI，超过 1024 个分支，出现了 3 CPI 的平台，一直延续到 49152 个分支。超出 BTB 容量以后，分支预测时，无法从 BTB 中得到哪些指令是分支指令的信息，只能等到取指甚至译码后才能后知后觉地发现这是一条分支指令，这样就出现了性能损失，出现了 3 CPI 的情况。第二个拐点 49152，对应的是指令 footprint 超出 L1 ICache 的情况：L1 ICache 是 192KB，按照每 4 字节一个 B 指令计算，最多可以存放 49152 条 B 指令。
+
+降低分支指令的密度，在 B 指令之间插入 NOP 指令，使得每 8 个字节有一条 B 指令，得到如下结果：
+
+![](./apple_m1_firestorm_btb_8b.png)
+
+可以看到 CPI=1 的拐点前移到 1024 个分支，同时 CPI=3 的平台也出现了新的拐点 24576。拐点的前移，意味着 BTB 采用了组相连的结构，当 B 指令的 PC 的部分低位总是为 0 时，组相连的 Index 可能无法取到所有的 Set，导致表现出来的 BTB 容量只有部分 Set，例如此处容量减半，说明只有一半的 Set 被用到了。
+
+如果进一步降低 B 指令的密度，使得它的低若干位都等于 0，最终 CPI=1 的拐点定格在 2 条分支，CPI=3 的拐点定格在 6 条分支。根据这个信息，认为 BTB 是 512 Set 2 Way 的结构，Index 是 PC[10:2]；同时也侧面佐证了 192KB L1 ICache 是 512 Set 6 Way，Index 是 PC[14:6]。
+
+#### Icestorm
+
+用相同的方式测试 Icestorm，首先用 4B 的间距：
+
+![](./apple_m1_icestorm_btb_4b.png)
+
+可以看到 1024 的拐点，1024 之前是 1 IPC，之后接近 3 IPC。比较奇怪的是，没有看到第二个拐点，第二个拐点在 8B 的间距下显现：
+
+![](./apple_m1_icestorm_btb_8b.png)
+
+第一个拐点前移到 512，第二个拐点出现在 16384，而 Icestorm 的 L1 ICache 容量是 128KB，8B 间距下正好可以保存 16384 个分支。
+
+用 16B 间距测试：
+
+![](./apple_m1_icestorm_btb_16b.png)
+
+第一个拐点前移到 256，出现了一个 2 CPI 的平台，新拐点出现在 2048，第三个拐点出现在 8192，对应 L1 ICache 容量。
+
+用 32B 间距测试：
+
+![](./apple_m1_icestorm_btb_32b.png)
+
+第一个拐点在 1024，第二个拐点出现在 4096，对应 L1 ICache 容量。
+
+用 64B 间距测试：
+
+![](./apple_m1_icestorm_btb_64b.png)
+
+第一个拐点在 512，第二个拐点出现在 2048，对应 L1 ICache 容量。
+
+可见 Icestorm 的 BTB 测试结果并不像 Firestorm 那样有规律，根据这个现象，给出一些猜测：
+
+1. 可能只有一级 BTB，但它的 Index 函数进行了一些 Hash 而非直接取 PC 某几位，使得随着分支的间距增大，CPI=1 的拐点并非单调递减；但这无法解释为何 16B 间距时会出现 2 CPI 的平台
+2. 可能有两级 BTB，它们并非简单地级联，而是在不同的区间内发挥作用
+
+针对 4B 间距没有出现 CPI>3 的情况，给出一些猜测：
+
+1. 测试规模不够大，把分支数量继续增大，才能出现 CPI>3 的情况
+2. 指令预取器在工作，当 footprint 大于 128KB L1 ICache 时，能提前把指令取进来
+
 ### L1 ITLB
 
 构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈，在 Firestorm 上进行测试：
@@ -95,8 +154,6 @@ hw.perflevel1.l1icachesize: 131072
 ### Return Stack
 
 ### Branch Predictor
-
-### BTB
 
 ### Branch Mispredict Latency
 
