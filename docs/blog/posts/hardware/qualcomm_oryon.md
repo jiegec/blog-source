@@ -344,3 +344,24 @@ Oryon 的 Load to use latency 针对 pointer chasing 场景做了优化，在下
 
 - 6MB System Level Cache, 26-29ns latency, 135GB/s bandwidth in each direction
 - LPDDR5x DRAM, 8448 MT/s, 8 channel of 16 bits, 135GB/s bandwidth, 102-104ns latency
+
+通过 dmidecode，可以看到 Surface Laptop 7 的内存型号：
+
+```
+Handle 0x0004, DMI type 17, 92 bytes
+Memory Device
+        Total Width: 16 bits
+        Data Width: 16 bits
+        Size: 32 GB
+        Form Factor: TSOP
+        Locator: Top - on board
+        Bank Locator: Bank 0
+        Type: LPDDR5
+        Speed: 8448 MT/s
+        Manufacturer: Hynix
+        Part Number: H58G66BK8BX067
+        Configured Memory Speed: 8448 MT/s
+        Minimum Voltage: 0.348 V
+        Maximum Voltage: 0.856 V
+        Configured Voltage: 0.8 V
+```
