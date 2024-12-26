@@ -318,9 +318,25 @@ Oryon 的 Load to use latency 针对 pointer chasing 场景做了优化，在下
 
 官方信息：
 
-- 12MB 12-way L2 Cache
+- 每 4 个核心组成一个 Cluster，Cluster 内的核心共享一个 12MB 12-way L2 Cache
 - MOESI
 - 17 cycle latency for L1 miss to L2 hit
+
+构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
+
+![](./qualcomm_oryon_l2.png)
+
+第一个拐点在 96KB，对应 L1 DCache 的容量，之后延迟在 18-22 周期之间波动，超过 6MB 以后延迟快速上升，对此有两种猜测：
+
+1. L2 Cache 并非所有容量都可以在差不多的时间内访问，离核心近的更快，离核心远的较慢
+2. 为了防止某个核心对 L2 Cache 的占用太大，导致同一个 Cluster 内其他核心分不到 L2 缓存，进行 QoS，限制每个核心能够占用的 L2 Cache 容量
+
+为了进一步验证以上的猜测，除了周期数以外，也测试了不同 footprint 下 L2D_CACHE_REFILL 事件的次数，发现：
+
+1. footprint 在 8MB 范围内时，L2D_CACHE_REFILL 约等于 0，意味着此时数据都命中了 L2 Cache，但当 footprint 达到 8MB 时，访问延迟已经增加到 45 个周期，这符合第一点猜测，即使都命中 L2 Cache，也有快慢之分
+2. footprint 达到 12 MB 时，每次访存的平均 L2D_CACHE_REFILL 约等于 0.23，假如一个核心可以用满整个 L2 Cache，此时应当没有这么高的缺失率，这符合第二点猜测
+
+因此可能上述两个猜测都是对的，当然了，也不排除还有别的解释。
 
 ### Memory
 
