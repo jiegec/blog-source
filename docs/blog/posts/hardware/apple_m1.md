@@ -151,6 +151,8 @@ Icestorm 的 BTB 测试结果并不像 Firestorm 那样有规律，根据这个�
 
 ### Decode
 
+从前面的测试来看，Firestorm 最大观察到 8 IPC，Icestorm 最大观察到 4 IPC，那么 Decode 宽度也至少是这么多，暂时也不能排除有更大的 Decode 宽度。
+
 ### Return Stack
 
 构造不同深度的调用链，测试每次调用花费的平均时间，在 Firestorm 上得到下面的图：
@@ -163,13 +165,27 @@ Icestorm 的 BTB 测试结果并不像 Firestorm 那样有规律，根据这个�
 
 可以看到调用链深度为 32 时性能突然变差，因此 Icestorm 的 Return Stack 深度为 32。
 
-### Branch Predictor
-
-### Branch Mispredict Latency
-
 ## 后端
 
 ### 物理寄存器堆
+
+为了测试物理寄存器堆的大小，一般会用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。Firestorm 测试结果见下图：
+
+![](./apple_m1_firestorm_prf.png)
+
+- 32b/64b int：测试 speculative 32/64 位整数寄存器的数量，拐点在 362
+- 32b fp：测试 speculative 32 位浮点寄存器的数量，拐点在 382
+- flags：测试 speculative NZCV 寄存器的数量，拐点在 123
+
+Icestorm 测试结果如下：
+
+![](./apple_m1_icestorm_prf.png)
+
+- 32b/64b int：测试 speculative 32/64 位整数寄存器的数量，拐点在 78
+- 32b fp：测试 speculative 32 位浮点寄存器的数量，拐点在 382
+- flags：测试 speculative NZCV 寄存器的数量，拐点在 75
+
+注意这里测试的都是能够用于预测执行的寄存器数量，实际的物理寄存器堆还需要保存架构寄存器。但具体保存多少个架构寄存器不确定，但至少 32 个整数通用寄存器和浮点寄存器是一定有的，但可能还有一些额外的需要重命名的状态也要算进来。
 
 ### Reservation Stations
 
