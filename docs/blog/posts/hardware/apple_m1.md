@@ -187,12 +187,6 @@ Icestorm 测试结果如下：
 
 注意这里测试的都是能够用于预测执行的寄存器数量，实际的物理寄存器堆还需要保存架构寄存器。但具体保存多少个架构寄存器不确定，但至少 32 个整数通用寄存器和浮点寄存器是一定有的，但可能还有一些额外的需要重命名的状态也要算进来。
 
-### Reservation Stations
-
-### 执行单元
-
-### Reorder Buffer
-
 ### Load Store Unit + L1 DCache
 
 #### L1 DCache 容量
@@ -217,6 +211,122 @@ hw.perflevel1.l1dcachesize: 65536
 #### Store to Load Forwarding
 
 #### Load to use latency
+
+
+### 执行单元
+
+想要测试有多少个执行单元，每个执行单元可以运行哪些指令，首先要测试各类指令在无依赖情况下的的 IPC，通过 IPC 来推断有多少个能够执行这类指令的执行单元；但由于一个执行单元可能可以执行多类指令，于是进一步需要观察在混合不同类的指令时的 IPC，从而推断出完整的结果。
+
+#### Firestorm
+
+在 Firestorm 上测试如下各类指令的延迟和每周期吞吐：
+
+| 指令               | 延迟 | 吞吐 |
+|--------------------|------|------|
+| asimd int add      | 2    | 4    |
+| asimd aesd/aese    | 3    | 4    |
+| asimd aesimc/aesmc | 2    | 4    |
+| asimd fabs         | 2    | 4    |
+| asimd fadd         | 3    | 4    |
+| asimd fdiv 64b     | 10   | 1    |
+| asimd fdiv 32b     | 8    | 1    |
+| asimd fmax         | 2    | 4    |
+| asimd fmin         | 2    | 4    |
+| asimd fmla         | 4    | 4    |
+| asimd fmul         | 4    | 4    |
+| asimd fneg         | 2    | 4    |
+| asimd frecpe       | 3    | 1    |
+| asimd frsqrte      | 3    | 1    |
+| asimd fsqrt 64b    | 13   | 0.5  |
+| asimd fsqrt 32b    | 10   | 0.5  |
+| fp cvtf2i (fcvtzs) | -    | 2    |
+| fp cvti2f (scvtf)  | -    | 3    |
+| fp fabs            | 2    | 4    |
+| fp fadd            | 3    | 4    |
+| fp fdiv 64b        | 10   | 1    |
+| fp fdiv 32b        | 8    | 1    |
+| fp fjcvtzs         | -    | 1    |
+| fp fmax            | 2    | 4    |
+| fp fmin            | 2    | 4    |
+| fp fmov f2i        | -    | 2    |
+| fp fmov i2f        | -    | 3    |
+| fp fmul            | 4    | 4    |
+| fp fneg            | 2    | 4    |
+| fp frecpe          | 3    | 1    |
+| fp frecpx          | 3    | 1    |
+| fp frsqrte         | 3    | 1    |
+| fp fsqrt 64b       | 13   | 0.5  |
+| fp fsqrt 32b       | 10   | 0.5  |
+| int add            | 1    | 4.6  |
+| int addi           | 1    | 6    |
+| int bfm            | -    | 1    |
+| int crc            | 3    | 1    |
+| int csel           | 1    | 3    |
+| int madd (addend)  | 1    | 1    |
+| int madd (others)  | 3    | 1    |
+| int mrs nzcv       | -    | 2    |
+| int mul            | 3    | 2    |
+| int nop            | -    | 8    |
+| int sdiv           | 7    | 0.5  |
+| int udiv           | 7    | 0.5  |
+| not taken branch   | -    | 2    |
+| taken branch       | -    | 1    |
+| mem asimd load     | -    | 3    |
+| mem asimd store    | -    | 2    |
+| mem int load       | -    | 3    |
+| mem int store      | -    | 2    |
+
+从上面的结果可以初步得到的信息：
+
+1. 标量浮点和 ASIMD 吞吐最大都是 4，意味着有 4 个浮点/ASIMD 执行单元，但并非完全对称，例如 fdiv/frecpe/frecpx/frsqrte/fsqrt/fjcvtzs 由于吞吐不超过 1，大概率只能在一个执行单元内执行。但这些指令是不是都只能在同一个执行单元内执行，还需要进一步的测试
+2. 浮点和整数之间的 move 或 convert 指令，fmov i2f/ctti2f 吞吐是 3，fmov f2i/cvtf2i 吞吐是 2，那么这些指令是在哪个执行单元里实现的，是否需要同时占用整数执行单元和浮点执行单元，需要进一步测试
+3. 整数方面，根据吞吐，推断出如下几类指令对应的执行单元数量：
+    1. ALU: 6
+    2. CSEL: 3
+    3. Mul/Br/MRS NZCV: 2
+    4. CRC/BFM/MAdd/Div: 1
+4. 虽然 Br 的吞吐可以达到 2，但是每周期只能有一个 taken branch；目前一些架构可以做到每周期超过一个 taken branch，此时 Br 的吞吐一般会给到 3
+5. 访存方面，每周期最多 3 Load 或者 2 Store
+
+首先来看浮点和 ASIMD 单元，根据上面的信息，认为至少有 4 个执行单元，每个执行单元都可以做这些操作：asimd int add/aes/fabs/fadd/fmax/fmin/fmla/fmul/fneg，下面把这些指令称为 basic fp/asimd ops + aes。接下来要判断，fmov f2i/fmov i2f/fdiv/frecpe/frecpx/frsqrte/fsqrt 由哪些执行单元负责执行，方法是把这些指令混合起来测试吞吐（此处的吞吐不代表 CPI，而是每周能够执行多少次指令组合，例如用 2 条指令的组合测试，那么吞吐等于 CPI 除以 2）：
+
+| 指令                  | 吞吐        |
+|-----------------------|-------------|
+| fp fdiv + fp frecpe   | 0.5         |
+| fp fdiv + fp frecpx   | 0.5         |
+| fp fdiv + fp frsqrte  | 0.5         |
+| fp fdiv + fp fsqrt    | 0.32=3/3.12 |
+| fp fdiv + fmov f2i    | 1           |
+| fp fdiv + 2x fmov f2i | 0.67=1/1.50 |
+| fp fdiv + 3x fmov i2f | 1           |
+| fp fdiv + 4x fmov i2f | 0.75=1/1.33 |
+| fmov i2f + 4x fp fadd | 1           |
+| fmov f2i + 4x fp fadd | 0.67=1/1.50 |
+
+根据以上测试结果，可以得到如下的推论：
+
+1. fp fdiv/frecpe/frecpx/frsqrte 混合的时候，吞吐只有一半，IPC 不变，说明这些指令在同一个执行单元中，混合并不能带来更高的 IPC
+2. fp fdiv 和 fp fsqrt 混合时，吞吐下降到 0.32 一个不太整的数字，猜测是因为它们属于同一个执行单元内的不同流水线，抢占寄存器堆写口
+3. fp fdiv + fmov f2i 的时候吞吐是 1，而 fdiv + 2x fmov f2i 时吞吐下降到 0.67，IPC 维持在 2，说明有两个执行单元，都可以执行 fmov f2i，但只有其中一个可以执行 fp fdiv，导致 fdiv + 2x fmov f2i 的时候会抢执行单元
+4. fp fdiv + 3x fmov i2f 的时候吞吐是 1，而 fdiv + 4x fmov i2f 时吞吐下降到 0.75，此时每周期还是执行 3 条 fmov i2f 指令，意味着 fdiv 没有抢占 fmov i2f 的执行单元，它们用的执行单元是独立的
+5. fmov i2f + 4x fp fadd 的时候吞吐是 1，说明 fmov i2f 没有抢占 fp fadd 的执行单元
+
+推断这四个执行单元支持的操作：
+
+1. basic fp/asimd ops + aes + fdiv + frecpe + frecpx + frsqrte + fsqrt + fmov f2i + cvtf2i
+2. basic fp/asimd ops + aes + fmov f2i + cvtf2i
+3. basic fp/asimd ops + aes
+4. basic fp/asimd ops + aes
+
+当然还有很多指令没有测，不过原理是一样的。
+
+#### Icestorm
+
+TODO
+
+### Reservation Stations
+
+### Reorder Buffer
 
 ### MMU
 
