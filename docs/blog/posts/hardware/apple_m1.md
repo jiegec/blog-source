@@ -198,6 +198,19 @@ hw.perflevel0.l1dcachesize: 131072
 hw.perflevel1.l1dcachesize: 65536
 ```
 
+构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间，Firestorm 上的结果：
+
+![](./apple_m1_firestorm_l1dc.png)
+
+可以看到 128KB 出现了明显的拐点，对应的就是 128KB 的 L1 DCache 容量。L1 DCache 范围内延迟是 3 cycle，之后提升到 16 cycle。
+
+Icestorm 上的结果：
+
+![](./apple_m1_icestorm_l1dc.png)
+
+可以看到 64KB 出现了明显的拐点，对应的就是 64KB 的 L1 DCache 容量。L1 DCache 范围内延迟是 3 cycle，之后提升到 14 cycle。
+
+
 #### L1 DTLB 容量
 
 #### Load/Store 带宽
