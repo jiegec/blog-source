@@ -346,25 +346,43 @@ hw.perflevel1.l1dcachesize: 65536
 | mrs nzcv + not taken branch       | 1           |
 | mrs nzcv + 2x not taken branch    | 0.67=1/1.50 |
 | 2x fmov f2i + 2x not taken branch | 1           |
+| 2x fmov f2i + 2x int mul          | 1           |
+| int madd + 2x int mul             | 0.67=1/1.50 |
+| int madd + int sdiv               | 0.5         |
+| int madd + int crc                | 0.5         |
 
 根据上述结果分析：
 
 1. 吞吐与不混合时相同，代表混合的指令对应的执行单元不重合
 2. 3x int csel + 2x fmov f2i 的 IPC 等于 4，意味着有四个执行单元，其中有三个可以执行 int csel，两个可以执行 fmov f2i，也就意味着其中有一个执行单元可以执行 int csel 和 fmov f2i，即有这样的四个执行单元：
-    1. csel
-    2. csel
-    3. csel + fmov f2i
-    4. fmov f2i
+    1. alu + csel
+    2. alu + csel
+    3. alu + csel + fmov f2i
+    4. alu + fmov f2i
 3. 3x int csel + mrs nzcv/not taken branch 的 IPC 等于 3，说明它们的执行单元是重合的；又因为 2x fmov f2i + 2x not taken branch 的吞吐是 1，说明它们的执行单元不重合，那么上述四个执行单元只能是：
-    1. csel + branch
-    2. csel + branch
-    3. csel + fmov f2i
-    4. fmov f2i
+    1. alu + csel + branch
+    2. alu + csel + branch
+    3. alu + csel + fmov f2i
+    4. alu + fmov f2i
 4. mrs nzcv + 2x not taken branch 的 IPC 等于 2，说明它们的执行单元是重合的，那么上述四个执行单元是：
-    1. csel + branch + mrs nzcv
-    2. csel + branch
-    3. csel + fmov f2i
-    4. fmov f2i
+    1. alu + csel + branch + mrs nzcv
+    2. alu + csel + branch
+    3. alu + csel + fmov f2i
+    4. alu + fmov f2i
+5. csel 和 mul 不重合，f2i 和 mul 也不重合，说明 mul 在剩下的两个执行单元内：
+    1. alu + csel + branch + mrs nzcv
+    2. alu + csel + branch
+    3. alu + csel + fmov f2i
+    4. alu + fmov f2i
+    5. alu + mul
+    6. alu + mul
+6. madd 和 mul 重合，madd 和 crc 重合，那么：
+    1. alu + csel + branch + mrs nzcv
+    2. alu + csel + branch
+    3. alu + csel + fmov f2i
+    4. alu + fmov f2i
+    5. alu + mul + madd + crc
+    6. alu + mul
 
 得到初步的结果：
 
@@ -372,8 +390,14 @@ hw.perflevel1.l1dcachesize: 65536
 2. alu + csel + branch
 3. alu + csel + fmov f2i
 4. alu + fmov f2i
-5. alu
-6. alu
+5. alu + mul + madd + crc
+6. alu + mul
+
+还有很多其他的指令没有测试，不过方法是类似的。从上面的结果里，可以看到一些值得一提的点：
+
+1. fmov f2i 同时占用了两个浮点执行单元和两个整数执行单元，这主要是为了复用寄存器堆读写口：fmov f2i 需要读浮点寄存器堆，又需要写整数寄存器堆，那就在浮点侧读寄存器，在整数侧写寄存器。
+2. fmov i2f 既不在浮点，也不在整数，那只能在访存了：而正好访存执行单元需要读整数，写整数或浮点，那就可以复用它的寄存器堆写口来实现 fmov i2f 的功能。
+3. 可见整数/浮点/访存执行单元并不是完全隔离的，例如一些微架构，整数和浮点是直接放在一起的。
 
 #### Icestorm
 
