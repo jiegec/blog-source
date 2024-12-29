@@ -210,8 +210,19 @@ Icestorm 上的结果：
 
 可以看到 64KB 出现了明显的拐点，对应的就是 64KB 的 L1 DCache 容量。L1 DCache 范围内延迟是 3 cycle，之后提升到 14 cycle。
 
-
 #### L1 DTLB 容量
+
+用类似的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈，在 Firestorm 上：
+
+![](./apple_m1_firestorm_l1dtlb.png)
+
+从 160 个页开始性能下降，到 250 个页时性能稳定在 9 CPI，认为 Firestorm 的 L1 DTLB 有 160 项。
+
+Icestorm:
+
+![](./apple_m1_icestorm_l1dtlb.png)
+
+从 128 个页开始性能下降，到 160 个页时性能稳定在 10 CPI，认为 Icestorm 的 L1 DTLB 有 128 项。
 
 #### Load/Store 带宽
 
