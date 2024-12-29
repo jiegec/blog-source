@@ -264,8 +264,69 @@ Icestorm:
 
 #### Store to Load Forwarding
 
+##### Firestorm
+
+经过实际测试，Firestorm 上如下的情况可以成功转发，对地址 x 的 Store 转发到对地址 y 的 Load 成功时 y-x 的取值范围：
+
+| Store\Load | 8b Load | 16b Load | 32b Load | 64b Load |
+|------------|---------|----------|----------|----------|
+| 8b Store   | {0}     | [-1,0]   | [-3,0]   | [-7,0]   |
+| 16b Store  | [0,1]   | [-1,1]   | [-3,1]   | [-7,1]   |
+| 32b Store  | [0,3]   | [-1,3]   | [-3,3]   | [-7,3]   |
+| 64b Store  | [0,7]   | [-1,7]   | [-3,7]   | [-7,7]   |
+
+从上表可以看到，所有 Store 和 Load Overlap 的情况，无论地址偏移，都能成功转发。甚至在 Load 或 Store 跨越 64B 缓存行边界时，也可以成功转发，代价是多一个周期。
+
+一个 Load 需要转发两个、四个甚至八个 Store 的数据时，如果数据跨越缓存行，则不能转发，但其他情况下，无论地址偏移，都可以转发，只是比从单个 Store 转发需要多耗费 1-4 个周期。
+
+成功转发时 7.5 cycle，跨缓存行且转发失败时 28+ cycle。
+
+小结：Apple Firestorm 的 Store to Load Forwarding：
+
+- 1 ld + 1 st: 支持
+- 1 ld + 2 st: 支持，要求不跨越 64B 边界
+- 1 ld + 4 st: 支持，要求不跨越 64B 边界
+- 1 ld + 8 st: 支持，要求不跨越 64B 边界
+
+##### Icestorm
+
+在 Icestorm 上，如果 Load 和 Store 访问范围出现重叠，则需要 10 Cycle，无论是和几个 Store 重叠，也无论是否跨缓存行。
+
 #### Load to use latency
 
+##### Firestorm
+
+实测 Firestorm 的 Load to use latency 针对 pointer chasing 场景做了优化，在下列的场景下可以达到 3 cycle:
+
+- `ldr x0, [x0]`: load 结果转发到基地址，无偏移
+- `ldr x0, [x0, 8]`：load 结果转发到基地址，有立即数偏移
+- `ldr x0, [x0, x1]`：load 结果转发到基地址，有寄存器偏移
+- `ldp x0, x1, [x0]`：load pair 的第一个目的寄存器转发到基地址，无偏移
+
+如果访存跨越了 8B 边界，则退化到 4 cycle。
+
+在下列场景下 Load to use latency 则是 4 cycle：
+
+- load 的目的寄存器作为 alu 的源寄存器（下称 load to alu latency）
+- `ldr x0, [sp, x0, lsl #3]`：load 结果转发到 index
+- `ldp x1, x0, [x0]`：load pair 的第二个目的寄存器转发到基地址，无偏移
+
+##### Icestorm
+
+实测 Icestorm 的 Load to use latency 针对 pointer chasing 场景做了优化，在下列的场景下可以达到 3 cycle:
+
+- `ldr x0, [x0]`: load 结果转发到基地址，无偏移
+- `ldr x0, [x0, 8]`：load 结果转发到基地址，有立即数偏移
+- `ldr x0, [x0, x1]`：load 结果转发到基地址，有寄存器偏移
+- `ldp x0, x1, [x0]`：load pair 的第一个目的寄存器转发到基地址，无偏移
+
+如果访存跨越了 8B/16B/32B 边界，依然是 3 cycle；跨越了 64B 边界则退化到 7 cycle。
+
+在下列场景下 Load to use latency 则是 4 cycle：
+
+- load 的目的寄存器作为 alu 的源寄存器（下称 load to alu latency）
+- `ldr x0, [sp, x0, lsl #3]`：load 结果转发到 index
+- `ldp x1, x0, [x0]`：load pair 的第二个目的寄存器转发到基地址，无偏移
 
 ### 执行单元
 
