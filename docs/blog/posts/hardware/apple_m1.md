@@ -653,7 +653,26 @@ Icestorm:
 
 ### Reorder Buffer
 
-### MMU
+#### Firestorm
+
+Firestorm 的 ROB 采用的是比较特别的方案，它的 entry 地位不是等同的，而是若干个 entry 组合在一起，成为一个 group，每个 group 有若干个 entry，一个 group 对 group 内指令的类型和数量有要求，这就导致用传统方法测 Firestorm 的 ROB，可能会测到特别巨大的数：2200+，也可能测到比较小的数：320+，这就和指令类型有关系。为什么对指令的类型和位置有要求呢，这是为了方便处理有副作用的指令。很多指令是没有副作用的，也不会抛异常，这些指令可以比较随意地放置；但是对于有副作用的指令，retire 时是需要特殊处理的，因此一个合理的设计就是，让这些指令只能放在 group 的开头。
+
+经过测试，发现 Firestorm 上 pointer chasing 的延迟波动比较大，目测是 prefetcher 做了针对性的优化，因此用 fsqrt chain 来做延迟，Firestorm 上一条双精度 fsqrt 的延迟是 13 个周期。构造一个循环，循环包括 M 个串行的 sqrt 和 N 个 nop，如果没有触碰到 ROB 的瓶颈，那么当 N 比较小的时候，瓶颈在串行 fsqrt 上，每次循环的周期数应该为 `M*13`；当 N 比较大的时候，瓶颈在每个周期执行 8 个 NOP 上（NOP 被 eliminate 了，不用进 ALU，可以打满 8 的发射宽度），每次循环的周期数应该为 `N/8` 再加上一个常数。
+
+但当 N 很大的时候，可能会撞上 ROB 大小的限制。下面给出了不同的 M 取值情况下，可以保证循环周期数在 `M*13` 左右的最大的 N 取值：
+
+- M=21, N <= 2109, cycle=273.74, M*13=273
+- M=22, N <= 2205, cycle=286.75, M*13=286
+- M=23, N <= 2269, cycle=299.76, M*13=299
+- M=24, N <= 2277, cycle=312.77, M*13=312
+- M=25, N <= 2275, cycle=325.77, M*13=325
+- M=26, N <= 2274, cycle=338.77, M*13=338
+
+可以看到 N 最大在 2277 附近就不能再增加了，说明遇到了 ROB 的瓶颈，预计 ROB 的所有 group 的 entry 个数加起来大概是 2277 左右。
+
+而如果把填充的指令改成 load/store，inflight 的 load 和 store 最多都是 325 个，并且这和 load/store queue 大小无关，而 load/store 又是有副作用的，很可能是因为它们只能在 ROB 每个 group 里只能放一条，于是看起来 ROB 的容量比 2277 小了很多，只表现出 325。按照这个猜想，对二者进行除法，发现商和 7 十分接近，这大概率意味着 Firestorm 的 ROB 有 325 左右个 group，每个 group 内有 7 个 entry，每个 entry 可以放一条指令（uop）。测试里开头的 20 个 sqrt 也要占用 ROB，实际的 ROB group 数量可能比 325 略多。
+
+结论：Firestorm 的 ROB 有大约 330 个 group，每个 group 最多保存 7 个 uop。
 
 ### L2 Cache
 
@@ -665,5 +684,3 @@ hw.perflevel0.cpusperl2: 4
 hw.perflevel1.l2cachesize: 4194304
 hw.perflevel1.cpusperl2: 4
 ```
-
-### Memory
