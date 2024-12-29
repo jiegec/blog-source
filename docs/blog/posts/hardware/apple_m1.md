@@ -481,19 +481,19 @@ Icestorm:
     4. alu + fmov f2i
 4. mrs nzcv + 2x not taken branch 的 IPC 等于 2，说明它们的执行单元是重合的，那么上述四个执行单元是：
     1. alu + csel + branch + mrs nzcv
-    2. alu + csel + branch
+    2. alu + csel + branch + mrs nzcv
     3. alu + csel + fmov f2i
     4. alu + fmov f2i
 5. csel 和 mul 不重合，f2i 和 mul 也不重合，说明 mul 在剩下的两个执行单元内：
     1. alu + csel + branch + mrs nzcv
-    2. alu + csel + branch
+    2. alu + csel + branch + mrs nzcv
     3. alu + csel + fmov f2i
     4. alu + fmov f2i
     5. alu + mul
     6. alu + mul
 6. madd 和 mul 重合，madd 和 crc 重合，那么：
     1. alu + csel + branch + mrs nzcv
-    2. alu + csel + branch
+    2. alu + csel + branch + mrs nzcv
     3. alu + csel + fmov f2i
     4. alu + fmov f2i
     5. alu + mul + madd + crc
@@ -502,7 +502,7 @@ Icestorm:
 得到初步的结果：
 
 1. alu + csel + branch + mrs nzcv
-2. alu + csel + branch
+2. alu + csel + branch + mrs nzcv
 3. alu + csel + fmov f2i
 4. alu + fmov f2i
 5. alu + mul + madd + crc
@@ -517,7 +517,7 @@ Icestorm:
 小结：Firestorm 的执行单元如下：
 
 1. alu + csel + branch + mrs nzcv
-2. alu + csel + branch
+2. alu + csel + branch + mrs nzcv
 3. alu + csel + fmov f2i
 4. alu + fmov f2i
 5. alu + mul + madd + crc
@@ -649,7 +649,48 @@ Icestorm:
 6. basic fp/asimd ops + aes + fdiv + frecpe + frecpx + frsqrte + fsqrt + fmov f2i
 7. basic fp/asimd ops + aes
 
-### Reservation Stations
+### Scheduler
+
+为了测试 Scheduler 的大小和组织方式（分布式还是集中式），测试方法是：首先用长延迟的操作堵住 ROB，接着用若干条依赖长延迟操作的指令堵住 Scheduler，当指令塞不进去的时候，就说明 Scheduler 满了。更进一步，由于现在很多处理器会引入 Non Scheduling Queue，里面的指令不会直接调度进执行单元，也不检查它依赖的操作数是否已经准备好，此时为了区分可调度部分和不可调度部分，在依赖长延迟操作的指令后面，添加若干条不依赖长延迟操作的指令，这样测出来的就是可调度部分的深度。
+
+#### Firestorm
+
+在 Firestorm 上测试，结果如下：
+
+| 指令     | 可调度 + 不可调度 | 可调度 |
+|----------|-------------------|--------|
+| ld       | 58                | 48     |
+| st       | 58                | 43     |
+| alu      | 158               | 134    |
+| fp       | 156               | 144    |
+| crc      | 40                | 28     |
+| idiv     | 40                | 28     |
+| bfm      | 40                | 28     |
+| fjcvtzs  | 42                | 36     |
+| fmov f2i | 84                | 72     |
+| csel     | 76                | 64     |
+| mrs nzcv | 62                | 50     |
+
+首先看浮点：
+
+1. 可调度部分 fp 是 144，fmov f2i 是 72，fjcvtzs 是 36，有明显的 4:2:1 的关系
+2. fp/fmov f2i/fjcvtzs 吞吐刚好也是 4:2:1 的关系
+3. 因此四个执行单元前面各有一个独立的 36 entry 的 Scheduler
+4. 不可调度部分，156-144=12，84-72=12，42-36=6，猜测有两个 Non Scheduling Queue，每个 Non Scheduling Queue 6 entry，分别对应两个 Scheduler
+
+下面是访存部分，load 和 store 总数一样但 Scheduler 差了 5，不确定是测试误差还是什么问题，暂且考虑为一个统一的 Scheduler 和同一个 Non Scheduling Queue。
+
+最后是整数部分，由于有 6 个整数执行单元，情况会比较复杂：
+
+1. 可调度部分 alu 一共是 134，其中 csel 是 64，crc/idiv/bfm 都是 28，mrs nzcv 是 50，结合六个整数执行单元，可以得到这六个执行单元对应的 Scheduler 大小关系：
+    1. alu + csel + branch + mrs nzcv: x entries
+    2. alu + csel + branch + mrs nzcv: 50-x entries
+    3. alu + csel + fmov f2i: 14 entries
+    4. alu + fmov f2i: y entries
+    5. alu + mul + madd + crc: 28 entries
+    6. alu + mul: 42-y entries
+2. alu 不可调度部分是 158-134=24，crc/idiv/bfm/csel/mrs nzcv 不可调度部分都是 12，考虑到 csel 对应前三个执行单元，并且和 mrs nzcv 一样多，说明前三个执行单元共享一个 12 entry 的 Non Scheduling Queue；剩下三个执行单元共享剩下的 12 entry 的 Non Scheduling Queue
+3. 最后只差 x 和 y 的取值没有求出来，可以通过进一步测试来更加精确地求出
 
 ### Reorder Buffer
 
