@@ -1,6 +1,5 @@
 ---
 layout: post
-draft: true
 date: 2024-12-26
 tags: [cpu,firestorm,icestorm,apple,m1,performance,uarch-review]
 categories:
