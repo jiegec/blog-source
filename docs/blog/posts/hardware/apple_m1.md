@@ -259,7 +259,7 @@ hw.perflevel1.l1dcachesize: 65536
 | fp fsqrt 32b       | 10   | 0.5  |
 | int add            | 1    | 4.6  |
 | int addi           | 1    | 6    |
-| int bfm            | -    | 1    |
+| int bfm            | 1    | 1    |
 | int crc            | 3    | 1    |
 | int csel           | 1    | 3    |
 | int madd (addend)  | 1    | 1    |
@@ -267,7 +267,10 @@ hw.perflevel1.l1dcachesize: 65536
 | int mrs nzcv       | -    | 2    |
 | int mul            | 3    | 2    |
 | int nop            | -    | 8    |
+| int sbfm           | 1    | 4.7  |
 | int sdiv           | 7    | 0.5  |
+| int smull          | 3    | 2    |
+| int ubfm           | 1    | 4.7  |
 | int udiv           | 7    | 0.5  |
 | not taken branch   | -    | 2    |
 | taken branch       | -    | 1    |
@@ -319,6 +322,58 @@ hw.perflevel1.l1dcachesize: 65536
 4. basic fp/asimd ops + aes
 
 当然还有很多指令没有测，不过原理是一样的。
+
+访存部分，前面已经在测 LSU 的时候测过了，每周期 Load + Store 不超过 4 个，其中 Load 不超过 3 个，Store 不超过 2 个。虽然从 IPC 的角度来看 LSU 的 Load/Store Pipe 未必准确，比如可能它发射和提交的带宽是不同的，但先暂时简化为如下的执行单元：
+
+1. load + store
+2. load
+3. load
+4. store
+
+最后是整数部分。从 addi 的指令来看，有 6 个 ALU，能够执行基本的整数指令（add/ubfm/sbfm 的吞吐有时候测出来 4.6-4.7，有时候测出来 6，怀疑是进入了什么低功耗模式）。但其他很多指令可能只有一部分执行单元可以执行：bfm/cfc/csel/madd/mrs nzcv/mul/div/branch/fmov i2f。为了测试这些指令使用的执行单元是否重合，进行一系列的混合指令测试，吞吐的定义和上面相同：
+
+| 指令                              | 吞吐        |
+|-----------------------------------|-------------|
+| 3x int csel + 3x fmov i2f         | 1           |
+| 3x int csel + 2x fmov f2i         | 0.75=1/1.33 |
+| 3x int csel + int bfm             | 1           |
+| 3x int csel + int crc             | 1           |
+| 3x int csel + int madd            | 1           |
+| 3x int csel + int mul             | 1           |
+| 3x int csel + int sdiv            | 0.5         |
+| 3x int csel + mrs nzcv            | 0.75=1/1.33 |
+| 3x int csel + not taken branch    | 0.75=1/1.33 |
+| mrs nzcv + not taken branch       | 1           |
+| mrs nzcv + 2x not taken branch    | 0.67=1/1.50 |
+| 2x fmov f2i + 2x not taken branch | 1           |
+
+根据上述结果分析：
+
+1. 吞吐与不混合时相同，代表混合的指令对应的执行单元不重合
+2. 3x int csel + 2x fmov f2i 的 IPC 等于 4，意味着有四个执行单元，其中有三个可以执行 int csel，两个可以执行 fmov f2i，也就意味着其中有一个执行单元可以执行 int csel 和 fmov f2i，即有这样的四个执行单元：
+    1. csel
+    2. csel
+    3. csel + fmov f2i
+    4. fmov f2i
+3. 3x int csel + mrs nzcv/not taken branch 的 IPC 等于 3，说明它们的执行单元是重合的；又因为 2x fmov f2i + 2x not taken branch 的吞吐是 1，说明它们的执行单元不重合，那么上述四个执行单元只能是：
+    1. csel + branch
+    2. csel + branch
+    3. csel + fmov f2i
+    4. fmov f2i
+4. mrs nzcv + 2x not taken branch 的 IPC 等于 2，说明它们的执行单元是重合的，那么上述四个执行单元是：
+    1. csel + branch + mrs nzcv
+    2. csel + branch
+    3. csel + fmov f2i
+    4. fmov f2i
+
+得到初步的结果：
+
+1. alu + csel + branch + mrs nzcv
+2. alu + csel + branch
+3. alu + csel + fmov f2i
+4. alu + fmov f2i
+5. alu
+6. alu
 
 #### Icestorm
 
