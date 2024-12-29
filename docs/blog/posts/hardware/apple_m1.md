@@ -226,11 +226,41 @@ Icestorm:
 
 #### Load/Store 带宽
 
-#### L1 DCache 分 Bank
+针对 Load Store 带宽，实测 Firestorm 每个周期可以完成：
 
-#### VIPT
+- 3x 128b Load + 1x 128b Store
+- 2x 128b Load + 2x 128b Store
+- 1x 128b Load + 2x 128b Store
+- 2x 128b Store
+
+如果把每条指令的访存位宽从 128b 改成 256b，读写带宽不变，指令吞吐减半。也就是说最大的读带宽是 48B/cyc，最大的写带宽是 32B/cyc，二者不能同时达到。
+
+实测 Icestorm 每个周期可以完成：
+
+- 2x 128b Load
+- 1x 128b Load + 1x 128b Store
+- 1x 128b Store
+
+如果把每条指令的访存位宽从 128b 改成 256b，读写带宽不变，指令吞吐减半。也就是说最大的读带宽是 32B/cyc，最大的写带宽是 16B/cyc，二者不能同时达到。
 
 #### Memory Dependency Predictor
+
+为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之前在内存上的依赖。参考 [Store-to-Load Forwarding and Memory Disambiguation in x86 Processors](https://blog.stuffedcow.net/2014/01/x86-memory-disambiguation/) 的方法，构造两个指令模式，分别在地址和数据上有依赖：
+
+- 数据依赖，地址无依赖：`str x3, [x1]` 和 `ldr x3, [x2]`
+- 地址依赖，数据无依赖：`str x2, [x1]` 和 `ldr x1, [x2]`
+
+初始化时，`x1` 和 `x2` 指向同一个地址，重复如上的指令模式，观察到多少条 `ldr` 指令时会出现性能下降，在 Firestorm 上测试：
+
+![](./apple_m1_firestorm_memory_dependency_predictor.png)
+
+数据依赖没有明显的阈值，但从 84 开始出现了一个小的增长，且斜率不为零；地址依赖的阈值是 70。
+
+Icestorm:
+
+![](./apple_m1_icestorm_memory_dependency_predictor.png)
+
+数据依赖和地址依赖的阈值都是 13。
 
 #### Store to Load Forwarding
 
