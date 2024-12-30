@@ -412,6 +412,27 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Cortex X1 @ 3.0 GHz: 8.9
 - Cortex A78 @ 2.4 GHz: 5.9
 
+### GCC + GFortran vs Clang + Flang-new
+
+在 Intel i9-14900K 上用 -O3 测试两种编译器组合的性能：
+
+| Benchmark       | GCC 12.2.0 | LLVM 19.1.4 |
+|-----------------|------------|-------------|
+| 503.bwaves_r    | 75.9       | 74.5        |
+| 507.cactuBSSN_r | 14.9       | 14.2        |
+| 508.namd_r      | 9.61       | 11.0        |
+| 510.parest_r    | 15.6       | 15.8        |
+| 511.povray_r    | 15.1       | 14.2        |
+| 519.lbm_r       | 12.6       | 11.3        |
+| 521.wrf_r       | 14.0       | 14.0        |
+| 526.blender_r   | 12.7       | 12.5        |
+| 527.cam4_r      | 16.3       | 13.7        |
+| 538.imagick_r   | 10.7       | 12.5        |
+| 544.nab_r       | 13.2       | 8.66        |
+| 549.fotonik3d_r | 25.0       | 21.6        |
+| 554.roms_r      | 14.7       | 14.1        |
+| geomean         | 16.1       | 15.2        |
+
 
 ## SPEC INT 2006 Speed
 
