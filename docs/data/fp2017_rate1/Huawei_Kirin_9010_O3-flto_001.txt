@@ -4,18 +4,18 @@ Built with Clang 15.0.4 from DevEco Studio 5.0.1 and Flang 20.0.0 from LLVM APT 
                  Base     Base        Base        Peak     Peak        Peak
 Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
 =================================================================================
-503.bwaves_r          1        340      29.49  *
-507.cactuBSSN_r       1        188       6.73  *
+503.bwaves_r          1        310      32.35  *
+507.cactuBSSN_r       1        185       6.84  *
 508.namd_r            1        209       4.55  *
 510.parest_r          1        479       5.46  *
-511.povray_r          1        476       4.91  *
+511.povray_r          1        441       5.29  *
 519.lbm_r             1        205       5.14  *
-521.wrf_r             1        282       7.94  *
+521.wrf_r             1        275       8.15  *
 526.blender_r         1        340       4.48  *
-527.cam4_r            1       1201       1.46  *
+527.cam4_r            1       1099       1.59  *
 538.imagick_r         1        450       5.53  *
-544.nab_r             1        261       6.45  *
-549.fotonik3d_r       1        436       6.35  *
+544.nab_r             1        253       6.65  *
+549.fotonik3d_r       1        436       8.94  *
 554.roms_r            1        292       5.44  *
- Est. SPECrate(R)2017_fp_base            5.93
+ Est. SPECrate(R)2017_fp_base            6.08
  Est. SPECrate(R)2017_fp_peak                                          Not Run
