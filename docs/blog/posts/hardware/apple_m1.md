@@ -724,3 +724,17 @@ hw.perflevel0.cpusperl2: 4
 hw.perflevel1.l2cachesize: 4194304
 hw.perflevel1.cpusperl2: 4
 ```
+
+### L2 TLB
+
+从苹果提供的性能计数器来看，L1 TLB 分为指令和数据，而 L2 TLB 是 Unified，不区分指令和数据。沿用之前测试 L1 DTLB 的方法，把规模扩大到 L2 Unified TLB 的范围，就可以测出来 L2 Unified TLB 的容量，下面是 Firestorm 上的测试结果：
+
+![](./apple_m1_firestorm_l2tlb.png)
+
+可以看到拐点是 3072 个 Page，说明 Firestorm 的 L2 TLB 容量是 3072 项。
+
+在 Icestorm 上测试：
+
+![](./apple_m1_icestorm_l2tlb.png)
+
+可以看到拐点是 1024 个 Page，说明 Icestorm 的 L2 TLB 容量是 1024 项。
