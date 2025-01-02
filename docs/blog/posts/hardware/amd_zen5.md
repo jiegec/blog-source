@@ -267,6 +267,21 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 可以观察到明显的 48KB 的拐点，命中 L1 DCache 时 load to use latency 是 4 cycle，命中 L2 时增大到了 14 cycle。
 
+#### Linear Address UTAG/Way-Predictor
+
+复现论文 [Take A Way: Exploring the Security Implications of AMD's Cache Way Predictors](https://dl.acm.org/doi/10.1145/3320269.3384746)，可以看到 Zen 5 的 UTAG 哈希函数和 Zen 2 一样也是如下 8 bit：
+
+- VA[12] xor VA[27]
+- VA[13] xor VA[26]
+- VA[14] xor VA[25]
+- VA[15] xor VA[20]
+- VA[16] xor VA[21]
+- VA[17] xor VA[22]
+- VA[18] xor VA[23]
+- VA[19] xor VA[24]
+
+如果两个虚拟地址映射到同一个 DCache Set 上的不同 Way（Set 根据 VA[11:6] 唯一确定），并且它们的 uTag 出现冲突，那么访问一个虚拟地址会把另一个虚拟地址从 L1 DCache 中清掉。
+
 ### Load Store Unit
 
 官方信息：每周期最多四个内存操作。每周期最多四个读，其中最多两个 128b/256b/512b 读；每周期最多两个写，其中最多一个 512b 写。load to use latency，整数是 4-5 个周期，浮点是 7-8 个周期。跨越 64B 边界的读会有额外的一个周期的延迟。支持 Store to load forwarding，要求先前的 store 包括了 load 的所有字节，不要求对齐。
