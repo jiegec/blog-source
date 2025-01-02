@@ -259,7 +259,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### L1 DCache
 
-官方信息：**48KB**, 12-way set associative
+官方信息：**48KB**, 12-way set associative, index 是 VA[11:6]
 
 使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
 

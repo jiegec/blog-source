@@ -276,6 +276,41 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 
 通过这样的方法，可以大大降低缓存读取的功耗。这样的设计在商用处理器中也有使用，见 [Take A Way: Exploring the Security Implications of AMD’s Cache Way Predictors](https://dl.acm.org/doi/10.1145/3320269.3384746)。
 
+[Zen5 的文档](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/software-optimization-guides/58455.zip)里提到了它怎么在 L1 DCache 上做 Way/Tag Prediction：
+
+1. 对于 VIPT 的 cache 来说，它的 tag 来自于物理地址，意味着如果要做 way 比对，需要等到虚实地址转换，才能知道实际的 tag
+2. Zen 5 为了避免等待虚实地址转换，基于虚拟地址计算出一个 tag，叫做 microtag(utag)，并且用虚拟地址来预测要访问的是 12 个 way 中的哪一个；读取出那一个 way 以后，用 utag 来提前做 tag 比对
+3. 由于 utag 完全用的是虚拟地址，它可能会出错，把 miss 的预测为 hit（比如出现了 hash 冲突），或者把 hit 的预测为 miss（比如两个虚拟页映射到同一个物理页，数据确实在 L1 DCache 中，用物理地址算出来的 tag 相同，但用虚拟地址算出来的 utag 不同）。
+
+除了 Way Prediction，实际的 L1 DCache 为了每个周期可以处理多条 Load/Store 指令，还会分 Bank。那么每条访存指令要访问哪个 Bank，也需要预测，这和 Way Prediction 是类似的，比如 Zen5 的文档是这么说的：
+
+    Address bits 5:3 and the size of an access along with its DC way determine
+    which DC banks are needed for that access. DC way is determined using the
+    linear-address-based utag/way-predictor.
+
+论文 [Take A Way: Exploring the Security Implications of AMD’s Cache Way Predictors](https://dl.acm.org/doi/10.1145/3320269.3384746) 是这么逆向 AMD 的 utag/way predictor 的：
+
+1. 由于是 VIPT，所以 cache 的 index 位是 VA[11:6]，因此可以构造出不同的虚拟地址，让它对应同一个 set
+2. 如果两个虚拟地址映射到同一个物理地址，并且出现了 utag 冲突，那么性能会下降；不断寻找有冲突的情况，发现最多可以得到 256 组地址，组内 utag 互相冲突，组间则不冲突；这暗示了 utag 冲突来源于 hash 出来的 8 个 bit 信息
+3. 根据这 256 组地址，找到 AMD Zen/Zen+/Zen2 的 uTag 哈希函数：
+	1. uTag[7] = VA[19] xor VA[24]
+	2. uTag[6] = VA[18] xor VA[23]
+	3. uTag[5] = VA[17] xor VA[22]
+	4. uTag[4] = VA[16] xor VA[21]
+	5. uTag[3] = VA[15] xor VA[20]
+	6. uTag[2] = VA[14] xor VA[25]
+	7. uTag[1] = VA[13] xor VA[26]
+	8. uTag[0] = VA[12] xor VA[27]
+5. 类似地，找到更早的 AMD Bulldozer/Piledriver/Streamroller 的 uTag 哈希函数：
+	1. uTag[7] = VA[19] xor VA[27]
+	2. uTag[6] = VA[18] xor VA[26]
+	3. uTag[5] = VA[17] xor VA[25]
+	4. uTag[4] = VA[16] xor VA[24]
+	5. uTag[3] = VA[15] xor VA[23]
+	6. uTag[2] = VA[14] xor VA[22]
+	7. uTag[1] = VA[13] xor VA[21]
+	8. uTag[0] = VA[12] xor VA[20]
+
 ## Load Value Prediction
 
 [Value Locality and Load Value Prediction](https://dl.acm.org/doi/pdf/10.1145/248209.237173) 提出了 Load Value Prediction，就是对 Load 得到的值进行预测。它设计了一个 Load Value Prediction Table，根据 Load 指令的地址来索引，得到预测的读取的值。然后设计一个 Load Classification Table 来记录预测准确与否的历史，记录了 saturating counter，以此来判断是否要进行预测。预测时，可以提前把结果写入到目的寄存器内，但还要验证预测的正确性。验证的方式有两种：第一是依然完成正常的访存，把读出来的数据和预测的数据做比较；第二是针对预测正确率很高的 Load，从一个小的 Constant Verification Unit 确认这个值没有变过。
