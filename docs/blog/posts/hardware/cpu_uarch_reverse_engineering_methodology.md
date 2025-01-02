@@ -109,6 +109,7 @@ categories:
 1. 尽量用汇编来构造测例，C/C++ 编译器可能会带来不期望的行为
 2. 链接器有一些行为可能是需要避免的，例如它可能会修改一些指令
 3. 链接器还可能有一些局限性，例如它不支持巨大的对齐
+4. Linux 内核会做优化，例如 Copy-on-Write 和 Transparent Huge Page
 
 ## 现成 Microbenchmark
 
