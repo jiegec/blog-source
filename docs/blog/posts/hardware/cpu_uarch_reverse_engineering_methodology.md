@@ -127,6 +127,7 @@ categories:
 - <https://www.anandtech.com>（可惜不再更新）
 - <https://blog.hjc.im/>
 - <https://www.zhihu.com/people/jamesaslan>
+- <https://uops.info>
 - 本博客
 
 如果你想要去逆向某个微架构的某个部件，但不知道怎么做，不妨在上面这些网站上寻找一下，是不是已经有现成的实现了。

@@ -327,6 +327,21 @@ Icestorm:
 - `ldr x0, [sp, x0, lsl #3]`：load 结果转发到 index
 - `ldp x1, x0, [x0]`：load pair 的第二个目的寄存器转发到基地址，无偏移
 
+#### Virtual Address UTag/Way-Predictor
+
+Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试方法，也可以在 Apple M1 上观察到类似的现象，猜想它也用了类似的基于虚拟地址的 Way Prediction 方案，并测出来它的 UTag 也有 8 bit，Firestorm 和 Icestorm 都是相同的：
+
+- VA[14] xor VA[22] xor VA[30] xor VA[38] xor VA[46]
+- VA[15] xor VA[23] xor VA[31] xor VA[39] xor VA[47]
+- VA[16] xor VA[24] xor VA[32] xor VA[40]
+- VA[17] xor VA[25] xor VA[33] xor VA[41]
+- VA[18] xor VA[26] xor VA[34] xor VA[42]
+- VA[19] xor VA[27] xor VA[35] xor VA[43]
+- VA[20] xor VA[28] xor VA[36] xor VA[44]
+- VA[21] xor VA[29] xor VA[37] xor VA[45]
+
+一共有 8 bit，由 VA[47:14] 折叠而来。
+
 ### 执行单元
 
 想要测试有多少个执行单元，每个执行单元可以运行哪些指令，首先要测试各类指令在无依赖情况下的的 IPC，通过 IPC 来推断有多少个能够执行这类指令的执行单元；但由于一个执行单元可能可以执行多类指令，于是进一步需要观察在混合不同类的指令时的 IPC，从而推断出完整的结果。
