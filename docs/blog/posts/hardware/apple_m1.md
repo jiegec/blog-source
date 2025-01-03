@@ -215,7 +215,7 @@ Icestorm 上的结果：
 
 ![](./apple_m1_firestorm_l1dtlb.png)
 
-从 160 个页开始性能下降，到 250 个页时性能稳定在 9 CPI，认为 Firestorm 的 L1 DTLB 有 160 项。
+从 160 个页开始性能下降，到 250 个页时性能稳定在 9 CPI，认为 Firestorm 的 L1 DTLB 有 160 项。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟。
 
 如果每两个页放一个指针，则拐点前移到 80；每四个页放一个指针，拐点变成 40；每八个页放一个指针，拐点变成 20；每 16 个页一个指针，拐点是 10；每 32 个页一个指针，拐点变成 5；每 64 个页一个指针，拐点依然是 5。说明 Firestorm 的 L1 DTLB 是 5 路组相连，32 个 Set，Index 是 VA[18:14]，注意页表大小是 16KB。
 
@@ -223,7 +223,7 @@ Icestorm:
 
 ![](./apple_m1_icestorm_l1dtlb.png)
 
-从 128 个页开始性能下降，到 160 个页时性能稳定在 10 CPI，认为 Icestorm 的 L1 DTLB 有 128 项。
+从 128 个页开始性能下降，到 160 个页时性能稳定在 10 CPI，认为 Icestorm 的 L1 DTLB 有 128 项。10 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟。
 
 如果每两个页放一个指针，则拐点前移到 64；每四个页放一个指针，拐点变成 32；每八个页放一个指针，拐点变成 16；每 16 个页一个指针，拐点是 8；每 32 个页一个指针，拐点变成 4；每 64 个页一个指针，拐点依然是 4。说明 Icestorm 的 L1 DTLB 是 4 路组相连，32 个 Set，Index 是 VA[18:14]。
 
@@ -746,14 +746,39 @@ hw.perflevel1.cpusperl2: 4
 
 ### L2 TLB
 
+#### Firestorm
+
 从苹果提供的性能计数器来看，L1 TLB 分为指令和数据，而 L2 TLB 是 Unified，不区分指令和数据。沿用之前测试 L1 DTLB 的方法，把规模扩大到 L2 Unified TLB 的范围，就可以测出来 L2 Unified TLB 的容量，下面是 Firestorm 上的测试结果：
 
 ![](./apple_m1_firestorm_l2tlb.png)
 
 可以看到拐点是 3072 个 Page，说明 Firestorm 的 L2 TLB 容量是 3072 项。
 
+把指针的跨度增大：
+
+- 如果每 32 个页一个指针，L2 TLB 拐点前移到 96，L2 TLB 缺失时 CPI 为 36.5
+- 如果每 64 个页一个指针，L2 TLB 拐点前移到 48，L2 TLB 缺失时 CPI 为 36.5
+- 如果每 128 个页一个指针，L2 TLB 拐点前移到 24，L2 TLB 缺失时 CPI 为 36.5
+- 如果每 256 个页一个指针，L2 TLB 拐点前移到 12，L2 TLB 缺失时 CPI 为 35
+- 如果每 512 个页一个指针，L2 TLB 拐点依然在 12，L2 TLB 缺失时 CPI 为 35
+- 观察到命中 L1 DTLB 时 CPI 是 3，命中 L2 TLB 时 CPI 是 9，L2 TLB 缺失时 CPI 是 35-36.5，此时缓存缺失率为 0
+
+认为 Firestorm 的 L2 TLB 是 12 Way，256 Set，Index 位是 VA[21:14]。
+
+#### Icestorm
+
 在 Icestorm 上测试：
 
 ![](./apple_m1_icestorm_l2tlb.png)
 
 可以看到拐点是 1024 个 Page，说明 Icestorm 的 L2 TLB 容量是 1024 项。
+
+把指针的跨度增大：
+
+- 如果每 32 个页一个指针，L2 TLB 拐点前移到 32，L2 TLB 缺失时 CPI 为 33
+- 如果每 64 个页一个指针，L2 TLB 拐点前移到 16，L2 TLB 缺失时 CPI 为 32
+- 如果每 128 个页一个指针，L2 TLB 拐点前移到 8，L2 TLB 缺失时 CPI 为 32
+- 如果每 256 个页一个指针，L2 TLB 拐点前移到 4 和 L1 DTLB 拐点重合，一旦 L1 DTLB 缺失，L2 TLB 也缺失，L2 TLB 缺失时 CPI 为 32
+- 观察到命中 L1 DTLB 时 CPI 是 3，命中 L2 TLB 时 CPI 是 10，L2 TLB 缺失时 CPI 是 32-33，此时缓存缺失率为 0
+
+由于 Icestorm 的 L1 DTLB 就是 4 Way，不确定 Icestorm 的 L2 TLB 组相连是 1/2/4 Way 的哪一种，假如是 4 Way，那么 Icestorm 的 L2 TLB 是 4 Way，256 Set，Index 位是 VA[21:14]。
