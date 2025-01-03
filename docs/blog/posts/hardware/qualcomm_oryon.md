@@ -316,6 +316,27 @@ Oryon 的 Load to use latency 针对 pointer chasing 场景做了优化，在下
 - 1 cycle access for L1 ITLB & L1 DTLB
 - Unified L2 TLB, 8-way >8K entry
 
+#### L2 TLB
+
+沿用之前测试 L1 DTLB 的方法，把规模扩大到 L2 Unified TLB 的范围，就可以测出来 L2 Unified TLB 的容量，下面是 Oryon 上的测试结果：
+
+![](./qualcomm_oryon_l2tlb.png)
+
+可以看到拐点是 32768 个 Page 附近，说明 Oryon 的 L2 TLB 容量是 32768 项。
+
+由于 Oryon 的 L2 TLB 很大，很容易遇到数据缓存容量的瓶颈，因此把指针的跨度调大，使得等效 L2 TLB 容量变小，但数据缓存容量不变，可以测试去掉缓存缺失延迟后的性能：
+
+- 如果每 512 个页一个指针，L2 TLB 拐点在 64，L2 TLB 缺失时 CPI 不太稳定，怀疑有预取
+- 如果每 1024 个页一个指针，L2 TLB 拐点在 32，L2 TLB 缺失时 CPI 为 55-57
+- 如果每 2048 个页一个指针，L2 TLB 拐点在 16，L2 TLB 缺失时 CPI 为 53-57
+- 如果每 4096 个页一个指针，L2 TLB 拐点在 8，L2 TLB 缺失时 CPI 为 59-67
+- 如果每 8192 个页一个指针，L2 TLB 拐点依然在 8，L2 TLB 缺失时 CPI 为 59-71
+- 观察到命中 L1 DTLB 时 CPI 是 3，命中 L2 TLB 时 CPI 是 11-14.5，此时 L1 数据缓存缺失率为 0
+
+认为 Oryon 的 L2 TLB 是 8 Way，4096 Set，那就是 32768 个 entry，Index 是 VA[23:12]。但官方声称的是 `>8K`，这个表述比较耐人寻味，可能是 8K 个 entry，每个 entry 最多记录四个页的映射关系。
+
+命中 L2 TLB 的时间有长有短，说明它的 entry 不是等同的，随着访问范围变大，即使都命中，延迟也会上升。
+
 ### L2 Cache
 
 官方信息：
