@@ -333,7 +333,7 @@ Icestorm:
 
 #### Virtual Address UTag/Way-Predictor
 
-Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试方法，也可以在 Apple M1 上观察到类似的现象，猜想它也用了类似的基于虚拟地址的 Way Prediction 方案，并测出来它的 UTag 也有 8 bit，Firestorm 和 Icestorm 都是相同的：
+Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试方法，也可以在 Apple M1 上观察到类似的现象，猜想它也用了类似的基于虚拟地址的 UTag/Way Predictor 方案，并测出来它的 UTag 也有 8 bit，Firestorm 和 Icestorm 都是相同的：
 
 - VA[14] xor VA[22] xor VA[30] xor VA[38] xor VA[46]
 - VA[15] xor VA[23] xor VA[31] xor VA[39] xor VA[47]

@@ -308,6 +308,23 @@ Oryon 的 Load to use latency 针对 pointer chasing 场景做了优化，在下
 
 比较奇怪的是 `ldr x0, [x0]` 在跨越 8B 边界时的行为，load to load latency 退化为 6 cycle，load to alu latency 则是 4 cycle。Apple Firestorm 则没有这个问题，在跨越 8B 边界甚至 64B 边界时，实现了 4 cycle load to load latency 和 4 cycle load to alu latency。
 
+#### Virtual Address UTag/Way-Predictor
+
+Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试方法，也可以在 Qualcomm Oryon 上观察到类似的现象，猜想它也用了类似的基于虚拟地址的 UTag/Way Predictor 方案，并测出来它的 UTag 也有 8 bit：
+
+- VA[14] xor VA[22] xor VA[30] xor VA[38] xor VA[46]
+- VA[15] xor VA[23] xor VA[31] xor VA[39] xor VA[47]
+- VA[16] xor VA[24] xor VA[32] xor VA[40]
+- VA[17] xor VA[25] xor VA[33] xor VA[41]
+- VA[18] xor VA[26] xor VA[34] xor VA[42]
+- VA[19] xor VA[27] xor VA[35] xor VA[43]
+- VA[20] xor VA[28] xor VA[36] xor VA[44]
+- VA[21] xor VA[29] xor VA[37] xor VA[45]
+
+一共有 8 bit，由 VA[47:14] 折叠而来，和 Apple M1 一样。
+
+除了 UTag 可能冲突以外，如果 VA[13:12] 出现了 VIPT 导致的 alias，也会出现性能下降。
+
 ### MMU
 
 官方信息：
