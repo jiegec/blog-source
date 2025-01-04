@@ -283,14 +283,14 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 （图源 [Take A Way: Exploring the Security Implications of AMD’s Cache Way Predictors](https://dl.acm.org/doi/10.1145/3320269.3384746)）
 
 1. 对于 VIPT 的 cache 来说，它的 tag 来自于物理地址，意味着如果要做 way 比对，判断哪一个 way 命中，需要等到虚实地址转换，得到物理地址以后，才能知道实际的 tag，才能去比对
-2. Zen 5 为了避免等待虚实地址转换，基于虚拟地址计算出一个 8-bit 的 microtag(utag)，在一个类似缓存的结构里，保存每个 set 的每个 way 的 utag，同一个 set 内不同 way 的 utag 互不相同
+2. Zen 5 为了避免等待虚实地址转换，基于虚拟地址计算出一个 8-bit 的 microtag(utag)，在一个类似缓存的 way predictor 结构里，保存每个 set 的每个 way 的 utag，同一个 set 内不同 way 的 utag 互不相同，way predictor 的 way 和 data cache 的 way 一一对应
 3. 访存的时候，读出那个 set 的所有 way 的 utag（12 路，每路 8 bit），用 utag 进行比对：
 	1. 因为 utag 互不相同，所以最多只有一个 way 命中
 	2. 如果有且仅有一个 way 命中，下一个周期就去读取出这一个 way 对应的数据以及用物理地址算出来的 tag
 	3. 如果没有 way 命中，则认为 miss
 4. 由于 utag 完全用的是虚拟地址，它可能会出错，分两种情况：
 	1. 把 miss 的预测为 hit，比如出现了 hash 冲突，有两个 way 的 tag 不同，但是 utag 一样，只能预测其中一个 way，访问另一个的时候就会 miss
-	2. 把 hit 的预测为 miss，比如两个虚拟页映射到同一个物理页，用物理地址算出来的 tag 相同，但用虚拟地址算出来的 utag 不同，这两个 utag 就会抢同一个 way 的位置
+	2. 把 hit 的预测为 miss，比如两个虚拟页映射到同一个物理页，用物理地址算出来的 tag 相同，但用虚拟地址算出来的 utag 不同，这两个 utag 就会抢同一个 way 的位置（注：这个问题是可以解决的，比如不要求 way predictor 的 way 与 data cache 的 way 一一对应，在 way predictor 每个 entry 里面加上一个 data cache 的 way index，不过考虑到概率和开销，好处不明显）
 5. 等虚实地址转换完成，再用物理地址验证访问是否正确
 
 除了 Way Prediction，实际的 L1 DCache 为了每个周期可以处理多条 Load/Store 指令，还会分 Bank。那么每条访存指令要访问哪个 Bank，也需要预测，这和 Way Prediction 是类似的，比如 Zen5 的文档是这么说的：
