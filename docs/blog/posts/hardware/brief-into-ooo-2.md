@@ -276,10 +276,10 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 
 通过这样的方法，可以大大降低缓存读取的功耗。这样的设计在商用处理器中也有使用，见 [Take A Way: Exploring the Security Implications of AMD’s Cache Way Predictors](https://dl.acm.org/doi/10.1145/3320269.3384746)。
 
-[Zen5 的文档](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/software-optimization-guides/58455.zip)里提到了它怎么在 L1 DCache 上做 Way/Tag Prediction：
+[Zen5 的文档](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/software-optimization-guides/58455.zip)里提到了它怎么在 L1 DCache 上做 Way Prediction：
 
-1. 对于 VIPT 的 cache 来说，它的 tag 来自于物理地址，意味着如果要做 way 比对，判断哪一个 way 命中，需要等到虚实地址转换，得到物理地址以后，才能知道实际的 tag
-2. Zen 5 为了避免等待虚实地址转换，基于虚拟地址计算出一个 tag，叫做 microtag(utag)，更进一步，用 utag 来预测要访问的是 12 个 way 中的哪一个；读取出预测的那一个 way 以后，用 utag 来做 way 比对
+1. 对于 VIPT 的 cache 来说，它的 tag 来自于物理地址，意味着如果要做 way 比对，判断哪一个 way 命中，需要等到虚实地址转换，得到物理地址以后，才能知道实际的 tag，才能去比对
+2. Zen 5 为了避免等待虚实地址转换，基于虚拟地址计算出一个 8-bit 的 microtag(utag)，在一个类似缓存的结构里，保存每个 set 的每个 way 的 utag；访存的时候，读出那个 set 的所有 way 的 utag（12 路，每路 8 bit），用 utag 进行比对：如果其中有一个 way 命中，下一个周期就去读取出这一个 way 对应的数据以及用物理地址算出来的 tag；如果用 utag 比对没有 way 命中，则认为 miss
 3. 由于 utag 完全用的是虚拟地址，它可能会出错，把 miss 的预测为 hit（比如出现了 hash 冲突，这个位置放的是别的数据，但是 utag 一样），或者把 hit 的预测为 miss（比如两个虚拟页映射到同一个物理页，数据确实在 L1 DCache 中，用物理地址算出来的 tag 相同，但用虚拟地址算出来的 utag 不同）；等虚实地址转换完成，再用物理地址验证访问是否正确
 
 除了 Way Prediction，实际的 L1 DCache 为了每个周期可以处理多条 Load/Store 指令，还会分 Bank。那么每条访存指令要访问哪个 Bank，也需要预测，这和 Way Prediction 是类似的，比如 Zen5 的文档是这么说的：
@@ -292,7 +292,7 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 
 1. 由于是 VIPT，所以 cache 的 index 位是 VA[11:6]，因此可以构造出不同的虚拟地址，让它对应同一个 set（`We pick two random virtual addresses that map to the same cache set.`）
 2. 如果两个虚拟地址映射到了不同的物理地址，但是用这两个虚拟地址算出来的 utag 相同，那么 way predictor 会把它们预测到同一个 way 上，但它们实际上对应了不同的物理地址，这就导致冲突，性能会下降（`If the two addresses have the same 𝜇Tag, repeatedly accessing them one after the other results in conflicts`）；不断寻找性能下降的情况，发现最多可以得到 256 组地址，组内 utag 相同，组间 utag 不同，这暗示了 utag 来源于用虚拟地址 hash 出来的 8 个 bit 信息
-3. 也可以反过来测，如果两个虚拟地址映射到相同的物理地址，但是 utag 不同，假如 way predictor 把它们预测到同一个 way 上，那么这个 way 会面临两种不同的 utag，出现冲突；假如 way predictor 把它们映射到不同的 way 上，结果有两个 way 的用物理地址算出来的 tag 相同，这一般也是不允许的
+3. 也可以反过来测，如果两个虚拟地址映射到相同的物理地址，但是 utag 不同，那么 way predictor 把它们映射到不同的 way 上，结果会有两个不同 way 的用物理地址算出来的 tag 相同，同一个数据存两份，这也是不允许的
 4. 根据这 256 组地址，找到 AMD Zen/Zen+/Zen2 的 uTag 哈希函数：
 	1. uTag[7] = VA[19] xor VA[24]
 	2. uTag[6] = VA[18] xor VA[23]
