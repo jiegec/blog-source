@@ -278,6 +278,10 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 
 [Zen5 的文档](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/software-optimization-guides/58455.zip)里提到了它怎么在 L1 DCache 上做 Way Prediction：
 
+![](brief-into-ooo-2-amd-way-prediction.png)
+
+（图源 [Take A Way: Exploring the Security Implications of AMD’s Cache Way Predictors](https://dl.acm.org/doi/10.1145/3320269.3384746)）
+
 1. 对于 VIPT 的 cache 来说，它的 tag 来自于物理地址，意味着如果要做 way 比对，判断哪一个 way 命中，需要等到虚实地址转换，得到物理地址以后，才能知道实际的 tag，才能去比对
 2. Zen 5 为了避免等待虚实地址转换，基于虚拟地址计算出一个 8-bit 的 microtag(utag)，在一个类似缓存的结构里，保存每个 set 的每个 way 的 utag；访存的时候，读出那个 set 的所有 way 的 utag（12 路，每路 8 bit），用 utag 进行比对：如果其中有一个 way 命中，下一个周期就去读取出这一个 way 对应的数据以及用物理地址算出来的 tag；如果用 utag 比对没有 way 命中，则认为 miss
 3. 由于 utag 完全用的是虚拟地址，它可能会出错，把 miss 的预测为 hit（比如出现了 hash 冲突，这个位置放的是别的数据，但是 utag 一样），或者把 hit 的预测为 miss（比如两个虚拟页映射到同一个物理页，数据确实在 L1 DCache 中，用物理地址算出来的 tag 相同，但用虚拟地址算出来的 utag 不同）；等虚实地址转换完成，再用物理地址验证访问是否正确
