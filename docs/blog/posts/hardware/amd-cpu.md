@@ -112,22 +112,42 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 
 ### Ryzen 9000
 
-| 代号          | 用途 | 核显  | 插槽 | 微架构 | 型号                    |
-|---------------|----|-------|------|--------|-------------------------|
-| Granite Ridge | 桌面 | RDNA2 | AM5  | Zen 5  | 9950X/9900X/9700X/9600X |
+| 代号          | 用途   | 核显  | 插槽 | 微架构 | 型号                              |
+|---------------|------|-------|------|--------|-----------------------------------|
+| Granite Ridge | 桌面   | RDNA2 | AM5  | Zen 5  | 9950X(3D)/9900X(3D)/9700X/9600(X) |
+| Fire Range    | 笔记本 | RDNA2 | FL1  | Zen 5  | 9955HX(3D)/9850HX                 |
 
 ### AI
 
-| 代号        | 用途        | 核显    | 插槽 | 微架构 | 型号            |
-|-------------|-----------|---------|------|--------|-----------------|
-| Strix Point | 笔记本，桌面 | RDNA3.5 | FP8  | Zen 5  | HX375/HX370/365 |
+| 代号          | 用途   | 核显    | 插槽 | 微架构         | 型号                |
+|---------------|------|---------|------|----------------|---------------------|
+| Strix Point   | 笔记本 | RDNA3.5 | FP8  | Zen 5 + Zen 5c | HX375/HX370/365/360 |
+| Krackan Point | 笔记本 | RDNA3.5 | FP8  | Zen 5 + Zen 5c | 350/340             |
 
-### Z1
+### AI Max
+
+| 代号       | 用途   | 核显    | 插槽 | 微架构         | 型号            |
+|------------|------|---------|------|----------------|-----------------|
+| Strix Halo | 笔记本 | RDNA3.5 | FP11 | Zen 5 + Zen 5c | 395/390/385/380 |
+
+### Ryzen 200
+
+| 代号       | 用途   | 核显 | 插槽 | 微架构         | 型号                        |
+|------------|------|------|------|----------------|-----------------------------|
+| Hawk Point | 笔记本 |      | FP8  | Zen 4 + Zen 4c | 270/260/250/240/230/220/210 |
+
+### Z
 
 Ryzen Z1 系列：
 
 - [Ryzen Z1](https://www.amd.com/en/product/13226)
 - [Ryzen Z1 Extreme](https://www.amd.com/en/product/13221)
+
+Ryzen Z2 系列：
+
+- [Ryzen Z2](https://www.amd.com/en/products/processors/handhelds/ryzen-z-series/z2-series/z2.html)
+- [Ryzen Z2 Extreme](https://www.amd.com/en/products/processors/handhelds/ryzen-z-series/z2-series/z2-extreme.html)
+- [Ryzen Z2 Go](https://www.amd.com/en/products/processors/handhelds/ryzen-z-series/z2-series/z2-go.html)
 
 ### 核显
 
@@ -158,6 +178,10 @@ Ryzen Z1 系列：
 - Hawk Point: [AMD Expands Commercial AI PC Portfolio to Deliver Leadership Performance Across Professional Mobile and Desktop Systems](https://ir.amd.com/news-events/press-releases/detail/1190/amd-expands-commercial-ai-pc-portfolio-to-deliver)
 - Phoenix: [AMD Reveals Next-Gen Desktop Processors for Extreme PC Gaming and Creator Performance](https://www.amd.com/en/newsroom/press-releases/2024-1-8-amd-reveals-next-gen-desktop-processors-for-extrem.html)
 - Granite Ridge: [AMD Unveils Ryzen 9000 CPUs For Desktop, Zen 5 Takes Center Stage at Computex 2024](https://www.anandtech.com/show/21415/amd-unveils-ryzen-9000-cpus-for-desktop-zen-5-takes-center-stage-at-computex-2024)
+- Fire Range: [AMD Launches ‘Fire Range’ HX3D mobile processor with game-boosting 3D V-Cache, other HX Series SKUs built on Zen 5 desktop CPU silicon](https://www.tomshardware.com/pc-components/cpus/amd-launches-fire-range-hx3d-mobile-processor-with-game-boosting-3d-v-cache-other-hx-series-skus-built-on-zen-5-desktop-cpu-silicon)
+- Krackan Point: [AMD Unveils Krackan Point “Ryzen 300” & Hawk Point Refresh “Ryzen 200” APUs: Up To 78% Better Performance Over Lunar Lake](https://wccftech.com/amd-unveils-krackan-point-and-hawk-point-refresh-lineups/)
+- Strix Halo: [AMD’s beastly ‘Strix Halo’ Ryzen AI Max+ debuts with radical new memory tech to feed RDNA 3.5 graphics and Zen 5 CPU cores](https://www.tomshardware.com/pc-components/cpus/amds-beastly-strix-halo-ryzen-ai-max-debuts-with-radical-new-memory-tech-to-feed-rdna-3-5-graphics-and-zen-5-cpu-cores)
+- Ryzen Z2: [AMD introduces Ryzen Z2 Series](https://videocardz.com/newz/amd-introduces-ryzen-z2-series-confirms-valve-steam-deck-update)
 
 
 ## EPYC 系列
