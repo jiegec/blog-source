@@ -344,7 +344,11 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 ![](./qualcomm_oryon_l2tlb.png)
 
-可以看到拐点是 32768 个 Page 附近，说明 Oryon 的 L2 TLB 容量是 32768 项。
+可以看到拐点是 32768 个 Page 附近，说明 Oryon 的 L2 TLB 容量是 32768 项。我们也可以把测试范围扩大，看到完整的图像：
+
+![](./qualcomm_oryon_tlb.png)
+
+第一个拐点是 224 * 4 KB = 896 KB，对应 L1 DTLB；第二个拐点是 32768 * 4 KB = 131072 KB，对应 L2 TLB。
 
 由于 Oryon 的 L2 TLB 很大，很容易遇到数据缓存容量的瓶颈，因此把指针的跨度调大，使得等效 L2 TLB 容量变小，但数据缓存容量不变，可以测试去掉缓存缺失延迟后的性能：
 
