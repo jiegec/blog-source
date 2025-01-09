@@ -262,11 +262,14 @@ slowdown = 2.14x
 - Stride=64B: IPC=2
 - Stride=128B/256B/512B: IPC=1
 
-Stride=64B 时出现性能下降，说明此时出现了 Bank Conflict，进一步到 Stride=128B 时，只能达到 1 的 IPC，说明此时所有的 Load 都命中了同一个 Bank，并且是串行读取。根据这个现象，认为 Neoverse V2 的 L1 DCache 组织方式是：
+Stride=64B 时出现性能下降，说明此时出现了 Bank Conflict，进一步到 Stride=128B 时，只能达到 1 的 IPC，说明此时所有的 Load 都命中了同一个 Bank，并且是串行读取。根据这个现象，认为 Neoverse V2 的 L1 DCache 组织方式和限制是：
 
 - 一共有两个 Bank，Bank Index 是 VA[6]
-- 每个 Bank 每周期可以从一个缓存行读取数据，支持多个 Load 访问同一个缓存行
+- 每个 Bank 每周期可以从一个缓存行读取数据
+- 支持多个 Load 访问同一个缓存行
 - 如果多个 Load 访问同一个 Bank 的不同缓存行，只能一个周期完成一个 Load
+
+这里讨论的是缓存行级别的 Bank，实际上通常缓存行内部也会进行 Bank 划分，但主要是为了功耗，比如从一个 64B 缓存行里读取 8B 数据，不需要把整个 64B 都读出来。
 
 ### L1 DTLB
 
