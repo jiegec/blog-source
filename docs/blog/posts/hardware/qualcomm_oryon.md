@@ -336,7 +336,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 - 4KB and 64KB translation granules
 - 1 cycle access for L1 ITLB & L1 DTLB
-- Unified L2 TLB, 8-way >8K entry
+- Unified L2 TLB, **8-way** >8K entry
 
 #### L2 TLB
 
@@ -369,7 +369,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 - 每 4 个核心组成一个 Cluster，Cluster 内的核心共享一个 12MB 12-way L2 Cache
 - MOESI
-- 17 cycle latency for L1 miss to L2 hit
+- **17** cycle latency for L1 miss to L2 hit
 
 构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
 

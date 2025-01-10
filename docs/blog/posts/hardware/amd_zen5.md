@@ -336,7 +336,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 ### L1 DTLB
 
-官方信息：96-entry, fully associative
+官方信息：**96-entry**, fully associative
 
 使用不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
 
@@ -365,4 +365,4 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 - 单精度：`512/32*2*2=64` FLOP per cycle
 - 双精度：`512/64*2*2=32` FLOP per cycle
 
-通过 512 位的浮点 datapath，终于达到了第一梯队的浮点峰值性能。
+通过 512 位的浮点 datapath，终于达到了第一梯队的浮点峰值性能。注意移动端的 Zen 5 的浮点 datapath 砍半，只有 256 位。

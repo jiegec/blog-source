@@ -6,7 +6,7 @@ categories:
     - hardware
 ---
 
-# ARM Neoverse V2 微架构评测
+# ARM Neoverse V2 (代号 Demeter) 微架构评测
 
 ## 背景
 
@@ -80,8 +80,8 @@ The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOP
 - Up to 4 µOPs utilizing the S（单周期整数）or B（分支）pipelines
 - Up to 4 µOPs utilizing the M（多周期整数）pipelines
 - Up to 2 µOPs utilizing the M0（多周期整数）pipelines
-- Up to 2 µOPs utilizing the V0（浮点/向量） pipeline
-- Up to 2 µOPs utilizing the V1（浮点/向量） pipeline
+- Up to 2 µOPs utilizing the V0（浮点/向量）pipeline
+- Up to 2 µOPs utilizing the V1（浮点/向量）pipeline
 - Up to 6 µOPs utilizing the L（访存）pipelines
 
 考虑到这个限制，使用 4 条 add 指令，4 条 fadd 指令为一组，不断重复。通过测试，这样的指令序列确实可以达到 8 的 IPC。当指令个数增加到超出 MOP Cache 容量时，将会观察到性能的下降：

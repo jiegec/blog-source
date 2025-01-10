@@ -6,11 +6,11 @@ categories:
     - hardware
 ---
 
-# Apple M1 微架构评测
+# Apple M1 (Firestorm & Icestorm) 微架构评测
 
 ## 背景
 
-虽然 Apple M1 已经是 2020 年的处理器，但它对苹果自研芯片来说是一个里程碑，考虑到 X Elite 处理器的 Oryon 微架构和 Apple M1 性能核 Firestorm 微架构的相似性，还是测试一下这个 Firestorm + Icestorm 微架构在各个方面的表现。
+虽然 Apple M1 已经是 2020 年的处理器，但它对苹果自研芯片来说是一个里程碑，考虑到 X Elite 处理器的 Oryon 微架构和 Apple M1 性能核 Firestorm 微架构的相似性，还是测试一下这个 Firestorm + Icestorm 微架构在各个方面的表现。Apple A14 采用了和 Apple M1 一样的微架构。
 
 <!-- more -->
 
