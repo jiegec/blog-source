@@ -348,7 +348,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 ![](./qualcomm_oryon_tlb.png)
 
-第一个拐点是 224 * 4 KB = 896 KB，对应 L1 DTLB；第二个拐点是 32768 * 4 KB = 131072 KB，对应 L2 TLB。
+第一个拐点是 224 * 4 KB = 896 KB，对应 L1 DTLB，此时访存延迟是 3 cycle；第二个拐点是 32768 * 4 KB = 131072 KB，对应 L2 TLB，此时访存延迟是 29.5 cycle，这个时候对 Cache 的占用是 32768 * 64 = 2 MB，已经超过了 L1 DCache 容量，所以这个延迟包括了 L1 DCache miss 的延迟，如果去掉官方宣称的 17 cycle 的 L1 DCache miss 延迟，就得到 29.5 - 17 = 12.5 cycle。
 
 由于 Oryon 的 L2 TLB 很大，很容易遇到数据缓存容量的瓶颈，因此把指针的跨度调大，使得等效 L2 TLB 容量变小，但数据缓存容量不变，可以测试去掉缓存缺失延迟后的性能：
 
@@ -357,7 +357,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 - 如果每 2048 个页一个指针，L2 TLB 拐点在 16，L2 TLB 缺失时 CPI 为 53-57
 - 如果每 4096 个页一个指针，L2 TLB 拐点在 8，L2 TLB 缺失时 CPI 为 59-67
 - 如果每 8192 个页一个指针，L2 TLB 拐点依然在 8，L2 TLB 缺失时 CPI 为 59-71
-- 观察到命中 L1 DTLB 时 CPI 是 3，命中 L2 TLB 时 CPI 是 11-14.5，此时 L1 数据缓存缺失率为 0
+- 观察到命中 L1 DTLB 时 CPI 是 3，命中 L2 TLB 时 CPI 是 11（每 1024 个页一个指针时例外，CPI 从 11 缓慢下降到 14.5），此时 L1 数据缓存缺失率为 0，延迟都来自于 L1 DTLB miss
 
 认为 Oryon 的 L2 TLB 是 8 Way，4096 Set，那就是 32768 个 entry，Index 是 VA[23:12]。但官方声称的是 `>8K`，这个表述比较耐人寻味，可能是 8K 个 entry，每个 entry 最多记录四个页的映射关系。
 
@@ -375,7 +375,9 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 ![](./qualcomm_oryon_l2.png)
 
-第一个拐点在 96KB，对应 L1 DCache 的容量，之后延迟在 18-22 周期之间波动，超过 6MB 以后延迟快速上升，对此有两种猜测：
+第一个拐点在 96KB，对应 L1 DCache 的容量，之后延迟在 18-22 周期之间波动，中间一段比较稳定在 20 cycle，这对应了 3 cycle load to load latency + 17 cycle l1 miss penalty。
+
+延迟超过 6MB 以后延迟快速上升，对此有两种猜测：
 
 1. L2 Cache 并非所有容量都可以在差不多的时间内访问，离核心近的更快，离核心远的较慢
 2. 为了防止某个核心对 L2 Cache 的占用太大，导致同一个 Cluster 内其他核心分不到 L2 缓存，进行 QoS，限制每个核心能够占用的 L2 Cache 容量
