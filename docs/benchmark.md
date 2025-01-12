@@ -324,6 +324,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - AMD Ryzen 7 5700X @ 4.7 GHz Zen 3（`-O3`）: [9.91](./data/fp2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
 - Qualcomm 8cx Gen3 P Core @ 3.0 GHz Cortex-X1C（`-O3`）: [8.07](./data/fp2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
+- Intel Core i9-12900KS E Core @ 4.1 GHz Gracemont（`-O3`）: [6.90](./data/fp2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
 - Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [6.08](./data/fp2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.57](./data/fp2017_rate1/Loongson_3A6000_O3_001.txt) [5.56](./data/fp2017_rate1/Loongson_3A6000_O3_002.txt)
 

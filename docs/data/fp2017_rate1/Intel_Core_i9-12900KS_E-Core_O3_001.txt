@@ -1,0 +1,146 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.11.9-x64v3-xanmod1
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        302      33.2   S
+503.bwaves_r          1        302      33.2   *
+503.bwaves_r          1        302      33.2   S
+507.cactuBSSN_r       1        187       6.77  *
+507.cactuBSSN_r       1        187       6.76  S
+507.cactuBSSN_r       1        187       6.77  S
+508.namd_r            1        196       4.85  S
+508.namd_r            1        196       4.85  *
+508.namd_r            1        196       4.84  S
+510.parest_r          1        399       6.56  *
+510.parest_r          1        399       6.55  S
+510.parest_r          1        399       6.56  S
+511.povray_r          1        315       7.42  S
+511.povray_r          1        312       7.49  *
+511.povray_r          1        312       7.49  S
+519.lbm_r             1        187       5.63  S
+519.lbm_r             1        187       5.63  *
+519.lbm_r             1        187       5.63  S
+521.wrf_r             1        710       3.15  S
+521.wrf_r             1        711       3.15  S
+521.wrf_r             1        711       3.15  *
+526.blender_r         1        246       6.19  S
+526.blender_r         1        246       6.18  S
+526.blender_r         1        246       6.18  *
+527.cam4_r            1        240       7.30  *
+527.cam4_r            1        240       7.30  S
+527.cam4_r            1        240       7.28  S
+538.imagick_r         1        657       3.78  S
+538.imagick_r         1        660       3.77  S
+538.imagick_r         1        657       3.78  *
+544.nab_r             1        259       6.49  S
+544.nab_r             1        258       6.52  S
+544.nab_r             1        258       6.51  *
+549.fotonik3d_r       1        293      13.3   *
+549.fotonik3d_r       1        293      13.3   S
+549.fotonik3d_r       1        293      13.3   S
+554.roms_r            1        275       5.77  S
+554.roms_r            1        274       5.79  S
+554.roms_r            1        275       5.78  *
+=================================================================================
+503.bwaves_r          1        302      33.2   *
+507.cactuBSSN_r       1        187       6.77  *
+508.namd_r            1        196       4.85  *
+510.parest_r          1        399       6.56  *
+511.povray_r          1        312       7.49  *
+519.lbm_r             1        187       5.63  *
+521.wrf_r             1        711       3.15  *
+526.blender_r         1        246       6.18  *
+527.cam4_r            1        240       7.30  *
+538.imagick_r         1        657       3.78  *
+544.nab_r             1        258       6.51  *
+549.fotonik3d_r       1        293      13.3   *
+554.roms_r            1        275       5.78  *
+ Est. SPECrate(R)2017_fp_base            6.90
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+503.bwaves_r: time (ms) = 302046
+503.bwaves_r: clock freq (MHz) = 4090.53
+503.bwaves_r: instructions = 2.24434e+12
+503.bwaves_r: ipc = 1.82
+503.bwaves_r: misprediction rate (%) = 0.12
+503.bwaves_r: mpki = 0.06
+507.cactuBSSN_r: time (ms) = 187058
+507.cactuBSSN_r: clock freq (MHz) = 4090.53
+507.cactuBSSN_r: instructions = 1.46146e+12
+507.cactuBSSN_r: ipc = 1.91
+507.cactuBSSN_r: misprediction rate (%) = 0.05
+507.cactuBSSN_r: mpki = 0.01
+508.namd_r: time (ms) = 195799
+508.namd_r: clock freq (MHz) = 4090.53
+508.namd_r: instructions = 2.58165e+12
+508.namd_r: ipc = 3.22
+508.namd_r: misprediction rate (%) = 4.33
+508.namd_r: mpki = 0.71
+510.parest_r: time (ms) = 398914
+510.parest_r: clock freq (MHz) = 4090.53
+510.parest_r: instructions = 3.27812e+12
+510.parest_r: ipc = 2.01
+510.parest_r: misprediction rate (%) = 1.81
+510.parest_r: mpki = 2.44
+511.povray_r: time (ms) = 312662
+511.povray_r: clock freq (MHz) = 4090.54
+511.povray_r: instructions = 3.45866e+12
+511.povray_r: ipc = 2.70
+511.povray_r: misprediction rate (%) = 0.71
+511.povray_r: mpki = 1.11
+519.lbm_r: time (ms) = 187315
+519.lbm_r: clock freq (MHz) = 4090.53
+519.lbm_r: instructions = 1.77966e+12
+519.lbm_r: ipc = 2.32
+519.lbm_r: misprediction rate (%) = 0.36
+519.lbm_r: mpki = 0.02
+521.wrf_r: time (ms) = 710682
+521.wrf_r: clock freq (MHz) = 4090.51
+521.wrf_r: instructions = 1.96857e+12
+521.wrf_r: ipc = 0.68
+521.wrf_r: misprediction rate (%) = 1.00
+521.wrf_r: mpki = 0.86
+526.blender_r: time (ms) = 246262
+526.blender_r: clock freq (MHz) = 4090.52
+526.blender_r: instructions = 1.77533e+12
+526.blender_r: ipc = 1.76
+526.blender_r: misprediction rate (%) = 2.64
+526.blender_r: mpki = 4.56
+527.cam4_r: time (ms) = 239709
+527.cam4_r: clock freq (MHz) = 4090.51
+527.cam4_r: instructions = 1.81674e+12
+527.cam4_r: ipc = 1.85
+527.cam4_r: misprediction rate (%) = 0.72
+527.cam4_r: mpki = 0.86
+538.imagick_r: time (ms) = 657938
+538.imagick_r: clock freq (MHz) = 4090.55
+538.imagick_r: instructions = 4.90838e+12
+538.imagick_r: ipc = 1.82
+538.imagick_r: misprediction rate (%) = 0.76
+538.imagick_r: mpki = 0.73
+544.nab_r: time (ms) = 258552
+544.nab_r: clock freq (MHz) = 4090.53
+544.nab_r: instructions = 1.93824e+12
+544.nab_r: ipc = 1.83
+544.nab_r: misprediction rate (%) = 2.69
+544.nab_r: mpki = 3.06
+549.fotonik3d_r: time (ms) = 292898
+549.fotonik3d_r: clock freq (MHz) = 4090.53
+549.fotonik3d_r: instructions = 1.53458e+12
+549.fotonik3d_r: ipc = 1.28
+549.fotonik3d_r: misprediction rate (%) = 0.12
+549.fotonik3d_r: mpki = 0.03
+554.roms_r: time (ms) = 274885
+554.roms_r: clock freq (MHz) = 4090.53
+554.roms_r: instructions = 1.63809e+12
+554.roms_r: ipc = 1.46
+554.roms_r: misprediction rate (%) = 0.42
+554.roms_r: mpki = 0.30
+
+System Info:
+CPU Name: 12th Gen Intel Core i9-12900KS
+Enabled: 16 cores, 1 chip, 2 threads/core
+Memory: 4x Crucial Technology CT32G48C40U5.M16A1 32 GB 2 rank 4400
