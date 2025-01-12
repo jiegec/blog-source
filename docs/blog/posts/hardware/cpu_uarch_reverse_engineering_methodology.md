@@ -17,6 +17,7 @@ categories:
 - [AMD Zen 5 微架构评测](./amd_zen5.md)
 - [ARM Neoverse V2 微架构评测](./arm_neoverse_v2.md)
 - [Intel Golden Cove 微架构评测](./intel_golden_cove.md)
+- [Intel Gracemont 微架构评测](./intel_gracemont.md)
 
 因此总结一下 CPU 微架构逆向方法学。
 
