@@ -73,23 +73,23 @@ permalink: /benchmark/
 桌面平台（LTO + Jemalloc）：
 
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto -ljemalloc`）: [12.9](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto-ljemalloc_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3 -flto -ljemalloc`）: [10.4](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto-ljemalloc_001.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
+- Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [10.4](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto-ljemalloc_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto -ljemalloc`）: [9.25](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto-ljemalloc_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
 
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
+- Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto`）: [8.62](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto_001.txt)
 
 桌面平台：
 
-- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
+- Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - AMD Ryzen 5 7500F @ 5.0 GHz Zen 4（`-O3`）: [9.51](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [8.31](./data/int2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 - AMD Ryzen 7 5700X @ 4.7 GHz Zen 3（`-O3`）: [7.87](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
@@ -160,7 +160,7 @@ x86 平台的分支预测准确率（Average）由高到低：
 3. Zen 4c(9754): MPKI=4.51 Mispred=2.55%
 4. Zen 4 Desktop(7500F)/Zen 3(5700X): MPKI=4.53 Mispred=2.57%
 5. Zen 2(7742): MPKI=4.62 Mispred=2.62%
-6. Ice Lake(8358P)/Alder Lake(12900KS)/Raptor Lake(14900K): MPKI=4.71 Mispred=2.68%
+6. Ice Lake(8358P)/Golden Cove(12900KS)/Raptor Cove(14900K): MPKI=4.71 Mispred=2.68%
 7. Skylake(D-2146NT)/Cascade Lake(10980XE): MPKI=5.34 Mispred=3.04%
 8. Zen 1(7551): MPKI=5.72 Mispred=3.26%
 9. Haswell(E5-2680 v3)/Broadwell(E5-2680 v4): MPKI=5.84 Mispred=3.27%
@@ -181,7 +181,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 
 - AMD Ryzen 9950X Zen 5: 12.6
 - Apple M3 Pro: 11.8
-- Intel Core 13900K Raptor Lake: 11.5
+- Intel Core 13900K Raptor Cove: 11.5
 - Apple M2 Pro: 10.3
 - Apple M2: 9.95
 - AMD HX 370 Strix Point Zen 5: 9.64
@@ -196,8 +196,8 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 [高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
 
 - AMD Ryzen 7700X Zen 4: 10.35
-- Intel Core 13700K Raptor Lake: 9.81
-- Intel Core 12700K Alder Lake: 9.13
+- Intel Core 13700K Raptor Cove: 9.81
+- Intel Core 12700K Golden Cove: 9.13
 - AMD Ryzen 5950X Zen 3: 8.45
 - Apple M2 Avalanche+Blizzard: 8.40
 - Qualcomm X1E80100 Oryon: 8.19
@@ -237,7 +237,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 [The AMD Ryzen 9 9950X and Ryzen 9 9900X Review: Flagship Zen 5 Soars - and Stalls](https://www.anandtech.com/show/21524/the-amd-ryzen-9-9950x-and-ryzen-9-9900x-review/5)
 
 - AMD Ryzen 9 9950X Zen 5: 10.95
-- Intel Core i9-14900K Raptor Lake: 10.94
+- Intel Core i9-14900K Raptor Cove: 10.94
 - AMD Ryzen 9 7950X Zen 4: 9.88
 
 [Snapdragon X Elite Qualcomm Oryon CPU Design and Architecture Hot Chips 2024](https://www.servethehome.com/snapdragon-x-elite-qualcomm-oryon-cpu-design-and-architecture-hot-chips-2024-arm/)
@@ -307,7 +307,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 桌面平台（`-march=native`）：
 
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -march=native`）: [17.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.70](./data/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
@@ -315,9 +315,9 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 桌面平台：
 
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [16.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Lake（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3_001.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Alder Lake（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
+- Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [11.5](./data/fp2017_rate1/Apple_M1_O3_001.txt)
 - AMD Ryzen 7 5700X @ 4.7 GHz Zen 3（`-O3`）: [9.91](./data/fp2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
@@ -373,10 +373,10 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 
 [高通 X Elite Oryon 微架构评测：走走停停 by JamesAslan](https://zhuanlan.zhihu.com/p/704707254):
 
-- Intel Core 13700K Raptor Lake: 14.56
+- Intel Core 13700K Raptor Cove: 14.56
 - Qualcomm X1E80100 Oryon: 14.20
 - AMD Ryzen 7700X Zen 4: 13.97
-- Intel Core 12700K Alder Lake: 13.70
+- Intel Core 12700K Golden Cove: 13.70
 - Apple M2 Avalanche+Blizzard: 12.64
 - AMD Ryzen 5950X Zen 3: 11.86
 - Apple M1 Firestorm+Icestorm: 11.20
@@ -415,7 +415,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 [The AMD Ryzen 9 9950X and Ryzen 9 9900X Review: Flagship Zen 5 Soars - and Stalls](https://www.anandtech.com/show/21524/the-amd-ryzen-9-9950x-and-ryzen-9-9900x-review/5)
 
 - AMD Ryzen 9 9950X Zen 5: 17.72
-- Intel Core i9-14900K Raptor Lake: 16.90
+- Intel Core i9-14900K Raptor Cove: 16.90
 - AMD Ryzen 9 7950X Zen 4: 14.26
 
 [Snapdragon X Elite Qualcomm Oryon CPU Design and Architecture Hot Chips 2024](https://www.servethehome.com/snapdragon-x-elite-qualcomm-oryon-cpu-design-and-architecture-hot-chips-2024-arm/)
@@ -458,11 +458,11 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 
 下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
-- Intel Core i9-14900K Raptor Lake（`-O3`）: [91.9](./data/int2006_speed/Intel_Core_i9-14900K_O3_001.txt)
-- Intel Core i9-14900K Raptor Lake（`-O2`）: [87.2](./data/int2006_speed/Intel_Core_i9-14900K_O2_001.txt)
-- Intel Core i9-13900K Raptor Lake（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
-- Intel Core i9-13900K Raptor Lake（`-O2`）: 79.6
-- Intel Core i9-12900KS Alder Lake（`-O2`）: 74.4
+- Intel Core i9-14900K Raptor Cove（`-O3`）: [91.9](./data/int2006_speed/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-14900K Raptor Cove（`-O2`）: [87.2](./data/int2006_speed/Intel_Core_i9-14900K_O2_001.txt)
+- Intel Core i9-13900K Raptor Cove（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
+- Intel Core i9-13900K Raptor Cove（`-O2`）: 79.6
+- Intel Core i9-12900KS Golden Cove（`-O2`）: 74.4
 - Intel Core i9-10980XE Cascade Lake（`-O2`）: 43.9
 - Intel Xeon E5-2680 v3 Haswell（`-O2`）: 33.2
 - POWER8NVL（`-O2`）: 26.5
@@ -571,8 +571,8 @@ TODO
 
 运行时间基本和分数成反比，乘积按 1e5 估算。
 
-- Intel Core i9-14900K Raptor Lake（`-O3`）: [12.1](./data/int2017_speed/Intel_Core_i9-14900K_O3_001.txt)
-- Intel Core i9-12900KS Alder Lake（`-O3`）: [10.5](./data/int2017_speed/Intel_Core_i9-12900KS_O3_001.txt) [10.9](./data/int2017_speed/Intel_Core_i9-12900KS_O3_002.txt)
+- Intel Core i9-14900K Raptor Cove（`-O3`）: [12.1](./data/int2017_speed/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-12900KS Golden Cove（`-O3`）: [10.5](./data/int2017_speed/Intel_Core_i9-12900KS_O3_001.txt) [10.9](./data/int2017_speed/Intel_Core_i9-12900KS_O3_002.txt)
 - Qualcomm X1E80100 X Elite（`-O3`）: [7.99](./data/int2017_speed/Qualcomm_X1E80100_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [7.18](./data/int2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [5.55](./data/int2017_speed/AMD_EPYC_7742_O3_001.txt)
@@ -586,8 +586,8 @@ TODO
 
 运行时间基本和分数成反比，乘积按 5e5 估算。
 
-- Intel Core i9-14900K Raptor Lake（`-O3`）: [12.8](./data/fp2017_speed/Intel_Core_i9-14900K_O3_001.txt)
-- Intel Core i9-12900KS Alder Lake（`-O3`）: [13.1](./data/fp2017_speed/Intel_Core_i9-12900KS_O3_001.txt)
+- Intel Core i9-14900K Raptor Cove（`-O3`）: [12.8](./data/fp2017_speed/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-12900KS Golden Cove（`-O3`）: [13.1](./data/fp2017_speed/Intel_Core_i9-12900KS_O3_001.txt)
 - AMD EPYC 7742 Zen 2（`-O3`）: [6.99](./data/fp2017_speed/AMD_EPYC_7742_O3_001.txt)
 - Intel Core i9-10980XE Cascade Lake（`-O3`）: [6.20](./data/fp2017_speed/Intel_Core_i9-10980XE_O3_001.txt)
 - Kunpeng 920 TaiShan V110（`-O3`）: [2.57](./data/fp2017_speed/Kunpeng_920_O3_001.txt)
