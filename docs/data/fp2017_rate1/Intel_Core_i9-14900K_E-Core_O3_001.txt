@@ -1,0 +1,146 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.12.6-x64v3-xanmod1
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        324      31.0   S
+503.bwaves_r          1        323      31.1   S
+503.bwaves_r          1        323      31.0   *
+507.cactuBSSN_r       1        181       6.98  S
+507.cactuBSSN_r       1        182       6.97  *
+507.cactuBSSN_r       1        182       6.97  S
+508.namd_r            1        179       5.30  *
+508.namd_r            1        179       5.30  S
+508.namd_r            1        179       5.31  S
+510.parest_r          1        316       8.29  S
+510.parest_r          1        315       8.31  S
+510.parest_r          1        315       8.30  *
+511.povray_r          1        285       8.20  S
+511.povray_r          1        285       8.20  *
+511.povray_r          1        285       8.19  S
+519.lbm_r             1        177       5.97  S
+519.lbm_r             1        177       5.97  *
+519.lbm_r             1        177       5.97  S
+521.wrf_r             1        625       3.58  *
+521.wrf_r             1        625       3.58  S
+521.wrf_r             1        625       3.58  S
+526.blender_r         1        223       6.84  *
+526.blender_r         1        223       6.83  S
+526.blender_r         1        222       6.85  S
+527.cam4_r            1        214       8.18  S
+527.cam4_r            1        214       8.19  *
+527.cam4_r            1        214       8.19  S
+538.imagick_r         1        604       4.12  *
+538.imagick_r         1        604       4.11  S
+538.imagick_r         1        604       4.12  S
+544.nab_r             1        239       7.05  S
+544.nab_r             1        239       7.05  S
+544.nab_r             1        239       7.05  *
+549.fotonik3d_r       1        371      10.5   S
+549.fotonik3d_r       1        370      10.5   S
+549.fotonik3d_r       1        371      10.5   *
+554.roms_r            1        267       5.96  S
+554.roms_r            1        265       5.99  S
+554.roms_r            1        265       5.99  *
+=================================================================================
+503.bwaves_r          1        323      31.0   *
+507.cactuBSSN_r       1        182       6.97  *
+508.namd_r            1        179       5.30  *
+510.parest_r          1        315       8.30  *
+511.povray_r          1        285       8.20  *
+519.lbm_r             1        177       5.97  *
+521.wrf_r             1        625       3.58  *
+526.blender_r         1        223       6.84  *
+527.cam4_r            1        214       8.19  *
+538.imagick_r         1        604       4.12  *
+544.nab_r             1        239       7.05  *
+549.fotonik3d_r       1        371      10.5   *
+554.roms_r            1        265       5.99  *
+ Est. SPECrate(R)2017_fp_base            7.31
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+503.bwaves_r: time (ms) = 323172
+503.bwaves_r: clock freq (MHz) = 4400.71
+503.bwaves_r: instructions = 2.24383e+12
+503.bwaves_r: ipc = 1.58
+503.bwaves_r: misprediction rate (%) = 0.12
+503.bwaves_r: mpki = 0.06
+507.cactuBSSN_r: time (ms) = 181578
+507.cactuBSSN_r: clock freq (MHz) = 4400.71
+507.cactuBSSN_r: instructions = 1.46146e+12
+507.cactuBSSN_r: ipc = 1.83
+507.cactuBSSN_r: misprediction rate (%) = 0.06
+507.cactuBSSN_r: mpki = 0.01
+508.namd_r: time (ms) = 179087
+508.namd_r: clock freq (MHz) = 4400.71
+508.namd_r: instructions = 2.58165e+12
+508.namd_r: ipc = 3.28
+508.namd_r: misprediction rate (%) = 4.33
+508.namd_r: mpki = 0.71
+510.parest_r: time (ms) = 314982
+510.parest_r: clock freq (MHz) = 4400.71
+510.parest_r: instructions = 3.27804e+12
+510.parest_r: ipc = 2.36
+510.parest_r: misprediction rate (%) = 1.81
+510.parest_r: mpki = 2.44
+511.povray_r: time (ms) = 284898
+511.povray_r: clock freq (MHz) = 4400.72
+511.povray_r: instructions = 3.45866e+12
+511.povray_r: ipc = 2.76
+511.povray_r: misprediction rate (%) = 0.69
+511.povray_r: mpki = 1.08
+519.lbm_r: time (ms) = 176577
+519.lbm_r: clock freq (MHz) = 4400.70
+519.lbm_r: instructions = 1.77966e+12
+519.lbm_r: ipc = 2.29
+519.lbm_r: misprediction rate (%) = 0.36
+519.lbm_r: mpki = 0.02
+521.wrf_r: time (ms) = 624955
+521.wrf_r: clock freq (MHz) = 4400.69
+521.wrf_r: instructions = 1.96832e+12
+521.wrf_r: ipc = 0.72
+521.wrf_r: misprediction rate (%) = 1.00
+521.wrf_r: mpki = 0.87
+526.blender_r: time (ms) = 222663
+526.blender_r: clock freq (MHz) = 4400.70
+526.blender_r: instructions = 1.77533e+12
+526.blender_r: ipc = 1.81
+526.blender_r: misprediction rate (%) = 2.64
+526.blender_r: mpki = 4.57
+527.cam4_r: time (ms) = 213643
+527.cam4_r: clock freq (MHz) = 4400.69
+527.cam4_r: instructions = 1.81677e+12
+527.cam4_r: ipc = 1.93
+527.cam4_r: misprediction rate (%) = 0.72
+527.cam4_r: mpki = 0.85
+538.imagick_r: time (ms) = 603963
+538.imagick_r: clock freq (MHz) = 4400.73
+538.imagick_r: instructions = 4.90838e+12
+538.imagick_r: ipc = 1.85
+538.imagick_r: misprediction rate (%) = 0.76
+538.imagick_r: mpki = 0.73
+544.nab_r: time (ms) = 238614
+544.nab_r: clock freq (MHz) = 4400.71
+544.nab_r: instructions = 1.93825e+12
+544.nab_r: ipc = 1.85
+544.nab_r: misprediction rate (%) = 2.68
+544.nab_r: mpki = 3.06
+549.fotonik3d_r: time (ms) = 370437
+549.fotonik3d_r: clock freq (MHz) = 4400.71
+549.fotonik3d_r: instructions = 1.53469e+12
+549.fotonik3d_r: ipc = 0.94
+549.fotonik3d_r: misprediction rate (%) = 0.13
+549.fotonik3d_r: mpki = 0.03
+554.roms_r: time (ms) = 265644
+554.roms_r: clock freq (MHz) = 4400.71
+554.roms_r: instructions = 1.63809e+12
+554.roms_r: ipc = 1.40
+554.roms_r: misprediction rate (%) = 0.52
+554.roms_r: mpki = 0.37
+
+System Info:
+CPU Name: Intel Core i9-14900K
+Enabled: 24 cores, 1 chip, 2 threads/core
+Memory: 2x Gloway International Co Ltd VGM5UX64C32BG-DTACWN 32 GB 2 rank 6400

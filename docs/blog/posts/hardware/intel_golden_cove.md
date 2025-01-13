@@ -56,12 +56,55 @@ Intel Golden Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 - The number of decoders is increased from 4 to 6
 
-### uOP Cache
+### DSB/uOP Cache
 
 官方信息：
 
-- The micro-op cache size is increased to hold 4,000 micro-ops,
+- The micro-op cache size is increased to hold 4,000 (注：应该是 4096) micro-ops,
 - and its bandwidth is increased to deliver up to 8 micro-ops per cycle.
+
+Intel 的 uOP(Micro-OP) Cache 称为 Decode Stream Buffer (DSB): `Decode Stream Buffer (DSB) is a Uop-cache that holds translations of previously fetched instructions that were decoded by the legacy x86 decode pipeline (MITE).`。
+
+uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP，这些 uOP 对应了原来指令流中连续的几条指令。
+
+为了测试 uOP Cache 的大小，构造不同大小的循环，循环体是复制若干份的 `add %%rsi, %%rdx` 指令，最后是 `dec + jnz` 作为循环结尾，通过 [IDQ.DSB_UOPS](https://perfmon-events.intel.com/index.html?pltfrm=ahybrid.html&evnt=IDQ.DSB_UOPS) 性能计数器统计每次循环有多少个 uOP 来自于 DSB 也就是 uOP Cache，发现其最大值为 2800 左右，距离 4K 还有一定的距离。目前还没有找到一个可以稳定跑出 4K uOP 的指令模式，不知道遇到了什么瓶颈。
+
+考虑到 taken branch 在典型的 uOP Cache 设计中会结束一个 entry，把循环体改成若干条 `jmp` 指令，并且每个 64B 缓存行只有一条 `jmp` 指令，此时每个 uOP entry 只记录一条 `jmp` 指令。观察到每次循环最多 512 个 uOP 来自 uOP Cache，那么 Golden Cove 的 uOP Cache 大概就是 512 个 entry。如果改成每 128B 缓存行只有一条 `jmp` 指令，uOP Cache 容量减少到 256 个 entry；继续增加间距，256B 间距对应 128 个 entry，512B 间距对应 64 个 entry，1024B 间距对应 32 个 entry，2048B 间距对应 16 个 entry，4096B 间距对应 8 个 entry，继续增大间距后，entry 数维持中 8 不再减少，意味着 Golden Cove 的 uOP Cache 是 8 Way 64 Set 一共 512 Entry，Index 是 PC[11:6]。
+
+那么按照官方信息所说的 4K 容量，一共 512 个 Entry，那么每个 Entry 应该能够记录最多 8 个 uOP，这正好也对应上了 8 uOP 的吞吐。
+
+根据前人在 Intel 比较老的微架构上的测试结果（见 [The microarchitecture of Intel, AMD, and VIA CPUs](https://agner.org/optimize/microarchitecture.pdf)）以及 Intel 的官方文档 Software Optimization Manual（这个文档把 uOP Cache 叫做 Decoded ICache），Intel 之前很多代微架构的 uOP Cache Entry 的构造条件是：
+
+1. 每个 Entry 能记录的 uOP 个数有上限，最多 6 uOP/Entry
+2. Entry 不能跨越 32B 边界，反过来，一个对齐的 32B 区间只能对应最多 3 个 Entry，结合第一条，就是对齐的 32B 块中不能超过 `3*6=18` 个 uOP（`The Decoded ICache can hold only up to 18 micro-ops per each 32 byte aligned memory chunk`）；如果指令跨了 32B 边界，它被算在后面那个 32B 里面
+3. 指令需要完整地出现在一个 Entry 中：如果一条指令需要的空间太多，在当前 Entry 的剩余空间内放不下，就需要另起一个 Entry
+4. 无条件跳转（或者被预测为要跳转）的指令会结束一个 Entry（`each unconditional branch is the last micro-op occupying a Decoded ICache Way`）
+5. 比较大的立即数也会占用 uOP 空间，减少了实际能存放的 uOP 数量
+6. 比较复杂的需要微码（Microcoded uops）的指令会占用一整个 Entry
+
+下面来分析 Golden Cove 上这些构造条件是否有变化。参考 [I See Dead µops: Leaking Secrets via Intel/AMD Micro-Op Caches](https://ieeexplore.ieee.org/document/9499837) 的方法，构造了一个循环，循环体由 `4x 15-byte-nop + 1x 4-byte-nop` 组成，这样的 5 条指令填满了对齐的 64B。在 Golden Cove 上测试，发现依然可以用满 512 个 Entry，假如 Entry 不能跨越 32B 边界，那么这 5 条指令至少就要 2 个 Entry，但实际上只用了 1 个 Entry。这说明 Golden Cove 上 uOP Cache Entry 的第一条限制中，Entry 不能跨越的边界，从 32B 扩大到了 64B，毕竟每个 Entry 能存的 uOP 数量也增多了，如果继续限制 32B，每个 Entry 就很难存满 8 个 uOP 了。接下来测试对齐的 64B 内可以最多有多少个 entry。
+
+把循环体改成每对齐的 64B 就有四条 jmp 指令，前一条 jmp 指令跳转到后一条 jmp 指令，模拟每 64B 有四个 Entry 的情况：
+
+1. 第 1 个 jmp 放在 64B 内的 0B 偏移处，跳转到 64B 内 16B 偏移处
+2. 第 2 个 jmp 放在 64B 内的 16B 偏移处，跳转到 64B 内 32B 偏移处
+3. 第 3 个 jmp 放在 64B 内的 32B 偏移处，跳转到 64B 内 48B 偏移处
+4. 第 4 个 jmp 放在 64B 内的 48B 偏移处，跳转到下一个 64B 的开头
+
+测试发现这个情况下能达到 512 个 Entry。说明对齐的 64B 内至少可以存 4 个 Entry。
+
+进一步测试，如果每对齐的 64B 有五条 jmp 指令，模拟每 64B 有五个 Entry 的情况：
+
+1. 第 1 个 jmp 放在 64B 内的 0B 偏移处，跳转到 64B 内 8B 偏移处
+2. 第 2 个 jmp 放在 64B 内的 8B 偏移处，跳转到 64B 内 16B 偏移处
+3. 第 3 个 jmp 放在 64B 内的 16B 偏移处，跳转到 64B 内 24B 偏移处
+4. 第 4 个 jmp 放在 64B 内的 24B 偏移处，跳转到 64B 内 32B 偏移处
+5. 第 5 个 jmp 放在 64B 内的 32B 偏移处，跳转到下一个 64B 的开头
+
+发现最高的 Entry 数只有 480 左右，不确定是遇到了什么限制，如果对齐的 64B 内不能存 5 个 Entry，也不应该得到 480 这个结果。
+
+如果单独去测试每个对齐的 64B 能缓存多少个 uOP，比如每个对齐的 64B 里由若干条 nop 加最后一条跳到下一个 64B 开头的 jmp 指令组成，会发现当对齐的 64B 内的 uOP 个数从 36 个变成 37 个时，uOP Cache 命中率急剧下降。这意味着，每对齐的 64B 内依然不能存超过 36 个 uOP。这类似于原来的每对齐的 32B 内不能存超过 18 个 uOP，但粒度更粗，实际上更加宽松，比如对齐的 64B 内的前 32B 可以全是 NOP 指令，只要 64B 内总数不超过 36 就可以。但比较奇怪的是，36 uOP per 64B 不能整除 8 uOP/Entry，不像原来的 18 per 32B 可以整除 6 uOP/Entry。
+
 
 ### L1 ITLB
 
@@ -105,6 +148,18 @@ Intel Golden Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
 ![](./intel_golden_cove_rs.png)
 
 可以看到调用链深度为 20 时性能突然变差，因此 Return Stack 深度为 20。
+
+### Instruction Decode Queue (IDQ) + Loop Stream Detector (LSD)
+
+官方信息：
+
+- The IDQ can hold 144 uops per logical processor in single thread mode, or 72 uops per thread when SMT is active.
+
+Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD）会检测当前指令流是否在一个循环当中，并且循环的 uop 不超出 Instruction Decode Queue(IDQ) 的容量，那么 LSD 会把 Legacy decode pipeline(MITE) 和 Decode stream buffer(DSB) 关掉，不再让 IDQ 的指令出队，而是直接在 IDQ 的内部循环提供指令，这个时候就节省了很多处理器前端的功耗。
+
+为了测试 Instruction Decode Queue 的大小，构造不同大小的循环，循环体是复制若干份的 `inc %rsi` 指令，最后是 `dec + jnz` 作为循环结尾，通过 [LSD.UOPS](https://perfmon-events.intel.com/index.html?pltfrm=ahybrid.html&evnt=LSD.UOPS) 性能计数器统计每次循环有多少个 UOP 来自于 Loop Stream Detector 机制，发现其最大值为 144，说明 Golden Cove 的 Loop Stream Detector 可以识别最多 144 个 uop 的循环。此时每个循环要执行 145 条指令，最后的 `dec + jnz` 被融合成了一个 uop。
+
+循环体中，如果用 `nop` 指令来填充，会得到 40 左右的小得多的容量，猜测是进入了低功耗模式。
 
 ## 后端
 
