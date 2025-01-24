@@ -33,6 +33,7 @@ AMD 一向公开得比较大方，关于 Zen 5 的信息有：
 - [Discussing AMD’s Zen 5 at Hot Chips 2024](https://chipsandcheese.com/2024/09/15/discussing-amds-zen-5-at-hot-chips-2024/)
 - [Zen 5 补充测试 (1/2): 更多微架构细节](https://blog.hjc.im/zen-5-more-details-1.html)
 - [Zen5's AVX512 Teardown + More...](http://www.numberworld.org/blogs/2024_8_7_zen5_avx512_teardown/)
+- [Disabling Zen 5’s Op Cache and Exploring its Clustered Decoder](https://chipsandcheese.com/p/disabling-zen-5s-op-cache-and-exploring)
 
 下面分各个模块分别记录官方提供的信息，以及实测的结果。读者可以对照已有的第三方评测理解。官方信息与实测结果一致的数据会加粗。
 
@@ -158,7 +159,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 这个规律延续下去，平均下来就是 3.2 IPC。
 
-根据这个猜想，Decode 从两个连续的 IBQ entry 译码最多四条指令，是没有 16B 的限制的，但 IBQ 每周期只能弹出一个 entry，而不允许每周期弹出两个，这才导致了 16B 的吞吐。总之，4-wide 以及 16B 的限制，应该说是很小的。
+根据这个猜想，Decode 从两个连续的 IBQ entry 译码最多四条指令，是没有 16B 的限制的，但 IBQ 在一些情况下，每周期只能弹出一个 entry，而不能每周期弹出两个，这才导致了 16B 的吞吐。总之，4-wide 以及 16B 的限制，应该说是很小的。
 
 ### L1 ICache
 
