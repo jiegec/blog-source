@@ -297,6 +297,28 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 - 第二个拐点在 384KB，对应 L1 DTLB 的容量，CPI 从 16 提升到 23
 - 第三个拐点在 1280KB，对应 L2 Cache 的容量
 
+### Prefetcher
+
+Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来源：Software Developers Manual，MSRs Supported by 12th and 13th Generation Intel® Core™ Processor P-core）：
+
+- MSR_1A4H[0]: the L2 hardware prefetcher, which fetches additional lines of code or data into the L2 cache.
+- MSR_1A4H[1]: the L2 adjacent cache line prefetcher, which fetches the cache line that comprises a cache line pair (128 bytes). 这和 AMD 的 Up/Down Prefetcher 应该是一个意思
+- MSR_1A4H[5]: the L2 Adaptive Multipath Probability (AMP) prefetcher. 这个应该属于 Spatial Prefetcher
+- MSR_1A4H[2]: the L1 data cache prefetcher, which fetches the next cache line into L1 data cache. 这个应该属于 Next Line Prefetcher
+- MSR_1A4H[3]: the L1 data cache IP prefetcher, which uses sequential load history (based on instruction pointer of previous loads) to determine whether to prefetch additional lines.
+
+在 Golden Cove 上按 64B 的跳步进行访存，测量每次访存的延迟，得到如下结果：
+
+![](./intel_golden_cove_prefetcher_64b_stride.png)
+
+可以观察到在 48KB 之内是 5 cycle latency，在 L2 Cache 范围内是 5-8 cycle latency。
+
+如果我们通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，即关闭 L1 data cache IP prefetcher，再在 0 号核心上重新跑上面的测试，得到如下结果：
+
+![](./intel_golden_cove_prefetcher_64b_stride_disable_prefetcher.png)
+
+就可以看到 L2 Cache 的范围内的性能退化到了 16 Cycle，和随机 pointer chasing 一样。关闭其他的 prefetcher 则没有这个现象，说明正是 L1 data cache IP prefetcher 实现了针对 L1 的 Stride Prefetcher。
+
 ### ReOrder Buffer
 
 官方信息：
