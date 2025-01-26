@@ -299,6 +299,8 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 ### Prefetcher
 
+#### 官方信息
+
 Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来源：Software Developers Manual，MSRs Supported by 12th and 13th Generation Intel® Core™ Processor P-core）：
 
 - MSR_1A4H[0]: the L2 hardware prefetcher, which fetches additional lines of code or data into the L2 cache.
@@ -307,17 +309,43 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 - MSR_1A4H[2]: the L1 data cache prefetcher, which fetches the next cache line into L1 data cache. 这个应该属于 Next Line Prefetcher
 - MSR_1A4H[3]: the L1 data cache IP prefetcher, which uses sequential load history (based on instruction pointer of previous loads) to determine whether to prefetch additional lines.
 
+#### 预取延迟
+
 在 Golden Cove 上按 64B 的跳步进行访存，测量每次访存的延迟，得到如下结果：
 
 ![](./intel_golden_cove_prefetcher_64b_stride.png)
 
 可以观察到在 48KB 之内是 5 cycle latency，在 L2 Cache 范围内是 5-8 cycle latency。
 
-如果我们通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，即关闭 L1 data cache IP prefetcher，再在 0 号核心上重新跑上面的测试，得到如下结果：
+如果通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，即关闭 L1 data cache IP prefetcher，再在 0 号核心上重新跑上面的测试，得到如下结果：
 
 ![](./intel_golden_cove_prefetcher_64b_stride_disable_prefetcher.png)
 
 就可以看到 L2 Cache 的范围内的性能退化到了 16 Cycle，和随机 pointer chasing 一样。关闭其他的 prefetcher 则没有这个现象，说明正是 L1 data cache IP prefetcher 实现了针对 L1 的 Stride Prefetcher。
+
+#### 预取距离
+
+更进一步，参考 [Battling the Prefetcher: Exploring Coffee Lake (Part 1)](https://abertschi.ch/blog/2022/prefetching/) 的方式，研究 Stride 预取器的行为：分配一片内存，把数据从缓存中 flush 掉，再按照特定的访存模式访问，触发预取器，最后测量访问每个缓存行的时间，从而得到预取器预取了哪些缓存行的信息。
+
+首先是只访问一个 cache line 的时候，可以看到，除了已经访问过的 cache line，其他 cache line 都出现了缓存缺失，说明此时预取器没有在工作：
+
+![](./intel_golden_cove_prefetcher_1.png)
+
+接下来，按照固定的 stride 访问各个缓存行，发现当访问了五个 cache line 时，预取器会比较稳定地预取第六个 cache line：
+
+![](./intel_golden_cove_prefetcher_5.png)
+
+继续增加访问次数，可以看到预取器总是会预取将要访问的下一个 cache line：
+
+![](./intel_golden_cove_prefetcher_13.png)
+
+如果通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，即关闭 L1 data cache IP prefetcher，就会观察到上述 Stride 预取的行为消失，不会预取将要访问的下一个 cache line。
+
+把相同的代码放到 Gracemont 上运行，会看到它的预取器会预取将要访问的未来两个 cache line：
+
+![](./intel_golden_cove_prefetcher_gracemont_comparison.png)
+
+可见不同微架构的预取器的策略是不同的。
 
 ### ReOrder Buffer
 
