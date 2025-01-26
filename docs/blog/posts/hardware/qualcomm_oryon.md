@@ -389,6 +389,26 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 因此可能上述两个猜测都是对的，当然了，也不排除还有别的解释。
 
+### Prefetcher
+
+为了测试预取器的行为，可以构造不同的 footprint 和不同访存模式的 pointer chasing 链，观察它的性能以及预取器介入次数的性能计数器。涉及到的访存模式如下：
+
+- 64B stride：按照固定的 stride 访存，地址模式是 0B -> 64B -> 128B -> ...
+- random cache line：把 64B cache line 打乱顺序，每个 cache line 轮流读取一次
+- first cache line in random page：把 4K 大小的 page 打乱顺序，每个 page 轮流读取一次，读取的是各个页内的第一个 64B cache line；只读取每个页的第一个 64B cache line 是为了达到类似 L1 DCache 的容量用满的效果
+- one random cache line in random page：把 4K 大小的 page 打乱顺序，每个 page 轮流读取一次，读取的是各个页内的随机但固定位置的一个 64B cache line
+
+注：上述的打乱顺序，只是在构建 pointer chasing 链时打乱，因此在访存过程中，不会再调整访存顺序。
+
+同时统计每次访存花费的时间以及 `0x8154, L1D_CACHE_HWPRF, Level 1 data cache hardware prefetch` 性能计数器的结果，得到测试结果如下：
+
+![](./qualcomm_oryon_prefetcher.png)
+
+- 64B stride：可以看到在超出 96KB 的 L1 DCache 容量以后，访存延迟略微增加到 1ns，同时每次访存对对应一次硬件预取，此时主要是 Stride Prefetcher 在起作用
+- random cache line：可以看到在超出 L1 DCache 容量后，访存延迟大幅上升，但并没有直接降低到 L2 Cache 的访问延迟，同时也可以看到预取的比例急剧上升；说明即使是随机的访问模式，预取器可以记录下部分访存过程，从而降低了缓存缺失率，此时主要是 Region/Spatial Prefetcher 在起作用
+- first cache line in random page：可以看到在超出 L1 DCache 容量后，访存延迟快速降低到 L2 Cache 的访问延迟，同时硬件预取器并没有工作；说明硬件没有针对 L1 DCache 实现 Temporal Prefetcher
+- one random cache line in random page：此时实际的缓存容量只有横座标的 `64/4096` 倍，所以这个时候测得的性能拐点 896KB 实际上对应的是 L1 DTLB 的容量
+
 ### Memory
 
 官方信息：
