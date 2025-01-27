@@ -345,6 +345,8 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 可以观察到明显的 96 page 的拐点，命中 L1 DTLB 时 load to use latency 是 4 cycle，命中 L2 DTLB 时增大到了 11 cycle。
 
+这个拐点也可以从性能计数器中看出，Zen 5 针对 L1 DTLB 有性能计数器 `PMCx045 [L1 DTLB Misses] (Core::X86::Pmc::Core::LsL1DTlbMiss)`，根据这个事件记录 L1 DTLB Miss 次数，可以看到在 96 个页内时 Miss 次数为 0，之后开始增加，到 100 个页的时候 Miss 次数和访问次数相同，即 100% Miss Rate。
+
 ### L2 DTLB
 
 官方信息：4096-entry, 16-way set associative
