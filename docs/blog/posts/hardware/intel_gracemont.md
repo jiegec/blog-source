@@ -100,10 +100,21 @@ Intel Gracemont 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 官方信息：
 
-- 2x 16B Load/cycle, 2x 16B Store/cycle
+- **2x 16B Load/cycle, 2x 16B Store/cycle**
 - Load latency 3-4 cycle
 
 #### Load Store 带宽
+
+针对 Load Store 带宽，实测每个周期可以完成：
+
+- 2x 128b Load
+- 2x 128b Load + 2x 128b Store
+- 2x 128b Store
+- 1x 256b Load
+- 1x 256b Load + 1x 256b Store
+- 1x 256b Store
+
+最大的读带宽是 32B/cyc，最大的写带宽是 32B/cyc，二者可以同时达到。
 
 #### Store to Load Forwarding
 
