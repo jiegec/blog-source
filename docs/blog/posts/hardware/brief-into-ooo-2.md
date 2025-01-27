@@ -218,14 +218,16 @@ there are 2 stores, then each store should forward to either first or second hal
 | [Qualcomm Oryon](./qualcomm_oryon.md)       | Yes [4]     | Yes [5]     | No          | No          |
 | [Apple Firestorm](./apple_m1.md)            | Yes         | Yes [6]     | Yes [6]     | Yes [6]     |
 | [Intel Golden Cove](./intel_golden_cove.md) | Yes [7]     | No          | No          | No          |
+| [Intel Gracemont](./intel_gracemont.md)     | Yes [8]     | No          | No          | No          |
 
 - [1]: 要求 st 完全包含 ld
-- [2]: 要求 ld 和 st 地址相同或差出半个 st 宽度
+- [2]: 要求 ld 和 st 地址相同或差半个 st 宽度
 - [3]: 要求 ld 和 st 地址相同
 - [4]: 要求不跨越 64B 边界
 - [5]: 要求 ld 对齐到 4B 边界且不跨越 64B 边界
 - [6]: 要求不跨越 64B 边界
-- [7]: 要求 st 完全包含 ld，特别地，在 st 和 ld 访问相同地址时，无 Forwarding 性能损失
+- [7]: 要求 st 完全包含 ld；特别地，在 st 和 ld 访问相同地址时，无 Forwarding 性能损失
+- [8]: 要求 st 完全包含 ld，ld 和 st 地址相同，不跨越 64B 边界；特别地，64b st 到 32b ld 转发允许 ld 地址和 st 地址差半个 st 宽度
 
 ## Memory Renaming
 
