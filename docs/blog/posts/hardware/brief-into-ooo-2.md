@@ -264,7 +264,13 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 
 那么，如果 Load 的地址需要比较长的时间去计算，但实际上又是可以预测的，那就可以通过 Load Address Prediction 的方法，来提升性能。
 
-根据论文 [SLAP: Data Speculation Attacks via Load Address Prediction on Apple Silicon](https://predictors.fail/files/SLAP.pdf)，苹果在 M2/M3/M4/A15/A16/A17 等处理器上实装了 Load Address Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是访问同一个地址，或者总是以相同的跨步访问地址，那么就会预测它的下一个访问地址，从而提升性能。
+根据论文 [SLAP: Data Speculation Attacks via Load Address Prediction on Apple Silicon](https://predictors.fail/files/SLAP.pdf)，苹果在 M2/M3/M4/A15/A16/A17 等处理器上实装了 Load Address Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是访问同一个地址，或者总是以相同的跨步访问地址，那么就会预测它的下一个访问地址，从而提升性能。它的各项参数如下：
+
+- 支持 Constant 和 Striding Address 两种访存模式
+- 支持 Stride 范围是正负 256B，过大的 Stride 则不会预测
+- 大概 500 次符合规律的 load 后使能地址预测以提升性能
+- 当下一次预测的地址要跨到下一个 page 的时候不预测，避免污染 DTLB
+- 用 load 指令的地址做 full tag，不同地址的 load 指令互不干扰，不会出现 alias
 
 ## Way Prediction
 
@@ -339,7 +345,18 @@ Constant Verification Unit 类似一个小的针对 Load Value Prediction 的 L0
 
 可见这个优化主要解决的是打破了 Load 指令带来的依赖，但缓存带宽还是要耗费的（Constant Verification Unit 可以节省一些）。
 
-根据论文 [FLOP: Breaking the Apple M3 CPU via False Load Output Predictions](https://predictors.fail/files/FLOP.pdf)，苹果在 M3/M4/A17 等处理器上实装了 Load Value Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是读出来相同的数据，那就会预测它未来读出来还是相同的数据。
+根据论文 [FLOP: Breaking the Apple M3 CPU via False Load Output Predictions](https://predictors.fail/files/FLOP.pdf)，苹果在 M3/M4/A17 等处理器上实装了 Load Value Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是读出来相同的数据，那就会预测它未来读出来还是相同的数据。它的各项参数如下：
+
+- 只支持 Constant value，即 load 指令读出来的数据不变
+- 不支持 Striding value，即 load 指令读出来的数据构成等差数列
+- 大概 240 次 load 相同的值后使能值预测以提升性能
+- 对于 1/2/4 字节 load，可以预测出所有可能的值，意味着这最多 4 字节的值会记录在预测器内部
+- 对于 8 字节 load，只能预测值等于 0 的情况，没有做 8 字节 load 的通用场景，背后的考虑可能是：
+	- 8 字节比较长，开销大
+	- 8 字节且非零的 constant load 相对少见
+	- 指针也是 8 字节，避免预测的 8 字节的值被当成指针来用
+- 观察到可以预测最多 72 个 Load 的 Value，可能是 4 路组相连
+- 用 load 指令的地址做 full tag，不能跨越上下文共享
 
 ## Stable Load
 
