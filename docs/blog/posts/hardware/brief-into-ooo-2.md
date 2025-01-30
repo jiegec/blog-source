@@ -264,7 +264,7 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 
 那么，如果 Load 的地址需要比较长的时间去计算，但实际上又是可以预测的，那就可以通过 Load Address Prediction 的方法，来提升性能。
 
-根据论文 [SLAP: Data Speculation Attacks via Load Address Prediction on Apple Silicon](https://predictors.fail/files/SLAP.pdf)，苹果在 M2/M3/M4/A15/A16/A17 等处理器上实装了 Load Address Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是访问同一个地址，或者总是以相同的跨步访问地址，那么就会预测它的下一个访问地址，从而提升性能。它的各项参数如下：
+根据论文 [SLAP: Data Speculation Attacks via Load Address Prediction on Apple Silicon](https://predictors.fail/files/SLAP.pdf)，苹果在 M2/M3/M4/A15/A16/A17 等处理器的 P 核上实装了 Load Address Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是访问同一个地址，或者总是以相同的跨步访问地址，那么就会预测它的下一个访问地址，从而提升性能。它的各项参数如下：
 
 - 支持 Constant 和 Striding Address 两种访存模式
 - 支持 Stride 范围是正负 256B，过大的 Stride 则不会预测
@@ -345,7 +345,7 @@ Constant Verification Unit 类似一个小的针对 Load Value Prediction 的 L0
 
 可见这个优化主要解决的是打破了 Load 指令带来的依赖，但缓存带宽还是要耗费的（Constant Verification Unit 可以节省一些）。
 
-根据论文 [FLOP: Breaking the Apple M3 CPU via False Load Output Predictions](https://predictors.fail/files/FLOP.pdf)，苹果在 M3/M4/A17 等处理器上实装了 Load Value Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是读出来相同的数据，那就会预测它未来读出来还是相同的数据。它的各项参数如下：
+根据论文 [FLOP: Breaking the Apple M3 CPU via False Load Output Predictions](https://predictors.fail/files/FLOP.pdf)，苹果在 M3/M4/A17 等处理器的 P 核上实装了 Load Value Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是读出来相同的数据，那就会预测它未来读出来还是相同的数据。它的各项参数如下：
 
 - 只支持 Constant value，即 load 指令读出来的数据不变
 - 不支持 Striding value，即 load 指令读出来的数据构成等差数列
@@ -357,6 +357,49 @@ Constant Verification Unit 类似一个小的针对 Load Value Prediction 的 L0
 	- 指针也是 8 字节，避免预测的 8 字节的值被当成指针来用
 - 观察到可以预测最多 72 个 Load 的 Value，可能是 4 路组相连
 - 用 load 指令的地址做 full tag，不能跨越上下文共享
+
+前面提到，苹果也实装了 Load Address Prediction，意味着在 M3/A17 及之后的处理器的 P 核上，既有 Load Address Prediction，又有 Load Value Prediction，分别对 Load 的地址和读出来的数据做预测。为此，苹果专利 [Shared Learning Table for Load Value Prediction and Load Address Prediction](https://patents.google.com/patent/US20240362027A1/en) 设计了一种机制来同时支持两种预测，并且共享 Learning Table：
+
+- 前面分析苹果的 Load Address Prediction 专利时提到，硬件实现中会用到两个表，一个用来跟踪训练的状态（Learning Table），另一个用来进行实际的预测（Prediction Table）
+- 类似地，Load Value Prediction 也会有类似的设计：一个 Learning Table 寻找潜在的可以被预测的 Load，一个 Prediction Table 跟踪正在被预测的 Load
+- 既然两种预测都是针对 Load 进行的，就要考虑应用哪种预测，避免冲突，提升性能
+- 具体的实现方法就是，用一个 Learning Table 解决 Value 和 Address 两种预测的训练，再分别给 Value 和 Address 设置各自的 Prediction Table
+- 专利中给出了一种可能的 Learning Table 的 Entry 的字段：
+	- Status: 状态，比如 Valid，Age，Priority 等等
+	- PC tag: 区分不同 Load，Full Tag
+	- Predicted address：预测的访存地址
+	- Stride or value：适用 Address 还是 Value Prediction
+	- Predicted stride/hash of value：预测的 Stride 或者 Value 的哈希
+	- Striding load indicator: 是否是 Striding Load
+	- Confidence level：预测的信心
+	- Allocated in prediction table?：是否在 Prediction Table
+	- Number of consecutive mis-predictions：连续的错误预测次数
+- 接下来讨论一条 Load 指令的训练过程：
+	- 当一条 Load 指令第一次进入 Prediction Table 时，还不知道它是否能够被预测，它的 Address 还是 Value 能够被预测，此时它的地址和数据会记录在 Prediction Table 当中
+	- 当这条 Load 再次被执行时，如果它的值和上一次相同（使用哈希判断，节省开销，当然也可能出错），则标记为 Value 预测模式；如果值不相同，那就把这次 Load 的地址减去上一次 Load 的地址作为 Stride 保存下来，标记为 Address 预测模式
+	- 在 Value 预测模式下，持续跟踪 Load 的值是否预测正确：
+		- 如果 Value 预测正确，则累积 Confidence
+		- 当 Confidence 超过阈值时，在 Value Prediction Table 中分配，启动 Value 预测
+		- 如果 Value 预测失败，则结束 Value 预测，切换到 Address 预测模式
+	- 在 Address 预测模式下，持续跟踪相邻两次 Load 的地址的差值：
+		- 如果发现连续两次访问的 Stride 相同，则标记为 Striding Load
+		- 反过来，如果两次访问的 Stride 不同，则取消 Striding Load 标记，重新识别 Load 的类型
+		- 如果 Striding Load 的 Stride 预测正确，则累积 Confidence
+		- 当 Confidence 超过阈值时，在 Address Prediction Table 中分配，启动 Address 预测
+- 接下来分析 Value Prediction Table，专利中给出了一种可能的 Value Prediction Table 的 Entry 的字段：
+	- Status: 状态
+	- PC tag：区分不同 Load，Full Tag
+	- Value acquired：数据是否已经保存到 Data 字段，如果没有，需要发送一个 Probing load 去把数据取进来
+	- Probe Sent：标记是否已经发送 Probing load，避免重复发送
+	- Data：记录了预测的数据
+	- LRU：维护 LRU 信息
+- 接下来分析 Address Prediction Table，专利中给出了一种可能的 Address Prediction Table 的 Entry 的字段：
+	- Status: 状态
+	- PC tag：区分不同 Load，Full Tag
+	- Predicted Address：预测要访问的地址
+	- Predicted Stride：预测的地址跨步
+	- Striding load indicator：标记是否为 Striding Load
+	- Intermittent striding loads：记录跨步访存的进度
 
 ## Stable Load
 
