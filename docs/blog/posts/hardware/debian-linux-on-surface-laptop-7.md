@@ -59,3 +59,4 @@ UPDATE:
 3. (2024-07-31 更新) 内置的键盘的问题修好了，需要额外的补丁，见 https://github.com/jiegec/linux/tree/surface-laptop-7。
 4. (2024-09-05 更新) 上游合并了 Surface Laptop 7 (Romulus 13/15) 的 Device Tree (`arch/arm64/boot/dts/qcom/x1e80100-microsoft-romulus13.dts`)，内置的键盘也直接支持了，直接用上游的 Device Tree 即可启动，见 https://github.com/jiegec/linux/tree/surface-laptop-7-next，估计 6.12 就有正式支持了
 5. (2024-09-05 更新) 更新 Mesa 到 24.2.1，显卡加速也工作了
+6. (2024-10-25 更新) 修复了无线网卡被 rfkill 的问题：无线网卡有个引脚决定 rfkill hard block 状态，但在 Surface Laptop 7 上这个引脚被用于其他用途，因此如果依然用这个引脚判断是否被 hard block，就有问题；Windows 上的驱动，会读取 ACPI 的配置，忽略掉这个 hard block 的情况；Linux 上也有正在上游化的 patch 来实现类似的行为，但 Surface Laptop 7 基于 OF 而不是基于 ACPI，于是这个 patch 也不管用，只好直接 hack 掉 rfkill 检查，详见[该链接](https://github.com/dwhinham/linux-surface-pro-11/issues/1#issuecomment-2628699027)
