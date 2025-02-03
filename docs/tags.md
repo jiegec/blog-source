@@ -1,3 +1,3 @@
 # 标签
 
-[TAGS]
+<!-- material/tags -->

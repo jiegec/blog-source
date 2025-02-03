@@ -34,7 +34,6 @@ nav:
 plugins:
   - tags:
       enabled: !ENV [DEPLOY, false]
-      tags_file: tags.md
   - blog:
       post_url_format: "{categories}/{date}/{file}"
       blog_dir: .
