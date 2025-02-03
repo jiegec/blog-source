@@ -1,10 +1,13 @@
 site_description: 杰哥的{运维，编程，调板子}小笔记
 site_name: 杰哥的{运维，编程，调板子}小笔记
 site_url: https://jia.je/
+repo_url: https://github.com/jiegec/blog-source
 
 theme:
   custom_dir: overrides
   name: material
+  icon:
+    repo: fontawesome/brands/github
   language: zh
   features:
     - navigation.instant
