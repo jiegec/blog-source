@@ -66,7 +66,7 @@ Oct 28, 2024
     ```
 3. 配置好以后，进行同步：`vdirsyncer discover && vdirsyncer sync`
 
-此时在 `~/.contacts` 目录下，已经能看到很多个 vcf 文件了，每个 vcf 文件对应了个一个日历中的事件。实际上，这些文件就已经是 iCalendar 格式了，只不过每个文件只有一个事件。
+此时在 `~/.contacts` 目录下，已经能看到很多个 vcf 文件了，每个 vcf 文件对应了日历中的一个事件。实际上，这些文件就已经是 iCalendar 格式了，只不过每个文件只有一个事件。
 
 为了让一个 `.ics` 文件包括日历的所有事件，写了一个脚本，实际上就是处理每个 vcf 文件，去掉每个文件开头结尾的 `BEGIN:VCALENDAR` 和 `END:VCALENDAR`，把中间的部分拼起来，最后再加上开头结尾：
 
