@@ -4,7 +4,6 @@ date: 2023-01-10
 tags: [mit,mit6824,distributed,raft,mapreduce,gfs,zookeeper,learn,notes]
 categories:
     - system
-draft: true
 ---
 
 # MIT 6.824 Distributed Systems 学习笔记
