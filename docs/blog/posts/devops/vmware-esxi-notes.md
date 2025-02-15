@@ -132,7 +132,7 @@ vmkfstool -i "old.vmdk" -d thin "new.vmdk"
 
 ## 手动分区并创建 datastore
 
-有时候在 ESXi Web UI 上会发现创建 Datastore 的按钮是灰的，但是又想创建 datastore，可以通过 SSH 进去手动分区并创建 datastore：
+有时候在 ESXi Web UI 上会发现创建 Datastore 的按钮是灰的（比如有虚拟机通过 Raw Disk Mapping 映射了这个盘），但是又想创建 datastore，可以通过 SSH 进去手动分区并创建 datastore：
 
 1. 重新创建 GPT 分区表：`partedUtil mklabel /dev/disks/<DISK> gpt`
 2. 创建 VMFS 分区表：`partedUtil add /dev/disks/<DISK> gpt "<PARTITION NUMBER> <START SECTOR> <END SECTOR> AA31E02A400F11DB9590000C2911D1B8 0"`
