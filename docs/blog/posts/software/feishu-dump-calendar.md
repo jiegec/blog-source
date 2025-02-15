@@ -42,7 +42,7 @@ Oct 28, 2024
 也就是说，用 vdirsyncer 把日历同步到本地，再转换为 iCalendar 格式的日历文件。参考 [vdirsyncer](https://vdirsyncer.pimutils.org/en/stable/installation.html#installation) 文档，这件事情并不复杂：
 
 1. 按照 vdirsyncer: `pip3 install vdirsyncer`
-2. 编辑 `~/.vdirsyncer/config`，填入在飞书处得到的用户密码:
+2. 编辑 `~/.vdirsyncer/config`，填入在飞书处得到的用户密码：
     ```
     [general]
     status_path = "~/.vdirsyncer/status/"

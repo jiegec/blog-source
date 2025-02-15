@@ -140,4 +140,4 @@ vmkfstool -i "old.vmdk" -d thin "new.vmdk"
 
 获取分区表：`partedUtil getptbl /dev/disks/<DISK>`
 
-参考：[Using partedUtil command line disk partitioning utility on ESXi](https://knowledge.broadcom.com/external/article/323144/using-partedutil-command-line-disk-parti.html) [New datastore Greyed out ](https://community.broadcom.com/vmware-cloud-foundation/discussion/new-datastore-greyed-out)
+参考：[Using partedUtil command line disk partitioning utility on ESXi](https://knowledge.broadcom.com/external/article/323144/using-partedutil-command-line-disk-parti.html) [New datastore Greyed out](https://community.broadcom.com/vmware-cloud-foundation/discussion/new-datastore-greyed-out)
