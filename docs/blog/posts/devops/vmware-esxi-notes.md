@@ -136,6 +136,8 @@ vmkfstool -i "old.vmdk" -d thin "new.vmdk"
 
 1. 重新创建 GPT 分区表：`partedUtil mklabel /dev/disks/<DISK> gpt`
 2. 创建 VMFS 分区表：`partedUtil add /dev/disks/<DISK> gpt "<PARTITION NUMBER> <START SECTOR> <END SECTOR> AA31E02A400F11DB9590000C2911D1B8 0"`
-3. 创建 datastore：`vmkfstools -C vmfs6 -S <NAME> <DISK>:<PARTITION NUMBER>`
+3. 创建 datastore：`vmkfstools -C vmfs6 -S <NAME> /dev/disks/<DISK>:<PARTITION NUMBER>`
+
+获取分区表：`partedUtil getptbl /dev/disks/<DISK>`
 
 参考：[Using partedUtil command line disk partitioning utility on ESXi](https://knowledge.broadcom.com/external/article/323144/using-partedutil-command-line-disk-parti.html) [New datastore Greyed out ](https://community.broadcom.com/vmware-cloud-foundation/discussion/new-datastore-greyed-out)
