@@ -129,3 +129,13 @@ vmkfstool -i "old.vmdk" -d thin "new.vmdk"
 ```
 
 这样就会重启 Web UI，不过等它恢复需要很长的时间，还要删掉 cookie。
+
+## 手动分区并创建 datastore
+
+有时候在 ESXi Web UI 上会发现创建 Datastore 的按钮是灰的，但是又想创建 datastore，可以通过 SSH 进去手动分区并创建 datastore：
+
+1. 重新创建 GPT 分区表：`partedUtil mklabel /dev/disks/<DISK> gpt`
+2. 创建 VMFS 分区表：`partedUtil add /dev/disks/<DISK> gpt "<PARTITION NUMBER> <START SECTOR> <END SECTOR> AA31E02A400F11DB9590000C2911D1B8 0"`
+3. 创建 datastore：`vmkfstools -C vmfs6 -S <NAME> <DISK>:<PARTITION NUMBER>`
+
+参考：[Using partedUtil command line disk partitioning utility on ESXi](https://knowledge.broadcom.com/external/article/323144/using-partedutil-command-line-disk-parti.html) [New datastore Greyed out ](https://community.broadcom.com/vmware-cloud-foundation/discussion/new-datastore-greyed-out)
