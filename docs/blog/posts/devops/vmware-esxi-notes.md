@@ -23,6 +23,7 @@ vsish -e cat /hardware/cpu/cpuList/0 | grep -i -E 'family|model|stepping|microco
 - [ESXi 8.0 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/8_0#custom_iso)
 - [ESXi 7.0 标准版下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/7_0)
 - [ESXi 8.0 标准版下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/8_0)
+- [VMware 被博通收购后的下载地址](https://knowledge.broadcom.com/external/article/366685/instructions-to-find-product-downloads-o.html)
 - [NUC 11 ESXi 7.0 网卡支持](https://flings.vmware.com/community-networking-driver-for-esxi/comments)：
 
 ```shell
