@@ -19,12 +19,13 @@ https://github.com/ewenmcneill/docker-build-static-ipmitool
 ```bash
 #!/bin/bash
 set -x
-export VERSION=1.8.18
+export VERSION=1.8.19
 rm -rf ipmitool_$VERSION
-curl -L -o ipmitool_$VERSION.tar.bz2 http://deb.debian.org/debian/pool/main/i/ipmitool/ipmitool_$VERSION.orig.tar.bz2
-tar xvf ipmitool_$VERSION.tar.bz2
-cd ipmitool-$VERSION
-CC=gcc CFLAGS=-m64 LDFLAGS=-static ./configure
+curl -L -o ipmitool_$VERSION.tar.gz http://deb.debian.org/debian/pool/main/i/ipmitool/ipmitool_$VERSION.orig.tar.gz
+tar xvf ipmitool_$VERSION.tar.gz
+cd ipmitool-IPMITOOL_${VERSION//./_}
+./bootstrap
+CC=gcc CFLAGS=-m64 LDFLAGS=-static ./configure --disable-ipmishell
 make -j24
 cd src
 ../libtool --silent --tag=CC --mode=link gcc -m64 -fno-strict-aliasing -Wreturn-type -all-static -o ipmitool.static ipmitool.o ipmishell.o ../lib/libipmitool.la plugins/libintf.la
