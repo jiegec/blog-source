@@ -17,13 +17,15 @@ vsish -e cat /hardware/cpu/cpuList/0 | grep -i -E 'family|model|stepping|microco
 ```
 
 - [AMD 最新 microcode 版本](https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/amd-ucode/README)
-- [ESXi 从 6.7 到 6.7U1 升级时出现版本问题](https://kb.vmware.com/s/article/56145)
-- [ESXi 6.7 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/6_7#custom_iso)
-- [ESXi 7.0 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/7_0#custom_iso)
-- [ESXi 8.0 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/8_0#custom_iso)
-- [ESXi 7.0 标准版下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/7_0)
-- [ESXi 8.0 标准版下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/8_0)
-- [VMware 被博通收购后的下载地址](https://knowledge.broadcom.com/external/article/366685/instructions-to-find-product-downloads-o.html)
+- [ESXi 从 6.7 到 6.7U1 升级时出现版本问题](https://knowledge.broadcom.com/external/article?legacyId=56145)
+- [VMware 被收购后的下载地址](https://knowledge.broadcom.com/external/article/366685/instructions-to-find-product-downloads-o.html)
+    - [ESXi 8.0 下载](https://support.broadcom.com/group/ecx/productfiles?displayGroup=VMware%20vSphere%20-%20Standard&release=8.0&os=&servicePk=202631&language=EN&groupId=204419)
+- VMware 被收购前的下载地址：
+    - [ESXi 6.7 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/6_7#custom_iso)
+    - [ESXi 7.0 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/7_0#custom_iso)
+    - [ESXi 8.0 OEM 版本下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/8_0#custom_iso)
+    - [ESXi 7.0 标准版下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/7_0)
+    - [ESXi 8.0 标准版下载](https://customerconnect.vmware.com/downloads/info/slug/datacenter_cloud_infrastructure/vmware_vsphere/8_0)
 - [NUC 11 ESXi 7.0 网卡支持](https://flings.vmware.com/community-networking-driver-for-esxi/comments)：
 
 ```shell
@@ -142,3 +144,12 @@ vmkfstool -i "old.vmdk" -d thin "new.vmdk"
 获取分区表：`partedUtil getptbl /dev/disks/<DISK>`
 
 参考：[Using partedUtil command line disk partitioning utility on ESXi](https://knowledge.broadcom.com/external/article/323144/using-partedutil-command-line-disk-parti.html) [New datastore Greyed out](https://community.broadcom.com/vmware-cloud-foundation/discussion/new-datastore-greyed-out)
+
+## vCSA 网络配置
+
+如果想要修改网络配置，但是又连不上 5480 管理网页，可以进 console 登录并拿到 shell 后直接进行管理：
+
+1. 运行 `/opt/vmware/share/vami/vami_config_net` 以修改网络配置
+2. 修改 `/etc/vmware/appliance/firewall.conf` 后运行 `/usr/lib/applmgmt/networking/bin/firewall-reload` 以修改防火墙配置
+
+参考：[How to change/update DNS Server IP address for vCenter Server](https://knowledge.broadcom.com/external/article/375247/how-to-changeupdate-dns-server-ip-addres.html) [Adding firewall rules to VCSA without web client? (self.vmware)](https://www.reddit.com/r/vmware/comments/9fjclx/adding_firewall_rules_to_vcsa_without_web_client/)
