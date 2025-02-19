@@ -45,6 +45,7 @@ categories:
 - 2.83.83.83: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=ddk5r)，2022 年 4 月版本。
 - 2.84.84.84: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=g79dw)，2023 年 3 月版本。
 - 2.85.85.85: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=j3jtj)，2023 年 10 月版本。
+- 2.86.86.86: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=vwf72)，2024 年 04 月版本。
 
 ## iDRAC 9
 
@@ -53,6 +54,7 @@ categories:
 - 4.40.00.00: [下载页面](https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=62gw1)，2020 年 12 月版本，下一代的 iDRAC virtual console 和 virtual media，支持 Infiniband。
 - 5.00.00.00: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=f87rp)，2021 年 6 月版本。
 - 7.00.00.00: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=kh4xx)，2023 年 6 月版本。
+- 7.00.00.174: [下载页面](https://www.dell.com/support/home/zh-cn/drivers/driversdetails?driverid=c2vdg)，2024 年 11 月版本。
 
 ## 在线升级
 
