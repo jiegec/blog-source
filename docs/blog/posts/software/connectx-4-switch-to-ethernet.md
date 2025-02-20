@@ -109,6 +109,8 @@ Applying... Done!
 
 整个安装流程在仓库 <https://github.com/jiegec/mft-debian-bookworm> 中用脚本实现。
 
+UPDATE: 太新的 MFT 版本不支持比较旧的网卡，例如 4.22.1-LTS 支持 ConnectX-3，但 4.26.1-LTS 就不支持了。
+
 ## VMware ESXi
 
 如果要在 ESXi 上把网卡改成以太网模式，可以参考下面的文档：

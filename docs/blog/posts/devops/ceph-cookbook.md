@@ -577,6 +577,29 @@ ceph orch ps
 
 然后就可以访问 Grafana 看到集群的状态。
 
+### 单机集群
+
+在集群只有单机的时候，由于默认 MGR 每个 host 只能有一个，所以会导致无法升级。
+
+一种方法是在创建 cluster 的时候，传入 `--single-host-defaults` 参数，详见 [Single host deployment](https://github.com/ceph/ceph/blob/main/doc/cephadm/install.rst#single-host)
+
+另一种方法是，动态修改 MGR 的 `mgr_standby_modules` 选项为 `false`：
+
+1. 运行 `ceph config set mgr mgr_standby_modules false`
+2. 创建一个 `mgr.yaml` 文件：
+
+        ```yaml
+        service_type: mgr
+        service_name: mgr
+        placement:
+          hosts:
+            - YOUR_HOSTNAME_HERE
+          count_per_host: 2
+        ```
+
+3. 告诉 cephadm，让它在 `YOUR_HOSTNAME_HERE` 机器上部署两个 MGR：`ceph orch apply -i mgr.yaml`
+4. 这样就成功了，可以用 `ceph orch ps` 确认有两个 MGR，这样就可以升级 ceph 了
+
 ## 更新
 
 使用容器编排器来升级：
