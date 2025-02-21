@@ -20,7 +20,7 @@ k3s 的好处就是配置十分简单：https://rancher.com/docs/k3s/latest/en/q
 2. 在第一个 node 上获取 token：`cat /var/lib/rancher/k3s/server/node-token`
 3. 在其他 node 上跑：`curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken sh -`
 
-然后就搞定了。从第一个 node 的 `/etc/rancher/k3s/k3s.yaml`获取 `kubectl` 配置。
+然后就搞定了。从第一个 node 的 `/etc/rancher/k3s/k3s.yaml` 获取 `kubectl` 配置。
 
 ## 给 api server 添加额外的 TLS SAN
 

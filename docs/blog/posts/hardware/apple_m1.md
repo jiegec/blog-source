@@ -39,6 +39,12 @@ Apple M1 的官方信息乏善可陈，关于微架构的信息几乎为零，�
 
 Apple Firestorm 的性能测试结果见 [SPEC](../../../benchmark.md)。Apple Icestorm 尚未进行性能测试。
 
+## 环境准备
+
+Apple M1 预装的是 macOS，macOS 的绑核只能绑到 P 或者 E，不能具体到某一个核上；在 macOS 上可以读取 PMU，需要使用 kpep 的私有框架，代码可以在[这里](https://github.com/jiegec/cpu-micro-benchmarks)找到。
+
+如果想更方便地进行测试，建议安装 Asahi Linux 的各种发行版，此时可以在 Linux 下自由地绑核，也可以用标准的方式使用 PMU。
+
 ## 前端
 
 ### 取指

@@ -42,6 +42,10 @@ categories:
 
 Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
+## 环境准备
+
+Surface Laptop 7 预装的是 Windows on ARM，并不适合进行测试。因此，我在它上面自己装了一个裸机的 Linux 系统，目前网上已经有比较多相关的教程以及安装镜像了。
+
 ## 前端
 
 ### 取指
