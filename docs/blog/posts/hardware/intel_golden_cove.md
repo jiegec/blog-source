@@ -1,6 +1,5 @@
 ---
 layout: post
-draft: true
 date: 2025-01-10
 tags: [cpu,intel,goldencove,alderlake,performance,uarch-review]
 categories:
