@@ -278,6 +278,29 @@ The file name is invalid(does not end with .cfg).
 [switch]lldp compliance cdp
 ```
 
+### 升级固件
+
+```
+<switch> tftp 1.2.3.4 get SWITCH_FIRMWARE.ipe
+<switch> boot-loader file flash:/SWITCH_FIRMWARE.ipe all main
+<switch> show boot
+<switch> save
+<switch> reboot
+```
+
+### 配置 NTP
+
+```
+[switch] ntp enable
+[switch] ntp unicast-server 1.2.3.4
+```
+
+### 配置远程日志
+
+```
+[switch] logging loghost 1.2.3.4
+```
+
 ## Mellanox
 
 ### 进入配置模式
