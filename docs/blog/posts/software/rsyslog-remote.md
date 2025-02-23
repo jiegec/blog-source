@@ -113,6 +113,81 @@ if [ -d /run/systemd/system ]; then
 fi
 ```
 
+## 一键脚本
+
+完成以上所有事情的一键脚本：
+
+```shell
+cat > /etc/rsyslog-remote.conf << 'EOL'
+module(load="imudp")
+input(type="imudp" port="514" address="1.2.3.4")
+
+module(load="imtcp")
+input(type="imtcp" port="514" address="1.2.3.4")
+
+$FileOwner root
+$FileGroup adm
+$FileCreateMode 0640
+$DirCreateMode 0755
+$Umask 0022
+
+$WorkDirectory /var/spool/rsyslog-remote
+
+$template FromIp,"/var/log/rsyslog-remote/%FROMHOST-IP%.log"
+*.* ?FromIp
+EOL
+mkdir -p /var/spool/rsyslog-remote
+mkdir -p /var/log/rsyslog-remote
+cat > /etc/systemd/system/rsyslog-remote.service << 'EOL'
+[Unit]
+ConditionPathExists=/etc/rsyslog-remote.conf
+Description=Remote Syslog Service
+
+[Service]
+Type=simple
+PIDFile=/var/run/rsyslogd-remote.pid
+ExecStart=/usr/sbin/rsyslogd -n -f /etc/rsyslog-remote.conf -i /var/run/rsyslogd-remote.pid
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+EOL
+systemctl daemon-reload
+systemctl enable --now rsyslog-remote
+cat > /etc/logrotate.d/rsyslog-remote << 'EOL'
+/var/log/rsyslog-remote/*.log
+{
+        rotate 4
+        weekly
+        missingok
+        notifempty
+        compress
+        delaycompress
+        sharedscripts
+        postrotate
+                /usr/lib/rsyslog/rsyslog-remote-rotate
+        endscript
+}
+EOL
+cat > /usr/lib/rsyslog/rsyslog-remote-rotate << 'EOL'
+#!/bin/sh
+
+if [ -d /run/systemd/system ]; then
+    systemctl kill -s HUP rsyslog-remote.service
+fi
+EOL
+chmod +x /usr/lib/rsyslog/rsyslog-remote-rotate
+```
+
+## syslog 客户端配置
+
+配好服务端以后，很多服务都支持远程 syslog 功能：
+
+- iBMC: 维护诊断->告警上报->Syslog 报文通知
+- Supermicro BMC: Configuration->Syslog
+- 交换机：见 [常用交换机命令](../devops/switch-config.md)
+- ESXi: 见 [Configuring syslog on ESXi](https://knowledge.broadcom.com/external/article/318939/configuring-syslog-on-esxi.html)
+
 ## 参考文档
 
 - [How to Set Up Remote Logging on Linux Using rsyslog](https://www.makeuseof.com/set-up-linux-remote-logging-using-rsyslog/)
