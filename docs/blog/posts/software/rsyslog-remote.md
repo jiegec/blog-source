@@ -30,11 +30,32 @@ $template FromIp,"/var/log/rsyslog-remote/%FROMHOST-IP%.log"
 *.* ?FromIp
 ```
 
-这样，就会按照来源的 IP 地址进行分类，然后都写入到 `/var/log/rsyslog-remote/x.x.x.x.log` 文件里。
+这样，就会按照来源的 IP 地址进行分类，然后都写入到 `/var/log/rsyslog-remote/x.x.x.x.log` 文件里。最后的 `/etc/rsyslog-remote.conf` 内容如下：
+
+```conf
+module(load="imudp")
+input(type="imudp" port="514" address="1.2.3.4")
+
+module(load="imtcp")
+input(type="imtcp" port="514" address="1.2.3.4")
+
+$FileOwner root
+$FileGroup adm
+$FileCreateMode 0640
+$DirCreateMode 0755
+$Umask 0022
+
+$WorkDirectory /var/spool/rsyslog-remote
+
+$template FromIp,"/var/log/rsyslog-remote/%FROMHOST-IP%.log"
+*.* ?FromIp
+```
+
+此外，还需要手动创建 `/var/spool/rsyslog-remote` 和 `/var/log/rsyslog-remote` 目录。
 
 ## systemd service
 
-最后，写一个 systemd service 让它自动启动：
+最后，写一个 systemd service `/etc/systemd/system/rsyslog-remote.service` 让它自动启动：
 
 ```toml
 [Unit]
@@ -51,6 +72,8 @@ ExecReload=/bin/kill -HUP $MAINPID
 WantedBy=multi-user.target
 ```
 
+立即启动并设置开机启动：
+
 ```shell
 systemctl daemon-reload
 systemctl enable --now rsyslog-remote
@@ -62,7 +85,33 @@ systemctl enable --now rsyslog-remote
 
 为了防止日志太多，还需要配置 logrotate。
 
-复制 `/etc/logrotate.d/rsyslog` 到 `/etc/logrotate.d/rsyslog-remote`，然后修改开头为 `/var/log/rsyslog-remote/*.log` 即可，路径和上面对应。注意脚本 `/usr/lib/rsyslog/rsyslog-remote` 也需要复制一份，然后修改一下 systemd service 名字。
+复制 `/etc/logrotate.d/rsyslog` 到 `/etc/logrotate.d/rsyslog-remote`，然后修改开头为 `/var/log/rsyslog-remote/*.log` 即可，路径和上面对应：
+
+```conf
+/var/log/rsyslog-remote/*.log
+{
+        rotate 4
+        weekly
+        missingok
+        notifempty
+        compress
+        delaycompress
+        sharedscripts
+        postrotate
+                /usr/lib/rsyslog/rsyslog-remote-rotate
+        endscript
+}
+```
+
+注意脚本 `/usr/lib/rsyslog/rsyslog-remote` 也需要复制一份到 `/usr/lib/rsyslog/rsyslog-remote-rotate`，然后修改一下 systemd service 名字：
+
+```shell
+#!/bin/sh
+
+if [ -d /run/systemd/system ]; then
+    systemctl kill -s HUP rsyslog-remote.service
+fi
+```
 
 ## 参考文档
 
