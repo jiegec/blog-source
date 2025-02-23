@@ -118,6 +118,8 @@ fi
 完成以上所有事情的一键脚本：
 
 ```shell
+# assuming bash
+# please change ip address below
 cat > /etc/rsyslog-remote.conf << 'EOL'
 module(load="imudp")
 input(type="imudp" port="514" address="1.2.3.4")
@@ -186,7 +188,14 @@ chmod +x /usr/lib/rsyslog/rsyslog-remote-rotate
 - iBMC: 维护诊断->告警上报->Syslog 报文通知
 - Supermicro BMC: Configuration->Syslog
 - 交换机：见 [常用交换机命令](../devops/switch-config.md)
-- ESXi: 见 [Configuring syslog on ESXi](https://knowledge.broadcom.com/external/article/318939/configuring-syslog-on-esxi.html)
+- ESXi: 见 [Configuring syslog on ESXi](https://knowledge.broadcom.com/external/article/318939/configuring-syslog-on-esxi.html)：
+
+    ```shell
+    esxcli system syslog config set --loghost=udp://1.2.3.4
+    esxcli system syslog reload
+    esxcli network firewall ruleset set --ruleset-id=syslog --enabled=true
+    esxcli network firewall refresh
+    ```
 
 ## 参考文档
 
