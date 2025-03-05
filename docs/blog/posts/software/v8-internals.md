@@ -397,6 +397,7 @@ Instructions (size = 324)
 # 从前面的分析可以看到 LdaSmi 由两个字节组成：
 # 1. 第一个字节是 0x0d，表示这是一条 LdaSmi
 # 2. 第二个字节就是要加载到 `accumulator` 的小整数
+# 如：0d 01 对应 LdaSmi [1]，0d 02 对应 LdaSmi [2]
 # 所以，为了实现 LdaSmi，需要从 bytecode array 中读取 LdaSmi 字节码的第二个字节，
 # 保存到 `accumulator` 寄存器当中
 # 下面一条一条地分析指令在做的事情：
@@ -589,14 +590,43 @@ Instructions (size = 80)
 0xc903f8193444    44  aa0203f1       mov x17, x2
 0xc903f8193448    48  d61f0220       br x17
 0xc903f819344c    4c  d503201f       nop
-
-
-Safepoints (entries = 0, byte size = 8)
-
-RelocInfo (size = 0)
 ```
 
 可见 release 模式下的代码还是简单了许多，保证了性能。
+
+有的 Opcode 后面不会紧接着出现 Short Star，此时 Dispatch 会减少一次特判，代码更加简单，以 `Ldar` 为例：
+
+```log
+kind = BYTECODE_HANDLER
+name = Ldar
+compiler = turbofan
+address = 0x31a00046245
+
+Instructions (size = 44)
+# Ldar 的语义是，把指定参数寄存器的值写入到 `accumulator` 当中
+# 参数寄存器的位置记录在 Ldar 字节码的第二个字节中
+# 如：0b 04 对应 Ldar a1
+# 计算 x19 + 1 的值并写入 x1，得到 Ldar 的第二个字节相对 bytecode array 的偏移
+0xc903f8193320     0  91000661       add x1, x19, #0x1 (1)
+# 从 x20 + x1 地址读取 Ldar 的第二个字节到 x1，也就是参数寄存器相对 fp 的下标
+0xc903f8193324     4  38a16a81       ldrsb x1, [x20, x1]
+# 相对 fp 以 x1 为下标，读取参数寄存器的值到 x1 寄存器
+0xc903f8193328     8  aa1d03e3       mov x3, fp
+0xc903f819332c     c  f8617861       ldr x1, [x3, x1, lsl #3]
+# Dispatch: 找到下一个 Opcode 对应的代码的入口，然后跳转过去
+# x19 = x19 + 2，就是 bytecode offset 前进两个字节，指向下一个字节码
+0xc903f8193330    10  91000a73       add x19, x19, #0x2 (2)
+# x20 是 bytecode array，从 bytecode array 读取下一个字节码的第一个字节到 x3 寄存器
+0xc903f8193334    14  38736a83       ldrb w3, [x20, x19]
+# 从 dispatch table，以 x3 为下标，读取下一个字节码对应的代码的地址
+0xc903f8193338    18  f8637aa2       ldr x2, [x21, x3, lsl #3]
+# 把参数寄存器的值写入到 `accumulator` 也就是 x0 当中
+0xc903f819333c    1c  aa0103e0       mov x0, x1
+# 跳转到下一个字节码对应的代码的地址
+0xc903f8193340    20  aa0203f1       mov x17, x2
+0xc903f8193344    24  d61f0220       br x17
+0xc903f8193348    28  d503201f       nop
+```
 
 小结一下：
 
