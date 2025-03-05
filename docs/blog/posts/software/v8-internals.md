@@ -474,7 +474,7 @@ Instructions (size = 324)
 0xc6ccfe4a8bf8    f8  d11a2063       sub x3, x3, #0x688 (1672)
 # 从 fp 的地址读取函数调用前的 fp
 0xc6ccfe4a8bfc    fc  f94003a4       ldr x4, [fp]
-# 把 `accumulator` 写入到相对函数调用前的的 fp 的对应位置
+# 把 `accumulator` 写入到相对函数调用前的 fp 的对应位置
 0xc6ccfe4a8c00   100  f8236880       str x0, [x4, x3]
 
 # 下面就是 Dispatch 逻辑，只不过这次是执行完 Short Star 字节码后的 Dispatch
@@ -533,6 +533,71 @@ RelocInfo (size = 3)
 
 为了简化代码，关闭了 control flow integrity 相关的代码生成，具体方法是运行 `gn args out/arm64.optdebug`，追加一行 `v8_control_flow_integrity = false`，再重新 `autoninja -C out/arm64.optdebug d8`。
 
+以上是 debug 模式下生成的代码，多了很多检查；如果在 release 模式下，可以观察到更优化的指令：
+
+```log
+kind = BYTECODE_HANDLER
+name = LdaSmi
+compiler = turbofan
+address = 0x31a000462bd
+
+Instructions (size = 80)
+# 从这里开始实现 LdaSmi 的语义
+# 计算 x19 + 1 的值并写入 x1，得到 LdaSmi 的第二个字节相对 bytecode array 的偏移
+0xc903f8193400     0  91000661       add x1, x19, #0x1 (1)
+# 从 x20 + x1 地址读取 LdaSmi 的第二个字节到 x1，也就是要加载到 `accumulator` 的值，
+# 之后 x1 的值会写入到 x0，也就是 `accumulator` 对应的寄存器
+0xc903f8193404     4  38e16a81       ldrsb w1, [x20, x1]
+
+# Dispatch: 找到下一个 Opcode 对应的代码的入口，然后跳转过去
+# x19 = x19 + 2，就是 bytecode offset 前进两个字节，指向下一个字节码
+0xc903f8193408     8  91000a73       add x19, x19, #0x2 (2)
+# x20 是 bytecode array，从 bytecode array 读取下一个字节码的第一个字节到 x3 寄存器
+0xc903f819340c     c  38736a83       ldrb w3, [x20, x19]
+
+# 计算 x4 = x3 * 8，也就是 dispatch table 中下一个字节码对应的代码地址的字节偏移
+0xc903f8193410    10  d37df064       lsl x4, x3, #3
+# 把之前 LdaSmi 计算得到的 x1 寄存器写到 `accumulator` 即 x0 寄存器当中
+# 这里 x0 = 2 * x1，是因为 v8 用最低位表示这是一个 Smi（用 0 表示）还是一个指针（用 1 表示）
+0xc903f8193414    14  0b010020       add w0, w1, w1
+# 如果 x3 寄存器大于或等于 187，说明这个字节码可能是 Short Star 字节码，就跳转到后面的 0xc903f819342c 地址
+0xc903f8193418    18  7102ec7f       cmp w3, #0xbb (187)
+0xc903f819341c    1c  54000082       b.hs #+0x10 (addr 0xc903f819342c)
+# 如果没有跳转，此时 x3 寄存器小于 187
+# 从 dispatch table，以 x3 为下标（x4 = x3 * 8），读取下一个字节码对应的代码的地址
+0xc903f8193420    20  f8646aa2       ldr x2, [x21, x4]
+# 跳转到下一个字节码对应的代码的地址
+0xc903f8193424    24  aa0203f1       mov x17, x2
+0xc903f8193428    28  d61f0220       br x17
+
+# 实现 Short Star 字节码
+# 计算出要写入的 r0-r15 寄存器相对 fp 的偏移量 x3 * 8 - 1672
+# 这个偏移量的计算公式在前面推导过，此时 x4 等于 x3 * 8
+0xc903f819342c    2c  d11a2081       sub x1, x4, #0x688 (1672)
+0xc903f8193430    30  aa1d03e3       mov x3, fp
+# 把 `accumulator` 写入到相对 fp 的对应位置
+0xc903f8193434    34  f8216860       str x0, [x3, x1]
+
+# 下面就是 Dispatch 逻辑，只不过这次是执行完 Short Star 字节码后的 Dispatch
+# x19 = x19 + 1，就是 bytecode offset 前进一个字节，指向下一个字节码
+0xc903f8193438    38  91000673       add x19, x19, #0x1 (1)
+# x20 是 bytecode array，从 bytecode array 读取下一个字节码的第一个字节到 x1 寄存器
+0xc903f819343c    3c  38736a81       ldrb w1, [x20, x19]
+# 从 dispatch table，以 x1 为下标，读取下一个字节码对应的代码的地址
+0xc903f8193440    40  f8617aa2       ldr x2, [x21, x1, lsl #3]
+# 跳转到下一个字节码对应的代码的地址
+0xc903f8193444    44  aa0203f1       mov x17, x2
+0xc903f8193448    48  d61f0220       br x17
+0xc903f819344c    4c  d503201f       nop
+
+
+Safepoints (entries = 0, byte size = 8)
+
+RelocInfo (size = 0)
+```
+
+可见 release 模式下的代码还是简单了许多，保证了性能。
+
 小结一下：
 
 1. Ignition 给每种可能的 Opcode 类型生成一段代码
@@ -540,6 +605,7 @@ RelocInfo (size = 3)
 3. 执行完字节码后，进入 Dispatch 逻辑，寻找下一个字节码对应的代码的地址
 4. 特别地，如果下一个字节码是 Short Star (Star0-Star15)，因为它比较简单和常见，就直接执行它，执行完再重新寻找再下一个字节码对应的代码的地址
 5. 这些 Opcode 对应的代码会在 v8 编译过程中通过 `mksnapshot` 命令一次性生成好，运行时直接复用，不用重新生成
+6. V8 的值的最低位标识了它的类型：0 表示 Smi，1 表示指针，因此在存储 Smi 的时候，寄存器里保存的是实际值的两倍，这样最低位就是 0
 
 ## 参考
 
