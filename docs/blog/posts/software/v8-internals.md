@@ -533,7 +533,7 @@ RelocInfo (size = 3)
 
 为了简化代码，关闭了 control flow integrity 相关的代码生成，具体方法是运行 `gn args out/arm64.optdebug`，追加一行 `v8_control_flow_integrity = false`，再重新 `autoninja -C out/arm64.optdebug d8`。
 
-以上是 debug 模式下生成的代码，多了很多检查；如果在 release 模式下，可以观察到更优化的指令：
+以上是 debug 模式下生成的代码，多了很多检查；如果在 release 模式下，可以观察到更优的指令：
 
 ```log
 kind = BYTECODE_HANDLER
