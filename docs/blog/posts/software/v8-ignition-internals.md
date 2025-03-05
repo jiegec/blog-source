@@ -67,7 +67,7 @@ tools/dev/gm.py arm64.optdebug --progress=verbose
 1. [Ignition](https://v8.dev/docs/ignition): 解释器
 2. [SparkPlug](https://v8.dev/blog/sparkplug): 不优化的快速编译器，追求快的编译速度
 3. [Maglev](https://v8.dev/blog/maglev)：做优化的编译器，寻求编译速度和编译质量的平衡
-4. [TurboGan](https://v8.dev/docs/turbofan)：做优化的编译器，寻求更好的编译质量
+4. [TurboFan](https://v8.dev/docs/turbofan)：做优化的编译器，寻求更好的编译质量
 
 在 JS 的使用场景，不同代码被调用的次数以及对及时性的需求差别很大，为了适应不同的场景，V8 设计了这些解释器和编译器来提升整体的性能：执行次数少的代码，倾向于用更低优化等级的解释器或编译器，追求更低的优化开销；执行次数多的代码，当编译优化时间不再成为瓶颈，则倾向于用更高优化等级的编译器，追求更高的执行性能。
 
