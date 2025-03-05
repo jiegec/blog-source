@@ -7,11 +7,11 @@ categories:
     - software
 ---
 
-# V8 内部实现探究
+# V8 Ignition 解释器的内部实现探究
 
 ## 背景
 
-V8 是一个很常见的 JavaScript 引擎，运行在很多的设备上，因此想探究一下它内部的部分实现。本博客在 ARM64 Ubuntu 24.04 平台上针对 [V8 12.8.374.31](https://chromium.googlesource.com/v8/v8.git/+/6f774f929205be0a49cf861b8d73a92655e1dd36) 版本进行分析。
+V8 是一个很常见的 JavaScript 引擎，运行在很多的设备上，因此想探究一下它内部的部分实现。本博客在 ARM64 Ubuntu 24.04 平台上针对 [V8 12.8.374.31](https://chromium.googlesource.com/v8/v8.git/+/6f774f929205be0a49cf861b8d73a92655e1dd36) 版本进行分析。本博客主要分析了 V8 的 Ignition 解释器的解释执行部分。
 
 <!-- more -->
 
