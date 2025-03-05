@@ -247,7 +247,7 @@ IGNITION_HANDLER(LdaSmi, InterpreterAssembler) {
 
 可以看到，逻辑并不复杂，就是取了第一个立即数操作数，设置到了 `accumulator`，最后调用 `Dispatch`，也就是读取下一个 Opcode 对应的汇编指令然后跳转。接下来看这几个步骤在汇编上是怎么实现的。
 
-为了查看 Ignition 对各种 Opcode 具体生成了什么样的汇编指令，可以用 `./out/arm64.optdebug/mksnapshot --trace-ignition--codegen --code-comments` 命令查看，下面列出了 `LdaSmi` 这个 Opcode 对应的汇编，由于这段汇编有点长，具体做的事情和对应的源码已经通过注释标注出来：
+为了查看 Ignition 对各种 Opcode 具体生成了什么样的汇编指令，可以用 `./out/arm64.optdebug/mksnapshot --trace-ignition-codegen --code-comments` 命令查看，下面列出了 `LdaSmi` 这个 Opcode 对应的汇编，由于这段汇编有点长，具体做的事情和对应的源码已经通过注释标注出来：
 
 ```log
 kind = BYTECODE_HANDLER
