@@ -212,7 +212,7 @@ Source Position Table (size = 0)
 2. `Add a0, [0]`: 求第一个参数 `a0` 也就是 `a` 与 `accumulator` 寄存器的和，写入到 `accumulator` 寄存器当中，结合上一条 Bytecode，就是 `accumulator = a0 + a1`；`[0]` 和 FeedBackVector 有关
 3. `Return`: 把 `accumulator` 中的值作为返回值，结束函数调用
 
-简单小结一下 V8 的字节码:
+简单小结一下 V8 的字节码：
 
 1. 有若干个局部的寄存器，在操作数中以 `rn` 的形式出现，`n` 是寄存器编号
 2. 有 `accumulator` 局部寄存器，作为部分字节码的隐含输入或输出（`Add`）
