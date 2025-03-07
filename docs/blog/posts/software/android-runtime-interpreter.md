@@ -172,12 +172,12 @@ Dalvik Bytecode 的完整列表见 [Dalvik bytecode format](https://source.andro
 
 Android Runtime (ART) 的解释器放在 `runtime/interpreter` 目录下。如果进行一些[考古](https://stackoverflow.com/questions/22187630/what-does-mterp-mean)，可以看到这个解释器的实现是从更早的 Dalvik VM 来的。它有两种不同的解释器实现：
 
-第一个解释器基于 switch-case 的 C++ 代码实现，其逐个遍历 Opcode，根据 Opcode 执行相应的操作，类似下面的代码：
+第一个解释器基于 switch-case 的 C++ 代码实现，其逐个遍历 Op，根据 Op 的类型 Opcode 执行相应的操作，类似下面的代码：
 
 ```c
-for (each opcode of current function) {
-  switch (opcode) {
-    case opcode_add:
+for (each op of current function) {
+  switch (op.opcode) {
+    case op_add:
       // implement add here
       break;
     // ... other opcode handlers
@@ -185,7 +185,7 @@ for (each opcode of current function) {
 }
 ```
 
-第二个解释器以 [Token threading](https://en.wikipedia.org/wiki/Threaded_code#Token_threading) 的方式实现，每个 Opcode 对应一段代码。这段代码在完成 Opcode 的操作后，读取下一个 Opcode，再间接跳转到下一个 Opcode 对应的代码。其工作原理类似下面的代码，这里 [`goto *`](https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html) 是 GNU C 的扩展，意思是一个间接跳转，目的地址取决于 `handlers[next_opcode]` 的值，意思是根据下一个 opcode，找到对应的 handler，直接跳转过去：
+第二个解释器以 [Token threading](https://en.wikipedia.org/wiki/Threaded_code#Token_threading) 的方式实现，每种 Op 对应一段代码。这段代码在完成 Op 的操作后，读取下一个 Op，再间接跳转到下一个 Op 对应的代码。其工作原理类似下面的代码，这里 [`goto *`](https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html) 是 GNU C 的扩展，对应间接跳转指令，其目的地址取决于 `handlers[next_opcode]` 的值，意思是根据下一个 op 的 Opcode，找到对应的 handler，直接跳转过去：
 
 ```c
   // op handlers array
@@ -193,31 +193,148 @@ for (each opcode of current function) {
 
 op_add:
   // implement add here
+  // read next opcode here
   goto *handlers[next_opcode];
 ```
 
-实际实现的时候更进一步，用汇编实现各个 opcode handler，并把 handler 放在了 128 字节对齐的位置，保证每个 handler 不超过 128 个字节，从而把读取 `handlers` 数组再跳转的 `goto *` 改成了用乘法和加法计算出 handler 的地址再跳转（computed goto）：
+实际实现的时候更进一步，用汇编实现各个 op handler，并把 handler 放在了 128 字节对齐的位置，保证每个 handler 不超过 128 个字节，从而把读取 `handlers` 数组再跳转的 `goto *` 改成了用乘法和加法计算出 handler 的地址再跳转（computed goto）：
 
 ```asm
 handlers_begin:
 op_add:
   .balign 128
   # implement add here
+  # read next opcode here
   jmp to (handlers_begin + 128 * next_opcode);
 
 op_sub:
   .balign 128
   # implement add here
+  # read next opcode here
   jmp to (handlers_begin + 128 * next_opcode);
 ```
 
-下面结合源码来分析这两种解释器的实现。
+下面结合源码来具体分析这两种解释器的实现。
 
 ### 基于 switch-case 的解释器
 
+目前 Android Runtime 包括一个基于 switch-case 的解释器，实现在 `runtime/interpreter/interpreter_switch_impl-inl.h` 文件当中，它的核心逻辑就是一个循环套 switch-case：
+
+```c++
+  while (true) {
+    const Instruction* const inst = next;
+    dex_pc = inst->GetDexPc(insns);
+    shadow_frame.SetDexPC(dex_pc);
+    TraceExecution(shadow_frame, inst, dex_pc);
+    uint16_t inst_data = inst->Fetch16(0);
+    bool exit = false;
+    bool success;  // Moved outside to keep frames small under asan.
+    if (InstructionHandler<transaction_active, Instruction::kInvalidFormat>(
+            ctx, instrumentation, self, shadow_frame, dex_pc, inst, inst_data, next, exit).
+            Preamble()) {
+      DCHECK_EQ(self->IsExceptionPending(), inst->Opcode(inst_data) == Instruction::MOVE_EXCEPTION);
+      switch (inst->Opcode(inst_data)) {
+#define OPCODE_CASE(OPCODE, OPCODE_NAME, NAME, FORMAT, i, a, e, v)                                \
+        case OPCODE: {                                                                            \
+          next = inst->RelativeAt(Instruction::SizeInCodeUnits(Instruction::FORMAT));             \
+          success = OP_##OPCODE_NAME<transaction_active>(                                         \
+              ctx, instrumentation, self, shadow_frame, dex_pc, inst, inst_data, next, exit);     \
+          if (success && LIKELY(!interpret_one_instruction)) {                                    \
+            continue;                                                                             \
+          }                                                                                       \
+          break;                                                                                  \
+        }
+  DEX_INSTRUCTION_LIST(OPCODE_CASE)
+#undef OPCODE_CASE
+      }
+    }
+    // exit condition handling omitted
+  }
+```
+
+代码中使用了 [X macro](https://en.wikipedia.org/wiki/X_macro) 的编程技巧：如果你需要在不同的地方重复出现同一个 list，比如在这里，就是所有可能的 Opcode 类型，你可以在一个头文件中用一个宏，以另一个宏为参数去列出来：
+
+```c++
+// V(opcode, instruction_code, name, format, index, flags, extended_flags, verifier_flags);
+#define DEX_INSTRUCTION_LIST(V) \
+  V(0x00, NOP, "nop", k10x, kIndexNone, kContinue, 0, kVerifyNothing) \
+  V(0x01, MOVE, "move", k12x, kIndexNone, kContinue, 0, kVerifyRegA | kVerifyRegB) \
+  // omitted
+```
+
+这个宏定义在 `libdexfile/dex/dex_instruction_list.h` 头文件当中。在使用的时候，临时定义一个宏，然后把新定义的宏传入 `DEX_INSTRUCTION_LIST` 的参数即可。例如要生成一个数组，记录所有的 op 名字，可以：
+
+```cpp
+// taken from libdexfile/dex/dex_instruction.cc
+const char* const Instruction::kInstructionNames[] = {
+#define INSTRUCTION_NAME(o, c, pname, f, i, a, e, v) pname,
+#include "dex_instruction_list.h"
+  DEX_INSTRUCTION_LIST(INSTRUCTION_NAME)
+#undef DEX_INSTRUCTION_LIST
+#undef INSTRUCTION_NAME
+};
+```
+
+这段代码经过 C 预处理器，首先会被展开为：
+
+```c
+const char* const Instruction::kInstructionNames[] = {
+#define INSTRUCTION_NAME(o, c, pname, f, i, a, e, v) pname,
+  INSTRUCTION_NAME(0x00, NOP, "nop", k10x, kIndexNone, kContinue, 0, kVerifyNothing) \
+  INSTRUCTION_NAME(0x01, MOVE, "move", k12x, kIndexNone, kContinue, 0, kVerifyRegA | kVerifyRegB) \
+  // omitted
+#undef INSTRUCTION_NAME
+};
+```
+
+继续展开，就得到了想要留下的内容：
+
+```c++
+const char* const Instruction::kInstructionNames[] = {
+  "nop",
+  "move",
+  // omitted
+};
+```
+
+回到 switch-case 的地方，可以预见到，预处理会生成的代码大概是：
+
+```cpp
+switch (inst->Opcode(inst_data)) {
+  case 0x00: {                                                                            \
+    next = inst->RelativeAt(Instruction::SizeInCodeUnits(Instruction::k10x));             \
+    success = OP_NOP<transaction_active>(                                                 \
+        ctx, instrumentation, self, shadow_frame, dex_pc, inst, inst_data, next, exit);   \
+    if (success && LIKELY(!interpret_one_instruction)) {                                  \
+      continue;                                                                           \
+    }                                                                                     \
+    break;                                                                                \
+  }
+  // omitted
+}
+```
+
+其中 `next = inst->RelativeAt(Instruction::SizeInCodeUnits(Instruction::k10x));` 语句根据当前 Op 类型计算出它会占用多少个字节，从而得到下一个 Op 的地址。之后就是调用 `OP_NOP` 函数来进行实际的操作了。当然了，这个实际的操作，还是需要开发者去手动实现（`OP_NOP` 函数会调用下面的 `NOP` 函数）：
+
+```c++
+HANDLER_ATTRIBUTES bool NOP() {
+  return true;
+}
+
+HANDLER_ATTRIBUTES bool MOVE() {
+  SetVReg(A(), GetVReg(B()));
+  return true;
+}
+
+HANDLER_ATTRIBUTES bool ADD_INT() {
+  SetVReg(A(), SafeAdd(GetVReg(B()), GetVReg(C())));
+  return true;
+}
+```
+
 ### 基于 token threading 的解释器 mterp (nterp)
 
-由于这些代码是用汇编写的，直接写会有很多重复的部分。为了避免重复的代码，目前的解释器 mterp (现在叫 nterp) 用 Python 脚本来生成最终的汇编代码。要生成它，也很简单：
+第二个解释器则是基于 token threading 的解释器，它的源码在 `runtime/interpreter/mterp` 目录下。由于这些代码是用汇编写的，直接写会有很多重复的部分。为了避免重复的代码，目前的解释器 mterp (现在叫 nterp) 用 Python 脚本来生成最终的汇编代码。要生成它，也很简单：
 
 ```shell
 cd runtime/interpreter/mterp
@@ -231,7 +348,7 @@ cd runtime/interpreter/mterp
 ./gen_mterp.py mterp_x86_64ng.S x86_64ng/*.S
 ```
 
-这样就可以看到完整的汇编代码了，后续的分析都会基于这份汇编代码。
+这样就可以看到完整的汇编代码了，后续的分析都会基于这份汇编代码。如果读者对 amd64 汇编比较熟悉，也可以在本地生成一份 amd64 的汇编再结合本文进行理解。
 
 ## 参考
 
