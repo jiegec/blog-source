@@ -350,6 +350,103 @@ cd runtime/interpreter/mterp
 
 这样就可以看到完整的汇编代码了，后续的分析都会基于这份汇编代码。如果读者对 amd64 汇编比较熟悉，也可以在本地生成一份 amd64 的汇编再结合本文进行理解。
 
+上面提到过 `add-int/2addr vA, vB` 这个做整数加法的 Op，直接在生成的汇编中，找到它对应的代码：
+
+```asm
+    .balign NTERP_HANDLER_SIZE
+.L_op_add_int_2addr: /* 0xb0 */
+    /* omitted */
+    /* binop/2addr vA, vB */
+    lsr     w3, wINST, #12              // w3<- B
+    ubfx    w9, wINST, #8, #4           // w9<- A
+    GET_VREG w1, w3                     // w1<- vB
+    GET_VREG w0, w9                     // w0<- vA
+    FETCH_ADVANCE_INST 1                // advance rPC, load rINST
+    add     w0, w0, w1                  // w0<- op, w0-w3 changed
+    GET_INST_OPCODE ip                  // extract opcode from rINST
+    SET_VREG w0, w9                     // vAA<- w0
+    GOTO_OPCODE ip                      // jump to next instruction
+    /* omitted */
+```
+
+其中 `wINST` 表示当前 Op 的前两个字节的内容，前面提到，`add-int/2addr vA, vB` 编码为两个字节，第一个字节是固定的 `0xb0`，第二个字节共 8 位，低 4 位编码了 `vA` 的寄存器编号 `A`，高 4 位编码了 `vB` 的寄存器编号 `B`。由于这是小端序的处理器，那么解释为 16 位整数，从高位到低位依次是：4 位的 `B`，4 位的 `A` 和 8 位的 `0xb0`。知道这个背景以后，再来分析每条指令做的事情，就很清晰：
+
+1. `lsr w3, wINST, #12`：求 `wINST` 右移动 12 位，得到了 `B`
+2. `ubfx w9, wINST, #8, #4`: `ubfx` 是 Bit Extract 指令，这里的意思是从 `wINST` 第 8 位开始取 4 位数据出来，也就是 `A`
+3. `GET_VREG w1, w3`: 读取寄存器编号为 `w3` 的值，写到 `w1` 当中，结合第一条指令，可知此时 `w1` 等于 `B` 寄存器的值
+4. `GET_VREG w0, w9`: 读取寄存器编号为 `w9` 的值，写到 `w0` 当中，结合第二条指令，可知此时 `w0` 等于 `A` 寄存器的值
+5. `FETCH_ADVANCE_INST 1`: 把 "PC" 往前移动 1 个单位的距离，也就是两个字节，并读取下一个 Op 到 `rINST` 当中
+6. `add w0, w0, w1`: 进行实际的整数加法运算，结果保存在 `w0` 当中
+7. `GET_INST_OPCODE ip`: 根据第五条指令读取的下一个 Op 的值 `rINST`，解析出它的 Opcode
+8. `SET_VREG w0, w9`: 把整数加法的结果写回到寄存器编号为 `w9` 的寄存器当中，结合第二条指令，可知写入的是 `A` 寄存器
+9. `GOTO_OPCODE ip`: 跳转到下一个 Op 对应的 handler
+
+整体代码还是比较清晰的，只是说把计算 `A + B` 写入 `A` 的过程和读取下一个 Op 并跳转的逻辑穿插了起来，手动做了一次寄存器调度。那么这些 `GET_REG` 和 `FETCH_ADVANCE_INST` 等等具体又是怎么实现的呢？下面把宏展开后的代码贴出来：
+
+```asm
+    .balign NTERP_HANDLER_SIZE
+.L_op_add_int_2addr: /* 0xb0 */
+    /* omitted */
+    /* binop/2addr vA, vB */
+
+    // wINST is w23, the first 16-bit code unit of current instruction
+    // lsr     w3, wINST, #12              // w3<- B
+    lsr w3, w23, #12 
+    // ubfx    w9, wINST, #8, #4           // w9<- A
+    ubfx w9, w23, #8, #4 
+
+    // virtual registers are stored relative to xFP(x29), the interpreted frame pointer, used for accessing locals and args
+    // GET_VREG w1, w3                     // w1<- vB
+    ldr w1, [x29, w3, uxtw #2] 
+    // GET_VREG w0, w9                     // w0<- vA
+    ldr w0, [x29, w9, uxtw #2] 
+
+    // xPC(x22) is the interpreted program counter, used for fetching instructions
+    // FETCH_ADVANCE_INST 1                // advance rPC, load rINST
+    // a pre-index load instruction that both reads wINST from memory and increments xPC(x22) by 2
+    ldrh w23, [x22, #2]!
+
+    // add     w0, w0, w1                  // w0<- op, w0-w3 changed
+    add w0, w0, w1 
+
+    // ip(x16) is a scratch register, used to store the first byte (opcode) of wINST
+    // GET_INST_OPCODE ip                  // extract opcode from rINST
+    and x16, x23, 0xff
+
+    // save addition result to virtual register, which is relative to xFP(x29)
+    // also set its object references to zero, which is relative to xREFS(x25)
+    // SET_VREG w0, w9                     // vAA<- w0
+    str w0, [x29, w9, uxtw #2]
+    str wzr, [x25, w9, uxtw #2]
+
+    // now x16 saves the opcode, and xIBASE(x24) interpreted instruction base pointer, used for computed goto
+    // for opcode #k, the handler address of it would be `xIBASE + k * 128`
+    // GOTO_OPCODE ip                      // jump to next instruction
+    add x16, x24, x16, lsl #7
+    br x16
+    /* omitted */
+```
+
+各个寄存器的含义已经在上面的注释中写出，比如 `w23` 记录了当前 Op 的前 16 位的内容，`x29` 记录了当前的 frame pointer，通过它可以访问各个 virtual register；`x11` 是 PC，记录了正在执行的 Op 的地址；`x24` 记录了这些 op handler 的起始地址，由于每个 handler 都不超过 128 字节，且都对齐到 128 字节边界（`.balign NTERP_HANDLER_SIZE`），所以只需要简单的运算 `xIBASE + opcode * 128` 即可找到下一个 op 的 handler 地址，不需要再进行一次访存。
+
+如果要比较一下 Android Runtime 的 mterp (nterp) 和 [V8 的 Ignition 解释器](./v8-ignition-internals.md)的实现，有如下几点相同与不同：
+
+1. 两者都采用了 token threading 的方法，即在一个 Op 处理完成以后，计算出下一个 Op 的 handler 的地址，跳转过去
+2. V8 的 op handler 是动态生成的（`mksnapshot` 阶段），长度没有限制，允许生成比较复杂的汇编，但如果汇编比较短（比如 release 模式下），也可以节省一些内存；代价是需要一次额外的对 dispatch table 的访存，来找到 opcode 对应的 handler
+3. mterp 的 op handler 对齐到 128B 边界，带来的好处是不需要访问 dispatch table，直接根据 opcode 计算地址即可，不过由于很多 handler 很短，可能只有十条指令左右，就会浪费了一些内存
+4. V8 没有 handler 长度的限制，所以针对一些常见的 Op 做了优化（Short Star），可以减少一些跳转的开销
+
+除了以上列举的不同的地方以外，其实整体来看是十分类似的，下面是二者实现把整数加载到寄存器（`const/4 vA, #+B` 和 `LdaSmi`）的汇编的对比：
+
+
+| Operation             | mterp (nterp)                                             | Ignition                                        |
+|-----------------------|-----------------------------------------------------------|-------------------------------------------------|
+| Extract Dest Register | `ubfx w0, w23, #8, #4`                                    | N/A (destination is always the accumulator)     |
+| Extract Const Integer | `sbfx w1, w23, #12, #4`                                   | `add x1, x19, #1; ldrsb w1, [x20, x1]`          |
+| Read Next Op          | `ldrh w23, [x22, #2]!`                                    | `add x19, x19, #2; ldrb w3, [x20, x19]`         |
+| Save Result           | `str w1, [x29, w0, uxtw #2]; str wzr, [x25, w0, uxtw #2]` | `add w0, w1, w1`                                |
+| Computed Goto         | `and x16, x23, 0xff; add x16, x24, x16, lsl #7; br x16`   | `ldr x2, [x21, x3, lsl #3]; mov x17, x2; br x2` |
+
 ## 参考
 
 - [What does mterp mean?](https://stackoverflow.com/questions/22187630/what-does-mterp-mean)
