@@ -2,7 +2,6 @@
 layout: post
 date: 2025-03-01
 tags: [linux,v8,javascript,js,jit,aot]
-draft: true
 categories:
     - software
 ---
