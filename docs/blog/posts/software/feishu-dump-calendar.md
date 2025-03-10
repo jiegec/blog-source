@@ -85,7 +85,7 @@ print("\n".join(all_lines))
 
 运行上述脚本：`python3 dump.py ~/.contacts/*/*.ics > dump.ics`，这样得到的 `.ics` 文件就可以直接导入到日历软件了。
 
-UPDATE: 我在之前写的飞书文档备份工具 [feishu-backup](https://github.com/jiegec/feishu-backup) 的基础上，添加了飞书日历的导出功能，把原始的 json 保存下来，并转换得到的 iCalendar 文件。
+UPDATE: 我在之前写的飞书文档备份工具 [feishu-backup](https://github.com/jiegec/feishu-backup) 的基础上，添加了飞书日历的导出功能，把原始的 json 保存下来，并转换得到 iCalendar 格式的 `.ics` 文件。
 
 ## 导出 iCloud 国区的日历和联系人
 
