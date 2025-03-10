@@ -254,23 +254,25 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Cortex X1 @ 3.0 GHz: 5.7
 - Cortex A78 @ 2.4 GHz: 3.9
 
-### GCC 12 vs GCC 11
+### GCC 12 vs GCC 11 vs LLVM 20
 
-在 Intel i9-14900K 上用 -O3 测试两种编译器组合的性能：
+在 Intel i9-14900K 上用 -O3 测试三种编译器组合的性能：
 
-| Benchmark       | GCC 12.2.0 | GCC 11.3.0 |
-|-----------------|------------|------------|
-| 500.perlbench_r | 12.9       | 12.8       |
-| 502.gcc_r       | 14.4       | 14.3       |
-| 505.mcf_r       | 9.62       | 9.82       |
-| 520.omnetpp_r   | 9.72       | 9.59       |
-| 523.xalancbmk_r | 9.48       | 9.66       |
-| 525.x264_r      | 18.7       | 20.4       |
-| 531.deepsjeng_r | 8.15       | 7.27       |
-| 541.leela_r     | 7.40       | 7.37       |
-| 548.exchange2_r | 29.8       | 17.1       |
-| 557.xz_r        | 5.97       | 5.85       |
-| geomean         | 11.3       | 10.6       |
+| Benchmark       | GCC 12.2.0 | GCC 11.3.0 | LLVM 20.1.0 |
+|-----------------|------------|------------|-------------|
+| 500.perlbench_r | 12.9       | 12.8       | 10.9        |
+| 502.gcc_r       | 14.4       | 14.3       | 13.6        |
+| 505.mcf_r       | 9.62       | 9.82       | 8.29        |
+| 520.omnetpp_r   | 9.72       | 9.59       | 8.80        |
+| 523.xalancbmk_r | 9.48       | 9.66       | 8.79        |
+| 525.x264_r      | 18.7       | 20.4       | 19.9        |
+| 531.deepsjeng_r | 8.15       | 7.27       | 7.17        |
+| 541.leela_r     | 7.40       | 7.37       | 7.41        |
+| 548.exchange2_r | 29.8       | 17.1       | 10.9        |
+| 557.xz_r        | 5.97       | 5.85       | 5.70        |
+| geomean         | 11.3       | 10.6       | 9.54        |
+
+注：GCC 指 GCC + GFortran，LLVM 指 Clang + Flang-new
 
 ## SPEC FP 2017 Rate-1
 
@@ -434,7 +436,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Cortex X1 @ 3.0 GHz: 8.9
 - Cortex A78 @ 2.4 GHz: 5.9
 
-### GCC + GFortran vs Clang + Flang-new
+### GCC 12 vs LLVM 19
 
 在 Intel i9-14900K 上用 -O3 测试两种编译器组合的性能：
 
@@ -455,6 +457,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 | 554.roms_r      | 14.7       | 14.1        |
 | geomean         | 16.1       | 15.2        |
 
+注：GCC 指 GCC + GFortran，LLVM 指 Clang + Flang-new
 
 ## SPEC INT 2006 Speed
 
