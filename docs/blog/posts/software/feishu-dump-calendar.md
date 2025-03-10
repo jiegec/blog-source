@@ -85,4 +85,14 @@ print("\n".join(all_lines))
 
 运行上述脚本：`python3 dump.py ~/.contacts/*/*.ics > dump.ics`，这样得到的 `.ics` 文件就可以直接导入到日历软件了。
 
-注：也可以用类似的方法导出 iCloud 国区的日历：把 url 改成 `"https://caldav.icloud.com.cn"`，在 Apple ID 上生成 App 密码，填入上面的 password，再把邮箱写到 username 即可。
+## 导出 iCloud 国区的日历和联系人
+
+除了导出飞书的日历，也可以用类似的方法导出 iCloud 国区的日历：把 url 改成 `"https://caldav.icloud.com.cn"`，在 Apple ID 上生成 App 密码，填入上面的 password，再把邮箱写到 username 即可。
+
+更进一步，也可以导出 iCloud 国区的联系人：
+
+1. 把配置中 `fileext = ".ics"` 改成 `fileext = ".vcf"`，因为联系人的格式是 [vCard](https://en.wikipedia.org/wiki/VCard)，其文件名后缀是 `.vcf`
+2. 把 `type = "caldav"` 改成 `type = "carddav"`，把 `url = "https://caldav.icloud.com.cn` 改成 `url = "https://contacts.icloud.com.cn"`，表示同步联系人而不是日历
+
+如果既要同步日历，又要同步联系人，或者需要同步来自不同来源的日历，建议把 status 和 storage local 放到不同的目录下，避免出现冲突。
+
