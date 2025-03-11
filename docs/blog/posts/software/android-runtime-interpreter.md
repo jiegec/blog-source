@@ -434,6 +434,7 @@ cd runtime/interpreter/mterp
 2. V8 的 op handler 是动态生成的（`mksnapshot` 阶段），长度没有限制，允许生成比较复杂的汇编，但如果汇编比较短（比如 release 模式下），也可以节省一些内存；代价是需要一次额外的对 dispatch table 的访存，来找到 opcode 对应的 handler
 3. mterp 的 op handler 对齐到 128B 边界，带来的好处是不需要访问 dispatch table，直接根据 opcode 计算地址即可，不过由于很多 handler 很短，可能只有十条指令左右，就会浪费了一些内存
 4. V8 没有 handler 长度的限制，所以针对一些常见的 Op 做了优化（Short Star），可以减少一些跳转的开销
+5. V8 在区分 Smi(Small integer) 和对象的时候，做法是在 LSB 上打标记：0 表示 Smi，1 表示对象；mterp 则不同，它给每个虚拟寄存器维护了两个 32 位的值：一个保存在 xFP 指向的数组当中，记录的是它的实际的值，比如 int 的值，或者对象的引用；另一个保存在 xREFS 指向的数组当中，记录的是它引用的对象，如果不是对象，则记录的是 0
 
 除了以上列举的不同的地方以外，其实整体来看是十分类似的，下面是二者实现把整数加载到寄存器（`const/4 vA, #+B` 和 `LdaSmi`）的汇编的对比：
 
