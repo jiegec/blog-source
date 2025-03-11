@@ -447,6 +447,14 @@ cd runtime/interpreter/mterp
 | Save Result           | `str w1, [x29, w0, uxtw #2]; str wzr, [x25, w0, uxtw #2]` | `add w0, w1, w1`                                |
 | Computed Goto         | `and x16, x23, 0xff; add x16, x24, x16, lsl #7; br x16`   | `ldr x2, [x21, x3, lsl #3]; mov x17, x2; br x2` |
 
+在寄存器的约定和使用上的区别：
+
+| Purpose          | mterp (nterp)          | Ignition                       |
+|------------------|------------------------|--------------------------------|
+| Intepreter PC    | base + offset in `x22` | base in `x20`, offset in `x19` |
+| Virtual Register | relative to `x29`      | relative to `fp`               |
+| Dispatch Table   | computed from `x24`    | saved in `x21`                 |
+
 ## 参考
 
 - [What does mterp mean?](https://stackoverflow.com/questions/22187630/what-does-mterp-mean)
