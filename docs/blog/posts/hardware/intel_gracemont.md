@@ -44,23 +44,39 @@ Intel Gracemont 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 - 2x 32B/cycle
 
+Gracemont 的 Clustered Decode 架构比较特别，目前没有找到方法去证实它的 Fetch 带宽，后续如果找到了更好的方法，再测这个特性。
+
 ### Decode
 
 官方信息：
 
 - 2x 3-wide
 
+Gracemont 的 Clustered Decode 架构比较特别，目前没有找到方法去确认它 2x 3-wide 的 Decode 带宽，后续如果找到了更好的方法，再测这个特性。
+
 ### L1 ICache
 
 官方信息：
 
-- 64KB
+- **64KB**
+
+为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 4 字节 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
+
+![](./intel_gracemont_fetch_bandwidth.png)
+
+可以看到 footprint 在 64 KB 之前时可以达到 5 IPC，之后则降到 3.25 IPC，这里的 64 KB 就对应了 L1 ICache 的容量。
 
 ### L1 ITLB
 
 官方信息：
 
-- 64 entries, fully associative
+- **64 entries**, fully associative
+
+构造一系列的 jmp 指令，使得 jmp 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
+
+![](./intel_gracemont_itlb_size.png)
+
+可以看到 64 个 Page 出现了明显的拐点，对应的就是 64 的 L1 ITLB 容量。过了拐点后，每次 jmp 的时间延长到了 16 个周期左右，包括了 L2 TLB 到 L1 ITLB 的 refill 时间。
 
 ### Return Stack
 
