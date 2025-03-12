@@ -412,22 +412,44 @@ Storage Clusters](https://ceph.com/assets/pdfs/weil-rados-pdsw07.pdf) 里画了�
 
 ## Distributed Transactions
 
+TODO
+
 ## Frangipani
+
+TODO
 
 ## Spanner
 
+TODO
+
 ## FaRM
+
+TODO
 
 ## Spark
 
+TODO
+
 ## Memcached
+
+TODO
 
 ## Causal Consistency
 
+TODO
+
 ## Secure Untrusted Data Repository
+
+TODO
 
 ## Blockchain
 
+TODO
+
 ## Blockstack
 
+TODO
+
 ## Ethereum
+
+TODO
