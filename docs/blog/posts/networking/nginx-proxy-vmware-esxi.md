@@ -19,7 +19,8 @@ socat TCP-LISTEN:8443,reuseaddr,fork TCP:esxi_addr:443
 首先讲讲为啥把 8443 换成 9443 不能工作吧 -- 很简单，ESXi 的网页界面会请求 8443 端口。只是恰好我用 8443 转发到 443，所以可以正常工作。这个很迷，但是测试的结果确实如此。VMware Remote Console 还用到了别的端口，我还在研究之中。
 
 来谈谈怎么配置这个 Nginx 转发吧。首先是 80 跳转 443:
-```
+
+```bash
 server {
         listen 80;
         listen 8080;
@@ -30,8 +31,8 @@ server {
 ```
 
 这个很简单，接下来是转发 443 端口：
-```
 
+```bash
 server {
         listen 443 ssl;
         server_name esxi.example.org;
@@ -50,7 +51,8 @@ server {
 ```
 
 此时，打开 https://esxi.example.org 就能看到登录界面了。但是仍然无法登录。从 DevTools 看错误，发现它请求了 8443 端口。于是进行转发：
-```
+
+```bash
 server {
         listen 8443 ssl;
         server_name esxi.example.org;
@@ -86,8 +88,9 @@ server {
 
 20:02 更新：现在做了 WebSocket 转发，目前可以在浏览器中打开 Web Console 了。但是，在访问 https://esxi.example.org/ 的时候还是会出现一些问题，然而 https://esxi.example.org:8443/ 是好的。
 
-转发 WebSocket：
-```
+转发 WebSocket，参考 [WebSocket proxying](http://nginx.org/en/docs/http/websocket.html)：
+
+```bash
 map $http_upgrade $connection_upgrade {
         default upgrade;
         ''      close;
@@ -129,12 +132,14 @@ server {
 ```
 
 20:29 更新：找到了 VMware Remote Console 的端口：902，用 iptables 进行 DNAT 即可：
+
 ```shell
 iptables -A PREROUTING -i wan_interface -p tcp -m tcp --dport 902 -j DNAT --to-destination esxi_addr:902
 ```
 
 2018-05-09 08:07 更新：最后发现，还是直接隧道到内网访问 ESXi 最科学。或者，让 443 重定向到 8443：
-```
+
+```bash
 server {
         listen 443 ssl;
         server_name esxi.example.org;
@@ -144,4 +149,5 @@ server {
         return 301 https://$host:8443$request_uri;
 }
 ```
+
 这样，前面也不用写那么多 CORS 的东西了。

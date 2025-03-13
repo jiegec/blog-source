@@ -10,7 +10,7 @@ categories:
 
 这次遇到一个需求，要反代到不在内网的地址，为了保证安全，还是得上 HTTPS，所以尝试了一下怎么给 upstream 配置自签名 HTTPS 证书的验证。
 
-```
+```bash
 upstream subpath {
     server 4.3.2.1:4321;
 }
@@ -34,9 +34,17 @@ server {
 
 可以用 `openssl` 获得自签名的 cert :
 
-```
+```bash
 echo | openssl s_client -showcerts -connect 4.3.2.1:4321 2>/dev/null | \
                               openssl x509 -text > /path/to/self_signed_cert.crt
 ```
 
 ref: https://stackoverflow.com/questions/7885785/using-openssl-to-get-the-certificate-from-a-server
+
+如果上游的 SSL/TLS 比较老，可能还需要添加一个选项来兼容：
+
+```bash
+proxy_ssl_conf_command Options UnsafeLegacyRenegotiation;
+```
+
+ref: https://stackoverflow.com/questions/77990465/nginx-fail-forwarding-with-ssl-error0a000152ssl-routinesunsafe-legacy-reneg
