@@ -1,6 +1,5 @@
 ---
 layout: post
-draft: true
 date: 2025-01-12
 tags: [cpu,intel,gracemont,alderlake,performance,uarch-review]
 categories:
