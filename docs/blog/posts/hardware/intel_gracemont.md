@@ -80,6 +80,44 @@ Gracemont 的 Clustered Decode 架构比较特别，目前没有找到方法去�
 
 ### Return Stack
 
+用之前设计的 Return Stack 测试代码来测试 Gracemont，它的 call/ret 是成对的，也就是 ret 的返回地址不变，称这个版本为 A。此时发现不同调用深度下，都能做到 2 cycle 每 call/ret 对，没有观察到性能的下降，说明此时 Return Stack 并没有介入，应该是由 BTB 提供了预测。下面是 A 版本代码在 Gracemont 上的测试结果：
+
+![](./intel_gracemont_rs_size_1.png)
+
+为了解决这个问题，修改代码，在函数里构造两个 call 去调用同一个函数，这样 ret 的返回地址就会变化了，称这个版本为 B。这时候跑出来的结果比较奇怪，周期数快速上升：
+
+![](./intel_gracemont_rs_size_2.png)
+
+同样的 B 版本代码在 AMD Zen3 的处理器上，可以观察到在符合预期的 Return Stack 大小处出现性能拐点，和 A 版本代码得到的结论一致。而 B 版本代码在 Golden Cove 上，会观察到在 6 的附近有一个性能下降如下图，但之前用 [A 版本代码测得的拐点为 20](./intel_golden_cove.md):
+
+![](./intel_gracemont_rs_size_golden_cove.png)
+
+这个区别背后的原因还需要进一步的分析。下面是两个版本的汇编代码的对比：
+
+```asm
+# version A
+func_n:
+    call func_{n-1}
+    ret
+
+# version B, generate two alternating call sites
+func_n:
+    mov %rdi, %rsi
+    and $1, %rsi
+    je 2f
+
+    call func_{n-1}
+    jmp 3f
+
+2:
+    call func_{n-1}
+    jmp 3f
+
+3:
+    ret
+
+```
+
 ## 后端
 
 ### Rename
