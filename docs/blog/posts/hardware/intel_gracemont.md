@@ -237,7 +237,7 @@ cases where the store's address is known, and the store data is available.
 
 - 32 entries, fully associative
 
-奇怪的是，虽然官方信息写的是 32-entry 的 L1 DTLB，实测它有 48-entry：
+用类似测 L1 DCache 的方法测试 L1 DTLB 容量，只不过把 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈。奇怪的是，虽然官方信息写的是 32-entry 的 L1 DTLB，但是实测它有 48-entry：
 
 ![](./intel_gracemont_dtlb_size.png)
 
@@ -247,9 +247,15 @@ cases where the store's address is known, and the store data is available.
 
 官方信息：
 
-- 4-way 2048 entries for 4K/2M pages
+- 4-way **2048** entries for 4K/2M pages
 - fully associative 8 entries for 1GB pages
 - 4 page walkers
+
+使用类似 L1 DTLB 的方式去测试 L2 TLB，在 2048 附近观察到了拐点：
+
+![](./intel_gracemont_l2_dtlb_size.png)
+
+这个结果和官方数据是吻合的。
 
 ### L2 Cache
 
@@ -263,5 +269,11 @@ cases where the store's address is known, and the store data is available.
 
 官方信息：
 
-- 256 entries
+- **256 entries**
 - 8 wide retirement
+
+为了测试 ROB 的大小，设计了一个循环，循环开始和结束是长延迟的 long latency load。中间是若干条 NOP 指令，当 NOP 指令比较少时，循环的时候取决于 load 指令的时间；当 NOP 指令数量过多，填满了 ROB 以后，就会导致 ROB 无法保存循环末尾的 load 指令，性能出现下降。测试结果如下：
+
+![](./intel_gracemont_rob_size.png)
+
+当 NOP 数量达到 256 时，性能开始急剧下滑，说明 Golden Cove 的 ROB 大小是 256。
