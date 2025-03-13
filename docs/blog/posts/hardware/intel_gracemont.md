@@ -157,13 +157,12 @@ func_n:
 - NOP: 5 IPC
 - ALU: 4 IPC
 
-
 ### LSU
 
 官方信息：
 
 - **2x 16B Load/cycle, 2x 16B Store/cycle**
-- Load latency 3-4 cycle
+- **Load latency 3-4 cycle**
 
 #### Load Store 带宽
 
@@ -215,6 +214,16 @@ cases where the store's address is known, and the store data is available.
 - 1 ld + 1 st: 要求 st 完全包含 ld 且地址相同且不能跨缓存行；特别地，64b Store 到 32b Load 转发允许 y-x=4
 - 1 ld + 2+ st: 不支持
 
+#### Load to Use Latency
+
+测试不同场景下的 Load to Use Latency：
+
+- `mov 0(%rsi), %rsi`: 3 cycle，但在跨越 64B 缓存行边界时退化到 11 cycle
+- `mov 8(%rsi), %rsi`: 3 cycle
+- `mov 0(%rsp, %rsi, 8), %rsi`: 4 cycle
+- `mov 0(%rsi, %rdx, 8), %rsi`: 4 cycle
+- Load to ALU Latency: 4 cycle
+
 ### L1 DCache
 
 官方信息：
@@ -227,6 +236,12 @@ cases where the store's address is known, and the store data is available.
 官方信息：
 
 - 32 entries, fully associative
+
+奇怪的是，虽然官方信息写的是 32-entry 的 L1 DTLB，实测它有 48-entry：
+
+![](./intel_gracemont_dtlb_size.png)
+
+这个观察和 [Meteor Lake’s E-Cores: Crestmont Makes Incremental Progress](https://chipsandcheese.com/p/meteor-lakes-e-cores-crestmont-makes-incremental-progress) 是一致的，怀疑是 Intel 写错了数据。
 
 ### L2 TLB
 
