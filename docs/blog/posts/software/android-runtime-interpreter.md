@@ -455,6 +455,51 @@ cd runtime/interpreter/mterp
 | Virtual Register | relative to `x29`      | relative to `fp`               |
 | Dispatch Table   | computed from `x24`    | saved in `x21`                 |
 
+## Lua 解释器
+
+既然已经分析了 [V8](./v8-ignition-internals.md) 和 Android Runtime 的解释器，也来简单看一下 [Lua](https://www.lua.org/) 的解释器实现。它写的非常简单，核心代码就在 `lvm.c` 当中：
+
+```c
+vmdispatch (GET_OPCODE(i)) {
+  vmcase(OP_MOVE) {
+    StkId ra = RA(i);
+    setobjs2s(L, ra, RB(i));
+    vmbreak;
+  }
+  vmcase(OP_LOADI) {
+    StkId ra = RA(i);
+    lua_Integer b = GETARG_sBx(i);
+    setivalue(s2v(ra), b);
+    vmbreak;
+  }
+  // ...
+}
+```
+
+可以看到，它把 `switch`、`case` 和 `break` 替换成了三个宏 `vmdispatch`、`vmcase` 和 `vmbreak`。接下来看它可能的定义，第一种情况是编译器不支持 `goto *` 语法，此时就直接展开：
+
+```c
+#define vmdispatch(o)	switch(o)
+#define vmcase(l)	case l:
+#define vmbreak	break
+```
+
+如果编译器支持 `goto *` 语法，则展开成对应的 `computed goto` 形式：
+
+```c
+#define vmdispatch(x) goto *disptab[x];
+#define vmcase(l) L_##l:
+#define vmbreak	mfetch(); vmdispatch(GET_OPCODE(i));
+
+static const void *const disptab[NUM_OPCODES] = {
+  &&L_OP_MOVE,
+  &&L_OP_LOADI,
+  // ...
+};
+```
+
+和之前写的解释器的不同实现方法对应，就不多阐述了。
+
 ## 参考
 
 - [What does mterp mean?](https://stackoverflow.com/questions/22187630/what-does-mterp-mean)
