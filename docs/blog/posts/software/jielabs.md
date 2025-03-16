@@ -1,7 +1,9 @@
 ---
 layout: page
 date: 2020-01-01
-permalink: /jielabs
+tags: [jielabs]
+categories:
+    - software
 ---
 
 # JieLabs 是如何工作的
