@@ -479,9 +479,9 @@ vmdispatch (GET_OPCODE(i)) {
 可以看到，它把 `switch`、`case` 和 `break` 替换成了三个宏 `vmdispatch`、`vmcase` 和 `vmbreak`。接下来看它可能的定义，第一种情况是编译器不支持 `goto *` 语法，此时就直接展开：
 
 ```c
-#define vmdispatch(o)	switch(o)
-#define vmcase(l)	case l:
-#define vmbreak	break
+#define vmdispatch(o) switch(o)
+#define vmcase(l) case l:
+#define vmbreak break
 ```
 
 如果编译器支持 `goto *` 语法，则展开成对应的 `computed goto` 形式：
