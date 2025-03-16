@@ -3,7 +3,7 @@ layout: post
 date: 2016-03-13
 tags: [lisp,logo]
 categories:
-    - logo
+    - software
 ---
 
 # Logo is a lisp dialect
