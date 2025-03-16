@@ -3,7 +3,7 @@ layout: post
 date: 2017-08-08
 tags: [huawei,wifi]
 categories:
-    - unboxing
+    - hardware
 ---
 
 # 华为随行 WiFi 2 mini 开箱

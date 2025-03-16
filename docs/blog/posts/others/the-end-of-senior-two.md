@@ -3,7 +3,7 @@ layout: post
 date: 2016-07-07
 tags: [coding, study]
 categories:
-    - life
+    - others
 ---
 
 # The end of senior two

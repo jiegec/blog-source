@@ -3,7 +3,7 @@ layout: post
 date: 2016-03-19
 tags: [cameron,subtitles]
 categories:
-    - speech
+    - others
 ---
 
 # Listen and write down subtitles of Cameron's speech
