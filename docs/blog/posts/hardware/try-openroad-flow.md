@@ -110,7 +110,7 @@ endmodule
 
 - slvt/lvt/rvt/hvt: super-low/low/regular/high V threshold 前者速度快：阈值电压低，同时漏电流大
 - ss/tt/ff: slow-slow/typical-typical/fast-fast 后者速度快：电压高，温度低，比如 SS（0.99V 125C）TT（1.10V 25C）FF（1.21V -40C）；有时候还会看到 ssg，可以理解为 ss 的比较精确的版本，因此没有那么悲观，延迟比 SS 低一些，详见 [STA | ssg 跟 ss corner 的区别——谬误更正版](https://cloud.tencent.com/developer/article/1598417)
-- c+数字：表示的是 channel length，c40 表示 40nm，数字越大速度越慢，能耗越低
+- c + 数字：表示的是 channel length，c40 表示 40nm，数字越大速度越慢，能耗越低
 - 数字+track：表示的是 track height，sc12 表示 12-track，数字越大速度越快
 
 ARM 的文档 [Choosing the physical IP libraries](https://developer.arm.com/documentation/102738/0100/Choosing-the-physical-IP-libraries) 描述了 Channel length, Track height, Voltage threshold 等不同的选择。

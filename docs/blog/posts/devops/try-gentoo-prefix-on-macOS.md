@@ -30,7 +30,7 @@ stage3.
 
 经过 n 次跑挂以后，终于搞完了 stage3，然后 `SHELL=bash ./bootstrap-prefix.sh $EPREFIX startscript` 生成 `startprefix` ，在外面的 SHELL 中向切进来的时候运行这个即可。
 
-然后就可以使用Gentoo/Prefix了。注意！此时的 `$PATH` 仅限于 `$EPREFIX` 下几个目录和 `/usr/bin` `/bin` 所以很多东西都会出问题（Emacs, Vim, Fish etc）。小心不要把自己的目录什么的搞挂了。
+然后就可以使用 Gentoo/Prefix 了。注意！此时的 `$PATH` 仅限于 `$EPREFIX` 下几个目录和 `/usr/bin` `/bin` 所以很多东西都会出问题（Emacs, Vim, Fish etc）。小心不要把自己的目录什么的搞挂了。
 
 然后就可以假装试用 Gentoo 了！
 

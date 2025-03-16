@@ -30,7 +30,7 @@ categories:
 | 型号                                                           | 类型            | 桥片/显卡         | 内存 | 硬盘  | 价格 |
 |----------------------------------------------------------------|---------------|-------------------|------|-------|------|
 | [PN-L520A](https://item.jd.com/10074790246806.html)            | 台式机          | 7A2000            | 16GB | 512GB | 2699 |
-| [GPC-100](https://item.jd.com/100017987513.html)               | 台式机          | 7A1000+独显       | 8GB  | 256GB | 3825 |
+| [GPC-100](https://item.jd.com/100017987513.html)               | 台式机          | 7A1000 + 独显     | 8GB  | 256GB | 3825 |
 | [M540Z](https://item.jd.com/100044255754.html)                 | 台式机          | 独显              | 8GB  | 256GB | 4599 |
 | [悦睿](https://item.jd.com/100023656622.html)                  | 台式机          | 独显              | 8GB  | 256GB | 4608 |
 | [EC-80G](https://item.jd.com/100029037278.html)                | 台式机          | AMD R5 230        | 8GB  | 256GB | 7266 |
@@ -43,7 +43,7 @@ categories:
 | [L860-T2](https://item.jd.com/100037403828.html)               | 笔记本          | 独显              | 8GB  | 256GB | 6999 |
 | [L71](https://www.eaecis.com/cp_95/877.html)                   | 笔记本          | 独显              | N/A  | N/A   | N/A  |
 | [L71S](https://www.eaecis.com/cp_95/875.html)                  | 笔记本          | 7A2000            | N/A  | N/A   | N/A  |
-| [L71F](https://www.eaecis.com/cp_95/924.html)                  | 笔记本          | 7A1000+独显       | N/A  | N/A   | N/A  |
+| [L71F](https://www.eaecis.com/cp_95/924.html)                  | 笔记本          | 7A1000 + 独显     | N/A  | N/A   | N/A  |
 | [龙芯开发板](https://item.taobao.com/item.htm?id=682906828504) | 主板+CPU        | 7A2000            | N/A  | N/A   | 1700 |
 | [智芯元](https://item.taobao.com/item.htm?id=717408690295)     | 主板+CPU        | 7A2000            | N/A  | N/A   | 1798 |
 | [我爱开发板](https://item.taobao.com/item.htm?id=683776108019) | 主板+CPU        | 7A2000            | N/A  | N/A   | 1900 |
@@ -108,7 +108,7 @@ categories:
 
 - [ZKL360-TF](https://item.jd.com/10092886566388.html)：16GB+1024GB，2699 元
 - [PN-L530A](https://item.jd.com/10090990632336.html) [官网](https://pnxc.cn/Products-Center/12/262.html): 16GB+512GB，2999 元
-- [EC-80G](https://item.jd.com/100076186619.html): 8GB+256GB+独显，4699 元
+- [EC-80G](https://item.jd.com/100076186619.html): 8GB + 256GB + 独显，4699 元
 - [DL37-D05](https://item.jd.com/10092330519232.html) [官网](https://www.eaecis.com/cp_94/960.html)
 - [龙芯俱乐部](https://item.taobao.com/item.htm?id=746096291480)
 - [F918](https://item.taobao.com/item.htm?id=747648718264) [天猫](https://detail.tmall.com/item.htm?id=745565351633)

@@ -12,7 +12,7 @@ categories:
 
 1. `fbgrab` ：命令就是 fbgrab image.png，直接得到 png 文件，格式是对的，但是用软件打开就是一片空白。用 ImageMagick 转换为 jpg 可以看到一些内容，但是和实际有些不一样。
 2.  `fbdump` ：命令就是 fbdump > image.ppm，得到裸的 ppm 文件，图像是正确的，也可以转换为别的格式正常打开。
-3. cat+脚本处理：直接 cat /dev/fb0 > image.rgb，然后用下面的脚本转换为 png。由于 Framebuffer 格式为 RGB，本来 A 所在的 channel 都为 0，所以用一些软件直接打开都是空白，只好写了脚本直接跳过 Alpha Channel。
+3. cat + 脚本处理：直接 cat /dev/fb0 > image.rgb，然后用下面的脚本转换为 png。由于 Framebuffer 格式为 RGB，本来 A 所在的 channel 都为 0，所以用一些软件直接打开都是空白，只好写了脚本直接跳过 Alpha Channel。
 
 Framebuffer 配置（ `fbset` 输出）：
 

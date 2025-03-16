@@ -8,7 +8,7 @@ categories:
 
 # 在 Jupyter Notebook 中运行 C++ 代码
 
-刚刚在 HN 上看到了这么一个文章：[Interactive Workflows for C++ with Jupyter](https://blog.jupyter.org/interactive-workflows-for-c-with-jupyter-fe9b54227d92) [HN](https://news.ycombinator.com/item?id=15808809) ，终于可以在 Jupyter Notebook 里跑 C++代码了，很开心，于是开始自己研究了起来怎么本地跑。
+刚刚在 HN 上看到了这么一个文章：[Interactive Workflows for C++ with Jupyter](https://blog.jupyter.org/interactive-workflows-for-c-with-jupyter-fe9b54227d92) [HN](https://news.ycombinator.com/item?id=15808809) ，终于可以在 Jupyter Notebook 里跑 C++ 代码了，很开心，于是开始自己研究了起来怎么本地跑。
 
 首先当然是更新一波 jupyter，安装一波 cling：
 
