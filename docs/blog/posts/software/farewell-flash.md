@@ -3,7 +3,7 @@ layout: post
 date: 2017-07-26
 tags: [flash,adobe]
 categories:
-    - news
+    - software
 ---
 
 # Farewell, Flash
