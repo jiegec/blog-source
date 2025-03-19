@@ -54,7 +54,9 @@ categories:
 
 可以在 cuda/include/crt/host_config.h 文件里找到：
 
+- cuda 12.8: gcc <= 14, 3.2 < clang < 20
 - cuda 12.6: gcc <= 13, 3.2 < clang < 19
+- cuda 12.3: gcc <= 12, 3.2 < clang < 16
 - cuda 12.1: gcc <= 12, 3.2 < clang < 16
 - cuda 12.0: gcc <= 12, 3.2 < clang < 15
 - cuda 11.8: gcc <= 11, 3.2 < clang < 15
@@ -74,6 +76,8 @@ categories:
 
 可以在 `nvcc --help` 搜索 gpu-architecture 找到：
 
+- cuda 12.8 sm_50 to sm_120a
+- cuda 12.3 sm_50 to sm_90a
 - cuda 12.1 sm_50 to sm_90a
 - cuda 12.0 sm_50 to sm_90a
 - cuda 11.8 sm_35 to sm_90
@@ -88,7 +92,9 @@ categories:
 
 显卡的 Compute Capability 可以在 https://developer.nvidia.com/cuda-gpus 找到：
 
+- B200: 100
 - H100: 90
+- RTX 4090: 89
 - A100: 80
 - V100: 70
 - P100: 60
