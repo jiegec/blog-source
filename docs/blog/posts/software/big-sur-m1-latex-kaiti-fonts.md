@@ -107,5 +107,6 @@ $ miktex-fc-list | grep Kaiti
 ```shell
 cd ~/Library/Fonts
 ln -s /System/Library/PrivateFrameworks/FontServices.framework/Versions/A/Resources/Fonts/Subsets/华文细黑.ttf # STHeiti
+ln -s /System/Library/PrivateFrameworks/FontServices.framework/Versions/A/Resources/Fonts/Subsets/华文仿宋.ttf # STFangsong
 ln -s /System/Library/PrivateFrameworks/FontServices.framework/Versions/A/Resources/Fonts/Subsets/Kaiti.ttc # STKaiti
 ```
