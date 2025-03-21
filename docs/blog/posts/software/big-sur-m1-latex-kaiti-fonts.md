@@ -101,3 +101,11 @@ $ miktex-fc-list | grep Kaiti
 这样就搞定了，用 LaTeX 找字体的时候也没有出现问题了。
 
 如果你用的是 TeX Live，那么直接把上面的 Kaiti.ttc 路径复制到 `~/Library/Fonts` 下即可。
+
+如果是用 Nixpkgs 装的 Tex Live，则建议用符号链接的方法，把相关的字体添加到 `~/Library/Fonts` 下：
+
+```shell
+cd ~/Library/Fonts
+ln -s /System/Library/PrivateFrameworks/FontServices.framework/Versions/A/Resources/Fonts/Subsets/华文细黑.ttf # STHeiti
+ln -s /System/Library/PrivateFrameworks/FontServices.framework/Versions/A/Resources/Fonts/Subsets/Kaiti.ttc # STKaiti
+```
