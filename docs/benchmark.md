@@ -14,14 +14,16 @@ permalink: /benchmark/
 2. LoongArch 测试：Debian sid, GCC 14.2.0
 3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.0.0，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)
 
-注意事项：
+## 注意事项
+
+注意事项如下：
 
 1. 分数只有在控制变量时（即一般所说的“用相同二进制测得”，此外还有一些影响性能的变量见下）可以用来比较**相同指令集**的不同处理器的性能，即通过测试结果比较：
       1. AMD64 指令集的 Intel 和 AMD 处理器的性能
       2. ARM64 指令集的 Apple、ARM、Huawei 和 Qualcomm 处理器的性能
       3. LoongArch 指令集的不同处理器的性能
-2. 用分数来进行**不同指令集**的处理器之间的性能比较，则没有很强的说服力
-3. 即使是相同硬件，如下因素都可能对测试结果产生显著的影响：
+2. 用分数来进行**不同指令集**的处理器之间的性能比较，则说服力较弱
+3. 即使是相同硬件，如下因素都可能对测试结果产生**显著的影响**：
       1. 不同编译器（例如同等编译选项下 GCC 通常比 Clang 快）
       2. 不同编译器版本（通常新版本比旧版本快，但也有反例）
       3. 不同编译选项（例如是否开 LTO，是否设置 -march=native）
@@ -254,6 +256,11 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Cortex X1 @ 3.0 GHz: 5.7
 - Cortex A78 @ 2.4 GHz: 3.9
 
+[极客湾•麒麟9010，测评汇总：IPC性能，巨幅提升！CPU能效全频段领先，麒麟9000S！](https://www.bilibili.com/opus/925502754370093090)
+
+- Huawei Kirin 9010: 4.54
+- HUawei Kirin 9000s: 4.06
+
 ### GCC 12 vs GCC 11 vs LLVM 20
 
 在 Intel i9-14900K 上用 -O3 测试三种编译器组合的性能：
@@ -436,6 +443,11 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Cortex X1 @ 3.0 GHz: 8.9
 - Cortex A78 @ 2.4 GHz: 5.9
 
+[极客湾•麒麟9010，测评汇总：IPC性能，巨幅提升！CPU能效全频段领先，麒麟9000S！](https://www.bilibili.com/opus/925502754370093090)
+
+- Huawei Kirin 9010: 7.77
+- HUawei Kirin 9000s: 7.12
+
 ### GCC 12 vs LLVM 19 vs LLVM 20
 
 在 Intel i9-14900K 上用 -O3 测试两种编译器组合的性能：
@@ -539,7 +551,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 
 ## SPEC INT 2006 Rate
 
-TODO
+不打算跑
 
 ### 网上的数据
 
