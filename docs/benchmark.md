@@ -256,7 +256,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Cortex X1 @ 3.0 GHz: 5.7
 - Cortex A78 @ 2.4 GHz: 3.9
 
-[极客湾•麒麟9010，测评汇总：IPC性能，巨幅提升！CPU能效全频段领先，麒麟9000S！](https://www.bilibili.com/opus/925502754370093090)
+[极客湾•麒麟 9010，测评汇总：IPC 性能，巨幅提升！CPU 能效全频段领先，麒麟 9000S！](https://www.bilibili.com/opus/925502754370093090)
 
 - Huawei Kirin 9010: 4.54
 - HUawei Kirin 9000s: 4.06
@@ -443,7 +443,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 - Cortex X1 @ 3.0 GHz: 8.9
 - Cortex A78 @ 2.4 GHz: 5.9
 
-[极客湾•麒麟9010，测评汇总：IPC性能，巨幅提升！CPU能效全频段领先，麒麟9000S！](https://www.bilibili.com/opus/925502754370093090)
+[极客湾•麒麟 9010，测评汇总：IPC 性能，巨幅提升！CPU 能效全频段领先，麒麟 9000S！](https://www.bilibili.com/opus/925502754370093090)
 
 - Huawei Kirin 9010: 7.77
 - HUawei Kirin 9000s: 7.12
