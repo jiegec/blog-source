@@ -325,7 +325,7 @@ ARM64 平台的分支预测准确率（Average）由高到低：
 
 桌面平台：
 
-- AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [16.5](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
+- AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [16.3](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [16.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)

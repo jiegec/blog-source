@@ -1,0 +1,146 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.11.0-21-generic
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1      132        76.0   S
+503.bwaves_r          1      131        76.3   S
+503.bwaves_r          1      132        76.2   *
+507.cactuBSSN_r       1       99.2      12.8   S
+507.cactuBSSN_r       1       99.4      12.7   *
+507.cactuBSSN_r       1       99.6      12.7   S
+508.namd_r            1       96.1       9.88  S
+508.namd_r            1       96.4       9.86  *
+508.namd_r            1       96.7       9.82  S
+510.parest_r          1      154        17.0   *
+510.parest_r          1      155        16.9   S
+510.parest_r          1      153        17.1   S
+511.povray_r          1      163        14.3   S
+511.povray_r          1      162        14.4   *
+511.povray_r          1      162        14.4   S
+519.lbm_r             1      102        10.3   S
+519.lbm_r             1       98.3      10.7   *
+519.lbm_r             1       97.6      10.8   S
+521.wrf_r             1      113        19.8   S
+521.wrf_r             1      114        19.7   S
+521.wrf_r             1      114        19.7   *
+526.blender_r         1      119        12.8   S
+526.blender_r         1      119        12.8   *
+526.blender_r         1      119        12.8   S
+527.cam4_r            1       98.6      17.7   S
+527.cam4_r            1       98.8      17.7   *
+527.cam4_r            1       98.8      17.7   S
+538.imagick_r         1      223        11.2   S
+538.imagick_r         1      222        11.2   *
+538.imagick_r         1      222        11.2   S
+544.nab_r             1      128        13.1   *
+544.nab_r             1      128        13.1   S
+544.nab_r             1      129        13.1   S
+549.fotonik3d_r       1      127        30.8   S
+549.fotonik3d_r       1      127        30.8   *
+549.fotonik3d_r       1      127        30.6   S
+554.roms_r            1      112        14.1   S
+554.roms_r            1      113        14.0   *
+554.roms_r            1      113        14.0   S
+=================================================================================
+503.bwaves_r          1      132        76.2   *
+507.cactuBSSN_r       1       99.4      12.7   *
+508.namd_r            1       96.4       9.86  *
+510.parest_r          1      154        17.0   *
+511.povray_r          1      162        14.4   *
+519.lbm_r             1       98.3      10.7   *
+521.wrf_r             1      114        19.7   *
+526.blender_r         1      119        12.8   *
+527.cam4_r            1       98.8      17.7   *
+538.imagick_r         1      222        11.2   *
+544.nab_r             1      128        13.1   *
+549.fotonik3d_r       1      127        30.8   *
+554.roms_r            1      113        14.0   *
+ Est. SPECrate(R)2017_fp_base            16.6
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+503.bwaves_r: time (ms) = 131747
+503.bwaves_r: clock freq (MHz) = 5647.26
+503.bwaves_r: instructions = 2.25331e+12
+503.bwaves_r: ipc = 3.03
+503.bwaves_r: misprediction rate (%) = 0.13
+503.bwaves_r: mpki = 0.06
+507.cactuBSSN_r: time (ms) = 99295.3
+507.cactuBSSN_r: clock freq (MHz) = 5651.46
+507.cactuBSSN_r: instructions = 1.46338e+12
+507.cactuBSSN_r: ipc = 2.61
+507.cactuBSSN_r: misprediction rate (%) = 0.05
+507.cactuBSSN_r: mpki = 0.01
+508.namd_r: time (ms) = 96303.5
+508.namd_r: clock freq (MHz) = 5596.05
+508.namd_r: instructions = 2.58249e+12
+508.namd_r: ipc = 4.79
+508.namd_r: misprediction rate (%) = 4.17
+508.namd_r: mpki = 0.68
+510.parest_r: time (ms) = 154019
+510.parest_r: clock freq (MHz) = 5637.19
+510.parest_r: instructions = 3.27894e+12
+510.parest_r: ipc = 3.78
+510.parest_r: misprediction rate (%) = 1.22
+510.parest_r: mpki = 1.65
+511.povray_r: time (ms) = 162403
+511.povray_r: clock freq (MHz) = 5527.54
+511.povray_r: instructions = 3.46005e+12
+511.povray_r: ipc = 3.85
+511.povray_r: misprediction rate (%) = 0.34
+511.povray_r: mpki = 0.53
+519.lbm_r: time (ms) = 99458.4
+519.lbm_r: clock freq (MHz) = 5684.65
+519.lbm_r: instructions = 1.78067e+12
+519.lbm_r: ipc = 3.15
+519.lbm_r: misprediction rate (%) = 0.07
+519.lbm_r: mpki = 0.00
+521.wrf_r: time (ms) = 113380
+521.wrf_r: clock freq (MHz) = 5639.67
+521.wrf_r: instructions = 1.96193e+12
+521.wrf_r: ipc = 3.07
+521.wrf_r: misprediction rate (%) = 0.95
+521.wrf_r: mpki = 0.83
+526.blender_r: time (ms) = 119048
+526.blender_r: clock freq (MHz) = 5618.73
+526.blender_r: instructions = 1.77645e+12
+526.blender_r: ipc = 2.66
+526.blender_r: misprediction rate (%) = 1.94
+526.blender_r: mpki = 3.36
+527.cam4_r: time (ms) = 98723.1
+527.cam4_r: clock freq (MHz) = 5653.43
+527.cam4_r: instructions = 1.81193e+12
+527.cam4_r: ipc = 3.25
+527.cam4_r: misprediction rate (%) = 0.48
+527.cam4_r: mpki = 0.56
+538.imagick_r: time (ms) = 222342
+538.imagick_r: clock freq (MHz) = 5642.54
+538.imagick_r: instructions = 4.91007e+12
+538.imagick_r: ipc = 3.91
+538.imagick_r: misprediction rate (%) = 0.44
+538.imagick_r: mpki = 0.42
+544.nab_r: time (ms) = 128399
+544.nab_r: clock freq (MHz) = 5650.02
+544.nab_r: instructions = 1.93936e+12
+544.nab_r: ipc = 2.67
+544.nab_r: misprediction rate (%) = 2.58
+544.nab_r: mpki = 2.94
+549.fotonik3d_r: time (ms) = 126798
+549.fotonik3d_r: clock freq (MHz) = 5687.21
+549.fotonik3d_r: instructions = 1.53556e+12
+549.fotonik3d_r: ipc = 2.13
+549.fotonik3d_r: misprediction rate (%) = 0.12
+549.fotonik3d_r: mpki = 0.03
+554.roms_r: time (ms) = 113014
+554.roms_r: clock freq (MHz) = 5659.44
+554.roms_r: instructions = 1.63762e+12
+554.roms_r: ipc = 2.56
+554.roms_r: misprediction rate (%) = 0.20
+554.roms_r: mpki = 0.14
+
+System Info:
+CPU Name: AMD Ryzen 9 9950X
+Enabled: 16 cores, 1 chip, 2 threads/core
+Memory: 2x Kingston KF552C40-32 32 GB 2 rank 4800, configured at 5200
