@@ -2,6 +2,7 @@ site_description: 杰哥的{运维，编程，调板子}小笔记
 site_name: 杰哥的{运维，编程，调板子}小笔记
 site_url: https://jia.je/
 repo_url: https://github.com/jiegec/blog-source
+copyright: Copyright &copy; 2016-2025 Jiajie Chen
 
 theme:
   custom_dir: overrides
