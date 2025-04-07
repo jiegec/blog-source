@@ -321,6 +321,308 @@ Disassembly of section .got:
 
 那么这就是 initial exec TLS model 的实现方法了：它利用了动态库会在程序启动时加载的性质，保证 TLS 变量都保存在相对 `%fs` 的运行时可知且不变的偏移上，把偏移记录在 `.got` 表中，由动态链接器去计算，那么访问的时候就很简单了，直接读取 offset 从 `%fs` 访问即可。
 
+### local/global dynamic TLS model
+
+接下来看动态库的第二种情况：它可能由 dlopen 加载，因此 TLS 变量相对 `%fs` 的位置可能会变化，此时需要通过 `__tls_get_addr` 函数来得到 TLS 变量的地址。回顾前面提到的 `__tls_get_addr` 的声明：
+
+```c
+typedef struct dl_tls_index
+{
+  uint64_t ti_module;
+  uint64_t ti_offset;
+} tls_index;
+
+void *__tls_get_addr (tls_index *ti);
+```
+
+即它需要两个信息，一个是 TLS 变量所在的动态库的编号（这个编号是动态生成的一个 id，无实际含义，仅用来区分动态库），另外是这个 TLS 变量在动态库内的偏移。这时候，又分为两种情况：
+
+1. 第一种情况是，这个 TLS 变量就在这个动态库本身内部定义，此时 TLS 变量在动态库内的偏移在链接期间已知，只是不知道 TLS 空间的起始地址，需要通过 `__tls_get_addr` 函数获取，这种情景叫做 local dynamic TLS model
+2. 第二种情况是，这个 TLS 变量不知道在哪个动态库定义，此时只知道这个 TLS 变量的名字，不知道它属于哪个动态库，也不知道它在动态库内的偏移，这种情况叫做 global dynamic TLS model，是最通用的情况，对 TLS 变量所在的位置没有任何假设
+
+### local dynamic TLS model
+
+接下来分析 local dynamic TLS model，它面向的场景是一个可能被 dlopen 加载的动态库，需要访问自己的 TLS 变量，此时需要用 `__tls_get_addr` 读取自己的 TLS 空间的起始地址，根据链接时已知的偏移，计算出 TLS 变量在运行时的地址。由于 `__tls_get_addr` 需要知道动态库的编号，而这个编号只有动态链接器才知道，因此需要生成一个 dynamic relocation，让动态链接器把这个动态库自己的编号写入到 `.got` entry 中，之后才能拿这个 `.got` entry 的值调用 `__tls_get_addr`，进而得到 TLS 变量的地址。下面来观察这个过程，源码和之前一样：
+
+```c
+__thread int tls_data1;
+__thread int tls_data2;
+
+int read_tls_data1() { return tls_data1; }
+int read_tls_data2() { return tls_data2; }
+```
+
+首先查看生成的汇编：
+
+```shell
+$ gcc -ftls-model=local-dynamic -fPIC -O2 -S tls.c
+$ cat tls.s
+read_tls_data1:
+.LFB0:
+        subq    $8, %rsp
+        leaq    tls_data1@tlsld(%rip), %rdi
+        call    __tls_get_addr@PLT
+        movl    tls_data1@dtpoff(%rax), %eax
+        addq    $8, %rsp
+        ret
+
+read_tls_data2:
+        subq    $8, %rsp
+        leaq    tls_data2@tlsld(%rip), %rdi
+        call    __tls_get_addr@PLT
+        movl    tls_data2@dtpoff(%rax), %eax
+        addq    $8, %rsp
+        ret
+```
+
+首先可以看到的是一个新的语法：`symbol@tlsld(%rip)`，生成一个 `R_X86_64_TLSLD` 类型的 relocation，它的意思是在 `.got` 表中生成一个 entry，这个 entry 会保存当前动态库对应的编号，然后在这里通过 `lea` 指令把这个 `.got` entry 的地址作为 `tls_index *` 类型的参数传给 `__tls_get_addr`，那么它就会去寻找这个动态库的 TLS 空间的起始地址，把结果写入到 `%rax` 寄存器内。
+
+得到 TLS 空间的起始地址后，再利用 `symbol@dtpoff(%rax)` 的语法，生成 `R_X86_64_DTPOFF32` 类型的 relocation，在链接的时候直接把 `symbol` 相对自己的 TLS 空间的起始地址的偏移写到 `movl` 指令内，从而实现了 TLS 变量的访问。
+
+下面观察生成的对象文件：
+
+```shell
+$ as tls.s -o tls.o
+$ objdump -D -r tls.o
+Disassembly of section .text:
+
+0000000000000000 <read_tls_data1>:
+   0:   48 83 ec 08             sub    $0x8,%rsp
+   4:   48 8d 3d 00 00 00 00    lea    0x0(%rip),%rdi        # b <read_tls_data1+0xb>
+                        7: R_X86_64_TLSLD       tls_data1-0x4
+   b:   e8 00 00 00 00          call   10 <read_tls_data1+0x10>
+                        c: R_X86_64_PLT32       __tls_get_addr-0x4
+  10:   8b 80 00 00 00 00       mov    0x0(%rax),%eax
+                        12: R_X86_64_DTPOFF32   tls_data1
+  16:   48 83 c4 08             add    $0x8,%rsp
+  1a:   c3                      ret
+  1b:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+
+0000000000000020 <read_tls_data2>:
+  20:   48 83 ec 08             sub    $0x8,%rsp
+  24:   48 8d 3d 00 00 00 00    lea    0x0(%rip),%rdi        # 2b <read_tls_data2+0xb>
+                        27: R_X86_64_TLSLD      tls_data2-0x4
+  2b:   e8 00 00 00 00          call   30 <read_tls_data2+0x10>
+                        2c: R_X86_64_PLT32      __tls_get_addr-0x4
+  30:   8b 80 00 00 00 00       mov    0x0(%rax),%eax
+                        32: R_X86_64_DTPOFF32   tls_data2
+  36:   48 83 c4 08             add    $0x8,%rsp
+  3a:   c3                      ret
+```
+
+可以看到，由于 `__tls_get_addr` 的运行时地址也是不知道的，所以就和调用其他动态库的函数一样，用已有的 PLT 机制去重定位。
+
+接下来看最后的动态库：
+
+```shell
+$ gcc -shared tls.o -o libtls.so
+$ objdump -D -R libtls.so
+# omitted
+Disassembly of section .text:
+
+0000000000001110 <read_tls_data1>:
+    1110:       48 83 ec 08             sub    $0x8,%rsp
+    1114:       48 8d 3d 9d 2e 00 00    lea    0x2e9d(%rip),%rdi        # 3fb8 <_DYNAMIC+0x1c0>
+    111b:       e8 10 ff ff ff          call   1030 <__tls_get_addr@plt>
+    1120:       8b 80 04 00 00 00       mov    0x4(%rax),%eax
+    1126:       48 83 c4 08             add    $0x8,%rsp
+    112a:       c3                      ret
+    112b:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+
+0000000000001130 <read_tls_data2>:
+    1130:       48 83 ec 08             sub    $0x8,%rsp
+    1134:       48 8d 3d 7d 2e 00 00    lea    0x2e7d(%rip),%rdi        # 3fb8 <_DYNAMIC+0x1c0>
+    113b:       e8 f0 fe ff ff          call   1030 <__tls_get_addr@plt>
+    1140:       8b 80 00 00 00 00       mov    0x0(%rax),%eax
+    1146:       48 83 c4 08             add    $0x8,%rsp
+    114a:       c3                      ret
+
+Disassembly of section .got:
+
+0000000000003fb8 <.got>:
+        ...
+                        3fb8: R_X86_64_DTPMOD64 *ABS*
+```
+
+可以看到，无论是访问 `tls_data1` 还是 `tls_data2`，在调用 `__tls_get_addr` 时，使用的参数都是一样的 `0x3fb8`，也就是动态链接器把当前动态库的编号写进去的 `.got` entry。返回值就是当前动态库的 TLS 空间的基地址，把返回值加上对应的 offset（`tls_data1` 的偏移是 4，`tls_data2` 的偏移是 0，这个 offset 直接写到了 `movl` 指令的立即数里），就得到了 TLS 变量的地址。
+
+特别地，如果在一个函数里访问多个当前动态库的 TLS 变量，那么 `__tls_get_addr` 调用是可以合并的：
+
+```c
+__thread int tls_data1;
+__thread int tls_data2;
+
+int read_tls_data() { return tls_data1 + tls_data2; }
+```
+
+会生成如下的汇编：
+
+```shell
+$ gcc -ftls-model=local-dynamic -fPIC -O2 -S tls.c
+$ cat tls.s
+read_tls_data:
+.LFB0:
+        subq    $8, %rsp
+        leaq    tls_data1@tlsld(%rip), %rdi
+        call    __tls_get_addr@PLT
+        movl    tls_data1@dtpoff(%rax), %edx
+        addl    tls_data2@dtpoff(%rax), %edx
+        addq    $8, %rsp
+        movl    %edx, %eax
+        ret
+```
+
+这样就减少了一次 `__tls_get_addr` 的调用。
+
+### global dynamic TLS model
+
+再来介绍最后一种情况：对于一个 dlopen 的动态库，如果它要访问的 TLS 变量，只知道名字，不知道来自哪一个动态库，不知道偏移是多少。这时候，只能把全部工作交给动态链接器去做：让动态链接器根据符号，去查找符号表，找到对应的动态库和偏移，记录下来；由于涉及到动态库的编号和偏移，所以需要两个连续的 `.got` entry，正好对应 `tls_index` 结构体的两项成员：
+
+```c
+typedef struct dl_tls_index
+{
+  uint64_t ti_module;
+  uint64_t ti_offset;
+} tls_index;
+```
+
+继续上面的例子，这次采用 global dynamic TLS model 进行编译：
+
+```shell
+$ cat tls.c
+__thread int tls_data1;
+__thread int tls_data2;
+
+int read_tls_data1() { return tls_data1; }
+int read_tls_data2() { return tls_data2; }
+$ gcc -ftls-model=global-dynamic -fPIC -O2 -S tls.c
+$ cat tls.s
+read_tls_data1:
+        subq    $8, %rsp
+        data16  leaq    tls_data1@tlsgd(%rip), %rdi
+        .value  0x6666
+        rex64
+        call    __tls_get_addr@PLT
+        movl    (%rax), %eax
+        addq    $8, %rsp
+        ret
+
+read_tls_data2:
+        subq    $8, %rsp
+        data16  leaq    tls_data2@tlsgd(%rip), %rdi
+        .value  0x6666
+        rex64
+        call    __tls_get_addr@PLT
+        movl    (%rax), %eax
+        addq    $8, %rsp
+        ret
+```
+
+这次出现了一些不一样的内容：`data16`、`.value 0x6666` 和 `rex64`；实际上，这些是无用的指令前缀，不影响指令的语义，但是保证了这段代码有足够的长度，方便后续链接器进行优化。除了这些奇怪的前缀，核心就是 `symbol@tlsgd(%rip)` 语法，它会创建 `R_X86_64_TLSGD` relocation，它的意思是：创建一对 `.got` entry，第一个 entry 对应 symbol 所在动态库的编号，第二个 entry 对应 symbol 在动态库的 TLS 空间内的偏移，这两个 entry 组成一个 `tls_index` 结构体；通过 `leaq` 指令得到这个结构体的指针，调用 `__tls_get_addr`，就得到了这个 TLS 变量的地址。
+
+接下来看生成的对象文件：
+
+```shell
+$ as tls.s -o tls.o
+$ objdump -D -r tls.o
+Disassembly of section .text:
+
+0000000000000000 <read_tls_data1>:
+   0:   48 83 ec 08             sub    $0x8,%rsp
+   4:   66 48 8d 3d 00 00 00    data16 lea 0x0(%rip),%rdi        # c <read_tls_data1+0xc>
+   b:   00
+                        8: R_X86_64_TLSGD       tls_data1-0x4
+   c:   66 66 48 e8 00 00 00    data16 data16 rex.W call 14 <read_tls_data1+0x14>
+  13:   00
+                        10: R_X86_64_PLT32      __tls_get_addr-0x4
+  14:   8b 00                   mov    (%rax),%eax
+  16:   48 83 c4 08             add    $0x8,%rsp
+  1a:   c3                      ret
+  1b:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+
+0000000000000020 <read_tls_data2>:
+  20:   48 83 ec 08             sub    $0x8,%rsp
+  24:   66 48 8d 3d 00 00 00    data16 lea 0x0(%rip),%rdi        # 2c <read_tls_data2+0xc>
+  2b:   00
+                        28: R_X86_64_TLSGD      tls_data2-0x4
+  2c:   66 66 48 e8 00 00 00    data16 data16 rex.W call 34 <read_tls_data2+0x14>
+  33:   00
+                        30: R_X86_64_PLT32      __tls_get_addr-0x4
+  34:   8b 00                   mov    (%rax),%eax
+  36:   48 83 c4 08             add    $0x8,%rsp
+  3a:   c3                      ret
+```
+
+基本符合预期，通过 `R_X86_64_TLSGD` relocation 来表示意图，通过反汇编也可以看到，多余的那些修饰符是没有用的，语义上就是一条 `leaq` 加一条 `call` 指令。和之前 local dynamic TLS model 类似，`__tls_get_addr` 也是用已有的 PLT 机制来寻址。
+
+最后来看生成的动态库：
+
+```shell
+$ gcc -shared tls.o -o libtls.so
+$ objdump -D -R libtls.so
+# omitted
+Disassembly of section .text:
+
+0000000000001110 <read_tls_data1>:
+    1110:       48 83 ec 08             sub    $0x8,%rsp
+    1114:       66 48 8d 3d b4 2e 00    data16 lea 0x2eb4(%rip),%rdi        # 3fd0 <tls_data1@@Base+0x3fcc>
+    111b:       00
+    111c:       66 66 48 e8 0c ff ff    data16 data16 rex.W call 1030 <__tls_get_addr@plt>
+    1123:       ff
+    1124:       8b 00                   mov    (%rax),%eax
+    1126:       48 83 c4 08             add    $0x8,%rsp
+    112a:       c3                      ret
+    112b:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+
+0000000000001130 <read_tls_data2>:
+    1130:       48 83 ec 08             sub    $0x8,%rsp
+    1134:       66 48 8d 3d 74 2e 00    data16 lea 0x2e74(%rip),%rdi        # 3fb0 <tls_data2@@Base+0x3fb0>
+    113b:       00
+    113c:       66 66 48 e8 ec fe ff    data16 data16 rex.W call 1030 <__tls_get_addr@plt>
+    1143:       ff
+    1144:       8b 00                   mov    (%rax),%eax
+    1146:       48 83 c4 08             add    $0x8,%rsp
+    114a:       c3                      ret
+
+Disassembly of section .got:
+
+0000000000003fa8 <.got>:
+        ...
+                        3fb0: R_X86_64_DTPMOD64 tls_data2@@Base
+                        3fb8: R_X86_64_DTPOFF64 tls_data2@@Base
+                        3fd0: R_X86_64_DTPMOD64 tls_data1@@Base
+                        3fd8: R_X86_64_DTPOFF64 tls_data1@@Base
+```
+
+观察 `.got`，可以看到对于每个 TLS 变量，都生成了两个 entry：`tls_data2` 占用了 `0x3fb0` 和 `0x3fb8` 两个 entry，第一个对应动态库的下标（MOD 表示 Module），第二个对应偏移（OFF 表示 Offset）；`tls_data1` 也是类似的，占用了 `0x3fd0` 和 `0x3fd8`。当动态链接器在 `.got` 表中准备好 `tls_index` 结构体后，在访问 TLS 变量时，只需要 `lea` + `call` 就可以找到 TLS 变量的地址了。
+
+## 四种 TLS model 的对比
+
+接下来进行四种 TLS model 的对比：
+
+1. local exec TLS model: 用于可执行程序访问自身的 TLS 变量，由于可执行程序的 TLS 空间总是紧挨着 `%fs`，所以自身的 TLS 变量相对 `%fs` 的偏移在链接时已知，可以直接计算出来，运行时开销最小
+2. initial exec TLS model: 用于在程序启动时由动态链接器自动加载的动态库访问自身的 TLS 变量，由于它的 TLS 空间相对 `%fs` 的偏移在加载后就是固定的，所以由动态链接器计算出各个 TLS 变量相对 `%fs` 的偏移，写到 `.got` 表中，运行时只需要读取 `.got` 表中记录的 offset，和 `%fs` 做加法就得到了变量的地址
+3. local dynamic TLS model: 用于可能被 dlopen 的动态库访问自身的 TLS 变量，由于它的 TLS 空间相对 `%fs` 的偏移是不确定的，所以需要用 `__tls_get_addr` 调用来获取自身的 TLS 空间的起始地址；为了给 `__tls_get_addr` 传递正确的参数，告诉这个函数自己的动态库编号是多少，在 `.got` 表中预留了一个 entry 让动态链接器把该动态库的编号写进去；那么运行时只需要读取 `.got` 表中记录的动态库编号，调用 `__tls_get_addr`，再和链接时已知的 offset 做加法就得到了变量的地址
+4. global dynamic TLS model: 用于通用情况下，不知道 TLS 变量属于哪个动态库，也不知道 TLS 变量在 TLS 空间内的偏移是多少，所以需要动态链接器去查询 TLS 变量属于哪个动态库，放在哪个偏移上，并且动态链接器要把这两个信息写到 `.got` 表中；那么运行时就要用 `__tls_get_addr` 调用来根据 `.got` 表中记录的动态库编号以及偏移来找到变量的地址
+
+下面是一个对比表格：
+
+|                | Instructions       | GOT                   |
+|----------------|--------------------|-----------------------|
+| local exec     | movq               | N/A                   |
+| initial exec   | movq + addq        | offset                |
+| local dynamic  | leaq + call + leaq | self module index     |
+| global dynamic | leaq + call        | module index + offset |
+
+特别地，local dynamic TLS model 的 `leaq + call` 是可以复用的，所以整体来说，还是越通用的 TLS model，运行时的开销越大。
+
+## __tls_get_addr 内部实现
+
+TODO
+
+## linker relaxation
+
+TODO
 
 ## 参考
 
