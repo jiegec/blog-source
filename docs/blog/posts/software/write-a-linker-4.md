@@ -313,7 +313,7 @@ func2:
 2. 执行 `401016:	68 00 00 00 00       	push   $0x0`，向栈上压入了 `0`，具体什么含义，下面会进行分析
 3. 执行 `40101b:	e9 e0 ff ff ff       	jmp    401000 <print@plt-0x10>`，跳转到 `0x401000`
 4. 执行 `401000:	ff 35 ea 1f 00 00    	push   0x1fea(%rip)        # 402ff0 <_GLOBAL_OFFSET_TABLE_+0x8>`，具体什么含义，下面会进行分析
-5. 执行 `401006:	ff 25 ec 1f 00 00    	jmp    *0x1fec(%rip)        # 402ff8 <_GLOBAL_OFFSET_TABLE_+0x10>`，这一条指令跳转到 `0x402ff8` 地址保存的内容，这个内容就是动态链接器提供的函数，它会负责进行重定位，重定位以后，就会把结果写到 `0x403000` 地址里
+5. 执行 `401006:	ff 25 ec 1f 00 00    	jmp    *0x1fec(%rip)        # 402ff8 <_GLOBAL_OFFSET_TABLE_+0x10>`，这一条指令跳转到 `0x402ff8` 地址保存的内容，这个内容就是动态链接器提供的函数（如果是 glibc 提供的动态链接器，这个函数是 [_dl_runtime_resolve](https://github.com/bminor/glibc/blob/master/sysdeps/x86_64/dl-trampoline.h)），它会负责进行重定位，重定位以后，就会把结果写到 `0x403000` 地址里
 
 那么，之后调用 `print@plt` 会发生的事情是：
 
