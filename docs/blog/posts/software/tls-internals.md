@@ -335,7 +335,7 @@ typedef struct dl_tls_index
 void *__tls_get_addr (tls_index *ti);
 ```
 
-即它需要两个信息，一个是 TLS 变量所在的动态库的编号（这个编号是动态生成的一个 id，无实际含义，仅用来区分动态库），另外是这个 TLS 变量在动态库内的偏移。这时候，又分为两种情况：
+即它需要两个信息，一个是 TLS 变量所在的动态库的编号（这个编号是动态生成的一个 id，实际上是这个动态库在 `dtv` 数组中的下标），另外是这个 TLS 变量在动态库内的偏移。这时候，又分为两种情况：
 
 1. 第一种情况是，这个 TLS 变量就在这个动态库本身内部定义，此时 TLS 变量在动态库内的偏移在链接期间已知，只是不知道 TLS 空间的起始地址，需要通过 `__tls_get_addr` 函数获取，这种情景叫做 local dynamic TLS model
 2. 第二种情况是，这个 TLS 变量不知道在哪个动态库定义，此时只知道这个 TLS 变量的名字，不知道它属于哪个动态库，也不知道它在动态库内的偏移，这种情况叫做 global dynamic TLS model，是最通用的情况，对 TLS 变量所在的位置没有任何假设
@@ -661,7 +661,91 @@ Disassembly of section .got:
     movl symbol@tpoff(%rax), %eax
     ```
 
-可见通过两阶段的处理，在编译器和链接器的协同下，尝试优化到一个开销更小的 TLS model。
+3. 如果编译源码的时候，打开了 `-fPIC` 且用了 `extern` 来标记 TLS 变量，由于编译器不知道这个 TLS 变量属于谁，所以编译器会使用 global dynamic TLS model；但如果这个对象文件最后被链接到了可执行程序当中，并且编译器发现这个 TLS 变量属于一个动态库，这意味着这个 TLS 变量在程序启动时会随着动态库加载而变得可用，适用 initial exec TLS model，于是链接器也会进行改写：
+
+    ```asm
+    # before linker optimizations: global dynamic
+    data16 leaq symbol@tlsgd(%rip), %rdi
+    .value 0x6666
+    rex64
+    call __tls_get_addr@PLT
+
+    # after linker optimizations: initial exec
+    movq %fs:0, %rax
+    addq symbol@gottpoff(%rip), %rax
+    ```
+
+4. 如果编译源码的时候，没有打开 `-fPIC` 且用了 `extern` 来标记 TLS 变量，那么编译器知道，这个对象文件最后只能出现在可执行程序中，那么这个 TLS 变量要么来自于可执行程序自己，要么来自于程序启动时加载的动态库，所以编译器会使用 initial exec TLS model；但如果这个对象文件最后被链接到了可执行程序当中，并且编译器发现这个 TLS 变量属于可执行程序自己，适用 local exec TLS model，于是链接器也会进行改写：
+
+    ```asm
+    # before linker optimizations: initial exec
+    movq %fs:0, %rax
+    addq symbol@gottpoff(%rip), %rax
+
+    # after linker optimizations: local exec
+    # the symbol@tpoff(%rax) relocation is resolved by the linker immediately
+    movq %fs:0, %rax
+    leaq symbol@tpoff(%rax), %rax
+    ```
+
+可见通过两阶段的处理，在编译器和链接器的协同下，尝试优化到一个开销更小的 TLS model，转化的几种情况如下：
+
+1. global dynamic -> initial exec：编译的时候开了 -fPIC 和 `extern`，然后链接到可执行程序内，TLS 变量来自动态库
+2. global dynamic -> local exec：编译的时候开了 -fPIC，然后链接到可执行程序内，TLS 变量来自程序自己
+3. local dynamic -> local exec：编译的时候开了 -fPIC 和 `-static`，然后链接到可执行程序内，TLS 变量来自程序自己
+4. initial exec -> local exec：编译的时候没开 -fPIC，然后链接到可执行程序内，TLS 变量来自程序自己
+
+## TLSDESC
+
+前面提到，在 global dynamic 和 local dynamic 两种 TLS model 下，要访问 TLS 变量的时候，需要调用 `__tls_get_addr` 函数，这是比较慢的。为了优化它，让人想到了 PLT 机制：
+
+1. 初始情况下，PLT 会生成一个 stub，从 `.got` 读取一个函数指针并跳转，这个函数指针初始情况下是执行了 `stub` 的下一条指令
+2. 对于第一次执行这个 stub，它会把这个函数的编号 push 到栈上，然后调用动态链接器提供的 `_dl_runtime_resolve` 函数来寻找这个函数的实际地址；此时 `_dl_runtime_resolve` 会把找到的函数地址写回到 `.got` 的函数指针
+3. 此后再次执行 stub 的时候，就会从 `.got` 读取计算好的的函数指针，直接跳转到实际的函数地址
+
+由此可以类比得到一个针对 TLS 的类似机制，称为 TLSDESC：
+
+1. TLSDESC 占用 16 字节空间，前面 8 字节是一个函数指针，后面 8 字节用来保存 offset，保存在 `.got` 表中
+2. 把原来 local/global dynamic TLS model 对 `__tls_get_addr` 的调用，改成调用 TLSDESC 中的函数指针，调用时 `%rax` 寄存器指向了 TLSDESC 的地址，它的返回结果是 TLS 变量相对 `%fs` 的偏移，后续指令根据这个偏移计算出实际的地址
+3. 动态链接器在加载的时候，它会去判断目标 TLS 变量相对 `%fs` 的偏移是否是常量：对于可执行程序以及随着程序启动而自动加载的动态库，它们的 TLS 变量相对 `%fs` 的偏移是常量
+4. 如果目标 TLS 变量相对 `%fs` 的偏移是常量，则把这个常量写入到 `.got` 表中 TLSDESC 变量的 offset 的位置，然后把函数指针改写成 `_dl_tlsdesc_return`，它是一个很简单的实现，因为在调用这个函数时，`%rax` 寄存器指向了 TLSDESC 的地址，所以直接从 `%rax+8` 地址把 offset 读出来然后返回就可以：
+
+    ```asm
+    _dl_tlsdesc_return:
+        movq	8(%rax), %rax
+        ret
+    ```
+
+5. 如果目标 TLS 变量相对 `%fs` 的偏移不是常量，则把函数指针改写成 `_dl_tlsdesc_dynamic` 函数，再走和之前的 `__tls_get_addr` 类似的逻辑，完成剩下的查找；由于返回值是 TLS 变量相对 `%fs` 的偏移，所以返回之前还要减去 `%fs` 的地址：
+
+    ```c
+    /* %rax points to the TLS descriptor, such that 0(%rax) points to
+        _dl_tlsdesc_dynamic itself, and 8(%rax) points to a struct
+        tlsdesc_dynamic_arg object.  It must return in %rax the offset
+        between the thread pointer and the object denoted by the
+        argument, without clobbering any registers.
+
+        The assembly code that follows is a rendition of the following
+        C code, hand-optimized a little bit.
+
+    ptrdiff_t
+    _dl_tlsdesc_dynamic (register struct tlsdesc *tdp asm ("%rax"))
+    {
+    struct tlsdesc_dynamic_arg *td = tdp->arg;
+    dtv_t *dtv = *(dtv_t **)((char *)__thread_pointer + DTV_OFFSET);
+    if (__builtin_expect (td->gen_count <= dtv[0].counter
+                && (dtv[td->tlsinfo.ti_module].pointer.val
+                    != TLS_DTV_UNALLOCATED),
+                1))
+        return dtv[td->tlsinfo.ti_module].pointer.val + td->tlsinfo.ti_offset
+        - __thread_pointer;
+
+    return __tls_get_addr_internal (&td->tlsinfo) - __thread_pointer;
+    }
+    */
+    ```
+
+它利用的也是在内存中保存函数指针，通过运行时替换函数指针的方式，实现 slow path 到 fast path 的动态替换。
 
 ## __tls_get_addr 内部实现
 
@@ -670,3 +754,4 @@ TODO
 ## 参考
 
 - [ELF Handling For Thread-Local Storage](https://www.akkadia.org/drepper/tls.pdf)
+- [All about thread-local storage](https://maskray.me/blog/2021-02-14-all-about-thread-local-storage)
