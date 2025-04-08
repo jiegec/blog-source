@@ -7,7 +7,7 @@ categories:
     - software
 ---
 
-# glibc 2.31 的 TLS 实现探究
+# TLS 实现探究
 
 ## 背景
 
@@ -77,7 +77,7 @@ global_data:
 
 这里面可执行程序和启动时加载的动态库的需求是明确的，不会变的，因此可以由动态链接器在加载的时候，直接给可执行程序和动态库分配 TLS 空间：
 
-1. 比如可执行程序本身需要 0x10 字节的 TLS 空间，它启动时加载两个动态库 libc.so.6 和 libstdc++.so.6,期中 libc.so.6 需要 0x20 字节的 TLS 空间，libstdc++.so.6 需要 0x30 字节的 TLS 空间
+1. 比如可执行程序本身需要 0x10 字节的 TLS 空间，它启动时加载两个动态库 libc.so.6 和 libstdc++.so.6，期中 libc.so.6 需要 0x20 字节的 TLS 空间，libstdc++.so.6 需要 0x30 字节的 TLS 空间
 2. 加起来一共需要 0x60 字节的 TLS 空间，那么在创建线程的时候，创建好 0x60 字节的 TLS 空间，按照顺序进行分配：
     1. 0x00-0x10: 属于可执行程序
     2. 0x10-0x30: 属于 libc.so.6
@@ -747,9 +747,155 @@ Disassembly of section .got:
 
 它利用的也是在内存中保存函数指针，通过运行时替换函数指针的方式，实现 slow path 到 fast path 的动态替换。
 
-## __tls_get_addr 内部实现
+## dtv 维护
 
-TODO
+最后再来深入分析一下 dtv 的维护方式。前面提到，dtv 的指针是保存在 `struct pthread` 内的，而 `struct pthread` 又是保存在 `%fs` 寄存器指向的位置：
+
+```c
+struct pthread
+{
+  tcbhead_t header;
+  /* omitted */
+};
+
+typedef struct
+{
+  /* omitted */
+  dtv_t *dtv;
+  /* omitted */
+} tcbhead_t;
+```
+
+所以要访问 dtv 也很简单，直接从 `%fs` 加它在 `struct pthread` 结构体内的偏移即可。
+
+前面提到，在调用 `__tls_get_addr` 时，需要提供一个动态库的 ID 来查询得到这个动态库的 TLS 空间的起始地址，再加上在这个 TLS 空间内的偏移。而这个动态库的 ID，正好就是 dtv 数组的下标，所以 `__tls_get_addr` 做的事情大概是：
+
+1. 找到 `dtv` 的地址：`mov %fs:DTV_OFFSET, %RDX_LP`
+2. 从 `__tls_get_addr` 函数的参数里读取 `ti_module` 字段：`mov TI_MODULE_OFFSET(%rdi), %RAX_LP`
+3. 读取 `dtv[ti->ti_module].val`，也就是这个模块的 TLS 空间的起始地址：`salq $4, %rax; movq (%rdx, %rax), %rax`，这里左移 4 位是因为 `dtv` 数组的每个元素的类型是 `dtv_t`，其定义如下：
+
+    ```c
+    struct dtv_pointer
+    {
+        void *val;                    /* Pointer to data, or TLS_DTV_UNALLOCATED.  */
+        void *to_free;                /* Unaligned pointer, for deallocation.  */
+    };
+
+    /* Type for the dtv.  */
+    typedef union dtv
+    {
+        size_t counter;
+        struct dtv_pointer pointer;
+    } dtv_t;
+    ```
+4. 把起始地址加上偏移，然后返回：`add TI_OFFSET_OFFSET(%rdi), %RAX_LP; ret`
+
+但实际情况会比这个更复杂：dlopen 可能会动态引入新的动态库，此时 dtv 数组可能需要扩张；此外，如果一个动态库有 TLS 变量但是从来不用，也可以 lazy 分配它的 TLS 空间，只有在第一次访问的时候，才去分配。
+
+首先来考虑第一个需求，处理 dlopen 导致 dtv 元素个数变化，它的实现方法是这样的：
+
+1. `dtv[0]` 不用来保存 TLS 空间的信息，而是记录一个 counter，这个 counter 记录的是当前 dtv 的版本号（generation），另外在全局变量 `dl_tls_generation` 中记录当前最新的版本号；当 dlopen 导致 dtv 结构发生变化时，更新 `dl_tls_generation` 版本，然后在 `__tls_get_addr` 里检查版本号，不一致则进入 slow path：
+
+    ```asm
+    ENTRY (__tls_get_addr)
+        mov %fs:DTV_OFFSET, %RDX_LP
+
+        mov	GL_TLS_GENERATION_OFFSET+_rtld_local(%rip), %RAX_LP
+        /* GL(dl_tls_generation) == dtv[0].counter */
+        cmp	%RAX_LP, (%rdx)
+        jne	1f
+
+        mov	TI_MODULE_OFFSET(%rdi), %RAX_LP
+        /* dtv[ti->ti_module] */
+        salq	$4, %rax
+        movq	(%rdx,%rax), %rax
+        /* omitted */
+        add	TI_OFFSET_OFFSET(%rdi), %RAX_LP
+        ret
+    1:
+        /* slow path, stack alignment omitted */
+        call	__tls_get_addr_slow
+        ret
+    ```
+2. 在 `__tls_get_addr_slow` 中，如果发现当前 dtv 的版本号和最新的版本号 `dl_tls_generation` 不一致，就调用 `update_get_addr` 来重新分配内存：
+
+    ```c
+    void *
+    __tls_get_addr_slow (tls_index *ti)
+    {
+        dtv_t *dtv = THREAD_DTV ();
+
+        if (__glibc_unlikely (dtv[0].counter != GL(dl_tls_generation)))
+            return update_get_addr (ti);
+
+        return tls_get_addr_tail (ti, dtv, NULL);
+    }
+    ```
+
+具体的 dtv 更新逻辑比较复杂，有兴趣的读者可以翻阅 glibc 的源码中 `update_get_addr` 函数的实现。
+
+接下来考虑第二个需求，也就是 lazy 分配，只有在第一次访问 TLS 空间的时候，才给 dlopen 的动态库分配 TLS 空间。为了区分已分配和未分配的 TLS 空间，未分配的 TLS 空间的 `val` 字段的值是 `TLS_DTV_UNALLOCATED`，当 `__tls_get_addr` 检测到 TLS 空间尚未分配时，也会进入 slow path：
+
+```asm
+ENTRY (__tls_get_addr)
+    mov %fs:DTV_OFFSET, %RDX_LP
+
+    mov	GL_TLS_GENERATION_OFFSET+_rtld_local(%rip), %RAX_LP
+    /* GL(dl_tls_generation) == dtv[0].counter */
+    cmp	%RAX_LP, (%rdx)
+    jne	1f
+
+    mov	TI_MODULE_OFFSET(%rdi), %RAX_LP
+    /* dtv[ti->ti_module] */
+    salq	$4, %rax
+    movq	(%rdx,%rax), %rax
+    
+    /* branch if val == TLS_DTV_UNALLOCATED */
+    cmp	$-1, %RAX_LP
+	je	1f
+
+    add	TI_OFFSET_OFFSET(%rdi), %RAX_LP
+    ret
+1:
+    /* slow path, stack alignment omitted */
+    call	__tls_get_addr_slow
+    ret
+```
+
+在 slow path 中，最终由 `allocate_dtv_entry` 函数来分配这片空间，注意到 TLS 空间可能有对齐的要求，所以它实际上记录了两个地址，一个是 malloc 得到的地址（用于后续的 free 调用），一个是经过对齐后的地址：
+
+```c
+/* Allocate one DTV entry.  */
+static struct dtv_pointer
+allocate_dtv_entry (size_t alignment, size_t size)
+{
+  if (powerof2 (alignment) && alignment <= _Alignof (max_align_t))
+    {
+      /* The alignment is supported by malloc.  */
+      void *ptr = malloc (size);
+      return (struct dtv_pointer) { ptr, ptr };
+    }
+
+  /* Emulate memalign to by manually aligning a pointer returned by
+     malloc.  First compute the size with an overflow check.  */
+  size_t alloc_size = size + alignment;
+  if (alloc_size < size)
+    return (struct dtv_pointer) {};
+
+  /* Perform the allocation.  This is the pointer we need to free
+     later.  */
+  void *start = malloc (alloc_size);
+  if (start == NULL)
+    return (struct dtv_pointer) {};
+
+  /* Find the aligned position within the larger allocation.  */
+  void *aligned = (void *) roundup ((uintptr_t) start, alignment);
+
+  return (struct dtv_pointer) { .val = aligned, .to_free = start };
+}
+```
+
+可见这些 lazy 分配的 TLS 空间都是放在堆上的，由 malloc 进行动态分配。而可执行程序和随着程序启动而自动加载的动态库的 TLS 空间，是随着 TCB 也就是 `struct pthread` 一起分配的。对于新创建的线程来说，TCB 放置在栈的顶部，而不是在堆上，所以要求大小不能动态变化，只有 dtv 数组的指针保存在 `struct pthread` 中，dtv 数组本身是放在堆上的，根据需要进行 malloc/realloc。对于初始线程来说，TCB 是通过 malloc 或者 sbrk 动态分配的。
 
 ## 参考
 

@@ -7,7 +7,7 @@ categories:
     - software
 ---
 
-# glibc 2.31 的内存分配器实现探究
+# glibc 内存分配器实现探究
 
 ## 背景
 
