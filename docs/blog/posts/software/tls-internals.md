@@ -616,11 +616,54 @@ Disassembly of section .got:
 
 特别地，local dynamic TLS model 的 `leaq + call` 是可以复用的，所以整体来说，还是越通用的 TLS model，运行时的开销越大。
 
+## 实际编程中的 TLS model
+
+看到这里，你可能会疑惑：在编程的时候，大多数时候并没有去管 TLS model 的事情，也就是说在编译的时候并没有指定，那么这个时候会采用什么 TLS model 呢？
+
+答案是取决于编译器和链接器会根据所能了解到的情况，选择一个最优的实现方法。在前面的例子中，都是直接定义了一个全局的 `__thread` 变量然后去访问它，但如果它是 `static` 的，会发生什么呢？如果编译的时候，没有开 `-fPIC`，也就是说生成的代码不会出现在动态库中，又会发生什么呢？
+
+首先来看从编译器到汇编的这一个阶段，会采用什么样的 TLS model：
+
+1. 如果在编译源码的时候，没有开 `-fPIC`，那么生成的代码只出现在可执行程序中，这个时候编译器会直接使用 local exec TLS model，即生成 `movl %fs:symbol@tpoff, %rax` 的指令
+2. 如果在编译源码的时候，开了 `-fPIC`，那么生成的代码既可能出现在可执行程序中，也可能出现在动态库中，这时会首先默认为 global dynamic TLS model，即生成 `data16 leaq symbol@tlsgd(%rip), %rdi; .value 0x6666; rex64; call __tls_get_addr@PLT; movl (%rax), %eax` 指令
+3. 但如果 `__thread` 变量设置了 `static`，即使打开了 `-fPIC`，也保证了这个 TLS 变量一定是访问自己 TLS 空间中的，不会访问别人的，那么编译器会自动选择 local dynamic TLS model，即生成 `leaq symbol@tlsld(%rip), %rdi; call__tls_get_addr@PLT; movl %symbol@dtpoff(%rax), %eax` 指令
+
+接下来观察链接的时候，会发生什么事情：
+
+1. 如果编译源码的时候，打开了 `-fPIC` 且没有用 `static`，如前所述，编译器会使用 global dynamic TLS model；但如果这个对象文件最后被链接到了可执行程序当中，那么链接器知道这个时候用 local exec TLS model 是性能更好的，那么它会对指令进行改写，此时之前预留的无用的指令前缀 `data 16; .value 0x6666; rex64` 起了作用，保证改写前后的指令序列的长度不变：
+
+    ```asm
+    # before linker optimizations: global dynamic
+    data16 leaq symbol@tlsgd(%rip), %rdi
+    .value 0x6666
+    rex64
+    call __tls_get_addr@PLT
+
+    # after linker optimizations: local exec
+    # the symbol@tpoff(%rax) relocation is resolved by the linker immediately
+    movq %fs:0, %rax
+    leaq symbol@tpoff(%rax), %rax
+    ```
+
+2. 类似地，如果编译源码的时候，打开了 `-fPIC` 且用了 `static`，如前所述，编译器会使用 local dynamic TLS model；但如果这个对象文件最后被链接到了可执行程序当中，那么链接器知道这个时候用 local exec TLS model 是性能更好的，那么它会对指令进行改写，为了保证改写前后的指令序列的长度不变，这次是在生成的汇编里加入无用的指令前缀：
+
+    ```asm
+    # before linker optimizations: local dynamic
+    leaq symbol@tlsld(%rip), %rdi
+    call __tls_get_addr@PLT
+    movl symbol@dtpoff(%rax), %eax
+
+    # after linker optimizations: local exec
+    # the symbol@tpoff(%rax) relocation is resolved by the linker immediately
+    .word 0x6666
+    .byte 0x66
+    movq %fs:0, %rax
+    movl symbol@tpoff(%rax), %eax
+    ```
+
+可见通过两阶段的处理，在编译器和链接器的协同下，尝试优化到一个开销更小的 TLS model。
+
 ## __tls_get_addr 内部实现
-
-TODO
-
-## linker relaxation
 
 TODO
 
