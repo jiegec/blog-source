@@ -2,7 +2,6 @@
 layout: post
 date: 2025-04-07
 tags: [linux,glibc,tls]
-draft: true
 categories:
     - software
 ---
@@ -895,9 +894,10 @@ allocate_dtv_entry (size_t alignment, size_t size)
 }
 ```
 
-可见这些 lazy 分配的 TLS 空间都是放在堆上的，由 malloc 进行动态分配。而可执行程序和随着程序启动而自动加载的动态库的 TLS 空间，是随着 TCB 也就是 `struct pthread` 一起分配的。对于新创建的线程来说，TCB 放置在栈的顶部，而不是在堆上，所以要求大小不能动态变化，只有 dtv 数组的指针保存在 `struct pthread` 中，dtv 数组本身是放在堆上的，根据需要进行 malloc/realloc。对于初始线程来说，TCB 是通过 malloc 或者 sbrk 动态分配的。
+可见这些 lazy 分配的 TLS 空间都是放在堆上的，由 malloc 进行动态分配。而可执行程序和随着程序启动而自动加载的动态库的 TLS 空间，是随着 TCB 也就是 `struct pthread` 一起分配的。对于新创建的线程来说，TCB 放置在栈的顶部，而不是在堆上，所以要求大小不能动态变化，只有 dtv 数组的指针保存在 `struct pthread` 中，dtv 数组本身是放在堆上的，根据需要进行 malloc/realloc（见 `_dl_resize_dtv` 函数）。对于初始线程来说，TCB 是通过 malloc 或者 sbrk 动态分配的。
 
 ## 参考
 
 - [ELF Handling For Thread-Local Storage](https://www.akkadia.org/drepper/tls.pdf)
 - [All about thread-local storage](https://maskray.me/blog/2021-02-14-all-about-thread-local-storage)
+- [What system data is stored on the stack](https://stackoverflow.com/questions/8482079/what-system-data-is-stored-on-the-stack)

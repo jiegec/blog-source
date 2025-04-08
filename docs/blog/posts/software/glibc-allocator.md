@@ -2,7 +2,6 @@
 layout: post
 date: 2025-03-30
 tags: [linux,glibc,malloc,allocator]
-draft: true
 categories:
     - software
 ---
