@@ -1,0 +1,66 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.11.0-21-generic
+
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        283      35.4   S
+503.bwaves_r          1        279      36.0   *
+503.bwaves_r          1        277      36.2   S
+507.cactuBSSN_r       1        207       6.12  S
+507.cactuBSSN_r       1        215       5.88  S
+507.cactuBSSN_r       1        213       5.93  *
+508.namd_r            1        174       5.46  *
+508.namd_r            1        174       5.46  S
+508.namd_r            1        174       5.47  S
+510.parest_r          1        360       7.27  S
+510.parest_r          1        360       7.27  *
+510.parest_r          1        360       7.27  S
+511.povray_r          1        380       6.15  *
+511.povray_r          1        379       6.16  S
+511.povray_r          1        381       6.13  S
+519.lbm_r             1        156       6.76  *
+519.lbm_r             1        156       6.76  S
+519.lbm_r             1        156       6.78  S
+521.wrf_r             1        257       8.71  S
+521.wrf_r             1        258       8.70  S
+521.wrf_r             1        257       8.70  *
+526.blender_r         1        251       6.06  S
+526.blender_r         1        250       6.10  S
+526.blender_r         1        251       6.08  *
+527.cam4_r            1        214       8.17  S
+527.cam4_r            1        214       8.17  *
+527.cam4_r            1        214       8.16  S
+538.imagick_r         1        306       8.13  *
+538.imagick_r         1        307       8.10  S
+538.imagick_r         1        306       8.13  S
+544.nab_r             1        277       6.08  S
+544.nab_r             1        276       6.09  *
+544.nab_r             1        276       6.10  S
+549.fotonik3d_r       1        277      14.1   *
+549.fotonik3d_r       1        277      14.1   S
+549.fotonik3d_r       1        276      14.1   S
+554.roms_r            1        249       6.38  S
+554.roms_r            1        249       6.39  *
+554.roms_r            1        248       6.41  S
+=================================================================================
+503.bwaves_r          1        279      36.0   *
+507.cactuBSSN_r       1        213       5.93  *
+508.namd_r            1        174       5.46  *
+510.parest_r          1        360       7.27  *
+511.povray_r          1        380       6.15  *
+519.lbm_r             1        156       6.76  *
+521.wrf_r             1        257       8.70  *
+526.blender_r         1        251       6.08  *
+527.cam4_r            1        214       8.17  *
+538.imagick_r         1        306       8.13  *
+544.nab_r             1        276       6.09  *
+549.fotonik3d_r       1        277      14.1   *
+554.roms_r            1        249       6.39  *
+ SPECrate(R)2017_fp_base                 8.13
+ SPECrate(R)2017_fp_peak                                               Not Run
+
+
+System Info:
+CPU Name: -
+Enabled: -1 cores, number of chips enabled chips
