@@ -111,6 +111,7 @@ permalink: /benchmark/
 
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.48](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3 -flto -ljemalloc`）: [6.17](./data/int2017_rate1/AWS_Graviton_3E_O3-flto-ljemalloc_001.txt)
+- Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto -ljemalloc`）: [6.00](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto -ljemalloc`）: [5.33](./data/int2017_rate1/AMD_EPYC_7742_O3-flto-ljemalloc_001.txt)
 - IBM POWER8NVL @ 4.0 GHz POWER8（`-O3 -flto -ljemalloc`）: [4.02](./data/int2017_rate1/IBM_POWER8NVL_O3-flto-ljemalloc_001.txt)
 
