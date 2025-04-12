@@ -90,7 +90,7 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 
 刚才讨论了很多 trace 的大小以及如何用 SimPoint 压缩空间，那么这个 trace 到底怎么抓取呢？主要有两种方法：
 
-1. 基于硬件已有的 trace，比如 [Intel PT](./linux-perf-pmu.md)
+1. 基于硬件已有的 trace，比如 [Intel PT](./linux-perf-pmu.md)，但需要注意，Intel PT 是可能丢失历史的，虽然比例比较小；为了避免丢失历史，建议设置 `sysctl kernel.perf_event_paranoid=-1`（或者用 root 权限来运行 `perf record`，即绕过 `mlock limit after perf_event_mlock_kb` 的限制） 来扩大 Intel PT 使用的 buffer 大小，从 32KB 扩大到 1MB（参考 [pt_perf](https://github.com/mysqlperformance/pt_perf)）
 2. 基于软件的 Binary Instrumentation，即针对分支指令插桩，比如 Pin、DynamoRIO 甚至 QEMU
 
 第一种方法性能是最好的，运行开销比较小，耗费 1.4x 的时间，但是后续处理也比较费劲一些，此外比较依赖平台，ARM 上虽然也有 SPE，但是支持的平台比较少。其他平台就不好说了。
