@@ -6,7 +6,7 @@ categories:
     - software
 ---
 
-# TLS 实现探究
+# Thread Local Storage (TLS) 实现探究
 
 ## 背景
 
