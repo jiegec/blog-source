@@ -113,6 +113,8 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 4. 注意 RET compression 的处理：维护 call stack，如果遇到 return 的时候刚好在 TNT packet 中，且对应的 bit 是 Taken，则从 call stack 取出目的地址；一个优化是 call stack 不仅记录地址，还记录从这个地址开始遇到的下一个分支在数组的下标
 5. 重建控制流的同时，输出第二种格式的 trace，在内存中完成流式压缩
 
+对于动态链接，perf.data 会记录 mmap event；Pin 和 DynamoRIO 都可以对 module load 事件进行插桩。动态库可以从文件系统中访问，vdso 可以从内存中[导出](https://ldpreload.com/p/blog/dump-vdso.c)。
+
 ## 条件分支预测器模拟
 
 在完成了前面的大部分步骤以后，最终就是搭建一个条件分支预测器的模拟器了。其实这一点倒是并不复杂，例如 CBP Championship 或者 ChampSim 都有现成的框架，它们也都提供了一些经典的分支预测器的实现代码，例如 TAGE-SC-L。在它们的基础上进行开发，就可以评估各种条件分支预测器的预测效果了。
