@@ -16,7 +16,7 @@ TLS 是 thread local storage 的缩写，可以很方便地存储一些 per-thre
 
 ## __thread
 
-首先来看 TLS 在 C 中是怎么使用的：用 `__thread` 标记一个全局变量，那么它就会保存在 TLS 当中，每个线程都有一份：
+首先来看 TLS 在 C 中是怎么使用的：用 `__thread` 标记一个全局变量（注：进入 C11/C++11 标准的用法是用 `thread_local` 来标记），那么它就会保存在 TLS 当中，每个线程都有一份：
 
 ```c
 __thread int data;
