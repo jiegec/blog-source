@@ -160,7 +160,7 @@ permalink: /benchmark/
 3. 对于服务器 CPU，默认设置可能没有打开 C6 State，此时单核不一定能 Boost 到宣称的最高频率，需要进 BIOS 打开 C6 State，使得空闲的核心进入低功耗模式，才能发挥出最高的 Boost 频率。
 4. 对于除了苹果以外的 ARM64 核心，内核的 branch-misses 计数器考虑了 speculative 而不只是 retired，因此数字会偏高，此时要用 r22 计数替代。
 
-x86 平台的分支预测准确率（Average）由高到低：
+x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
 1. Zen 5(9950X): MPKI=4.33 Mispred=2.45%
 2. Zen 4 Server(9R14): MPKI=4.38 Mispred=2.48%
@@ -172,7 +172,13 @@ x86 平台的分支预测准确率（Average）由高到低：
 8. Zen 1(7551): MPKI=5.72 Mispred=3.26%
 9. Haswell(E5-2680 v3)/Broadwell(E5-2680 v4): MPKI=5.84 Mispred=3.27%
 
-ARM64 平台的分支预测准确率（Average）由高到低：
+x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
+
+1. Zen 5(9950X): MPKI=5.14 Mispred=2.96%
+2. Zen 2(7742): MPKI=5.34 Mispred=3.07%
+3. Golden Cove(12900KS)/Raptor Cove(14900K): MPKI=5.60 Mispred=3.25%
+
+ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
 1. Neoverse V2(Graviton 4): MPKI=4.34 Mispred=2.39%
 2. Oryon(X1E80100): MPKI=4.56 Mispred=2.50%
