@@ -199,9 +199,11 @@ def plot_perf(flavor, file_name, key, display):
         for bench in reversed(benchmarks):
             y_data.append(mean(data[name][f"{bench}/{key}"]))
         # geomean
-        y_data.insert(0, round(geometric_mean(y_data), 2))
+        y_geomean = geometric_mean(y_data)
+        y_mean = mean(y_data)
+        y_data.insert(0, round(y_geomean, 2))
         # average
-        y_data.insert(0, round(mean(y_data), 2))
+        y_data.insert(0, round(y_mean, 2))
         rects = ax.barh(x_data, y_data, width, label=name)
         ax.bar_label(rects, labels=[f"{y:.3g} {name}" for y in y_data], padding=3)
         max_value = max(max_value, *y_data)
