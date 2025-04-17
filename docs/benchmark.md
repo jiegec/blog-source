@@ -119,6 +119,7 @@ permalink: /benchmark/
 
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [5.65](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.02](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.26](./data/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
 
 服务器平台：
 
