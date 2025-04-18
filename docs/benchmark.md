@@ -71,6 +71,7 @@ permalink: /benchmark/
 桌面平台（`-march=native` + LTO + Jemalloc）：
 
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native -flto -ljemalloc`）: [9.43](./data/int2017_rate1/Qualcomm_X1E80100_O3-march=native-flto-ljemalloc_001.txt)
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native -flto -ljemalloc`）: [9.28](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3-march=native-flto-ljemalloc_001.txt)
 
 桌面平台（LTO + Jemalloc）：
 
@@ -88,6 +89,7 @@ permalink: /benchmark/
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto`）: [8.62](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto`）: [8.44](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3-flto_001.txt)
+- Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto`）: [6.37](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
 
 桌面平台：
