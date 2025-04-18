@@ -128,20 +128,35 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 在这里列出最终使用的 trace 格式和实验数据：
 
 1. trace 格式：使用第二种 trace 记录方法，每次执行 branch 记录 4 字节的信息，包括 branch id 和是否跳转，使用 zstd 进行无损压缩
-2. trace 大小和运行时间统计（GCC 12.2.0，`-O3` 编译，在 Intel i9-14900K 上实验）：
+2. trace 大小和运行时间统计（GCC 12.2.0，`-O3 -static` 编译，在 Intel i9-14900K 上实验）：
 
 | benchmark       | 子 benchmark | 分支执行次数 | trace 大小 | 每分支空间开销 | 程序直接运行时间 | Pin 抓取时间 | 时间开销 |
 |-----------------|--------------|--------------|------------|----------------|------------------|--------------|----------|
-| 500.perlbench_r | checkspam    | 2.39e11      | 8.9GB      | 0.30 bit       | 59s              | 6334s        | 107x     |
-| 500.perlbench_r | diffmail     | 1.49e11      | 2.8GB      | 0.15 bit       | 33s              | 4615s        | 140x     |
-| 500.perlbench_r | splitmail    | 1.33e11      | 1.5GB      | 0.09 bit       | 31s              | 3385s        | 109x     |
-| 500.perlbench_r | 合计         | 5.21e11      | 13.2GB     | 0.20 bit       | 123s             | 14334s       | 117x     |
-| 502.gcc_r       | gcc-pp -O3   | 4.50e10      | 3.3GB      | 0.63 bit       | 17s              | 1625s        | 96x      |
-| 502.gcc_r       | gcc-pp -O2   | 5.37e10      | 3.5GB      | 0.55 bit       | 20s              | 1930s        | 97x      |
-| 502.gcc_r       | gcc-smaller  | 5.51e10      | 2.9GB      | 0.44 bit       | 21s              | 1830s        | 87x      |
-| 502.gcc_r       | ref32 -O5    | 4.22e10      | 1.3GB      | 0.24 bit       | 16s              | 1369s        | 86x      |
-| 502.gcc_r       | ref32 -O3    | 4.80e10      | 1.5GB      | 0.27 bit       | 24s              | 2209s        | 92x      |
-| 502.gcc_r       | 合计         | 2.44e11      | 12.5GB     | 0.41 bit       | 98s              | 8963s        | 91x      |
-| 505.mcf_r       | N/A          | 2.21e11      | 32GB       | 1.20 bit       | 168s             | 4800s        | 29x      |
-| 520.omnetpp_r   | N/A          | 2.15e11      | 14GB       | 0.53 bit       | 135s             | 7289s        | 54x      |
-| 523.xalancbmk_r | N/A          | 3.27e11      | 4.5GB      | 0.12 bit       | 112s             | 8883s        | 79x      |
+| 500.perlbench_r | checkspam    | 2.40e11      | 8.87 GiB   | 0.32 bit       | 59s              | 6334s        | 107x     |
+| 500.perlbench_r | diffmail     | 1.49e11      | 2.78 GiB   | 0.16 bit       | 33s              | 4615s        | 140x     |
+| 500.perlbench_r | splitmail    | 1.33e11      | 1.49 GiB   | 0.10 bit       | 31s              | 3385s        | 109x     |
+| 500.perlbench_r | 合计         | 5.22e11      | 13.14 GiB  | 0.22 bit       | 123s             | 14334s       | 117x     |
+| 502.gcc_r       | gcc-pp -O3   | 4.50e10      | 3.28 GiB   | 0.63 bit       | 17s              | 1625s        | 96x      |
+| 502.gcc_r       | gcc-pp -O2   | 5.37e10      | 3.46 GiB   | 0.55 bit       | 20s              | 1930s        | 97x      |
+| 502.gcc_r       | gcc-smaller  | 5.51e10      | 2.84 GiB   | 0.44 bit       | 21s              | 1830s        | 87x      |
+| 502.gcc_r       | ref32 -O5    | 4.22e10      | 1.20 GiB   | 0.24 bit       | 16s              | 1369s        | 86x      |
+| 502.gcc_r       | ref32 -O3    | 4.80e10      | 1.50 GiB   | 0.27 bit       | 24s              | 2209s        | 92x      |
+| 502.gcc_r       | 合计         | 2.44e11      | 12.24 GiB  | 0.43 bit       | 98s              | 8963s        | 91x      |
+| 505.mcf_r       | N/A          | 2.21e11      | 31.0 GiB   | 1.20 bit       | 168s             | 4800s        | 29x      |
+| 520.omnetpp_r   | N/A          | 2.15e11      | 13.3 GiB   | 0.53 bit       | 135s             | 7289s        | 54x      |
+| 523.xalancbmk_r | N/A          | 3.27e11      | 4.45 GiB   | 0.12 bit       | 112s             | 8883s        | 79x      |
+| 525.x264_r      | pass 1       | 1.44e10      | 579 MiB    | 0.34 bit       | 14s              | 348s         | 25x      |
+| 525.x264_r      | pass 2       | 4.42e10      | 2.30 GiB   | 0.45 bit       | 39s              | 1202s        | 31x      |
+| 525.x264_r      | seek 500     | 4.78e10      | 2.77 GiB   | 0.50 bit       | 41s              | 1258s        | 31x      |
+| 525.x264_r      | 合计         | 1.06e11      | 5.64 GiB   | 0.46 bit       | 94s              | 2808s        | 30x      |
+
+每分支的空间开销和在 i9-14900K 上测得的 MPKI（Mispredictions Per Kilo Instructions）有比较明显的正相关性：
+
+| benchmark       | MPKI  | 每分支空间开销 |
+|-----------------|-------|----------------|
+| 523.xalancbmk_r | 0.94  | 0.12 bit       |
+| 500.perlbench_r | 0.95  | 0.22 bit       |
+| 525.x264_r      | 1.06  | 0.46 bit       |
+| 502.gcc_r       | 3.16  | 0.43 bit       |
+| 520.omnetpp_r   | 4.47  | 0.53 bit       |
+| 505.mcf_r       | 13.24 | 1.20 bit       |
