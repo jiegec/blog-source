@@ -181,7 +181,8 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 
 1. Zen 5(9950X): MPKI=5.35 Mispred=3.07%
 2. Zen 2(7742): MPKI=5.52 Mispred=3.17%
-3. Golden Cove(12900KS)/Raptor Cove(14900K): MPKI=5.81 Mispred=3.37%
+3. Zen 3(5700X): MPKI=5.55 Mispred=3.19%
+4. Golden Cove(12900KS)/Raptor Cove(14900K): MPKI=5.81 Mispred=3.37%
 
 ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
@@ -192,6 +193,11 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 5. Neoverse V1(Graviton 3/Graviton 3E)/Cortex X1C(8cx Gen3 P Core): MPKI=4.91 Mispred=2.69%
 6. Neoverse N1(Ampere Altra)/Cortex A78C(8cx Gen3 E Core): MPKI=5.21 Mispred=2.87%
 7. TSV110(Kunpeng 920): MPKI=6.54 Mispred=3.58%
+
+ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
+
+1. Oryon(X1E80100): MPKI=5.41 Mispred=3.13%
+2. TSV110(Kunpeng 920): MPKI=6.74 Mispred=3.98%
 
 ### 网上的数据
 
