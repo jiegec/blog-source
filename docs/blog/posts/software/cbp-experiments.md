@@ -149,14 +149,26 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 | 525.x264_r      | pass 2       | 4.42e10      | 2.30 GiB   | 0.45 bit       | 39s              | 1202s        | 31x      |
 | 525.x264_r      | seek 500     | 4.78e10      | 2.77 GiB   | 0.50 bit       | 41s              | 1258s        | 31x      |
 | 525.x264_r      | 合计         | 1.06e11      | 5.64 GiB   | 0.46 bit       | 94s              | 2808s        | 30x      |
+| 531.deepsjeng_r | N/A          | 2.74e11      | 31.6 GiB   | 0.99 bit       | 140s             | 8093s        | 58x      |
+| 541.leela_r     | N/A          | 3.38e11      | 75.6 GiB   | 1.92 bit       | 224s             | 8894s        | 40x      |
+| 548.exchange2_r | N/A          | 3.01e11      | 26.3 GiB   | 0.75 bit       | 88s              | 6753s        | 77x      |
+| 557.xz_r        | cld          | 5.08e10      | 9.16 GiB   | 1.55 bit       | 60s              | 1252s        | 21x      |
+| 557.xz_r        | cpu2006docs  | 1.84e11      | 7.80 GiB   | 0.36 bit       | 65s              | 3923s        | 60x      |
+| 557.xz_r        | input        | 7.96e10      | 10.5 GiB   | 1.14 bit       | 55s              | 1842s        | 33x      |
+| 557.xz_r        | 合计         | 3.14e11      | 27.5 GiB   | 0.75 bit       | 180s             | 7017s        | 39x      |
+| 合计            | N/A          | 2.86e12      | 241 GiB    | 0.72 bit       | 1362s            | 77834s       | 57x      |
 
 每分支的空间开销和在 i9-14900K 上测得的 MPKI（Mispredictions Per Kilo Instructions）有比较明显的正相关性：
 
 | benchmark       | MPKI  | 每分支空间开销 |
 |-----------------|-------|----------------|
-| 523.xalancbmk_r | 0.94  | 0.12 bit       |
+| 523.xalancbmk_r | 0.84  | 0.12 bit       |
 | 500.perlbench_r | 0.95  | 0.22 bit       |
 | 525.x264_r      | 1.06  | 0.46 bit       |
+| 548.exchange2_r | 2.66  | 0.75 bit       |
 | 502.gcc_r       | 3.16  | 0.43 bit       |
+| 531.deepsjeng_r | 4.35  | 0.99 bit       |
 | 520.omnetpp_r   | 4.47  | 0.53 bit       |
+| 557.xz_r        | 5.35  | 0.75 bit       |
+| 541.leela_r     | 12.61 | 1.92 bit       |
 | 505.mcf_r       | 13.24 | 1.20 bit       |
