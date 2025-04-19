@@ -360,7 +360,7 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native`）: [11.4](./data/fp2017_rate1/AMD_Ryzen_7_5700X_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
-- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.70](./data/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.73](./data/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 
 桌面平台：
 
