@@ -209,6 +209,11 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）�
 2. Firestorm(Apple M1): MPKI=5.45 Mispred=3.14%
 3. TSV110(Hisilicon Kunpeng 920): MPKI=6.74 Mispred=3.98%
 
+LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）：
+
+1. LA664(3A6000/3C6000): MPKI=5.01 Mispred=2.79%
+2. LA464(3C5000): MPKI=8.39 Mispred=4.21%
+
 ### 网上的数据
 
 [SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
