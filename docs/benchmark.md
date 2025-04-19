@@ -218,14 +218,17 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 
 [SPEC CPU 2017 by David Huang](https://blog.hjc.im/spec-cpu-2017):
 
+- Apple M4 Pro: 13.7
 - AMD Ryzen 9950X Zen 5: 12.6
 - Apple M3 Pro: 11.8
 - Intel Core 13900K Raptor Cove: 11.5
+- Intel Core Ultra 7 265K Arrow Lake Lion Cove+Skymont: 11.1
+- AMD AI Max+ 395 Zen 5: 10.6
 - Apple M2 Pro: 10.3
 - Apple M2: 9.95
 - AMD HX 370 Strix Point Zen 5: 9.64
 - Intel Core Ultra 258V Lunar Lake Lion Cove+Skymont: 9.46
-- Apple M1 Max Firestorm+Icestorm: 9.2
+- Apple M1 Max Firestorm: 9.2
 - AMD Ryzen 5950X Zen 3: 9.15
 - Kunpeng 920 TSV120: 6.00
 - Loongson 3A6000 LA664: 4.29
