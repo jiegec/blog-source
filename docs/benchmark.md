@@ -80,6 +80,8 @@ permalink: /benchmark/
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [10.4](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto-ljemalloc_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto -ljemalloc`）: [9.25](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto-ljemalloc_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto -ljemalloc`）: [9.13](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3-flto-ljemalloc_001.txt)
+- Apple M1 @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [8.93](./data/int2017_rate1/Apple_M1_O3-flto-ljemalloc_001.txt)
+- Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.70](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
@@ -89,6 +91,7 @@ permalink: /benchmark/
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto`）: [8.62](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto`）: [8.44](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3-flto_001.txt)
+- Apple M1 @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.24](./data/int2017_rate1/Apple_M1_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto`）: [6.37](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
 
@@ -126,6 +129,7 @@ permalink: /benchmark/
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [5.65](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.02](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.26](./data/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.19](./data/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
 
 服务器平台：
 
@@ -175,9 +179,10 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 4. Zen 4 Desktop(AMD 7500F)/Zen 3(AMD 5700X): MPKI=4.68 Mispred=2.64%
 5. Zen 2(AMD 7742): MPKI=4.77 Mispred=2.69%
 6. Ice Lake(Intel 8358P)/Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K): MPKI=4.86 Mispred=2.75%
-7. Skylake(D-2146NT)/Cascade Lake(Intel 10980XE): MPKI=5.50 Mispred=3.13%
-8. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
-9. Haswell(Intel E5-2680 v3)/Broadwell(Intel E5-2680 v4): MPKI=5.98 Mispred=3.34%
+7. Gracemont(Intel 12900KS/Intel 14900K): MPKI=5.15 Mispred=2.92%
+8. Skylake(Intel D-2146NT)/Cascade Lake(Intel 10980XE): MPKI=5.50 Mispred=3.13%
+9. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
+10. Haswell(Intel E5-2680 v3)/Broadwell(Intel E5-2680 v4): MPKI=5.98 Mispred=3.34%
 
 x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 
@@ -185,6 +190,7 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 2. Zen 2(AMD 7742): MPKI=5.52 Mispred=3.17%
 3. Zen 3(AMD 5700X): MPKI=5.55 Mispred=3.19%
 4. Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K): MPKI=5.81 Mispred=3.37%
+5. Cascade Lake(Intel 10980XE): MPKI=6.55 Mispred=3.83%
 
 ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
@@ -342,6 +348,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）�
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -march=native`）: [17.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native`）: [11.4](./data/fp2017_rate1/AMD_Ryzen_7_5700X_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.70](./data/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 
@@ -359,7 +366,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）�
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS E Core @ 4.1 GHz Gracemont（`-O3`）: [6.90](./data/fp2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
 - Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [6.08](./data/fp2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
-- Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.57](./data/fp2017_rate1/Loongson_3A6000_O3_001.txt) [5.56](./data/fp2017_rate1/Loongson_3A6000_O3_002.txt)
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.56](./data/fp2017_rate1/Loongson_3A6000_O3_001.txt)
 
 服务器平台（`-march=native`）：
 
