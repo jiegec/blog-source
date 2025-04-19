@@ -199,7 +199,7 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 
 使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟 SPEC INT 2017 Rate-1，只需要 9-10 分钟。
 
-使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟的 CMPKI（只考虑了方向分支），和 Intel i9-14900K 的 MPKI（考虑了所有分支）在 SPEC INT 2017 Rate-1 的比较：
+使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟的 CMPKI（只考虑了方向分支），和 Intel i9-14900K 的 MPKI（考虑了所有分支）在 SPEC INT 2017 Rate-1（AMD64，`-O3`）的比较：
 
 | benchmark       | TAGE-SC-L 8KB | TAGE-SC-L 64KB | i9-14900K |
 |-----------------|---------------|----------------|-----------|
