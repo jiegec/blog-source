@@ -194,3 +194,23 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 557.xz_r input:
 
 ![](./cbp-experiments-simpoint-xz-input.png)
+
+以 1e8 条指令的粒度切分 SimPoint，把 241 GB 的 trace 缩减到 415 MB 的规模。
+
+使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟 SPEC INT 2017 Rate-1，只需要 9-10 分钟。
+
+使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟的 CMPKI（只考虑了方向分支），和 Intel i9-14900K 的 MPKI（考虑了所有分支）在 SPEC INT 2017 Rate-1 的比较：
+
+| benchmark       | TAGE-SC-L 8KB | TAGE-SC-L 64KB | i9-14900K |
+|-----------------|---------------|----------------|-----------|
+| 500.perlbench_r | 1.00          | 0.72           | 0.95      |
+| 502.gcc_r       | 4.69          | 3.36           | 3.16      |
+| 505.mcf_r       | 13.02         | 12.23          | 13.24     |
+| 520.omnetpp_r   | 4.09          | 3.49           | 4.47      |
+| 523.xalancbmk_r | 0.85          | 0.68           | 0.84      |
+| 525.x264_r      | 0.76          | 0.59           | 1.06      |
+| 531.deepsjeng_r | 4.59          | 3.45           | 4.35      |
+| 541.leela_r     | 11.79         | 9.42           | 12.61     |
+| 548.exchange2_r | 2.96          | 1.25           | 2.66      |
+| 557.xz_r        | 4.68          | 4.06           | 5.35      |
+| average         | 4.84          | 3.925          | 4.87      |
