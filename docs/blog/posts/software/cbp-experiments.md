@@ -191,3 +191,6 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 
 ![](./cbp-experiments-simpoint-omnetpp.png)
 
+557.xz_r input:
+
+![](./cbp-experiments-simpoint-xz-input.png)
