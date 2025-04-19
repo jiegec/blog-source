@@ -180,3 +180,14 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 3. 模拟分支预测：约 1 小时
 
 考虑到（子）benchmark 之间没有依赖关系，可以同时进行多个 trace/simpoint/simulate 操作，不过考虑到内存占用和硬盘 I/O 压力，实际的并行性也没有那么高。
+
+跑出来的 SimPoint 聚类可视化中效果比较好的：
+
+500.perlbench_r diffmail:
+
+![](./cbp-experiments-simpoint-perlbench-diffmail.png)
+
+520.omnetpp_r:
+
+![](./cbp-experiments-simpoint-omnetpp.png)
+
