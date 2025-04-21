@@ -135,28 +135,28 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 | 500.perlbench_r | checkspam    | 2.40e11      | 8.87 GiB   | 0.32 bit       | 59s              | 6334s        | 107x     |
 | 500.perlbench_r | diffmail     | 1.49e11      | 2.78 GiB   | 0.16 bit       | 33s              | 4615s        | 140x     |
 | 500.perlbench_r | splitmail    | 1.33e11      | 1.49 GiB   | 0.10 bit       | 31s              | 3385s        | 109x     |
-| 500.perlbench_r | 合计         | 5.22e11      | 13.14 GiB  | 0.22 bit       | 123s             | 14334s       | 117x     |
+| 500.perlbench_r | Total        | 5.22e11      | 13.14 GiB  | 0.22 bit       | 123s             | 14334s       | 117x     |
 | 502.gcc_r       | gcc-pp -O3   | 4.50e10      | 3.28 GiB   | 0.63 bit       | 17s              | 1625s        | 96x      |
 | 502.gcc_r       | gcc-pp -O2   | 5.37e10      | 3.46 GiB   | 0.55 bit       | 20s              | 1930s        | 97x      |
 | 502.gcc_r       | gcc-smaller  | 5.51e10      | 2.84 GiB   | 0.44 bit       | 21s              | 1830s        | 87x      |
 | 502.gcc_r       | ref32 -O5    | 4.22e10      | 1.20 GiB   | 0.24 bit       | 16s              | 1369s        | 86x      |
 | 502.gcc_r       | ref32 -O3    | 4.80e10      | 1.50 GiB   | 0.27 bit       | 24s              | 2209s        | 92x      |
-| 502.gcc_r       | 合计         | 2.44e11      | 12.24 GiB  | 0.43 bit       | 98s              | 8963s        | 91x      |
+| 502.gcc_r       | Total        | 2.44e11      | 12.24 GiB  | 0.43 bit       | 98s              | 8963s        | 91x      |
 | 505.mcf_r       | N/A          | 2.21e11      | 31.0 GiB   | 1.20 bit       | 168s             | 4800s        | 29x      |
 | 520.omnetpp_r   | N/A          | 2.15e11      | 13.3 GiB   | 0.53 bit       | 135s             | 7289s        | 54x      |
 | 523.xalancbmk_r | N/A          | 3.27e11      | 4.45 GiB   | 0.12 bit       | 112s             | 8883s        | 79x      |
 | 525.x264_r      | pass 1       | 1.44e10      | 579 MiB    | 0.34 bit       | 14s              | 348s         | 25x      |
 | 525.x264_r      | pass 2       | 4.42e10      | 2.30 GiB   | 0.45 bit       | 39s              | 1202s        | 31x      |
 | 525.x264_r      | seek 500     | 4.78e10      | 2.77 GiB   | 0.50 bit       | 41s              | 1258s        | 31x      |
-| 525.x264_r      | 合计         | 1.06e11      | 5.64 GiB   | 0.46 bit       | 94s              | 2808s        | 30x      |
+| 525.x264_r      | Total        | 1.06e11      | 5.64 GiB   | 0.46 bit       | 94s              | 2808s        | 30x      |
 | 531.deepsjeng_r | N/A          | 2.74e11      | 31.6 GiB   | 0.99 bit       | 140s             | 8093s        | 58x      |
 | 541.leela_r     | N/A          | 3.38e11      | 75.6 GiB   | 1.92 bit       | 224s             | 8894s        | 40x      |
 | 548.exchange2_r | N/A          | 3.01e11      | 26.3 GiB   | 0.75 bit       | 88s              | 6753s        | 77x      |
 | 557.xz_r        | cld          | 5.08e10      | 9.16 GiB   | 1.55 bit       | 60s              | 1252s        | 21x      |
 | 557.xz_r        | cpu2006docs  | 1.84e11      | 7.80 GiB   | 0.36 bit       | 65s              | 3923s        | 60x      |
 | 557.xz_r        | input        | 7.96e10      | 10.5 GiB   | 1.14 bit       | 55s              | 1842s        | 33x      |
-| 557.xz_r        | 合计         | 3.14e11      | 27.5 GiB   | 0.75 bit       | 180s             | 7017s        | 39x      |
-| 合计            | N/A          | 2.86e12      | 241 GiB    | 0.72 bit       | 1362s            | 77834s       | 57x      |
+| 557.xz_r        | Total        | 3.14e11      | 27.5 GiB   | 0.75 bit       | 180s             | 7017s        | 39x      |
+| Total           | N/A          | 2.86e12      | 241 GiB    | 0.72 bit       | 1362s            | 77834s       | 57x      |
 
 每分支的空间开销和在 i9-14900K 上测得的 MPKI（Mispredictions Per Kilo Instructions）有比较明显的正相关性：
 
@@ -181,7 +181,7 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 
 考虑到（子）benchmark 之间没有依赖关系，可以同时进行多个 trace/simpoint/simulate 操作，不过考虑到内存占用和硬盘 I/O 压力，实际的并行性也没有那么高。
 
-跑出来的 SimPoint 聚类可视化中效果比较好的：
+跑出来的 SimPoint 聚类可视化中效果比较好的，图中横轴是按执行顺序的 SimPoint slice，纵轴每一个 y 值对应一个 SimPoint phase，图中的点代表哪个 slice 被归到了哪个 phase 上：
 
 500.perlbench_r diffmail:
 
@@ -214,3 +214,131 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 | 548.exchange2_r | 2.96          | 1.25           | 2.66      |
 | 557.xz_r        | 4.68          | 4.06           | 5.35      |
 | average         | 4.84          | 3.925          | 4.87      |
+
+由于 LTO 对分支数量的影响较大，额外对比了 `-O3` 和 `-O3 -flto` 的区别（TODO）：
+
+| benchmark       | 子 benchmark | O3 分支执行次数 | O3 trace 大小 | O3+LTO 分支执行次数 | O3+LTO trace 大小 |
+|-----------------|--------------|-----------------|---------------|---------------------|-------------------|
+| 500.perlbench_r | checkspam    | 2.40e11         | 8.87 GiB      | 2.32e11             | 8.77 GiB          |
+| 500.perlbench_r | diffmail     | 1.49e11         | 2.78 GiB      | 1.45e11             | 2.70 GiB          |
+| 500.perlbench_r | splitmail    | 1.33e11         | 1.49 GiB      | 1.31e11             | 1.48 GiB          |
+| 500.perlbench_r | Total        | 5.22e11         | 13.14 GiB     | 5.08e11             | 12.95 GiB         |
+| 502.gcc_r       | gcc-pp -O3   | 4.50e10         | 3.28 GiB      | 4.27e10             | 3.20 GiB          |
+| 502.gcc_r       | gcc-pp -O2   | 5.37e10         | 3.46 GiB      | 5.10e10             | 3.38 GiB          |
+| 502.gcc_r       | gcc-smaller  | 5.51e10         | 2.84 GiB      | 5.31e10             | 2.78 GiB          |
+| 502.gcc_r       | ref32 -O5    | 4.22e10         | 1.20 GiB      | 4.05e10             | 1.17 GiB          |
+| 502.gcc_r       | ref32 -O3    | 4.80e10         | 1.50 GiB      |                     |                   |
+| 502.gcc_r       | Total        | 2.44e11         | 12.24 GiB     |                     |                   |
+| 505.mcf_r       | N/A          | 2.21e11         | 31.0 GiB      |                     |                   |
+| 520.omnetpp_r   | N/A          | 2.15e11         | 13.3 GiB      |                     |                   |
+| 523.xalancbmk_r | N/A          | 3.27e11         | 4.45 GiB      |                     |                   |
+| 525.x264_r      | pass 1       | 1.44e10         | 579 MiB       |                     |                   |
+| 525.x264_r      | pass 2       | 4.42e10         | 2.30 GiB      |                     |                   |
+| 525.x264_r      | seek 500     | 4.78e10         | 2.77 GiB      |                     |                   |
+| 525.x264_r      | Total        | 1.06e11         | 5.64 GiB      |                     |                   |
+| 531.deepsjeng_r | N/A          | 2.74e11         | 31.6 GiB      |                     |                   |
+| 541.leela_r     | N/A          | 3.38e11         | 75.6 GiB      |                     |                   |
+| 548.exchange2_r | N/A          | 3.01e11         | 26.3 GiB      |                     |                   |
+| 557.xz_r        | cld          | 5.08e10         | 9.16 GiB      |                     |                   |
+| 557.xz_r        | cpu2006docs  | 1.84e11         | 7.80 GiB      |                     |                   |
+| 557.xz_r        | input        | 7.96e10         | 10.5 GiB      |                     |                   |
+| 557.xz_r        | Total        | 3.14e11         | 27.5 GiB      |                     |                   |
+| Total           | N/A          | 2.86e12         | 241 GiB       |                     |                   |
+
+## Pin trace 实践
+
+下面给出如何用 Pin 实现一个 branch trace 工具的过程：
+
+1. 参考 Pin 的样例代码，Instrument 每一条指令，如果它是分支指令，就记录它的指令地址、目的地址、指令长度、分支类型以及是否跳转的信息：
+
+    ```cpp
+    VOID Instruction(INS ins, VOID *v) {
+        if (INS_IsControlFlow(ins)) {
+            UINT32 size = INS_Size(ins);
+            enum branch_type type = /* omitted */;
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)RecordBranch, IARG_INST_PTR,
+                        IARG_BRANCH_TARGET_ADDR, IARG_UINT32, size, IARG_UINT32,
+                        type, IARG_BRANCH_TAKEN, IARG_END);
+        }
+    }
+    int main(int argc, char *argv[]) {
+        if (PIN_Init(argc, argv))
+            return Usage();
+
+        INS_AddInstrumentFunction(Instruction, 0);
+        PIN_StartProgram();
+        return 0;
+    }
+    ```
+
+2. 记录分支的时候，分别维护分支的数组和分支执行事件的数组，然后对于每次执行的分支，记录分支的 id 以及是否跳转的信息，到分支执行事件的数组当中：
+
+    ```cpp
+    VOID RecordBranch(VOID *inst_addr, VOID *targ_addr, UINT32 inst_length,
+                    UINT32 type, BOOL taken) {
+        struct branch br;
+        br.inst_addr = (uint64_t)inst_addr;
+        br.targ_addr = (uint64_t)targ_addr;
+        br.inst_length = inst_length;
+        br.type = (branch_type)type;
+
+        struct entry e;
+        e.taken = taken;
+
+        // insert branch if not exists
+        auto it = br_map.find(br);
+        if (it == br_map.end()) {
+            assert(num_brs < MAX_BRS);
+            br_map[br] = num_brs;
+            e.br_index = num_brs;
+            brs[num_brs++] = br;
+        } else {
+            e.br_index = it->second;
+        }
+
+        if (buffer_size == BUFFER_SIZE) {
+            // omitted
+        }
+        write_buffer[buffer_size++] = e;
+        num_entries++;
+    }
+    ```
+
+3. 为了减少磁盘空间，当缓冲区满的时候，首先经过 zstd 的流压缩，再把压缩后的内容写入到文件中：
+
+    ```cpp
+    // https://github.com/facebook/zstd/blob/dev/examples/streaming_compression.c
+    ZSTD_EndDirective mode = ZSTD_e_continue;
+    ZSTD_inBuffer input = {write_buffer, sizeof(write_buffer), 0};
+    int finished;
+    do {
+        ZSTD_outBuffer output = {zstd_output_buffer, zstd_output_buffer_size, 0};
+        size_t remaining = ZSTD_compressStream2(zstd_cctx, &output, &input, mode);
+        assert(!ZSTD_isError(remaining));
+        assert(fwrite(zstd_output_buffer, 1, output.pos, trace) == output.pos);
+        finished = input.pos == input.size;
+    } while (!finished);
+    ```
+
+4. 最后在程序结束时，把分支数组写入到文件并记录元数据：
+
+    ```cpp
+    VOID Fini(INT32 code, VOID *v) {
+        // 1. compress the remaining data in write buffer and write to file
+        // 2. save metadata, including:
+        //    1. number of branch executions
+        //    2. number of branches
+        //    3. branches array
+    }
+
+    int main(int argc, char *argv[]) {
+        // omitted
+        PIN_AddFiniFunction(Fini, 0);
+        PIN_StartProgram();
+        // omitted
+    }
+    ```
+
+5. 针对动态链接，可以利用 Pin 已有的 API `IMG_AddInstrumentFunction` 来跟踪，方便后续找到 trace 中各个地址对应的指令
+
+这样就完成了 Branch Trace 的抓取。
