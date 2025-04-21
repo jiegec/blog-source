@@ -125,6 +125,8 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 
 ## 实验数据
 
+### Trace 抓取
+
 在这里列出最终使用的 trace 格式和实验数据：
 
 1. trace 格式：使用第二种 trace 记录方法，每次执行 branch 记录 4 字节的信息，包括 branch id 和是否跳转，使用 zstd 进行无损压缩
@@ -173,48 +175,6 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 | 541.leela_r     | 12.61 | 1.92 bit       |
 | 505.mcf_r       | 13.24 | 1.20 bit       |
 
-各个步骤需要耗费的时间（单线程）：
-
-1. 抓取 trace：约 20 小时
-2. 运行 SimPoint: 约 4 小时
-3. 模拟分支预测：约 1 小时
-
-考虑到（子）benchmark 之间没有依赖关系，可以同时进行多个 trace/simpoint/simulate 操作，不过考虑到内存占用和硬盘 I/O 压力，实际的并行性也没有那么高。
-
-跑出来的 SimPoint 聚类可视化中效果比较好的，图中横轴是按执行顺序的 SimPoint slice，纵轴每一个 y 值对应一个 SimPoint phase，图中的点代表哪个 slice 被归到了哪个 phase 上：
-
-500.perlbench_r diffmail:
-
-![](./cbp-experiments-simpoint-perlbench-diffmail.png)
-
-520.omnetpp_r:
-
-![](./cbp-experiments-simpoint-omnetpp.png)
-
-557.xz_r input:
-
-![](./cbp-experiments-simpoint-xz-input.png)
-
-以 1e8 条指令的粒度切分 SimPoint，把 241 GB 的 trace 缩减到 415 MB 的规模。
-
-使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟 SPEC INT 2017 Rate-1，只需要 9-10 分钟。
-
-使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟的 CMPKI（只考虑了方向分支），和 Intel i9-14900K 的 MPKI（考虑了所有分支）在 SPEC INT 2017 Rate-1（AMD64，`-O3`）的比较：
-
-| benchmark       | TAGE-SC-L 8KB | TAGE-SC-L 64KB | i9-14900K |
-|-----------------|---------------|----------------|-----------|
-| 500.perlbench_r | 1.00          | 0.72           | 0.95      |
-| 502.gcc_r       | 4.69          | 3.36           | 3.16      |
-| 505.mcf_r       | 13.02         | 12.23          | 13.24     |
-| 520.omnetpp_r   | 4.09          | 3.49           | 4.47      |
-| 523.xalancbmk_r | 0.85          | 0.68           | 0.84      |
-| 525.x264_r      | 0.76          | 0.59           | 1.06      |
-| 531.deepsjeng_r | 4.59          | 3.45           | 4.35      |
-| 541.leela_r     | 11.79         | 9.42           | 12.61     |
-| 548.exchange2_r | 2.96          | 1.25           | 2.66      |
-| 557.xz_r        | 4.68          | 4.06           | 5.35      |
-| average         | 4.84          | 3.925          | 4.87      |
-
 由于 LTO 对分支数量的影响较大，额外对比了 `-O3` 和 `-O3 -flto` 的区别（TODO）：
 
 | benchmark       | 子 benchmark | O3 分支执行次数 | O3 trace 大小 | O3+LTO 分支执行次数 | O3+LTO trace 大小 |
@@ -245,7 +205,56 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 | 557.xz_r        | Total        | 3.14e11         | 27.5 GiB      |                     |                   |
 | Total           | N/A          | 2.86e12         | 241 GiB       |                     |                   |
 
-## Pin trace 实践
+
+### 时间开销
+
+各个步骤需要耗费的时间（单线程）：
+
+1. 抓取 trace：约 20 小时
+2. 运行 SimPoint: 约 4 小时
+3. 模拟分支预测：约 1 小时
+
+### SimPoint
+
+考虑到（子）benchmark 之间没有依赖关系，可以同时进行多个 trace/simpoint/simulate 操作，不过考虑到内存占用和硬盘 I/O 压力，实际的并行性也没有那么高。
+
+跑出来的 SimPoint 聚类可视化中效果比较好的，图中横轴是按执行顺序的 SimPoint slice，纵轴每一个 y 值对应一个 SimPoint phase，图中的点代表哪个 slice 被归到了哪个 phase 上：
+
+500.perlbench_r diffmail:
+
+![](./cbp-experiments-simpoint-perlbench-diffmail.png)
+
+520.omnetpp_r:
+
+![](./cbp-experiments-simpoint-omnetpp.png)
+
+557.xz_r input:
+
+![](./cbp-experiments-simpoint-xz-input.png)
+
+以 1e8 条指令的粒度切分 SimPoint，把 241 GB 的 trace 缩减到 415 MB 的规模。
+
+### 分支预测器模拟
+
+使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟 SPEC INT 2017 Rate-1，只需要 9-10 分钟。
+
+使用 CBP 2016 的 Andre Seznec TAGE-SC-L 8KB/64KB 的分支预测器在 SimPoint 上模拟的 CMPKI（只考虑了方向分支），和 Intel i9-14900K 的 MPKI（考虑了所有分支）在 SPEC INT 2017 Rate-1（AMD64，`-O3`）的比较：
+
+| benchmark       | TAGE-SC-L 8KB | TAGE-SC-L 64KB | i9-14900K |
+|-----------------|---------------|----------------|-----------|
+| 500.perlbench_r | 1.00          | 0.72           | 0.95      |
+| 502.gcc_r       | 4.69          | 3.36           | 3.16      |
+| 505.mcf_r       | 13.02         | 12.23          | 13.24     |
+| 520.omnetpp_r   | 4.09          | 3.49           | 4.47      |
+| 523.xalancbmk_r | 0.85          | 0.68           | 0.84      |
+| 525.x264_r      | 0.76          | 0.59           | 1.06      |
+| 531.deepsjeng_r | 4.59          | 3.45           | 4.35      |
+| 541.leela_r     | 11.79         | 9.42           | 12.61     |
+| 548.exchange2_r | 2.96          | 1.25           | 2.66      |
+| 557.xz_r        | 4.68          | 4.06           | 5.35      |
+| average         | 4.84          | 3.925          | 4.87      |
+
+## 基于 Pin 开发 branch trace 工具
 
 下面给出如何用 Pin 实现一个 branch trace 工具的过程：
 
