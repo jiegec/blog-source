@@ -172,6 +172,21 @@ permalink: /benchmark/
       2. AMD Ryzen 9 9950X 不同核能够达到的最大频率不同，目前 Linux（6.11）的调度算法不一定可以保证跑到最大频率 5.75 GHz 上，可能会飘到频率低一些（5.45 GHz 左右）的核心上，损失 4% 的性能，因此需要绑核心，详见 [Linux 大小核的调度算法探究](./blog/posts/software/linux-core-scheduling.md) 以及 [谈谈 Linux 与 ITMT 调度器与多簇处理器](https://blog.hjc.im/thoughts-on-linux-preferred-cores-and-multi-ccx.html)。这个问题已经有 Patch 进行修复。
 3. 对于服务器 CPU，默认设置可能没有打开 C6 State，此时单核不一定能 Boost 到宣称的最高频率，需要进 BIOS 打开 C6 State，使得空闲的核心进入低功耗模式，才能发挥出最高的 Boost 频率。
 4. 对于除了苹果以外的 ARM64 核心，内核的 branch-misses 计数器考虑了 speculative 而不只是 retired，因此数字会偏高，此时要用 r22 计数替代。
+5. Google Cloud 只有部分机型支持 PMU，并且需要手动开启（参考 [Enable the PMU in VMs](https://cloud.google.com/compute/docs/enable-pmu-in-vms)）：
+
+      ```shell
+      $ gcloud compute instances export VM_NAME \
+          --destination=YAML_FILE \
+          --zone=ZONE
+      $ vim YAML_FILE
+      # append the following lines
+      advancedMachineFeatures:
+        performanceMonitoringUnit: STANDARD
+      $ gcloud compute instances update-from-file VM_NAME \
+          --most-disruptive-allowed-action=RESTART \
+          --source=YAML_FILE \
+          --zone=ZONE
+      ```
 
 x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
