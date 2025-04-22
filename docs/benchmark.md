@@ -134,6 +134,7 @@ permalink: /benchmark/
 
 服务器平台：
 
+- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [6.95](./data/int2017_rate1/AMD_EPYC_9T24_O3_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [6.80](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt) [7.00](./data/int2017_rate1/AWS_Graviton_4_O3_002.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Emerald Rapids（`-O3`）: [6.52](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
