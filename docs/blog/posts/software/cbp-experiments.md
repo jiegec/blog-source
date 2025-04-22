@@ -175,7 +175,7 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 | 541.leela_r     | 12.61 | 1.92 bit       |
 | 505.mcf_r       | 13.24 | 1.20 bit       |
 
-由于 LTO 对分支数量的影响较大，额外对比了 `-O3` 和 `-O3 -flto` 的区别（TODO）：
+由于 LTO 对分支数量的影响较大，额外对比了 `-O3` 和 `-O3 -flto` 的区别：
 
 | benchmark       | 子 benchmark | O3 分支执行次数 | O3 trace 大小 | O3+LTO 分支执行次数 | O3+LTO trace 大小 |
 |-----------------|--------------|-----------------|---------------|---------------------|-------------------|
@@ -187,24 +187,25 @@ SimPoint 论文中展示了聚类的效果，还是很可观的：
 | 502.gcc_r       | gcc-pp -O2   | 5.37e10         | 3.46 GiB      | 5.10e10             | 3.38 GiB          |
 | 502.gcc_r       | gcc-smaller  | 5.51e10         | 2.84 GiB      | 5.31e10             | 2.78 GiB          |
 | 502.gcc_r       | ref32 -O5    | 4.22e10         | 1.20 GiB      | 4.05e10             | 1.17 GiB          |
-| 502.gcc_r       | ref32 -O3    | 4.80e10         | 1.50 GiB      |                     |                   |
-| 502.gcc_r       | Total        | 2.44e11         | 12.24 GiB     |                     |                   |
-| 505.mcf_r       | N/A          | 2.21e11         | 31.0 GiB      |                     |                   |
-| 520.omnetpp_r   | N/A          | 2.15e11         | 13.3 GiB      |                     |                   |
-| 523.xalancbmk_r | N/A          | 3.27e11         | 4.45 GiB      |                     |                   |
-| 525.x264_r      | pass 1       | 1.44e10         | 579 MiB       |                     |                   |
-| 525.x264_r      | pass 2       | 4.42e10         | 2.30 GiB      |                     |                   |
-| 525.x264_r      | seek 500     | 4.78e10         | 2.77 GiB      |                     |                   |
-| 525.x264_r      | Total        | 1.06e11         | 5.64 GiB      |                     |                   |
-| 531.deepsjeng_r | N/A          | 2.74e11         | 31.6 GiB      |                     |                   |
-| 541.leela_r     | N/A          | 3.38e11         | 75.6 GiB      |                     |                   |
-| 548.exchange2_r | N/A          | 3.01e11         | 26.3 GiB      |                     |                   |
-| 557.xz_r        | cld          | 5.08e10         | 9.16 GiB      |                     |                   |
-| 557.xz_r        | cpu2006docs  | 1.84e11         | 7.80 GiB      |                     |                   |
-| 557.xz_r        | input        | 7.96e10         | 10.5 GiB      |                     |                   |
-| 557.xz_r        | Total        | 3.14e11         | 27.5 GiB      |                     |                   |
-| Total           | N/A          | 2.86e12         | 241 GiB       |                     |                   |
+| 502.gcc_r       | ref32 -O3    | 4.80e10         | 1.50 GiB      | 4.58e10             | 1.45 GiB          |
+| 502.gcc_r       | Total        | 2.44e11         | 12.24 GiB     | 2.33e11             | 11.98 GiB         |
+| 505.mcf_r       | N/A          | 2.21e11         | 31.0 GiB      | 1.62e11             | 26.6 GiB          |
+| 520.omnetpp_r   | N/A          | 2.15e11         | 13.3 GiB      | 1.97e11             | 13.2 GiB          |
+| 523.xalancbmk_r | N/A          | 3.27e11         | 4.45 GiB      | 3.16e11             | 4.37 GiB          |
+| 525.x264_r      | pass 1       | 1.44e10         | 579 MiB       | 1.43e10             | 575 MiB           |
+| 525.x264_r      | pass 2       | 4.42e10         | 2.30 GiB      | 4.42e10             | 2.29 GiB          |
+| 525.x264_r      | seek 500     | 4.78e10         | 2.77 GiB      | 4.77e10             | 2.76 GiB          |
+| 525.x264_r      | Total        | 1.06e11         | 5.64 GiB      | 1.06e11             | 5.61 GiB          |
+| 531.deepsjeng_r | N/A          | 2.74e11         | 31.6 GiB      | 2.13e11             | 29.1 GiB          |
+| 541.leela_r     | N/A          | 3.38e11         | 75.6 GiB      | 2.61e11             | 72.3 GiB          |
+| 548.exchange2_r | N/A          | 3.01e11         | 26.3 GiB      | 3.02e11             | 26.2 GiB          |
+| 557.xz_r        | cld          | 5.08e10         | 9.16 GiB      | 5.07e10             | 9.12 GiB          |
+| 557.xz_r        | cpu2006docs  | 1.84e11         | 7.80 GiB      | 1.84e11             | 7.78 GiB          |
+| 557.xz_r        | input        | 7.96e10         | 10.5 GiB      | 7.94e10             | 10.5 GiB          |
+| 557.xz_r        | Total        | 3.14e11         | 27.5 GiB      | 3.14e11             | 27.4 GiB          |
+| Total           | N/A          | 2.86e12         | 241 GiB       | 2.61e12             | 230 GiB           |
 
+LTO 去掉了 9% 的分支指令，对整体性能的影响还是蛮大的，MPKI 的数值也有明显的变化。
 
 ### 时间开销
 
