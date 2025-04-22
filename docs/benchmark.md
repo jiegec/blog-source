@@ -138,6 +138,7 @@ permalink: /benchmark/
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [6.80](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt) [7.00](./data/int2017_rate1/AWS_Graviton_4_O3_002.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Emerald Rapids（`-O3`）: [6.52](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
+- Intel Xeon 6982P-C @ 3.4 GHz Granite Rapids（`-O3`）: [6.38](./data/int2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 - Intel Xeon Platinum 8576C Emerald Rapids（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
