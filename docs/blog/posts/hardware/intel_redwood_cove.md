@@ -177,3 +177,11 @@ Intel Redwood Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来
 - MSR_1A4H[6]: LLC page prefetcher，类似 Next page prefetcher 的思路，但是把虚拟地址上连续的两个 4KB 的页，一共 8KB 的数据预取到 LLC 缓存上
 - MSR_1A4H[7]: Array of pointers prefetcher，针对指针数组 `T *arr[]` 的场景进行预取
 - MSR_1A4H[8]: Stream prefetch code fetch
+
+### ReOrder Buffer
+
+为了测试 ROB 的大小，设计了一个循环，循环开始和结束是长延迟的 long latency load。中间是若干条 NOP 指令，当 NOP 指令比较少时，循环的时候取决于 load 指令的时间；当 NOP 指令数量过多，填满了 ROB 以后，就会导致 ROB 无法保存循环末尾的 load 指令，性能出现下降。测试结果如下：
+
+![](./intel_redwood_cove_rob_size.png)
+
+当 NOP 数量达到 512 时，性能开始急剧下滑，说明 Redwood Cove 的 ROB 大小是 512。
