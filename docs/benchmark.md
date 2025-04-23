@@ -200,26 +200,29 @@ permalink: /benchmark/
 x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
 1. Zen 5(AMD 9950X): MPKI=4.48 Mispred=2.52%
-2. Zen 4 Server(AMD 9R14): MPKI=4.53 Mispred=2.56%
-3. Zen 4c(AMD 9754): MPKI=4.66 Mispred=2.63%
-4. Zen 4 Desktop(AMD 7500F)/Zen 3(AMD 5700X): MPKI=4.68 Mispred=2.64%
-5. Zen 2(AMD 7742): MPKI=4.77 Mispred=2.69%
-6. Redwood Cove(Intel 6982P-C): MPKI=4.77 Mispred=2.71%
-7. Sunny Cove(Intel 8358P)/Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=4.86 Mispred=2.75%
-8. Gracemont(Intel 12900KS/Intel 14900K): MPKI=5.15 Mispred=2.92%
-9. Skylake(Intel D-2146NT)/Cascade Lake(Intel 10980XE): MPKI=5.50 Mispred=3.13%
-10. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
-11. Haswell(Intel E5-2680 v3)/Broadwell(Intel E5-2680 v4): MPKI=5.98 Mispred=3.34%
+2. Zen 4(AMD 9R14): MPKI=4.53 Mispred=2.56%
+3. Zen 4(AMD 9T24): MPKI=4.57 Mispred=2.57%
+4. Zen 4c(AMD 9754): MPKI=4.66 Mispred=2.63%
+5. Zen 4(AMD 7500F): MPKI=4.68 Mispred=2.64%
+6. Zen 3(AMD 5700X): MPKI=4.68 Mispred=2.64%
+7. Zen 2(AMD 7742): MPKI=4.77 Mispred=2.69%
+8. Redwood Cove(Intel 6982P-C): MPKI=4.77 Mispred=2.71%
+9. Sunny Cove(Intel 8358P)/Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=4.86 Mispred=2.75%
+10. Gracemont(Intel 12900KS/Intel 14900K): MPKI=5.15 Mispred=2.92%
+11. Skylake(Intel D-2146NT)/Cascade Lake(Intel 10980XE): MPKI=5.50 Mispred=3.13%
+12. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
+13. Haswell(Intel E5-2680 v3)/Broadwell(Intel E5-2680 v4): MPKI=5.98 Mispred=3.34%
 
 x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 
 1. Zen 5(AMD 9950X): MPKI=5.35 Mispred=3.07%
 2. Zen 2(AMD 7742): MPKI=5.52 Mispred=3.17%
 3. Zen 3(AMD 5700X): MPKI=5.55 Mispred=3.19%
-4. Redwood Cove(Intel 6982P-C): MPKI=5.70 Mispred=3.29%
-5. Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=5.81 Mispred=3.37%
-6. Cascade Lake(Intel 10980XE): MPKI=6.55 Mispred=3.83%
-7. Zen 1(AMD 7551): MPKI=6.86 Mispred=4.02%
+4. Zen 4 Server(AMD 9T24): MPKI=5.57 Mispred=3.19%
+5. Redwood Cove(Intel 6982P-C): MPKI=5.70 Mispred=3.29%
+6. Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=5.81 Mispred=3.37%
+7. Cascade Lake(Intel 10980XE): MPKI=6.55 Mispred=3.83%
+8. Zen 1(AMD 7551): MPKI=6.86 Mispred=4.02%
 
 ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
