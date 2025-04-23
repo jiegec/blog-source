@@ -29,19 +29,39 @@ categories:
 
 <!-- more -->
 
+### Intel® Xeon® 6
+
+- [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/240357/intel-xeon-6.html)
+- 发布时间：Q2'24
+- 代号：Granite Rapids/Sierra Forest
+- 微架构：Redwood Cove/Crestmont
+- 用途：Server
+- 旗舰：Xeon 6980P(128C256T，Redwood Cove, 504 MB L3), Xeon 6780E(144C144T, Crestmont, 108 MB L3)
+
+### 5th Generation Intel® Xeon® Scalable Processors
+
+- [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/236644/5th-gen-intel-xeon-scalable-processors.html)
+- 发布时间：Q4'23
+- 代号：Emerald Rapids
+- 微架构：Raptor Cove
+- 用途：Server
+- 旗舰：Xeon Platinum 8593Q(64C128T，320 MB L3)
+
 ### 4th Generation Intel® Xeon® Scalable Processors/Xeon CPU Max Series
 
 - [CPU 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/228622/4th-generation-intel-xeon-scalable-processors.html) [Xeon CPU Max 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/232643/intel-xeon-cpu-max-series.html)
 - 发布时间：Q1'23
 - 代号：Sapphire Rapids/Sapphire Rapids HBM
+- 微架构：Golden Cove
 - 用途：Server
-- 旗舰：Xeon CPU Max 9480(56C112T，112.5 MB L3，HBM)/Xeon Platinum 8490H(60C120T，Golden Cove，112.5 MB L3)/Xeon Platinum 8480+(56C112T，105 MB L3)
+- 旗舰：Xeon CPU Max 9480(56C112T，112.5 MB L3，HBM)/Xeon Platinum 8490H(60C120T，112.5 MB L3)/Xeon Platinum 8480+(56C112T，105 MB L3)
 
 ### 3rd Generation Intel® Xeon® Scalable Processors
 
 - [CPU 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/204098/3rd-generation-intel-xeon-scalable-processors.html)
 - 发布时间：Q2'21(Ice Lake), Q2'20(Cooper Lake)
 - 代号：Cooper Lake/Ice Lake
+- 微架构：Sunny Cove
 - 用途：Server
 - 旗舰：Xeon Platinum 8380(40C80T，Sunny Cove，60 MB L3)
 - 相关阅读：[Ice Lake](https://www.anandtech.com/show/16594/intel-3rd-gen-xeon-scalable-review)
