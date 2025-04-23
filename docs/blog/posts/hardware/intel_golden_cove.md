@@ -185,6 +185,8 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
     - footprint[14] = B[14]
     - footprint[15] = B[15]
 
+这个结果和论文是一致的。
+
 ## 后端
 
 ### Rename
