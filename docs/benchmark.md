@@ -921,3 +921,43 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - 2025.01.12:
    - 测试 Intel Core i9-12900KS E-Core 的性能
    - 测试 Intel Core i9-14900K E-Core 的性能
+- 2024.12.31:
+   - 测试 Huawei Kirin 9010 的性能
+- 2024.12.16:
+   - 测试 Huawei Kirin 9010 的性能
+- 2024.12.05:
+   - 测试 Loongson 3A6000 的性能
+   - 测试 IBM POWER8NVL 的性能
+- 2024.11.20:
+   - 在 AWS c7gn.medium 实例上测试 AWS Graviton 3E 的性能
+   - 在 AWS r8g.medium 实例上测试 AWS Graviton 4 的性能
+   - 在华为云 kc1.large.2 实例上测试 HuaweiCloud Kunpeng 920 kc1 的性能
+   - 在华为云 kc2.large.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
+   - 测试 AMD EPYC 7742 的性能
+   - 测试 AMD EPYC 7H12 的性能
+   - 测试 AMD Ryzen 7 5700X 的性能
+   - 测试 Intel Xeon E5-2603 v4 的性能
+   - 测试 Loongson 3A6000 的性能
+   - 测试 Loongson 3C5000 的性能
+   - 测试 Loongson 3C6000 的性能
+   - 测试 Qualcomm X1E80100 的性能
+- 2024.11.18:
+   - 测试 Intel Core i9-14900K 的性能
+   - 测试 Intel Core i9-12900KS 的性能
+   - 测试 Qualcomm X1E80100 的性能
+   - 测试 AMD Ryzen 9 9950X 的性能
+- 2024.11.07:
+   - 测试 Qualcomm 8cx Gen3 的性能
+- 2024.11.02:
+   - 在阿里云 c6r.large 实例上测试 Ampere Altra 的性能
+   - 在阿里云 c8y.large 实例上测试 T-Head Yitian 710 的性能
+   - 在 AWS r8g.medium 实例上测试 AWS Graviton 4 的性能
+   - 在 AWS c7g.medium 实例上测试 AWS Graviton 3 的性能
+- 2024.11.01:
+   - 测试 Apple M1 的性能
+   - 测试 Qualcomm X1E80100 的性能
+- 2024.10.30:
+   - 在 AWS c7a.medium 实例上测试 AMD EPYC 9R14 的性能
+   - 在腾讯云 s8.medium8 实例上测试 Intel Xeon Platinum 8576C 的性能
+   - 在腾讯云 sa3.medium4 实例上测试 AMD EPYC 7K83 的性能
+   - 在腾讯云 sa5.medium2 实例上测试 AMD EPYC 9754 的性能
