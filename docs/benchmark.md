@@ -127,8 +127,8 @@ permalink: /benchmark/
 服务器平台（LTO）：
 
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto`）: [7.19](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto_001.txt)
-- Intel Xeon Platinum 8581C @ 3.4 GHz Emerald Rapids（`-O3 -flto`）: [6.67](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto_001.txt)
-- Intel Xeon 6982P-C @ 3.4 GHz Granite Rapids（`-O3 -flto`）: [6.60](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto_001.txt)
+- Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto`）: [6.67](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto_001.txt)
+- Intel Xeon 6982P-C @ 3.4 GHz Redwood Cove（`-O3 -flto`）: [6.60](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [5.65](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.02](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
@@ -140,10 +140,10 @@ permalink: /benchmark/
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [6.95](./data/int2017_rate1/AMD_EPYC_9T24_O3_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [6.80](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt) [7.00](./data/int2017_rate1/AWS_Graviton_4_O3_002.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
-- Intel Xeon Platinum 8581C @ 3.4 GHz Emerald Rapids（`-O3`）: [6.52](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
-- Intel Xeon 6982P-C @ 3.4 GHz Granite Rapids（`-O3`）: [6.38](./data/int2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
+- Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [6.52](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
+- Intel Xeon 6982P-C @ 3.4 GHz Redwood Cove（`-O3`）: [6.38](./data/int2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
-- Intel Xeon Platinum 8576C Emerald Rapids（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
+- Intel Xeon Platinum 8576C Raptor Cove（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.39](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt) [5.40](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_002.txt)
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3`）: [5.32](./data/int2017_rate1/AMD_EPYC_9754_O3_001.txt)
@@ -201,20 +201,22 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 3. Zen 4c(AMD 9754): MPKI=4.66 Mispred=2.63%
 4. Zen 4 Desktop(AMD 7500F)/Zen 3(AMD 5700X): MPKI=4.68 Mispred=2.64%
 5. Zen 2(AMD 7742): MPKI=4.77 Mispred=2.69%
-6. Ice Lake(Intel 8358P)/Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K): MPKI=4.86 Mispred=2.75%
-7. Gracemont(Intel 12900KS/Intel 14900K): MPKI=5.15 Mispred=2.92%
-8. Skylake(Intel D-2146NT)/Cascade Lake(Intel 10980XE): MPKI=5.50 Mispred=3.13%
-9. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
-10. Haswell(Intel E5-2680 v3)/Broadwell(Intel E5-2680 v4): MPKI=5.98 Mispred=3.34%
+6. Redwood Cove(Intel 6982P-C): MPKI=4.77 Mispred=2.71%
+7. Ice Lake(Intel 8358P)/Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=4.86 Mispred=2.75%
+8. Gracemont(Intel 12900KS/Intel 14900K): MPKI=5.15 Mispred=2.92%
+9. Skylake(Intel D-2146NT)/Cascade Lake(Intel 10980XE): MPKI=5.50 Mispred=3.13%
+10. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
+11. Haswell(Intel E5-2680 v3)/Broadwell(Intel E5-2680 v4): MPKI=5.98 Mispred=3.34%
 
 x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 
 1. Zen 5(AMD 9950X): MPKI=5.35 Mispred=3.07%
 2. Zen 2(AMD 7742): MPKI=5.52 Mispred=3.17%
 3. Zen 3(AMD 5700X): MPKI=5.55 Mispred=3.19%
-4. Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K): MPKI=5.81 Mispred=3.37%
-5. Cascade Lake(Intel 10980XE): MPKI=6.55 Mispred=3.83%
-6. Zen 1(AMD 7551): MPKI=6.86 Mispred=4.02%
+4. Redwood Cove(Intel 6982P-C): MPKI=5.70 Mispred=3.29%
+5. Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=5.81 Mispred=3.37%
+6. Cascade Lake(Intel 10980XE): MPKI=6.55 Mispred=3.83%
+7. Zen 1(AMD 7551): MPKI=6.86 Mispred=4.02%
 
 ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
