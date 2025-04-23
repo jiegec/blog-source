@@ -419,6 +419,7 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 
 服务器平台：
 
+- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [9.14](./data/fp2017_rate1/AMD_EPYC_9T24_O3_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [9.03](./data/fp2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [8.75](./data/fp2017_rate1/AWS_Graviton_4_O3_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [8.42](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
