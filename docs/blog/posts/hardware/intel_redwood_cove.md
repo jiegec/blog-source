@@ -165,3 +165,15 @@ Intel Redwood Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
 官方信息：
 
 - New HW data prefetcher to recognize and prefetch the “Array of Pointers” pattern.
+
+Intel Redwood Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来源：Software Developers Manual，Additional MSRs Supported by the Intel® Core™ Ultra 7 Processors Supporting Performance Hybrid Architecture）：
+
+- MSR_1A4H[0]: the L2 hardware prefetcher, which fetches additional lines of code or data into the L2 cache.
+- MSR_1A4H[1]: the L2 adjacent cache line prefetcher, which fetches the cache line that comprises a cache line pair (128 bytes). 这和 AMD 的 Up/Down Prefetcher 应该是一个意思
+- MSR_1A4H[2]: the L1 data cache prefetcher, which fetches the next cache line into L1 data cache. 这个应该属于 Next Line Prefetcher
+- MSR_1A4H[3]: the L1 data cache IP prefetcher, which uses sequential load history (based on instruction pointer of previous loads) to determine whether to prefetch additional lines.
+- MSR_1A4H[4]: Next page prefetcher，当访问快走到一个页的结尾的时候，从下一个页的开头开始 prefetch，提前进行可能的 TLB refill
+- MSR_1A4H[5]: the L2 Adaptive Multipath Probability (AMP) prefetcher. 这个应该属于 Spatial Prefetcher
+- MSR_1A4H[6]: LLC page prefetcher，类似 Next page prefetcher 的思路，但是把虚拟地址上连续的两个 4KB 的页，一共 8KB 的数据预取到 LLC 缓存上
+- MSR_1A4H[7]: Array of pointers prefetcher，针对指针数组 `T *arr[]` 的场景进行预取
+- MSR_1A4H[8]: Stream prefetch code fetch
