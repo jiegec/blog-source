@@ -1,0 +1,56 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3 -flto -ljemalloc
+Running on Linux kernel 6.1.0-32-amd64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1        640       2.49  S
+500.perlbench_r       1        635       2.51  S
+500.perlbench_r       1        639       2.49  *
+502.gcc_r             1        405       3.49  S
+502.gcc_r             1        409       3.46  S
+502.gcc_r             1        408       3.47  *
+505.mcf_r             1        426       3.80  *
+505.mcf_r             1        425       3.80  S
+505.mcf_r             1        427       3.79  S
+520.omnetpp_r         1        705       1.86  *
+520.omnetpp_r         1        709       1.85  S
+520.omnetpp_r         1        704       1.86  S
+523.xalancbmk_r       1        264       3.99  *
+523.xalancbmk_r       1        265       3.99  S
+523.xalancbmk_r       1        264       3.99  S
+525.x264_r            1        302       5.79  S
+525.x264_r            1        302       5.79  *
+525.x264_r            1        302       5.79  S
+531.deepsjeng_r       1        428       2.68  S
+531.deepsjeng_r       1        429       2.67  S
+531.deepsjeng_r       1        429       2.67  *
+541.leela_r           1        637       2.60  S
+541.leela_r           1        643       2.58  *
+541.leela_r           1        644       2.57  S
+548.exchange2_r       1        343       7.65  *
+548.exchange2_r       1        343       7.63  S
+548.exchange2_r       1        342       7.65  S
+557.xz_r              1        543       1.99  S
+557.xz_r              1        541       2.00  S
+557.xz_r              1        541       1.99  *
+=================================================================================
+500.perlbench_r       1        639       2.49  *
+502.gcc_r             1        408       3.47  *
+505.mcf_r             1        426       3.80  *
+520.omnetpp_r         1        705       1.86  *
+523.xalancbmk_r       1        264       3.99  *
+525.x264_r            1        302       5.79  *
+531.deepsjeng_r       1        429       2.67  *
+541.leela_r           1        643       2.58  *
+548.exchange2_r       1        343       7.65  *
+557.xz_r              1        541       1.99  *
+ Est. SPECrate(R)2017_int_base           3.29
+ Est. SPECrate(R)2017_int_peak                                         Not Run
+
+
+System Info:
+CPU Name: Hygon C86 7390
+Enabled: 1 core, 1 chip, 2 threads/core
+Memory: 1x Alibaba Cloud Not Specified 8 GB
