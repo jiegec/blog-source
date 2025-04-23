@@ -161,6 +161,30 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 循环体中，如果用 `nop` 指令来填充，会得到 40 左右的小得多的容量，猜测是进入了低功耗模式。
 
+### Conditional Branch Predictor
+
+参考 [Half&Half: Demystifying Intel’s Directional Branch Predictors for Fast, Secure Partitioned Execution](https://cseweb.ucsd.edu/~dstefan/pubs/yavarzadeh:2023:half.pdf) 论文的方法，可以测出 Golden Cove 的分支预测器采用的历史更新方式为：
+
+1. 使用 388 位的 Path History Register，每次执行 taken branch 时更新
+2. 更新方式为：`PHRnew = (PHRold << 2) xor footprint`
+3. footprint 共有 16 位，其中 B 代表分支指令的地址，T 代表分支跳转的目的地址：
+    - footprint[0] = B[3] xor T[0]
+    - footprint[1] = B[4] xor T[1]
+    - footprint[2] = B[5]
+    - footprint[3] = B[6]
+    - footprint[4] = B[7]
+    - footprint[5] = B[8]
+    - footprint[6] = B[9]
+    - footprint[7] = B[10]
+    - footprint[8] = B[0] xor T[2]
+    - footprint[9] = B[1] xor T[3]
+    - footprint[10] = B[2] xor T[4]
+    - footprint[11] = B[11] xor T[5]
+    - footprint[12] = B[12]
+    - footprint[13] = B[13]
+    - footprint[14] = B[14]
+    - footprint[15] = B[15]
+
 ## 后端
 
 ### Rename

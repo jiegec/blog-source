@@ -20,12 +20,12 @@ categories:
   - M：媒体/大内存
   - N：网络
   - P：虚拟化，IaaS
-  - Q: 水冷
+  - Q：水冷
   - S：存储/搜索
   - T：长寿命
   - U：单插槽
   - V：虚拟化，SaaS
-  - Y: Speed Select
+  - Y：Speed Select
 
 <!-- more -->
 

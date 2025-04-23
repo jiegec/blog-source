@@ -170,6 +170,18 @@ Icestorm 的 BTB 测试结果并不像 Firestorm 那样有规律，根据这个�
 
 可以看到调用链深度为 32 时性能突然变差，因此 Icestorm 的 Return Stack 深度为 32。
 
+### Conditional Branch Predictor
+
+参考 [Dissecting Conditional Branch Predictors of Apple Firestorm and Qualcomm Oryon for Software Optimization and Architectural Analysis](https://arxiv.org/abs/2411.13900) 论文的方法，可以测出 Firestorm 的分支预测器采用的历史更新方式为：
+
+1. 使用 100 位的 Path History Register for Target(PHRT) 以及 28 位的 Path History Register for Branch(PHRB)，每次执行 taken branch 时更新
+2. 更新方式为：`PHRTnew = (PHRTold << 1) xor T[31:2], PHRBnew = (PHRBold << 1) xor B[5:2]`，其中 B 代表分支指令的地址，T 代表分支跳转的目的地址
+
+Icestorm 的分支预测器采用的历史更新方式为：
+
+1. 使用 60 位的 Path History Register for Target(PHRT) 以及 16 位的 Path History Register for Branch(PHRB)，每次执行 taken branch 时更新
+2. 更新方式为：`PHRTnew = (PHRTold << 1) xor T[47:2], PHRBnew = (PHRBold << 1) xor B[5:2]`，其中 B 代表分支指令的地址，T 代表分支跳转的目的地址
+
 ## 后端
 
 ### 物理寄存器堆
