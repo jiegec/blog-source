@@ -103,7 +103,7 @@ Intel Redwood Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
     - footprint[14] = B[14]
     - footprint[15] = B[15]
 
-和 [Golden Cove](./intel_golden_cove.md) 是一样的。
+和 [Golden Cove](./intel_golden_cove.md) 是一样的。各厂商处理器的 PHR 更新规则见 [jiegec/cpu](https://jia.je/cpu/cbp.html)。
 
 ## 后端
 
