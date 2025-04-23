@@ -126,6 +126,7 @@ permalink: /benchmark/
 
 服务器平台（LTO）：
 
+- Intel Xeon Platinum 8581C @ 3.4 GHz Emerald Rapids（`-O3 -flto`）: [6.67](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto_001.txt)
 - Intel Xeon 6982P-C @ 3.4 GHz Granite Rapids（`-O3 -flto`）: [6.60](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [5.65](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.02](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
