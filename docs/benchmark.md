@@ -144,7 +144,7 @@ permalink: /benchmark/
 - Intel Xeon 6982P-C @ 3.4 GHz Redwood Cove（`-O3`）: [6.38](./data/int2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 - Intel Xeon Platinum 8576C Raptor Cove（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
-- Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.39](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt) [5.40](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_002.txt)
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3`）: [5.32](./data/int2017_rate1/AMD_EPYC_9754_O3_001.txt)
 - AMD EPYC 7K83 Zen 3（`-O3`）: [5.18](./data/int2017_rate1/AMD_EPYC_7K83_O3_001.txt)
@@ -202,7 +202,7 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 4. Zen 4 Desktop(AMD 7500F)/Zen 3(AMD 5700X): MPKI=4.68 Mispred=2.64%
 5. Zen 2(AMD 7742): MPKI=4.77 Mispred=2.69%
 6. Redwood Cove(Intel 6982P-C): MPKI=4.77 Mispred=2.71%
-7. Ice Lake(Intel 8358P)/Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=4.86 Mispred=2.75%
+7. Sunny Cove(Intel 8358P)/Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=4.86 Mispred=2.75%
 8. Gracemont(Intel 12900KS/Intel 14900K): MPKI=5.15 Mispred=2.92%
 9. Skylake(Intel D-2146NT)/Cascade Lake(Intel 10980XE): MPKI=5.50 Mispred=3.13%
 10. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
@@ -406,7 +406,7 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 服务器平台（`-march=native`）：
 
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -march=native`）: [8.87](./data/fp2017_rate1/AWS_Graviton_4_O3-march=native_001.txt)
-- Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3 -march=native`）: [7.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3-march=native_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -march=native`）: [7.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3-march=native_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3 -march=native`）: [5.48](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3-march=native_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3 -march=native`）: [3.09](./data/fp2017_rate1/Loongson_3C5000_O3-march=native_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.17](./data/fp2017_rate1/Kunpeng_920_O3-march=native_001.txt)
@@ -415,16 +415,16 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [9.03](./data/fp2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [8.75](./data/fp2017_rate1/AWS_Graviton_4_O3_001.txt)
-- Intel Xeon Platinum 8581C @ 3.4 GHz Emerald Rapids（`-O3`）: [8.42](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
+- Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [8.42](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [8.19](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt) [8.13](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_002.txt)
-- Intel Xeon Platinum 8576C Emerald Rapids（`-O3`）: [8.14](./data/fp2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
+- Intel Xeon Platinum 8576C Raptor Cove（`-O3`）: [8.14](./data/fp2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3`）: [8.10](./data/fp2017_rate1/AWS_Graviton_3E_O3_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3`）: [7.80](./data/fp2017_rate1/AWS_Graviton_3_O3_001.txt)
 - AMD EPYC 7K83 Zen 3（`-O3`）: [7.63](./data/fp2017_rate1/AMD_EPYC_7K83_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [7.63](./data/fp2017_rate1/T-Head_Yitian_710_O3_001.txt)
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3`）: [7.53](./data/fp2017_rate1/AMD_EPYC_9754_O3_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [7.12](./data/fp2017_rate1/AMD_EPYC_7742_O3_001.txt)
-- Intel Xeon Platinum 8358P @ 3.4 GHz Ice Lake（`-O3`）: [7.12](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3`）: [7.12](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - AMD EPYC 7H12 @ 3.3 GHz Zen 2（`-O3`）: [6.61](./data/fp2017_rate1/AMD_EPYC_7H12_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [5.44](./data/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Ampere Altra @ 3.0 GHz Neoverse N1（`-O3`）: [5.26](./data/fp2017_rate1/Ampere_Altra_O3_001.txt)
