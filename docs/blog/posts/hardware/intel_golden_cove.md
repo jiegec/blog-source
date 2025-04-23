@@ -105,7 +105,6 @@ uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP�
 
 如果单独去测试每个对齐的 64B 能缓存多少个 uOP，比如每个对齐的 64B 里由若干条 nop 加最后一条跳到下一个 64B 开头的 jmp 指令组成，会发现当对齐的 64B 内的 uOP 个数从 36 个变成 37 个时，uOP Cache 命中率急剧下降。这意味着，每对齐的 64B 内依然不能存超过 36 个 uOP。这类似于原来的每对齐的 32B 内不能存超过 18 个 uOP，但粒度更粗，实际上更加宽松，比如对齐的 64B 内的前 32B 可以全是 NOP 指令，只要 64B 内总数不超过 36 就可以。但比较奇怪的是，36 uOP per 64B 不能整除 8 uOP/Entry，不像原来的 18 per 32B 可以整除 6 uOP/Entry。
 
-
 ### L1 ITLB
 
 官方信息：
@@ -153,13 +152,13 @@ uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP�
 
 官方信息：
 
-- The IDQ can hold 144 uops per logical processor in single thread mode, or 72 uops per thread when SMT is active.
+- The IDQ can hold **144** uops per logical processor in single thread mode, or 72 uops per thread when SMT is active.
 
 Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD）会检测当前指令流是否在一个循环当中，并且循环的 uop 不超出 Instruction Decode Queue(IDQ) 的容量，那么 LSD 会把 Legacy decode pipeline(MITE) 和 Decode stream buffer(DSB) 关掉，不再让 IDQ 的指令出队，而是直接在 IDQ 的内部循环提供指令，这个时候就节省了很多处理器前端的功耗。
 
 为了测试 Instruction Decode Queue 的大小，构造不同大小的循环，循环体是复制若干份的 `inc %rsi` 指令，最后是 `dec + jnz` 作为循环结尾，通过 [LSD.UOPS](https://perfmon-events.intel.com/index.html?pltfrm=ahybrid.html&evnt=LSD.UOPS) 性能计数器统计每次循环有多少个 UOP 来自于 Loop Stream Detector 机制，发现其最大值为 144，说明 Golden Cove 的 Loop Stream Detector 可以识别最多 144 个 uop 的循环。此时每个循环要执行 145 条指令，最后的 `dec + jnz` 被融合成了一个 uop。
 
-循环体中，如果用 `nop` 指令来填充，会得到 40 左右的小得多的容量，猜测是进入了低功耗模式。
+循环体中，如果用 `nop` 指令来填充，会得到 40 左右的比 144 小得多的容量，猜测是进入了低功耗模式。
 
 ### Conditional Branch Predictor
 
@@ -249,16 +248,16 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 可以看到，Golden Cove 在 Store 完全包含 Load 的情况下都可以转发，没有额外的对齐要求。但当 Load 和 Store 只有部分重合时，就无法转发，这和官方信息有所冲突。两个连续的 32 位的 Store 和一个 64 位的 Load 重合也不能转发。
 
-比较有意思的是，在 y=x 且不跨越缓存行边界且满足下列要求的情况下，Store Forwarding 不会带来性能损失，就好像 Load Store 访问的是不同的没有 Overlap 的地址一样：
+比较有意思的是，在 y=x 且不跨越缓存行边界且满足下列要求的情况下，Store Forwarding 不会或只带来很小的性能损失：
 
 - 8b Store -> 8b Load
 - 32b Store -> 8b Load
 - 64b Store -> 8b Load
-- 16b Store -> 16b Load
 - 32b Store -> 32b Load
 - 64b Store -> 32b Load
+- 64b Store -> 64b Load
 
-考虑到 y 必须等于 x，也就是地址要一样，并且没有带来性能损失，猜测 Golden Cove 使用了类似 Memory Renaming 的技术来实现这个效果。如果是连续两个对同一个地址的 Store 对一个 Load 的转发，效果和只有一个 Store 是一样的。
+考虑到 y 必须等于 x，也就是地址要一样，猜测 Golden Cove 使用了类似 Memory Renaming 的技术来实现这个效果。如果是连续两个对同一个地址的 Store 对一个 Load 的转发，效果和只有一个 Store 是一样的。
 
 除了上述情况以外，Store Forwarding 成功时的延迟在 5 个周期，失败则要 19 个周期。
 

@@ -12,12 +12,13 @@ categories:
 
 最近做了不少微架构的评测，其中涉及到了很多的 CPU 微架构的逆向：
 
-- [Apple M1 微架构评测](./apple_m1.md)
-- [Qualcomm Oryon 微架构评测](./qualcomm_oryon.md)
 - [AMD Zen 5 微架构评测](./amd_zen5.md)
 - [ARM Neoverse V2 微架构评测](./arm_neoverse_v2.md)
+- [Apple M1 微架构评测](./apple_m1.md)
 - [Intel Golden Cove 微架构评测](./intel_golden_cove.md)
 - [Intel Gracemont 微架构评测](./intel_gracemont.md)
+- [Intel Redwood Cove 微架构评测](./intel_redwood_cove.md)
+- [Qualcomm Oryon 微架构评测](./qualcomm_oryon.md)
 
 因此总结一下 CPU 微架构逆向方法学。
 
