@@ -107,6 +107,21 @@ Intel Redwood Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 ## 后端
 
+### L1 DCache
+
+构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
+
+- 0KB-48KB: 5 cycle，对应 L1 DCache
+- 48KB-384KB: 16 cycle，对应 L2 Cache，且命中了 L1 DTLB；说明 L1 miss L2 hit 带来了 11 cycle 的损失
+
+### L1 DTLB
+
+用类似测 L1 DCache 的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈：
+
+![](./intel_redwood_cove_dtlb_size.png)
+
+可以看到 96 Page 出现了明显的拐点，对应的就是 96 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 5 cycle；超出 L1 DTLB 容量后，Load to use latency 是 12 cycle，说明 L1 DTLB miss 带来了 7 cycle 的损失。
+
 ### 执行单元
 
 官方信息：
