@@ -219,7 +219,7 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 1. Zen 5(AMD 9950X): MPKI=5.35 Mispred=3.07%
 2. Zen 2(AMD 7742): MPKI=5.52 Mispred=3.17%
 3. Zen 3(AMD 5700X): MPKI=5.55 Mispred=3.19%
-4. Zen 4 Server(AMD 9T24): MPKI=5.57 Mispred=3.19%
+4. Zen 4(AMD 9T24): MPKI=5.57 Mispred=3.19%
 5. Redwood Cove(Intel 6982P-C): MPKI=5.70 Mispred=3.29%
 6. Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=5.81 Mispred=3.37%
 7. Cascade Lake(Intel 10980XE): MPKI=6.55 Mispred=3.83%
@@ -412,6 +412,7 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 
 服务器平台（`-march=native`）：
 
+- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -march=native`）: [10.1](./data/fp2017_rate1/AMD_EPYC_9T24_O3-march=native_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -march=native`）: [8.87](./data/fp2017_rate1/AWS_Graviton_4_O3-march=native_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -march=native`）: [8.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3-march=native_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -march=native`）: [7.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3-march=native_001.txt)
@@ -895,20 +896,6 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 2. 读取当前的 pstate 设置
 3. 修改当前 pstate 的 FID，也就修改了频率
 
-## CPU 型号
-
-下面给出测试的各 CPU 型号的官网链接：
-
-- [AMD Ryzen 5 7500F](https://www.amd.com/en/products/processors/desktops/ryzen/7000-series/amd-ryzen-5-7500f.html): Max Boost Clock 5.0 GHz
-- [AMD Ryzen 9 9950X](https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x.html): Max Boost Clock 5.7 GHz
-- [AWS Gravition 2/3/3E/4](https://github.com/aws/aws-graviton-getting-started/blob/main/README.md)
-- [Intel Core i9-10980XE](https://www.intel.com/content/www/us/en/products/sku/198017/intel-core-i910980xe-extreme-edition-processor-24-75m-cache-3-00-ghz/specifications.html): Max Boost Clock 4.8 GHz
-- [Intel Core i9-12900KS](https://www.intel.com/content/www/us/en/products/sku/225916/intel-core-i912900ks-processor-30m-cache-up-to-5-50-ghz/specifications.html): Max Boost Clock 5.5 GHz
-- [Intel Core i9-14900K](https://www.intel.com/content/www/us/en/products/sku/236773/intel-core-i9-processor-14900k-36m-cache-up-to-6-00-ghz/specifications.html): Max Boost Clock 6.0 GHz
-- [Intel Xeon E5-2603 v4](https://www.intel.com/content/www/us/en/products/sku/92993/intel-xeon-processor-e52603-v4-15m-cache-1-70-ghz/specifications.html)
-- [Qualcomm 8cx Gen3](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-mobile-compute-platforms/snapdragon-8cx-gen-3-compute-platform)
-- [Qualcomm X Elite](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-x-elite)
-
 ## 测试环境
 
 参与测试的机型如下：
@@ -960,7 +947,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
       - 在阿里云 g7h.large 实例上测试 Hygon C86 7390 的性能
       - 在阿里云 g8a.large 实例上测试 AMD EPYC 9T24 的性能
       - 在阿里云 g9i.large 实例上测试 Intel Xeon 6982P-C 的性能
-- 2025.04.22:
+- 2025.04.19:
       - 测试 Loongson 3C6000 的性能
 - 2025.04.18:
       - 测试 AMD EPYC 7551 的性能
