@@ -900,7 +900,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 ## 更新历史
 
 - 2025.04.22:
-   - 在 Google Cloud Platform c4-standard-2 实例上测试 Intel Xeon Pltinum 8581C 的性能
+   - 在 GCP c4-standard-2 实例上测试 Intel Xeon Platinum 8581C 的性能
    - 在阿里云 g7h.large 实例上测试 Hygon C86 7390 的性能
    - 在阿里云 g8a.large 实例上测试 AMD EPYC 9T24 的性能
    - 在阿里云 g9i.large 实例上测试 Intel Xeon 6982P-C 的性能
