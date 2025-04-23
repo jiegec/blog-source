@@ -119,7 +119,7 @@ permalink: /benchmark/
 
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto -ljemalloc`）: [7.64](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.48](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
-- Intel Xeon 6982P-C @ 3.4 GHz Redwood Cove（`-O3 -flto -ljemalloc`）: [7.20](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto-ljemalloc_001.txt)
+- Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3 -flto -ljemalloc`）: [7.20](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto-ljemalloc_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [6.87](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3 -flto -ljemalloc`）: [6.17](./data/int2017_rate1/AWS_Graviton_3E_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto -ljemalloc`）: [6.00](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto-ljemalloc_001.txt)
@@ -131,7 +131,7 @@ permalink: /benchmark/
 
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto`）: [7.19](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto`）: [6.67](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto_001.txt)
-- Intel Xeon 6982P-C @ 3.4 GHz Redwood Cove（`-O3 -flto`）: [6.60](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto_001.txt)
+- Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3 -flto`）: [6.60](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [5.65](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.02](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
@@ -144,7 +144,7 @@ permalink: /benchmark/
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [6.80](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt) [7.00](./data/int2017_rate1/AWS_Graviton_4_O3_002.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [6.52](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
-- Intel Xeon 6982P-C @ 3.4 GHz Redwood Cove（`-O3`）: [6.38](./data/int2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
+- Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3`）: [6.38](./data/int2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 - Intel Xeon Platinum 8576C Raptor Cove（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
@@ -419,6 +419,7 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 
 服务器平台：
 
+- Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3`）: [9.60](./data/fp2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [9.14](./data/fp2017_rate1/AMD_EPYC_9T24_O3_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [9.03](./data/fp2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [8.75](./data/fp2017_rate1/AWS_Graviton_4_O3_001.txt)
