@@ -896,3 +896,28 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - [Intel Xeon E5-2603 v4](https://www.intel.com/content/www/us/en/products/sku/92993/intel-xeon-processor-e52603-v4-15m-cache-1-70-ghz/specifications.html)
 - [Qualcomm 8cx Gen3](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-mobile-compute-platforms/snapdragon-8cx-gen-3-compute-platform)
 - [Qualcomm X Elite](https://www.qualcomm.com/products/mobile/snapdragon/laptops-and-tablets/snapdragon-x-elite)
+
+## 更新历史
+
+- 2025.04.22:
+   - 在 Google Cloud Platform c4-standard-2 实例上测试 Intel Xeon Pltinum 8581C 的性能
+   - 在阿里云 g7h.large 实例上测试 Hygon C86 7390 的性能
+   - 在阿里云 g8a.large 实例上测试 AMD EPYC 9T24 的性能
+   - 在阿里云 g9i.large 实例上测试 Intel Xeon 6982P-C 的性能
+- 2025.04.22:
+   - 测试 Loongson 3C6000 的性能
+- 2025.04.18:
+   - 测试 AMD EPYC 7551 的性能
+   - 测试 AMD Ryzen 7 5700X 的性能
+   - 测试 Apple M1 的性能
+   - 测试 Huawei Kunpeng 920 的性能
+   - 测试 Intel Core i9-10980XE 的性能
+   - 测试 Loongson 3A6000 的性能
+- 2025.04.11:
+   - 在华为云 kc2.xlarge.4 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
+- 2025.03.26:
+   - 测试 AMD Ryzen 9 9950X 的性能
+   - 测试 Intel Xeon E5-4610 v2 的性能
+- 2025.01.12:
+   - 测试 Intel Core i9-12900KS E-Core 的性能
+   - 测试 Intel Core i9-14900K E-Core 的性能
