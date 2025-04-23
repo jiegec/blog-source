@@ -137,6 +137,7 @@ permalink: /benchmark/
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.26](./data/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.19](./data/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
+- Hygon C86 7390（`-O3 -flto`）: [3.09](./data/int2017_rate1/Hygon_C86_7390_O3-flto_001.txt)
 
 服务器平台：
 
