@@ -10,8 +10,9 @@ categories:
 
 ## Xeon 系列
 
-[命名方式](https://www.intel.com/content/www/us/en/support/articles/000059657/processors/intel-xeon-processors.html)：
+[5 代和之前的 Xeon 的命名方式](https://www.intel.com/content/www/us/en/support/articles/000059657/processors/intel-xeon-processors.html)：
 
+- Platinum/Gold/Silver/Bronze：从高端到低端
 - 第一位数字：8-9 对应 Platinum，5-6 对应 Gold，4 对应 Silver，3 对应 Bronze
 - 第二位数字：对应代次，1 对应 1st Generation，2 对应 2nd Generation，依此类推
 - 第三位第四位数字：一般越大性能越好
