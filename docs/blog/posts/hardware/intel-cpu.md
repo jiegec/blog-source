@@ -87,6 +87,34 @@ categories:
 
 [命名方式](https://www.intel.com/content/www/us/en/processors/processor-numbers.html)
 
+Intel Core Ultra:
+
+- Intel Core Ultra {Performance Tier} {Generation}{Number}{Suffix}
+- Ultra 5/7/9：数字越大越高端
+- 此外还有 Intel Core 系列，不带 Ultra，也不带 i
+- 百位：对应代次，2 对应 2 代
+- 十位 + 千位：型号，一般越大越高端
+- 后缀：
+  - K: 桌面，高性能，可超频
+  - F：桌面，无核显
+  - S：桌面，特殊版本
+  - T：桌面，省电
+  - HX：笔记本，高性能，可超频
+  - HK：笔记本，高性能，可超频
+  - H：笔记本，高性能
+  - P：笔记本，轻薄本
+  - U：笔记本，省电
+  - Y：笔记本，超级省电
+  - G1-G7：笔记本，带不同代的核显
+  - E：嵌入式
+  - UE：嵌入式，省电
+  - HE：嵌入式，高性能
+  - UL：嵌入式，省电，LGA 封装
+  - HL：嵌入式，高性能，LGA 封装
+
+Intel Core i 系列:
+
+- Intel Core i{Performance Tier} {Generation}{Number}{Suffix}
 - i3/i5/i7/i9：数字越大越高端
 - 万位 + 千位：对应代次，13 对应 13 代
 - 百位 + 十位 + 千位：型号，一般越大越高端
