@@ -1,0 +1,68 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.1.0-32-amd64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        619      16.2   S
+503.bwaves_r          1        618      16.2   S
+503.bwaves_r          1        618      16.2   *
+507.cactuBSSN_r       1        352       3.59  *
+507.cactuBSSN_r       1        352       3.59  S
+507.cactuBSSN_r       1        354       3.58  S
+508.namd_r            1        441       2.16  S
+508.namd_r            1        425       2.24  S
+508.namd_r            1        425       2.23  *
+510.parest_r          1        693       3.77  *
+510.parest_r          1        693       3.77  S
+510.parest_r          1        694       3.77  S
+511.povray_r          1        845       2.76  *
+511.povray_r          1        844       2.77  S
+511.povray_r          1        845       2.76  S
+519.lbm_r             1        366       2.88  S
+519.lbm_r             1        367       2.87  S
+519.lbm_r             1        367       2.87  *
+521.wrf_r             1        517       4.33  S
+521.wrf_r             1        518       4.33  *
+521.wrf_r             1        520       4.31  S
+526.blender_r         1        453       3.36  S
+526.blender_r         1        454       3.36  *
+526.blender_r         1        457       3.34  S
+527.cam4_r            1        464       3.77  *
+527.cam4_r            1        465       3.76  S
+527.cam4_r            1        464       3.77  S
+538.imagick_r         1        856       2.91  *
+538.imagick_r         1        870       2.86  S
+538.imagick_r         1        855       2.91  S
+544.nab_r             1        525       3.21  S
+544.nab_r             1        526       3.20  S
+544.nab_r             1        526       3.20  *
+549.fotonik3d_r       1        484       8.05  S
+549.fotonik3d_r       1        483       8.07  *
+549.fotonik3d_r       1        482       8.08  S
+554.roms_r            1        446       3.56  *
+554.roms_r            1        447       3.56  S
+554.roms_r            1        446       3.56  S
+=================================================================================
+503.bwaves_r          1        618      16.2   *
+507.cactuBSSN_r       1        352       3.59  *
+508.namd_r            1        425       2.23  *
+510.parest_r          1        693       3.77  *
+511.povray_r          1        845       2.76  *
+519.lbm_r             1        367       2.87  *
+521.wrf_r             1        518       4.33  *
+526.blender_r         1        454       3.36  *
+527.cam4_r            1        464       3.77  *
+538.imagick_r         1        856       2.91  *
+544.nab_r             1        526       3.20  *
+549.fotonik3d_r       1        483       8.07  *
+554.roms_r            1        446       3.56  *
+ Est. SPECrate(R)2017_fp_base            3.95
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+
+System Info:
+CPU Name: Hygon C86 7390
+Enabled: 1 core, 1 chip, 2 threads/core
+Memory: 1x Alibaba Cloud Not Specified 8 GB

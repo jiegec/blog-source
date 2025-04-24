@@ -446,6 +446,7 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.94](./data/fp2017_rate1/Loongson_3C6000_O3_001.txt)
 - IBM POWER8NVL @ 4.0 GHz POWER8（`-O3`）: [4.10](./data/fp2017_rate1/IBM_POWER8NVL_O3_001.txt)
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [4.05](./data/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- Hygon C86 7390（`-O3`）: [3.95](./data/fp2017_rate1/Hygon_C86_7390_O3_001.txt)
 - Intel Xeon E5-4610 v2 @ 2.7 GHz Ivy Bridge EP（`-O3`）: [3.74](./data/fp2017_rate1/Intel_Xeon_E5-4610_v2_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc1 @ 2.6 GHz（`-O3`）: [3.17](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc1_O3_001.txt)
 - Intel Xeon E5-2603 v4 @ 1.7 GHz Broadwell（`-O3`）: [3.14](./data/fp2017_rate1/Intel_Xeon_E5-2603_v4_O3_001.txt)
