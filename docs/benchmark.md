@@ -444,7 +444,7 @@ LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）�
 - Ampere Altra @ 3.0 GHz Neoverse N1（`-O3`）: [5.26](./data/fp2017_rate1/Ampere_Altra_O3_001.txt)
 - Intel Xeon E5-2680 v3 @ 3.3 GHz Haswell（`-O3`）: [5.15](./data/fp2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [5.00](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.94](./data/fp2017_rate1/Loongson_3C6000_O3_001.txt)
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.94](./data/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data/fp2017_rate1/Loongson_3C6000_O3_003.txt)
 - IBM POWER8NVL @ 4.0 GHz POWER8（`-O3`）: [4.10](./data/fp2017_rate1/IBM_POWER8NVL_O3_001.txt)
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [4.05](./data/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - Hygon C86 7390（`-O3`）: [3.95](./data/fp2017_rate1/Hygon_C86_7390_O3_001.txt)
@@ -948,6 +948,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 - 2025.05.07:
       - 在 AWS c8g.large 实例上测试 AWS Graviton 4 的性能
+      - 测试 Loongson 3C6000 的性能
 - 2025.04.22:
       - 在 GCP c4-standard-2 实例上测试 Intel Xeon Platinum 8581C 的性能
       - 在阿里云 g7h.large 实例上测试 Hygon C86 7390 的性能
