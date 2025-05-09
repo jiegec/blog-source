@@ -88,6 +88,8 @@ def parse_data(flavor):
             # perf
             if found_delim and ":" in line:
                 benchmark = parts[0][:-1]
+                if benchmark == "all":
+                    continue
                 key = parts[1]
                 value = float(parts[-1])
                 data[name][f"{benchmark}/{key}"].append(value)

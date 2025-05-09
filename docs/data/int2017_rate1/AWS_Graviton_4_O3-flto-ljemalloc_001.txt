@@ -119,6 +119,10 @@ Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
 557.xz_r: ipc = 2.0964
 557.xz_r: misprediction rate (%) = 3.0939
 557.xz_r: mpki = 5.3199
+all: time (ms) = 2.0272e+06
+all: clock freq (MHz) = 2749.1677
+all: instructions = 1.5219e+13
+all: branch instructions = 2.5586e+12
 
 System Info:
 CPU Name: -

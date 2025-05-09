@@ -152,6 +152,10 @@ Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
 554.roms_r: ipc = 2.4428
 554.roms_r: misprediction rate (%) = 0.4954
 554.roms_r: mpki = 0.3431
+all: time (ms) = 2.96731e+06
+all: clock freq (MHz) = 2748.5687
+all: instructions = 2.48464e+13
+all: branch instructions = 2.43667e+12
 
 System Info:
 CPU Name: -
