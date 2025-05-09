@@ -231,4 +231,5 @@ for flavor in ["int", "fp"]:
     plot_perf(flavor, "mispred", "misprediction", "Branch Misprediction Rate (%)")
     plot_perf(flavor, "freq", "clock", "Clock Freq (MHz)")
     plot_perf(flavor, "inst", "instructions", "Instructions")
+    plot_perf(flavor, "brinst", "branch", "Branch Instructions")
     plot_perf(flavor, "ratio", "ratio", "Ratio")
