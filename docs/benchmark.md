@@ -118,7 +118,7 @@ permalink: /benchmark/
 服务器平台（LTO + Jemalloc）：
 
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto -ljemalloc`）: [7.64](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto-ljemalloc_001.txt)
-- AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.64](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
+- AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.64](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt) [7.41](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_002.txt)
 - Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3 -flto -ljemalloc`）: [7.20](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto-ljemalloc_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [6.87](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3 -flto -ljemalloc`）: [6.17](./data/int2017_rate1/AWS_Graviton_3E_O3-flto-ljemalloc_001.txt)
