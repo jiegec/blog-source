@@ -775,15 +775,34 @@ basepeak = yes
 # show live output
 teeout = yes
 # speedup compilation
-makeflags = --jobs=16
+makeflags = --jobs=%{nproc}
 
 # compilers
 default:
    preENV_LD_LIBRARY_PATH  = /usr/lib64:/usr/lib:/lib64
    SPECLANG                = /usr/bin/
+%if %{clang} eq "1"
+   CC                      = $(SPECLANG)clang -std=c99
+   CXX                     = $(SPECLANG)clang++
+%else
    CC                      = $(SPECLANG)gcc -std=c99
    CXX                     = $(SPECLANG)g++
+%endif
+%if %{flang} eq "1"
+   FC                      = $(SPECLANG)flang-new
+%else
    FC                      = $(SPECLANG)gfortran
+%endif
+# allow to override compilers
+%ifdef %{override-cc}
+   CC                      = %{override-cc} -std=c99
+%endif
+%ifdef %{override-cxx}
+   CXX                     = %{override-cxx}
+%endif
+%ifdef %{override-fc}
+   FC                      = %{override-fc}
+%endif
    # How to say "Show me your version, please"
    CC_VERSION_OPTION       = -v
    CXX_VERSION_OPTION      = -v
@@ -792,16 +811,23 @@ default:
 # perf: use runcpu --define perf=1 --noreportable to enable
 %if %{perf} eq "1"
 # override branch-misses counter if necessary
-%ifndef %{branchmisses}
-%define branchmisses branch-misses
+# e.g. on ARMv8 PMUv3, use r22 for branch misses
+# e.g. on Apple M1, use rcb for branch misses
+%ifndef %{perf-branchmisses}
+%define perf-branchmisses branch-misses
+%endif
+# override branches counter if necessary
+# e.g. on Apple M1, use r8d for branches
+%ifndef %{perf-branches}
+%define perf-branches branches
 %endif
 default:
    command_add_redirect = 1
 # bind to core if requested
 %ifdef %{bindcore}
-   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,branches,%{branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,%{perf-branches},%{perf-branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
 %else
-   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,branches,%{branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,%{perf-branches},%{perf-branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
 %endif
 %endif
 
@@ -824,6 +850,10 @@ default:
 
 526.blender_r:  #lang='CXX,C'
    PORTABILITY   = -funsigned-char -DSPEC_LINUX
+%if %{clang} eq "1"
+# from config/Example-aocc-linux-x86.cfg
+   CXXPORTABILITY = -D__BOOL_DEFINED
+%endif
 
 527.cam4_r,627.cam4_s:  #lang='F,C'
    PORTABILITY   = -DSPEC_CASE_FLAG
@@ -852,8 +882,10 @@ default=base:         # flags for all base
 %endif
    # -std=c++03 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
    CXXOPTIMIZE    = -std=c++03
+%if %{flang} ne "1"
    # -fallow-argument-mismatch required for https://www.spec.org/cpu2017/Docs/benchmarks/521.wrf_r.html
    FOPTIMIZE      = -fallow-argument-mismatch
+%endif
 
 intrate,intspeed=base: # flags for integer base
    EXTRA_COPTIMIZE = -fno-strict-aliasing -fno-unsafe-math-optimizations -fno-finite-math-only -fgnu89-inline -fcommon
@@ -867,6 +899,16 @@ intrate,intspeed=base: # flags for integer base
 #       https://www.spec.org/cpu2017/Docs/benchmarks/500.perlbench_r.html
 #       https://www.spec.org/cpu2017/Docs/benchmarks/502.gcc_r.html
 #       https://www.spec.org/cpu2017/Docs/benchmarks/525.x264_r.html
+
+%if %{clang} eq "1"
+# https://github.com/llvm/llvm-project/issues/96859
+# 523.xalancbmk_r
+   EXTRA_CXXOPTIMIZE = -fdelayed-template-parsing
+%endif
+
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116064
+# 523.xalamcbmk_r
+   EXTRA_CXXOPTIMIZE += -Wno-error=template-body
 
 fprate,fpspeed=base: # flags for fp base
    EXTRA_COPTIMIZE = -Wno-error=implicit-int
