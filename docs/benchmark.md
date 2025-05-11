@@ -907,9 +907,11 @@ intrate,intspeed=base: # flags for integer base
    EXTRA_CXXOPTIMIZE = -fdelayed-template-parsing
 %endif
 
+%if %{gcc15} eq "1"
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116064
 # 523.xalamcbmk_r
    EXTRA_CXXOPTIMIZE += -Wno-error=template-body
+%endif
 
 fprate,fpspeed=base: # flags for fp base
    EXTRA_COPTIMIZE = -Wno-error=implicit-int
