@@ -1,7 +1,6 @@
 ---
 layout: post
 date: 2025-04-23
-draft: true
 tags: [cpu,intel,redwoodcove,meteorlake,graniterapids,performance,uarch-review]
 categories:
     - hardware
