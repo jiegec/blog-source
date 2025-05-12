@@ -26,17 +26,21 @@ Diplomacy 为了表示总线的结构，每个模块可以对应一个 Node，No
 
 每个 Node 可能作为 Manager 连接上游的 Client，这个叫做入边（Inward Edge）；同样地，也可以作为 Client 连接下游的 Manager，这个是出边（Outward Edge）。想象成一个 DAG，从若干个 Client 流向 Manager。
 
-连接方式采用的是 `:=` `:=*` `:*=` `:*=*` 操作符，左侧是 Manager（Slave），右侧是 Client（Master）。它们的区别如下：
+连接方式采用的是 `:=`、`:=*`、`:*=` 和 `:*=*` 操作符，左侧是 Manager（Slave），右侧是 Client（Master）。它们的区别如下：
 
 - `:=`：在两个 Node 之间只连一条边
 - `:=*`：Query 连接，意思是在两个 Node 之间连接多条边，连接的边的数量取决于右边的 Node
 - `:*=`：Star 连接，意思是在两个 Node 之间连接多条边，连接的边的数量取决于左边的 Node
 - `:*=*`：Flex 连接，意思是在两个 Node 之间连接多条边，连接的边的数量取决于哪边的 Node 可以确认边的数量
 
+## 使用方法
+
 由于各模块的硬件描述，需要等到连接图建立完成后，才能生成，因此 Diplomacy 采用了两阶段：
 
 1. 第一个阶段发生在 LazyModule 中，通过 LazyModule 嵌套其他模块，并把 LazyModule 之间的 Node 连接起来，组成一个图，协商每一条边对应的参数
 2. 第二个阶段发生在 LazyModuleImp 中，当访问 LazyModule 的 module 字段的时候，才会生成对应的硬件描述
+
+### 引入 Diplomacy
 
 比如一个加法器的例子，如果不使用 Diplomacy，就是直接写在 Module 当中：
 
@@ -119,6 +123,120 @@ object AdderDiplomacyCompact extends App {
   )
 }
 ```
+
+### 引入图的连接
+
+接下来用 Diplomacy 做一些实际的使用。例如实现一个可以从多个 Node 输入 UInt，把求和后的结果输出到所有后继 Node 的模块，由于这里不涉及到要协商的 Bundle 的参数，所以统一用 Unit 代替：
+
+```scala
+import org.chipsalliance.diplomacy.lazymodule._
+import org.chipsalliance.cde.config.Parameters
+import circt.stage.ChiselStage
+import chisel3._
+import org.chipsalliance.diplomacy.nodes._
+import chisel3.experimental.SourceInfo
+
+class MultiAdderModule()(implicit p: Parameters) extends LazyModule {
+  val node = new NexusNode(MultiAdderNodeImp)(
+    { _ => },
+    { _ => }
+  )
+  lazy val module = new MultiAdderModuleImp(this)
+}
+
+class MultiAdderModuleImp(outer: MultiAdderModule)
+    extends LazyModuleImp(outer) {
+  // compute sum of all inward edges
+  val sum = Wire(UInt(32.W))
+  sum := outer.node.in.map(_._1).reduce(_ + _)
+
+  // copy sum to all outward edges
+  outer.node.out.foreach({ case (out, _) =>
+    out := sum
+  })
+}
+
+class MultiAdderTopModule()(implicit p: Parameters) extends LazyModule {
+  val inputNodes = new SourceNode(MultiAdderNodeImp)(Seq.fill(5)(()))
+  val outputNodes = new SinkNode(MultiAdderNodeImp)(Seq.fill(3)(()))
+  val adder = LazyModule(new MultiAdderModule)
+
+  outputNodes :*= adder.node
+  adder.node :=* inputNodes
+
+  lazy val module = new LazyModuleImp(this) {
+    // connect input to IO
+    inputNodes.out.zipWithIndex.foreach({ case ((wire, _), i) =>
+      val in = IO(Input(UInt(32.W))).suggestName(s"in_${i}")
+      wire := in
+    })
+
+    // connect output to IO
+    outputNodes.in.zipWithIndex.foreach({ case ((wire, _), i) =>
+      val out = IO(Output(UInt(32.W))).suggestName(s"out_${i}")
+      out := wire
+    })
+  }
+}
+
+object MultiAdderNodeImp extends NodeImp[Unit, Unit, Unit, Unit, UInt] {
+  override def edgeI(
+      pd: Unit,
+      pu: Unit,
+      p: Parameters,
+      sourceInfo: SourceInfo
+  ): Unit = ()
+  override def bundleI(ei: Unit): UInt = UInt(32.W)
+  override def edgeO(
+      pd: Unit,
+      pu: Unit,
+      p: Parameters,
+      sourceInfo: SourceInfo
+  ): Unit = ()
+  override def bundleO(eo: Unit): UInt = UInt(32.W)
+  override def render(e: Unit): RenderedEdge = ???
+}
+
+object MultiAdder extends App {
+  println(
+    ChiselStage.emitSystemVerilog(
+      LazyModule(new MultiAdderTopModule()(Parameters.empty)).module,
+      firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
+    )
+  )
+}
+```
+
+注意 `MultiAdderModule` 的实现，它使用了一个 NexusNode，即可以连接不定个数的入边和出边；然后在 `MultiAdderModuleImp` 中，对所有入边上的 `UInt` 进行求和，然后把结果写到所有的出边上。
+
+接着，在 `MultiAdderTopModule` 中，建立了一个这样的图：
+
+```
+outputNodes <=3-> adder.node <=5-> inputNodes
+```
+
+其中 `inputNodes` 和 `adder.node` 之间有五条边，`outputNodes` 和 `adder.node` 之间有三条边。于是 `MultiAdderModule` 生成的 RTL 就是求五个 UInt 的和，把结果输出到三个 UInt 上：
+
+```verilog
+module MultiAdderModule(
+  input  [31:0] auto_in_4,
+                auto_in_3,
+                auto_in_2,
+                auto_in_1,
+                auto_in_0,
+  output [31:0] auto_out_2,
+                auto_out_1,
+                auto_out_0
+);
+
+  wire [31:0] _sum_T_6 = auto_in_0 + auto_in_1 + auto_in_2 + auto_in_3 + auto_in_4;
+  assign auto_out_2 = _sum_T_6;
+  assign auto_out_1 = _sum_T_6;
+  assign auto_out_0 = _sum_T_6;
+endmodule
+```
+
+这样就实现了根据图的连接，动态地生成内部逻辑的目的。
 
 ## 代码解析
 
