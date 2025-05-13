@@ -195,7 +195,7 @@ object MultiAdderNodeImp extends NodeImp[Unit, Unit, Unit, Unit, UInt] {
   ): Unit = ()
   override def bundleO(eo: Unit): UInt = UInt(32.W)
   override def render(e: Unit): RenderedEdge =
-    RenderedEdge(colour = "#cccc00" /* yellow */ )
+    RenderedEdge(colour = "#000000" /* black */ )
 }
 
 object MultiAdder extends App {
@@ -206,7 +206,7 @@ object MultiAdder extends App {
       firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
     )
   )
-  os.write(os.pwd / "dump.graphml", top.graphML)
+  os.write.over(os.pwd / "dump.graphml", top.graphML)
 }
 ```
 
@@ -244,6 +244,196 @@ endmodule
 Diplomacy 提供了把图导出为 GraphML 格式的功能，只需要访问 `LazyModule` 类型的 `graphML` 字段即可。上面的连接关系会被可视化为下图：
 
 ![](./diplomacy_multi_adder.png)
+
+### 参数协商
+
+上面的例子里，没有需要协商的参数，Bundle 也是固定的。接下来，尝试用 Diplomacy 实现参数协商：实现一个 Concat 模块，它会把入边上的所有 UInt 拼接起来，输出到所有的出边。那么要协商的就是每条边上的 UInt 的宽度，Concat 模块会计算入边的 UInt 宽度之和，传递到出边上。
+
+为了实现这一点，在生成 edge 上的 Bundle 的时候，基于 Int 类型的宽度参数，生成对应的 UInt；同时，由于宽度是从入边传递到出边，所以是从 upstream 传递到 downstream（downward flowing，下面的 `pd` 参数），所以把来自 upstream 的参数类型设置为 Int；反过来，从 downstream 到 upstream 没有要传递的信息（upward flowing，下面的 `pu` 参数），所以就用 Unit：
+
+```scala
+object ConcatNodeImp extends NodeImp[Int, Unit, Int, Int, UInt] {
+  override def edgeI(
+      pd: Int,
+      pu: Unit,
+      p: Parameters,
+      sourceInfo: SourceInfo
+  ): Int = pd
+  override def bundleI(ei: Int): UInt = UInt(ei.W)
+  override def edgeO(
+      pd: Int,
+      pu: Unit,
+      p: Parameters,
+      sourceInfo: SourceInfo
+  ): Int = pd
+  override def bundleO(eo: Int): UInt = UInt(eo.W)
+  override def render(e: Int): RenderedEdge =
+    RenderedEdge(colour = "#000000" /* black */, label = s"${e}")
+}
+```
+
+在此基础上，实现一个 Concat 模块，它把入边的 UInt 拼接起来，输出到所有出边上：
+
+```scala
+import org.chipsalliance.diplomacy.lazymodule._
+import org.chipsalliance.cde.config.Parameters
+import circt.stage.ChiselStage
+import chisel3._
+import org.chipsalliance.diplomacy.nodes._
+import chisel3.experimental.SourceInfo
+import chisel3.util.Cat
+
+class ConcatModule()(implicit p: Parameters) extends LazyModule {
+  val node = new NexusNode(ConcatNodeImp)(
+    { widths => widths.sum },
+    { _ => }
+  )
+  lazy val module = new ConcatModuleImp(this)
+}
+
+class ConcatModuleImp(outer: ConcatModule) extends LazyModuleImp(outer) {
+  // compute concatenation of all inward edges
+  val cat = Wire(UInt(outer.node.in.map(_._2).sum.W))
+  cat := Cat(outer.node.in.map(_._1))
+
+  // copy concatenation to all outward edges
+  outer.node.out.foreach({ case (out, _) =>
+    out := cat
+  })
+}
+
+class ConcatTopModule()(implicit p: Parameters) extends LazyModule {
+  val inputNodes1 = new SourceNode(ConcatNodeImp)(Seq(1, 2, 3, 4, 5))
+  val inputNodes2 = new SourceNode(ConcatNodeImp)(Seq(6, 7))
+  val outputNodes = new SinkNode(ConcatNodeImp)(Seq.fill(3)(()))
+  val concat1 = LazyModule(new ConcatModule)
+  val concat2 = LazyModule(new ConcatModule)
+
+  concat1.node :=* inputNodes1
+  concat2.node := concat1.node
+  concat2.node :=* inputNodes2
+  outputNodes :*= concat2.node
+
+  lazy val module = new LazyModuleImp(this) {
+    // connect input to IO
+    inputNodes1.out.zipWithIndex.foreach({ case ((wire, width), i) =>
+      val in = IO(Input(UInt(width.W))).suggestName(s"in1_${i}")
+      wire := in
+    })
+    inputNodes2.out.zipWithIndex.foreach({ case ((wire, width), i) =>
+      val in = IO(Input(UInt(width.W))).suggestName(s"in2_${i}")
+      wire := in
+    })
+
+    // connect output to IO
+    outputNodes.in.zipWithIndex.foreach({ case ((wire, width), i) =>
+      val out = IO(Output(UInt(width.W))).suggestName(s"out_${i}")
+      out := wire
+    })
+  }
+}
+
+object ConcatNodeImp extends NodeImp[Int, Unit, Int, Int, UInt] {
+  override def edgeI(
+      pd: Int,
+      pu: Unit,
+      p: Parameters,
+      sourceInfo: SourceInfo
+  ): Int = pd
+  override def bundleI(ei: Int): UInt = UInt(ei.W)
+  override def edgeO(
+      pd: Int,
+      pu: Unit,
+      p: Parameters,
+      sourceInfo: SourceInfo
+  ): Int = pd
+  override def bundleO(eo: Int): UInt = UInt(eo.W)
+  override def render(e: Int): RenderedEdge =
+    RenderedEdge(colour = "#000000" /* black */, label = s"${e}")
+}
+
+object Concat extends App {
+  val top = LazyModule(new ConcatTopModule()(Parameters.empty))
+  println(
+    ChiselStage.emitSystemVerilog(
+      top.module,
+      firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
+    )
+  )
+  os.write.over(os.pwd / "dump.graphml", top.graphML)
+}
+```
+
+注意 NexusNode 初始化的时候，传入了两个函数，在这里就起到了作用：把 upstream 的参数，也就是一系列的宽度，求和后，传递到 downstream。生成的 RTL 里，可以看到这个宽度经过求和传递到了 downstream，其中 concat1 的输出宽度是 `1+2+3+4+5=15`，而 concat2 的输出宽度是 `6+7+15=28`：
+
+```verilog
+// this is concat1
+module ConcatModule(
+  input  [4:0]  auto_in_4,
+  input  [3:0]  auto_in_3,
+  input  [2:0]  auto_in_2,
+  input  [1:0]  auto_in_1,
+  input         auto_in_0,
+  output [14:0] auto_out
+);
+
+  assign auto_out = {auto_in_0, auto_in_1, auto_in_2, auto_in_3, auto_in_4};
+endmodule
+
+// this is concat2
+module ConcatModule_1(
+  input  [6:0]  auto_in_2,
+  input  [5:0]  auto_in_1,
+  input  [14:0] auto_in_0,
+  output [27:0] auto_out_2,
+                auto_out_1,
+                auto_out_0
+);
+
+  wire [27:0] cat = {auto_in_0, auto_in_1, auto_in_2};
+  assign auto_out_2 = cat;
+  assign auto_out_1 = cat;
+  assign auto_out_0 = cat;
+endmodule
+
+module ConcatTopModule(
+  input         clock,
+                reset,
+                in1_0,
+  input  [1:0]  in1_1,
+  input  [2:0]  in1_2,
+  input  [3:0]  in1_3,
+  input  [4:0]  in1_4,
+  input  [5:0]  in2_0,
+  input  [6:0]  in2_1,
+  output [27:0] out_0,
+                out_1,
+                out_2
+);
+
+  wire [14:0] _concat1_auto_out;
+  ConcatModule concat1 (
+    .auto_in_4 (in1_4),
+    .auto_in_3 (in1_3),
+    .auto_in_2 (in1_2),
+    .auto_in_1 (in1_1),
+    .auto_in_0 (in1_0),
+    .auto_out  (_concat1_auto_out)
+  );
+  ConcatModule_1 concat2 (
+    .auto_in_2  (in2_1),
+    .auto_in_1  (in2_0),
+    .auto_in_0  (_concat1_auto_out),
+    .auto_out_2 (out_2),
+    .auto_out_1 (out_1),
+    .auto_out_0 (out_0)
+  );
+endmodule
+```
+
+经过可视化的连接图如下：
+
+![](./diplomacy_concat.png)
 
 ## 代码解析
 
