@@ -126,7 +126,7 @@ object AdderDiplomacyCompact extends App {
 
 ### 引入图的连接
 
-接下来用 Diplomacy 做一些实际的使用。例如实现一个可以从多个 Node 输入 UInt，把求和后的结果输出到所有后继 Node 的模块，由于这里不涉及到要协商的 Bundle 的参数，所以统一用 Unit 代替：
+接下来用 Diplomacy 做一些实际的使用。例如实现一个可以从多个 Node 输入 UInt，把求和后的结果输出到所有后继 Node 的模块，由于这里不涉及到要协商的 Bundle 的参数，所以统一用 Unit 代替，Bundle 的类型固定为 `UInt(32.W)`：
 
 ```scala
 import org.chipsalliance.diplomacy.lazymodule._
@@ -194,16 +194,19 @@ object MultiAdderNodeImp extends NodeImp[Unit, Unit, Unit, Unit, UInt] {
       sourceInfo: SourceInfo
   ): Unit = ()
   override def bundleO(eo: Unit): UInt = UInt(32.W)
-  override def render(e: Unit): RenderedEdge = ???
+  override def render(e: Unit): RenderedEdge =
+    RenderedEdge(colour = "#cccc00" /* yellow */ )
 }
 
 object MultiAdder extends App {
+  val top = LazyModule(new MultiAdderTopModule()(Parameters.empty))
   println(
     ChiselStage.emitSystemVerilog(
-      LazyModule(new MultiAdderTopModule()(Parameters.empty)).module,
+      top.module,
       firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
     )
   )
+  os.write(os.pwd / "dump.graphml", top.graphML)
 }
 ```
 
@@ -237,6 +240,10 @@ endmodule
 ```
 
 这样就实现了根据图的连接，动态地生成内部逻辑的目的。
+
+Diplomacy 提供了把图导出为 GraphML 格式的功能，只需要访问 `LazyModule` 类型的 `graphML` 字段即可。上面的连接关系会被可视化为下图：
+
+![](./diplomacy_multi_adder.png)
 
 ## 代码解析
 

@@ -113,7 +113,7 @@ Intel Core Ultra:
   - UL：嵌入式，省电，LGA 封装
   - HL：嵌入式，高性能，LGA 封装
 
-Intel Core i 系列:
+Intel Core i 系列：
 
 - Intel Core i{Performance Tier} {Generation}{Number}{Suffix}
 - i3/i5/i7/i9：数字越大越高端
