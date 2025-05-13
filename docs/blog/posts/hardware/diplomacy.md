@@ -435,6 +435,250 @@ endmodule
 
 ![](./diplomacy_concat.png)
 
+### 复杂例子
+
+接下来实现一个比较复杂的例子，提供三种模块，实现 UInt 的加法和拼接计算：
+
+1. Adder：计算入边上可变长度的 UInt 的和，输出到出边上；支持多条入边，只支持一条出边
+2. Concat：对入边上可变长度的 UInt 拼接，输出到出边上；支持多条入边，只支持一条出边
+3. Broadcast：把入边上可变长度的 UInt 输出到每一条出边上；只支持一条入边，支持多条出边
+
+实现如下：
+
+```scala
+import org.chipsalliance.diplomacy.lazymodule._
+import org.chipsalliance.cde.config.Parameters
+import circt.stage.ChiselStage
+import chisel3._
+import org.chipsalliance.diplomacy.nodes._
+import chisel3.experimental.SourceInfo
+import chisel3.util.Cat
+import chisel3.util.log2Ceil
+
+class ConcatModule()(implicit p: Parameters) extends LazyModule {
+  val node = new NexusNode(NetworkNodeImp)(
+    { widths => widths.sum },
+    { _ => }
+  )
+  lazy val module = new ConcatModuleImp(this)
+}
+
+class ConcatModuleImp(outer: ConcatModule) extends LazyModuleImp(outer) {
+  // only one output is permitted
+  assert(outer.node.out.length == 1)
+
+  // compute concatenation of all inward edges
+  val cat = Wire(UInt(outer.node.out(0)._2.W))
+  cat := Cat(outer.node.in.map(_._1))
+
+  // copy concatenation to the outward edge
+  outer.node.out(0)._1 := cat
+}
+
+class AddModule()(implicit p: Parameters) extends LazyModule {
+  val node = new NexusNode(NetworkNodeImp)(
+    { widths =>
+      // compute maximum possible value
+      val max = widths.map(width => BigInt(2).pow(width) - 1).sum
+      // compute the bits required to represent the maximum value
+      log2Ceil(max + 1)
+    },
+    { _ => }
+  )
+  lazy val module = new AddModuleImp(this)
+}
+
+class AddModuleImp(outer: AddModule) extends LazyModuleImp(outer) {
+  // only one output is permitted
+  assert(outer.node.out.length == 1)
+
+  // compute sum of all inward edges
+  val sum = Wire(UInt(outer.node.out(0)._2.W))
+  sum := outer.node.in.map(_._1).reduce(_ + _)
+
+  // copy sum to the outward edge
+  outer.node.out(0)._1 := sum
+}
+
+class BroadcastModule()(implicit p: Parameters) extends LazyModule {
+  val node = new NexusNode(NetworkNodeImp)(
+    { widths =>
+      widths(0)
+    },
+    { _ => }
+  )
+  lazy val module = new BroadcastModuleImp(this)
+}
+
+class BroadcastModuleImp(outer: BroadcastModule) extends LazyModuleImp(outer) {
+  // only one input is permitted
+  assert(outer.node.in.length == 1)
+
+  // copy inward edge to outward edges
+  outer.node.out.foreach({ case ((out, _)) =>
+    out := outer.node.in(0)._1
+  })
+}
+
+class NetworkTopModule()(implicit p: Parameters) extends LazyModule {
+  val inputNodes1 = new SourceNode(NetworkNodeImp)(Seq(1, 2, 3))
+  val inputNodes2 = new SourceNode(NetworkNodeImp)(Seq(4, 5, 6))
+  val outputNodes = new SinkNode(NetworkNodeImp)(Seq.fill(3)(()))
+  val add1 = LazyModule(new AddModule)
+  val concat1 = LazyModule(new ConcatModule)
+  val concat2 = LazyModule(new ConcatModule)
+  val broadcast1 = LazyModule(new BroadcastModule)
+
+  concat1.node :=* inputNodes1
+  concat2.node :=* inputNodes2
+  add1.node := concat1.node
+  add1.node := concat2.node
+  broadcast1.node := add1.node
+  outputNodes :*= broadcast1.node
+
+  lazy val module = new LazyModuleImp(this) {
+    // connect input to IO
+    inputNodes1.out.zipWithIndex.foreach({ case ((wire, width), i) =>
+      val in = IO(Input(UInt(width.W))).suggestName(s"in1_${i}")
+      wire := in
+    })
+    inputNodes2.out.zipWithIndex.foreach({ case ((wire, width), i) =>
+      val in = IO(Input(UInt(width.W))).suggestName(s"in2_${i}")
+      wire := in
+    })
+
+    // connect output to IO
+    outputNodes.in.zipWithIndex.foreach({ case ((wire, width), i) =>
+      val out = IO(Output(UInt(width.W))).suggestName(s"out_${i}")
+      out := wire
+    })
+  }
+}
+
+object NetworkNodeImp extends NodeImp[Int, Unit, Int, Int, UInt] {
+  override def edgeI(
+      pd: Int,
+      pu: Unit,
+      p: Parameters,
+      sourceInfo: SourceInfo
+  ): Int = pd
+  override def bundleI(ei: Int): UInt = UInt(ei.W)
+  override def edgeO(
+      pd: Int,
+      pu: Unit,
+      p: Parameters,
+      sourceInfo: SourceInfo
+  ): Int = pd
+  override def bundleO(eo: Int): UInt = UInt(eo.W)
+  override def render(e: Int): RenderedEdge =
+    RenderedEdge(colour = "#000000" /* black */, label = s"${e}")
+}
+
+object Network extends App {
+  val top = LazyModule(new NetworkTopModule()(Parameters.empty))
+  println(
+    ChiselStage.emitSystemVerilog(
+      top.module,
+      firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
+    )
+  )
+  os.write.over(os.pwd / "dump.graphml", top.graphML)
+}
+```
+
+生成如下代码：
+
+```verilog
+module AddModule(
+  input  [14:0] auto_in_1,
+  input  [5:0]  auto_in_0,
+  output [15:0] auto_out
+);
+
+  assign auto_out = {10'h0, auto_in_0} + {1'h0, auto_in_1};
+endmodule
+
+module ConcatModule(
+  input  [2:0] auto_in_2,
+  input  [1:0] auto_in_1,
+  input        auto_in_0,
+  output [5:0] auto_out
+);
+
+  assign auto_out = {auto_in_0, auto_in_1, auto_in_2};
+endmodule
+
+module ConcatModule_1(
+  input  [5:0]  auto_in_2,
+  input  [4:0]  auto_in_1,
+  input  [3:0]  auto_in_0,
+  output [14:0] auto_out
+);
+
+  assign auto_out = {auto_in_0, auto_in_1, auto_in_2};
+endmodule
+
+module BroadcastModule(
+  input  [15:0] auto_in,
+  output [15:0] auto_out_2,
+                auto_out_1,
+                auto_out_0
+);
+
+  assign auto_out_2 = auto_in;
+  assign auto_out_1 = auto_in;
+  assign auto_out_0 = auto_in;
+endmodule
+
+module NetworkTopModule(
+  input         clock,
+                reset,
+                in1_0,
+  input  [1:0]  in1_1,
+  input  [2:0]  in1_2,
+  input  [3:0]  in2_0,
+  input  [4:0]  in2_1,
+  input  [5:0]  in2_2,
+  output [15:0] out_0,
+                out_1,
+                out_2
+);
+
+  wire [14:0] _concat2_auto_out;
+  wire [5:0]  _concat1_auto_out;
+  wire [15:0] _add1_auto_out;
+  AddModule add1 (
+    .auto_in_1 (_concat2_auto_out),
+    .auto_in_0 (_concat1_auto_out),
+    .auto_out  (_add1_auto_out)
+  );
+  ConcatModule concat1 (
+    .auto_in_2 (in1_2),
+    .auto_in_1 (in1_1),
+    .auto_in_0 (in1_0),
+    .auto_out  (_concat1_auto_out)
+  );
+  ConcatModule_1 concat2 (
+    .auto_in_2 (in2_2),
+    .auto_in_1 (in2_1),
+    .auto_in_0 (in2_0),
+    .auto_out  (_concat2_auto_out)
+  );
+  BroadcastModule broadcast1 (
+    .auto_in    (_add1_auto_out),
+    .auto_out_2 (out_2),
+    .auto_out_1 (out_1),
+    .auto_out_0 (out_0)
+  );
+endmodule
+```
+
+连接关系如下：
+
+![](./diplomacy_network.png)
+
+结果符合预期。
+
 ## 代码解析
 
 下面对着 Diplomacy 的源码进行解析。前面提到，Diplomacy 把各 Node 通过 Edge 连接成了一个图，下面介绍这个图的组织方式。
