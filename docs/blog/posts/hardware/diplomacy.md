@@ -181,21 +181,14 @@ class MultiAdderTopModule()(implicit p: Parameters) extends LazyModule {
   }
 }
 
-object MultiAdderNodeImp extends NodeImp[Unit, Unit, Unit, Unit, UInt] {
-  override def edgeI(
+object MultiAdderNodeImp extends SimpleNodeImp[Unit, Unit, Unit, UInt] {
+  override def edge(
       pd: Unit,
       pu: Unit,
       p: Parameters,
       sourceInfo: SourceInfo
   ): Unit = ()
-  override def bundleI(ei: Unit): UInt = UInt(32.W)
-  override def edgeO(
-      pd: Unit,
-      pu: Unit,
-      p: Parameters,
-      sourceInfo: SourceInfo
-  ): Unit = ()
-  override def bundleO(eo: Unit): UInt = UInt(32.W)
+  override def bundle(ei: Unit): UInt = UInt(32.W)
   override def render(e: Unit): RenderedEdge =
     RenderedEdge(colour = "#000000" /* black */ )
 }
@@ -254,21 +247,14 @@ Diplomacy 提供了把图导出为 GraphML 格式的功能，只需要访问 `La
 为了实现这一点，在生成 edge 上的 Bundle 的时候，基于 Int 类型的宽度参数，生成对应的 UInt；同时，由于宽度是从入边传递到出边，所以是从 upstream 传递到 downstream（downward flowing，下面的 `pd` 参数），所以把来自 upstream 的参数类型设置为 Int；反过来，从 downstream 到 upstream 没有要传递的信息（upward flowing，下面的 `pu` 参数），所以就用 Unit：
 
 ```scala
-object ConcatNodeImp extends NodeImp[Int, Unit, Int, Int, UInt] {
-  override def edgeI(
+object ConcatNodeImp extends SimpleNodeImp[Int, Unit, Int, UInt] {
+  override def edge(
       pd: Int,
       pu: Unit,
       p: Parameters,
       sourceInfo: SourceInfo
   ): Int = pd
-  override def bundleI(ei: Int): UInt = UInt(ei.W)
-  override def edgeO(
-      pd: Int,
-      pu: Unit,
-      p: Parameters,
-      sourceInfo: SourceInfo
-  ): Int = pd
-  override def bundleO(eo: Int): UInt = UInt(eo.W)
+  override def bundle(ei: Int): UInt = UInt(ei.W)
   override def render(e: Int): RenderedEdge =
     RenderedEdge(colour = "#000000" /* black */, label = s"${e}")
 }
@@ -335,21 +321,14 @@ class ConcatTopModule()(implicit p: Parameters) extends LazyModule {
   }
 }
 
-object ConcatNodeImp extends NodeImp[Int, Unit, Int, Int, UInt] {
-  override def edgeI(
+object ConcatNodeImp extends SimpleNodeImp[Int, Unit, Int, UInt] {
+  override def edge(
       pd: Int,
       pu: Unit,
       p: Parameters,
       sourceInfo: SourceInfo
   ): Int = pd
-  override def bundleI(ei: Int): UInt = UInt(ei.W)
-  override def edgeO(
-      pd: Int,
-      pu: Unit,
-      p: Parameters,
-      sourceInfo: SourceInfo
-  ): Int = pd
-  override def bundleO(eo: Int): UInt = UInt(eo.W)
+  override def bundle(ei: Int): UInt = UInt(ei.W)
   override def render(e: Int): RenderedEdge =
     RenderedEdge(colour = "#000000" /* black */, label = s"${e}")
 }
@@ -557,21 +536,14 @@ class NetworkTopModule()(implicit p: Parameters) extends LazyModule {
   }
 }
 
-object NetworkNodeImp extends NodeImp[Int, Unit, Int, Int, UInt] {
-  override def edgeI(
+object NetworkNodeImp extends SimpleNodeImp[Int, Unit, Int, UInt] {
+  override def edge(
       pd: Int,
       pu: Unit,
       p: Parameters,
       sourceInfo: SourceInfo
   ): Int = pd
-  override def bundleI(ei: Int): UInt = UInt(ei.W)
-  override def edgeO(
-      pd: Int,
-      pu: Unit,
-      p: Parameters,
-      sourceInfo: SourceInfo
-  ): Int = pd
-  override def bundleO(eo: Int): UInt = UInt(eo.W)
+  override def bundle(ei: Int): UInt = UInt(ei.W)
   override def render(e: Int): RenderedEdge =
     RenderedEdge(colour = "#000000" /* black */, label = s"${e}")
 }
@@ -765,6 +737,55 @@ trait OutwardNode[DO, UO, BO <: Data] extends BaseNode {
         2. 对于 Nexus Node（例如 Crossbar），它会把 Star 当成普通但是 weak 的连接：如果只有 Star，没有已知的边，它就相当于不连；如果有已知的边，它只会对应一条边
         3. 对于 Sink/Source Node，它的行为和 Adapter Node 类似，只不过只有 Inward 或者 Outward 其中一侧，并且会根据自己的参数的数量来决定边的数量：例如一个模块有三个 AXI Master，导出了一条边加一个 Star 连接，那么 Star 连接会连接后两个 AXI Master
     4. 计算每个 Connection 的边的数量
+
+简单来说，Star Connection 的功能就是：
+
+1. 遇到 Adapter/Sink/Source Node，把剩下没连上的边都连上
+2. 遇到 Nexus Node，生成 0 或 1 条边：如果另一侧有边，就生成 1 条边，否则就是 0 条边
+
+Query Connection 就是另一个方向上的 Star Connection。比较特别的是 Flex Connection，目前它的实现方式还没有深入的去研究。
+
+分析到各个 Edge 以及连接关系后，接下来就是协商每个 Edge 上的参数，进而得到最终的 Bundle。参数的协商，主要依靠的是 Diplomacy 用户需要实现的函数：
+
+```scala
+/** @param dFn
+  *   convert downward parameter from input to output.
+  * @param uFn
+  *   convert upward parameter from output to input.
+  */
+```
+
+然后基于这两个函数，在 Upward/Downward 两个方向上传递参数，再得到 Edge 上的参数，最终得到 Bundle：
+
+```scala
+  /** Creates the inward edge parameters by combining the downward-flowing and upward-flowing parameters for edges that
+    * connect to the inward side of this [[BaseNode]].
+    *
+    * It is left up to a user defining a particular protocol implementation to decide how the parameters flowing through
+    * the graph in both directions on this Edge are combined into a single representation.
+    *
+    * @param pd
+    *   The downward-flowing parameters into the node along the edge.
+    * @param pu
+    *   The upward-flowing parameters going out of the node along the edge.
+    * @param p
+    *   A view of [[Parameters]] at the point at which the returned edge is being bound.
+    * @param sourceInfo
+    *   [[SourceInfo]] of this edge.
+    * @return
+    *   An inward edge of this node.
+    */
+  def edgeI(pd: DI, pu: UI, p: Parameters, sourceInfo: SourceInfo): EI
+
+  /** Create an inward bundle parameterized by the inward edge.
+    *
+    * @param ei
+    *   Inward edge of this node.
+    * @return
+    *   An outward Bundle of this node parameterized by the negotiated Edge parameters.
+    */
+  def bundleI(ei: EI): BI
+```
 
 
 ## Rocket Chip 总线结构
