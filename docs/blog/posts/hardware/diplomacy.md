@@ -6,7 +6,13 @@ categories:
     - hardware
 ---
 
-# 分析 Rocket Chip 中 Diplomacy 系统
+# 分析 Diplomacy 系统
+
+## 背景
+
+在使用 Rocket Chip 的时候，难免要和 Diplomacy 打交道，那么它比较特别的语法和使用方式会带来一些学习上的困难，并且文档也比较少。本人在学习 Diplomacy 源码的时候，记录了这个笔记，希望对读者有所启发。
+
+<!-- more -->
 
 ## 概念
 
@@ -238,7 +244,7 @@ endmodule
 
 Diplomacy 提供了把图导出为 GraphML 格式的功能，只需要访问 `LazyModule` 类型的 `graphML` 字段即可。上面的连接关系会被可视化为下图：
 
-![](./diplomacy_multi_adder.png)
+![](./diplomacy-multi-adder.png)
 
 ### 参数协商
 
@@ -414,7 +420,7 @@ endmodule
 
 经过可视化的连接图如下：
 
-![](./diplomacy_concat.png)
+![](./diplomacy-concat.png)
 
 ### 复杂例子
 
@@ -649,7 +655,7 @@ endmodule
 
 连接关系如下：
 
-![](./diplomacy_network.png)
+![](./diplomacy-network.png)
 
 结果符合预期。
 
@@ -787,123 +793,9 @@ Query Connection 就是另一个方向上的 Star Connection。比较特别的�
   def bundleI(ei: EI): BI
 ```
 
+## TileLink Widgets
 
-## Rocket Chip 总线结构
-
-Rocket Chip 主要有以下几个总线：
-
-1. sbus: System Bus
-2. mbus: Memory Bus
-3. cbus: Control Bus
-4. pbus: Periphery Bus
-5. fbus: Frontend Bus
-
-图示可以见参考文档中的链接，不过链接中的结构和实际的有一些区别。目前的 Rocket Chip 内存结构大致是这样：
-
-```
-fbus -> sbus -> mbus
-tile --/    \-> cbus -> pbus
-```
-
-主要是 pbus 的位置从连接 sbus 移动到了连接 cbus。
-
-相关代码：
-
-```scala
-/** Parameterization of a topology containing three additional, optional buses for attaching MMIO devices. */
-case class HierarchicalBusTopologyParams(
-  pbus: PeripheryBusParams,
-  fbus: FrontBusParams,
-  cbus: PeripheryBusParams,
-  xTypes: SubsystemCrossingParams,
-  driveClocksFromSBus: Boolean = true
-) extends TLBusWrapperTopology(
-  instantiations = List(
-    (PBUS, pbus),
-    (FBUS, fbus),
-    (CBUS, cbus)),
-  connections = List(
-    (SBUS, CBUS, TLBusWrapperConnection  .crossTo(xTypes.sbusToCbusXType, if (driveClocksFromSBus) Some(true) else None)),
-    (CBUS, PBUS, TLBusWrapperConnection  .crossTo(xTypes.cbusToPbusXType, if (driveClocksFromSBus) Some(true) else None)),
-    (FBUS, SBUS, TLBusWrapperConnection.crossFrom(xTypes.fbusToSbusXType, if (driveClocksFromSBus) Some(false) else None)))
-)
-```
-
-当然了，也有简化版的 JustOneBusTopology，那就只有 SystemBus 了。如果再配置了 CoherentBusTopology，那么 SBUS 和 MBUS 之间还有一层 L2:
-
-```scala
-/** Parameterization of a topology containing a banked coherence manager and a bus for attaching memory devices. */
-case class CoherentBusTopologyParams(
-  sbus: SystemBusParams, // TODO remove this after better width propagation
-  mbus: MemoryBusParams,
-  l2: BankedL2Params,
-  sbusToMbusXType: ClockCrossingType = NoCrossing,
-  driveMBusClockFromSBus: Boolean = true
-) extends TLBusWrapperTopology(
-  instantiations = (if (l2.nBanks == 0) Nil else List(
-    (MBUS, mbus),
-    (L2, CoherenceManagerWrapperParams(mbus.blockBytes, mbus.beatBytes, l2.nBanks, L2.name, sbus.dtsFrequency)(l2.coherenceManager)))),
-  connections = if (l2.nBanks == 0) Nil else List(
-    (SBUS, L2,   TLBusWrapperConnection(driveClockFromMaster = Some(true), nodeBinding = BIND_STAR)()),
-    (L2,  MBUS,  TLBusWrapperConnection.crossTo(
-      xType = sbusToMbusXType,
-      driveClockFromMaster = if (driveMBusClockFromSBus) Some(true) else None,
-      nodeBinding = BIND_QUERY))
-  )
-)
-```
-
-下面是一个双核 Rocket Chip 的 GraphML 导出来用 yED 绘制的架构图：
-
-![](./diplomacy_rocket_chip.png)
-
-这个图比较复杂，混合了多个 Diplomacy 网络，首先是总线的部分，包括 TileLink 和 AXI：
-
-1. 两个 Tile，对应一个双核的系统；每个 Tile 内部有一个 dcache 和 icache，连接到一个 tlMasterXbar 上，再通过 coupler_from_rockettile 连接到 fixer 再到 system_bus_xbar
-2. 从 system_bus_xbar 分出来三路 Slave：
-    1. 第一路是 cbus，通过 out_xbar，连接到多个 slave：debug，error device，plic，clint，l2 control，bootrom
-    2. 第二路是 mmio，通过 tl2axi4，转成 AXI4 连接到外部的 MMIO 外设
-    3. 第三路是 coh，连接到 InclusiveCache，再连接到 mbus，通过 tl2axi4，转成 AXI4 连接到外部的内存
-3. system_bus_xbar 除了每个 tile 对应一个 master 以外，还有一个 master：fbus，它从外部的 AXI4 进来，通过 axi42tl 转换，接到 fbus，提供一个有缓存一致性的 AXI 访问接口，用于 DMA
-
-简化后的结构如图：
-
-```mermaid
-flowchart TD
-    subgraph tile0
-        dcache0[dcache]
-        icache0[icache]
-        tlMasterXbar0[tlMasterXbar]
-        dcache0 --> tlMasterXbar0
-        icache0 --> tlMasterXbar0
-    end
-
-    subgraph tile1
-        dcache1[dcache]
-        icache1[icache]
-        tlMasterXbar1[tlMasterXbar]
-        dcache1 --> tlMasterXbar1
-        icache1 --> tlMasterXbar1
-    end
-
-    system_bus_xbar
-    tlMasterXbar0 --> system_bus_xbar
-    tlMasterXbar1 --> system_bus_xbar
-    axi_fbus --> axi42tl --> system_bus_xbar
-    system_bus_xbar --> cbus --> out_xbar
-    out_xbar --> debug
-    out_xbar --> error
-    out_xbar --> plit
-    out_xbar --> clint
-    out_xbar --> l2_ctrl
-    out_xbar --> bootrom
-    system_bus_xbar --> tl2axi4_mmio[tl2axi4] --> axi_mmio
-    system_bus_xbar --> coh --> InclusiveCache --> tl2axi4_mem[tl2axi4] --> axi_mem
-```
-
-### TileLink
-
-Rocket Chip 中用 Diplomacy 实现 TileLink 总线的连接。相关的结构如下：
+Rocket Chip 中用 Diplomacy 实现 TileLink 总线的连接。涉及到的相关结构如下：
 
 1. TLBundle：代表 TileLink 总线的接口，根据 TLBundleParameters 例化
 2. TLMasterPortParameters：信息 TileLink Master 的信息，从 Upstream 向 Downstream 传递
@@ -913,6 +805,8 @@ Rocket Chip 中用 Diplomacy 实现 TileLink 总线的连接。相关的结构�
 6. TLImp: `extends NodeImp[TLMasterPortParameters, TLSlavePortParameters, TLEdgeOut, TLEdgeIn, TLBundle]`，基于这个类型来导出各种类型的 TileLink Node
 7. TLXBar：TileLink 的 Crossbar，生成一个继承 NexusNode 的 TLNexusNode，它的信息传递方式是，把下游的各个 Slave 信息拼起来传给上游，使得 Master 可以看到所有 Slave 的信息；把上游的各个 Master 信息拼起来传给下游，使得 Slave 可以看到所有 Master 的信息
 8. TLToAXI4：生成一个继承 AdapterNode 的 TLToAXI4Node，把 TileLink Master 转成 AXI4 Master，把上游的 TileLink Master 信息转换为 AXI Master 传递给下游，把下游的 AXI Slave 信息转换为 TileLink Slave 传递给上游
+
+如果想要用 Diplomacy 实现其他总线结构的连接，可以参考 Rocket Chip 中以上的设计。
 
 ## 参考文档
 

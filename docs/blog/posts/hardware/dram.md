@@ -153,7 +153,7 @@ Xilinx 的 Virtex Ultrascale Plus HBM FPGA 提供了 `1800 (MT/s) * 128 (bits/tr
 
 当然了，HBM 的高带宽的代价就是引脚数量很多。根据 [HBM3 JESD238A](https://www.jedec.org/system/files/docs/JESD238A.pdf)，每个 Channel 要 120 个 pin，一共 16 个 channel（HBM2 是 8 channel，每个 channel 128 位；HBM3 是 16 channel，每个 channel 64 位），然后还有其他的 52 个 pin，这些加起来就 1972 个 pin 了。所以一般在 Silicon Interposer 上连接，而不是传统的在 PCB 上走线（图源 [A 1.2V 20nm 307GB/s HBM DRAM with At-Speed Wafer-Level I/O Test Scheme and Adaptive Refresh Considering Temperature Distribution](https://picture.iczhiku.com/resource/ieee/WYifSuFTZuHLFcMV.pdf)）：
 
-![](./hbm_stack.png)
+![](./dram-hbm-stack.png)
 
 所以在 HBM3 标准里，用 Microbump 来描述 HBM 的 pin。
 
