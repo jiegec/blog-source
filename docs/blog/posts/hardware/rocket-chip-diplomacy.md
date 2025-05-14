@@ -91,6 +91,7 @@ flowchart TD
     out_xbar --> clint
     out_xbar --> l2_ctrl
     out_xbar --> bootrom
+    cbus --> pbus
     sbus --> tl2axi4_mmio[tl2axi4] --> axi_mmio
     sbus --> coh --> mbus --> tl2axi4_mem[tl2axi4] --> axi_mem
 ```
@@ -404,7 +405,7 @@ flowchart TD
     val clint = clintDomainWrapper { LazyModule(new CLINT(params, tlbus.beatBytes)) }
     clintDomainWrapper { clint.node := tlbus.coupleTo("clint") { TLFragmenter(tlbus, Some("CLINT")) := _ } }
 
-    // in CanHavePeripheryPLIC of Pli.scala
+    // in CanHavePeripheryPLIC of Plic.scala
     // default to cbus
     val tlbus = locateTLBusWrapper(p(PLICAttachKey).slaveWhere)
     val plicDomainWrapper = tlbus.generateSynchronousDomain("PLIC").suggestName("plic_domain")
@@ -415,13 +416,52 @@ flowchart TD
 
 至此就把前面提到的 Rocket Chip 的总线结构在源码中的对应关系都找到了。
 
+除了这一组大的总线结构，实际上调试模块内部还有一个小的总线，主要是把 RISC-V Debug 的 DMI 转化为 TileLink，然后访问内部的一些寄存器。
+
 ### 中断
 
-TODO
+除了总线，中断也是通过 Diplomacy 管理的。首先可以看到，每个 Tile 有一个中断的 SinkNode：
+
+```scala
+// Use diplomatic interrupts to external interrupts from the subsystem into the tile
+trait SinksExternalInterrupts { this: BaseTile =>
+  val intInwardNode = intXbar.intnode :=* IntIdentityNode()(ValName("int_local"))
+  protected val intSinkNode = IntSinkNode(IntSinkPortSimple())
+  intSinkNode := intXbar.intnode
+
+  // go from flat diplomatic Interrupts to bundled TileInterrupts
+  def decodeCoreInterrupts(core: TileInterrupts): Unit = {
+    val async_ips = Seq(core.debug)
+    val periph_ips = Seq(
+      core.msip,
+      core.mtip,
+      core.meip)
+
+    val seip = if (core.seip.isDefined) Seq(core.seip.get) else Nil
+
+    val core_ips = core.lip
+
+    val (interrupts, _) = intSinkNode.in(0)
+    (async_ips ++ periph_ips ++ seip ++ core_ips).zip(interrupts).foreach { case(c, i) => c := i }
+  }
+}
+
+class TileInterrupts(implicit p: Parameters) extends CoreBundle()(p) {
+  val debug = Bool()
+  val mtip = Bool()
+  val msip = Bool()
+  val meip = Bool()
+  val seip = usingSupervisor.option(Bool())
+  val lip = Vec(coreParams.nLocalInterrupts, Bool())
+  val nmi = usingNMI.option(new NMI(resetVectorLen))
+}
+```
+
+它通过 Diplomacy 的 intXbar 输入多路的中断，然后按照顺序，还原出对应的 debug/mtip/msip/seip 等中断信号。从前面的图中，也可以看到 intXbar 的第一个输入 debug（经过 intsink）来自 dmOuter 也就是调试模块，第二个和第三个输入 msip 和 mtip（经过 intsink_1）来自 clint（负责时钟 mtimer 和软件中断），最后的 meip 和 seip（经过 intsink_2/3）来自 plic（负责外部中断）。为了处理外部中断，从外面接了 6 位的中断信号到 plic。
 
 ### 时钟
 
-TODO
+最后，时钟（时钟加上复位）也是由 Diplomacy 管理的：从前面的图中，从 aggregator 进来，首先到 sbus，然后分出来多路的时钟信号：第一路到 cbus，用于 cbus 的各个外设（plic/clint 等），进一步也从 cbus 引到 pbus；第二路到各个 tile；第三路到 coh（coherence wrapper）；第四路到 fbus。默认配置下，这些时钟都是同一个信号，没有额外的处理，但是通过配置，可以把它们区分开，放到不同的时钟域，并在跨时钟域的时候，添加合适的跨时钟域的处理。
 
 ## TileLink Widgets
 
