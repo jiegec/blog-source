@@ -463,6 +463,112 @@ class TileInterrupts(implicit p: Parameters) extends CoreBundle()(p) {
 
 最后，时钟（时钟加上复位）也是由 Diplomacy 管理的：从前面的图中，从 aggregator 进来，首先到 sbus，然后分出来多路的时钟信号：第一路到 cbus，用于 cbus 的各个外设（plic/clint 等），进一步也从 cbus 引到 pbus；第二路到各个 tile；第三路到 coh（coherence wrapper）；第四路到 fbus。默认配置下，这些时钟都是同一个信号，没有额外的处理，但是通过配置，可以把它们区分开，放到不同的时钟域，并在跨时钟域的时候，添加合适的跨时钟域的处理。
 
+那么这些时钟是怎么分出来的呢：
+
+1. aggregator 把时钟暴露到 IO 上，然后内部暴露一个 allClockGroupsNode，连接到 sbus 上：
+
+    ```scala
+    // in BaseSubsystem.scala
+    trait HasConfigurablePRCILocations { this: HasPRCILocations =>
+      val ibus = LazyModule(new InterruptBusWrapper)
+      val allClockGroupsNode = ClockGroupIdentityNode()
+      val io_clocks = if (p(SubsystemDriveClockGroupsFromIO)) {
+        val aggregator = ClockGroupAggregator()
+        val source = ClockGroupSourceNode(Seq(ClockGroupSourceParameters()))
+        allClockGroupsNode :*= aggregator := source
+        Some(InModuleBody {
+          val elements = source.out.map(_._1.member.elements).flatten
+          val io = IO(Flipped(RecordMap(elements.map { case (name, data) =>
+            name -> data.cloneType
+          }:_*)))
+          elements.foreach { case (name, data) => io(name).foreach { data := _ } }
+          io
+        })
+      } else {
+        None
+      }
+    }
+
+    abstract class BaseSubsystem(val location: HierarchicalLocation = InSubsystem)
+                                (implicit p: Parameters)
+      extends BareSubsystem
+      with HasDTS
+      with Attachable
+      with HasConfigurablePRCILocations
+      with HasConfigurableTLNetworkTopology
+    {
+
+      // viewpointBus points to sbus by default
+      viewpointBus.clockGroupNode := allClockGroupsNode
+    }
+    ```
+
+2. 前面提到，通过 CoherentBusTopologyParams，实现 `mbus := coh := sbus` 的连接，通过 HierarchicalBusTopologyParams，实现 `pbus := cbus := sbus := fbus` 的连接，与此同时，时钟也被接上了：
+
+    ```scala
+    // in BusTopology.scala
+    // (master, slave, parameters)
+    // from CoherentBusTopologyParams
+    // coh := sbus, use sbus's clock for coh
+    (SBUS, COH,   TLBusWrapperConnection(driveClockFromMaster = Some(true), nodeBinding = BIND_STAR)()),
+    // mbus := coh, use coh's clock for mbus by default
+    (COH,  MBUS,  TLBusWrapperConnection.crossTo(
+      xType = sbusToMbusXType,
+      driveClockFromMaster = if (driveMBusClockFromSBus) Some(true) else None,
+      nodeBinding = BIND_QUERY))
+
+    // from HierarchicalBusTopologyParams
+    // cbus := sbus, use sbus's clock for cbus by default
+    (SBUS, CBUS, TLBusWrapperConnection  .crossTo(xTypes.sbusToCbusXType, if (driveClocksFromSBus) Some(true) else None)),
+    // pbus := cbus, use cbus's clock for pbus by default
+    (CBUS, PBUS, TLBusWrapperConnection  .crossTo(xTypes.cbusToPbusXType, if (driveClocksFromSBus) Some(true) else None)),
+    // sbus := fbus, use sbus's clock for fbus by default
+    (FBUS, SBUS, TLBusWrapperConnection.crossFrom(xTypes.fbusToSbusXType, if (driveClocksFromSBus) Some(false) else None)))
+    ```
+
+3. 具体地，每个 bus 有一个自己的 clockGroupNode，bus 之间的 clockGroupNode 按照上面所属的方式连接，然后 bus 下面的设备再挂到 fixedClockNode 下面：
+
+    ```scala
+    abstract class TLBusWrapper(params: HasTLBusParams, val busName: String)(implicit p: Parameters)
+        extends ClockDomain
+        with HasTLBusParams
+        with CanHaveBuiltInDevices
+    {
+      private val clockGroupAggregator = LazyModule(new ClockGroupAggregator(busName){ override def shouldBeInlined = true }).suggestName(busName + "_clock_groups")
+      private val clockGroup = LazyModule(new ClockGroup(busName){ override def shouldBeInlined = true })
+      val clockGroupNode = clockGroupAggregator.node // other bus clock groups attach here
+      val clockNode = clockGroup.node
+      val fixedClockNode = FixedClockBroadcast(fixedClockOpt) // device clocks attach here
+      private val clockSinkNode = ClockSinkNode(List(ClockSinkParameters(take = fixedClockOpt)))
+
+      clockGroup.node := clockGroupAggregator.node
+      fixedClockNode := clockGroup.node // first member of group is always domain's own clock
+      clockSinkNode := fixedClockNode
+
+      def clockBundle = clockSinkNode.in.head._1
+    }
+
+    // in ClockDomain.scala
+    abstract class Domain(implicit p: Parameters) extends LazyModule with HasDomainCrossing
+    {
+      def clockBundle: ClockBundle
+
+      lazy val module = new Impl
+      class Impl extends LazyRawModuleImp(this) {
+        childClock := clockBundle.clock
+        childReset := clockBundle.reset
+        override def provideImplicitClockToLazyChildren = true
+
+        // these are just for backwards compatibility with external devices
+        // that were manually wiring themselves to the domain's clock/reset input:
+        val clock = IO(Output(chiselTypeOf(clockBundle.clock)))
+        val reset = IO(Output(chiselTypeOf(clockBundle.reset)))
+        clock := clockBundle.clock
+        reset := clockBundle.reset
+      }
+    }
+    ```
+
 ## TileLink Widgets
 
 Rocket Chip 中用 Diplomacy 实现 TileLink 总线的连接。涉及到的相关结构如下：
