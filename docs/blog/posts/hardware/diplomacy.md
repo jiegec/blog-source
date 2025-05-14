@@ -19,8 +19,8 @@ Diplomacy 主要实现了两个功能：
 
 Diplomacy 为了表示总线的结构，每个模块可以对应一个 Node，Node 和 Node 之间连接形成一个图。Node 的类型主要有以下几个：
 
-1. Client：对应 AXI 里面的 Master，发起请求
-2. Manager：对应 AXI 里面的 Slave，处理请求
+1. Client（Source）：对应 AXI 里面的 Master，发起请求
+2. Manager（Sink）：对应 AXI 里面的 Slave，处理请求
 3. Adapter：对应 AXI Width Converter/Clock Converter/AXI4 to AXI3/AXI4 to AHB bridge 等，会修改 AXI 的参数，然后每个输入对应一个输出，不改变数量
 4. Nexus：对应 AXI Crossbar，多个输入和多个输出，输入输出数量可能不同
 
@@ -33,11 +33,13 @@ Diplomacy 为了表示总线的结构，每个模块可以对应一个 Node，No
 - `:*=`：Star 连接，意思是在两个 Node 之间连接多条边，连接的边的数量取决于左边的 Node
 - `:*=*`：Flex 连接，意思是在两个 Node 之间连接多条边，连接的边的数量取决于哪边的 Node 可以确认边的数量
 
+由于一次连接可能会对应多条边，为了区分连接和图中的边，一次连接操作符生成一个 Connection，然后 Connection 会在两个 Node 之间连接若干条边。在代码中，Connection 也被称为 Binding 或者 Port。
+
 ## 使用方法
 
 由于各模块的硬件描述，需要等到连接图建立完成后，才能生成，因此 Diplomacy 采用了两阶段：
 
-1. 第一个阶段发生在 LazyModule 中，通过 LazyModule 嵌套其他模块，并把 LazyModule 之间的 Node 连接起来，组成一个图，协商每一条边对应的参数
+1. 第一个阶段发生在 LazyModule 中，通过 LazyModule 嵌套其他模块，并把 LazyModule 之间的 Node 连接起来，组成一个图，计算每一个 Connection 对应多少条边，协商每一条边对应的参数
 2. 第二个阶段发生在 LazyModuleImp 中，当访问 LazyModule 的 module 字段的时候，才会生成对应的硬件描述
 
 ### 引入 Diplomacy
@@ -722,7 +724,48 @@ trait OutwardNode[DO, UO, BO <: Data] extends BaseNode {
 
 一个 Node 可以同时继承 InwardNode 和 OutwardNode。
 
-特别地，为了方便使用，在连接的时候未必是每次只连接一条边，比如可能一次性把多个 AXI 都接过去，比如前面提到的 Query/Star/Flex connection，这个信息会被记录在 NodeBinding 类型中。具体的连接个数，是通过 lazy evaluation + recursion 计算出来的。
+特别地，为了方便使用，在连接的时候未必是每次只连接一条边，比如可能一次性把多个 AXI 都接过去，比如前面提到的 Query/Star/Flex connection，这个信息会被记录在 NodeBinding 类型中。具体的连接个数，是通过 lazy evaluation + recursion 计算出来的。计算过程如下：
+
+1. 针对 Inward Connection，InwardNode 维护数组 accPI，记录了 Inward 的 Connection；类似地，针对 Outward Connection，OutwardNode 维护数组 accPO，记录了 Outward 的 Connection；使用连接操作符时，调用 `MixedNode` 的 `bind` 函数，在连接的两端 Node 记录下 Connection，互相记录该 Connection 在对方的 accPI/accPO 数组内的下标：
+
+      ```scala
+      /** Connects the outward part of a node with the inward part of this node. */
+      protected[diplomacy] def bind(
+        h:          OutwardNode[DI, UI, BI],
+        binding:    NodeBinding
+      )(
+        implicit p: Parameters,
+        sourceInfo: SourceInfo
+      ): Unit = {
+        val x = this // x := y
+        val y = h
+        sourceLine(sourceInfo, " at ", "")
+        val i = x.iPushed
+        val o = y.oPushed
+        y.oPush(
+          i,
+          x,
+          binding match {
+            case BIND_ONCE  => BIND_ONCE
+            case BIND_FLEX  => BIND_FLEX
+            case BIND_STAR  => BIND_QUERY
+            case BIND_QUERY => BIND_STAR
+          }
+        )
+        x.iPush(o, y, binding)
+      }
+      ```
+
+2. 得到整个图的所有 Connection 以后，计算每个 Node 的每个 Connection 具体有哪些边，流程如下（暂不考虑 Flex，只考虑 Star 和 Query）：
+
+    1. 统计 Inward 和 Outward 两个方向上有多少个 Star Connection，这些 Star Connection 对应的边的数量是未知的：比如统计 A 的 Outward 方向上有多少个 Star Connection，就是看有多少个 B 出现过 `A :=* B`
+    2. 统计 Inward 和 Outward 两个方向上有多少条已知的边：如果是 `A := B`，那就是一条边；如果是 `A :=* B`，边数未知，已知的边的数量记为 0；如果是 `A :*= B`，则需要递归到 B，看 B 的 Star Connection 对应多少条边，如果递归出现环，则报告失败
+    3. 根据当前的 Node 类型，决定 Star Connection 对应多少条边（`resolveStar` 函数）：
+        1. 对于 Adapter Node（例如 Width Converter），它的输入和输出边数是相同的，要么两侧都没有 Star，要么只在一侧出现一个 Star：如果两侧都有 Star，或者一侧有多个 Star，就无法求得边的数量了；如果两侧都没有 Star，就要求两侧的边的数量相同；如果只有一侧有 Star 并且只有一个，那么那个 Star Connection，会把剩下的没连的边都连上，例如 Inward 有 4 条边，Outward 有 2 条已知边加一条 Star，那么前两条 Inward 和 Outward 会一对一连接，Star 会连接到剩下的 2 条 Inward 边上
+        2. 对于 Nexus Node（例如 Crossbar），它会把 Star 当成普通但是 weak 的连接：如果只有 Star，没有已知的边，它就相当于不连；如果有已知的边，它只会对应一条边
+        3. 对于 Sink/Source Node，它的行为和 Adapter Node 类似，只不过只有 Inward 或者 Outward 其中一侧，并且会根据自己的参数的数量来决定边的数量：例如一个模块有三个 AXI Master，导出了一条边加一个 Star 连接，那么 Star 连接会连接后两个 AXI Master
+    4. 计算每个 Connection 的边的数量
+
 
 ## Rocket Chip 总线结构
 
