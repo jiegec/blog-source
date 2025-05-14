@@ -1390,7 +1390,7 @@ Method (DVNT, 2, NotSerialized)
 
 ACPI 定义的 Power State：
 
-![](./acpi_power.png)
+![](./acpi-notes-power.png)
 
 - G0-G3: 全局状态，G0 表示正在工作
 - S0-S5：睡眠状态，S0 表示正在工作，S5 表示关机

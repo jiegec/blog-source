@@ -22,11 +22,11 @@ categories:
 
 802.11 MAC 层的帧格式，如 802.11-1997 Figure 12：
 
-![](./80211_mac.png)
+![](./wireless-network-80211-mac.png)
 
 前两个字节 Frame Control 的定义如 802.11-1997 Figure 13：
 
-![](./80211_frame_control.png)
+![](./wireless-network-80211-frame-control.png)
 
 根据 Type 和 Subtype 字段决定了帧的类型，如管理（Management）帧，控制（Control）帧和数据（Data）帧。
 
@@ -48,7 +48,7 @@ categories:
 
 HR-DSSS 工作在 2.4 GHz 频段上，常用的是 13 个 channel，中心频率从 2412 MHz 到 2472 MHz 不等，呈等差数列，公差是 5 MHz。HR-DSSS 会占用 22MHz 的频谱，从中心频率减 11 MHz 到中心频率加 11 MHz，所以相邻 channel 会有干扰，见下图（取自 [Wikipedia](https://en.wikipedia.org/wiki/IEEE_802.11)）
 
-![](./80211_channels.png)
+![](./wireless-network-80211-channels.png)
 
 这就是为什么通常会把 2.4GHz 无线路由器的 channel 固定为 1、6 或 11。
 
