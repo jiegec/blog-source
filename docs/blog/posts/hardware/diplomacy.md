@@ -853,6 +853,23 @@ case class CoherentBusTopologyParams(
 )
 ```
 
+下面是一个双核 Rocket Chip 的 GraphML 导出来用 yED 绘制的架构图：
+
+![](./diplomacy_rocket_chip.png)
+
+### TileLink
+
+Rocket Chip 中用 Diplomacy 实现 TileLink 总线的连接。相关的结构如下：
+
+1. TLBundle：代表 TileLink 总线的接口，根据 TLBundleParameters 例化
+2. TLMasterPortParameters：信息 TileLink Master 的信息，从 Upstream 向 Downstream 传递
+3. TLSlavePortParameters：信息 TileLink Slave 的信息，从 Downstream 向 Upstream 传递
+4. TLEdgeOut：记录 Outward 边，也就是 Master 侧的 TileLink 的信息
+5. TLEdgeIn：记录 Inward 边，也就是 Slave 侧的 TileLink 的信息
+6. TLImp: `extends NodeImp[TLMasterPortParameters, TLSlavePortParameters, TLEdgeOut, TLEdgeIn, TLBundle]`，基于这个类型来导出各种类型的 TileLink Node
+7. TLXBar：TileLink 的 Crossbar，生成一个继承 NexusNode 的 TLNexusNode，它的信息传递方式是，把下游的各个 Slave 信息拼起来传给上游，使得 Master 可以看到所有 Slave 的信息；把上游的各个 Master 信息拼起来传给下游，使得 Slave 可以看到所有 Master 的信息
+8. TLToAXI4：生成一个继承 AdapterNode 的 TLToAXI4Node，把 TileLink Master 转成 AXI4 Master，把上游的 TileLink Master 信息转换为 AXI Master 传递给下游，把下游的 AXI Slave 信息转换为 TileLink Slave 传递给上游
+
 ## 参考文档
 
 - [TileLink and Diplomacy Reference](https://chipyard.readthedocs.io/en/latest/TileLink-Diplomacy-Reference/index.html)
