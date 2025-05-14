@@ -857,6 +857,50 @@ case class CoherentBusTopologyParams(
 
 ![](./diplomacy_rocket_chip.png)
 
+这个图比较复杂，混合了多个 Diplomacy 网络，首先是总线的部分，包括 TileLink 和 AXI：
+
+1. 两个 Tile，对应一个双核的系统；每个 Tile 内部有一个 dcache 和 icache，连接到一个 tlMasterXbar 上，再通过 coupler_from_rockettile 连接到 fixer 再到 system_bus_xbar
+2. 从 system_bus_xbar 分出来三路 Slave：
+    1. 第一路是 cbus，通过 out_xbar，连接到多个 slave：debug，error device，plic，clint，l2 control，bootrom
+    2. 第二路是 mmio，通过 tl2axi4，转成 AXI4 连接到外部的 MMIO 外设
+    3. 第三路是 coh，连接到 InclusiveCache，再连接到 mbus，通过 tl2axi4，转成 AXI4 连接到外部的内存
+3. system_bus_xbar 除了每个 tile 对应一个 master 以外，还有一个 master：fbus，它从外部的 AXI4 进来，通过 axi42tl 转换，接到 fbus，提供一个有缓存一致性的 AXI 访问接口，用于 DMA
+
+简化后的结构如图：
+
+```mermaid
+flowchart TD
+    subgraph tile0
+        dcache0[dcache]
+        icache0[icache]
+        tlMasterXbar0[tlMasterXbar]
+        dcache0 --> tlMasterXbar0
+        icache0 --> tlMasterXbar0
+    end
+
+    subgraph tile1
+        dcache1[dcache]
+        icache1[icache]
+        tlMasterXbar1[tlMasterXbar]
+        dcache1 --> tlMasterXbar1
+        icache1 --> tlMasterXbar1
+    end
+
+    system_bus_xbar
+    tlMasterXbar0 --> system_bus_xbar
+    tlMasterXbar1 --> system_bus_xbar
+    axi_fbus --> axi42tl --> system_bus_xbar
+    system_bus_xbar --> cbus --> out_xbar
+    out_xbar --> debug
+    out_xbar --> error
+    out_xbar --> plit
+    out_xbar --> clint
+    out_xbar --> l2_ctrl
+    out_xbar --> bootrom
+    system_bus_xbar --> tl2axi4_mmio[tl2axi4] --> axi_mmio
+    system_bus_xbar --> coh --> InclusiveCache --> tl2axi4_mem[tl2axi4] --> axi_mem
+```
+
 ### TileLink
 
 Rocket Chip 中用 Diplomacy 实现 TileLink 总线的连接。相关的结构如下：
