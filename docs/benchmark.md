@@ -1024,6 +1024,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 ## 更新历史
 
 - 2025.05.15:
+      - 测试 AMD EPYC 9755 的性能
       - 在华为云 kc2.large.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
       - 在 AWS c7g.large 实例上测试 AWS Graviton 3 的性能
 - 2025.05.07:
