@@ -45,7 +45,7 @@ tile --/    \-> cbus -> pbus
 
 下面是一个双核 Rocket Chip 的 GraphML 导出来用 yED 绘制的架构图：
 
-![](./rocket-chip-diplomacy.png)
+![](./rocket-chip-diplomacy.svg)
 
 接下来深入分析图中的各个连接关系以及对应的代码。
 

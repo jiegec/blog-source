@@ -244,7 +244,7 @@ endmodule
 
 Diplomacy 提供了把图导出为 GraphML 格式的功能，只需要访问 `LazyModule` 类型的 `graphML` 字段即可。上面的连接关系会被可视化为下图：
 
-![](./diplomacy-multi-adder.png)
+![](./diplomacy-multi-adder.svg)
 
 ### 参数协商
 
@@ -420,7 +420,7 @@ endmodule
 
 经过可视化的连接图如下：
 
-![](./diplomacy-concat.png)
+![](./diplomacy-concat.svg)
 
 ### 复杂例子
 
@@ -655,7 +655,7 @@ endmodule
 
 连接关系如下：
 
-![](./diplomacy-network.png)
+![](./diplomacy-network.svg)
 
 结果符合预期。
 
@@ -764,33 +764,33 @@ Query Connection 就是另一个方向上的 Star Connection。比较特别的�
 然后基于这两个函数，在 Upward/Downward 两个方向上传递参数，再得到 Edge 上的参数，最终得到 Bundle：
 
 ```scala
-  /** Creates the inward edge parameters by combining the downward-flowing and upward-flowing parameters for edges that
-    * connect to the inward side of this [[BaseNode]].
-    *
-    * It is left up to a user defining a particular protocol implementation to decide how the parameters flowing through
-    * the graph in both directions on this Edge are combined into a single representation.
-    *
-    * @param pd
-    *   The downward-flowing parameters into the node along the edge.
-    * @param pu
-    *   The upward-flowing parameters going out of the node along the edge.
-    * @param p
-    *   A view of [[Parameters]] at the point at which the returned edge is being bound.
-    * @param sourceInfo
-    *   [[SourceInfo]] of this edge.
-    * @return
-    *   An inward edge of this node.
-    */
-  def edgeI(pd: DI, pu: UI, p: Parameters, sourceInfo: SourceInfo): EI
+/** Creates the inward edge parameters by combining the downward-flowing and upward-flowing parameters for edges that
+  * connect to the inward side of this [[BaseNode]].
+  *
+  * It is left up to a user defining a particular protocol implementation to decide how the parameters flowing through
+  * the graph in both directions on this Edge are combined into a single representation.
+  *
+  * @param pd
+  *   The downward-flowing parameters into the node along the edge.
+  * @param pu
+  *   The upward-flowing parameters going out of the node along the edge.
+  * @param p
+  *   A view of [[Parameters]] at the point at which the returned edge is being bound.
+  * @param sourceInfo
+  *   [[SourceInfo]] of this edge.
+  * @return
+  *   An inward edge of this node.
+  */
+def edgeI(pd: DI, pu: UI, p: Parameters, sourceInfo: SourceInfo): EI
 
-  /** Create an inward bundle parameterized by the inward edge.
-    *
-    * @param ei
-    *   Inward edge of this node.
-    * @return
-    *   An outward Bundle of this node parameterized by the negotiated Edge parameters.
-    */
-  def bundleI(ei: EI): BI
+/** Create an inward bundle parameterized by the inward edge.
+  *
+  * @param ei
+  *   Inward edge of this node.
+  * @return
+  *   An outward Bundle of this node parameterized by the negotiated Edge parameters.
+  */
+def bundleI(ei: EI): BI
 ```
 
 ## TileLink Widgets
