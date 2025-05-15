@@ -199,6 +199,14 @@ permalink: /benchmark/
           --source=YAML_FILE \
           --zone=ZONE
       ```
+6. 华为云的 kc2 实例的 PMU 默认不开启，需要通过工单申请，步骤如下：
+      1. 创建一个私有镜像（可以先用公共镜像起一个虚拟机，再从虚拟机创建私有镜像）
+      2. 创建工单申请，申请给私有镜像启用 PMU
+      3. 用私有镜像创建新的虚拟机，在这个虚拟机内就可以使用 PMU：
+            ```shell
+            root@kc2 ~# dmesg | grep PMU
+            [    1.196145] hw perfevents: enabled with armv8_pmuv3_0 PMU driver, 9 counters available
+            ```
 
 x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
