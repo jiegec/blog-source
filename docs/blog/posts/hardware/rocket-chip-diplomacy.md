@@ -2,7 +2,6 @@
 layout: post
 date: 2025-05-14
 tags: [chisel,rocketchip,diplomacy]
-draft: true
 categories:
     - hardware
 ---
