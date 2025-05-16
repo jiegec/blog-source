@@ -460,6 +460,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3`）: [9.61](./data/fp2017_rate1/Intel_Xeon_6982P-C_O3-march=native_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -march=native`）: [9.29](./data/fp2017_rate1/AWS_Graviton_4_O3-march=native_001.txt) [9.35](./data/fp2017_rate1/AWS_Graviton_4_O3-march=native_002.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -march=native`）: [8.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3-march=native_001.txt)
+- AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3 -march=native`）: [7.73](./data/fp2017_rate1/AWS_Graviton_3_O3-march=native_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -march=native`）: [7.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8358P_O3-march=native_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3 -march=native`）: [5.48](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3-march=native_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3 -march=native`）: [3.09](./data/fp2017_rate1/Loongson_3C5000_O3-march=native_001.txt)
