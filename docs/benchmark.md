@@ -158,7 +158,7 @@ permalink: /benchmark/
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 - Intel Xeon Platinum 8576C Raptor Cove（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3`）: [5.66](./data/int2017_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
-- Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.39](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt) [5.40](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_002.txt) [5.22](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_003.txt)
+- Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.39](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt) [5.40](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_002.txt) [5.22](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_003.txt) [5.53](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_004.txt)
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3`）: [5.32](./data/int2017_rate1/AMD_EPYC_9754_O3_001.txt)
 - AMD EPYC 7K83 Zen 3（`-O3`）: [5.18](./data/int2017_rate1/AMD_EPYC_7K83_O3_001.txt)
 - AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3`）: [5.53](./data/int2017_rate1/AWS_Graviton_3E_O3_001.txt)
