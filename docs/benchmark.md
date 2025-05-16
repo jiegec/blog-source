@@ -217,9 +217,11 @@ permalink: /benchmark/
             [    1.196145] hw perfevents: enabled with armv8_pmuv3_0 PMU driver, 9 counters available
             ```
 
+### 分支预测器比较
+
 x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
-1. Zen 5(AMD 9950X): MPKI=4.48 Mispred=2.52%
+1. Zen 5(AMD 9950X/AMD 9755): MPKI=4.48 Mispred=2.52%
 2. Zen 4(AMD 9R14): MPKI=4.53 Mispred=2.56%
 3. Zen 4(AMD 9T24): MPKI=4.57 Mispred=2.57%
 4. Zen 4c(AMD 9754): MPKI=4.66 Mispred=2.63%
