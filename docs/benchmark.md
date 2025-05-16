@@ -1023,9 +1023,9 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Intel Xeon Platinum 8358P: Sunny Cove, Ice Lake
 - Intel Xeon Platinum 8576C(TencentCloud s8.medium8): Raptor Cove, Emerald Rapids
 - Intel Xeon Platinum 8581C(GCP c4-standard-2): Raptor Cove, Emerald Rapids
-- Kunpeng 920: TaiShan V110
 - Kunpeng 920 HuaweiCloud kc1(HuaweiCloud kc1.large.2): TaiShan V110
 - Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.2)
+- Kunpeng 920: TaiShan V110
 - Loongson 3A6000: LA664
 - Loongson 3C5000: LA464
 - Loongson 3C6000: LA664
