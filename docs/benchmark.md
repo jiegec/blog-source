@@ -260,7 +260,9 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）�
 1. Neoverse V2(AWS Graviton 4): MPKI=5.19 Mispred=3.03%
 2. Oryon(Qualcomm X1E80100): MPKI=5.41 Mispred=3.13%
 3. Firestorm(Apple M1): MPKI=5.45 Mispred=3.14%
-4. TSV110(Hisilicon Kunpeng 920): MPKI=6.74 Mispred=3.98%
+4. Neoverse V1(AWS Graviton 3): MPKI=5.64 Mispred=3.27%
+5. HuaweiCloud kc2: MPKI=6.00 Mispred=3.50%
+6. TSV110(Hisilicon Kunpeng 920): MPKI=6.74 Mispred=3.98%
 
 LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
