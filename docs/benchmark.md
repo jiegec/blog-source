@@ -66,6 +66,10 @@ permalink: /benchmark/
 
     ![](./data/int2017_rate1_freq.svg)
 
+??? note "指令数"
+
+    ![](./data/int2017_rate1_inst.svg)
+
 ### 原始数据
 
 桌面平台（`-march=native` + LTO + Jemalloc）：
@@ -412,6 +416,10 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 ??? note "频率"
 
     ![](./data/fp2017_rate1_freq.svg)
+
+??? note "指令数"
+
+    ![](./data/fp2017_rate1_inst.svg)
 
 ### 原始数据
 
