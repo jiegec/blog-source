@@ -145,7 +145,7 @@ permalink: /benchmark/
 - AMD EPYC 9755 @ 4.1 GHz Zen 5（`-O3`）: [8.57](./data/int2017_rate1/AMD_EPYC_9755_O3_001.txt)
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [6.95](./data/int2017_rate1/AMD_EPYC_9T24_O3_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [7.00](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt) [6.85](./data/int2017_rate1/AWS_Graviton_4_O3_002.txt)
-- AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt)
+- AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt) [6.41](./data/int2017_rate1/AMD_EPYC_9R14_O3_002.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [6.52](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
 - Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3`）: [6.38](./data/int2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
