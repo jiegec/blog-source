@@ -453,6 +453,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 服务器平台（`-march=native`）：
 
+- AMD EPYC 9755 @ 4.1 GHz Zen 5（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/AMD_EPYC_9755_O3-march=native_001.txt)
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -march=native`）: [10.1](./data/fp2017_rate1/AMD_EPYC_9T24_O3-march=native_001.txt)
 - Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3`）: [9.61](./data/fp2017_rate1/Intel_Xeon_6982P-C_O3-march=native_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -march=native`）: [9.29](./data/fp2017_rate1/AWS_Graviton_4_O3-march=native_001.txt) [9.35](./data/fp2017_rate1/AWS_Graviton_4_O3-march=native_002.txt)
@@ -1000,6 +1001,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - AMD EPYC 7H12: Zen 2
 - AMD EPYC 7K83: Zen 2
 - AMD EPYC 9754: Zen 4
+- AMD EPYC 9755: Zen 5
 - AMD EPYC 9R14: Zen 4
 - AMD EPYC 9T24: Zen 4
 - AMD Ryzen 5 7500F: Zen 4
