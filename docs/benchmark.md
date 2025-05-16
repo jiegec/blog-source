@@ -72,11 +72,6 @@ permalink: /benchmark/
 
 ### 原始数据
 
-桌面平台（`-march=native` + LTO + Jemalloc）：
-
-- Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native -flto -ljemalloc`）: [9.43](./data/int2017_rate1/Qualcomm_X1E80100_O3-march=native-flto-ljemalloc_001.txt)
-- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native -flto -ljemalloc`）: [9.28](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3-march=native-flto-ljemalloc_001.txt)
-
 桌面平台（LTO + Jemalloc）：
 
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto -ljemalloc`）: [12.9](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto-ljemalloc_001.txt)
@@ -114,10 +109,6 @@ permalink: /benchmark/
 - Qualcomm 8cx Gen3 P Core @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data/int2017_rate1/Loongson_3A6000_O3_002.txt)
 - Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
-
-服务器平台（`-march=native` + LTO + Jemalloc）：
-
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -march=native -flto -ljemalloc`）: [4.65](./data/int2017_rate1/Loongson_3C6000_O3-march=native-flto-ljemalloc_001.txt)
 
 服务器平台（LTO + Jemalloc）：
 
