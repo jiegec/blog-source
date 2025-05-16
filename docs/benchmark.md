@@ -995,43 +995,43 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - AMD EPYC 7551: Zen 1
 - AMD EPYC 7742: Zen 2
 - AMD EPYC 7H12: Zen 2
-- AMD EPYC 7K83(TencentCloud sa3.medium4): Zen 2
-- AMD EPYC 9754(TencentCloud sa5.medium2): Zen 4
+- AMD EPYC 7K83(TencentCloud sa3.medium4, 2C 4G): Zen 2
+- AMD EPYC 9754(TencentCloud sa5.medium2, 2C 2G): Zen 4
 - AMD EPYC 9755: Zen 5
-- AMD EPYC 9R14(AWS c7a.medium): Zen 4
-- AMD EPYC 9T24(Aliyun g8a.large): Zen 4
+- AMD EPYC 9R14(AWS c7a.medium, 1C 2G): Zen 4
+- AMD EPYC 9T24(Aliyun g8a.large, 2C 8G): Zen 4
 - AMD Ryzen 5 7500F: Zen 4
 - AMD Ryzen 7 5700X: Zen 3
 - AMD Ryzen 9 9950X: Zen 5
-- AWS Gravition 3(AWS c7g.large): Neoverse V1
-- AWS Gravition 3E(AWS c7gn.medium): Neoverse V1
-- AWS Gravition 4(AWS c8g.large): Neoverse V2
-- Ampere Altra(Aliyun c6r.large): Neoverse N1
+- AWS Gravition 3(AWS c7g.large, 2C 4G): Neoverse V1
+- AWS Gravition 3E(AWS c7gn.medium, 1C 2G): Neoverse V1
+- AWS Gravition 4(AWS c8g.large, 2C 4G): Neoverse V2
+- Ampere Altra(Aliyun c6r.large, 2C 4G): Neoverse N1
 - Apple M1: Firestorm + Icestorm
 - Huawei Kirin 9010
-- Hygon C86 7390(Aliyun g7h.large)
+- Hygon C86 7390(Aliyun g7h.large, 2C 8G)
 - IBM POWER8NVL
 - Intel Core i9-10980XE: Cascade Lake
 - Intel Core i9-12900KS: Golden Cove + Gracemont, Alder Lake
 - Intel Core i9-14900K: Raptor Cove + Gracemont, Raptor Lake
-- Intel Xeon 6982P-C(Aliyun g9i.large): Redwood Cove, Granite Rapids
+- Intel Xeon 6982P-C(Aliyun g9i.large, 2C 8G): Redwood Cove, Granite Rapids
 - Intel Xeon D-2146NT: Skylake
 - Intel Xeon E5-2603 v4: Broadwell
 - Intel Xeon E5-2680 v3: Haswell
 - Intel Xeon E5-2680 v4: Broadwell
 - Intel Xeon E5-4610 v2: Ivy Bridge EP
 - Intel Xeon Platinum 8358P: Sunny Cove, Ice Lake
-- Intel Xeon Platinum 8576C(TencentCloud s8.medium8): Raptor Cove, Emerald Rapids
-- Intel Xeon Platinum 8581C(GCP c4-standard-2): Raptor Cove, Emerald Rapids
-- Kunpeng 920 HuaweiCloud kc1(HuaweiCloud kc1.large.2): TaiShan V110
-- Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.2)
+- Intel Xeon Platinum 8576C(TencentCloud s8.medium8, 2C 8G): Raptor Cove, Emerald Rapids
+- Intel Xeon Platinum 8581C(GCP c4-standard-2, 2C 7G): Raptor Cove, Emerald Rapids
+- Kunpeng 920 HuaweiCloud kc1(HuaweiCloud kc1.large.2, 2C 4G): TaiShan V110
+- Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.2, 4C 8G)
 - Kunpeng 920: TaiShan V110
 - Loongson 3A6000: LA664
 - Loongson 3C5000: LA464
 - Loongson 3C6000: LA664
 - Qualcomm 8cx Gen3: Cortex-X1C + Cortex-A78C
 - Qualcomm X1E80100: Oryon
-- T-Head Yitian 710(Aliyun c8y.large): Neoverse N2
+- T-Head Yitian 710(Aliyun c8y.large, 2C 4G): Neoverse N2
 
 ## 更新历史
 
