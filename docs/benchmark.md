@@ -131,6 +131,7 @@ permalink: /benchmark/
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto`）: [7.19](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto`）: [7.14](./data/int2017_rate1/AWS_Graviton_4_O3-flto_001.txt) [6.53](./data/int2017_rate1/AWS_Graviton_4_O3-flto_002.txt) [6.51](./data/int2017_rate1/AWS_Graviton_4_O3-flto_003.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto`）: [6.67](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto_001.txt)
+- AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3 -flto`）: [6.62](./data/int2017_rate1/AMD_EPYC_9R14_O3-flto_001.txt)
 - Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3 -flto`）: [6.60](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3 -flto`）: [5.68](./data/int2017_rate1/AWS_Graviton_3_O3-flto_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [5.71](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
