@@ -219,6 +219,61 @@ def plot_perf(flavor, file_name, key, display):
     plt.savefig(f"{flavor}2017_rate1_{file_name}.svg", bbox_inches="tight")
 
 
+def plot_table(flavor):
+    # plot score data
+    x_data = sorted(data.keys(), key=compute_key)
+    table = []
+    columns = ["Config", *benchmarks, "Score", "Clock", "Score/GHz", "MPKI", "Misp (%)"]
+    for x in x_data:
+        row = [x]
+        row += [
+            f"{mean(data[x][benchmark + '/ratio']):.2f}" for benchmark in benchmarks
+        ]
+        row.append(f"{mean(data[x]["all"]):.2f}")
+
+        if f"{benchmarks[0]}/clock" in data[x]:
+            clocks = [
+                mean(data[x][benchmark + "/clock"]) / 1000 for benchmark in benchmarks
+            ]
+            mean_clock = mean(clocks)
+            row.append(f"{mean_clock:.2f} GHz")
+            score_per_ghz = mean(data[x]["all"]) / mean_clock
+            row.append(f"{score_per_ghz:.2f}")
+        else:
+            row.append("N/A")
+            row.append("N/A")
+
+        if f"{benchmarks[0]}/mpki" in data[x]:
+            mpkis = [mean(data[x][benchmark + "/mpki"]) for benchmark in benchmarks]
+            mean_mpki = mean(mpkis)
+            row.append(f"{mean_mpki:.2f}")
+        else:
+            row.append("N/A")
+
+        if f"{benchmarks[0]}/misprediction" in data[x]:
+            mispreds = [mean(data[x][benchmark + "/misprediction"]) for benchmark in benchmarks]
+            mean_mispred = mean(mispreds)
+            row.append(f"{mean_mispred:.2f}")
+        else:
+            row.append("N/A")
+        table.append(row)
+
+    plt.cla()
+    fig, ax = plt.subplots()
+
+    # hide axes
+    ax.axis("off")
+    ax.axis("tight")
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+
+    table = ax.table(cellText=table, colLabels=columns, loc="center")
+    table.auto_set_font_size(False)
+    table.set_fontsize(4)
+    table.auto_set_column_width(col=list(range(len(columns))))
+    plt.savefig(f"{flavor}2017_rate1_table.svg", bbox_inches="tight")
+
+
 for flavor in ["int", "fp"]:
     data.clear()
     if flavor == "int":
@@ -226,6 +281,7 @@ for flavor in ["int", "fp"]:
     else:
         benchmarks = benchmarks_fp_rate
     parse_data(flavor)
+    plot_table(flavor)
     plot_score(flavor)
     plot_score_per_ghz(flavor)
     plot_perf(flavor, "mpki", "mpki", "MPKI")

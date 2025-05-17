@@ -42,6 +42,8 @@ permalink: /benchmark/
 
 ![](./data/int2017_rate1_score.svg)
 
+![](./data/int2017_rate1_table.svg)
+
 ??? note "分数/GHz"
 
     ![](./data/int2017_rate1_score_per_ghz.svg)
@@ -393,6 +395,8 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 ### 数据总览
 
 ![](./data/fp2017_rate1_score.svg)
+
+![](./data/fp2017_rate1_table.svg)
 
 ??? note "分数/GHz"
 
