@@ -88,6 +88,7 @@ permalink: /benchmark/
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto`）: [8.44](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3-flto_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
 - Apple M1 @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.24](./data/int2017_rate1/Apple_M1_O3-flto_001.txt)
+- Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto`）: [3.29](./data/int2017_rate1/Apple_M1_E-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto`）: [6.37](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
