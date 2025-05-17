@@ -99,6 +99,26 @@ def get_opt_flags(name):
     return name.split("(")[1].removesuffix(")")
 
 
+def get_isa(name):
+    if "Intel" in name or "AMD" in name or "Hygon" in name:
+        return "amd64"
+    elif (
+        "Graviton" in name
+        or "Huawei" in name
+        or "Kunpeng" in name
+        or "Qualcomm" in name
+        or "Apple" in name
+        or "Ampere" in name
+        or "Yitian" in name
+    ):
+        return "arm64"
+    elif "Loongson" in name:
+        return "loong64"
+    elif "POWER" in name:
+        return "ppc64el"
+    assert False, f"Unknown ISA for CPU {name}"
+
+
 def compute_key(x):
     # sort by opt flags first, then score
     opt_flags = get_opt_flags(x)
@@ -225,6 +245,7 @@ def plot_table(flavor):
     table = []
     columns = [
         "CPU",
+        "ISA",
         "Flags",
         "MPKI",
         "Misp (%)",
@@ -240,7 +261,8 @@ def plot_table(flavor):
             # add delimiter
             table.append(columns)
 
-        row = [x.split(" (")[0], get_opt_flags(x)]
+        cpu = x.split(" (")[0]
+        row = [cpu, get_isa(cpu), get_opt_flags(x)]
 
         if f"{benchmarks[0]}/mpki" in data[x]:
             mpkis = [mean(data[x][benchmark + "/mpki"]) for benchmark in benchmarks]
