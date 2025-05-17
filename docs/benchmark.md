@@ -424,6 +424,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 桌面平台（`-march=native`）：
 
+- Apple M1 @ 3.1 GHz Firestorm（`-O3 -march=native`）: [11.6](./data/fp2017_rate1/Apple_M1_O3-march=native_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native`）: [11.4](./data/fp2017_rate1/AMD_Ryzen_7_5700X_O3-march=native_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -march=native`）: [17.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
@@ -436,7 +437,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3`）: [9.91](./data/fp2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [16.3](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [16.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt)
-- Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [11.5](./data/fp2017_rate1/Apple_M1_O3_001.txt)
+- Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [11.6](./data/fp2017_rate1/Apple_M1_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - Intel Core i9-12900KS E Core @ 4.1 GHz Gracemont（`-O3`）: [6.90](./data/fp2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
@@ -1058,6 +1059,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - 2025.05.16:
       - 在华为云 kc2.xlarge.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
       - 在 AWS c7a.xlarge 实例上测试 AMD EPYC 9R14 的性能
+      - 测试 Apple M1 的性能
 - 2025.05.15:
       - 测试 AMD EPYC 9755 的性能
       - 在华为云 kc2.large.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
