@@ -500,9 +500,9 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 注：
 
-1. SPEC FP 2017 Rate-1 结果受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。
+1. SPEC FP 2017 Rate-1 结果在 AMD64 平台下受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。ARM64 平台下 `-march=native` 没有什么影响，甚至有一定的劣化。
 2. 部分内核版本（大约 6.7-6.11，在 6.12/6.11.7 中修复）会显著影响 503.bwaves_r 和 507.cactuBSSN_r 项目的性能，详见 [Intel Spots A 3888.9% Performance Improvement In The Linux Kernel From One Line Of Code](https://www.phoronix.com/news/Intel-Linux-3888.9-Performance)、[mm, mmap: limit THP alignment of anonymous mappings to PMD-aligned sizes](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d4148aeab412432bf928f311eca8a2ba52bb05df) 和 [kernel 6.10 THP causes abysmal performance drop](https://bugzilla.suse.com/show_bug.cgi?id=1229012)。
-3. Qualcomm 8cx Gen3 P core 在跑测试的时候，会因为过热降频，导致达不到最佳性能。
+3. Qualcomm 8cx Gen3 P core 在跑测试的时候，会因为过热降频，导致达不到最佳性能，三轮测试一轮比一轮慢。
 4. 在华为云 kc2 实例上用 Debian Bookworm 带 `-march=native` 编译代码会报错，是 binutils 2.40 版本的问题；解决办法是手动安装一个 binutils 2.42：
 
       ```shell
