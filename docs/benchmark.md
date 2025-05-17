@@ -107,7 +107,7 @@ permalink: /benchmark/
 - Intel Core i9-14900K E Core @ 4.4 GHz Gracemont（`-O3`）: [7.03](./data/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data/int2017_rate1/Loongson_3A6000_O3_002.txt)
 - Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
-- Qualcomm 8cx Gen3 P Core @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
+- Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [8.31](./data/int2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 
 服务器平台（LTO + Jemalloc）：
@@ -244,7 +244,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 2. Oryon(Qualcomm X1E80100): MPKI=4.71 Mispred=2.58%
 3. Neoverse N2(Aliyun Yitian 710): MPKI=4.80 Mispred=2.64%
 4. Firestorm(Apple M1): MPKI=4.82 Mispred=2.63%
-5. Neoverse V1(AWS Graviton 3/AWS Graviton 3E)/Cortex X1C(Qualcomm 8cx Gen3 P Core): MPKI=4.91 Mispred=2.69%
+5. Neoverse V1(AWS Graviton 3/AWS Graviton 3E)/Cortex X1C(Qualcomm 8cx Gen3): MPKI=4.91 Mispred=2.69%
 6. HuaweiCloud kc2: MPKI=5.17 Mispred=2.85%
 7. Neoverse N1(Ampere Altra)/Cortex A78C(Qualcomm 8cx Gen3 E Core): MPKI=5.21 Mispred=2.87%
 8. TSV110(Hisilicon Kunpeng 920): MPKI=6.54 Mispred=3.58%
@@ -445,7 +445,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Core i9-14900K E Core @ 4.4 GHz Gracemont（`-O3`）: [7.31](./data/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.56](./data/fp2017_rate1/Loongson_3A6000_O3_001.txt)
 - Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [6.08](./data/fp2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
-- Qualcomm 8cx Gen3 P Core @ 3.0 GHz Cortex-X1C（`-O3`）: [8.07](./data/fp2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
+- Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [8.07](./data/fp2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 
 服务器平台（`-march=native`）：
@@ -502,7 +502,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 1. SPEC FP 2017 Rate-1 结果在 AMD64 平台下受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。ARM64 平台下 `-march=native` 没有什么影响，甚至有一定的劣化。
 2. 部分内核版本（大约 6.7-6.11，在 6.12/6.11.7 中修复）会显著影响 503.bwaves_r 和 507.cactuBSSN_r 项目的性能，详见 [Intel Spots A 3888.9% Performance Improvement In The Linux Kernel From One Line Of Code](https://www.phoronix.com/news/Intel-Linux-3888.9-Performance)、[mm, mmap: limit THP alignment of anonymous mappings to PMD-aligned sizes](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d4148aeab412432bf928f311eca8a2ba52bb05df) 和 [kernel 6.10 THP causes abysmal performance drop](https://bugzilla.suse.com/show_bug.cgi?id=1229012)。
-3. Qualcomm 8cx Gen3 P core 在跑测试的时候，会因为过热降频，导致达不到最佳性能，三轮测试一轮比一轮慢。
+3. Qualcomm 8cx Gen3 在跑测试的时候，会因为过热降频，导致达不到最佳性能，三轮测试一轮比一轮慢。
 4. 在华为云 kc2 实例上用 Debian Bookworm 带 `-march=native` 编译代码会报错，是 binutils 2.40 版本的问题；解决办法是手动安装一个 binutils 2.42：
 
       ```shell
