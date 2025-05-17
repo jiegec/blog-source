@@ -488,7 +488,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [8.42](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.13](./data/fp2017_rate1/Kunpeng_920_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc1 @ 2.6 GHz（`-O3`）: [3.17](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc1_O3_001.txt)
-- Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [8.19](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt) [8.13](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_002.txt) [8.20](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_003.txt)
+- Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [8.17](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data/fp2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.94](./data/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data/fp2017_rate1/Loongson_3C6000_O3_003.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [7.63](./data/fp2017_rate1/T-Head_Yitian_710_O3_001.txt)
@@ -502,6 +502,26 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 1. SPEC FP 2017 Rate-1 结果受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。
 2. 部分内核版本（大约 6.7-6.11，在 6.12/6.11.7 中修复）会显著影响 503.bwaves_r 和 507.cactuBSSN_r 项目的性能，详见 [Intel Spots A 3888.9% Performance Improvement In The Linux Kernel From One Line Of Code](https://www.phoronix.com/news/Intel-Linux-3888.9-Performance)、[mm, mmap: limit THP alignment of anonymous mappings to PMD-aligned sizes](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d4148aeab412432bf928f311eca8a2ba52bb05df) 和 [kernel 6.10 THP causes abysmal performance drop](https://bugzilla.suse.com/show_bug.cgi?id=1229012)。
 3. Qualcomm 8cx Gen3 P core 在跑测试的时候，会因为过热降频，导致达不到最佳性能。
+4. 在华为云 kc2 实例上用 Debian Bookworm 带 `-march=native` 编译代码会报错，是 binutils 2.40 版本的问题；解决办法是手动安装一个 binutils 2.42：
+
+      ```shell
+      # Fix error building 511.povray_r:
+      # /usr/bin/gcc -std=c99 -c -o image_validator/ImageValidator.o -DSPEC -DNDEBUG -Ifrontend -Ibase -I. -Ispec_qsort -DSPEC_AUTO_SUPPRESS_OPENMP  -O3 -march=native            -Wno-error=implicit-int   -DSPEC_LP64  image_validator/ImageValidator.c
+      # /tmp/cc0E80QY.s: Assembler messages:
+      # /tmp/cc0E80QY.s:2340: Error: selected processor does not support `bcax v22.16b,v22.16b,v11.16b,v22.16b'
+      # /tmp/cc0E80QY.s:2425: Error: selected processor does not support `bcax v8.16b,v8.16b,v16.16b,v8.16b'
+      # /tmp/cc0E80QY.s:2502: Error: selected processor does not support `bcax v3.16b,v3.16b,v5.16b,v3.16b'
+      apt update
+      apt install -y texinfo
+      wget https://mirrors.tuna.tsinghua.edu.cn/gnu/binutils/binutils-2.42.tar.xz
+      tar xvf binutils-2.42.tar.xz
+      cd binutils-2.42
+      mkdir build
+      cd build/
+      ../configure
+      make all -j4
+      make install -j4
+      ```
 
 ### 网上的数据
 
