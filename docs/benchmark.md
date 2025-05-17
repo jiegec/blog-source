@@ -100,14 +100,15 @@ permalink: /benchmark/
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3`）: [7.87](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [11.3](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt)
 - Apple M1 @ 3.2 GHz Firestorm（`-O3`）: [7.85](./data/int2017_rate1/Apple_M1_O3_001.txt)
+- Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.15](./data/int2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3`）: [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
-- Intel Core i9-12900KS E Core @ 4.1 GHz Gracemont（`-O3`）: [6.08](./data/int2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
+- Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [6.08](./data/int2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
-- Intel Core i9-14900K E Core @ 4.4 GHz Gracemont（`-O3`）: [7.03](./data/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
+- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.03](./data/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data/int2017_rate1/Loongson_3A6000_O3_002.txt)
-- Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
-- Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
+- Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
+- Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [8.31](./data/int2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 
 服务器平台（LTO + Jemalloc）：
@@ -246,7 +247,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 4. Firestorm(Apple M1): MPKI=4.82 Mispred=2.63%
 5. Neoverse V1(AWS Graviton 3/AWS Graviton 3E)/Cortex X1C(Qualcomm 8cx Gen3): MPKI=4.91 Mispred=2.69%
 6. HuaweiCloud kc2: MPKI=5.17 Mispred=2.85%
-7. Neoverse N1(Ampere Altra)/Cortex A78C(Qualcomm 8cx Gen3 E Core): MPKI=5.21 Mispred=2.87%
+7. Neoverse N1(Ampere Altra)/Cortex A78C(Qualcomm 8cx Gen3 E-Core): MPKI=5.21 Mispred=2.87%
 8. TSV110(Hisilicon Kunpeng 920): MPKI=6.54 Mispred=3.58%
 
 ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
@@ -440,12 +441,12 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [11.6](./data/fp2017_rate1/Apple_M1_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
-- Intel Core i9-12900KS E Core @ 4.1 GHz Gracemont（`-O3`）: [6.90](./data/fp2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
+- Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [6.90](./data/fp2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
-- Intel Core i9-14900K E Core @ 4.4 GHz Gracemont（`-O3`）: [7.31](./data/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
+- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.31](./data/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.56](./data/fp2017_rate1/Loongson_3A6000_O3_001.txt)
-- Qualcomm 8cx Gen3 E Core @ 2.4 GHz Cortex-A78C（`-O3`）: [6.08](./data/fp2017_rate1/Qualcomm_8cx_Gen3_E_Core_O3_001.txt)
-- Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [8.07](./data/fp2017_rate1/Qualcomm_8cx_Gen3_P_Core_O3_001.txt)
+- Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [6.08](./data/fp2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
+- Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [8.07](./data/fp2017_rate1/Qualcomm_8cx_Gen3_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 
 服务器平台（`-march=native`）：
