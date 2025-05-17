@@ -168,7 +168,6 @@ permalink: /benchmark/
 - Intel Xeon Platinum 8576C Raptor Cove（`-O3`）: [5.72](./data/int2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [6.52](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.10](./data/int2017_rate1/Kunpeng_920_O3_001.txt)
-- Kunpeng 920 HuaweiCloud kc1 @ 2.6 GHz（`-O3`）: [3.03](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc1_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.53](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data/int2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data/int2017_rate1/Loongson_3C6000_O3_001.txt)
@@ -488,7 +487,6 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Xeon Platinum 8576C Raptor Cove（`-O3`）: [8.14](./data/fp2017_rate1/Intel_Xeon_Platinum_8576C_O3_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [8.42](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.13](./data/fp2017_rate1/Kunpeng_920_O3_001.txt)
-- Kunpeng 920 HuaweiCloud kc1 @ 2.6 GHz（`-O3`）: [3.17](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc1_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [8.17](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data/fp2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.94](./data/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data/fp2017_rate1/Loongson_3C6000_O3_003.txt)
@@ -1046,7 +1044,6 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Intel Xeon Platinum 8358P: Sunny Cove, Ice Lake
 - Intel Xeon Platinum 8576C(TencentCloud s8.medium8, 2C 8G): Raptor Cove, Emerald Rapids
 - Intel Xeon Platinum 8581C(GCP c4-standard-2, 2C 7G): Raptor Cove, Emerald Rapids
-- Kunpeng 920 HuaweiCloud kc1(HuaweiCloud kc1.large.2, 2C 4G): TaiShan V110
 - Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.2, 4C 8G)
 - Kunpeng 920: TaiShan V110
 - Loongson 3A6000: LA664
