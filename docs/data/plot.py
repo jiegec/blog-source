@@ -226,12 +226,12 @@ def plot_table(flavor):
     columns = [
         "CPU",
         "Flags",
-        *benchmarks,
-        "Score",
-        "Clock",
-        "Score/GHz",
         "MPKI",
         "Misp (%)",
+        "Clock",
+        "Score/GHz",
+        "Score",
+        *benchmarks,
     ]
 
     last_x = None
@@ -241,22 +241,6 @@ def plot_table(flavor):
             table.append(columns)
 
         row = [x.split(" (")[0], get_opt_flags(x)]
-        row += [
-            f"{mean(data[x][benchmark + '/ratio']):.2f}" for benchmark in benchmarks
-        ]
-        row.append(f"{mean(data[x]["all"]):.2f}")
-
-        if f"{benchmarks[0]}/clock" in data[x]:
-            clocks = [
-                mean(data[x][benchmark + "/clock"]) / 1000 for benchmark in benchmarks
-            ]
-            mean_clock = mean(clocks)
-            row.append(f"{mean_clock:.2f} GHz")
-            score_per_ghz = mean(data[x]["all"]) / mean_clock
-            row.append(f"{score_per_ghz:.2f}")
-        else:
-            row.append("N/A")
-            row.append("N/A")
 
         if f"{benchmarks[0]}/mpki" in data[x]:
             mpkis = [mean(data[x][benchmark + "/mpki"]) for benchmark in benchmarks]
@@ -273,6 +257,24 @@ def plot_table(flavor):
             row.append(f"{mean_mispred:.2f}")
         else:
             row.append("N/A")
+
+        if f"{benchmarks[0]}/clock" in data[x]:
+            clocks = [
+                mean(data[x][benchmark + "/clock"]) / 1000 for benchmark in benchmarks
+            ]
+            mean_clock = mean(clocks)
+            row.append(f"{mean_clock:.2f} GHz")
+            score_per_ghz = mean(data[x]["all"]) / mean_clock
+            row.append(f"{score_per_ghz:.2f}")
+        else:
+            row.append("N/A")
+            row.append("N/A")
+
+        row.append(f"{mean(data[x]["all"]):.2f}")
+        row += [
+            f"{mean(data[x][benchmark + '/ratio']):.2f}" for benchmark in benchmarks
+        ]
+
         table.append(row)
         last_x = x
 
