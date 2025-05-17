@@ -269,7 +269,8 @@ def plot_table(flavor):
 
     table = ax.table(cellText=table, colLabels=columns, loc="center")
     table.auto_set_font_size(False)
-    table.set_fontsize(4)
+    table.set_fontsize(16)
+    table.scale(1, 2)
     table.auto_set_column_width(col=list(range(len(columns))))
     plt.savefig(f"{flavor}2017_rate1_table.svg", bbox_inches="tight")
 
