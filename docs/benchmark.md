@@ -251,7 +251,8 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 5. Neoverse V1(AWS Graviton 3/AWS Graviton 3E)/Cortex X1C(Qualcomm 8cx Gen3): MPKI=4.91 Mispred=2.69%
 6. HuaweiCloud kc2: MPKI=5.17 Mispred=2.85%
 7. Neoverse N1(Ampere Altra)/Cortex A78C(Qualcomm 8cx Gen3 E-Core): MPKI=5.21 Mispred=2.87%
-8. TSV110(Hisilicon Kunpeng 920): MPKI=6.54 Mispred=3.58%
+8. Icestorm(Apple M1 E-Core): MPKI=5.41 Mispred=2.99%
+9. TSV110(Hisilicon Kunpeng 920): MPKI=6.54 Mispred=3.58%
 
 ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 

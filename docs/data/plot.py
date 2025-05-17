@@ -223,9 +223,24 @@ def plot_table(flavor):
     # plot score data
     x_data = sorted(data.keys(), key=compute_key)
     table = []
-    columns = ["Config", *benchmarks, "Score", "Clock", "Score/GHz", "MPKI", "Misp (%)"]
+    columns = [
+        "CPU",
+        "Flags",
+        *benchmarks,
+        "Score",
+        "Clock",
+        "Score/GHz",
+        "MPKI",
+        "Misp (%)",
+    ]
+
+    last_x = None
     for x in x_data:
-        row = [x]
+        if last_x is not None and get_opt_flags(x) != get_opt_flags(last_x):
+            # add delimiter
+            table.append(columns)
+
+        row = [x.split(" (")[0], get_opt_flags(x)]
         row += [
             f"{mean(data[x][benchmark + '/ratio']):.2f}" for benchmark in benchmarks
         ]
@@ -251,12 +266,15 @@ def plot_table(flavor):
             row.append("N/A")
 
         if f"{benchmarks[0]}/misprediction" in data[x]:
-            mispreds = [mean(data[x][benchmark + "/misprediction"]) for benchmark in benchmarks]
+            mispreds = [
+                mean(data[x][benchmark + "/misprediction"]) for benchmark in benchmarks
+            ]
             mean_mispred = mean(mispreds)
             row.append(f"{mean_mispred:.2f}")
         else:
             row.append("N/A")
         table.append(row)
+        last_x = x
 
     plt.cla()
     fig, ax = plt.subplots()
@@ -267,7 +285,7 @@ def plot_table(flavor):
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
 
-    table = ax.table(cellText=table, colLabels=columns, loc="center")
+    table = ax.table(cellText=table, colLabels=columns, loc="center", colLoc="right")
     table.auto_set_font_size(False)
     table.set_fontsize(16)
     table.scale(1, 2)
