@@ -136,6 +136,7 @@ permalink: /benchmark/
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.19](./data/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.02](./data/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
+- AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3 -flto`）: [5.48](./data/int2017_rate1/AMD_EPYC_9754_O3-flto_001.txt)
 - AMD EPYC 9755 @ 4.1 GHz Zen 5（`-O3 -flto`）: [8.97](./data/int2017_rate1/AMD_EPYC_9755_O3-flto_001.txt)
 - AMD EPYC 9K65 @ 3.7 GHz Zen 5c（`-O3 -flto`）: [7.78](./data/int2017_rate1/AMD_EPYC_9K65_O3-flto_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3 -flto`）: [6.62](./data/int2017_rate1/AMD_EPYC_9R14_O3-flto_001.txt)
