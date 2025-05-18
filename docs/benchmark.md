@@ -1078,6 +1078,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
       - 在 AWS c7a.xlarge 实例上测试 AMD EPYC 9R14 的性能
       - 测试 Apple M1 的性能
       - 在腾讯云 sa9.large8 实例上测试 AMD EPYC 9K65 的性能
+      - 在腾讯云 sa5.large8 实例上测试 AMD EPYC 9754 的性能
 - 2025.05.15:
       - 测试 AMD EPYC 9755 的性能
       - 在华为云 kc2.large.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
