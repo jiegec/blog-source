@@ -1028,18 +1028,18 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 参与测试的机型如下，除了括号中表明为云服务虚拟机的，其他都是物理机：
 
-- AMD EPYC 7551: Zen 1
-- AMD EPYC 7742: Zen 2
-- AMD EPYC 7H12: Zen 2
-- AMD EPYC 7K83(TencentCloud sa3.medium4, 2C 4G): Zen 2, w/o PMU
-- AMD EPYC 9754(TencentCloud sa5.medium2, 2C 2G): Zen 4
-- AMD EPYC 9755: Zen 5
-- AMD EPYC 9K65(TencentCloud sa9.large8, 4C 8G): Zen 5c
-- AMD EPYC 9R14(AWS c7a.xlarge, 4C 8G): Zen 4
-- AMD EPYC 9T24(Aliyun g8a.large, 2C 8G): Zen 4
-- AMD Ryzen 5 7500F: Zen 4
-- AMD Ryzen 7 5700X: Zen 3
-- AMD Ryzen 9 9950X: Zen 5
+- AMD EPYC 7551: Zen 1, Naples
+- AMD EPYC 7742: Zen 2, Rome
+- AMD EPYC 7H12: Zen 2, Rome
+- AMD EPYC 7K83(TencentCloud sa3.medium4, 2C 4G): Zen 3, Milan, w/o PMU
+- AMD EPYC 9754(TencentCloud sa5.medium2, 2C 2G): Zen 4c, Bergamo
+- AMD EPYC 9755: Zen 5, Turin
+- AMD EPYC 9K65(TencentCloud sa9.large8, 4C 8G): Zen 5c, Turin Dense
+- AMD EPYC 9R14(AWS c7a.xlarge, 4C 8G): Zen 4, Genoa
+- AMD EPYC 9T24(Aliyun g8a.large, 2C 8G): Zen 4, Genoa
+- AMD Ryzen 5 7500F: Zen 4, Raphael
+- AMD Ryzen 7 5700X: Zen 3, Vermeer
+- AMD Ryzen 9 9950X: Zen 5, Granite Ridge
 - AWS Gravition 3(AWS c7g.large, 2C 4G): Neoverse V1
 - AWS Gravition 3E(AWS c7gn.medium, 1C 2G): Neoverse V1
 - AWS Gravition 4(AWS c8g.large, 2C 4G): Neoverse V2
