@@ -1025,9 +1025,10 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - AMD EPYC 7551: Zen 1
 - AMD EPYC 7742: Zen 2
 - AMD EPYC 7H12: Zen 2
-- AMD EPYC 7K83(TencentCloud sa3.medium4, 2C 4G): Zen 2
+- AMD EPYC 7K83(TencentCloud sa3.medium4, 2C 4G): Zen 2, w/o PMU
 - AMD EPYC 9754(TencentCloud sa5.medium2, 2C 2G): Zen 4
 - AMD EPYC 9755: Zen 5
+- AMD EPYC 9K65(TencentCloud sa9.large8, 4C 8G): Zen 5c
 - AMD EPYC 9R14(AWS c7a.xlarge, 4C 8G): Zen 4
 - AMD EPYC 9T24(Aliyun g8a.large, 2C 8G): Zen 4
 - AMD Ryzen 5 7500F: Zen 4
@@ -1039,7 +1040,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Ampere Altra(Aliyun c6r.large, 2C 4G): Neoverse N1
 - Apple M1: Firestorm + Icestorm
 - Huawei Kirin 9010
-- Hygon C86 7390(Aliyun g7h.large, 2C 8G)
+- Hygon C86 7390(Aliyun g7h.large, 2C 8G): w/o PMU
 - IBM POWER8NVL
 - Intel Core i9-10980XE: Cascade Lake
 - Intel Core i9-12900KS: Golden Cove + Gracemont, Alder Lake
@@ -1051,7 +1052,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Intel Xeon E5-2680 v4: Broadwell
 - Intel Xeon E5-4610 v2: Ivy Bridge EP
 - Intel Xeon Platinum 8358P: Sunny Cove, Ice Lake
-- Intel Xeon Platinum 8576C(TencentCloud s8.medium8, 2C 8G): Raptor Cove, Emerald Rapids
+- Intel Xeon Platinum 8576C(TencentCloud s8.medium8, 2C 8G): Raptor Cove, Emerald Rapids, w/o PMU
 - Intel Xeon Platinum 8581C(GCP c4-standard-2, 2C 7G): Raptor Cove, Emerald Rapids
 - Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.2, 4C 8G)
 - Kunpeng 920: TaiShan V110
@@ -1068,6 +1069,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
       - 在华为云 kc2.xlarge.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
       - 在 AWS c7a.xlarge 实例上测试 AMD EPYC 9R14 的性能
       - 测试 Apple M1 的性能
+      - 在腾讯云 sa9.large8 实例上测试 AMD EPYC 9K65 的性能
 - 2025.05.15:
       - 测试 AMD EPYC 9755 的性能
       - 在华为云 kc2.large.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
