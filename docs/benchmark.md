@@ -140,6 +140,7 @@ permalink: /benchmark/
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3 -flto`）: [5.48](./data/int2017_rate1/AMD_EPYC_9754_O3-flto_001.txt)
 - AMD EPYC 9755 @ 4.1 GHz Zen 5（`-O3 -flto`）: [8.97](./data/int2017_rate1/AMD_EPYC_9755_O3-flto_001.txt)
 - AMD EPYC 9K65 @ 3.7 GHz Zen 5c（`-O3 -flto`）: [7.78](./data/int2017_rate1/AMD_EPYC_9K65_O3-flto_001.txt)
+- AMD EPYC 9K85 @ 4.1 GHz Zen 5（`-O3 -flto`）: [8.83](./data/int2017_rate1/AMD_EPYC_9K85_O3-flto_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3 -flto`）: [6.62](./data/int2017_rate1/AMD_EPYC_9R14_O3-flto_001.txt)
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto`）: [7.19](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3 -flto`）: [5.68](./data/int2017_rate1/AWS_Graviton_3_O3-flto_001.txt)
