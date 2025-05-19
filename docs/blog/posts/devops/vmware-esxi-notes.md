@@ -153,3 +153,58 @@ vmkfstool -i "old.vmdk" -d thin "new.vmdk"
 2. 修改 `/etc/vmware/appliance/firewall.conf` 后运行 `/usr/lib/applmgmt/networking/bin/firewall-reload` 以修改防火墙配置
 
 参考：[How to change/update DNS Server IP address for vCenter Server](https://knowledge.broadcom.com/external/article/375247/how-to-changeupdate-dns-server-ip-addres.html) [Adding firewall rules to VCSA without web client? (self.vmware)](https://www.reddit.com/r/vmware/comments/9fjclx/adding_firewall_rules_to_vcsa_without_web_client/)
+
+## 导出 ESXi 虚拟机到 OVF
+
+使用 ovftool 导出 ESXi 上的虚拟机到本地的 OVF 文件：
+
+```shell
+ovftool vi://$HOSTNAME/$VMNAME $PWD
+```
+
+## 导入 OVF 到 ESXi
+
+使用 ovftool 把本地的 OVF 导入到 ESXi：
+
+```shell
+ovftool ./xxx/xxx.ovf vi://$HOSTNAME/
+```
+
+特别地，如果目标 ESXi 被 vCenter 管理：
+
+```shell
+ovftool ./xxx/xxx.ovf vi://$VCENTER_HOSTNAME/$CLUSTER/host/$HOSTNAME
+```
+
+给 ovftool 传递的额外参数：
+
+- `-dm=thin`: Thin Provisioning
+- `--net:"OLD NAME"="NEW NAME"`: 对网络名字进行映射，比如原来的虚拟机用 `OLD NAME`，在现在的 ESXi 上叫 `NEW NAME`
+- `-ds=DATASTORE_NAME`：设置保存到哪个 datastore 内
+
+## 把物理机的硬盘导出为 VMDK
+
+如果物理机的硬盘正在用（比如是保存 rootfs 的硬盘），建议重启到 Live CD（可以通过 BMC 挂着 Virtual Media），小心 Live CD 有没有网卡驱动和网卡固件。
+
+本地导出：
+
+```shell
+# -p: progress
+# -O vmdk: output as vmdk
+# -o subformat=streamOptimized: thin provisioning
+# output file should be put in places other that /dev/sda
+qemu-img convert -p -O vmdk -o subformat=streamOptimized /dev/sda xxx.vmdk
+```
+
+远程导出：
+
+```shell
+# on the source machine
+# expose raw /dev/sda as network block device
+qemu-nbd -f raw /dev/sda
+# on the destination machine
+# -p: progress
+# -O vmdk: output as vmdk
+# -o subformat=streamOptimized: thin provisioning
+qemu-img convert -p -O vmdk -o subformat=streamOptimized nbd://$SOURCE_IP xxx.vmdk
+```
