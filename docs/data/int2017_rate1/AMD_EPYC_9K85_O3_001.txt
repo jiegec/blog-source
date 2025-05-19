@@ -1,0 +1,130 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.12.22+bpo-amd64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1      160         9.96  S
+500.perlbench_r       1      162         9.86  S
+500.perlbench_r       1      161         9.89  *
+502.gcc_r             1      135        10.5   S
+502.gcc_r             1      137        10.3   S
+502.gcc_r             1      137        10.3   *
+505.mcf_r             1      221         7.30  S
+505.mcf_r             1      222         7.28  *
+505.mcf_r             1      224         7.21  S
+520.omnetpp_r         1      217         6.05  S
+520.omnetpp_r         1      223         5.90  *
+520.omnetpp_r         1      226         5.81  S
+523.xalancbmk_r       1      133         7.93  S
+523.xalancbmk_r       1      135         7.85  *
+523.xalancbmk_r       1      135         7.83  S
+525.x264_r            1      125        14.0   *
+525.x264_r            1      126        13.9   S
+525.x264_r            1      125        14.0   S
+531.deepsjeng_r       1      214         5.36  S
+531.deepsjeng_r       1      215         5.34  S
+531.deepsjeng_r       1      214         5.36  *
+541.leela_r           1      296         5.59  *
+541.leela_r           1      298         5.56  S
+541.leela_r           1      294         5.64  S
+548.exchange2_r       1       96.6      27.1   S
+548.exchange2_r       1       96.1      27.3   *
+548.exchange2_r       1       95.7      27.4   S
+557.xz_r              1      230         4.70  *
+557.xz_r              1      230         4.70  S
+557.xz_r              1      230         4.69  S
+=================================================================================
+500.perlbench_r       1      161         9.89  *
+502.gcc_r             1      137        10.3   *
+505.mcf_r             1      222         7.28  *
+520.omnetpp_r         1      223         5.90  *
+523.xalancbmk_r       1      135         7.85  *
+525.x264_r            1      125        14.0   *
+531.deepsjeng_r       1      214         5.36  *
+541.leela_r           1      296         5.59  *
+548.exchange2_r       1       96.1      27.3   *
+557.xz_r              1      230         4.70  *
+ Est. SPECrate(R)2017_int_base           8.44
+ Est. SPECrate(R)2017_int_peak                                         Not Run
+
+500.perlbench_r: time (ms) = 160631
+500.perlbench_r: clock freq (MHz) = 4123.3541
+500.perlbench_r: instructions = 2.65885e+12
+500.perlbench_r: branch instructions = 5.22209e+11
+500.perlbench_r: ipc = 4.0143
+500.perlbench_r: misprediction rate (%) = 0.4835
+500.perlbench_r: mpki = 0.9497
+502.gcc_r: time (ms) = 136290
+502.gcc_r: clock freq (MHz) = 4115.0918
+502.gcc_r: instructions = 1.07894e+12
+502.gcc_r: branch instructions = 2.46272e+11
+502.gcc_r: ipc = 1.9238
+502.gcc_r: misprediction rate (%) = 1.3311
+502.gcc_r: mpki = 3.0383
+505.mcf_r: time (ms) = 222434
+505.mcf_r: clock freq (MHz) = 4122.2287
+505.mcf_r: instructions = 9.9768e+11
+505.mcf_r: branch instructions = 2.21263e+11
+505.mcf_r: ipc = 1.0881
+505.mcf_r: misprediction rate (%) = 5.9587
+505.mcf_r: mpki = 13.2151
+520.omnetpp_r: time (ms) = 221655
+520.omnetpp_r: clock freq (MHz) = 4121.3077
+520.omnetpp_r: instructions = 1.03134e+12
+520.omnetpp_r: branch instructions = 2.18573e+11
+520.omnetpp_r: ipc = 1.1290
+520.omnetpp_r: misprediction rate (%) = 2.1122
+520.omnetpp_r: mpki = 4.4764
+523.xalancbmk_r: time (ms) = 134118
+523.xalancbmk_r: clock freq (MHz) = 4124.0256
+523.xalancbmk_r: instructions = 1.03639e+12
+523.xalancbmk_r: branch instructions = 3.27338e+11
+523.xalancbmk_r: ipc = 1.8738
+523.xalancbmk_r: misprediction rate (%) = 0.2601
+523.xalancbmk_r: mpki = 0.8214
+525.x264_r: time (ms) = 125407
+525.x264_r: clock freq (MHz) = 4124.2245
+525.x264_r: instructions = 1.92855e+12
+525.x264_r: branch instructions = 1.06655e+11
+525.x264_r: ipc = 3.7288
+525.x264_r: misprediction rate (%) = 1.3225
+525.x264_r: mpki = 0.7314
+531.deepsjeng_r: time (ms) = 214132
+531.deepsjeng_r: clock freq (MHz) = 4126.3071
+531.deepsjeng_r: instructions = 1.97254e+12
+531.deepsjeng_r: branch instructions = 2.74223e+11
+531.deepsjeng_r: ipc = 2.2325
+531.deepsjeng_r: misprediction rate (%) = 2.9004
+531.deepsjeng_r: mpki = 4.0321
+541.leela_r: time (ms) = 295834
+541.leela_r: clock freq (MHz) = 4125.6076
+541.leela_r: instructions = 2.07453e+12
+541.leela_r: branch instructions = 3.38428e+11
+541.leela_r: ipc = 1.6998
+541.leela_r: misprediction rate (%) = 6.7258
+541.leela_r: mpki = 10.9721
+548.exchange2_r: time (ms) = 96098
+548.exchange2_r: clock freq (MHz) = 4126.2346
+548.exchange2_r: instructions = 1.73877e+12
+548.exchange2_r: branch instructions = 3.01909e+11
+548.exchange2_r: ipc = 4.3851
+548.exchange2_r: misprediction rate (%) = 1.1031
+548.exchange2_r: mpki = 1.9153
+557.xz_r: time (ms) = 229796
+557.xz_r: clock freq (MHz) = 4124.0198
+557.xz_r: instructions = 2.05511e+12
+557.xz_r: branch instructions = 3.14551e+11
+557.xz_r: ipc = 2.1686
+557.xz_r: misprediction rate (%) = 3.1813
+557.xz_r: mpki = 4.8692
+all: time (ms) = 1.83639e+06
+all: clock freq (MHz) = 4123.4075
+all: instructions = 1.65727e+13
+all: branch instructions = 2.87142e+12
+
+System Info:
+CPU Name: AMD EPYC 9K85
+Enabled: 2 cores, 1 chip, 2 threads/core
+Memory: 1x Red Hat Not Specified 8 GB
