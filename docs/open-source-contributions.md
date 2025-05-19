@@ -17,6 +17,7 @@ permalink: /open-source-contributions/
 - [NixOS/nixpkgs](https://github.com/nixos/nixpkgs)
 - [canokeys](https://github.com/canokeys)
 - [nfcim](https://github.com/nfcim)
+- [AOSC-Dev](https://github.com/AOSC-Dev)
 
 ## aosc-os-abbs
 
@@ -35,6 +36,12 @@ permalink: /open-source-contributions/
 - [as: Add new estimated reciprocal instructions in LoongArch v1.1](https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=cd51849c90e8fd13779bec69f5d4c7aadf03a532)
 - [as: Add new atomic instructions in LoongArch v1.1](https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=9ff4752d0f6d46ca0f7d275ea07e05790ac8dd1d)
 
+## capstone
+
+- [Add LoongArch support](https://github.com/capstone-engine/llvm-capstone/pull/47)
+- [Initial auto-sync LoongArch support](https://github.com/capstone-engine/capstone/pull/2349)
+- [Drop MatchByTypeName check in opIsPartOfiPTRPattern](https://github.com/capstone-engine/llvm-capstone/pull/79)
+
 ## cargo
 
 - [Don't create hardlink for library test and integrations tests, fixing #7960](https://github.com/rust-lang/cargo/pull/7965)
@@ -44,6 +51,14 @@ permalink: /open-source-contributions/
 - [Fix VCS simulation binary path](https://github.com/ucb-bar/chiseltest/pull/430)
 - [Fix issue #428: add blackbox sources to argument of icarus-verilog and vcs](https://github.com/ucb-bar/chiseltest/pull/429)
 - [Fix VcsFlags not properly passed to vcs backend](https://github.com/ucb-bar/chiseltest/pull/426)
+
+## delve
+
+- [proc: use CPUID to determine ZMM_Hi256 region offset](https://github.com/go-delve/delve/pull/3831)
+
+## DynamoRIO
+
+- [i#2297: AARCH64: Implement mbr & cbr instrumentation](https://github.com/DynamoRIO/dynamorio/pull/7005)
 
 ## emacs
 
