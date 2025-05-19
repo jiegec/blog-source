@@ -226,7 +226,7 @@ permalink: /benchmark/
 
 x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
-1. Zen 5(AMD 9950X/AMD 9755): MPKI=4.48 Mispred=2.52%
+1. Zen 5(AMD 9950X/AMD 9755/AMD 9K85): MPKI=4.48 Mispred=2.52%
 2. Zen 5c(AMD 9K65): MPKI=4.51 Mispred=2.54%
 3. Zen 4(AMD 9T24/9R14): MPKI=4.57 Mispred=2.57%
 4. Zen 4c(AMD 9754): MPKI=4.66 Mispred=2.63%
@@ -243,7 +243,7 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 
 1. Zen 5(AMD 9950X/AMD 9755): MPKI=5.35 Mispred=3.07%
-2. Zen 5c(AMD 9K65): MPKI=5.42 Mispred=3.10%
+2. Zen 5c(AMD 9K65)/Zen 5(AMD 9K85): MPKI=5.42 Mispred=3.10%
 3. Zen 2(AMD 7742): MPKI=5.52 Mispred=3.17%
 4. Zen 3(AMD 5700X): MPKI=5.55 Mispred=3.19%
 5. Zen 4(AMD 9T24/AMD 9R14): MPKI=5.57 Mispred=3.19%
@@ -494,6 +494,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD EPYC 9754 @ 3.1 GHz Zen 4c（`-O3`）: [7.64](./data/fp2017_rate1/AMD_EPYC_9754_O3_001.txt)
 - AMD EPYC 9755 @ 4.1 GHz Zen 5（`-O3`）: [13.2](./data/fp2017_rate1/AMD_EPYC_9755_O3_001.txt)
 - AMD EPYC 9K65 @ 3.7 GHz Zen 5c（`-O3`）: [11.7](./data/fp2017_rate1/AMD_EPYC_9K65_O3_001.txt)
+- AMD EPYC 9K85 @ 4.1 GHz Zen 5（`-O3`）: [13.0](./data/fp2017_rate1/AMD_EPYC_9K85_O3_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [9.26](./data/fp2017_rate1/AMD_EPYC_9R14_O3_001.txt)
 - AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [9.14](./data/fp2017_rate1/AMD_EPYC_9T24_O3_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3`）: [7.80](./data/fp2017_rate1/AWS_Graviton_3_O3_001.txt)
