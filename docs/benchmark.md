@@ -1042,6 +1042,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - AMD EPYC 9754(TencentCloud sa5.medium2, 2C 2G): Zen 4c, Bergamo
 - AMD EPYC 9755: Zen 5, Turin
 - AMD EPYC 9K65(TencentCloud sa9.large8, 4C 8G): Zen 5c, Turin Dense
+- AMD EPYC 9K85(TencentCloud sa9e.large8, 4C 8G): Zen 5, Turin
 - AMD EPYC 9R14(AWS c7a.xlarge, 4C 8G): Zen 4, Genoa
 - AMD EPYC 9T24(Aliyun g8a.large, 2C 8G): Zen 4, Genoa
 - AMD Ryzen 5 7500F: Zen 4, Raphael
@@ -1084,6 +1085,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
       - 测试 Apple M1 的性能
       - 在腾讯云 sa9.large8 实例上测试 AMD EPYC 9K65 的性能
       - 在腾讯云 sa5.large8 实例上测试 AMD EPYC 9754 的性能
+      - 在腾讯云 sa9e.large8 实例上测试 AMD EPYC 9K85 的性能
 - 2025.05.15:
       - 测试 AMD EPYC 9755 的性能
       - 在华为云 kc2.large.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
