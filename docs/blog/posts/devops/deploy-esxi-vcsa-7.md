@@ -25,7 +25,7 @@ categories:
 sudo mount /dev/sr0 /mnt
 ```
 
-接着，复制并修改 `/mnt/vcsa-cli-installer/templates/install/embedded_vCSA_on_ESi.json`，按照代码注释进行修改。需要注意几点：
+接着，复制并修改 `/mnt/vcsa-cli-installer/templates/install/embedded_vCSA_on_ESXi.json`，按照代码注释进行修改。需要注意几点：
 
 1. 密码都可以设为空，然后运行 cli 的时候输入
 2. ESXi 的密码和 vCSA 的密码是不一样的
