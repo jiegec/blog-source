@@ -38,6 +38,6 @@ categories:
 
 ## 非 LACP 的链路聚合
 
-如果想要链路聚合，但是又不想用 Virtual Distributed Switch，可以在交换机上配置 Static Link Aggregation，然后在 ESXi 上添加多个 Uplink，配置 NIC teaming 为 `Route based on IP hash` 模式即可。
+如果想要链路聚合，但是又不想用 Virtual Distributed Switch，可以在交换机上配置 Static Link Aggregation，然后在 ESXi 上添加多个 Uplink，配置 NIC teaming 为 `Route based on IP hash` 模式即可。但这样只有到 3 层的 hash，不支持到 4 层的 hash，那么只用一个 IP 就没法享受所有链路聚合后的带宽。
 
 参考：[NIC teaming in ESXi and ESX](https://kb.vmware.com/s/article/1004088)
