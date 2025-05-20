@@ -172,6 +172,7 @@ permalink: /benchmark/
 - Hygon C86 7390（`-O3`）: [2.97](./data/int2017_rate1/Hygon_C86_7390_O3_001.txt)
 - IBM POWER8NVL @ 4.0 GHz POWER8（`-O3`）: [3.54](./data/int2017_rate1/IBM_POWER8NVL_O3_001.txt)
 - Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3`）: [6.38](./data/int2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
+- Intel Xeon 6981E Crestmont（`-O3`）: [4.48](./data/int2017_rate1/Intel_Xeon_6981E_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [3.96](./data/int2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
 - Intel Xeon E5-2603 v4 @ 1.7 GHz Broadwell（`-O3`）: [2.48](./data/int2017_rate1/Intel_Xeon_E5-2603_v4_O3_001.txt)
 - Intel Xeon E5-2680 v3 @ 3.0 GHz Haswell（`-O3`）: [4.01](./data/int2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
