@@ -147,6 +147,7 @@ permalink: /benchmark/
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3 -flto`）: [5.68](./data/int2017_rate1/AWS_Graviton_3_O3-flto_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto`）: [7.14](./data/int2017_rate1/AWS_Graviton_4_O3-flto_001.txt) [6.53](./data/int2017_rate1/AWS_Graviton_4_O3-flto_002.txt) [6.51](./data/int2017_rate1/AWS_Graviton_4_O3-flto_003.txt)
 - Hygon C86 7390（`-O3 -flto`）: [3.09](./data/int2017_rate1/Hygon_C86_7390_O3-flto_001.txt)
+- Intel Xeon 6981E Crestmont（`-O3 -flto`）: [4.62](./data/int2017_rate1/Intel_Xeon_6981E_O3-flto_001.txt)
 - Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3 -flto`）: [6.60](./data/int2017_rate1/Intel_Xeon_6982P-C_O3-flto_001.txt)
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto`）: [6.67](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.26](./data/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
