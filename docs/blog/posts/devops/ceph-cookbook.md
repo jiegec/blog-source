@@ -432,7 +432,7 @@ mount -t ceph abc@<fsid>.xxx=/ -o mon_addr=x.x.x.x:6789,secret=REDACTED MOUNTPOI
 #or
 mount -t ceph abc@.xxx=/ -o mon_addr=x.x.x.x:6789/y.y.y.y:6789,secretfile=/etc/ceph/xxx.secret MOUNTPOINT
 # or
-mount -t ceph -o name=client.abc,secret=REDACTED,mds_namespace=xxx MON_IP:/ MOUNTPOINT
+mount -t ceph -o name=abc,secret=REDACTED,mds_namespace=xxx MON_IP:/ MOUNTPOINT
 ```
 
 以用户 `client.abc` 的身份登录，挂载 CepFS `xxx` 下面的 `/` 目录到 `MOUNTPOINT`。它会读取 `/etc/ceph` 下面的配置，如果已经 `ceph.conf` 写了，命令行里就可以不写。
@@ -489,6 +489,18 @@ ceph nfs export create cephfs --cluster-id xxx --pseudo-path /a/b/c --fsname som
 
 ```shell
 mount -t nfs x.x.x.x:/a/b/c /mnt
+```
+
+### 列出所有 CephFS
+
+```shell
+ceph fs ls
+```
+
+### 获取 CephFS Volume 信息
+
+```shell
+ceph fs volume info FSNAME
 ```
 
 ## RadosGW
