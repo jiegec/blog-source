@@ -30,6 +30,7 @@ sudo mount /dev/sr0 /mnt
 1. 密码都可以设为空，然后运行 cli 的时候输入
 2. ESXi 的密码和 vCSA 的密码是不一样的
 3. 可以把 ceip 关掉，设置 ceip_enabled: false
+4. 配的域名可以解析到正确的 IP
 
 接着，进行安装：
 
@@ -37,6 +38,6 @@ sudo mount /dev/sr0 /mnt
 /mnt/vcsa-cli-installer/lin64/vcsa-deploy install --accept-eula /path/to/customized.json -v
 ```
 
-慢慢等待它安装成功即可。
+慢慢等待它安装成功即可。做好心理准备：这个过程很漫长，而且可能出各种错误，需要去修复。
 
 安装完成后，进入 vCSA，新建一个 Datacenter，然后选择新建的 Datacenter，选择 Add host，输入 ESXi 的地址和用户密码信息即可。
