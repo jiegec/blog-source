@@ -1,0 +1,56 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3 -flto -ljemalloc
+Running on Linux kernel 6.12.22+bpo-amd64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1        355       4.48  S
+500.perlbench_r       1        357       4.46  S
+500.perlbench_r       1        355       4.48  *
+502.gcc_r             1        259       5.46  S
+502.gcc_r             1        260       5.44  S
+502.gcc_r             1        260       5.44  *
+505.mcf_r             1        352       4.59  S
+505.mcf_r             1        346       4.67  S
+505.mcf_r             1        350       4.62  *
+520.omnetpp_r         1        298       4.40  S
+520.omnetpp_r         1        295       4.45  S
+520.omnetpp_r         1        297       4.42  *
+523.xalancbmk_r       1        242       4.36  S
+523.xalancbmk_r       1        243       4.35  *
+523.xalancbmk_r       1        243       4.35  S
+525.x264_r            1        246       7.11  *
+525.x264_r            1        246       7.10  S
+525.x264_r            1        246       7.11  S
+531.deepsjeng_r       1        309       3.71  S
+531.deepsjeng_r       1        309       3.71  S
+531.deepsjeng_r       1        309       3.71  *
+541.leela_r           1        486       3.41  *
+541.leela_r           1        485       3.41  S
+541.leela_r           1        486       3.41  S
+548.exchange2_r       1        213      12.3   *
+548.exchange2_r       1        213      12.3   S
+548.exchange2_r       1        214      12.3   S
+557.xz_r              1        406       2.66  S
+557.xz_r              1        406       2.66  *
+557.xz_r              1        405       2.66  S
+=================================================================================
+500.perlbench_r       1        355       4.48  *
+502.gcc_r             1        260       5.44  *
+505.mcf_r             1        350       4.62  *
+520.omnetpp_r         1        297       4.42  *
+523.xalancbmk_r       1        243       4.35  *
+525.x264_r            1        246       7.11  *
+531.deepsjeng_r       1        309       3.71  *
+541.leela_r           1        486       3.41  *
+548.exchange2_r       1        213      12.3   *
+557.xz_r              1        406       2.66  *
+ Est. SPECrate(R)2017_int_base           4.79
+ Est. SPECrate(R)2017_int_peak                                         Not Run
+
+
+System Info:
+CPU Name: Intel Xeon 6981E
+Enabled: 4 cores, 1 chip
+Memory: 1x Red Hat Not Specified 8 GB
