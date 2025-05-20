@@ -248,6 +248,12 @@ ceph osd pool stats
 ceph osd mksnap xxx snap-xxx-123
 ```
 
+删除 Pool：
+
+```shell
+ceph osd pool rm POOL POOL --yes-i-really-really-mean-it
+```
+
 ### PG
 
 PG 是数据存放的组，每个对象都会放到一个 PG 里面，而 PG 会决定它保存到哪些 OSD 上（具体哪些 OSD 是由 CRUSH 决定的）。PG 数量只有一个的话，那么一个 pool 的所有数据都会存放在某几个 OSD 中，一旦这几个 OSD 都不工作了，那么整个 pool 的数据都不能访问了。PG 增多了以后，就会分布到不同的 OSD 上，并且各个 OSD 的占用也会比较均匀。
@@ -507,7 +513,17 @@ ceph fs volume info FSNAME
 
 RGW 提供了 S3 或者 OpenStack Swift 兼容的对象存储 API。
 
-TODO
+列出所有 Bucket：
+
+```shell
+radosgw-admin bucket list
+```
+
+获取所有 Bucket 的统计信息：
+
+```shell
+radosgw-admin bucket stats
+```
 
 ## 编排器
 
