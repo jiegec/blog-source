@@ -1044,7 +1044,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - AMD EPYC 7742: Zen 2, Rome
 - AMD EPYC 7H12: Zen 2, Rome
 - AMD EPYC 7K83(TencentCloud sa3.medium4, 2C 4G): Zen 3, Milan, w/o PMU
-- AMD EPYC 9754(TencentCloud sa5.medium2, 2C 2G): Zen 4c, Bergamo
+- AMD EPYC 9754(TencentCloud sa5.large8, 4C 8G): Zen 4c, Bergamo
 - AMD EPYC 9755: Zen 5, Turin
 - AMD EPYC 9K65(TencentCloud sa9.large8, 4C 8G): Zen 5c, Turin Dense
 - AMD EPYC 9K85(TencentCloud sa9e.large8, 4C 8G): Zen 5, Turin
