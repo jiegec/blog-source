@@ -1,0 +1,68 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3 -march=native
+Running on Linux kernel 6.12.22+bpo-amd64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        510      19.7   *
+503.bwaves_r          1        510      19.7   S
+503.bwaves_r          1        509      19.7   S
+507.cactuBSSN_r       1        274       4.62  *
+507.cactuBSSN_r       1        274       4.62  S
+507.cactuBSSN_r       1        274       4.62  S
+508.namd_r            1        289       3.29  S
+508.namd_r            1        287       3.31  S
+508.namd_r            1        287       3.31  *
+510.parest_r          1        649       4.03  S
+510.parest_r          1        650       4.02  S
+510.parest_r          1        649       4.03  *
+511.povray_r          1        455       5.13  *
+511.povray_r          1        448       5.21  S
+511.povray_r          1        457       5.11  S
+519.lbm_r             1        281       3.75  S
+519.lbm_r             1        281       3.75  S
+519.lbm_r             1        281       3.75  *
+521.wrf_r             1        914       2.45  S
+521.wrf_r             1        915       2.45  S
+521.wrf_r             1        915       2.45  *
+526.blender_r         1        343       4.44  *
+526.blender_r         1        344       4.43  S
+526.blender_r         1        342       4.45  S
+527.cam4_r            1        328       5.34  S
+527.cam4_r            1        329       5.32  S
+527.cam4_r            1        328       5.33  *
+538.imagick_r         1        906       2.74  S
+538.imagick_r         1        906       2.75  *
+538.imagick_r         1        904       2.75  S
+544.nab_r             1        382       4.40  S
+544.nab_r             1        383       4.40  *
+544.nab_r             1        383       4.39  S
+549.fotonik3d_r       1        418       9.32  *
+549.fotonik3d_r       1        418       9.32  S
+549.fotonik3d_r       1        418       9.31  S
+554.roms_r            1        366       4.34  S
+554.roms_r            1        366       4.34  *
+554.roms_r            1        367       4.33  S
+=================================================================================
+503.bwaves_r          1        510      19.7   *
+507.cactuBSSN_r       1        274       4.62  *
+508.namd_r            1        287       3.31  *
+510.parest_r          1        649       4.03  *
+511.povray_r          1        455       5.13  *
+519.lbm_r             1        281       3.75  *
+521.wrf_r             1        915       2.45  *
+526.blender_r         1        343       4.44  *
+527.cam4_r            1        328       5.33  *
+538.imagick_r         1        906       2.75  *
+544.nab_r             1        383       4.40  *
+549.fotonik3d_r       1        418       9.32  *
+554.roms_r            1        366       4.34  *
+ Est. SPECrate(R)2017_fp_base            4.77
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+
+System Info:
+CPU Name: Intel Xeon 6981E
+Enabled: 4 cores, 1 chip
+Memory: 1x Red Hat Not Specified 8 GB
