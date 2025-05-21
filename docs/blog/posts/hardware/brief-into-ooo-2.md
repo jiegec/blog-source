@@ -217,6 +217,7 @@ there are 2 stores, then each store should forward to either first or second hal
 | [ARM Neoverse V2](./arm-neoverse-v2.md)     | Yes [2]     | Yes [3]     | No          | No          |
 | [Qualcomm Oryon](./qualcomm-oryon.md)       | Yes [4]     | Yes [5]     | No          | No          |
 | [Apple Firestorm](./apple-m1.md)            | Yes         | Yes [6]     | Yes [6]     | Yes [6]     |
+| [Apple M4 P-Core](./apple-m4.md)            | Yes         | Yes         | Yes         | Yes         |
 | [Intel Golden Cove](./intel-golden-cove.md) | Yes [7]     | No          | No          | No          |
 | [Intel Gracemont](./intel-gracemont.md)     | Yes [8]     | No          | No          | No          |
 

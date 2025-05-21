@@ -328,15 +328,89 @@ M4 E-Core:
 
 ##### P-Core
 
+经过实际测试，M4 P-Core 上如下的情况可以成功转发，对地址 x 的 Store 转发到对地址 y 的 Load 成功时 y-x 的取值范围：
+
+| Store\Load | 8b Load | 16b Load | 32b Load | 64b Load |
+|------------|---------|----------|----------|----------|
+| 8b Store   | {0}     | [-1,0]   | [-3,0]   | [-7,0]   |
+| 16b Store  | [0,1]   | [-1,1]   | [-3,1]   | [-7,1]   |
+| 32b Store  | [0,3]   | [-1,3]   | [-3,3]   | [-7,3]   |
+| 64b Store  | [0,7]   | [-1,7]   | [-3,7]   | [-7,7]   |
+
+从上表可以看到，所有 Store 和 Load Overlap 的情况，无论地址偏移，都能成功转发。甚至在 Load 或 Store 跨越 64B 缓存行边界时，也可以成功转发，代价是多一个周期。
+
+一个 Load 需要转发两个、四个甚至八个 Store 的数据时，也可以成功转发。即使数据跨越缓存行，也可以转发，只是多耗费 1-2 个周期。但在跨 64B 缓存行的时候，代价可能多于一个周期。相比 M1 P-Core，M4 P-Core 在跨越缓存行的情况下也可以得到比较好的性能。
+
+成功转发时 7 cycle 左右。
+
+小结：Apple M4 P-Core 的 Store to Load Forwarding：
+
+- 1 ld + 1 st: 支持
+- 1 ld + 2 st: 支持
+- 1 ld + 4 st: 支持
+- 1 ld + 8 st: 支持
+- 跨 64B 缓存行边界时，性能略微下降
+
 ##### E-Core
+
+在 M4 E-Core 上，如果 Load 和 Store 访问范围出现重叠，当需要转发一个到两个 Store 的数据时，需要 7 Cycle，无论是否跨缓存行。如果需要转发四个 Store 的数据，则需要 8 Cycle；转发八个 Store 的数据需要 11 Cycle。相比 M1 E-Core，多数情况下获得了性能提升。
 
 #### Load to use latency
 
 ##### P-Core
 
+实测 M4 P-Core 的 Load to use latency 针对 pointer chasing 场景做了优化，在下列的场景下可以达到 3 cycle:
+
+- `ldr x0, [x0]`: load 结果转发到基地址，无偏移
+- `ldr x0, [x0, 8]`：load 结果转发到基地址，有立即数偏移
+- `ldr x0, [x0, x1]`：load 结果转发到基地址，有寄存器偏移
+- `ldp x0, x1, [x0]`：load pair 的第一个目的寄存器转发到基地址，无偏移
+
+如果访存跨越了 8B 边界，则退化到 4 cycle。
+
+在下列场景下 Load to use latency 则是 4 cycle：
+
+- load 的目的寄存器作为 alu 的源寄存器（下称 load to alu latency）
+- `ldr x0, [sp, x0, lsl #3]`：load 结果转发到 index
+- `ldp x1, x0, [x0]`：load pair 的第二个目的寄存器转发到基地址，无偏移
+
+注意由于 Load Address/Value Predictor 的存在，测试的时候需要排除预测器带来的影响。延迟方面，和 M1 P-Core 相同。
+
 ##### E-Core
 
+实测 M4 E-Core 的 Load to use latency 针对 pointer chasing 场景做了优化，在下列的场景下可以达到 3 cycle:
+
+- `ldr x0, [x0]`: load 结果转发到基地址，无偏移
+- `ldr x0, [x0, 8]`：load 结果转发到基地址，有立即数偏移
+- `ldr x0, [x0, x1]`：load 结果转发到基地址，有寄存器偏移
+- `ldp x0, x1, [x0]`：load pair 的第一个目的寄存器转发到基地址，无偏移
+
+如果访存跨越了 8B/16B/32B 边界，依然是 3 cycle；跨越了 64B 边界则退化到 7 cycle。
+
+在下列场景下 Load to use latency 则是 4 cycle：
+
+- load 的目的寄存器作为 alu 的源寄存器（下称 load to alu latency）
+- `ldr x0, [sp, x0, lsl #3]`：load 结果转发到 index
+- `ldp x1, x0, [x0]`：load pair 的第二个目的寄存器转发到基地址，无偏移
+
+延迟方面，和 M1 E-Core 相同。
+
 #### Virtual Address UTag/Way-Predictor
+
+##### P-Core
+
+##### E-Core
+
+#### Load Address/Value Predictor
+
+Apple 从 M2 开始引入 Load Address Predictor，从 M3 开始引入 Load Value Predictor，相关的信息如下：
+
+- Load Address Predictor：支持 Constant 和 Striding Address 两种模式，专利是 [Early load execution via constant address and stride prediction](https://patents.google.com/patent/US11829763B2/)
+- Load Value Predictor（也称 Load Output Predictor）：只支持 Constant Value，专利是 [Shared learning table for load value prediction and load address prediction](https://patents.google.com/patent/US12067398B1/en)
+
+这两个 Predictor 会对已有的基于 Load 的各种 microbenchmark 带来深刻的影响。
+
+网上已有针对这两个 Predictor 的逆向和攻击：[SLAP: Data Speculation Attacks via Load Address Prediction on Apple Silicon;FLOP Breaking the Apple M3 CPU via False Load Output Predictions](https://predictors.fail/)。
 
 ##### P-Core
 
