@@ -397,9 +397,18 @@ M4 E-Core:
 
 #### Virtual Address UTag/Way-Predictor
 
-##### P-Core
+Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试方法，也可以在 Apple M1 上观察到类似的现象，猜想它也用了类似的基于虚拟地址的 UTag/Way Predictor 方案，并测出来它的 UTag 也有 8 bit，M4 P-Core 和 M4 E-Core 都是相同的：
 
-##### E-Core
+- VA[14] xor VA[22] xor VA[30] xor VA[38] xor VA[46]
+- VA[15] xor VA[23] xor VA[31] xor VA[39] xor VA[47]
+- VA[16] xor VA[24] xor VA[32] xor VA[40]
+- VA[17] xor VA[25] xor VA[33] xor VA[41]
+- VA[18] xor VA[26] xor VA[34] xor VA[42]
+- VA[19] xor VA[27] xor VA[35] xor VA[43]
+- VA[20] xor VA[28] xor VA[36] xor VA[44]
+- VA[21] xor VA[29] xor VA[37] xor VA[45]
+
+一共有 8 bit，由 VA[47:14] 折叠而来。和 Apple M1 相同。
 
 #### Load Address/Value Predictor
 
@@ -415,6 +424,8 @@ Apple 从 M2 开始引入 Load Address Predictor，从 M3 开始引入 Load Valu
 ##### P-Core
 
 ##### E-Core
+
+M4 E-Core 没有实现 Load Address/Value Predictor。
 
 ### 执行单元
 
