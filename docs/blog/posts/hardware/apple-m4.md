@@ -172,7 +172,7 @@ ret
 
 ![](./apple-m4-p-core-itlb.png)
 
-第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 12 Cycle，则对应了 192 项的 L1 ITLB 容量。
+第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 12 Cycle，则对应了 192 项的 L1 ITLB 容量。这和 M1 是一样的。
 
 #### E-Core
 
@@ -180,19 +180,29 @@ ret
 
 ![](./apple-m1-icestorm-itlb.png)
 
-第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 10 Cycle，则对应了 192 项的 L1 ITLB 容量。
+第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 10 Cycle，则对应了 192 项的 L1 ITLB 容量。相比 M1 的 128 项，容量变大了，和 M4 P-Core 看齐。
 
 ### Decode
 
-#### P-Core
-
-#### E-Core
+从前面的测试来看，M4 P-Core 最大观察到 10 IPC，M4 E-Core 最大观察到 5 IPC，那么 Decode 宽度也至少是这么多，暂时也不能排除有更大的 Decode 宽度。相比 M1 的 P-Core 8 IPC，E-Core 4 IPC 都有拓宽。
 
 ### Return Stack
 
 #### P-Core
 
+构造不同深度的调用链，测试每次调用花费的平均时间，在 M4 P-Core 上得到下面的图：
+
+![](./apple-m4-p-core-rs.png)
+
+可以看到调用链深度为 60 时性能突然变差，因此 M4 P-Core 的 Return Stack 深度为 60，比 M1 P-Core 的 50 要更大。这里测试的两个 Variant，对应的是 Return 的目的地址不变还是会变化。
+
 #### E-Core
+
+在 M4 E-Core 上测试：
+
+![](./apple-m4-e-core-rs.png)
+
+可以看到调用链深度为 40 时性能突然变差，因此 M4 E-Core 的 Return Stack 深度为 40，比 M1 E-Core 的 32 要更大。
 
 ### Conditional Branch Predictor
 
