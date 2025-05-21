@@ -116,6 +116,7 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 |---------------|------|-------|------|--------|-------------------------------------------|
 | Granite Ridge | 桌面   | RDNA2 | AM5  | Zen 5  | 9950X(3D)/9900X(3D)/9800X3D/9700X/9600(X) |
 | Fire Range    | 笔记本 | RDNA2 | FL1  | Zen 5  | 9955HX(3D)/9850HX                         |
+| Shimada Peak  | 工作站 |       | sTR5 | Zen 5  | 9995WX/9985WX/9975WX/9965WX/9955WX/9945WX |
 
 ### AI
 
@@ -183,6 +184,7 @@ Ryzen Z2 系列：
 - Krackan Point: [AMD Unveils Krackan Point “Ryzen 300” & Hawk Point Refresh “Ryzen 200” APUs: Up To 78% Better Performance Over Lunar Lake](https://wccftech.com/amd-unveils-krackan-point-and-hawk-point-refresh-lineups/)
 - Strix Halo: [AMD’s beastly ‘Strix Halo’ Ryzen AI Max+ debuts with radical new memory tech to feed RDNA 3.5 graphics and Zen 5 CPU cores](https://www.tomshardware.com/pc-components/cpus/amds-beastly-strix-halo-ryzen-ai-max-debuts-with-radical-new-memory-tech-to-feed-rdna-3-5-graphics-and-zen-5-cpu-cores)
 - Ryzen Z2: [AMD introduces Ryzen Z2 Series](https://videocardz.com/newz/amd-introduces-ryzen-z2-series-confirms-valve-steam-deck-update)
+- Shimada Peak: [AMD Ryzen Threadripper 9000 “Zen 5” CPUs Official: Up To 96 Cores, 5.4 GHz Clocks, 384 MB L3 In DIY & Workstation Flavors](https://wccftech.com/amd-ryzen-threadripper-9000-zen-5-cpus-official-up-to-96-cores-384-mb-l3-diy-workstation/)
 
 
 ## EPYC 系列
