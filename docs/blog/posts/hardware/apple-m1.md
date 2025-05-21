@@ -47,7 +47,7 @@ Apple M1 预装的是 macOS，macOS 的绑核只能绑到 P 或者 E，不能具
 
 ## 前端
 
-### 取指
+### 取指带宽
 
 #### Firestorm
 
