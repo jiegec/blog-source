@@ -278,7 +278,24 @@ M4 E-Core 测试结果:
 
 ##### P-Core
 
+针对 Load Store 带宽，实测 M4 P-Core 每个周期可以完成：
+
+- 3x 128b Load + 1x 128b Store
+- 2x 128b Load + 2x 128b Store
+- 1x 128b Load + 2x 128b Store
+- 2x 128b Store
+
+如果把每条指令的访存位宽从 128b 改成 256b，读写带宽不变，指令吞吐减半。也就是说最大的读带宽是 48B/cyc，最大的写带宽是 32B/cyc，二者不能同时达到。和 M1 P-Core 相同。
+
 ##### E-Core
+
+实测 M4 E-Core 每个周期可以完成：
+
+- 2x 128b Load
+- 1x 128b Load + 1x 128b Store
+- 1x 128b Store
+
+如果把每条指令的访存位宽从 128b 改成 256b，读写带宽不变，指令吞吐减半。也就是说最大的读带宽是 32B/cyc，最大的写带宽是 16B/cyc，二者不能同时达到。和 M1 E-Core 相同。
 
 #### Memory Dependency Predictor
 
