@@ -37,7 +37,7 @@ Apple M1 的官方信息乏善可陈，关于微架构的信息几乎为零，�
 
 ## Benchmark
 
-Apple Firestorm 的性能测试结果见 [SPEC](../../../benchmark.md)。Apple Icestorm 尚未进行性能测试。
+Apple Firestorm/Icestorm 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 ## 环境准备
 
@@ -49,11 +49,15 @@ Apple M1 预装的是 macOS，macOS 的绑核只能绑到 P 或者 E，不能具
 
 ### 取指
 
+#### Firestorm
+
 为了测试实际的 Fetch 宽度，参考 [如何测量真正的取指带宽（I-fetch width） - JamesAslan](https://zhuanlan.zhihu.com/p/720136752) 构造了测试。其原理是当 Fetch 要跨页的时候，由于两个相邻页可能映射到不同的物理地址，如果要支持单周期跨页取指，需要查询两次 ITLB，或者 ITLB 需要把相邻两个页的映射存在一起。这个场景一般比较少，处理器很少会针对这种特殊情况做优化，但也不是没有。经过测试，把循环放在两个页的边界上，发现 Firestorm 微架构遇到跨页的取指时确实会拆成两个周期来进行。在此基础上，构造一个循环，循环的第一条指令放在第一个页的最后四个字节，其余指令放第二个页上，那么每次循环的取指时间，就是一个周期（读取第一个页内的指令）加上第二个页内指令需要 Fetch 的周期数，多的这一个周期就足以把 Fetch 宽度从后端限制中区分开，实验结果如下：
 
 ![](./apple_m1_firestorm_if_width.png)
 
 图中蓝线（cross-page）表示的就是上面所述的第一条指令放一个页，其余指令放第二个页的情况，横坐标是第二个页内的指令数，那么一次循环的指令数等于横坐标 +1。纵坐标是运行很多次循环的总 cycle 数除以循环次数，也就是平均每次循环耗费的周期数。可以看到每 16 条指令会多一个周期，因此 Firestorm 的前端取指宽度确实是 16 条指令。为了确认这个瓶颈是由取指造成的，又构造了一组实验，把循环的所有指令都放到一个页中，这个时候 Fetch 不再成为瓶颈（图中 aligned），两个曲线的对比可以明确地得出上述结论。
+
+#### Icestorm
 
 用相同的方式测试 Icestorm，结果如下：
 
@@ -70,11 +74,15 @@ hw.perflevel0.l1icachesize: 196608
 hw.perflevel1.l1icachesize: 131072
 ```
 
+#### Firestorm
+
 为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 nop 和最后的分支指令组成。观察在不同 footprint 大小下 Firestorm 的 IPC：
 
 ![](./apple_m1_firestorm_fetch_bandwidth.png)
 
 可以看到 footprint 在 192 KB 之前时可以达到 8 IPC，之后则快速降到 2.22 IPC，这里的 192 KB 就对应了 Firestorm 的 L1 ICache 的容量。虽然 Fetch 可以每周期 16 条指令，也就是一条 64B 的缓存行，由于后端的限制，只能观察到 8 的 IPC。
+
+#### Icestorm
 
 用相同的方式测试 Icestorm，结果如下：
 
@@ -142,11 +150,15 @@ Icestorm 的 BTB 测试结果并不像 Firestorm 那样有规律，根据这个�
 
 ### L1 ITLB
 
+#### Firestorm
+
 构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈，在 Firestorm 上进行测试：
 
 ![](./apple_m1_firestorm_itlb.png)
 
 从 1 Cycle 到 3 Cycle 的增加是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 13 Cycle，则对应了 192 项的 L1 ITLB 容量。
+
+#### Icestorm
 
 在 Icestorm 上重复实验：
 
@@ -160,11 +172,17 @@ Icestorm 的 BTB 测试结果并不像 Firestorm 那样有规律，根据这个�
 
 ### Return Stack
 
+#### Firestorm
+
 构造不同深度的调用链，测试每次调用花费的平均时间，在 Firestorm 上得到下面的图：
 
 ![](./apple_m1_firestorm_rs.png)
 
-可以看到调用链深度为 50 时性能突然变差，因此 Firestorm 的 Return Stack 深度为 50。在 Icestorm 上测试：
+可以看到调用链深度为 50 时性能突然变差，因此 Firestorm 的 Return Stack 深度为 50。
+
+#### Icestorm
+
+在 Icestorm 上测试：
 
 ![](./apple_m1_icestorm_rs.png)
 
@@ -188,6 +206,8 @@ Icestorm 的分支预测器采用的历史更新方式为：
 
 ### 物理寄存器堆
 
+#### Firestorm
+
 为了测试物理寄存器堆的大小，一般会用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。Firestorm 测试结果见下图：
 
 ![](./apple_m1_firestorm_prf.png)
@@ -195,6 +215,8 @@ Icestorm 的分支预测器采用的历史更新方式为：
 - 32b/64b int：测试 speculative 32/64 位整数寄存器的数量，拐点在 362
 - 32b fp：测试 speculative 32 位浮点寄存器的数量，拐点在 382
 - flags：测试 speculative NZCV 寄存器的数量，拐点在 123
+
+#### Icestorm
 
 Icestorm 测试结果如下：
 
@@ -231,6 +253,8 @@ Icestorm 上的结果：
 
 #### L1 DTLB 容量
 
+##### Firestorm
+
 用类似的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈，在 Firestorm 上：
 
 ![](./apple_m1_firestorm_l1dtlb.png)
@@ -238,6 +262,8 @@ Icestorm 上的结果：
 从 160 个页开始性能下降，到 250 个页时性能稳定在 9 CPI，认为 Firestorm 的 L1 DTLB 有 160 项。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟。
 
 如果每两个页放一个指针，则拐点前移到 80；每四个页放一个指针，拐点变成 40；每八个页放一个指针，拐点变成 20；每 16 个页一个指针，拐点是 10；每 32 个页一个指针，拐点变成 5；每 64 个页一个指针，拐点依然是 5。说明 Firestorm 的 L1 DTLB 是 5 路组相连，32 个 Set，Index 是 VA[18:14]，注意页表大小是 16KB。
+
+##### Icestorm
 
 Icestorm:
 
@@ -249,6 +275,8 @@ Icestorm:
 
 #### Load/Store 带宽
 
+##### Firestorm
+
 针对 Load Store 带宽，实测 Firestorm 每个周期可以完成：
 
 - 3x 128b Load + 1x 128b Store
@@ -257,6 +285,8 @@ Icestorm:
 - 2x 128b Store
 
 如果把每条指令的访存位宽从 128b 改成 256b，读写带宽不变，指令吞吐减半。也就是说最大的读带宽是 48B/cyc，最大的写带宽是 32B/cyc，二者不能同时达到。
+
+##### Icestorm
 
 实测 Icestorm 每个周期可以完成：
 
@@ -730,6 +760,10 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 2. alu 不可调度部分是 158-134=24，crc/idiv/bfm/csel/mrs nzcv 不可调度部分都是 12，考虑到 csel 对应前三个执行单元，并且和 mrs nzcv 一样多，说明前三个执行单元共享一个 12 entry 的 Non Scheduling Queue；剩下三个执行单元共享剩下的 12 entry 的 Non Scheduling Queue
 3. 最后只差 x 和 y 的取值没有求出来，可以通过进一步测试来更加精确地求出
 
+#### Icestorm
+
+TODO
+
 ### Reorder Buffer
 
 #### Firestorm
@@ -752,6 +786,10 @@ Firestorm 的 ROB 采用的是比较特别的方案，它的 entry 地位不是�
 而如果把填充的指令改成 load/store，inflight 的 load 和 store 最多都是 325 个，并且这和 load/store queue 大小无关，而 load/store 又是有副作用的，很可能是因为它们只能在 ROB 每个 group 里只能放一条，于是看起来 ROB 的容量比 2277 小了很多，只表现出 325。按照这个猜想，对二者进行除法，发现商和 7 十分接近，这大概率意味着 Firestorm 的 ROB 有 325 左右个 group，每个 group 内有 7 个 entry，每个 entry 可以放一条指令（uop）。测试里开头的 20 个 sqrt 也要占用 ROB，实际的 ROB group 数量可能比 325 略多。
 
 结论：Firestorm 的 ROB 有大约 330 个 group，每个 group 最多保存 7 个 uop。
+
+#### Icestorm
+
+TODO
 
 ### L2 Cache
 

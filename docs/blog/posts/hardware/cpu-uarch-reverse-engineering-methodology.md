@@ -15,6 +15,7 @@ categories:
 - [AMD Zen 5 微架构评测](./amd_zen5.md)
 - [ARM Neoverse V2 微架构评测](./arm_neoverse_v2.md)
 - [Apple M1 微架构评测](./apple_m1.md)
+- [Apple M4 微架构评测](./apple-m4.md)
 - [Intel Golden Cove 微架构评测](./intel_golden_cove.md)
 - [Intel Gracemont 微架构评测](./intel_gracemont.md)
 - [Intel Redwood Cove 微架构评测](./intel_redwood_cove.md)
