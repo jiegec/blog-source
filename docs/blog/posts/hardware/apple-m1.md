@@ -810,7 +810,13 @@ Firestorm 的 ROB 采用的是比较特别的方案，它的 entry 地位不是�
 
 #### Icestorm
 
-TODO
+首先用 NOP 指令测试 Icestorm 的 ROB 大小：
+
+![](./apple-m1-icestorm-rob.png)
+
+可以看到拐点是 413 条指令。改成用 load/store 指令，可以测到拐点在 57 左右，根据上面的分析，认为 group 数量在 57 左右，每个 group 最多保存 7 个 uop。由于 `413 / 7 = 59`，认为有 59 个 group。
+
+结论：Icestorm 的 ROB 有 59 个 group，每个 group 最多保存 7 个 uop。
 
 ### L2 Cache
 
