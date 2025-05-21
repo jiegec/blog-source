@@ -219,6 +219,8 @@ ret
 - flags：测试 speculative NZCV 寄存器的数量，拐点在 175 左右
 - 32b fp：测试 speculative 32 位浮点寄存器的数量，没有观察到明显的拐点
 
+寄存器堆大小和 M1 P-Core 比较类似，但是多了 32 位整数寄存器的优化。
+
 #### E-Core
 
 在 M4 E-Core 上复现相同的测试，发现性能非常不稳定，不确定是什么原因。
@@ -299,9 +301,28 @@ M4 E-Core 测试结果:
 
 #### Memory Dependency Predictor
 
+为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之前在内存上的依赖。参考 [Store-to-Load Forwarding and Memory Disambiguation in x86 Processors](https://blog.stuffedcow.net/2014/01/x86-memory-disambiguation/) 的方法，构造两个指令模式，分别在地址和数据上有依赖：
+
+- 数据依赖，地址无依赖：`str x3, [x1]` 和 `ldr x3, [x2]`
+- 地址依赖，数据无依赖：`str x2, [x1]` 和 `ldr x1, [x2]`
+
+初始化时，`x1` 和 `x2` 指向同一个地址，重复如上的指令模式，观察到多少条 `ldr` 指令时会出现性能下降。
+
 ##### P-Core
 
+在 M4 P-Core 上测试：
+
+![](./apple-m4-p-core-memory-dependency-predictor.png)
+
+数据依赖没有明显的阈值，但从 72 开始出现了一个小的增长，且斜率不为零；地址依赖的阈值是 39。相比 M1 P-Core 有所减小。
+
 ##### E-Core
+
+M4 E-Core:
+
+![](./apple-m4-e-core-memory-dependency-predictor.png)
+
+数据依赖的阈值是 20，地址依赖的阈值是 14。比 M1 E-Core 略大。
 
 #### Store to Load Forwarding
 
