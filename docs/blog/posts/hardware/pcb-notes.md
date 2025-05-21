@@ -71,12 +71,12 @@ JLC SMT 的基础库不需要换料费，如何寻找[基础库](https://www.jlc
 5. 需求阻抗：协议所要求的阻抗，例如单端 50 欧姆（SDIO），差分 90 欧姆（USB）
 6. 阻抗模式：传输线的连接方式，见下（图源 KiCad）
     1. 单端阻抗（Microstrip Line）：一根线传输信号，地线在另一个平面，图中上面的长方形就是传输线，底部就是地平面
-    ![](./microstrip_line.png)
+    ![](./pcb-notes-microstrip-line.png)
     2. 差分阻抗（Coupled Microstrip Line）：差分线传输信号，地线在另一个平面，图中上方两个长方形就是差分传输线，底部是地平面
-    ![](./couple_microstrip_line.png)
+    ![](./pcb-notes-couple-microstrip-line.png)
     3. 共面单端：一根线传输信号，周围就是地平面
-    ![](./coplanar_wave_guide.png)
-    ![](./coplanar_wave_guide_ground_plane.png)
+    ![](./pcb-notes-coplanar-wave-guide.png)
+    ![](./pcb-notes-coplanar-wave-guide-ground-plane.png)
     4. 共面差分：差分线传输信号，周围就是地平面
 7. 阻抗层：传输线所在的层
 8. 参考层：地线所在的层
