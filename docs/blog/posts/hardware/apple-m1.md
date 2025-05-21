@@ -762,7 +762,28 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 #### Icestorm
 
-TODO
+在 Icestorm 上测试，结果如下：
+
+| 指令     | 可调度 + 不可调度 | 可调度 |
+|----------|-------------------|--------|
+| ld       | 24                | 10     |
+| st       | 24                | 4      |
+| alu      | 36                | 28     |
+| crc      | 16                | 8      |
+| idiv     | 16                | 8      |
+| bfm      | 16                | 8      |
+| csel     | 32                | 24     |
+| mrs nzcv | 32                | 24     |
+
+访存部分，load 和 store 总数一样但 Scheduler 差了 6，不确定是测试误差还是什么问题，暂且考虑为一个统一的 Scheduler 和同一个 Non Scheduling Queue。
+
+整数部分，由于有 3 个整数执行单元，情况会比较复杂：
+
+1. 可调度部分 alu 一共是 28（多出来的 4 个不确定是什么原因），其中 csel/mrs nzcv 是 24，crc/idiv/bfm 都是 8，结合 3 个整数执行单元，可以得到这 3 个执行单元对应的 Scheduler 大小关系：
+    1. alu + csel + mrs nzcv + branch: x entries
+    2. alu + csel + mrs nzcv + branch: 16-x entries
+    3. alu + csel + mrs nzcv + madd + mul + crc: 8 entries
+2. alu 不可调度部分是 36-28=8，crc/idiv/bfm/csel/mrs nzcv 不可调度部分都是 8，应该是 3 个整数执行单元共享一个 8 entry 的 Non Scheduling Queue
 
 ### Reorder Buffer
 

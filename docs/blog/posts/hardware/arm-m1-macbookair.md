@@ -177,8 +177,6 @@ aes-128-cbc     734225.68k   788483.88k   802857.39k   805860.69k   807848.62k
 sha256           82720.89k   184528.45k   342888.28k   425826.30k   457149.10k
                   sign    verify    sign/s verify/s
 rsa 2048 bits 0.000573s 0.000017s   1745.5  60236.3
-# Intel Xeon E5-2680 v4 (Broadwell) TODO
-# Intel Xeon Gold 5218 (Cascade Lake) TODO
 # IBM POWER8NVL
 OpenSSL 1.1.1  11 Sep 2018
 built on: Wed Feb 17 12:35:54 2021 UTC
