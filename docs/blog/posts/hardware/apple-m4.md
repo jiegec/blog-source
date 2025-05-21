@@ -168,7 +168,19 @@ ret
 
 #### P-Core
 
+构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈，在 M4 P-Core 上进行测试：
+
+![](./apple-m4-p-core-itlb.png)
+
+第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 12 Cycle，则对应了 192 项的 L1 ITLB 容量。
+
 #### E-Core
+
+在 M4 E-Core 上重复实验：
+
+![](./apple-m1-icestorm-itlb.png)
+
+第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 10 Cycle，则对应了 192 项的 L1 ITLB 容量。
 
 ### Decode
 
