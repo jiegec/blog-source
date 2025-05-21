@@ -57,7 +57,7 @@ assert(dev != MAP_FAILED);
 
 接着就需要先把输入输出做起来，需要移植一个 bootloader。相比之下，OpenSBI 明显比 bbl 更适合于这个用途，于是拿着 OpenSBI 就拿来改了。考虑到 fesvr 采用的是 htif 进行输入输出，于是从 bbl 里抄了相关代码过来，得到了正确的输出：
 
-![](opensbi_uart.jpg)
+![](axi-uart-interrupt-opensbi-uart.jpg)
 
 ### rCore，启动！
 

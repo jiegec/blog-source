@@ -49,7 +49,7 @@ name "virtio-rng-device", bus virtio-bus
 
 首先想到并且实现了的是网卡驱动， `virtio-net` 。最开始的时候，为了简单，只开了一块缓冲区，每次同时只收/发一个包。首先拿了 [device_tree-rs](https://github.com/jiegec/device_tree-rs) 读取 bbl 传过来的 dtb 地址，找到各个 `virtio_mmio` 总线以后按照设备类型找到对应的设备。然后就是对着 virtio 的标准死磕，同时看 Linux 和 QEMU 的源代码辅助理解，最后终于是成功地把收/发的两个 virtqueue 配置好，并且在中断的时候处理收到的包。这个时候，可以成功地输出收到的包的内容，并且发出指定内容的包了。效果就是看到了这样的图片（图中网站是 [Hex Packet Decoder](https://hpd.gasmi.net/)）：
 
-![](./arp_packet.jpg)
+![](./virtio-drivers-implementation-arp-packet.jpg)
 
 基于此，写了一个简单的以太网帧的解析，ARP 的回复和 ping 的回复（直接修改 `ECHO_REQUEST` 为 `ECHO_REPLY` 然后更新 CHECKSUM），实现了最基本的 ping：
 

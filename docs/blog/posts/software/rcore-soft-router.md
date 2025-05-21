@@ -30,7 +30,7 @@ categories:
 
 网络拓扑：
 
-![](router_topo.png)
+![](rcore-soft-router-topo.png)
 
 可以，这很玄学。
 
