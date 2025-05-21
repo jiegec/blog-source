@@ -204,19 +204,24 @@ ret
 
 可以看到调用链深度为 40 时性能突然变差，因此 M4 E-Core 的 Return Stack 深度为 40，比 M1 E-Core 的 32 要更大。
 
-### Conditional Branch Predictor
-
-#### P-Core
-
-#### E-Core
-
 ## 后端
 
 ### 物理寄存器堆
 
 #### P-Core
 
+为了测试物理寄存器堆的大小，一般会用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。M4 P-Core 测试结果见下图：
+
+![](./apple-m4-p-core-prf.png)
+
+- 32b int：测试 speculative 32 位整数寄存器的数量，拐点在 720 左右
+- 64b int：测试 speculative 64 位整数寄存器的数量，拐点在 360 左右，只有 32b 的一半，可见实际的物理寄存器堆有 360 左右个 64 位整数寄存器，但是可以分成两半分别当成 32 位整数寄存器用，这一个优化在 M1 是没有的，即用 32b 或者用 64b 整数，测出来的整数寄存器数量相同
+- flags：测试 speculative NZCV 寄存器的数量，拐点在 175 左右
+- 32b fp：测试 speculative 32 位浮点寄存器的数量，没有观察到明显的拐点
+
 #### E-Core
+
+在 M4 E-Core 上复现相同的测试，发现性能非常不稳定，不确定是什么原因。
 
 ### Load Store Unit + L1 DCache
 
