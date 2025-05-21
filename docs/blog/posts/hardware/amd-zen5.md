@@ -176,7 +176,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 为了测试 L1 ITLB 的容量，构造 jmp 序列，每个 jmp 在一个单独的页中，在关闭 Op Cache 的情况下观察 jmp 的性能：
 
-![](./amd_zen5_itlb.png)
+![](./amd-zen5-itlb.png)
 
 可以看到明显的 64 pages 的拐点，对应了 64 entry 的 L1 ITLB。
 
@@ -186,7 +186,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 继续沿用测试 L1 ITLB 的方式，把页的数量提高到 2000+，在关闭 Op Cache 的情况下得到以下测试结果：
 
-![](./amd_zen5_l2itlb.png)
+![](./amd-zen5-l2itlb.png)
 
 可以看到明显的 2048 pages 的拐点，对应了 2048 entry 的 L2 ITLB。
 
@@ -202,7 +202,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 构造不同深度的调用链，测试每次调用花费的时间，在关闭 Op Cache 的情况下得到如下测试结果：
 
-![](./amd_zen5_ras.png)
+![](./amd-zen5-ras.png)
 
 可以看到 52 的拐点，对应的就是 Return Address Stack 的大小。
 
@@ -239,7 +239,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 把两个独立的 long latency pointer chasing load 放在循环的头和尾，中间用 NOP 填充，当 NOP 填满了 ROB，第二个 pointer chasing load 无法提前执行，导致性能下降。测试结果如下：
 
-![](./amd_zen5_rob.png)
+![](./amd-zen5-rob.png)
 
 当 NOP 指令达到 446 条时出现性能突变，此时应该是触发了 Zen 5 的每个 entry 保存两个 MOP 的条件，因此 446 条 NOP 指令对应 223 个 entry，加上循环开头的 load 指令，正好把循环尾部的 load 拦在了 ROB 外面，导致性能下降。
 
@@ -251,7 +251,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 为了测试物理寄存器堆大小，构造一个循环，循环开头和结尾各是一个长延迟的操作，由于 Zen 5 没有实现 temporal prefetcher，使用的是 pointer chasing load。然后在两个长延迟的操作中间穿插不同的指令类型，从而测出对应的物理寄存器堆可供预测执行的寄存器数量：
 
-![](./amd_zen5_rf.png)
+![](./amd-zen5-rf.png)
 
 整数方面使用 lea 指令来消耗整数物理寄存器而不消耗 flags 寄存器，此时无论是 32 位还是 64 位寄存器，供预测执行的寄存器数都有 200 个，和官方的信息吻合：`200+40=240`，说明超线程在没有负载的时候，不会占用整数物理寄存器堆，这在 AMD 的文档中叫做 Watermarked：`Resource entries are assigned on demand`。356 个 flags 寄存器超过了官方宣传的 192 的大小，猜测做了一些优化，测到的并非 flags 寄存器堆大小。
 
@@ -265,7 +265,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
 
-![](./amd_zen5_l1dc.png)
+![](./amd-zen5-l1dc.png)
 
 可以观察到明显的 48KB 的拐点，命中 L1 DCache 时 load to use latency 是 4 cycle，命中 L2 时增大到了 14 cycle。
 
@@ -327,7 +327,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 可以看到，Zen 5 在 Store 完全包含 Load 的情况下都可以转发，没有额外的对齐要求。但当 Load 和 Store 只有部分重合时，就无法转发。两个连续的 32 位的 Store 和一个 64 位的 Load 重合也不能转发。
 
-可见 Zen 5 的 Store to Load Forwarding 实现比较粗暴，只允许 Load 从单个完全包含 Load 的 Store 中转发数据。和 [Neoverse V2](./arm_neoverse_v2.md) 相比，Zen 5 对 Load 在 Store 内的偏移没有要求，但也不允许 Load 和 Store 只有一部分覆盖，也不支持一个 Load 从两个或更多的 Store 中获取数据。
+可见 Zen 5 的 Store to Load Forwarding 实现比较粗暴，只允许 Load 从单个完全包含 Load 的 Store 中转发数据。和 [Neoverse V2](./arm-neoverse-v2.md) 相比，Zen 5 对 Load 在 Store 内的偏移没有要求，但也不允许 Load 和 Store 只有一部分覆盖，也不支持一个 Load 从两个或更多的 Store 中获取数据。
 
 成功转发时 8 cycle，有 Overlap 但转发失败时 14-15 cycle。
 
@@ -342,7 +342,7 @@ AMD Zen 5 的 Decode 虽然有两个 Pipe，但是每个逻辑线程只能用一
 
 使用不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
 
-![](./amd_zen5_l1dtlb.png)
+![](./amd-zen5-l1dtlb.png)
 
 可以观察到明显的 96 page 的拐点，命中 L1 DTLB 时 load to use latency 是 4 cycle，命中 L2 DTLB 时增大到了 11 cycle。
 

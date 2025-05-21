@@ -22,13 +22,13 @@ categories:
 
 PCIe 定义了三个层：Transaction Layer，Data Link Layer，Physical Layer，和 TCP/IP 四层模型很像。PCIe 也是基于 Packet 传输的。
 
-![](./pcie_layer.png)
+![](./pcie-layer.png)
 
 ### Transaction Layer
 
 Transaction Layer 的核心是 Transaction Layer Packet(TLP)。TLP 格式：
 
-![](./pcie_tlp.png)
+![](./pcie-tlp.png)
 
 即可选的若干个 Prefix，一个 Header，可选的 Data Payload，可选的 Digest。
 
@@ -72,7 +72,7 @@ TLP 路由有三个方法，决定了这个 TLP 目的地是哪里：
 
 Data Link Layer 的主要功能是进行 TLP 的可靠传输。它在传输 TLP 的时候，会在开头加上一个两字节的 Sequence Number，最后加上一个四字节的 LCRC（Link CRC）。
 
-![](./pcie_tlp_link.png)
+![](./pcie-tlp-link.png)
 
 除了传输 TLP，Data Link Layer 还会传输 Data Link Layer Packet(DLLP)，类型包括：
 
@@ -107,11 +107,11 @@ Data Link Layer 的流量是 Credit-based 的：接受方会告诉发送方自�
 
 所以简单理解一下，PCI 总线确实是一条总线，一条总线上很多设备。而 PCIe 实际上是一个网络，可以看作是很多个 PCI 总线连接在一起，可以把 Root Complex 或者 Switch 内部看成一个虚拟的有很多设备的 PCI 总线，而 PCIe Link 可以看成是只有一个设备的 PCI 总线。这样 PCIe 交换机可以看成若干个 PCI-PCI Bridge：
 
-![](./pcie_bridge.png)
+![](./pcie-bridge.png)
 
 还有 MindShare 书中的图 3-5:
 
-![](./pcie_system.png)
+![](./pcie-system.png)
 
 可以看到，这里的每一个 Bus 就是一个 PCI 总线，既有内部的虚拟 PCI 总线（Bus 0/2/6），也有 PCIe Link 充当的 PCI 总线（Bus 1/3/4/5/7/8/9）。在虚拟的 PCI 总线里，比如 PCIe Switch，一个 Device 对应一个 Downstream Port；而 PCIe Link 对应的 PCI 总线上就只有一个 Device。然后 PCIe Switch 的每个 Upstream Port 和 Downstream Port 里会记录三个 Bus Number：Primary(Pri)，Secondary(Sec) 和 Subordinate(Sub)。Primary 指的就是它上游直接连接的 PCI 总线编号，Sec 指的是下游直接连接的 PCI 总线编号，Sub 指的是它下游的最大 PCI 总线编号。
 
@@ -121,7 +121,7 @@ Data Link Layer 的流量是 Credit-based 的：接受方会告诉发送方自�
 
 这些用于路由的区间上下界，可以在各个端口的 Type1 Configuration Space 中找到：
 
-![](./pcie_type1.png)
+![](./pcie-type1.png)
 
 - 路由 Type1 Configuration Request：Primary Bus Number, Secondary Bus Number, Subordinate Bus Number
     - `Request Bus Number == Secondary Bus Number`: Type1 -> Type0
@@ -281,7 +281,7 @@ for (Device = 0; Device <= PCI_MAX_DEVICE; Device++) {
 
 最后的结果，类似 MindShare 书中的这个图：
 
-![](./pcie_enum.png)
+![](./pcie-enum.png)
 
 为了支持 PCIe 热插拔，或者可能会动态产生新设备的 SR-IOV，代码中做了相应的预留：
 
@@ -411,7 +411,7 @@ ATS（Address Translation Service）是在 PCIe 上给外设提供查询页表�
 
 它的整体工作方式如图：
 
-![](./pcie_ats.png)
+![](./pcie-ats.png)
 
 就是在 Root Complex 和 Memory 之间设置一个 Translation Agent，负责查表，也就是 Page Table Walker。它会接收来自 PCIe 设备的地址翻译请求，然后它获取到页表地址后，根据虚拟地址去查内存中的页表。TLB（在标准中叫做 Address Translation Cache，ATC）是实现在 PCIe 设备侧的，而不是统一的 TLB，也不是 CPU 核心的 TLB。
 

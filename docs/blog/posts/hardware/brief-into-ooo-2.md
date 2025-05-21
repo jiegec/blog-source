@@ -213,12 +213,12 @@ there are 2 stores, then each store should forward to either first or second hal
 
 | uArch                                       | 1 ld + 1 st | 1 ld + 2 st | 1 ld + 4 st | 1 ld + 8 st |
 |---------------------------------------------|-------------|-------------|-------------|-------------|
-| [AMD Zen5](./amd_zen5.md)                   | Yes [1]     | No          | No          | No          |
-| [ARM Neoverse V2](./arm_neoverse_v2.md)     | Yes [2]     | Yes [3]     | No          | No          |
-| [Qualcomm Oryon](./qualcomm_oryon.md)       | Yes [4]     | Yes [5]     | No          | No          |
-| [Apple Firestorm](./apple_m1.md)            | Yes         | Yes [6]     | Yes [6]     | Yes [6]     |
-| [Intel Golden Cove](./intel_golden_cove.md) | Yes [7]     | No          | No          | No          |
-| [Intel Gracemont](./intel_gracemont.md)     | Yes [8]     | No          | No          | No          |
+| [AMD Zen5](./amd-zen5.md)                   | Yes [1]     | No          | No          | No          |
+| [ARM Neoverse V2](./arm-neoverse-v2.md)     | Yes [2]     | Yes [3]     | No          | No          |
+| [Qualcomm Oryon](./qualcomm-oryon.md)       | Yes [4]     | Yes [5]     | No          | No          |
+| [Apple Firestorm](./apple-m1.md)            | Yes         | Yes [6]     | Yes [6]     | Yes [6]     |
+| [Intel Golden Cove](./intel-golden-cove.md) | Yes [7]     | No          | No          | No          |
+| [Intel Gracemont](./intel-gracemont.md)     | Yes [8]     | No          | No          | No          |
 
 - [1]: 要求 st 完全包含 ld
 - [2]: 要求 ld 和 st 地址相同或差半个 st 宽度

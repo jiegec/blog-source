@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-之前我们测试了 Intel 的微架构 [Redwood Cove](./intel_golden_cove.md)，这次就来测一下 Redwood Cove，它被用到了 Meteor Lake 以及 Granite Rapids 上。这次就以阿里云 [g9i](https://help.aliyun.com/zh/ecs/user-guide/overview-of-instance-families#g9i) 实例的 Granite Rapids 机器来测试一下 Redwood Cove 微架构的各项指标。
+之前我们测试了 Intel 的微架构 [Redwood Cove](./intel-golden-cove.md)，这次就来测一下 Redwood Cove，它被用到了 Meteor Lake 以及 Granite Rapids 上。这次就以阿里云 [g9i](https://help.aliyun.com/zh/ecs/user-guide/overview-of-instance-families#g9i) 实例的 Granite Rapids 机器来测试一下 Redwood Cove 微架构的各项指标。
 
 <!-- more -->
 
@@ -44,7 +44,7 @@ Intel Redwood Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 4 字节 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
 
-![](./intel_redwood_cove_fetch_bandwidth.png)
+![](./intel-redwood-cove-fetch-bandwidth.png)
 
 可以看到 footprint 在 64 KB 之前时可以达到 6 IPC，之后则降到 3.2 IPC，这里的 64 KB 就对应了 L1 ICache 的容量。
 
@@ -52,13 +52,13 @@ Intel Redwood Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 构造一系列的 jmp 指令，使得 jmp 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
 
-![](./intel_redwood_cove_itlb_size.png)
+![](./intel-redwood-cove-itlb-size.png)
 
 可以看到 256 个 Page 出现了明显的拐点，对应的就是 256 的 L1 ITLB 容量。注意要避免 ICache 和 BTB 的容量成为瓶颈，把 jmp 指令分布在不同的 Cache Line 和 BTB entry 上。
 
 超过 256 个 Page 以后，如图有周期数突然下降后缓慢上升的情况（例如横坐标 288->289、320->321、352->353、384->385 等，以 32 为周期），背后的原理需要进一步分析。
 
-和 [Golden Cove](./intel_golden_cove.md) 是一样的。
+和 [Golden Cove](./intel-golden-cove.md) 是一样的。
 
 ### Instruction Decode Queue (IDQ) + Loop Stream Detector (LSD)
 
@@ -102,7 +102,7 @@ Intel Redwood Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
     - footprint[14] = B[14]
     - footprint[15] = B[15]
 
-和 [Golden Cove](./intel_golden_cove.md) 是一样的。各厂商处理器的 PHR 更新规则见 [jiegec/cpu](https://jia.je/cpu/cbp.html)。
+和 [Golden Cove](./intel-golden-cove.md) 是一样的。各厂商处理器的 PHR 更新规则见 [jiegec/cpu](https://jia.je/cpu/cbp.html)。
 
 ## 后端
 
@@ -117,7 +117,7 @@ Intel Redwood Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 用类似测 L1 DCache 的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈：
 
-![](./intel_redwood_cove_dtlb_size.png)
+![](./intel-redwood-cove-dtlb-size.png)
 
 可以看到 96 Page 出现了明显的拐点，对应的就是 96 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 5 cycle；超出 L1 DTLB 容量后，Load to use latency 是 12 cycle，说明 L1 DTLB miss 带来了 7 cycle 的损失。
 
@@ -167,7 +167,7 @@ Intel Redwood Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
 
 除了上述情况以外，Store Forwarding 成功时的延迟在 5 个周期，失败则要 19 个周期。
 
-和 [Golden Cove](./intel_golden_cove.md) 是一样的。
+和 [Golden Cove](./intel-golden-cove.md) 是一样的。
 
 小结：Redwood Cove 的 Store to Load Forwarding：
 
@@ -196,6 +196,6 @@ Intel Redwood Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来
 
 为了测试 ROB 的大小，设计了一个循环，循环开始和结束是长延迟的 long latency load。中间是若干条 NOP 指令，当 NOP 指令比较少时，循环的时候取决于 load 指令的时间；当 NOP 指令数量过多，填满了 ROB 以后，就会导致 ROB 无法保存循环末尾的 load 指令，性能出现下降。测试结果如下：
 
-![](./intel_redwood_cove_rob_size.png)
+![](./intel-redwood-cove-rob-size.png)
 
 当 NOP 数量达到 512 时，性能开始急剧下滑，说明 Redwood Cove 的 ROB 大小是 512。

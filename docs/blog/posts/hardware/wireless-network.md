@@ -85,7 +85,7 @@ HR-DSSS 工作在 2.4 GHz 频段上，常用的是 13 个 channel，中心频率
 
 OFDM 的核心思想就是采用多个载波信号，这些载波信号的频率呈等差数列，同时保证各载波相互正交，这样就提高了数据传输速率。为了保证正交，相邻载波信号的频率的差要满足 $\Delta{f} = k / T_U$，其中 k 是正整数，$T_U$ 是每个 symbol 的时间（引用 [wikipedia](https://zh.wikipedia.org/zh-cn/%E6%AD%A3%E4%BA%A4%E9%A0%BB%E5%88%86%E5%A4%8D%E7%94%A8#%E6%AD%A3%E4%BA%A4)）。下面是 802.11 标准中的 OFDM PHY 的组成：
 
-![](./ofdm_circuit.png)
+![](./ofdm-circuit.png)
 
 图中的缩写：
 

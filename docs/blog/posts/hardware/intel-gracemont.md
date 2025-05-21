@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-[之前](./intel_golden_cove.md) 测试了 Intel Alder Lake 的 P 核微架构，这次就来测一下 Alder Lake 的 E 核微架构 Gracemont。
+[之前](./intel-golden-cove.md) 测试了 Intel Alder Lake 的 P 核微架构，这次就来测一下 Alder Lake 的 E 核微架构 Gracemont。
 
 <!-- more -->
 
@@ -61,7 +61,7 @@ Gracemont 的 Clustered Decode 架构比较特别，目前没有找到方法去�
 
 为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 4 字节 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
 
-![](./intel_gracemont_fetch_bandwidth.png)
+![](./intel-gracemont-fetch-bandwidth.png)
 
 可以看到 footprint 在 64 KB 之前时可以达到 5 IPC，之后则降到 3.25 IPC，这里的 64 KB 就对应了 L1 ICache 的容量。
 
@@ -73,7 +73,7 @@ Gracemont 的 Clustered Decode 架构比较特别，目前没有找到方法去�
 
 构造一系列的 jmp 指令，使得 jmp 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
 
-![](./intel_gracemont_itlb_size.png)
+![](./intel-gracemont-itlb-size.png)
 
 可以看到 64 个 Page 出现了明显的拐点，对应的就是 64 的 L1 ITLB 容量。过了拐点后，每次 jmp 的时间延长到了 16 个周期左右，包括了 L2 TLB 到 L1 ITLB 的 refill 时间。
 
@@ -81,15 +81,15 @@ Gracemont 的 Clustered Decode 架构比较特别，目前没有找到方法去�
 
 用之前设计的 Return Stack 测试代码来测试 Gracemont，它的 call/ret 是成对的，也就是 ret 的返回地址不变，称这个版本为 A。此时发现不同调用深度下，都能做到 2 cycle 每 call/ret 对，没有观察到性能的下降，说明此时 Return Stack 并没有介入，应该是由 BTB 提供了预测。下面是 A 版本代码在 Gracemont 上的测试结果：
 
-![](./intel_gracemont_rs_size_1.png)
+![](./intel-gracemont-rs-size-1.png)
 
 为了解决这个问题，修改代码，在函数里构造两个 call 去调用同一个函数，这样 ret 的返回地址就会变化了，称这个版本为 B。这时候跑出来的结果比较奇怪，周期数快速上升：
 
-![](./intel_gracemont_rs_size_2.png)
+![](./intel-gracemont-rs-size-2.png)
 
-同样的 B 版本代码在 AMD Zen3 和 Apple Firestorm 的处理器上，可以观察到在符合预期的 Return Stack 大小处出现性能拐点，和 A 版本代码得到的结论一致。而 B 版本代码在 Golden Cove 上，会观察到在 6 的附近有一个性能下降如下图，但之前用 [A 版本代码测得的拐点为 20](./intel_golden_cove.md):
+同样的 B 版本代码在 AMD Zen3 和 Apple Firestorm 的处理器上，可以观察到在符合预期的 Return Stack 大小处出现性能拐点，和 A 版本代码得到的结论一致。而 B 版本代码在 Golden Cove 上，会观察到在 6 的附近有一个性能下降如下图，但之前用 [A 版本代码测得的拐点为 20](./intel-golden-cove.md):
 
-![](./intel_gracemont_rs_size_golden_cove.png)
+![](./intel-gracemont-rs-size-golden-cove.png)
 
 这个区别背后的原因还需要进一步的分析。下面是两个版本的汇编代码的对比：
 
@@ -238,7 +238,7 @@ cases where the store's address is known, and the store data is available.
 
 用类似测 L1 DCache 的方法测试 L1 DTLB 容量，只不过把 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈。奇怪的是，虽然官方信息写的是 32-entry 的 L1 DTLB，但是实测它有 48-entry：
 
-![](./intel_gracemont_dtlb_size.png)
+![](./intel-gracemont-dtlb-size.png)
 
 这个观察和 [Meteor Lake’s E-Cores: Crestmont Makes Incremental Progress](https://chipsandcheese.com/p/meteor-lakes-e-cores-crestmont-makes-incremental-progress) 是一致的，怀疑是 Intel 写错了数据。
 
@@ -252,7 +252,7 @@ cases where the store's address is known, and the store data is available.
 
 使用类似 L1 DTLB 的方式去测试 L2 TLB，在 2048 附近观察到了拐点：
 
-![](./intel_gracemont_l2_dtlb_size.png)
+![](./intel-gracemont-l2-dtlb-size.png)
 
 这个结果和官方数据是吻合的。
 
@@ -273,6 +273,6 @@ cases where the store's address is known, and the store data is available.
 
 为了测试 ROB 的大小，设计了一个循环，循环开始和结束是长延迟的 long latency load。中间是若干条 NOP 指令，当 NOP 指令比较少时，循环的时候取决于 load 指令的时间；当 NOP 指令数量过多，填满了 ROB 以后，就会导致 ROB 无法保存循环末尾的 load 指令，性能出现下降。测试结果如下：
 
-![](./intel_gracemont_rob_size.png)
+![](./intel-gracemont-rob-size.png)
 
 当 NOP 数量达到 256 时，性能开始急剧下滑，说明 Golden Cove 的 ROB 大小是 256。

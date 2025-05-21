@@ -56,7 +56,7 @@ Surface Laptop 7 预装的是 Windows on ARM，并不适合进行测试。因此
 
 其原理是当 Fetch 要跨页的时候，由于两个相邻页可能映射到不同的物理地址，如果要支持单周期跨页取指，需要查询两次 ITLB，或者 ITLB 需要把相邻两个页的映射存在一起。这个场景一般比较少，处理器很少会针对这种特殊情况做优化，但也不是没有。经过测试，把循环放在两个页的边界上，发现 Oryon 微架构遇到跨页的取指时确实会拆成两个周期来进行。在此基础上，构造一个循环，循环的第一条指令放在第一个页的最后四个字节，其余指令放第二个页上，那么每次循环的取指时间，就是一个周期（读取第一个页内的指令）加上第二个页内指令需要 Fetch 的周期数，多的这一个周期就足以把 Fetch 宽度从后端限制中区分开，实验结果如下：
 
-![](./qualcomm_oryon_if_width.png)
+![](./qualcomm-oryon-if-width.png)
 
 图中蓝线（cross-page）表示的就是上面所述的第一条指令放一个页，其余指令放第二个页的情况，横坐标是第二个页内的指令数，那么一次循环的指令数等于横坐标 +1。纵坐标是运行很多次循环的总 cycle 数除以循环次数，也就是平均每次循环耗费的周期数。可以看到每 16 条指令会多一个周期，因此 Oryon 的前端取指宽度确实是 16 条指令。
 
@@ -68,7 +68,7 @@ Surface Laptop 7 预装的是 Windows on ARM，并不适合进行测试。因此
 
 为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
 
-![](./qualcomm_oryon_fetch_bandwidth.png)
+![](./qualcomm-oryon-fetch-bandwidth.png)
 
 可以看到 footprint 在 192 KB 之前时可以达到 8 IPC，之后则快速降到 2 IPC，这里的 192 KB 就对应了 L1 ICache 的容量。虽然 Fetch 可以每周期 16 条指令，也就是一条 64B 的缓存行，由于后端的限制，只能观察到 8 的 IPC。
 
@@ -78,7 +78,7 @@ Surface Laptop 7 预装的是 Windows on ARM，并不适合进行测试。因此
 
 构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
 
-![](./qualcomm_oryon_itlb.png)
+![](./qualcomm-oryon-itlb.png)
 
 可以看到 256 Page 出现了明显的拐点，对应的就是 256 的 L1 ITLB 容量。注意要避免 ICache 和 BTB 的容量成为瓶颈，把 B 指令分布在不同的 Cache Line 和 BTB entry 上。
 
@@ -94,7 +94,7 @@ Surface Laptop 7 预装的是 Windows on ARM，并不适合进行测试。因此
 
 构造不同深度的调用链，测试每次调用花费的平均时间，得到下面的图：
 
-![](./qualcomm_oryon_rs.png)
+![](./qualcomm-oryon-rs.png)
 
 可以看到调用链深度为 50 时性能突然变差，因此 Return Stack 深度为 50。
 
@@ -108,13 +108,13 @@ Surface Laptop 7 预装的是 Windows on ARM，并不适合进行测试。因此
 
 构造大量的无条件分支指令（B 指令），BTB 需要记录这些指令的目的地址，那么如果分支数量超过了 BTB 的容量，性能会出现明显下降。当把大量 B 指令紧密放置，也就是每 4 字节一条 B 指令时：
 
-![](./qualcomm_oryon_btb_4b.png)
+![](./qualcomm-oryon-btb-4b.png)
 
 可见在 2048 个分支之内可以达到 1 的 CPI，超过 2048 个分支，出现了 3 CPI 的平台，一直延续到 32768 个分支或更多。超出 BTB 容量以后，分支预测时，无法从 BTB 中得到哪些指令是分支指令的信息，只能等到取指甚至译码后才能后知后觉地发现这是一条分支指令，这样就出现了性能损失，出现了 3 CPI 的情况。
 
 降低分支指令的密度，在 B 指令之间插入 NOP 指令，使得每 8 个字节有一条 B 指令，得到如下结果：
 
-![](./qualcomm_oryon_btb_8b.png)
+![](./qualcomm-oryon-btb-8b.png)
 
 可以看到 CPI=1 的拐点前移到 1024 个分支，同时 CPI=3 的平台也出现了新的拐点，在 16384 和 32768 之间。拐点的前移，意味着 BTB 采用了组相连的结构，当 B 指令的 PC 的部分低位总是为 0 时，组相连的 Index 可能无法取到所有的 Set，导致表现出来的 BTB 容量只有部分 Set，例如此处容量减半，说明只有一半的 Set 被用到了。
 
@@ -145,7 +145,7 @@ Surface Laptop 7 预装的是 Windows on ARM，并不适合进行测试。因此
 
 为了测试物理寄存器堆的大小，一般会用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。测试结果见下图：
 
-![](./qualcomm_oryon_prf.png)
+![](./qualcomm-oryon-prf.png)
 
 - 32b/64b int：测试 32/64 位整数寄存器的数量，拐点在 362-374
 - fp：测试浮点寄存器的数量，拐点在 362-372
@@ -186,7 +186,7 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 
 为了测试 ROB 的大小，设计了一个循环，循环开始是 8 条串行的 fsqrt 指令，每条指令需要 13 个周期，由于数据依赖，一共需要 8*13=104 个周期完成。之后是若干条 NOP 指令，当 NOP 指令比较少时，循环的时候取决于 fsqrt 指令的时间，一次循环大约需要 104 个周期；当 NOP 指令数量过多，填满了 ROB 以后，就会导致 ROB 无法保存下一次循环的 fsqrt 指令，性能出现下降。测试结果如下：
 
-![](./qualcomm_oryon_rob.png)
+![](./qualcomm-oryon-rob.png)
 
 当 NOP 数量达到 676 时，性能开始急剧下滑，而执行 676 条 NOP 只需要 676/8=84.5 个周期，小于 104 个周期，说明瓶颈不在执行 NOP 上，而是因为 ROB 被填满，导致后续的 fsqrt 指令无法及时执行。因此认为 Oryon 的 ROB 大小在 680+。
 
@@ -206,7 +206,7 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 
 构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
 
-![](./qualcomm_oryon_l1dc.png)
+![](./qualcomm-oryon-l1dc.png)
 
 可以看到 96KB 出现了明显的拐点，对应的就是 96KB 的 L1 DCache 容量。
 
@@ -214,11 +214,11 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 
 用类似的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈：
 
-![](./qualcomm_oryon_dtlb.png)
+![](./qualcomm-oryon-dtlb.png)
 
 可以看到 224 Page 出现了明显的拐点，对应的就是 224 的 L1 DTLB 容量。从每个 page 一个指针改成每 32 page 一个指针并注意对齐尽量保证 Index 为 0，此时 L1 DTLB 容量降为 7，说明 L1 DTLB 是 7 路组相连结构，32 个 Set，Index 位是 VA[16:12]，这些页被映射到了相同的 Set 当中：
 
-![](./qualcomm_oryon_dtlb_7.png)
+![](./qualcomm-oryon-dtlb-7.png)
 
 横座标为 8，也就是有 8 个页时，此时这 8 个页都映射到同一个 set 当中，有四分之一的概率会出现 L1 DTLB miss，此时 load latency 是 11 cycle，剩下四分之三的概率 L1 DTLB hit，load latency 是 3 cycle，加权平均下来得到 `11*1/4+3*3/4=5`，符合预期。这个四分之一对应了某种替换策略。从横座标为 9 开始，则所有访问都出现 L1 DTLB miss，延迟降低到 11 cycle，这代表了 L1 DTLB miss，L2 Unified TLB hit 的延迟。
 
@@ -273,7 +273,7 @@ slowdown = 6.79x
 
 初始化时，`x1` 和 `x2` 指向同一个地址，重复如上的指令模式，观察到多少条 `ldr` 指令时会出现性能下降：
 
-![](./qualcomm_oryon_memory_dependency_predictor.png)
+![](./qualcomm-oryon-memory-dependency-predictor.png)
 
 有意思的是，两种模式出现了不同的阈值，地址依赖的阈值是 64，而数据依赖的阈值是 96。
 
@@ -290,13 +290,13 @@ slowdown = 6.79x
 | 32b Store  | [0,3]   | [-1,3]   | [-3,3]   | [-7,3]   |
 | 64b Store  | [0,7]   | [-1,7]   | [-3,7]   | [-7,7]   |
 
-从上表可以看到，所有 Store 和 Load Overlap 的情况，无论地址偏移，都能成功转发，不过代价是如果 Load 或 Store 跨越 64B 缓存行的边界时就会转发失败，毕竟在只有部分覆盖的情况下，剩下的部分需要从缓存中读取。[Apple Firestorm](./apple_m1.md) 和 Qualcomm Oryon 比较类似，所有 Overlap 情况下都可以成功转发，但即使是跨越 64B 缓存行也可以成功转发，只需要多花费一个周期。
+从上表可以看到，所有 Store 和 Load Overlap 的情况，无论地址偏移，都能成功转发，不过代价是如果 Load 或 Store 跨越 64B 缓存行的边界时就会转发失败，毕竟在只有部分覆盖的情况下，剩下的部分需要从缓存中读取。[Apple Firestorm](./apple-m1.md) 和 Qualcomm Oryon 比较类似，所有 Overlap 情况下都可以成功转发，但即使是跨越 64B 缓存行也可以成功转发，只需要多花费一个周期。
 
 一个 Load 需要转发两个 Store 的数据的情况比较奇怪：对地址 x 的 32b Store 和对地址 x+4 的 32b Store 转发到对地址 y 的 64b Load，要求 x%4==0，不跨越 64B 缓存行，对 y-x 除了 Overlap 以外没有额外的要求。Apple Firestorm 则没有 x%4==0 这个局限性，但在跨越 64B 缓存行时也不能转发。
 
 但 64b Load 就不支持从 4 个 16b Store 转发了，8 个 8b Store 也不支持。Apple Firestorm 则都支持，相比从单个 Store 转发多 1-4 个周期。
 
-由此看出 Oryon 和 [Zen 5](./amd_zen5.md) 以及 [Neoverse V2](./arm_neoverse_v2.md) 在设计思路上的不同：Oryon 追求 Load 和 Store 的自由组合，允许只有一部分覆盖，也无所谓地址偏移是多少，但也牺牲了跨 64B 缓存行时的性能。此外，Oryon 针对一个 Load 转发两个 Store 的情况的支持比较特别，要求 Store 地址对齐到 4B。
+由此看出 Oryon 和 [Zen 5](./amd-zen5.md) 以及 [Neoverse V2](./arm-neoverse-v2.md) 在设计思路上的不同：Oryon 追求 Load 和 Store 的自由组合，允许只有一部分覆盖，也无所谓地址偏移是多少，但也牺牲了跨 64B 缓存行时的性能。此外，Oryon 针对一个 Load 转发两个 Store 的情况的支持比较特别，要求 Store 地址对齐到 4B。
 
 成功转发时 9 cycle，有 Overlap 但转发失败时 17-23 cycle，跨缓存行时要 40+ cycle。
 
@@ -355,11 +355,11 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 沿用之前测试 L1 DTLB 的方法，把规模扩大到 L2 Unified TLB 的范围，就可以测出来 L2 Unified TLB 的容量，下面是 Oryon 上的测试结果：
 
-![](./qualcomm_oryon_l2tlb.png)
+![](./qualcomm-oryon-l2tlb.png)
 
 可以看到拐点是 32768 个 Page 附近，说明 Oryon 的 L2 TLB 容量是 32768 项。我们也可以把测试范围扩大，看到完整的图像：
 
-![](./qualcomm_oryon_tlb.png)
+![](./qualcomm-oryon-tlb.png)
 
 第一个拐点是 224 * 4 KB = 896 KB，对应 L1 DTLB，此时访存延迟是 3 cycle；第二个拐点是 32768 * 4 KB = 131072 KB，对应 L2 TLB，此时访存延迟是 29.5 cycle，这个时候对 Cache 的占用是 32768 * 64 = 2 MB，已经超过了 L1 DCache 容量，所以这个延迟包括了 L1 DCache miss 的延迟，如果去掉官方宣称的 17 cycle 的 L1 DCache miss 延迟，就得到 29.5 - 17 = 12.5 cycle。
 
@@ -386,7 +386,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
 
-![](./qualcomm_oryon_l2.png)
+![](./qualcomm-oryon-l2.png)
 
 第一个拐点在 96KB，对应 L1 DCache 的容量，之后延迟在 18-22 周期之间波动，中间一段比较稳定在 20 cycle，这对应了 3 cycle load to load latency + 17 cycle l1 miss penalty。
 
@@ -415,7 +415,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 同时统计每次访存花费的时间以及 `0x8154, L1D_CACHE_HWPRF, Level 1 data cache hardware prefetch` 性能计数器的结果，得到测试结果如下：
 
-![](./qualcomm_oryon_prefetcher.png)
+![](./qualcomm-oryon-prefetcher.png)
 
 - 64B stride：可以看到在超出 96KB 的 L1 DCache 容量以后，访存延迟略微增加到 1ns，同时每次访存对对应一次硬件预取，此时主要是 Stride Prefetcher 在起作用
 - random cache line：可以看到在超出 L1 DCache 容量后，访存延迟大幅上升，但并没有直接降低到 L2 Cache 的访问延迟，同时也可以看到预取的比例急剧上升；说明即使是随机的访问模式，预取器可以记录下部分访存过程，从而降低了缓存缺失率，此时主要是 Region/Spatial Prefetcher 在起作用

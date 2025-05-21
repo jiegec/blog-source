@@ -62,7 +62,7 @@ A 核心上的程序要进行 Read a（表示读取 a 地址的数据，下面�
 
 这种内存模型就是 Sequential Consistency (简称 SC)，它的性质就是遵循 program order，从每个核心来看，代码怎么写的就怎么跑，不做重排，而来自不同核心的访存之间的顺序不做要求。下面是 SC 模型的图示（图源 [A Tutorial Introduction to the ARM and POWER Relaxed Memory Model](https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/test7.pdf)）：
 
-![](memory_model_and_memory_ordering_sc.png)
+![](memory-model-and-memory-ordering-sc.png)
 
 根据这个性质，我们就可以分析软件的行为，判断它是否可能出现特定的结果。下面举一个例子：
 
@@ -258,7 +258,7 @@ Ok
 
 依托 Store Buffer，我们可以构建出一个新的内存模型：在每个核心和内存子系统之间，多了一个 Store Buffer，Store 指令会先进入 Store Buffer，再进入内存子系统。当 Load 指令和 Store Buffer 中的 Store 指令有数据相关时，会从 Store Buffer 中取数据，如果不相关，或者不完全相关（例如只有一部分重合），则会从内存子系统中取数据，此时从内存子系统的角度来看，就发生了 Load 提前于 Store 执行的重排。这个模型被称为 [X86-TSO](https://dl.acm.org/doi/10.1145/1785414.1785443)（图源 [A Primer on Memory Consistency and Cache Coherence, Second Edition](https://link.springer.com/book/10.1007/978-3-031-01764-3)）：
 
-![](memory_model_and_memory_ordering_x86_tso.png)
+![](memory-model-and-memory-ordering-x86-tso.png)
 
 需要注意的是，X86-TSO 模型是在 [2010 年的论文 x86-TSO: a rigorous and usable programmer's model for x86 multiprocessors](https://dl.acm.org/doi/10.1145/1785414.1785443)中由学术界对现有 x86 处理器的内存模型的总结，但 Intel 和 AMD 在他们的文档中没有直接采用这个模型，而是给出了各种各样的规则。但实践中，可以认为 x86 处理器用的就是这个模型，从各自 litmus 测试中，也没有发现理论和实际不一致的地方。
 
@@ -289,7 +289,7 @@ Ok
 
 既然 Weak 了，那就自由到底：全都允许重排。如果用户不想重排，那再加合适的 fence 或 barrier 指令，阻止不想要的重排。在这个内存模型下，每个核心可以在向内存子系统读写前，对自己的读写进行重排（图源 [A Primer on Memory Consistency and Cache Coherence, Second Edition](https://link.springer.com/book/10.1007/978-3-031-01764-3)）：
 
-![](memory_model_and_memory_ordering_weak.png)
+![](memory-model-and-memory-ordering-weak.png)
 
 这意味着什么呢？前面出现过 Message Passing 的例子，结论是 MP 测试的情况在 SC 和 X86-TSO 场景下都被禁止。但如果我们在一个具有 Weak Memory Model 的机器上运行：
 
@@ -323,7 +323,7 @@ Histogram (4 states)
 
 更进一步，SC 和 X86-TSO 都要求有 Total Store Order（Multi-copy Atomic）：所有核心会看到统一的 Store 顺序。有要求，就可以舍弃，部分 Weak Memory Model 也不要求这一点，这个时候，内存模型就好像每个核心都有自己的一份内存，这些内存之间会互相传播 Store 以保证缓存一致性，但是有的核心可能先看到，有的核心可能后看到（图源 [A Tutorial Introduction to the ARM and POWER Relaxed Memory Model](https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/test7.pdf)）：
 
-![](memory_model_and_memory_ordering_weak_2.png)
+![](memory-model-and-memory-ordering-weak-2.png)
 
 这一点可以在 IRIW（全称 Independent Read of Independent Write；准确地说，为了排除 PodRR 重排的情况，要用 IRIW+addrs 或者加 barrier）Litmus 测试中看到。简单来说，IRIW 测试中，有两个核心负责写入，另外两个核心负责读，如果这两个负责读的核心观察到了不同的写入顺序，说明没有 Total Store Order（Multi-copy Atomic）：写入传播到不同核心的顺序可能打乱。
 
@@ -395,7 +395,7 @@ P1:
 
 这个 API 在很多编程语言中都有，C 的 stdatomic.h，C++ 的 std::memory_order，Rust 的 std::sync::atomic::Ordering 等等。它们对各种处理器的内存序进行了进一步的抽象，并且在编译的时候，由编译器或标准库把这些抽象的内存序翻译成实际的指令。以 C++ 的抽象为例，有如下几种内存序（图源 [cppreference](https://en.cppreference.com/w/cpp/atomic/memory_order)）：
 
-![](memory_model_and_memory_ordering_order.png)
+![](memory-model-and-memory-ordering-order.png)
 
 其中比较重要的 acquire 和 release，其实就是上面提到的 Load Acquire 和 Store Release。最后的 seq_cst，就对应了 Sequential Consistency（SC）模型，要模拟 SC 模型的行为。
 

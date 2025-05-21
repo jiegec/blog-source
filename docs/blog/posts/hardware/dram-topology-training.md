@@ -22,7 +22,7 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
 
 因此，实际上地址和控制信号是采用了串联的方式连接，也就是下图的右边的连接方式：
 
-![](./ddr_fly_by.png)
+![](./ddr-fly-by.png)
 
 图源 [Versal ACAP PCB Design User Guide (UG863)](https://docs.xilinx.com/r/en-US/ug863-versal-pcb-design/Signals-and-Connections-for-DDR4-Interfaces)。
 
@@ -116,13 +116,13 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
 
 再回到拓扑的问题上来，实际上除了 Fly by topology，还有一种拓扑是 Clam shell topology：把 DRAM 分布在 PCB 的上面和下面，这样可以节省 PCB 的面积，但是走线就会比较困难：
 
-![](./ddr_clam_shell.png)
+![](./ddr-clam-shell.png)
 
 图源 [Versal ACAP Programmable Network on Chip and Integrated Memory Controller LogiCORE IP Product Guide (PG313) ](https://docs.xilinx.com/r/en-US/pg313-network-on-chip/Clamshell-Topology).
 
 直观地讲，两个芯片都放在 PCB 的正面，如果要连线的话，如果保证引脚顺序接近一致，就可以比较容易地连接，不会有很多交叉的地方。但如果一个在正面，另一个在背面，引脚的顺序就倒转过来了，连线的时候就比较困难。解决的办法是，修改引脚的顺序，把一些引脚的功能进行对调，使得走线更加简单：
 
-![](./ddr_mirror.png)
+![](./ddr-mirror.png)
 
 图源 [Versal ACAP PCB Design User Guide (UG863)](https://docs.xilinx.com/r/en-US/ug863-versal-pcb-design/Utilizing-Address-Mirroring-to-Ease-Clamshell-Routing)
 
@@ -130,7 +130,7 @@ DRAM 一直有一个比较麻烦的初始化过程，就是 DRAM Training，其�
 
 此外，Clam Shell Topology 的正面和背面各有一个 cs_n 片选信号，但是这和 Dual Rank 不同：Dual Rank 是正面和背面都有同样数量的 DRAM 芯片，共享地址信号、数据信号和控制信号，总线上同一时间只有一侧的 DRAM 芯片在使用，好处是内存容量翻倍，并且两个 rank 可以互相掩盖延迟；而 Clam Shell Topology 的两个 cs_n 是为了给 Mode Register Set 操作指定正面或背面，而其余的大部分操作，可以正面和背面同时使用，因为它们的数据信号并没有共享。
 
-![](./ddr_rank.png)
+![](./ddr-rank.png)
 
 图源 [DIFFERENCE BETWEEN DUAL RANK AND SINGLE RANK RAM](https://blog.memory4less.com/2022/09/16/difference-between-dual-rank-and-single-rank-ram/)
 

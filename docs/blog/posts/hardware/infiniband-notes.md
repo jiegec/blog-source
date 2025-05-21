@@ -20,7 +20,7 @@ InfiniBand 的网络分为两层，第一层是由 End Node 和 Switch 组成的
 
 ![](./iba.png)
 
-![](./ib_am.png)
+![](./ib-am.png)
 
 ## Queue Pair
 
@@ -28,7 +28,7 @@ InfiniBand 的网络分为两层，第一层是由 End Node 和 Switch 组成的
 
 在 IB 中，也有类似的概念，就是 Queue Pair（QP），其实就是 Send Queue 和 Receive Queue 成对出现。另外还有 Completion Queue，当请求完成的时候，会在 CQ 上得到结果。
 
-![](./ib_qp.png)
+![](./ib-qp.png)
 
 ## Transport Functions
 
@@ -60,7 +60,7 @@ IB 支持四种 Transport Service，当 QP 在创建的时候，就需要从以�
 
 几种 Transport Service 的对比：
 
-![](./ib_comparison.png)
+![](./ib-comparison.png)
 
 在编程的时候，需要知道对端的 LID（Local ID）、QPN（Queue Pair Number）和 PSN（Packet Sequence Number），才能进行通信。如果要进行 RDMA，还需要知道 `R_Key` 和内存地址。这些信息一般是通过 TCP 来传输的。
 

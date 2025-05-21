@@ -113,7 +113,7 @@ uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP�
 
 构造一系列的 jmp 指令，使得 jmp 指令分布在不同的 page 上，使得 ITLB 成为瓶颈：
 
-![](./intel_golden_cove_itlb.png)
+![](./intel-golden-cove-itlb.png)
 
 可以看到 256 个 Page 出现了明显的拐点，对应的就是 256 的 L1 ITLB 容量。注意要避免 ICache 和 BTB 的容量成为瓶颈，把 jmp 指令分布在不同的 Cache Line 和 BTB entry 上。
 
@@ -136,7 +136,7 @@ uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP�
 
 为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 4 字节 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
 
-![](./intel_golden_cove_fetch_bandwidth.png)
+![](./intel-golden-cove-fetch-bandwidth.png)
 
 可以看到 footprint 在 32 KB 之前时可以达到 6 IPC，之后则降到 4 IPC，这里的 32 KB 就对应了 L1 ICache 的容量。
 
@@ -144,7 +144,7 @@ uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP�
 
 构造不同深度的调用链，测试每次调用花费的平均时间，得到下面的图：
 
-![](./intel_golden_cove_rs.png)
+![](./intel-golden-cove-rs.png)
 
 可以看到调用链深度为 20 时性能突然变差，因此 Return Stack 深度为 20。
 
@@ -274,7 +274,7 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
 
-![](./intel_golden_cove_l1dc.png)
+![](./intel-golden-cove-l1dc.png)
 
 可以看到 48KB 出现了明显的拐点，对应的就是 48KB 的 L1 DCache 容量。第二个拐点在 384KB，对应的是 L1 DTLB 的容量。
 
@@ -289,7 +289,7 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 用类似测 L1 DCache 的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 page 上，使得 DTLB 成为瓶颈：
 
-![](./intel_golden_cove_dtlb.png)
+![](./intel-golden-cove-dtlb.png)
 
 可以看到 96 Page 出现了明显的拐点，对应的就是 96 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 5 cycle；超出 L1 DTLB 容量后，Load to use latency 是 12 cycle，说明 L1 DTLB miss 带来了 7 cycle 的损失。
 
@@ -302,7 +302,7 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 沿用之前测试 L1 DTLB 的方法，把规模扩大到 L2 Unified TLB 的范围，就可以测出来 L2 Unified TLB 的容量，下面是 Golden Cove 上的测试结果：
 
-![](./intel_golden_cove_l2tlb.png)
+![](./intel-golden-cove-l2tlb.png)
 
 第一个拐点是 96 个 Page，对应 L1 DTLB，此时 CPI 从 5 提升到 12；第二个拐点是 768，对应 L1 DCache，此时 CPI 从 12 提升到 23；第三个拐点是 1600 左右，而没有到 2048，猜测有 QoS 限制了数据对 L2 TLB 的占用。
 
@@ -316,7 +316,7 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
 
-![](./intel_golden_cove_l2c.png)
+![](./intel-golden-cove-l2c.png)
 
 - 第一个拐点在 48KB，对应 L1 DCache 的容量，CPI 从 5 提升到 16
 - 第二个拐点在 384KB，对应 L1 DTLB 的容量，CPI 从 16 提升到 23
@@ -338,13 +338,13 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 
 在 Golden Cove 上按 64B 的跳步进行访存，测量每次访存的延迟，得到如下结果：
 
-![](./intel_golden_cove_prefetcher_64b_stride.png)
+![](./intel-golden-cove-prefetcher-64b-stride.png)
 
 可以观察到在 48KB 之内是 5 cycle latency，在 L2 Cache 范围内是 5-8 cycle latency。
 
 如果通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，即关闭 L1 data cache IP prefetcher，再在 0 号核心上重新跑上面的测试，得到如下结果：
 
-![](./intel_golden_cove_prefetcher_64b_stride_disable_prefetcher.png)
+![](./intel-golden-cove-prefetcher-64b-stride-disable-prefetcher.png)
 
 就可以看到 L2 Cache 的范围内的性能退化到了 16 Cycle，和随机 pointer chasing 一样。关闭其他的 prefetcher 则没有这个现象，说明正是 L1 data cache IP prefetcher 实现了针对 L1 的 Stride Prefetcher。
 
@@ -354,21 +354,21 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 
 首先是只访问一个 cache line 的时候，可以看到，除了已经访问过的 cache line，其他 cache line 都出现了缓存缺失，说明此时预取器没有在工作：
 
-![](./intel_golden_cove_prefetcher_1.png)
+![](./intel-golden-cove-prefetcher-1.png)
 
 接下来，按照固定的 stride 访问各个缓存行，发现当访问了五个 cache line 时，预取器会比较稳定地预取第六个 cache line：
 
-![](./intel_golden_cove_prefetcher_5.png)
+![](./intel-golden-cove-prefetcher-5.png)
 
 继续增加访问次数，可以看到预取器总是会预取将要访问的下一个 cache line：
 
-![](./intel_golden_cove_prefetcher_13.png)
+![](./intel-golden-cove-prefetcher-13.png)
 
 如果通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，即关闭 L1 data cache IP prefetcher，就会观察到上述 Stride 预取的行为消失，不会预取将要访问的下一个 cache line。
 
 把相同的代码放到 Gracemont 上运行，会看到它的预取器会预取将要访问的未来两个 cache line：
 
-![](./intel_golden_cove_prefetcher_gracemont_comparison.png)
+![](./intel-golden-cove-prefetcher-gracemont-comparison.png)
 
 可见不同微架构的预取器的策略是不同的。
 
@@ -381,6 +381,6 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 
 为了测试 ROB 的大小，设计了一个循环，循环开始和结束是长延迟的 long latency load。中间是若干条 NOP 指令，当 NOP 指令比较少时，循环的时候取决于 load 指令的时间；当 NOP 指令数量过多，填满了 ROB 以后，就会导致 ROB 无法保存循环末尾的 load 指令，性能出现下降。测试结果如下：
 
-![](./intel_golden_cove_rob.png)
+![](./intel-golden-cove-rob.png)
 
 当 NOP 数量达到 512 时，性能开始急剧下滑，说明 Golden Cove 的 ROB 大小是 512。
