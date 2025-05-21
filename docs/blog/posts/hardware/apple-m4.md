@@ -260,7 +260,19 @@ M4 E-Core 上的结果：
 
 ##### P-Core
 
+用类似的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 page 的不同 cache line 上，使得 DTLB 成为瓶颈，在 M4 P-Core 上：
+
+![](./apple-m4-p-core-l1dtlb.png)
+
+从 160 个页开始性能下降，到 200 个页时性能稳定在 9 CPI，认为 M4 P-Core 的 L1 DTLB 有 160 项，大小和 M1 P-Core 相同。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟。中间有时性能特别快，是 Load Address/Value Predictor 的功劳。
+
 ##### E-Core
+
+M4 E-Core 测试结果:
+
+![](./apple-m4-e-core-l1dtlb.png)
+
+从 192 个页开始性能下降，到 224 个页时性能稳定在 9 CPI，认为 M4 E-Core 的 L1 DTLB 有 192 项，比 M1 E-Core 的 128 项更大，甚至大过了 P-Core。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟，比 M1 E-Core 少了一个周期。
 
 #### Load/Store 带宽
 
