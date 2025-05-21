@@ -144,6 +144,26 @@ ret
 
 #### E-Core
 
+另一方面，M4 E-Core 的 BTB 设计和 Apple M1 的 E-Core 即 Icestorm 十分接近，当分支间距是 4 字节时：
+
+![](./apple-m4-e-core-btb-4b.png)
+
+可以看到 1024 的拐点，1024 之前是 1 IPC，之后增加到 3 IPC。比较奇怪的是，没有看到第二个拐点。
+
+8B 的间距：
+
+![](./apple-m4-e-core-btb-8b.png)
+
+拐点前移到 512。
+
+16B 的间距：
+
+![](./apple-m4-e-core-btb-16b.png)
+
+第一个拐点前移到 256，第二个拐点出现在 8192，而 Icestorm 的 L1 ICache 容量是 128KB，16B 间距下正好可以保存 8192 个分支。
+
+可见 M4 E-Core 的前端设计和 M4 P-Core 有较大的不同。
+
 ### L1 ITLB
 
 #### P-Core
