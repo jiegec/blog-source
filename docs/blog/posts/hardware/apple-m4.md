@@ -227,9 +227,34 @@ ret
 
 #### L1 DCache 容量
 
+官方信息：通过 sysctl 可以看到，M4 P-Core 具有 128KB L1 DCache，M4 E-Core 具有 64KB L1 DCache：
+
+```
+hw.perflevel0.l1dcachesize: 131072
+hw.perflevel1.l1dcachesize: 65536
+```
+
+和 M1 相同。
+
 ##### P-Core
 
+构造不同大小 footprint 的 pointer chasing 链，在每个页的开头放一个指针，测试不同 footprint 下每条 load 指令耗费的时间，M4 P-Core 上的结果：
+
+![](./apple-m4-p-core-l1dc.png)
+
+可以看到 128KB 出现了拐点，对应的就是 128KB 的 L1 DCache 容量。当 footprint 比较小的时候，由于 Load Address/Value Predictor 的介入，打破了依赖链，所以出现了 latency 小于正常 load to use 的 3 cycle  latency 的情况。
+
 ##### E-Core
+
+M4 E-Core 上的结果：
+
+![](./apple-m4-e-core-l1dc.png)
+
+可以看到 128KB 出现了明显的拐点，但实际上 M4 E-Core 的 L1 DCache 只有 64KB。猜测这是因为在测试的时候，是在每个 16KB 页的开头放一个指针，但如果 L1 DCache 的 Index 并非都在 16KB 内部，就会导致实际测出来的不是 L1 DCache 的大小。修改测试，使得每 8 字节一个指针，此时测出来的结果就是正确的 64KB 大小：
+
+![](./apple-m4-e-core-l1dc-2.png)
+
+此时 64KB 对应的就是 64KB 的 L1 DCache 容量。L1 DCache 范围内延迟是 3 cycle，之后提升到 14+ cycle。由此可见 M4 E-Core 没有 Load Address/Value Predictor，不能打断依赖链。
 
 #### L1 DTLB 容量
 
