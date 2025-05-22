@@ -269,7 +269,7 @@ M4 E-Core 上的结果：
 
 ##### E-Core
 
-M4 E-Core 测试结果:
+M4 E-Core 测试结果：
 
 ![](./apple-m4-e-core-l1dtlb.png)
 
