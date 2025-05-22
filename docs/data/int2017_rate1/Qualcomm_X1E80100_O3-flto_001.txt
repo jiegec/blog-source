@@ -1,8 +1,9 @@
 Built with GCC 12.2.0 from Debian Bookworm with -O3 -flto
+Running on Linux kernel 6.12.0-rc3-next-20241018-00006-gf45f3b79dcfc
 
                        Estimated                       Estimated
                  Base     Base        Base        Peak     Peak        Peak
-Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
 --------------- -------  ---------  ---------    -------  ---------  ---------
 500.perlbench_r       1      174         9.15  S
 500.perlbench_r       1      176         9.05  S
@@ -49,66 +50,80 @@ Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
  Est. SPECrate(R)2017_int_peak                                         Not Run
 
 500.perlbench_r: time (ms) = 174751
-500.perlbench_r: clock freq (MHz) = 3984.92
+500.perlbench_r: clock freq (MHz) = 3984.9235
 500.perlbench_r: instructions = 2.64981e+12
-500.perlbench_r: ipc = 3.81
-500.perlbench_r: misprediction rate (%) = 0.55
-500.perlbench_r: mpki = 1.05
+500.perlbench_r: branch instructions = 5.0317e+11
+500.perlbench_r: ipc = 3.8052
+500.perlbench_r: misprediction rate (%) = 0.5532
+500.perlbench_r: mpki = 1.0505
 502.gcc_r: time (ms) = 119917
-502.gcc_r: clock freq (MHz) = 3932.69
+502.gcc_r: clock freq (MHz) = 3932.6887
 502.gcc_r: instructions = 1.00004e+12
-502.gcc_r: ipc = 2.12
-502.gcc_r: misprediction rate (%) = 1.24
-502.gcc_r: mpki = 2.96
+502.gcc_r: branch instructions = 2.39218e+11
+502.gcc_r: ipc = 2.1205
+502.gcc_r: misprediction rate (%) = 1.2358
+502.gcc_r: mpki = 2.9561
 505.mcf_r: time (ms) = 165029
-505.mcf_r: clock freq (MHz) = 3996.97
+505.mcf_r: clock freq (MHz) = 3996.9692
 505.mcf_r: instructions = 7.15328e+11
-505.mcf_r: ipc = 1.08
-505.mcf_r: misprediction rate (%) = 8.23
-505.mcf_r: mpki = 18.83
+505.mcf_r: branch instructions = 1.63721e+11
+505.mcf_r: ipc = 1.0845
+505.mcf_r: misprediction rate (%) = 8.2262
+505.mcf_r: mpki = 18.8277
 520.omnetpp_r: time (ms) = 345142
-520.omnetpp_r: clock freq (MHz) = 3989.17
+520.omnetpp_r: clock freq (MHz) = 3989.1696
 520.omnetpp_r: instructions = 1.02264e+12
-520.omnetpp_r: ipc = 0.74
-520.omnetpp_r: misprediction rate (%) = 2.22
-520.omnetpp_r: mpki = 4.51
+520.omnetpp_r: branch instructions = 2.07805e+11
+520.omnetpp_r: ipc = 0.7428
+520.omnetpp_r: misprediction rate (%) = 2.2180
+520.omnetpp_r: mpki = 4.5070
 523.xalancbmk_r: time (ms) = 164305
-523.xalancbmk_r: clock freq (MHz) = 3990.13
+523.xalancbmk_r: clock freq (MHz) = 3990.1309
 523.xalancbmk_r: instructions = 1.05615e+12
-523.xalancbmk_r: ipc = 1.61
-523.xalancbmk_r: misprediction rate (%) = 0.31
-523.xalancbmk_r: mpki = 0.90
+523.xalancbmk_r: branch instructions = 3.09121e+11
+523.xalancbmk_r: ipc = 1.6110
+523.xalancbmk_r: misprediction rate (%) = 0.3068
+523.xalancbmk_r: mpki = 0.8978
 525.x264_r: time (ms) = 75173.6
-525.x264_r: clock freq (MHz) = 3959.78
+525.x264_r: clock freq (MHz) = 3959.7823
 525.x264_r: instructions = 1.51087e+12
-525.x264_r: ipc = 5.08
-525.x264_r: misprediction rate (%) = 1.29
-525.x264_r: mpki = 0.90
+525.x264_r: branch instructions = 1.05728e+11
+525.x264_r: ipc = 5.0756
+525.x264_r: misprediction rate (%) = 1.2871
+525.x264_r: mpki = 0.9007
 531.deepsjeng_r: time (ms) = 192461
-531.deepsjeng_r: clock freq (MHz) = 3996.53
+531.deepsjeng_r: clock freq (MHz) = 3996.5251
 531.deepsjeng_r: instructions = 1.55285e+12
-531.deepsjeng_r: ipc = 2.02
-531.deepsjeng_r: misprediction rate (%) = 3.67
-531.deepsjeng_r: mpki = 4.65
+531.deepsjeng_r: branch instructions = 1.96808e+11
+531.deepsjeng_r: ipc = 2.0188
+531.deepsjeng_r: misprediction rate (%) = 3.6711
+531.deepsjeng_r: mpki = 4.6527
 541.leela_r: time (ms) = 220204
-541.leela_r: clock freq (MHz) = 4000.17
+541.leela_r: clock freq (MHz) = 4000.1684
 541.leela_r: instructions = 1.80068e+12
-541.leela_r: ipc = 2.04
-541.leela_r: misprediction rate (%) = 9.02
-541.leela_r: mpki = 12.64
+541.leela_r: branch instructions = 2.52259e+11
+541.leela_r: ipc = 2.0442
+541.leela_r: misprediction rate (%) = 9.0248
+541.leela_r: mpki = 12.6429
 548.exchange2_r: time (ms) = 100256
-548.exchange2_r: clock freq (MHz) = 3988.09
+548.exchange2_r: clock freq (MHz) = 3988.0929
 548.exchange2_r: instructions = 2.17003e+12
-548.exchange2_r: ipc = 5.43
-548.exchange2_r: misprediction rate (%) = 1.48
-548.exchange2_r: mpki = 1.97
+548.exchange2_r: branch instructions = 2.8958e+11
+548.exchange2_r: ipc = 5.4274
+548.exchange2_r: misprediction rate (%) = 1.4788
+548.exchange2_r: mpki = 1.9734
 557.xz_r: time (ms) = 333283
-557.xz_r: clock freq (MHz) = 3995.95
+557.xz_r: clock freq (MHz) = 3995.9460
 557.xz_r: instructions = 1.8291e+12
-557.xz_r: ipc = 1.37
-557.xz_r: misprediction rate (%) = 3.33
-557.xz_r: mpki = 5.72
+557.xz_r: branch instructions = 3.14494e+11
+557.xz_r: ipc = 1.3734
+557.xz_r: misprediction rate (%) = 3.3254
+557.xz_r: mpki = 5.7177
+all: time (ms) = 1.89052e+06
+all: clock freq (MHz) = 3987.9578
+all: instructions = 1.53075e+13
+all: branch instructions = 2.5819e+12
 
 System Info:
-CPU Name: Qualcomm X1E80100
-Enabled: 12 cores, 1 chip
+CPU Name: -
+Enabled: -1 cores, 1 chip

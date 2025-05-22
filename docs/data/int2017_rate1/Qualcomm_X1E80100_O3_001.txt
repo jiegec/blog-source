@@ -1,8 +1,9 @@
 Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.12.0-rc3-next-20241018-00006-gf45f3b79dcfc
 
                        Estimated                       Estimated
                  Base     Base        Base        Peak     Peak        Peak
-Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
 --------------- -------  ---------  ---------    -------  ---------  ---------
 500.perlbench_r       1      179         8.90  S
 500.perlbench_r       1      185         8.58  S
@@ -49,66 +50,80 @@ Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
  Est. SPECrate(R)2017_int_peak                                         Not Run
 
 500.perlbench_r: time (ms) = 180962
-500.perlbench_r: clock freq (MHz) = 3953.57
+500.perlbench_r: clock freq (MHz) = 3953.5728
 500.perlbench_r: instructions = 2.79036e+12
-500.perlbench_r: ipc = 3.90
-500.perlbench_r: misprediction rate (%) = 0.53
-500.perlbench_r: mpki = 0.97
+500.perlbench_r: branch instructions = 5.10843e+11
+500.perlbench_r: ipc = 3.9002
+500.perlbench_r: misprediction rate (%) = 0.5285
+500.perlbench_r: mpki = 0.9676
 502.gcc_r: time (ms) = 123733
-502.gcc_r: clock freq (MHz) = 3927.81
+502.gcc_r: clock freq (MHz) = 3927.8092
 502.gcc_r: instructions = 1.05251e+12
-502.gcc_r: ipc = 2.17
-502.gcc_r: misprediction rate (%) = 1.18
-502.gcc_r: mpki = 2.82
+502.gcc_r: branch instructions = 2.51208e+11
+502.gcc_r: ipc = 2.1657
+502.gcc_r: misprediction rate (%) = 1.1816
+502.gcc_r: mpki = 2.8202
 505.mcf_r: time (ms) = 189279
-505.mcf_r: clock freq (MHz) = 3989.93
+505.mcf_r: clock freq (MHz) = 3989.9252
 505.mcf_r: instructions = 9.19365e+11
-505.mcf_r: ipc = 1.22
-505.mcf_r: misprediction rate (%) = 5.98
-505.mcf_r: mpki = 14.61
+505.mcf_r: branch instructions = 2.24562e+11
+505.mcf_r: ipc = 1.2174
+505.mcf_r: misprediction rate (%) = 5.9821
+505.mcf_r: mpki = 14.6118
 520.omnetpp_r: time (ms) = 345121
-520.omnetpp_r: clock freq (MHz) = 3986.65
+520.omnetpp_r: clock freq (MHz) = 3986.6460
 520.omnetpp_r: instructions = 1.09033e+12
-520.omnetpp_r: ipc = 0.79
-520.omnetpp_r: misprediction rate (%) = 2.03
-520.omnetpp_r: mpki = 4.21
+520.omnetpp_r: branch instructions = 2.25794e+11
+520.omnetpp_r: ipc = 0.7925
+520.omnetpp_r: misprediction rate (%) = 2.0333
+520.omnetpp_r: mpki = 4.2108
 523.xalancbmk_r: time (ms) = 167115
-523.xalancbmk_r: clock freq (MHz) = 3987.80
+523.xalancbmk_r: clock freq (MHz) = 3987.8047
 523.xalancbmk_r: instructions = 1.10553e+12
-523.xalancbmk_r: ipc = 1.66
-523.xalancbmk_r: misprediction rate (%) = 0.30
-523.xalancbmk_r: mpki = 0.87
+523.xalancbmk_r: branch instructions = 3.21135e+11
+523.xalancbmk_r: ipc = 1.6589
+523.xalancbmk_r: misprediction rate (%) = 0.3007
+523.xalancbmk_r: mpki = 0.8734
 525.x264_r: time (ms) = 75145.1
-525.x264_r: clock freq (MHz) = 3958.83
+525.x264_r: clock freq (MHz) = 3958.8334
 525.x264_r: instructions = 1.51214e+12
-525.x264_r: ipc = 5.08
-525.x264_r: misprediction rate (%) = 1.30
-525.x264_r: mpki = 0.91
+525.x264_r: branch instructions = 1.05844e+11
+525.x264_r: ipc = 5.0830
+525.x264_r: misprediction rate (%) = 1.3011
+525.x264_r: mpki = 0.9107
 531.deepsjeng_r: time (ms) = 206540
-531.deepsjeng_r: clock freq (MHz) = 3991.97
+531.deepsjeng_r: clock freq (MHz) = 3991.9719
 531.deepsjeng_r: instructions = 1.75898e+12
-531.deepsjeng_r: ipc = 2.13
-531.deepsjeng_r: misprediction rate (%) = 2.81
-531.deepsjeng_r: mpki = 3.99
+531.deepsjeng_r: branch instructions = 2.49125e+11
+531.deepsjeng_r: ipc = 2.1334
+531.deepsjeng_r: misprediction rate (%) = 2.8146
+531.deepsjeng_r: mpki = 3.9864
 541.leela_r: time (ms) = 234478
-541.leela_r: clock freq (MHz) = 3998.19
+541.leela_r: clock freq (MHz) = 3998.1860
 541.leela_r: instructions = 2.06383e+12
-541.leela_r: ipc = 2.20
-541.leela_r: misprediction rate (%) = 6.83
-541.leela_r: mpki = 11.00
+541.leela_r: branch instructions = 3.32062e+11
+541.leela_r: ipc = 2.2015
+541.leela_r: misprediction rate (%) = 6.8342
+541.leela_r: mpki = 10.9960
 548.exchange2_r: time (ms) = 99602.5
-548.exchange2_r: clock freq (MHz) = 3988.98
+548.exchange2_r: clock freq (MHz) = 3988.9832
 548.exchange2_r: instructions = 2.1283e+12
-548.exchange2_r: ipc = 5.36
-548.exchange2_r: misprediction rate (%) = 1.51
-548.exchange2_r: mpki = 2.05
+548.exchange2_r: branch instructions = 2.89432e+11
+548.exchange2_r: ipc = 5.3567
+548.exchange2_r: misprediction rate (%) = 1.5111
+548.exchange2_r: mpki = 2.0550
 557.xz_r: time (ms) = 337481
-557.xz_r: clock freq (MHz) = 3991.37
+557.xz_r: clock freq (MHz) = 3991.3699
 557.xz_r: instructions = 1.82304e+12
-557.xz_r: ipc = 1.35
-557.xz_r: misprediction rate (%) = 3.30
-557.xz_r: mpki = 5.69
+557.xz_r: branch instructions = 3.14135e+11
+557.xz_r: ipc = 1.3534
+557.xz_r: misprediction rate (%) = 3.3001
+557.xz_r: mpki = 5.6866
+all: time (ms) = 1.95946e+06
+all: clock freq (MHz) = 3982.1000
+all: instructions = 1.62444e+13
+all: branch instructions = 2.82414e+12
 
 System Info:
-CPU Name: Oryon
-Enabled: 12 cores, 1 chip
+CPU Name: -
+Enabled: -1 cores, 1 chip
