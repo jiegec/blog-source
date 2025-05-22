@@ -423,6 +423,8 @@ Apple 从 M2 开始引入 Load Address Predictor，从 M3 开始引入 Load Valu
 
 ##### P-Core
 
+构造依赖链，但是实际测试可以观察到打破依赖链的情况，比串行执行要更快。测试下来，大概可以跟踪 60 条 Load 指令的地址并实现预测。
+
 ##### E-Core
 
 M4 E-Core 没有实现 Load Address/Value Predictor。
@@ -431,7 +433,366 @@ M4 E-Core 没有实现 Load Address/Value Predictor。
 
 #### P-Core
 
+在 M4 P-Core 上测试如下各类指令的延迟和每周期吞吐：
+
+| Instruction        | Latency | Throughput |
+|--------------------|---------|------------|
+| asimd int add      | 2       | 4          |
+| asimd aesd/aese    | 2/3     | 4          |
+| asimd aesimc/aesmc | 2       | 4          |
+| asimd fabs         | 2       | 4          |
+| asimd fadd         | 3       | 4          |
+| asimd fdiv 64b     | 10      | 1          |
+| asimd fdiv 32b     | 8       | 1          |
+| asimd fmax         | 2       | 4          |
+| asimd fmin         | 2       | 4          |
+| asimd fmla         | 3       | 4          |
+| asimd fmul         | 3       | 4          |
+| asimd fneg         | 2       | 4          |
+| asimd frecpe       | 3       | 1          |
+| asimd frsqrte      | 3       | 1          |
+| asimd fsqrt 64b    | 13      | 0.5        |
+| asimd fsqrt 32b    | 10      | 0.5        |
+| fp cvtf2i (fcvtzs) | -       | 2          |
+| fp cvti2f (scvtf)  | -       | 3          |
+| fp fabs            | 2       | 4          |
+| fp fadd            | 2       | 4          |
+| fp fdiv 64b        | 10      | 1          |
+| fp fdiv 32b        | 8       | 1          |
+| fp fjcvtzs         | -       | 1          |
+| fp fmax            | 2       | 4          |
+| fp fmin            | 2       | 4          |
+| fp fmov f2i        | -       | 2          |
+| fp fmov i2f        | -       | 3          |
+| fp fmul            | 4       | 4          |
+| fp fneg            | 2       | 4          |
+| fp frecpe          | 3       | 1          |
+| fp frecpx          | 3       | 1          |
+| fp frsqrte         | 3       | 1          |
+| fp fsqrt 64b       | 13      | 0.5        |
+| fp fsqrt 32b       | 10      | 0.5        |
+| int add            | 1       | 7.5        |
+| int addi           | 1       | 8          |
+| int bfm            | 1       | 1          |
+| int crc            | 3       | 1          |
+| int csel           | 1       | 4          |
+| int madd (addend)  | 1       | 2.8        |
+| int madd (others)  | 4       | 2.8        |
+| int mrs nzcv       | -       | 2          |
+| int mul            | 3       | 3          |
+| int nop            | -       | 10         |
+| int sbfm           | 1       | 8          |
+| int sdiv           | 7       | 0.5        |
+| int smull          | 3       | 3          |
+| int ubfm           | 1       | 8          |
+| int udiv           | 7       | 0.5        |
+| not taken branch   | -       | 2          |
+| taken branch       | -       | 1-2        |
+| mem asimd load     | -       | 3          |
+| mem asimd store    | -       | 2          |
+| mem int load       | -       | 3          |
+| mem int store      | -       | 2          |
+
+从上面的结果可以初步得到的信息：
+
+1. 标量浮点和 ASIMD 吞吐最大都是 4，意味着有 4 个浮点/ASIMD 执行单元，但并非完全对称，例如 fdiv/frecpe/frecpx/frsqrte/fsqrt/fjcvtzs 由于吞吐不超过 1，大概率只能在一个执行单元内执行。但这些指令是不是都只能在同一个执行单元内执行，还需要进一步的测试；这部分和 M1 P-Core 相同，但浮点乘法 fmla/fmul 的延迟从 4 周期降低到了 3 周期
+2. 浮点和整数之间的 move 或 convert 指令，fmov i2f/cvti2f 吞吐是 3，fmov f2i/cvtf2i 吞吐是 2，那么这些指令是在哪个执行单元里实现的，是否需要同时占用整数执行单元和浮点执行单元，需要进一步测试；这部分和 M1 P-Core 相同
+3. 整数方面，根据吞吐，推断出如下几类指令对应的执行单元数量：
+    1. ALU: 8
+    2. CSEL: 4
+    3. Mul/MAdd: 3
+    3. Br/MRS NZCV: 2
+    4. CRC/BFM/Div: 1
+    5. ALU/CSEL/Mul/MAdd 的执行单元相比 M1 P-Core 有扩充
+4. 访存方面，每周期最多 3 Load 或者 2 Store；这部分和 M1 P-Core 相同
+
+首先来看浮点和 ASIMD 单元，根据上面的信息，认为至少有 4 个执行单元，每个执行单元都可以做这些操作：asimd int add/aes/fabs/fadd/fmax/fmin/fmla/fmul/fneg，下面把这些指令称为 basic fp/asimd ops + aes。接下来要判断，fmov f2i/fmov i2f/fdiv/frecpe/frecpx/frsqrte/fsqrt 由哪些执行单元负责执行，方法是把这些指令混合起来测试吞吐（此处的吞吐不代表 CPI，而是每周能够执行多少次指令组合，例如用 2 条指令的组合测试，那么吞吐等于 CPI 除以 2）：
+
+| 指令                  | 吞吐        |
+|-----------------------|-------------|
+| fp fdiv + fp frecpe   | 0.5         |
+| fp fdiv + fp frecpx   | 0.5         |
+| fp fdiv + fp frsqrte  | 0.5         |
+| fp fdiv + fp fsqrt    | 0.33=1/3    |
+| fp fdiv + fmov f2i    | 0.5         |
+| fp fdiv + 2x fmov f2i | 0.33=1/3    |
+| fp fdiv + 3x fmov i2f | 1           |
+| fp fdiv + 4x fmov i2f | 0.75=1/1.33 |
+| fmov i2f + 4x fp fadd | 1           |
+| fmov f2i + 4x fp fadd | 0.75=1/1.33 |
+
+根据以上测试结果，可以得到如下的推论：
+
+1. fp fdiv/frecpe/frecpx/frsqrte 混合的时候，吞吐只有一半，IPC 不变，说明这些指令在同一个执行单元中，混合并不能带来更高的 IPC；这部分和 M1 P-Core 相同
+2. fp fdiv 和 fp fsqrt 混合时，吞吐下降到 0.33 一个不太整的数字，猜测是因为它们属于同一个执行单元内的不同流水线，抢占寄存器堆写口；这部分和 M1 P-Core 相同
+3. fp fdiv + fmov f2i 的时候吞吐是 0.5，而 fdiv + 2x fmov f2i 时吞吐下降到 0.33，IPC 维持在 1，说明有 1 个执行单元执行 fdiv 或 fmov f2i，但奇怪的是单独执行 fmov f2i 可以达到 2 的 IPC；这部分吞吐比 M1 P-Core 要差
+4. fp fdiv + 3x fmov i2f 的时候吞吐是 1，而 fdiv + 4x fmov i2f 时吞吐下降到 0.75，此时每周期还是执行 3 条 fmov i2f 指令，意味着 fdiv 没有抢占 fmov i2f 的执行单元，它们用的执行单元是独立的；这部分和 M1 P-Core 相同
+5. fmov i2f + 4x fp fadd 的时候吞吐是 1，说明 fmov i2f 没有抢占 fp fadd 的执行单元；这部分和 M1 P-Core 相同
+
+推断这四个执行单元支持的操作：
+
+1. basic fp/asimd ops + aes + fdiv + frecpe + frecpx + frsqrte + fsqrt + fmov f2i + cvtf2i
+2. basic fp/asimd ops + aes + fmov f2i + cvtf2i
+3. basic fp/asimd ops + aes
+4. basic fp/asimd ops + aes
+
+当然还有很多指令没有测，不过原理是一样的。这部分和 M1 P-Core 相同。
+
+访存部分，前面已经在测 LSU 的时候测过了，每周期 Load + Store 不超过 4 个，其中 Load 不超过 3 个，Store 不超过 2 个。虽然从 IPC 的角度来看 LSU 的 Load/Store Pipe 未必准确，比如可能它发射和提交的带宽是不同的，但先暂时简化为如下的执行单元：
+
+1. load + store
+2. load
+3. load
+4. store
+
+这部分和 M1 P-Core 相同。
+
+最后是整数部分。从 addi 的指令来看，有 8 个 ALU，能够执行基本的整数指令。但其他很多指令可能只有一部分执行单元可以执行：bfm/crc/csel/madd/mrs nzcv/mul/div/branch/fmov i2f。为了测试这些指令使用的执行单元是否重合，进行一系列的混合指令测试，吞吐的定义和上面相同：
+
+| 指令                              | 吞吐        |
+|-----------------------------------|-------------|
+| 4x int csel + 3x fmov i2f         | 1           |
+| int csel + 2x fmov f2i            | 1           |
+| 2x int csel + 2x fmov f2i         | 0.80=1/1.25 |
+| 3x int csel + int bfm             | 1           |
+| 4x int csel + int bfm             | 0.80=1/1.25 |
+| 4x int csel + int crc             | 1           |
+| 3x int csel + int madd            | 1.33=1/0.75 |
+| 4x int csel + int madd            | 1           |
+| 4x int csel + 2x int madd         | 1           |
+| 4x int csel + 3x int madd         | 0.75=1/1.33 |
+| 4x int csel + int mul             | 1           |
+| 3x int csel + int sdiv            | 0.5         |
+| 4x int csel + int sdiv            | 0.45=1/2.23 |
+| 3x int csel + mrs nzcv            | 1           |
+| 4x int csel + mrs nzcv            | 0.80=1/1.25 |
+| 3x int csel + not taken branch    | 1           |
+| 4x int csel + not taken branch    | 0.80=1/1.25 |
+| mrs nzcv + not taken branch       | 1           |
+| mrs nzcv + 2x not taken branch    | 0.67=1/1.50 |
+| 2x fmov f2i + 2x not taken branch | 1           |
+| 2x fmov f2i + 2x int mul          | 1           |
+| 2x int madd + int crc             | 1           |
+| 3x int madd + int crc             | 0.75=1/1.33 |
+| 2x int madd + int mul             | 1           |
+| 3x int madd + int mul             | 0.75        |
+| 2x int madd + int sdiv            | 0.5         |
+| 3x int madd + int sdiv            | 0.5         |
+| 3x int madd + mrs nzcv            | 1           |
+
+根据上述结果分析：
+
+1. 吞吐与不混合时相同，代表混合的指令对应的执行单元不重合
+2. 2x int madd + int mul 的 IPC 是 3，3x int add + int mul 的 IPC 也是 3，说明有三个执行单元可以执行 madd 和 mul：
+    1. alu + madd + mul
+    2. alu + madd + mul
+    3. alu + madd + mul
+3. 2x int madd + int crc 的 IPC 是 3，3x int madd + int crc 的 IPC 也是 3，说明其中一个执行单元可以执行 crc：
+    1. alu + madd + mul + crc
+    2. alu + madd + mul
+    3. alu + madd + mul
+4. 4x int csel + 2x int madd 的吞吐是 1，4x int csel + 3x int madd 的吞吐是 0.75，说明它们有一个重合的执行单元，并且由于 4x int csel + int crc 的吞吐是 1，所以重合的执行单元不是 crc 的那一个：
+    1. alu + madd + mul + crc
+    2. alu + madd + mul + csel
+    3. alu + madd + mul
+    4. alu + csel
+    5. alu + csel
+    6. alu + csel
+5. 4x int csel + mrs nzcv 的 IPC 等于 4，说明 mrs nzcv 的执行单元被包括在能执行 csel 的四个执行单元当中；而 3x int madd + mrs nzcv 的吞吐等于 1，说明 mrs nzcv 的执行单元和 int madd 不重合：
+    1. alu + madd + mul + crc
+    2. alu + madd + mul + csel
+    3. alu + madd + mul
+    4. alu + csel + mrs nzcv
+    5. alu + csel + mrs nzcv
+    6. alu + csel
+6. 因为 mrs nzcv + 2x not taken branch 的吞吐是 0.67，此时 IPC 等于 2，说明它们的执行单元重合：
+    1. alu + madd + mul + crc
+    2. alu + madd + mul + csel
+    3. alu + madd + mul
+    4. alu + csel + mrs nzcv + branch
+    5. alu + csel + mrs nzcv + branch
+    6. alu + csel
+
+得到初步的结果：
+
+1. alu + madd + mul + crc
+2. alu + madd + mul + csel
+3. alu + madd + mul
+4. alu + csel + mrs nzcv + branch
+5. alu + csel + mrs nzcv + branch
+6. alu + csel
+7. alu
+8. alu
+
+还有很多其他的指令没有测试，不过方法是类似的。从上面的结果里，可以看到一些值得一提的点：
+
+1. fmov f2i 同时占用了浮点执行单元和整数执行单元，这主要是为了复用寄存器堆读写口：fmov f2i 需要读浮点寄存器堆，又需要写整数寄存器堆，那就在浮点侧读寄存器，在整数侧写寄存器。
+2. fmov i2f 既不在浮点，也不在整数，那只能在访存了：而正好访存执行单元需要读整数，写整数或浮点，那就可以复用它的寄存器堆写口来实现 fmov i2f 的功能。
+3. 可见整数/浮点/访存执行单元并不是完全隔离的，例如一些微架构，整数和浮点是直接放在一起的。
+
+小结：M4 P-Core 的执行单元如下：
+
+1. alu + madd + mul + crc
+2. alu + madd + mul + csel
+3. alu + madd + mul
+4. alu + csel + mrs nzcv + branch
+5. alu + csel + mrs nzcv + branch
+6. alu + csel
+7. alu
+8. alu
+9. load + store
+10. load
+11. load
+12. store
+13. basic fp/asimd ops + aes + fdiv + frecpe + frecpx + frsqrte + fsqrt + fmov f2i + cvtf2i
+14. basic fp/asimd ops + aes + fmov f2i + cvtf2i
+15. basic fp/asimd ops + aes
+16. basic fp/asimd ops + aes
+
+相比 M1 P-Core，只在整数方面有扩充。
+
 #### E-Core
+
+接下来用类似的方法测试 M4 E-Core：
+
+| Instruction        | Latency | Throughput |
+|--------------------|---------|------------|
+| asimd int add      | 2       | 3          |
+| asimd aesd/aese    | 2.5/3   | 3          |
+| asimd aesimc/aesmc | 2       | 3          |
+| asimd fabs         | 2       | 3          |
+| asimd fadd         | 2.5     | 3          |
+| asimd fdiv 64b     | 11      | 0.5        |
+| asimd fdiv 32b     | 9       | 0.5        |
+| asimd fmax         | 2       | 3          |
+| asimd fmin         | 2       | 3          |
+| asimd fmla         | 4       | 2          |
+| asimd fmul         | 4       | 2          |
+| asimd fneg         | 2       | 3          |
+| asimd frecpe       | 4       | 0.5        |
+| asimd frsqrte      | 4       | 0.5        |
+| asimd fsqrt 64b    | 15      | 0.5        |
+| asimd fsqrt 32b    | 12      | 0.5        |
+| fp cvtf2i (fcvtzs) | -       | 2          |
+| fp cvti2f (scvtf)  | -       | 1.5        |
+| fp fabs            | 2       | 3          |
+| fp fadd            | 2.5     | 3          |
+| fp fdiv 64b        | 10      | 1          |
+| fp fdiv 32b        | 8       | 1          |
+| fp fjcvtzs         | -       | 2          |
+| fp fmax            | 2       | 3          |
+| fp fmin            | 2       | 3          |
+| fp fmov f2i        | -       | 2          |
+| fp fmov i2f        | -       | 2          |
+| fp fmul            | 4       | 2          |
+| fp fneg            | 2       | 3          |
+| fp frecpe          | 3       | 1          |
+| fp frecpx          | 3       | 1          |
+| fp frsqrte         | 3       | 1          |
+| fp fsqrt 64b       | 13      | 0.5        |
+| fp fsqrt 32b       | 10      | 0.5        |
+| int add            | 1       | 4          |
+| int addi           | 1       | 3          |
+| int bfm            | 1       | 1          |
+| int crc            | 3       | 1          |
+| int csel           | 1       | 3          |
+| int madd (addend)  | 1       | 1          |
+| int madd (others)  | 3       | 1          |
+| int mrs nzcv       | -       | 3          |
+| int mul            | 3       | 1          |
+| int nop            | -       | 5          |
+| int sbfm           | 1       | 3          |
+| int sdiv           | 7       | 0.125=1/8  |
+| int smull          | 3       | 1          |
+| int ubfm           | 1       | 3          |
+| int udiv           | 7       | 0.125=1/8  |
+| not taken branch   | -       | 2          |
+| taken branch       | -       | 1          |
+| mem asimd load     | -       | 2          |
+| mem asimd store    | -       | 1          |
+| mem int load       | -       | 2          |
+| mem int store      | -       | 1          |
+
+从上面的结果可以初步得到的信息：
+
+1. 标量浮点和 ASIMD 吞吐最大都是 3，意味着有 3 个浮点/ASIMD 执行单元，但并非完全对称，例如 fdiv/frecpe/frecpx/frsqrte/fsqrt 由于吞吐不超过 1，大概率只能在一个执行单元内执行；fmla/fmul 的吞吐只有 2，只能在其中两个执行单元内执行。但这些指令是不是都只能在同一个执行单元内执行，还需要进一步的测试；相比 M1 E-Core，添加了一个浮点/ASIMD 执行单元
+2. 整数方面，根据吞吐，推断出如下几类指令对应的执行单元数量：
+    1. ALU: 4
+    2. CSEL/MRS NZCV/SBFM/UBFM: 3
+    3. Br: 2
+    4. Mul/CRC/BFM/MAdd/Div: 1
+    5. 相比 M1 E-Core 增加了 ALU 的数量
+3. 虽然 Br 的吞吐可以达到 2，但是每周期只能有一个 taken branch，和 M1 E-Core 相同
+4. 访存方面，每周期最多 2 Load 或者 1 Store，和 M1 E-Core 相同
+
+还是先看浮点，基本指令 add/aes/fabs/fadd/fmax/fmin/fneg 都能做到 3 的吞吐，也就是这三个执行单元都能执行这些基本指令。接下来测其余指令的混合吞吐（吞吐定义见上）：
+
+| 指令                  | 吞吐        |
+|-----------------------|-------------|
+| fp fdiv + fp frecpe   | 0.5         |
+| fp fdiv + fp frecpx   | 0.5         |
+| fp fdiv + fp frsqrte  | 0.5         |
+| fp fdiv + fp fsqrt    | 0.31=1/3.25 |
+| fp fdiv + fmov f2i    | 0.5         |
+| fp fdiv + 2x fmov f2i | 0.66=1/1.50 |
+| fp fdiv + 2x fmov i2f | 1           |
+| fp fdiv + 3x fmov i2f | 0.67=1/1.50 |
+| fp fdiv + fp fmul     | 1           |
+| fp fdiv + 2x fp fmul  | 0.6         |
+| fp fmul + fmov f2i    | 1           |
+| 2x fp fmul + fmov f2i | 0.67=1/1.50 |
+
+可见 fdiv/frecpe/frecpx/frsqrte/fsqrt 都在同一个执行单元内：
+
+1. basic fp/asimd ops + aes + fdiv + frecpe + frecpx + frsqrte + fsqrt
+2. basic fp/asimd ops + aes
+3. basic fp/asimd ops + aes
+
+由于 fp fdiv + 2x fmov f2i 的 IPC 是 2，说明它们有重合的执行单元：
+
+1. basic fp/asimd ops + aes + fdiv + frecpe + frecpx + frsqrte + fsqrt + fmov f2i
+2. basic fp/asimd ops + aes + fmov f2i
+3. basic fp/asimd ops + aes
+
+因为 2x fp fmul + fmov f2i 的 IPC 也只有 2，说明 fp fmul 和 fmov f2i 是重合的：
+
+1. basic fp/asimd ops + aes + fdiv + frecpe + frecpx + frsqrte + fsqrt + fmov f2i + fmul
+2. basic fp/asimd ops + aes + fmov f2i + fmul
+3. basic fp/asimd ops + aes
+
+还有很多指令没有测，不过原理是一样的。访存在前面测 LSU 的时候已经测过了：
+
+1. load + store
+2. load
+
+最后是整数部分。从 add 的指令来看，有 4 个 ALU，能够执行基本的整数指令。但其他很多指令可能只有一部分执行单元可以执行：bfm/crc/csel/madd/mul/div/branch。为了测试这些指令使用的执行单元是否重合，进行一系列的混合指令测试，吞吐的定义和上面相同：
+
+| 指令                           | 吞吐 |
+|--------------------------------|------|
+| int madd + int mul             | 0.5  |
+| int madd + int crc             | 0.5  |
+| int madd + 2x not taken branch | 1    |
+
+由此可见，madd/mul/crc 是一个执行单元，和 branch 的两个执行单元不重合，因此整数侧的执行单元有：
+
+1. alu + csel + mrs nzcv + branch
+2. alu + csel + mrs nzcv + branch
+3. alu + csel + mrs nzcv + madd + mul + crc
+4. alu
+
+小结：M4 E-Core 的执行单元如下：
+
+1. alu + csel + mrs nzcv + branch
+2. alu + csel + mrs nzcv + branch
+3. alu + csel + mrs nzcv + madd + mul + crc
+4. alu
+5. load + store
+6. load
+7. basic fp/asimd ops + aes + fdiv + frecpe + frecpx + frsqrte + fsqrt + fmov f2i + fmul
+8. basic fp/asimd ops + aes + fmov f2i + fmul
+9. basic fp/asimd ops + aes
+
+相比 M1 E-Core，整数和浮点方面都有扩充。
 
 ### Scheduler
 

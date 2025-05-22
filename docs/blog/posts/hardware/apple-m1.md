@@ -489,7 +489,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 | fp fdiv + fp frecpe   | 0.5         |
 | fp fdiv + fp frecpx   | 0.5         |
 | fp fdiv + fp frsqrte  | 0.5         |
-| fp fdiv + fp fsqrt    | 0.32=3/3.12 |
+| fp fdiv + fp fsqrt    | 0.33=1/3    |
 | fp fdiv + fmov f2i    | 1           |
 | fp fdiv + 2x fmov f2i | 0.67=1/1.50 |
 | fp fdiv + 3x fmov i2f | 1           |
@@ -500,7 +500,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 根据以上测试结果，可以得到如下的推论：
 
 1. fp fdiv/frecpe/frecpx/frsqrte 混合的时候，吞吐只有一半，IPC 不变，说明这些指令在同一个执行单元中，混合并不能带来更高的 IPC
-2. fp fdiv 和 fp fsqrt 混合时，吞吐下降到 0.32 一个不太整的数字，猜测是因为它们属于同一个执行单元内的不同流水线，抢占寄存器堆写口
+2. fp fdiv 和 fp fsqrt 混合时，吞吐下降到 0.33 一个不太整的数字，猜测是因为它们属于同一个执行单元内的不同流水线，抢占寄存器堆写口
 3. fp fdiv + fmov f2i 的时候吞吐是 1，而 fdiv + 2x fmov f2i 时吞吐下降到 0.67，IPC 维持在 2，说明有两个执行单元，都可以执行 fmov f2i，但只有其中一个可以执行 fp fdiv，导致 fdiv + 2x fmov f2i 的时候会抢执行单元
 4. fp fdiv + 3x fmov i2f 的时候吞吐是 1，而 fdiv + 4x fmov i2f 时吞吐下降到 0.75，此时每周期还是执行 3 条 fmov i2f 指令，意味着 fdiv 没有抢占 fmov i2f 的执行单元，它们用的执行单元是独立的
 5. fmov i2f + 4x fp fadd 的时候吞吐是 1，说明 fmov i2f 没有抢占 fp fadd 的执行单元
@@ -586,7 +586,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 还有很多其他的指令没有测试，不过方法是类似的。从上面的结果里，可以看到一些值得一提的点：
 
-1. fmov f2i 同时占用了两个浮点执行单元和两个整数执行单元，这主要是为了复用寄存器堆读写口：fmov f2i 需要读浮点寄存器堆，又需要写整数寄存器堆，那就在浮点侧读寄存器，在整数侧写寄存器。
+1. fmov f2i 同时占用了浮点执行单元和整数执行单元，这主要是为了复用寄存器堆读写口：fmov f2i 需要读浮点寄存器堆，又需要写整数寄存器堆，那就在浮点侧读寄存器，在整数侧写寄存器。
 2. fmov i2f 既不在浮点，也不在整数，那只能在访存了：而正好访存执行单元需要读整数，写整数或浮点，那就可以复用它的寄存器堆写口来实现 fmov i2f 的功能。
 3. 可见整数/浮点/访存执行单元并不是完全隔离的，例如一些微架构，整数和浮点是直接放在一起的。
 
@@ -679,17 +679,17 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 3. 虽然 Br 的吞吐可以达到 2，但是每周期只能有一个 taken branch
 4. 访存方面，每周期最多 2 Load 或者 1 Store
 
-还是先看浮点，基本指令 add/aes/fabs/fadd/fmax/fmin/fmla/fmul/fneg 都能做到 2 的吞吐，也就是这两个指定单元都能执行这些基本指令。接下来测其余指令的混合吞吐（吞吐定义见上）：
+还是先看浮点，基本指令 add/aes/fabs/fadd/fmax/fmin/fmla/fmul/fneg 都能做到 2 的吞吐，也就是这两个执行单元都能执行这些基本指令。接下来测其余指令的混合吞吐（吞吐定义见上）：
 
 | 指令                  | 吞吐        |
 |-----------------------|-------------|
 | fp fdiv + fp frecpe   | 0.5         |
 | fp fdiv + fp frecpx   | 0.5         |
 | fp fdiv + fp frsqrte  | 0.5         |
-| fp fdiv + fp fsqrt    | 0.31=3/3.25 |
+| fp fdiv + fp fsqrt    | 0.31=1/3.25 |
 | fp fdiv + fmov f2i    | 0.5         |
 | fp fdiv + 2x fmov i2f | 1           |
-| fp fdiv + 3x fmov i2f | 0.67/1/1.50 |
+| fp fdiv + 3x fmov i2f | 0.67=1/1.50 |
 
 可见 fdiv/frecpe/frecpx/frsqrte/fsqrt/fmov f2i 都在同一个执行单元内：
 
