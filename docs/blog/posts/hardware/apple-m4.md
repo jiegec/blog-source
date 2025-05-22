@@ -23,7 +23,7 @@ Apple M4 的官方信息乏善可陈，关于微架构的信息几乎为零，�
 
 网上已经有较多针对 Apple M4 微架构的评测和分析，建议阅读：
 
-- [苹果M4性能分析：尽力了，但芯片工艺快到头了！](https://www.bilibili.com/video/BV1NJ4m1w7zk/)
+- [苹果 M4 性能分析：尽力了，但芯片工艺快到头了！](https://www.bilibili.com/video/BV1NJ4m1w7zk/)
 
 下面分各个模块分别记录官方提供的信息，以及实测的结果。读者可以对照已有的第三方评测理解。官方信息与实测结果一致的数据会加粗。
 
@@ -798,15 +798,94 @@ M4 E-Core 没有实现 Load Address/Value Predictor。
 
 #### P-Core
 
+在 M4 P-Core 上测试，结果如下：
+
+| 指令     | 可调度 + 不可调度 | 可调度 |
+|----------|-------------------|--------|
+| ld       | 66                | 51     |
+| st addr  | 66                | 51     |
+| st data  | 86                | 70     |
+| alu      | 198               | 175    |
+| fp       | 266               | 243    |
+| crc      | 36                | 23     |
+| idiv     | 36                | 23     |
+| bfm      | 31                | 18     |
+| fjcvtzs  | 72                | 60     |
+| fmov f2i | 144               | 121    |
+| csel     | 98                | 85     |
+| mrs nzcv | 60                | 47     |
+
+首先看浮点：
+
+1. 可调度部分 fp 是 243，fmov f2i 是 121，fjcvtzs 是 60，有明显的 4:2:1 的关系
+2. fp/fmov f2i/fjcvtzs 吞吐刚好也是 4:2:1 的关系
+3. 因此四个执行单元前面各有一个独立的 60 entry 的 Scheduler
+4. 不可调度部分，266-243=23，144-121=23，72-60=12，猜测有两个 Non Scheduling Queue，每个 Non Scheduling Queue 12 entry，分别对应两个 Scheduler
+
+相比 M1 P-Core 有比较大的扩充：Scheduler 大小从 36 扩大到 60，Non Scheduling Queue 从 6 扩大到了 12。
+
+下面是访存部分，load 和 store addr 一样，但 store data 要更多，可能做了不同的处理。
+
+最后是整数部分，由于有 8 个整数执行单元，情况会比较复杂：
+
+1. 可调度部分 alu 一共是 175，其中 csel 是 85，crc/idiv 都是 23，bfm 是 18，mrs nzcv 是 47，结合 8 个整数执行单元，可以得到这 8 个执行单元对应的 Scheduler 大小关系：
+    1. alu + madd + mul + crc: 23 entries
+    2. alu + madd + mul + csel: a entries
+    3. alu + madd + mul: b entries
+    4. alu + csel + mrs nzcv + branch: c entries
+    5. alu + csel + mrs nzcv + branch: 47-c entries
+    6. alu + csel: 38-a entries
+    7. alu: d entries
+    8. alu: 67-b-d entries
+2. alu 不可调度部分是 198-175=23，crc/idiv/bfm/csel/mrs nzcv 不可调度部分都是 13，应该是其中四个执行单元共享一个 12 entry 的 Non Scheduling Queue；另外四个执行单元共享剩下的 12 entry 的 Non Scheduling Queue
+3. 最后只差 a 到 d 的取值没有求出来，可以通过进一步测试来更加精确地求出
+
+Scheduler 大小相比 M1 P-Core 有比较大的扩充，Non Scheduling Queue 没有变化。
+
 #### E-Core
+
+在 M4 E-Core 上测试，结果很不稳定，需要进一步研究。
 
 ### Reorder Buffer
 
 #### P-Core
 
+首先用不同数量的 fsqrt 依赖链加 NOP 指令测试 M4 P-Core 的 ROB 大小：
+
+![](./apple-m4-p-core-rob.png)
+
+可以看到当 fsqrt 数量足够多的时候，出现了统一的拐点，在 3184 条指令左右。
+
+为了测 Coalesced ROB 的大小，改成用 load/store 指令，可以测到拐点在 313 左右：
+
+![](./apple-m4-p-core-rob-load.png)
+
+3184 除以 313 约等于 10，意味着每个 group 可以保存 10 条指令，一共有 313 左右个 group。相比 M1 P-Core，Group 数量差不多，但是能保存的指令数量有了很大的提升。
+
 #### E-Core
 
+首先用 NOP 指令测试 M4 E-Core 的 ROB 大小：
+
+![](./apple-m4-e-core-rob.png)
+
+可以看到拐点是 513 条指令。
+
+为了测 Coalesced ROB 的大小，改成用 load/store 指令，可以测到拐点在 121 左右：
+
+![](./apple-m4-e-core-rob-load.png)
+
+但是 513 除以 121 是 4.24，离 4 或者 5 都有一段距离，比较奇怪，不确定每个 group 可以放多少条指令。容量上比 M1 E-Core 有明显提升。
+
 ### L2 Cache
+
+官方信息：通过 sysctl 可以看到，4 个 M4 P-Core 核心共享一个 16MB L2 Cache，6 个 M4 E-Core 核心共享一个 4MB L2 Cache：
+
+```
+hw.perflevel0.l2cachesize: 16777216
+hw.perflevel0.cpusperl2: 4
+hw.perflevel1.l2cachesize: 4194304
+hw.perflevel1.cpusperl2: 6
+```
 
 ### L2 TLB
 
