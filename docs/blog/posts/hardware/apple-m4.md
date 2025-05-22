@@ -41,7 +41,7 @@ Apple M4 的官方信息乏善可陈，关于微架构的信息几乎为零，�
 
 ![](./apple-m4-p-core-if-width.png)
 
-图中蓝线（cross-page）表示的就是上面所述的第一条指令放一个页，其余指令放第二个页的情况，横坐标是第二个页内的指令数，那么一次循环的指令数等于横坐标 +1。纵坐标是运行很多次循环的总 cycle 数除以循环次数，也就是平均每次循环耗费的周期数。可以看到每 16 条指令会多一个周期，因此 M4 P-Core 的前端取指宽度确实是 16 条指令，和 Apple M1 的 P-Core 即 Firestorm 是相同的。
+图中蓝线（cross-page）表示的就是上面所述的第一条指令放一个页，其余指令放第二个页的情况，横坐标是第二个页内的指令数，那么一次循环的指令数等于横坐标 +1。纵坐标是运行很多次循环的总 cycle 数除以循环次数，也就是平均每次循环耗费的周期数。可以看到每 16 条指令会多一个周期，因此 M4 P-Core 的前端取指宽度确实是 16 条指令，和 Apple M1 的 P-Core 是相同的。
 
 为了确认这个瓶颈是由取指造成的，又构造了一组实验，把循环的所有指令都放到一个页中，这个时候 Fetch 不再成为瓶颈（图中 aligned），两个曲线的对比可以明确地得出上述结论。
 
@@ -53,7 +53,7 @@ Apple M4 的官方信息乏善可陈，关于微架构的信息几乎为零，�
 
 ![](./apple-m4-e-core-if-width.png)
 
-由于两个曲线汇合的点太前（NOP 指令执行得不够快），无法确定 M4 E-Core 的取指宽度，但可以确认的是它每周期取值不少于 10 条指令，比 Apple M1 的 E-Core 即 Icestorm 要更快。如果读者想到什么办法来确认 M4 E-Core 的取指宽度，欢迎在评论区给出。
+由于两个曲线汇合的点太前（NOP 指令执行得不够快），无法确定 M4 E-Core 的取指宽度，但可以确认的是它每周期取值不少于 10 条指令，比 Apple M1 的 E-Core 要更快。如果读者想到什么办法来确认 M4 E-Core 的取指宽度，欢迎在评论区给出。
 
 ### L1 ICache
 
@@ -144,7 +144,7 @@ ret
 
 #### E-Core
 
-另一方面，M4 E-Core 的 BTB 设计和 Apple M1 的 E-Core 即 Icestorm 十分接近，当分支间距是 4 字节时：
+另一方面，M4 E-Core 的 BTB 设计和 Apple M1 的 E-Core 十分接近，当分支间距是 4 字节时：
 
 ![](./apple-m4-e-core-btb-4b.png)
 
@@ -160,7 +160,7 @@ ret
 
 ![](./apple-m4-e-core-btb-16b.png)
 
-第一个拐点前移到 256，第二个拐点出现在 8192，而 Icestorm 的 L1 ICache 容量是 128KB，16B 间距下正好可以保存 8192 个分支。
+第一个拐点前移到 256，第二个拐点出现在 8192，而 M4 E-Core 的 L1 ICache 容量是 128KB，16B 间距下正好可以保存 8192 个分支。
 
 可见 M4 E-Core 的前端设计和 M4 P-Core 有较大的不同。
 
@@ -244,7 +244,7 @@ hw.perflevel1.l1dcachesize: 65536
 
 ![](./apple-m4-p-core-l1dc.png)
 
-可以看到 128KB 出现了拐点，对应的就是 128KB 的 L1 DCache 容量。当 footprint 比较小的时候，由于 Load Address/Value Predictor 的介入，打破了依赖链，所以出现了 latency 小于正常 load to use 的 3 cycle  latency 的情况。
+可以看到 128KB 出现了拐点，对应的就是 128KB 的 L1 DCache 容量。当 footprint 比较小的时候，由于 Load Address/Value Predictor 的介入，打破了依赖链，所以出现了 latency 小于正常 load to use 的 3 cycle latency 的情况。
 
 ##### E-Core
 
@@ -891,4 +891,29 @@ hw.perflevel1.cpusperl2: 6
 
 #### P-Core
 
+沿用之前测试 L1 DTLB 的方法，把规模扩大到 L2 Unified TLB 的范围，就可以测出来 L2 Unified TLB 的容量，下面是 M4 P-Core 上的测试结果：
+
+![](./apple-m4-p-core-l2tlb.png)
+
+可以看到拐点是 3072 个 Page，说明 M4 P-Core 的 L2 TLB 容量是 3072 项。这和 M1 P-Core 是一样的。
+
 #### E-Core
+
+在 M4 E-Core 上测试：
+
+![](./apple-m4-e-core-l2tlb.png)
+
+可以看到拐点是 1024 个 Page，说明 M4 E-Core 的 L2 TLB 容量是 1024 项。这和 M4 E-Core 是一样的。
+
+## 总结
+
+M4 相比 M1，在很多方面做了迭代：
+
+1. P-Core 的前端有较大改进，尤其是 BTB 部分
+2. 各种结构相比 M1 有了容量的增加
+3. 寄存器堆增加了对 32 位整数寄存器的优化
+4. 引入了 Load Address/Value Predictor
+5. 扩充了执行单元，P-Core 主要扩充了整数，E-Core 则是整数和浮点都做了扩充
+6. 添加了 SME 指令集
+
+但也有一些遗憾，例如访存方面没有每周期带宽上的增加，P-Core 的浮点也没有增加。
