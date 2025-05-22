@@ -199,3 +199,13 @@ Intel Redwood Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来
 ![](./intel-redwood-cove-rob-size.png)
 
 当 NOP 数量达到 512 时，性能开始急剧下滑，说明 Redwood Cove 的 ROB 大小是 512。
+
+## 总结
+
+Redwood Cove 相比 Golden Cove 是比较小的一个迭代，更新的部分主要有：
+
+1. 扩大了 L1 ICache 容量
+2. 扩大了分支预测器的容量
+3. 增加了更多预取器
+
+因此性能提升也比较小，希望 Intel 可以更加给力一些，给 AMD 一些竞争压力。
