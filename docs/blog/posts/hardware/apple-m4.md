@@ -172,15 +172,15 @@ ret
 
 ![](./apple-m4-p-core-itlb.png)
 
-第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 12 Cycle，则对应了 192 项的 L1 ITLB 容量。这和 M1 是一样的。
+第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 12 Cycle，则对应了 192 项的 L1 ITLB 容量。这和 M1 P-Core 是一样的。
 
 #### E-Core
 
 在 M4 E-Core 上重复实验：
 
-![](./apple-m1-icestorm-itlb.png)
+![](./apple-m4-e-core-itlb.png)
 
-第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 10 Cycle，则对应了 192 项的 L1 ITLB 容量。相比 M1 的 128 项，容量变大了，和 M4 P-Core 看齐。
+第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 10 Cycle，则对应了 192 项的 L1 ITLB 容量。相比 M1 E-Core 的 128 项，容量变大了，和 M4 P-Core 看齐。
 
 ### Decode
 
