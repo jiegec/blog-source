@@ -2,7 +2,6 @@
 layout: post
 date: 2025-05-21
 tags: [cpu,apple,m4,performance,uarch-review]
-draft: true
 categories:
     - hardware
 ---
@@ -21,7 +20,7 @@ Apple M4 的官方信息乏善可陈，关于微架构的信息几乎为零，�
 
 ## 现有评测
 
-网上已经有较多针对 Apple M4 微架构的评测和分析，建议阅读：
+网上已经有针对 Apple M4 微架构的评测和分析，建议阅读：
 
 - [苹果 M4 性能分析：尽力了，但芯片工艺快到头了！](https://www.bilibili.com/video/BV1NJ4m1w7zk/)
 
