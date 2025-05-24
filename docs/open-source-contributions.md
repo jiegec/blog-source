@@ -18,6 +18,7 @@ permalink: /open-source-contributions/
 - [canokeys](https://github.com/canokeys)
 - [nfcim](https://github.com/nfcim)
 - [AOSC-Dev](https://github.com/AOSC-Dev)
+- [capstone-rust](https://github.com/capstone-rust)
 
 ## aosc-os-abbs
 
