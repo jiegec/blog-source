@@ -134,6 +134,7 @@ permalink: /benchmark/
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [6.87](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto -ljemalloc`）: [3.57](./data/int2017_rate1/Kunpeng_920_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto -ljemalloc`）: [6.03](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto-ljemalloc_001.txt)
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto -ljemalloc`）: [4.54](./data/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
 
 服务器平台（LTO）：
 
