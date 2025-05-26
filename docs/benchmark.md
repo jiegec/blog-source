@@ -154,7 +154,7 @@ permalink: /benchmark/
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto`）: [6.67](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.26](./data/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [5.71](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt) [4.37](./data/int2017_rate1/Loongson_3C6000_O3-flto_002.txt)
 
 服务器平台：
 
@@ -187,7 +187,7 @@ permalink: /benchmark/
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.10](./data/int2017_rate1/Kunpeng_920_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.53](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data/int2017_rate1/Loongson_3C5000_O3_001.txt)
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data/int2017_rate1/Loongson_3C6000_O3_001.txt)
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data/int2017_rate1/Loongson_3C6000_O3_001.txt) [4.14](./data/int2017_rate1/Loongson_3C6000_O3_002.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 
 手机平台（LTO）：
