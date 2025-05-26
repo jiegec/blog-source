@@ -146,7 +146,7 @@ permalink: /benchmark/
 - AMD EPYC 9K65 @ 3.7 GHz Zen 5c（`-O3 -flto`）: [7.78](./data/int2017_rate1/AMD_EPYC_9K65_O3-flto_001.txt)
 - AMD EPYC 9K85 @ 4.1 GHz Zen 5（`-O3 -flto`）: [8.83](./data/int2017_rate1/AMD_EPYC_9K85_O3-flto_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3 -flto`）: [6.62](./data/int2017_rate1/AMD_EPYC_9R14_O3-flto_001.txt)
-- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto`）: [7.19](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto_001.txt)
+- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto`）: [7.14](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3 -flto`）: [5.68](./data/int2017_rate1/AWS_Graviton_3_O3-flto_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto`）: [7.14](./data/int2017_rate1/AWS_Graviton_4_O3-flto_001.txt) [6.53](./data/int2017_rate1/AWS_Graviton_4_O3-flto_002.txt) [6.51](./data/int2017_rate1/AWS_Graviton_4_O3-flto_003.txt)
 - Hygon C86 7390（`-O3 -flto`）: [3.09](./data/int2017_rate1/Hygon_C86_7390_O3-flto_001.txt)
@@ -405,7 +405,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 注：GCC 指 GCC + GFortran，LLVM 指 Clang + Flang-new
 
-### LA664 不同编译器和编译选项下的测试结果
+### LA664 不同编译器版本和编译选项下的测试结果
 
 鉴于网上针对 LA664 的 SPEC INT 2017 Rate-1 性能测试有一些争议：
 
@@ -415,24 +415,26 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 小结一下上面的文章里的结果：
 
-- [3A6000 GCC 15.0.0 -O3 -march=native -flto by guee: 5.11](https://gitee.com/guee/CPU-benchmarks/blob/master/2024-11/3A6000/SPEC%20CPU%202017/intrate-1%20(OpenKylin%20%2B%20GCC15%2Bglibc2.40%20NUC%E5%8F%8C%E9%80%9A%E9%81%93%E5%86%85%E5%AD%98)/CPU2017.019.intrate.txt)
-- [3A6000 GCC 14.0.1 -Ofast -march=native -flto -ljemalloc by Matterhorn: 4.73](https://gitee.com/matter2024/CPU/blob/master/Spec2017/Ofast%2Bflto%2Bnative%2Bjemalloc/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.008.intrate.txt)
-- [3A6000 GCC 14.0.1 -Ofast -march=native -flto by Matterhorn: 4.69](https://gitee.com/matter2024/CPU/blob/master/Spec2017/Ofast%2Bflto%2Bnative/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.003.intrate.txt)
-- [3A6000 GCC 14.0.1 -O3 -msimd=lasx by Matterhorn: 4.50](https://gitee.com/matter2024/CPU/blob/master/Spec2017/O3/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.004.intrate.txt)
-- [3A6000 GCC 14.0.1 -O3 by Matterhorn: 4.17](https://gitee.com/matter2024/CPU/blob/master/Spec2017/O3/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.010.intrate.txt)
+- [3A6000 GCC 15.0.0 -O3 -march=native -flto by guee: 5.11, 2.04/GHz](https://gitee.com/guee/CPU-benchmarks/blob/master/2024-11/3A6000/SPEC%20CPU%202017/intrate-1%20(OpenKylin%20%2B%20GCC15%2Bglibc2.40%20NUC%E5%8F%8C%E9%80%9A%E9%81%93%E5%86%85%E5%AD%98)/CPU2017.019.intrate.txt)
+- [3A6000 GCC 14.0.1 -Ofast -march=native -flto -ljemalloc by Matterhorn: 4.73, 1.89/GHz](https://gitee.com/matter2024/CPU/blob/master/Spec2017/Ofast%2Bflto%2Bnative%2Bjemalloc/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.008.intrate.txt)
+- [3A6000 GCC 14.0.1 -Ofast -march=native -flto by Matterhorn: 4.69, 1.88/GHz](https://gitee.com/matter2024/CPU/blob/master/Spec2017/Ofast%2Bflto%2Bnative/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.003.intrate.txt)
+- [3A6000 GCC 14.0.1 -O3 -msimd=lasx by Matterhorn: 4.50, 1.80/GHz](https://gitee.com/matter2024/CPU/blob/master/Spec2017/O3/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.004.intrate.txt)
+- [3A6000 GCC 14.0.1 -O3 by Matterhorn: 4.17, 1.67/GHz](https://gitee.com/matter2024/CPU/blob/master/Spec2017/O3/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.010.intrate.txt)
 
 可见主要的分歧是在 GCC 版本和编译选项上。
 
 下面贴出本人测试的结果：
 
-- [3A6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.86](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
-- [3A6000 GCC 14.2.0 -O3 -flto: 4.56](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
-- [3A6000 GCC 14.2.0 -O3: 4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt)
-- [3C6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.54](./data/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
-- [3C6000 GCC 14.2.0 -O3 -flto: 4.39](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
-- [3C6000 GCC 14.2.0 -O3: 4.19](./data/int2017_rate1/Loongson_3C6000_O3_001.txt)
+- [3A6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.86, 1.94/GHz](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
+- [3A6000 GCC 14.2.0 -O3 -flto: 4.56, 1.82/GHz](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
+- [3A6000 GCC 14.2.0 -O3: 4.35, 1.74/GHz](./data/int2017_rate1/Loongson_3A6000_O3_001.txt)
+- [3C6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.54, 2.06/GHz](./data/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
+- [3C6000 GCC 14.2.0 -O3 -flto: 4.39, 2.00/GHz](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
+- [3C6000 GCC 14.2.0 -O3: 4.19, 1.90/GHz](./data/int2017_rate1/Loongson_3C6000_O3_001.txt)
 
 注：3A6000 频率是 2.5 GHz，3C6000 频率是 2.2 GHz。
+
+结论：性能受编译器版本和编译选项影响很大，如果对不上，那么性能的差距可能会影响和其他处理器比较的结论。
 
 ## SPEC FP 2017 Rate-1
 
