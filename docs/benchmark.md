@@ -535,7 +535,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD EPYC 9K65 @ 3.7 GHz Zen 5c（`-O3`）: [11.7](./data/fp2017_rate1/AMD_EPYC_9K65_O3_001.txt)
 - AMD EPYC 9K85 @ 4.1 GHz Zen 5（`-O3`）: [13.0](./data/fp2017_rate1/AMD_EPYC_9K85_O3_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [9.26](./data/fp2017_rate1/AMD_EPYC_9R14_O3_001.txt)
-- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [9.14](./data/fp2017_rate1/AMD_EPYC_9T24_O3_001.txt)
+- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [9.23](./data/fp2017_rate1/AMD_EPYC_9T24_O3_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3`）: [7.80](./data/fp2017_rate1/AWS_Graviton_3_O3_001.txt)
 - AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3`）: [8.10](./data/fp2017_rate1/AWS_Graviton_3E_O3_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [9.36](./data/fp2017_rate1/AWS_Graviton_4_O3_001.txt) [9.39](./data/fp2017_rate1/AWS_Graviton_4_O3_002.txt)
