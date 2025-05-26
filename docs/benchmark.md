@@ -1104,7 +1104,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Intel Core i9-12900KS: Golden Cove + Gracemont, Alder Lake
 - Intel Core i9-14900K: Raptor Cove + Gracemont, Raptor Lake
 - Intel Xeon 6981E(TencentCloud s9.large8, 4C 8G): Crestmont, Sierra Forest, w/o PMU
-- Intel Xeon 6982P-C(Aliyun g9i.large, 2C 8G): Redwood Cove, Granite Rapids
+- Intel Xeon 6982P-C(Aliyun g9i.xlarge, 4C 16G): Redwood Cove, Granite Rapids
 - Intel Xeon D-2146NT: Skylake
 - Intel Xeon E5-2603 v4: Broadwell
 - Intel Xeon E5-2680 v3: Haswell
@@ -1127,6 +1127,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - 2025.05.26:
       - 测试 Loongson 3C6000 的性能
       - 在阿里云 g8a.xlarge 实例上测试 AMD EPYC 9T24 的性能
+      - 在阿里云 g9i.xlarge 实例上测试 Intel Xeon 6982P-C 的性能
 - 2025.05.16:
       - 在华为云 kc2.xlarge.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
       - 在 AWS c7a.xlarge 实例上测试 AMD EPYC 9R14 的性能
