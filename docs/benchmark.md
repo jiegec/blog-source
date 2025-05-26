@@ -124,7 +124,7 @@ permalink: /benchmark/
 - AMD EPYC 9K85 @ 4.1 GHz Zen 5（`-O3 -flto -ljemalloc`）: [9.48](./data/int2017_rate1/AMD_EPYC_9K85_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 9K65 @ 3.7 GHz Zen 5c（`-O3 -flto -ljemalloc`）: [8.19](./data/int2017_rate1/AMD_EPYC_9K65_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3 -flto -ljemalloc`）: [7.21](./data/int2017_rate1/AMD_EPYC_9R14_O3-flto-ljemalloc_001.txt)
-- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto -ljemalloc`）: [7.64](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto-ljemalloc_001.txt)
+- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3 -flto -ljemalloc`）: [7.62](./data/int2017_rate1/AMD_EPYC_9T24_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3 -flto -ljemalloc`）: [5.24](./data/int2017_rate1/AWS_Graviton_3_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3 -flto -ljemalloc`）: [6.17](./data/int2017_rate1/AWS_Graviton_3E_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.64](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt) [7.41](./data/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_002.txt)
