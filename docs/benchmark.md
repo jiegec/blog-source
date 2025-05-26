@@ -11,8 +11,9 @@ permalink: /benchmark/
 测试环境如下：
 
 1. 大部分测试：Debian Bookworm, GCC 12.2.0
-2. LoongArch 测试：Debian sid, GCC 14.2.0
+2. LoongArch 测试：Debian Trixie, GCC 14.2.0
 3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.0.0，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)
+4. 此外有针对不同编译器和编译器版本对比的测试，相关测试结果都进行了标注
 
 ## 注意事项
 
@@ -167,7 +168,7 @@ permalink: /benchmark/
 - AMD EPYC 9K65 @ 3.7 GHz Zen 5c（`-O3`）: [7.47](./data/int2017_rate1/AMD_EPYC_9K65_O3_001.txt)
 - AMD EPYC 9K85 @ 4.1 GHz Zen 5（`-O3`）: [8.44](./data/int2017_rate1/AMD_EPYC_9K85_O3_001.txt)
 - AMD EPYC 9R14 @ 3.7 GHz Zen 4（`-O3`）: [6.57](./data/int2017_rate1/AMD_EPYC_9R14_O3_001.txt) [6.41](./data/int2017_rate1/AMD_EPYC_9R14_O3_002.txt)
-- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [6.95](./data/int2017_rate1/AMD_EPYC_9T24_O3_001.txt)
+- AMD EPYC 9T24 @ 3.7 GHz Zen 4（`-O3`）: [6.94](./data/int2017_rate1/AMD_EPYC_9T24_O3_001.txt)
 - AWS Graviton 3 @ 2.6 GHz Neoverse V1（`-O3`）: [5.43](./data/int2017_rate1/AWS_Graviton_3_O3_001.txt)
 - AWS Graviton 3E @ 2.6 GHz Neoverse V1（`-O3`）: [5.53](./data/int2017_rate1/AWS_Graviton_3E_O3_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3`）: [7.00](./data/int2017_rate1/AWS_Graviton_4_O3_001.txt) [6.85](./data/int2017_rate1/AWS_Graviton_4_O3_002.txt)
@@ -403,6 +404,35 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - [LLVM 20.1.5 with -fwrapv](./data/others/SPEC_INT_2017_Intel_i9-14900K_O3_LLVM_20_fwrapv.txt)
 
 注：GCC 指 GCC + GFortran，LLVM 指 Clang + Flang-new
+
+### LA664 不同编译器和编译选项下的测试结果
+
+鉴于网上针对 LA664 的 SPEC INT 2017 Rate-1 性能测试有一些争议：
+
+- [龙芯 3A6000、华为鲲鹏 920B 与 Intel 各代 CPU GCC14 Spec 2017 性能比对评测](https://zhuanlan.zhihu.com/p/711617301)
+- [开源软件环境下龙芯 3A6000 的性能](https://zhuanlan.zhihu.com/p/7264671348)
+- [是什么原因导致 guee 测试 3C6000 同编译参数同编译器下会有两份差异较大的 Spec2017 测试报告？](https://www.zhihu.com/question/9063557412)
+
+小结一下上面的文章里的结果：
+
+- [3A6000 GCC 15.0.0 -O3 -march=native -flto by guee: 5.11](https://gitee.com/guee/CPU-benchmarks/blob/master/2024-11/3A6000/SPEC%20CPU%202017/intrate-1%20(OpenKylin%20%2B%20GCC15%2Bglibc2.40%20NUC%E5%8F%8C%E9%80%9A%E9%81%93%E5%86%85%E5%AD%98)/CPU2017.019.intrate.txt)
+- [3A6000 GCC 14.0.1 -Ofast -march=native -flto -ljemalloc by Matterhorn: 4.73](https://gitee.com/matter2024/CPU/blob/master/Spec2017/Ofast%2Bflto%2Bnative%2Bjemalloc/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.008.intrate.txt)
+- [3A6000 GCC 14.0.1 -Ofast -march=native -flto by Matterhorn: 4.69](https://gitee.com/matter2024/CPU/blob/master/Spec2017/Ofast%2Bflto%2Bnative/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.003.intrate.txt)
+- [3A6000 GCC 14.0.1 -O3 -msimd=lasx by Matterhorn: 4.50](https://gitee.com/matter2024/CPU/blob/master/Spec2017/O3/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.004.intrate.txt)
+- [3A6000 GCC 14.0.1 -O3 by Matterhorn: 4.17](https://gitee.com/matter2024/CPU/blob/master/Spec2017/O3/3A6000%E6%96%B0%E4%B8%96%E7%95%8C/CPU2017.010.intrate.txt)
+
+可见主要的分歧是在 GCC 版本和编译选项上。
+
+下面贴出本人测试的结果：
+
+- [3A6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.86](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
+- [3A6000 GCC 14.2.0 -O3 -flto: 4.56](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
+- [3A6000 GCC 14.2.0 -O3: 4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt)
+- [3C6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.54](./data/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
+- [3C6000 GCC 14.2.0 -O3 -flto: 4.39](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
+- [3C6000 GCC 14.2.0 -O3: 4.19](./data/int2017_rate1/Loongson_3C6000_O3_001.txt)
+
+注：3A6000 频率是 2.5 GHz，3C6000 频率是 2.2 GHz。
 
 ## SPEC FP 2017 Rate-1
 
@@ -1055,7 +1085,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - AMD EPYC 9K65(TencentCloud sa9.large8, 4C 8G): Zen 5c, Turin Dense
 - AMD EPYC 9K85(TencentCloud sa9e.large8, 4C 8G): Zen 5, Turin
 - AMD EPYC 9R14(AWS c7a.xlarge, 4C 8G): Zen 4, Genoa
-- AMD EPYC 9T24(Aliyun g8a.large, 2C 8G): Zen 4, Genoa
+- AMD EPYC 9T24(Aliyun g8a.xlarge, 4C 16G): Zen 4, Genoa
 - AMD Ryzen 5 7500F: Zen 4, Raphael
 - AMD Ryzen 7 5700X: Zen 3, Vermeer
 - AMD Ryzen 9 9950X: Zen 5, Granite Ridge
@@ -1091,6 +1121,9 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 更新历史
 
+- 2025.05.26:
+      - 测试 Loongson 3C6000 的性能
+      - 在阿里云 g8a.xlarge 实例上测试 AMD EPYC 9T24 的性能
 - 2025.05.16:
       - 在华为云 kc2.xlarge.2 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
       - 在 AWS c7a.xlarge 实例上测试 AMD EPYC 9R14 的性能
