@@ -543,7 +543,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Ampere Altra @ 3.0 GHz Neoverse N1（`-O3`）: [5.26](./data/fp2017_rate1/Ampere_Altra_O3_001.txt)
 - Hygon C86 7390（`-O3`）: [3.95](./data/fp2017_rate1/Hygon_C86_7390_O3_001.txt)
 - IBM POWER8NVL @ 4.0 GHz POWER8（`-O3`）: [4.10](./data/fp2017_rate1/IBM_POWER8NVL_O3_001.txt)
-- Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3`）: [9.60](./data/fp2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
+- Intel Xeon 6982P-C @ 3.6 GHz Redwood Cove（`-O3`）: [9.50](./data/fp2017_rate1/Intel_Xeon_6982P-C_O3_001.txt)
 - Intel Xeon D-2146NT @ 2.9 GHz Skylake（`-O3`）: [5.00](./data/fp2017_rate1/Intel_Xeon_D-2146NT_O3_001.txt)
 - Intel Xeon E5-2603 v4 @ 1.7 GHz Broadwell（`-O3`）: [3.14](./data/fp2017_rate1/Intel_Xeon_E5-2603_v4_O3_001.txt)
 - Intel Xeon E5-2680 v3 @ 3.3 GHz Haswell（`-O3`）: [5.15](./data/fp2017_rate1/Intel_Xeon_E5-2680_v3_O3_001.txt)
