@@ -427,9 +427,10 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 - [3A6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.86, 1.94/GHz](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 - [3A6000 GCC 14.2.0 -O3 -flto: 4.56, 1.82/GHz](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
-- [3A6000 GCC 14.2.0 -O3: 4.35, 1.74/GHz](./data/int2017_rate1/Loongson_3A6000_O3_001.txt)
 - [3C6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.54, 2.06/GHz](./data/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
+- [3C6000 GCC 15.1.0 -O3: 4.49, 2.04/GHz](./data/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3.txt)
 - [3C6000 GCC 14.2.0 -O3 -flto: 4.39, 2.00/GHz](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
+- [3A6000 GCC 14.2.0 -O3: 4.35, 1.74/GHz](./data/int2017_rate1/Loongson_3A6000_O3_001.txt)
 - [3C6000 GCC 14.2.0 -O3: 4.19, 1.90/GHz](./data/int2017_rate1/Loongson_3C6000_O3_001.txt)
 
 注：3A6000 频率是 2.5 GHz，3C6000 频率是 2.2 GHz。
