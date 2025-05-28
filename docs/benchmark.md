@@ -427,6 +427,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 下面贴出本人测试的结果：
 
+- [3C6000 GCC 15.1.0 -O3 -flto -ljemalloc: 4.90, 2.23/GHz](./data/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-flto-ljemalloc.txt)
 - [3A6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.86, 1.94/GHz](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 - [3C6000 GCC 15.1.0 -O3 -flto: 4.63, 2.10/GHz](./data/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-flto.txt)
 - [3A6000 GCC 14.2.0 -O3 -flto: 4.56, 1.82/GHz](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
