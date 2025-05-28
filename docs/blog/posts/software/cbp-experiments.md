@@ -277,6 +277,8 @@ LTO 去掉了 9% 的分支指令，对整体性能的影响还是蛮大的，MPK
 | LoongArch | O3              | GCC 14.2    | 1.75e+13 | 2.86e+12      | 16.3%         |
 | LoongArch | O3+LTO          | GCC 14.2    | 1.66e+13 | 2.61e+12      | 15.7%         |
 | LoongArch | O3+LTO+JEMALLOC | GCC 14.2    | 1.65e+13 | 2.61e+12      | 15.8%         |
+| LoongArch | O3              | GCC 15.1    | 1.64e+13 | 2.83e+12      | 17.3%         |
+| LoongArch | O3+LTO          | GCC 15.1    | 1.55e+13 | 2.59e+12      | 16.7%         |
 
 - O3: `-O3`
 - LTO: `-flto`
