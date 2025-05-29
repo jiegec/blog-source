@@ -11,9 +11,11 @@ permalink: /benchmark/
 测试环境如下：
 
 1. 大部分测试：Debian Bookworm, GCC 12.2.0
-2. LoongArch 测试：Debian Trixie, GCC 14.2.0
+2. LoongArch 测试：Debian Trixie, GCC 14.2.0，因为 Debian Bookworm 并不支持 LoongArch
 3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.0.0，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)
 4. 此外有针对不同编译器和编译器版本对比的测试，相关测试结果都进行了标注
+
+预计等 Debian Trixie 发布后，尽量重跑一遍测试。
 
 ## 注意事项
 
