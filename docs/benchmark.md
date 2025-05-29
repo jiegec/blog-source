@@ -429,6 +429,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 下面贴出本人测试的结果：
 
+- [3C6000 GCC 15.1.0 -O3 -msimd=lasx -flto -ljemalloc: 4.92, 2.24/GHz](./data/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-msimd=lasx-flto-ljemalloc.txt)
 - [3C6000 GCC 15.1.0 -O3 -flto -ljemalloc: 4.90, 2.23/GHz](./data/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-flto-ljemalloc.txt)
 - [3C6000 GCC 15.1.0 -O3 -march=native -flto -ljemalloc: 4.82, 2.20/GHz](./data/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-march=native-flto-ljemalloc.txt)
 - [3A6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.86, 1.94/GHz](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
@@ -446,7 +447,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 结论：性能受编译器版本和编译选项影响很大，如果对不上，那么性能的差距可能会影响和其他处理器比较的结论。在上面的例子里，这些编译器版本和编译选项带来的优化：
 
 1. `-flto`：约 5% 提升，`4.39/4.19=1.05`, `4.56/4.35=1.05`
-2. `-march=native` 或 `-msimd=lasx`（仅 GCC 14）: 约 8% 提升，`4.50/4.17=1.08`
+2. `-march=native`（仅 GCC 14）或 `-msimd=lasx`: 约 8% 提升，`4.50/4.17=1.08`
 3. GCC 15.1.0 vs GCC 14.2.0: 约 7% 提升，`4.49/4.19=1.07`
 3. `-ljemalloc`: 约 3-7% 提升，`4.90/4.63=1.06`, `4.86/4.56=1.07`, `4.54/4.39=1.03`
 
