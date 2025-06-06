@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-ARM Neoverse N1 是比较早的一代 ARM 服务器的处理器，它在很多地方都和 Cortex-A76 类似。它的 BTB 结构比较有意思，所以在这里对它的 BTB 做了一些分析
+ARM Neoverse N1 是比较早的一代 ARM 服务器的处理器，它在很多地方都和 Cortex-A76 类似。它的 BTB 结构比较有意思，所以在这里对它的 BTB 做一些分析。
 
 <!-- more -->
 
@@ -163,9 +163,9 @@ stride=128B 相比 stride=64B 的 Main BTB 容量进一步砍半，也是组相�
 
 首先来回顾一下 Main BTB 的 6144-entry 是怎么来的：虽然它没说是几路组相连，但因为 6144 有一个 3 的因子，它不是二的幂次，所以一定是在 Way 数量上产生的。这就导致了至少这样几种可能：
 
-- 3-way set associative，2048 sets
-- 6-way set associative，1024 sets
-- 12-way set associative，512 sets
+- 3-way set associative, 2048 sets
+- 6-way set associative, 1024 sets
+- 12-way set associative, 512 sets
 
 回顾前面的分析：4 条指令没有超过 Way 数量，8 条指令超过了，那么只能是上述可能里的 6-way set associative，1024 sets 的情况。
 
@@ -287,7 +287,7 @@ L1 BTB cache format:
 
 这个逻辑是比较复杂的，首先要筛选出地址大于或等于输入的 VA 的分支，其次要找到其中 VA 最小的分支。一个思路是保证 BTB 里面的 VA 是排好序的，但是硬件上排序并不好做，而且即使排序了，也需要做类似二分搜索的事情。另一个思路就是不管顺序，用组合逻辑把所有可能性都考虑到，计算出要找的分支。
 
-但是这个组合逻辑比较复杂，本质上就是一个 filter+argmin 操作，需要比较大的延迟。三个周期能做下来，但是两个周期内，就做不下这么复杂的组合逻辑了。那怎么办呢？
+但是这个组合逻辑比较复杂，本质上就是一个 filter+min 操作，需要比较大的延迟。三个周期能做下来，但是两个周期内，就做不下这么复杂的组合逻辑了。那怎么办呢？
 
 观察一下 CPI 比 3 小的情况：
 
@@ -327,6 +327,241 @@ stride=32B 或更大的时候，对齐的 32B 块内都只有一条分支，满�
 这就解释了前面看到的各种奇怪的 CPI 现象。
 
 小结：Main BTB 可以在 2 或 3 周期提供预测，其中 2 周期预测的条件是，只找到一条 VA 大于或等于输入 VA 的分支，此时可以跳过求 min 的组合逻辑，在第二个周期给出预测。
+
+## 模拟
+
+既然已经知道了它的 BTB 结构，就写了一段程序来模拟它的工作过程：
+
+```cpp
+// Cortex-A76/Neoverse-N1 BTB model
+// 16-entry Nano BTB, fully associative, 1 cycle latency.
+// 64-entry Micro BTB, fully associative, 2 cycle latency.
+// 3072-entry Main BTB, 3-way set associative, 2-3 cycle latency, each entry at
+// most 2 branches, index PC[14:5].
+
+#include <cassert>
+#include <set>
+#include <stdint.h>
+#include <stdio.h>
+#include <utility>
+#include <vector>
+
+struct BTBEntry {
+  bool valid;
+  uint64_t pc;
+  uint64_t target;
+};
+
+typedef BTBEntry NanoBTBEntry;
+typedef BTBEntry MicroBTBEntry;
+typedef BTBEntry MainBTBEntry;
+
+struct BTB {
+  NanoBTBEntry nanoBTB[16];
+  MicroBTBEntry microBTB[64];
+  // pretend as 6-way
+  MainBTBEntry mainBTB[1024][6];
+
+  // return latency
+  // use pc to predict a branch at pc, i.e. pva = pc
+  int match(uint64_t pc, uint64_t target) {
+    int result = 5; // miss penalty
+    // Nano BTB at P1
+    for (int i = 0; i < 16; i++) {
+      if (nanoBTB[i].pc == pc && nanoBTB[i].target == target) {
+        // Nano BTB hit
+        // LRU: move it to head
+        for (int j = i; j > 0; j--) {
+          nanoBTB[j] = nanoBTB[j - 1];
+        }
+        nanoBTB[0].pc = pc;
+        nanoBTB[0].target = target;
+        result = 1;
+        goto main_btb;
+      }
+    }
+
+    // Nano BTB miss, check Micro BTB at P1
+    // like victim cache
+    for (int i = 0; i < 64; i++) {
+      if (microBTB[i].pc == pc && microBTB[i].target == target) {
+        // Micro BTB hit
+        // Move to Nano BTB
+        for (int j = i; j > 0; j--) {
+          microBTB[j] = microBTB[j - 1];
+        }
+        microBTB[0].pc = nanoBTB[16 - 1].pc;
+        microBTB[0].target = nanoBTB[16 - 1].target;
+
+        for (int j = 16 - 1; j > 0; j--) {
+          nanoBTB[j] = nanoBTB[j - 1];
+        }
+        nanoBTB[0].pc = pc;
+        nanoBTB[0].target = target;
+        result = 2;
+        goto main_btb;
+      }
+    }
+
+    // Micro BTB miss
+    for (int j = 64 - 1; j > 0; j--) {
+      microBTB[j] = microBTB[j - 1];
+    }
+    microBTB[0].pc = nanoBTB[16 - 1].pc;
+    microBTB[0].target = nanoBTB[16 - 1].target;
+
+    for (int j = 16 - 1; j > 0; j--) {
+      nanoBTB[j] = nanoBTB[j - 1];
+    }
+    nanoBTB[0].pc = pc;
+    nanoBTB[0].target = target;
+
+  main_btb:
+    // check Main BTB
+    // PC[4:2]
+    uint64_t offset = pc & 0x1c;
+    // PC[14:5]
+    uint64_t index = (pc & 0x7fe0) >> 5;
+    assert(index < 1024);
+    // PC[n:15]
+    uint64_t tag = pc >> 15;
+    uint64_t min_offset = -1;
+    int min_i = -1;
+    int matches = 0;
+    for (int i = 0; i < 6; i++) {
+      // find matches
+      if ((mainBTB[index][i].pc >> 15) == tag && mainBTB[index][i].valid) {
+        // check offset
+        if ((mainBTB[index][i].pc & 0x1c) >= offset) {
+          if (min_i == -1) {
+            min_i = i;
+            min_offset = mainBTB[index][i].pc & 0x1c;
+          } else if ((mainBTB[index][i].pc & 0x1c) < min_offset) {
+            min_i = i;
+            min_offset = mainBTB[index][i].pc & 0x1c;
+          }
+          matches++;
+        }
+      }
+    }
+
+    // hit
+    if (min_offset == offset) {
+      if (matches != 0) {
+        // LRU
+        MainBTBEntry temp = mainBTB[index][min_i];
+        for (int i = min_i; i > 0; i--) {
+          mainBTB[index][i] = mainBTB[index][i - 1];
+        }
+        mainBTB[index][0] = temp;
+      }
+
+      if (matches == 1) {
+        // fast path
+        if (result == 5) {
+          result = 2;
+          goto end;
+        }
+      } else if (matches > 1) {
+        // slow path
+        if (result == 5) {
+          result = 3;
+          goto end;
+        }
+      }
+    }
+
+    // miss
+    for (int i = 6 - 1; i > 0; i--) {
+      mainBTB[index][i] = mainBTB[index][i - 1];
+    }
+    mainBTB[index][0].pc = pc;
+    mainBTB[index][0].target = target;
+    mainBTB[index][0].valid = true;
+
+  end:
+    // BTB miss
+    return result;
+  }
+};
+
+int main() {
+  FILE *fp = fopen("btb_size.csv", "w");
+  int min_size = 2;
+  int max_size = 8192;
+  int max_product = 1048576;
+  std::vector<int> mults = {1,  3,  5,  7,  9,  11, 13, 15, 17, 19,
+                            21, 23, 25, 27, 29, 31, 33, 35, 37, 39};
+
+  fprintf(fp, "pattern,size,stride,min,avg,max\n");
+  for (int stride = 4; stride <= 128; stride *= 2) {
+    std::set<int> sizes;
+    for (uint64_t size_base = min_size; size_base <= max_product / stride;
+         size_base *= 2) {
+      for (uint64_t mult : mults) {
+        for (uint64_t size = size_base * mult - 1;
+             size <= size_base * mult + 1 && size * stride <= max_product &&
+             size <= max_size;
+             size++) {
+          sizes.insert(size);
+        }
+      }
+    }
+
+    for (int size : sizes) {
+      BTB btb;
+      memset(&btb, 0, sizeof(btb));
+      int cycles = 0;
+      int branch_count = 1000 * size;
+      // warmup
+      for (int i = 0; i < branch_count; i++) {
+        uint64_t pc = ((i % size) * stride);
+        uint64_t target = (((i + 1) % size) * stride);
+        btb.match(pc, target);
+      }
+
+      // test
+      for (int i = 0; i < branch_count; i++) {
+        uint64_t pc = ((i % size) * stride);
+        uint64_t target = (((i + 1) % size) * stride);
+        cycles += btb.match(pc, target);
+      }
+      float cpi = (float)cycles / branch_count;
+      fprintf(fp, "0,%d,%d,%.2f,%.2f,%.2f\n", size, stride, cpi, cpi, cpi);
+      fflush(fp);
+    }
+  }
+  return 0;
+}
+```
+
+这个模型只评估了 BTB 的性能影响，没有考虑 ICache。下面是模拟和实际的对比图，左边是模拟，右边是实际：
+
+stride=4B：
+
+![](./arm-neoverse-n1-btb-4b-model.png)
+
+stride=8B：
+
+![](./arm-neoverse-n1-btb-8b-model.png)
+
+stride=16B：
+
+![](./arm-neoverse-n1-btb-16b-model.png)
+
+stride=32B：
+
+![](./arm-neoverse-n1-btb-32b-model.png)
+
+stride=64B：
+
+![](./arm-neoverse-n1-btb-64b-model.png)
+
+stride=128B：
+
+![](./arm-neoverse-n1-btb-128b-model.png)
+
+可以看到模型和实际的表现是非常一致的。
 
 ## 总结
 
