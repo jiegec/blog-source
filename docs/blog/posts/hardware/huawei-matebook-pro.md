@@ -127,4 +127,48 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 把 Type-C Hub 接到 MateBook Pro 上，显示器，键盘鼠标都正常工作了。
 
+## 侧载
+
+打开开发者模式后，在设置里，可以打开 USB 调试：把电脑右边的 USB Type-C 接到另一台电脑上，就可以用 hdc 连接了。
+
+然后给自己的项目加上 2in1 的 device type：
+
+```
+diff --git a/entry/build-profile.json5 b/entry/build-profile.json5
+index 38bdcc9..ad6fd45 100644
+--- a/entry/build-profile.json5
++++ b/entry/build-profile.json5
+@@ -30,7 +30,13 @@
+   ],
+   "targets": [
+     {
+-      "name": "default"
++      "name": "default",
++      "config": {
++        "deviceType": [
++          "default",
++          "2in1"
++        ]
++      }
+     },
+     {
+       "name": "ohosTest",
+diff --git a/entry/src/main/module.json5 b/entry/src/main/module.json5
+index 7b8532f..76c009c 100644
+--- a/entry/src/main/module.json5
++++ b/entry/src/main/module.json5
+@@ -5,7 +5,8 @@
+     "description": "$string:module_desc",
+     "mainElement": "EntryAbility",
+     "deviceTypes": [
+-      "default"
++      "default",
++      "2in1"
+     ],
+     "requestPermissions": [
+       {
+```
+
+就可以在鸿蒙电脑上跑了。
+
 ## 未完待续
