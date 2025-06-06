@@ -52,7 +52,7 @@ categories:
 
 开发者模式的打开方式和手机上一样，在设置里狂点软件版本。自带了一个 Terminal App，会提示你如何打开开发者模式。
 
-打开以后就可以访问终端了。df 如下：
+打开以后就可以访问终端了。shell 是用的 toybox。df 如下：
 
 ```shell
 $ df -h
@@ -74,6 +74,33 @@ tmpfs                                                 1.0G  608K  0.9G   1% /dev
 
 查看 [`/proc/cpuinfo`](./huawei-matebook-pro-cpuinfo.txt)。四个 0xd42，八个 0xd43，八个 0xd03，共 20 个逻辑核。
 
+试了一下 CodeArts IDE，显示支持 Java 和 Python 开发，UI 上有点像 JetBrains，但应该是基于 VSCode 做的二次开发。实际测了一下，用它创建 Python 项目后，可以在 CodeArts IDE 的命令行里用 Python3：
+
+```shell
+$ pwd
+/storage/Users/currentUser/IDEProjects/pythonProject
+$ python3 main.py
+Hello World!
+$ which python3
+/storage/Users/currentUser/IDEProjects/pythonProject/venv/bin/python3o
+$ /data/app/bin/python --version
+Python 3.12.5
+```
+
+看了看 `/data/app/bin` 目录，下面有 git，python，unzip, vi，rg，java（bisheng jdk 8/17），ssh，electron（用来跑 LSP！）等等。
+
+试了试 pip，也是工作的：
+
+```shell
+(venv) $ python3 -m pip install requests
+(venv) $ python3
+Python 3.12.5 (main, Aug 28 2024, 01:18:17) [Clang 15.0.4 (llvm-project 81cdec3cd117b1e6e3a9f1ebc4695d790c978463)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import requests
+>>> requests.get("https://github.com").status_code
+200
+>>> 
+```
 
 ## 外设
 
