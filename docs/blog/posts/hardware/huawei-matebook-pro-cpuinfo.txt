@@ -1,0 +1,203 @@
+$ cat /proc/cpuinfo
+Processor							: AArch64 Processor rev 3 (aarch64)
+processor							: 0
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd42
+CPU revision				: 3
+CPU physical				: 0
+
+processor							: 1
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd42
+CPU revision				: 3
+CPU physical				: 1
+
+processor							: 2
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd42
+CPU revision				: 3
+CPU physical				: 2
+
+processor							: 3
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd42
+CPU revision				: 3
+CPU physical				: 3
+
+processor							: 4
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd43
+CPU revision				: 0
+CPU physical				: 4
+
+processor							: 5
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd43
+CPU revision				: 0
+CPU physical				: 5
+
+processor							: 6
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd43
+CPU revision				: 0
+CPU physical				: 6
+
+processor							: 7
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd43
+CPU revision				: 0
+CPU physical				: 7
+
+processor							: 8
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd43
+CPU revision				: 0
+CPU physical				: 8
+
+processor							: 9
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd43
+CPU revision				: 0
+CPU physical				: 9
+
+processor							: 10
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd43
+CPU revision				: 0
+CPU physical				: 10
+
+processor							: 11
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd43
+CPU revision				: 0
+CPU physical				: 11
+
+processor							: 12
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd03
+CPU revision				: 0
+CPU physical				: 12
+
+processor							: 13
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd03
+CPU revision				: 0
+CPU physical				: 13
+
+processor							: 14
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd03
+CPU revision				: 0
+CPU physical				: 14
+
+processor							: 15
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd03
+CPU revision				: 0
+CPU physical				: 15
+
+processor							: 16
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd03
+CPU revision				: 0
+CPU physical				: 16
+
+processor							: 17
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd03
+CPU revision				: 0
+CPU physical				: 17
+
+processor							: 18
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd03
+CPU revision				: 0
+CPU physical				: 18
+
+processor							: 19
+BogoMIPS								: 2000.00
+Features								: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint svei8mm svebf16 i8mm bf16 dgh bti ecv
+CPU implementer	: 0x48
+CPU architecture: 8
+CPU variant					: 0x2
+CPU part								: 0xd03
+CPU revision				: 0
+CPU physical				: 19
+
+Hardware								: HUAWEI KirinX90
