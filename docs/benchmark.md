@@ -102,6 +102,7 @@ permalink: /benchmark/
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto`）: [8.62](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto_001.txt)
+- Huawei Kirin X90 @ 2.3 GHz（`-O3 -flto`）: [4.87](./data/int2017_rate1/Huawei_Kirin_X90_O3-flto_001.txt)
 
 桌面平台：
 

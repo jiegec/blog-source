@@ -122,6 +122,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 似乎没有安装 Remote 开发的插件，也没有安装插件的菜单。
 
+既然可以跑 shell，意味着可以 execve 了，意味着可以做 termux 的类似物了。期待鸿蒙 5 上早日有 Termux 用，直接跑 Linux 发行版。
+
 ## 虚拟机
 
 目前应用商城有两家虚拟机：Oseasy 和铠大师。两者都是提示安装 ARM64 版本的 Windows，尝试了一下给它一个 Debian 的安装 ISO，它不认。用的 unattended install，不需要进行什么操作。Oseasy 和铠大师的虚拟机不能同时开，但是可以一边安装完，再去安装另一边的 Windows。
