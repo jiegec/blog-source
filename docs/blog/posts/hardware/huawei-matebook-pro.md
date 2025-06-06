@@ -74,6 +74,8 @@ tmpfs                                                 1.0G  608K  0.9G   1% /dev
 
 查看 [`/proc/cpuinfo`](./huawei-matebook-pro-cpuinfo.txt)。四个 0xd42，八个 0xd43，八个 0xd03，共 20 个逻辑核。
 
+### CodeArts IDE
+
 试了一下 CodeArts IDE，显示支持 Java 和 Python 开发，UI 上有点像 JetBrains，但应该是基于 VSCode 做的二次开发。实际测了一下，用它创建 Python 项目后，可以在 CodeArts IDE 的命令行里用 Python3：
 
 ```shell
@@ -101,6 +103,10 @@ Type "help", "copyright", "credits" or "license" for more information.
 200
 >>> 
 ```
+
+需要 native 编译的库，比如 numpy 还不行，会提示找不到 make。
+
+终端里的括号补全有一些问题，等待修复。CodeArts IDE 的 Python 单步调试功能也是工作的。
 
 ## 外设
 
