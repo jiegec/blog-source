@@ -1,0 +1,21 @@
+Built with Clang 15.0.4 from DevEco Studio 5.0.1 and Flang 20.0.0 from LLVM APT on HarmonyOS NEXT 5.0.0.113 with -O3 -flto
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+=================================================================================
+503.bwaves_r          1        299      33.54  *
+507.cactuBSSN_r       1        195       6.49  *
+508.namd_r            1        219       4.34  *
+510.parest_r          1        500       5.23  *
+511.povray_r          1        445       5.25  *
+519.lbm_r             1        224       4.71  *
+521.wrf_r             1        304       7.37  *
+526.blender_r         1        411       3.71  *
+527.cam4_r            1       1112       1.57  *
+538.imagick_r         1        475       5.24  *
+544.nab_r             1        274       6.14  *
+549.fotonik3d_r       1        494       7.89  *
+554.roms_r            1        384       4.14  *
+ Est. SPECrate(R)2017_fp_base            5.61
+ Est. SPECrate(R)2017_fp_peak                                          Not Run

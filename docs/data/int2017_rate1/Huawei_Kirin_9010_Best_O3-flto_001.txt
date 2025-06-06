@@ -5,8 +5,8 @@ Built with Clang 15.0.4 from DevEco Studio 5.0.1 and Flang 20.0.0 from LLVM APT 
 Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
 =================================================================================
 500.perlbench_r       1        425       3.75  *
-502.gcc_r             1        267       5.30  *
-505.mcf_r             1        390       4.14  *
+502.gcc_r             1        267       5.36  *
+505.mcf_r             1        386       4.19  *
 520.omnetpp_r         1        495       2.65  *
 523.xalancbmk_r       1        314       3.36  *
 525.x264_r            1        151      11.60  *
@@ -14,5 +14,5 @@ Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate
 541.leela_r           1        645       2.57  *
 548.exchange2_r       1        230      11.39  *
 557.xz_r              1        540       2.00  *
- Est. SPECrate(R)2017_int_base           4.17
+ Est. SPECrate(R)2017_int_base           4.18
  Est. SPECrate(R)2017_int_peak                                         Not Run

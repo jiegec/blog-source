@@ -197,7 +197,8 @@ permalink: /benchmark/
 
 手机平台（LTO）：
 
-- Huawei Kirin 9010 @ 2.3 GHz （`-O3 -flto`）: [3.99](./data/int2017_rate1/Huawei_Kirin_9010_O3-flto_001.txt)
+- Huawei Kirin 9010 Best @ 2.3 GHz（`-O3 -flto`）: [4.18](./data/int2017_rate1/Huawei_Kirin_9010_Best_O3-flto_001.txt)
+- Huawei Kirin 9010 Full @ 2.3 GHz（`-O3 -flto`）: [3.96](./data/int2017_rate1/Huawei_Kirin_9010_Full_O3-flto_001.txt)
 
 注：
 
@@ -230,6 +231,7 @@ permalink: /benchmark/
             root@kc2 ~# dmesg | grep PMU
             [    1.196145] hw perfevents: enabled with armv8_pmuv3_0 PMU driver, 9 counters available
             ```
+7. Kirin 9010 因为散热问题，单独跑测试，和顺着跑一遍测试，结果差距比较大。因此提供了两组数据：Best（每一项单独跑，取最短时间，散热影响比较小）和 Full（按照顺序跑一次，散热影响比较大）。
 
 ### 分支预测器比较
 
@@ -580,7 +582,8 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 手机平台（LTO）：
 
-- Huawei Kirin 9010 @ 2.3 GHz （`-O3 -flto`）: [5.93](./data/fp2017_rate1/Huawei_Kirin_9010_O3-flto_001.txt)
+- Huawei Kirin 9010 Best @ 2.3 GHz（`-O3 -flto`）: [6.08](./data/fp2017_rate1/Huawei_Kirin_9010_Best_O3-flto_001.txt)
+- Huawei Kirin 9010 Full @ 2.3 GHz（`-O3 -flto`）: [5.61](./data/fp2017_rate1/Huawei_Kirin_9010_Full_O3-flto_001.txt)
 
 注：
 
@@ -607,6 +610,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
       make all -j4
       make install -j4
       ```
+5. Kirin 9010 因为散热问题，单独跑测试，和顺着跑一遍测试，结果差距比较大。因此提供了两组数据：Best（每一项单独跑，取最短时间，散热影响比较小）和 Full（按照顺序跑一次，散热影响比较大）。
 
 ### 网上的数据
 
