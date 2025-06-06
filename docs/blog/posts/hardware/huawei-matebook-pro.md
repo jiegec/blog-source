@@ -77,7 +77,7 @@ devfs                                                  15G  104M   15G   1% /dev
 tmpfs                                                 1.0G  608K  0.9G   1% /dev/shm
 ```
 
-查看 [`/proc/cpuinfo`](./huawei-matebook-pro-cpuinfo.txt)。四个 0xd42（2.0 GHz），八个 0xd43（2.0 GHz），八个 0xd03（2.3 GHz），共 20 个逻辑核。从 part id 来看，0xd42 和 0xd03 对应麒麟 9010 的大核和中核，但 0xd43 是新的 part id。
+查看 [`/proc/cpuinfo`](./huawei-matebook-pro-cpuinfo.txt)。四个 0xd42（2.0 GHz），八个 0xd43（2.0 GHz），八个 0xd03（2.3 GHz），共 20 个逻辑核。从 part id 来看，0xd03 和 0xd42 对应麒麟 9010 的大核和中核，但 0xd43 是新的 part id。
 
 简单跑了一部分 SPEC INT，即使都是 2.3 GHz 的 0xd03 大核，Kirin X90 的性能比 Kirin 9010 上要快 20%，可能是散热问题，或者缓存大小的问题，或许连微架构都是不一样的，这些都需要后续进一步测试。
 
