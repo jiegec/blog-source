@@ -171,10 +171,10 @@ index 7b8532f..76c009c 100644
        {
 ```
 
-就可以在鸿蒙电脑上跑了。我编写的两个鸿蒙上的应用：https://github.com/jiegec/SPECCPU2017Harmony 和 https://github.com/jiegec/NetworkToolsHarmony 都能正常在 MateBook Pro 上运行。
+就可以在鸿蒙电脑上跑了。我编写的两个鸿蒙上的应用：<https://github.com/jiegec/SPECCPU2017Harmony> 和 <https://github.com/jiegec/NetworkToolsHarmony> 都能正常在 MateBook Pro 上运行。
 
 开源的鸿蒙应用也可以编译+运行：
 
-- https://gitee.com/smdsbz/moonlight-ohos
+- <https://gitee.com/smdsbz/moonlight-ohos>
 
 ## 未完待续
