@@ -124,6 +124,10 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 既然可以跑 shell，意味着可以 execve 了，意味着可以做 termux 的类似物了。期待鸿蒙 5 上早日有 Termux 用，直接跑 Linux 发行版。
 
+试了一下 HOME 目录，发现它里面不能有可执行的文件，所以可能还是得打包到一个 App 里面，通过 `/data/app/bin` 类似的路径来访问。
+
+鸿蒙电脑上，可以访问各个 App 的内部目录了，无论是自带的文件浏览器，还是通过 DevEco Studio。这给调试带来了很多便利。
+
 ## 虚拟机
 
 目前应用商城有两家虚拟机：Oseasy 和铠大师。两者都是提示安装 ARM64 版本的 Windows，尝试了一下给它一个 Debian 的安装 ISO，它不认。用的 unattended install，不需要进行什么操作。Oseasy 和铠大师的虚拟机不能同时开，但是可以一边安装完，再去安装另一边的 Windows。
