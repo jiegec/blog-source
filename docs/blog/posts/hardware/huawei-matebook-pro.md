@@ -77,7 +77,9 @@ devfs                                                  15G  104M   15G   1% /dev
 tmpfs                                                 1.0G  608K  0.9G   1% /dev/shm
 ```
 
-查看 [`/proc/cpuinfo`](./huawei-matebook-pro-cpuinfo.txt)。四个 0xd42，八个 0xd43，八个 0xd03，共 20 个逻辑核。
+查看 [`/proc/cpuinfo`](./huawei-matebook-pro-cpuinfo.txt)。四个 0xd42，八个 0xd43，八个 0xd03，共 20 个逻辑核。从 part id 来看，0xd42 和 0xd03 对应麒麟 9010 的大核和中核，但 0xd43 是新的 part id。
+
+简单跑了一部分 SPEC INT，即使都是 2.3 GHz 的 0xd42 大核，Kirin X90 的性能比 Kirin 9010 上要快 20%，可能是散热问题，或者缓存大小的问题，或许连微架构都是不一样的，这些都需要后续进一步测试。
 
 ### CodeArts IDE
 
@@ -170,5 +172,9 @@ index 7b8532f..76c009c 100644
 ```
 
 就可以在鸿蒙电脑上跑了。我编写的两个鸿蒙上的应用：https://github.com/jiegec/SPECCPU2017Harmony 和 https://github.com/jiegec/NetworkToolsHarmony 都能正常在 MateBook Pro 上运行。
+
+开源的鸿蒙应用也可以编译+运行：
+
+- https://gitee.com/smdsbz/moonlight-ohos
 
 ## 未完待续
