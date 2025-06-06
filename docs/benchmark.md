@@ -503,6 +503,11 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.73](./data/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
 
+桌面平台（LTO）：
+
+- Huawei Kirin X90 @ 2.3 GHz（`-O3 -flto`）: [7.42](./data/fp2017_rate1/Huawei_Kirin_X90_O3-flto_001.txt)
+
+
 桌面平台：
 
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
@@ -1141,6 +1146,8 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 更新历史
 
+- 2025.06.06:
+      - 测试 Huawei Kirin X90 的性能
 - 2025.05.26:
       - 测试 Loongson 3C6000 的性能
       - 在阿里云 g8a.xlarge 实例上测试 AMD EPYC 9T24 的性能
