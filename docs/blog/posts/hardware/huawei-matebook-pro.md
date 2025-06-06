@@ -84,7 +84,7 @@ SPEC FP 可能快的还不止 20%，详细数据在测完以后会放到 <https:
 
 ### CodeArts IDE
 
-试了一下 CodeArts IDE，显示支持 Java 和 Python 开发，UI 上有点像 JetBrains，但应该是基于 VSCode 做的二次开发。实际测了一下，用它创建 Python 项目后，可以在 CodeArts IDE 的命令行里用 Python3：
+试了一下从应用商城安装的 CodeArts IDE，显示支持 Java 和 Python 开发，UI 上有点像 JetBrains，但应该是基于 VSCode 做的二次开发。实际测了一下，用它创建 Python 项目后，可以在 CodeArts IDE 的命令行里用 Python3：
 
 ```shell
 $ pwd
@@ -131,6 +131,12 @@ Type "help", "copyright", "credits" or "license" for more information.
 ## 虚拟机
 
 目前应用商城有两家虚拟机：Oseasy 和铠大师。两者都是提示安装 ARM64 版本的 Windows，尝试了一下给它一个 Debian 的安装 ISO，它不认。用的 unattended install，不需要进行什么操作。Oseasy 和铠大师的虚拟机不能同时开，但是可以一边安装完，再去安装另一边的 Windows。
+
+试了试在虚拟机里装 WSL，说没有硬件虚拟化，大概是没有打开嵌套虚拟化的功能。
+
+在 6 核虚拟机里运行 ARM64 Geekbench 6：[Single-Core 1436, Multi-Core 5296](https://browser.geekbench.com/v6/cpu/12309313)。8 核：[Single-Core 1462, Multi-Core 7043](https://browser.geekbench.com/v6/cpu/12309427)。
+
+Oseasy 虚拟机只允许开到 8 个核心，估计是避免用到八个 0xD03 以外的核心吧，毕竟 Windows 的大小核调度不太好，但是这样剩下的核就测不出来性能了。
 
 ## 外设
 
