@@ -134,7 +134,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 试了试在虚拟机里装 WSL，说没有硬件虚拟化，大概是没有打开嵌套虚拟化的功能。
 
-在 6 核虚拟机里运行 ARM64 Geekbench 6：[Single-Core 1436, Multi-Core 5296](https://browser.geekbench.com/v6/cpu/12309313)。8 核：[Single-Core 1462, Multi-Core 7043](https://browser.geekbench.com/v6/cpu/12309427)。
+在 6 核虚拟机里运行 ARM64 Geekbench 6：[Single-Core 1436, Multi-Core 5296](https://browser.geekbench.com/v6/cpu/12309313)。8 核：[Single-Core 1462, Multi-Core 7043](https://browser.geekbench.com/v6/cpu/12309427)。算上剩下的 12 个逻辑核，考虑虚拟化的开销，多核分数达到网传的 11640 分，感觉是可能的。 
 
 Oseasy 虚拟机只允许开到 8 个核心，估计是避免用到八个 0xD03 以外的核心吧，毕竟 Windows 的大小核调度不太好，但是这样剩下的核就测不出来性能了。
 
