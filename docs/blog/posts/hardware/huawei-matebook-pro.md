@@ -142,7 +142,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 似乎没有安装 Remote 开发的插件，也没有安装插件的菜单。
 
-既然可以跑 shell，意味着可以 execve 了，意味着可以做 termux 的类似物了。期待鸿蒙 5 上早日有 Termux 用，直接跑 Linux 发行版。
+既然可以跑 shell，意味着可以 execve 了，意味着可以做 termux 的类似物了。期待鸿蒙 5 上早日有 Termux 用，直接跑 Linux 发行版。实际测了一下，Popen 确实是工作的。
 
 试了一下 HOME 目录，发现它里面不能有可执行的文件，所以可能还是得打包到一个 App 里面，通过 `/data/app/bin` 类似的路径来访问。
 
@@ -190,6 +190,30 @@ Type "help", "copyright", "credits" or "license" for more information.
   }
 }
 ```
+
+解压 `git.hnp` 后，里面的文件会被复制到 `/data/app/git.org/git_1.2` 目录下，然后有一个 `hnp.json` 指定了在 `/data/app/bin` 创建哪些文件的软连接，比如：
+
+```json
+{
+    "install": {
+        "links": [
+            {
+                "source": "bin/expr",
+                "target": "expr"
+            },
+            {
+                "source": "bin/git",
+                "target": "git"
+            }
+        ]
+    },
+    "name": "git",
+    "type": "hnp-config",
+    "version": "1.2"
+}
+```
+
+在 HarmonyOS SDK 里，有一个 hnpcli，可以用来生成 .hnp 文件。
 
 除此之外，就是 VSCode 加各种插件了。
 
