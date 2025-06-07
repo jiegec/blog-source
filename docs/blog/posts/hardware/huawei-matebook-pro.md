@@ -88,7 +88,7 @@ tmpfs                                                 1.0G  608K  0.9G   1% /dev
 - 9010 P-Core 2.3 GHz 0xd03 Full: INT 3.96 FP 5.86
 - 9010 E-Core 2.2 GHz 0xd42 Full: INT 3.21 FP 4.72
 
-详细数据： <https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results>。Best 代表每一项单独跑，散热条件好，Full 代表顺着跑一遍，散热条件差。
+详细数据： <https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results>。Best 代表每一项单独跑，散热条件好，Full 代表顺着跑一遍，散热条件差。由于编译器和编译选项不同，不能和在其他平台上跑的 SPEC CPU 2017 成绩直接对比，仅供参考。
 
 大概性能排序：X90 P-Core > X90 E-Core > 9010 P-Core > X90 LPE-Core > 9010 E-Core > 9010 LPE-Core。
 
