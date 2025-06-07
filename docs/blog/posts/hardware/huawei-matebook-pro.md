@@ -79,8 +79,16 @@ tmpfs                                                 1.0G  608K  0.9G   1% /dev
 
 查看 [`/proc/cpuinfo`](./huawei-matebook-pro-cpuinfo.txt)。四个 0xd42（2.0 GHz），八个 0xd43（2.0 GHz），八个 0xd03（2.3 GHz），共 20 个逻辑核。从 part id 来看，0xd03 和 0xd42 对应麒麟 9010 的大核和中核，但 0xd43 是新的 part id。
 
-简单跑了一部分 SPEC INT，即使都是 2.3 GHz 的 0xd03 大核，Kirin X90 的性能比 Kirin 9010 上要快 20%，
-SPEC FP 可能快的还不止 20%，详细数据在测完以后会放到 <https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results>。可能是散热问题，或者缓存大小和内存带宽的问题，或许连微架构都是不一样的，这些都需要后续进一步测试。
+使用 <https://github.com/jiegec/SPECCPU2017Harmony> 性能测试：
+
+- X90 P-Core 2.3 GHz 0xd03 Full: INT 4.87 FP 7.42
+- X90 E-Core 2.0 GHz 0xd43 Full: INT 4.28 FP 6.52
+- 9010 P-Core 2.3 GHz 0xd03 Best: INT 4.18 FP 6.22
+- 9010 P-Core 2.3 GHz 0xd03 Full: INT 3.96 FP 5.86
+
+详细数据： <https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results>。Best 代表每一项单独跑，Full 代表顺着跑一遍。
+
+即使是同样的 2.3 GHz 0xd03 的核，X90 比 9010 快上 20%：可能是散热问题，或者缓存大小和内存带宽的问题，或许连微架构都是不一样的，这些都需要后续进一步测试。而 X90 的中核也比 9010 的大核要快。
 
 ### CodeArts IDE
 
