@@ -85,8 +85,9 @@ tmpfs                                                 1.0G  608K  0.9G   1% /dev
 - X90 E-Core 2.0 GHz 0xd43 Full: INT 4.28 FP 6.52
 - 9010 P-Core 2.3 GHz 0xd03 Best: INT 4.18 FP 6.22
 - 9010 P-Core 2.3 GHz 0xd03 Full: INT 3.96 FP 5.86
+- 9010 E-Core 2.2 GHz 0xd42 Full: INT 3.21 FP 4.72
 
-详细数据： <https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results>。Best 代表每一项单独跑，Full 代表顺着跑一遍。
+详细数据： <https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results>。Best 代表每一项单独跑，散热条件好，Full 代表顺着跑一遍，散热条件差。
 
 即使是同样的 2.3 GHz 0xd03 的核，X90 比 9010 快上 20%：可能是散热问题，或者缓存大小和内存带宽的问题，或许连微架构都是不一样的，这些都需要后续进一步测试。而 X90 的中核也比 9010 的大核要快。
 
