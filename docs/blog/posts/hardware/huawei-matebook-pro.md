@@ -20,6 +20,14 @@ categories:
 
 外形上，就是 MateBook X Pro 加了一个 HarmonyOS 的标识，上手很轻，不愧是不到一公斤的笔记本，对于习惯用 MacBookAir 轻薄本的我来说，是很大的一个亮点。不像 MacBookAir，这台鸿蒙电脑有风扇，有点小小的不习惯，但还算安静。
 
+规格如下：
+
+- 970g 重量
+- 14.2 寸显示器
+- 3120x2080 分辨率，120 Hz 刷新率
+- 1.8mm 键程键盘
+- 70 Wh 电池
+
 ## 系统体验
 
 预装的版本是 HarmonyOS 5.0.1.305，有更新 5.0.1.310 SP9，首先更新了一下系统。这是我的第一台支持触屏的笔记本，所以用起来还有点新奇。这个柔光屏用起来触感不错，和之前买的柔光屏 MatePad 的触感类似。
@@ -137,6 +145,53 @@ Type "help", "copyright", "credits" or "license" for more information.
 既然可以跑 shell，意味着可以 execve 了，意味着可以做 termux 的类似物了。期待鸿蒙 5 上早日有 Termux 用，直接跑 Linux 发行版。
 
 试了一下 HOME 目录，发现它里面不能有可执行的文件，所以可能还是得打包到一个 App 里面，通过 `/data/app/bin` 类似的路径来访问。
+
+在 CodeArts IDE 里，可以访问 /data/storage/el1/bundle 目录，里面有一个 pc_entry.hap 文件，可以通过 `cat /data/storage/el1/bundle/pc_entry.hap | ssh hostname "cat - > pc_entry.hap"` 拷贝到其他机器上。这个文件有 1.9GB，可以看到在 `/data/app` 下面的各种文件，其实是来自于这个 `pc_entry.hap` 的 `hnp/arm64-v8a` 下面的一系列文件，例如 `git.hnp` 就是一个 zip 压缩包，里面就是 `/data/app/git.org/git_1.2` 目录的内容，这个东西叫做 `应用包内 Native 包（.hnp）`。这些文件在 module.json 里声明，对应 [hnpPackages 标签](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/module-configuration-file#hnppackages%E6%A0%87%E7%AD%BE)：
+
+```json
+{
+  "module": {
+    "hnpPackages": [
+      {
+        "package": "electron.hnp",
+        "type": "private"
+      },
+      {
+        "package": "huaweicloud-smartassist-java-ls.hnp",
+        "type": "private"
+      },
+      {
+        "package": "bishengjdk8.hnp",
+        "type": "private"
+      },
+      {
+        "package": "rg.hnp",
+        "type": "private"
+      },
+      {
+        "package": "unzip.hnp",
+        "type": "private"
+      },
+      {
+        "package": "git.hnp",
+        "type": "private"
+      },
+      {
+        "package": "bishengjdk17.hnp",
+        "type": "private"
+      },
+      {
+        "package": "python.hnp",
+        "type": "private"
+      }
+    ],
+    "name": "pc_entry",
+    "packageName": "pc_entry"
+  }
+}
+```
+
+除此之外，就是 VSCode 加各种插件了。
 
 鸿蒙电脑上，可以访问各个 App 的内部目录了，无论是自带的文件浏览器，还是通过 DevEco Studio。这给调试带来了很多便利。
 
