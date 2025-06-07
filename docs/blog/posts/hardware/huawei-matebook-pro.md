@@ -83,7 +83,7 @@ tmpfs                                                 1.0G  608K  0.9G   1% /dev
 
 - X90 P-Core 2.3 GHz 0xd03 Full: INT 4.87 FP 7.42
 - X90 E-Core 2.0 GHz 0xd43 Full: INT 4.28 FP 6.52
-- X90 LPE-Core 2.0 GHz 0xd42 Full: TODO
+- X90 LPE-Core 2.0 GHz 0xd42 Full: INT 3.25 FP TODO
 - 9010 P-Core 2.3 GHz 0xd03 Best: INT 4.18 FP 6.22
 - 9010 P-Core 2.3 GHz 0xd03 Full: INT 3.96 FP 5.86
 - 9010 E-Core 2.2 GHz 0xd42 Full: INT 3.21 FP 4.72
