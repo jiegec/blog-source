@@ -97,7 +97,7 @@ permalink: /benchmark/
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
 - Apple M1 @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.24](./data/int2017_rate1/Apple_M1_O3-flto_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto`）: [3.29](./data/int2017_rate1/Apple_M1_E-Core_O3-flto_001.txt)
-- Huawei Kirin X90 E-Core @ 2.3 GHz（`-O3 -flto`）: [4.28](./data/int2017_rate1/Huawei_Kirin_X90_E-Core_O3-flto_001.txt)
+- Huawei Kirin X90 E-Core @ 2.0 GHz（`-O3 -flto`）: [4.28](./data/int2017_rate1/Huawei_Kirin_X90_E-Core_O3-flto_001.txt)
 - Huawei Kirin X90 P-Core @ 2.3 GHz（`-O3 -flto`）: [4.87](./data/int2017_rate1/Huawei_Kirin_X90_P-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto`）: [6.37](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
@@ -510,6 +510,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 桌面平台（LTO）：
 
+- Huawei Kirin X90 E-Core @ 2.0 GHz（`-O3 -flto`）: [6.52](./data/fp2017_rate1/Huawei_Kirin_X90_E-Core_O3-flto_001.txt)
 - Huawei Kirin X90 P-Core @ 2.3 GHz（`-O3 -flto`）: [7.42](./data/fp2017_rate1/Huawei_Kirin_X90_P-Core_O3-flto_001.txt)
 
 

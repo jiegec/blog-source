@@ -1,0 +1,21 @@
+Built with Clang 15.0.4 from HarmonyOS Command Line Tools 5.0.13.200 and Flang 20.1.7 from LLVM APT on HarmonyOS NEXT 5.0.1.310 with -O3 -flto
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+=================================================================================
+503.bwaves_r          1        252      39.79  *
+507.cactuBSSN_r       1        164       7.72  *
+508.namd_r            1        208       4.57  *
+510.parest_r          1        496       5.27  *
+511.povray_r          1        402       5.81  *
+519.lbm_r             1        190       5.55  *
+521.wrf_r             1        264       8.48  *
+526.blender_r         1        324       4.70  *
+527.cam4_r            1        859       2.04  *
+538.imagick_r         1        467       5.33  *
+544.nab_r             1        268       6.28  *
+549.fotonik3d_r       1        398       9.79  *
+554.roms_r            1        260       6.11  *
+ Est. SPECrate(R)2017_fp_base            6.52
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
