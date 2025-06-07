@@ -198,8 +198,8 @@ permalink: /benchmark/
 
 手机平台（LTO）：
 
-- Huawei Kirin 9010 Best @ 2.3 GHz（`-O3 -flto`）: [4.18](./data/int2017_rate1/Huawei_Kirin_9010_Best_O3-flto_001.txt)
-- Huawei Kirin 9010 Full @ 2.3 GHz（`-O3 -flto`）: [3.96](./data/int2017_rate1/Huawei_Kirin_9010_Full_O3-flto_001.txt)
+- Huawei Kirin 9010 P-Core Best @ 2.3 GHz（`-O3 -flto`）: [4.18](./data/int2017_rate1/Huawei_Kirin_9010_P-Core_Best_O3-flto_001.txt)
+- Huawei Kirin 9010 P-Core Full @ 2.3 GHz（`-O3 -flto`）: [3.96](./data/int2017_rate1/Huawei_Kirin_9010_P-Core_Full_O3-flto_001.txt)
 
 注：
 
@@ -583,8 +583,8 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 手机平台（LTO）：
 
-- Huawei Kirin 9010 Best @ 2.3 GHz（`-O3 -flto`）: [6.22](./data/fp2017_rate1/Huawei_Kirin_9010_Best_O3-flto_001.txt)
-- Huawei Kirin 9010 Full @ 2.3 GHz（`-O3 -flto`）: [5.86](./data/fp2017_rate1/Huawei_Kirin_9010_Full_O3-flto_001.txt)
+- Huawei Kirin 9010 P-Core Best @ 2.3 GHz（`-O3 -flto`）: [6.22](./data/fp2017_rate1/Huawei_Kirin_9010_P-Core_Best_O3-flto_001.txt)
+- Huawei Kirin 9010 P-Core Full @ 2.3 GHz（`-O3 -flto`）: [5.86](./data/fp2017_rate1/Huawei_Kirin_9010_P-Core_Full_O3-flto_001.txt)
 
 注：
 
