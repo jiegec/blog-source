@@ -89,7 +89,7 @@ void main() {
 
 vertex shader 只是简单地把这些信息传递到顶点的坐标和 fragment shader。fragment shader 做的事情是：
 
-- 根据当前点经过差值出来的 u v 坐标，在 texture 中进行采样
+- 根据当前点经过插值出来的 u v 坐标，在 texture 中进行采样
 - 由于这个 texture 只有单通道，所以它的第一个 channel 也就是 `texture(text, texCoords).r` 就代表了这个字体在这个位置的 alpha 值
 - 然后把 alpha 值输出：`(1.0, 1.0, 1.0, alpha)`，即带有 alpha 的白色
 
