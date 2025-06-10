@@ -33,8 +33,8 @@ categories:
 - 5.10 from debian：正常
 - 6.1 from debian：正常
 - 6.2/6.3/6.4 from kernel.ubuntu.com: `echo simpledrm > /etc/modules-load.d/simpledrm.conf` 后正常，否则系统可以启动但是图形界面起不来
-- 6.5 from kernel.ubuntu.com：起不来
-- 6.12 from debian：起不来
+- 6.5 from kernel.ubuntu.com：起不来，需要强制关机
+- 6.12 from debian：起不来，需要强制关机
 
 最终效果：
 
