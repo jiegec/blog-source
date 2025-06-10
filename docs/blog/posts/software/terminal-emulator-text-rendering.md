@@ -244,6 +244,7 @@ void main() {
 final.r = textColor.r * alpha + dest.r * (1 - alpha);
 final.g = textColor.g * alpha + dest.g * (1 - alpha);
 final.b = textColor.b * alpha + dest.b * (1 - alpha);
+final.a = textColor.a * alpha + dest.a * (1 - alpha);
 ```
 
 由于是 OpenGL 做的 blending，我们需要用 OpenGL 自带的 blending mode 来实现上述公式。OpenGL 可以指定 RGB 的 source 和 dest 的 blending 方式，比如：
@@ -251,15 +252,18 @@ final.b = textColor.b * alpha + dest.b * (1 - alpha);
 - GL_ONE：乘以 1 的系数
 - GL_ONE_MINUS_SRC_ALPHA：乘以 (1 - source.a) 的系数
 
-根据这个，就可以想到，设置 `source = vec4(textColor * alpha, alpha)`，设置 source 采用 GL_ONE 方式，dest 采用 GL_ONE_MINUS_SRC_ALPHA 模式，那么 OpenGL 负责剩下的 blending 工作 `final = source * 1 + dest * (1 - source.a)`：
+根据这个，就可以想到，设置 `source = textColor * alpha`，设置 source 采用 GL_ONE 方式，dest 采用 GL_ONE_MINUS_SRC_ALPHA 模式，那么 OpenGL 负责剩下的 blending 工作 `final = source * 1 + dest * (1 - source.a)`：
 
 ```cpp
 final.r = source.r * 1.0 + dest.r * (1 - source.a) = textColor.r * alpha + dest.r * (1 - alpha);
 final.g = source.g * 1.0 + dest.g * (1 - source.a) = textColor.g * alpha + dest.g * (1 - alpha);
 final.b = source.b * 1.0 + dest.b * (1 - source.a) = textColor.b * alpha + dest.b * (1 - alpha);
+final.a = source.a * 1.0 + dest.a * (1 - source.a) = textColor.a * alpha + dest.a * (1 - alpha);
 ```
 
 正好实现了想要的计算公式。这个方法来自于 [Text Rendering - WebRender](https://github.com/servo/webrender/blob/main/webrender/doc/text-rendering.md)。有了这个推导后，就可以分两轮，完成终端里前后景的绘制了。
+
+注：如果不考虑 textColor 的 alpha 值，也可以在 source 使用 GL_SRC_ALPHA，此时设置 `source = vec4(textColor.rgb, alpha)`，这样 `final.r = source.r * source.a + dest.r * (1 - source.a) = textColor.r * alpha + dest.r * (1 - alpha)`，结果是一样的，不过这个时候 final 的 alpha 值等于 `source.a * source.a + dest.a * (1 - source.a)` 是 alpha 和 dest.a 经过 blend 以后的结果，如果不用它就无所谓。
 
 ## 参考
 
