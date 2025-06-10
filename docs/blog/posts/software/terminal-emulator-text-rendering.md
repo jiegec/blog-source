@@ -270,6 +270,147 @@ final.a = source.a * 1.0 + dest.a * (1 - source.a) = textColor.a * alpha + dest.
 
 注：如果不考虑 textColor 的 alpha 值，也可以在 source 使用 GL_SRC_ALPHA，此时设置 `source = vec4(textColor.rgb, alpha)`，这样 `final.r = source.r * source.a + dest.r * (1 - source.a) = textColor.r * alpha + dest.r * (1 - alpha)`，结果是一样的，不过这个时候 final 的 alpha 值等于 `source.a * source.a + dest.a * (1 - source.a)` 是 alpha 和 dest.a 经过 blend 以后的结果，如果不用它就无所谓。
 
+## 在鸿蒙上使用 OpenGL 渲染
+
+最后再简单列举一下，在鸿蒙上用 OpenGL 渲染都需要哪些事情：
+
+首先，在 ArkTS 中，插入一个 XComponent，然后在 XComponentController 的回调函数中，通知 native api：
+
+```javascript
+import testNapi from 'libentry.so';
+
+class MyXComponentController extends XComponentController {
+  onSurfaceCreated(surfaceId: string): void {
+    hilog.info(DOMAIN, 'testTag', 'onSurfaceCreated surfaceId: %{public}s', surfaceId);
+    testNapi.createSurface(BigInt(surfaceId));
+  }
+
+  onSurfaceChanged(surfaceId: string, rect: SurfaceRect): void {
+    hilog.info(DOMAIN, 'testTag', 'onSurfaceChanged surfaceId: %{public}s rect: %{public}s', surfaceId, JSON.stringify(rect));
+    testNapi.resizeSurface(BigInt(surfaceId), rect.surfaceWidth, rect.surfaceHeight);
+  }
+
+  onSurfaceDestroyed(surfaceId: string): void {
+    hilog.info(DOMAIN, 'testTag', 'onSurfaceDestroyed surfaceId: %{public}s', surfaceId);
+    testNapi.destroySurface(BigInt(surfaceId))
+  }
+}
+
+@Component
+struct Index {
+  xComponentController: XComponentController = new MyXComponentController();
+
+  build() {
+    // ...
+    XComponent({
+      type: XComponentType.SURFACE,
+      controller: this.xComponentController
+    })
+  }
+}
+```
+
+native 部分需要实现至少两个函数：createSurface 和 resizeSurface。其中主要的工作在 CreateSurface 中完成，ResizeSurface 会在窗口大小变化的时候被调用。
+
+CreateSurface 要做的事情：
+
+读取 surface id：
+
+```cpp
+size_t argc = 1;
+napi_value args[1] = {nullptr};
+napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+
+int64_t surface_id = 0;
+bool lossless = true;
+napi_status res = napi_get_value_bigint_int64(env, args[0], &surface_id, &lossless);
+assert(res == napi_ok);
+```
+
+创建 OHNativeWindow：
+
+```cpp
+OHNativeWindow *native_window;
+OH_NativeWindow_CreateNativeWindowFromSurfaceId(surface_id, &native_window);
+assert(native_window);
+```
+
+创建 EGLDisplay：
+
+```cpp
+EGLNativeWindowType egl_window = (EGLNativeWindowType)native_window;
+EGLDisplay egl_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+assert(egl_display != EGL_NO_DISPLAY);
+```
+
+初始化 EGL：
+
+```cpp
+EGLint major_version;
+EGLint minor_version;
+EGLBoolean egl_res = eglInitialize(egl_display, &major_version, &minor_version);
+assert(egl_res == EGL_TRUE);
+```
+
+选择 EGL 配置：
+
+```cpp
+const EGLint attrib[] = {EGL_SURFACE_TYPE,
+                          EGL_WINDOW_BIT,
+                          EGL_RENDERABLE_TYPE,
+                          EGL_OPENGL_ES2_BIT,
+                          EGL_RED_SIZE,
+                          8,
+                          EGL_GREEN_SIZE,
+                          8,
+                          EGL_BLUE_SIZE,
+                          8,
+                          EGL_ALPHA_SIZE,
+                          8,
+                          EGL_DEPTH_SIZE,
+                          24,
+                          EGL_STENCIL_SIZE,
+                          8,
+                          EGL_SAMPLE_BUFFERS,
+                          1,
+                          EGL_SAMPLES,
+                          4, // Request 4 samples for multisampling
+                          EGL_NONE};
+
+const EGLint max_config_size = 1;
+EGLint num_configs;
+EGLConfig egl_config;
+egl_res = eglChooseConfig(egl_display, attrib, &egl_config, max_config_size, &num_configs);
+assert(egl_res == EGL_TRUE);
+```
+
+创建 EGLSurface：
+
+```cpp
+EGLSurface egl_surface = eglCreateWindowSurface(egl_display, egl_config, egl_window, NULL);
+```
+
+创建 EGLContext：
+
+```cpp
+EGLint context_attributes[] = {EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE};
+EGLContext egl_context = eglCreateContext(egl_display, egl_config, EGL_NO_CONTEXT, context_attributes);
+```
+
+在当前线程启用 EGL：
+
+```cpp
+eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
+```
+
+在这之后就可以用 OpenGL 的各种函数了。OpenGL 绘制完成以后，更新到窗口上：
+
+```cpp
+eglSwapBuffers(egl_display, egl_surface);
+```
+
+在 ResizeSurface 中，主要是更新 glViewport，让它按照新的 surface 大小来绘制额。
+
 ## 参考
 
 - [Text Rendering - Learn OpenGL](https://learnopengl.com/In-Practice/Text-Rendering)
