@@ -409,7 +409,7 @@ eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
 eglSwapBuffers(egl_display, egl_surface);
 ```
 
-在 ResizeSurface 中，主要是更新 glViewport，让它按照新的 surface 大小来绘制额。
+在 ResizeSurface 中，主要是更新 glViewport，让它按照新的 surface 大小来绘制。
 
 ## 参考
 
