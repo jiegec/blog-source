@@ -231,6 +231,8 @@ UPDATE: 开了个坑：<https://github.com/jiegec/Termony>，目前已经能跑 
 
 Oseasy 虚拟机只允许开到 8 个核心，估计是避免用到八个 0xD03 以外的核心吧，毕竟 Windows 的大小核调度不太好，但是这样剩下的核就测不出来性能了。
 
+UPDATE: 能跑 Linux 了，见 [在鸿蒙电脑上的虚拟机内启动 Linux](../software/linux-vm-on-harmonyos-computer.md)。
+
 ## 外设
 
 把 Type-C Hub 接到 MateBook Pro 上，显示器，键盘鼠标都正常工作了。
