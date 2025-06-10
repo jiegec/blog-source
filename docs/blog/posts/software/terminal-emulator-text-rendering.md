@@ -177,7 +177,7 @@ final.b = textColor.b * alpha + dest.b * (1 - alpha);
 最后还有一个小细节：上述的 xpos 和 ypos 说的是矩形左下角的坐标，但是我们画图的时候，实际上期望的是把字符都画到同一条线上。也就是说，我们指定 origin 的 xy 坐标，然后根据每个字符的 bearingX 和 bearingY 来算出它的矩形的左下角的坐标 xpos 和 ypos：
 
 - xpos = originX + bearingX
-- ypos = originY + yMax - bearingY
+- ypos = originY + bearingY - height
 
 至此就实现了逐个字符绘制需要的所有内容。这也是 [Text Rendering - Learn OpenGL](https://learnopengl.com/In-Practice/Text-Rendering) 这篇文章所讲的内容。
 
