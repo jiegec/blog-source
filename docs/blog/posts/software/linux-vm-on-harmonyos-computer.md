@@ -31,3 +31,8 @@ categories:
 最终效果：
 
 ![](./linux-vm-on-harmonyos-computer.png)
+
+Geekbench 6 测试结果：
+
+- 6 核：[Windows Single-Core 1436, Multi-Core 5296](https://browser.geekbench.com/v6/cpu/12309313) [Linux Single-Core 1500, Multi-Core 5699](https://browser.geekbench.com/v6/cpu/12373700)
+- 8 核：[Windows Single-Core 1462, Multi-Core 7043](https://browser.geekbench.com/v6/cpu/12309427) [Linux Single-Core 1489, Multi-Core 6076](https://browser.geekbench.com/v6/cpu/12373488) [Linux Single-Core 1503, Multi-Core 6289](https://browser.geekbench.com/v6/cpu/12373797)
