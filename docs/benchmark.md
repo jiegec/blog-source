@@ -12,7 +12,7 @@ permalink: /benchmark/
 
 1. 大部分测试：Debian Bookworm, GCC 12.2.0
 2. LoongArch 测试：Debian Trixie, GCC 14.2.0，因为 Debian Bookworm 并不支持 LoongArch
-3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.1.7，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)
+3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.1.7，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)；X90 带有 VM 的代表是在 Linux 虚拟机中测试
 4. 此外有针对不同编译器和编译器版本对比的测试，相关测试结果都进行了标注
 
 预计等 Debian Trixie 发布后，尽量重跑一遍测试。经过测试，GCC 14 相比 GCC 12 对 SPEC 没有太多的性能影响，所以大体是可以比较的。而 GCC 15 则会对测试结果产生显著的差异。
@@ -112,14 +112,15 @@ permalink: /benchmark/
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [11.3](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt)
 - Apple M1 @ 3.2 GHz Firestorm（`-O3`）: [7.85](./data/int2017_rate1/Apple_M1_O3_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.15](./data/int2017_rate1/Apple_M1_E-Core_O3_001.txt)
+- Huawei Kirin X90 VM P-Core @ 2.3 GHz（`-O3`）: [4.07](./data/int2017_rate1/Huawei_Kirin_X90_VM_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3`）: [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [6.08](./data/int2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.03](./data/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data/int2017_rate1/Loongson_3A6000_O3_002.txt)
-- Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
 - Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_O3_001.txt)
+- Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [8.31](./data/int2017_rate1/Qualcomm_X1E80100_O3_001.txt)
 
 服务器平台（LTO + Jemalloc）：
@@ -1155,6 +1156,8 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 更新历史
 
+- 2025.06.11:
+      - 测试 Huawei Kirin X90 在虚拟机中的性能
 - 2025.06.06:
       - 测试 Huawei Kirin X90 的性能
 - 2025.05.26:

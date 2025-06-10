@@ -1,0 +1,55 @@
+Built with GCC 12.2.0 from Debian Bookworm with -O3
+Running on Linux kernel 6.1.0-35-arm64
+
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1        450       3.54  *
+500.perlbench_r       1        447       3.56  S
+500.perlbench_r       1        450       3.53  S
+502.gcc_r             1        276       5.12  S
+502.gcc_r             1        273       5.19  S
+502.gcc_r             1        276       5.12  *
+505.mcf_r             1        374       4.32  S
+505.mcf_r             1        372       4.35  *
+505.mcf_r             1        369       4.38  S
+520.omnetpp_r         1        588       2.23  S
+520.omnetpp_r         1        578       2.27  S
+520.omnetpp_r         1        585       2.24  *
+523.xalancbmk_r       1        306       3.45  S
+523.xalancbmk_r       1        308       3.43  S
+523.xalancbmk_r       1        307       3.44  *
+525.x264_r            1        189       9.28  S
+525.x264_r            1        192       9.11  *
+525.x264_r            1        193       9.09  S
+531.deepsjeng_r       1        364       3.15  S
+531.deepsjeng_r       1        364       3.15  *
+531.deepsjeng_r       1        364       3.15  S
+541.leela_r           1        522       3.17  S
+541.leela_r           1        525       3.16  *
+541.leela_r           1        525       3.15  S
+548.exchange2_r       1        226      11.6   S
+548.exchange2_r       1        225      11.7   *
+548.exchange2_r       1        224      11.7   S
+557.xz_r              1        553       1.95  S
+557.xz_r              1        553       1.95  *
+557.xz_r              1        556       1.94  S
+=================================================================================
+500.perlbench_r       1        450       3.54  *
+502.gcc_r             1        276       5.12  *
+505.mcf_r             1        372       4.35  *
+520.omnetpp_r         1        585       2.24  *
+523.xalancbmk_r       1        307       3.44  *
+525.x264_r            1        192       9.11  *
+531.deepsjeng_r       1        364       3.15  *
+541.leela_r           1        525       3.16  *
+548.exchange2_r       1        225      11.7   *
+557.xz_r              1        553       1.95  *
+ SPECrate(R)2017_int_base                4.07
+ SPECrate(R)2017_int_peak                                              Not Run
+
+all: time (ms) = 0
+
+System Info:
+CPU Name: Kirin X90
+Enabled: 8 cores
