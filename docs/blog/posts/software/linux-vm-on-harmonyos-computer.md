@@ -26,7 +26,15 @@ categories:
 
 接着，重启 Windows，同时按住 Escape，进入 OVMF 的界面，然后选择 Boot Manager，从 U 盘启动，然后就进入 Ventoy 的界面了。
 
-剩下的就是正常的 Linux 安装过程了，分区的时候，注意保留 Windows 已有的 NTFS，可以和 Windows 用同一个 ESP 分区。网络的话，配置静态 IP 是 172.16.100.2，默认网关是 172.16.100.1 即可。重启以后，在 grub 界面，修改 linux 配置，在 cmdline 一栏添加 `modprobe.blacklist=vmwgfx`，这样就能启动了。内核版本是 Debian Bookworm 的 6.1。6.12 的版本会起不来。5.10 版本也可以起得来。
+剩下的就是正常的 Linux 安装过程了，分区的时候，注意保留 Windows 已有的 NTFS，可以和 Windows 用同一个 ESP 分区。网络的话，配置静态 IP 是 172.16.100.2，默认网关是 172.16.100.1 即可。重启以后，在 grub 界面，修改 linux 配置，在 cmdline 一栏添加 `modprobe.blacklist=vmwgfx`，这样就能启动了。内核版本是 Debian Bookworm 的 6.1。
+
+各内核版本启动情况：
+
+- 5.10 from debian：正常
+- 6.1 from debian：正常
+- 6.2/6.3/6.4 from kernel.ubuntu.com: `echo simpledrm > /etc/modules-load.d/simpledrm.conf` 后正常，否则系统可以启动但是图形界面起不来
+- 6.5 from kernel.ubuntu.com：起不来
+- 6.12 from debian：起不来
 
 最终效果：
 
