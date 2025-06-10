@@ -58,3 +58,5 @@ blacklist vmwgfx 后用的是 efifb：
 [    1.197711] efifb: scrolling: redraw
 [    1.197712] efifb: Truecolor: size=8:8:8:8, shift=24:16:8:0
 ```
+
+虚拟机的 IP 地址，从宿主机也可以直接访问，通过 WVMBr 访问，目测是直接 Tap 接出来，然后建了个 Bridge，外加 NAT，只是没有 DHCP。
