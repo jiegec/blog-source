@@ -36,3 +36,12 @@ Geekbench 6 测试结果：
 
 - 6 核：[Windows Single-Core 1436, Multi-Core 5296](https://browser.geekbench.com/v6/cpu/12309313) [Linux Single-Core 1500, Multi-Core 5699](https://browser.geekbench.com/v6/cpu/12373700)
 - 8 核：[Windows Single-Core 1462, Multi-Core 7043](https://browser.geekbench.com/v6/cpu/12309427) [Linux Single-Core 1489, Multi-Core 6076](https://browser.geekbench.com/v6/cpu/12373488) [Linux Single-Core 1503, Multi-Core 6289](https://browser.geekbench.com/v6/cpu/12373797)
+
+后附上 vmwgfx 驱动的报错：
+
+```log
+vmwgfx 0000:00:04.0: [drm] FIFO at 0x0000000020000000 size is 2048 kiB
+vmwgfx 0000:00:04.0: [drm] VRAM at 0x0000000010000000 size is 262144 kiB
+vmwgfx 0000:00:04.0: [drm] *ERROR* Unsupported SVGA ID 0xffffffff on chipset 0x405
+vmwgfx: probe of 0000:00:04.0 failed with error -38
+```
