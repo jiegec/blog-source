@@ -40,6 +40,8 @@ categories:
 
 ![](./linux-vm-on-harmonyos-computer.png)
 
+主要的遗憾是分辨率：屏幕两侧有黑边，并且由于宽度不同，触摸屏的位置映射会偏中间。
+
 ## 附录
 
 Geekbench 6 测试结果：
