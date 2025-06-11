@@ -289,4 +289,11 @@ index 7b8532f..76c009c 100644
 
 目前还没找到怎么让鸿蒙电脑自己调试自己。
 
+## 移植问题
+
+- ioctl(fd, TCSETS) 会失败，ioctl(fd, TCSETSW) 则成功
+- libc 缺少一些函数，比如 getspnam，有一些函数不可用，例如 getpwuid
+- openssl 的 hwcap 检测有问题，可能会导致 sigill
+- 无法访问 /proc/stat
+
 ## 未完待续
