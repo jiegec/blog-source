@@ -296,4 +296,35 @@ index 7b8532f..76c009c 100644
 - openssl 的 hwcap 检测有问题，可能会导致 sigill
 - 无法访问 /proc/stat
 
+## Termony
+
+目前通过 <https://github.com/jiegec/Termony> 运行了一些 benchmark：
+
+```shell
+$ vkpeak 0
+device       = Maleoon 916
+
+fp32-scalar  = 718.54 GFLOPS
+fp32-vec4    = 1038.34 GFLOPS
+
+fp16-scalar  = 1083.84 GFLOPS
+fp16-vec4    = 1791.44 GFLOPS
+fp16-matrix  = 0.00 GFLOPS
+
+fp64-scalar  = 0.00 GFLOPS
+fp64-vec4    = 0.00 GFLOPS
+
+int32-scalar = 303.34 GIOPS
+int32-vec4   = 316.56 GIOPS
+
+int16-scalar = 709.12 GIOPS
+int16-vec4   = 830.55 GIOPS
+
+int8-dotprod = 0.00 GIOPS
+int8-matrix  = 0.00 GIOPS
+
+bf16-dotprod = 0.00 GFLOPS
+bf16-matrix  = 0.00 GFLOPS
+```
+
 ## 未完待续
