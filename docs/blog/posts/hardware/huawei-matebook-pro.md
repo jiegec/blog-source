@@ -144,7 +144,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 既然可以跑 shell，意味着可以 execve 了，意味着可以做 termux 的类似物了。期待鸿蒙 5 上早日有 Termux 用，直接跑 Linux 发行版。实际测了一下，Popen 确实是工作的。
 
-UPDATE: 开了个坑：<https://github.com/jiegec/Termony>，目前已经能跑 busybox.static 了，虽然还有一些问题。
+UPDATE: 开了个坑：<https://github.com/jiegec/Termony>，目前已经能跑很多命令了，包括在鸿蒙电脑上编译 C/C++ 代码。
 
 试了一下 HOME 目录，发现它里面不能有可执行的文件，所以可能还是得打包到一个 App 里面，通过 `/data/app/bin` 类似的路径来访问。
 
