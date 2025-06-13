@@ -160,7 +160,7 @@ Intel 在 Skymont 这一代 E-core 微架构在大大拓宽后端的同时，把
 BTB 的目的是在分支预测阶段，提供哪些指令是分支指令，以及这些分支指令的目的地址的信息。那么 BTB 是怎么保存这些信息的呢？论文 [Branch Target Buffer Organizations](https://dl.acm.org/doi/pdf/10.1145/3613424.3623774) 总结了几种常见的 BTB 组织方法：
 
 1. 第一种方法：I-BTB，Instruction BTB，对于每个可能出现分支指令的地址，都进行一次 BTB 查询，看看这个地址是不是有分支指令。此时 BTB entry 只需要记录 tag（用于组相连的 Way 匹配）、branch type 和 branch target。以 ARMv8 为例，指令都是 4 字节，假如要对 32 字节的块进行预测，那么就要对这 32 字节的 8 个 4 字节都进行一次 BTB 查询，得到每一个位置上的分支信息。x86 的话每个字节都可能是一条分支指令，用这样的方法需要查询的次数过多。
-2. 第二种方法：R-BTB，Region BTB，对于每个对齐的块，记录这个块内的有限条分支的信息，例如对每个对齐到 32 字节的块，记录最多 4 条分支。此时 BTB entry 需要记录 tag（用于组相连的 Way 匹配）、每条分支的 offset、类型 和 target。这样 BTB 查询的次数会比较少，但如果一个块内分支太多，会出现存不下的情况。
+2. 第二种方法：R-BTB，Region BTB，对于每个对齐的块，记录这个块内的有限条分支的信息，例如对每个对齐到 32 字节的块，记录最多 4 条分支。此时 BTB entry 需要记录 tag（用于组相连的 Way 匹配）、每条分支的 offset、类型和 target。这样 BTB 查询的次数会比较少，但如果一个块内分支太多，会出现存不下的情况。
 3. 第三种方法：B-BTB，Block BTB，记录的是从某个 PC 开始连续的一段指令，这段指令不能有多于 n 条分支，并且不能多于 m 条指令或 m 个字节。此时 BTB entry 需要记录 tag（用于组相连的 Way 匹配）、每条分支的 offset、类型 和 target。这种方法在分支很密集的情况下，会用多个 BTB entry 保存这些分支。此外也比较方便做 2 predictions/cycle：同时预测两个条件分支，如果第一个分支不跳转，那就用第二个分支的结果。但同一个分支可能重复保存在多个 BTB entry 中，因为入口 PC 可能不同。
 
 下面看一些例子，例如 AMD 在 [Software Optimization Guide for AMD EPYC™ 7003 Processors](https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/software-optimization-guides/56665.zip) 中有如下表述：
