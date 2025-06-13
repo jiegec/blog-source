@@ -231,7 +231,7 @@ UPDATE: 开了个坑：<https://github.com/jiegec/Termony>，目前已经能跑�
 
 在 6 核 Oseasy 虚拟机里运行 ARM64 Geekbench 6：[Single-Core 1436, Multi-Core 5296](https://browser.geekbench.com/v6/cpu/12309313)。Oseasy 8 核：[Single-Core 1462, Multi-Core 7043](https://browser.geekbench.com/v6/cpu/12309427)。算上剩下的 12 个逻辑核，考虑虚拟化的开销，多核分数达到网传的 11640 分，感觉是可能的。
 
-Oseasy 虚拟机只允许开到 8 个核心，实测下来，会优先调度到 0xD03 的八个逻辑核中其中四个逻辑核（不同时用一个物理核的两个逻辑核），之后再调度到 0xD43 的八个逻辑核中的四个逻辑核（也不同时用同一个物理核的两个逻辑核）。
+Oseasy 虚拟机只允许开到 8 个核心，实测下来，会优先调度到 0xD03 的八个逻辑核中其中四个逻辑核（不同时用一个物理核的两个逻辑核），之后再调度到 0xD43 的八个逻辑核中的四个逻辑核（也不同时用同一个物理核的两个逻辑核）。在 Oseasy 虚拟机里看到的 CPU 信息是 Cortex-A53，没有正确暴露外面的处理器信息，从 cpuinfo 来看，也没有暴露 SVE。
 
 UPDATE: 能跑 Linux 了，见 [在鸿蒙电脑上的虚拟机内启动 Linux](../software/linux-vm-on-harmonyos-computer.md)。
 
