@@ -36,6 +36,8 @@ categories:
 - 6.5 from kernel.ubuntu.com：起不来，需要强制关机
 - 6.12 from debian：起不来，需要强制关机
 
+经过 @Fearyncess 的二分，找到了导致问题的 [commit](https://github.com/torvalds/linux/commit/edc25898f0b6cceed6c90b0e79916bd04de7dd19)。
+
 最终效果：
 
 ![](./linux-vm-on-harmonyos-computer.png)

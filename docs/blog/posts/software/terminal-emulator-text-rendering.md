@@ -231,7 +231,7 @@ void main() {
 
 接下来回到终端模拟器，它除了绘制字符，还需要绘制背景颜色和光标。前面在绘制字符的时候，只把 bounding box 绘制了出来，那么剩下的空白部分是没有绘制的。但是终端里，每一个位置的背景颜色都可能不同，所以还需要给每个位置绘制对应的背景颜色。这里有两种做法：
 
-第一种做法是，把前面每个字符的 bitmap 扩展到终端里一个固定的位置的大小，这样每次绘制的矩形，就是完整的一个位置的区域，这个时候再去绘制背景颜色，就比较容易了：修改 vertex shader 和 fragment shader，在内部进行一次 blend：`color = vec4(fragTextColor * alpha + fragBackgroundColor * (1.0 - alpha), 1.0)`，相当于是丢掉了 OpenGL 的 blend function，自己完成了前景和后景的绘制。
+第一种做法是，把前面每个字符的 bitmap 扩展到终端里一个固定的位置的大小，这样每次绘制的矩形，就是完整的一个位置的区域，这个时候再去绘制背景颜色，就比较容易了：修改 vertex shader 和 fragment shader，在内部进行一次 blend：`color = vec4(fragTextColor.rgb * alpha + fragBackgroundColor.rgb * (1.0 - alpha), 1.0)`，相当于是丢掉了 OpenGL 的 blend function，自己完成了前景和后景的绘制。
 
 但这个方法有个问题：并非所有的字符的 bitmap 都可以放到一个固定大小的矩形里的。有一些特殊字符，要么长的太高，要么在很下面的位置。后续可能还有更复杂的需求，比如 CJK 和 Emoji，那么字符的宽度又不一样了。所以这个时候导出了第二种做法：
 
@@ -244,7 +244,7 @@ void main() {
 final.r = textColor.r * alpha + dest.r * (1 - alpha);
 final.g = textColor.g * alpha + dest.g * (1 - alpha);
 final.b = textColor.b * alpha + dest.b * (1 - alpha);
-final.a = textColor.a * alpha + dest.a * (1 - alpha);
+final.a = 1.0;
 ```
 
 由于是 OpenGL 做的 blending，我们需要用 OpenGL 自带的 blending mode 来实现上述公式。OpenGL 可以指定 RGB 的 source 和 dest 的 blending 方式，比如：
@@ -252,13 +252,13 @@ final.a = textColor.a * alpha + dest.a * (1 - alpha);
 - GL_ONE：乘以 1 的系数
 - GL_ONE_MINUS_SRC_ALPHA：乘以 (1 - source.a) 的系数
 
-根据这个，就可以想到，设置 `source = textColor * alpha`，设置 source 采用 GL_ONE 方式，dest 采用 GL_ONE_MINUS_SRC_ALPHA 模式，那么 OpenGL 负责剩下的 blending 工作 `final = source * 1 + dest * (1 - source.a)`：
+根据这个，就可以想到，设置 `source = vec4(textColor.rgb * alpha, alpha)`，设置 source 采用 GL_ONE 方式，dest 采用 GL_ONE_MINUS_SRC_ALPHA 模式，那么 OpenGL 负责剩下的 blending 工作 `final = source * 1 + dest * (1 - source.a)`（要求 `dest.a = 1.0`）：
 
 ```cpp
 final.r = source.r * 1.0 + dest.r * (1 - source.a) = textColor.r * alpha + dest.r * (1 - alpha);
 final.g = source.g * 1.0 + dest.g * (1 - source.a) = textColor.g * alpha + dest.g * (1 - alpha);
 final.b = source.b * 1.0 + dest.b * (1 - source.a) = textColor.b * alpha + dest.b * (1 - alpha);
-final.a = source.a * 1.0 + dest.a * (1 - source.a) = textColor.a * alpha + dest.a * (1 - alpha);
+final.a = source.a * 1.0 + dest.a * (1 - source.a) = alpha + 1.0 * (1 - alpha) = 1.0;
 ```
 
 正好实现了想要的计算公式。这个方法来自于 [Text Rendering - WebRender](https://github.com/servo/webrender/blob/main/webrender/doc/text-rendering.md)。有了这个推导后，就可以分两轮，完成终端里前后景的绘制了。
@@ -268,7 +268,7 @@ final.a = source.a * 1.0 + dest.a * (1 - source.a) = textColor.a * alpha + dest.
 - 首先把不同字重的各种字符的 bitmap 拼在一起，放在一个 texture 内部
 - 使用两阶段绘制，第一阶段
 
-注：如果不考虑 textColor 的 alpha 值，也可以在 source 使用 GL_SRC_ALPHA，此时设置 `source = vec4(textColor.rgb, alpha)`，这样 `final.r = source.r * source.a + dest.r * (1 - source.a) = textColor.r * alpha + dest.r * (1 - alpha)`，结果是一样的，不过这个时候 final 的 alpha 值等于 `source.a * source.a + dest.a * (1 - source.a)` 是 alpha 和 dest.a 经过 blend 以后的结果，如果不用它就无所谓。
+注：如果在 source 使用 GL_SRC_ALPHA，设置 `source = vec4(textColor.rgb, alpha)`，这样 `final.r = source.r * source.a + dest.r * (1 - source.a) = textColor.r * alpha + dest.r * (1 - alpha)`，结果是上面是一样的，不过这个时候 final 的 alpha 值等于 `source.a * source.a + dest.a * (1 - source.a)` 是 alpha 和 dest.a 经过 blend 以后的结果，不再是 1.0，如果不用它就无所谓。上面这种 `vec4(textColor.rgb * alpha, alpha)` 的计算方法，叫做 premultiplied alpha，也就是预先把 alpha 乘到颜色项里，可以方便后续的计算。
 
 ## 在鸿蒙上使用 OpenGL 渲染
 
