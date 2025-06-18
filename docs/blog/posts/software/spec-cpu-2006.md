@@ -522,6 +522,8 @@ int=default=default=default:
 PORTABILITY = -DSPEC_CPU_LP64 -fsigned-char
 ```
 
+## SPEC CPU 2017
+
 SPEC CPU 2017 基本类似，下面给出需要运行的命令：
 
 ```shell
