@@ -247,4 +247,6 @@ main BTB 的容量不变，意味着它在 cond + cond 的情况下，会退化�
 - 96-entry nano BTB, 1 cycle latency, at most 2 predicted branches per cycle
 - 8K-entry main BTB, 2 cycle latency, at most 2 predicted branches every 2 cycles
 
+当 uncond + uncond 或者 cond + uncond 时，可以实现每次预测两条分支；对于 cond + cond，每次只能预测一条分支。
+
 2 predicted branches per cycle 通常也被称为 2 taken branches per cycle，简称 2 taken。
