@@ -192,23 +192,53 @@ stride=64B cond 的情况：
 
 测试到这里就差不多了，更大的 stride 得到的也是类似的结果，总结一下前面的发现：
 
-- nano BTB 是 96-entry，1 cycle latency，对于 uncond 分支可以做到一次预测两条分支，大小不随着 stride 变化
-- main BTB 是 8K-entry，2 cycle latency，对于 uncond 分支可以做到一次预测两条分支，此时可以达到 CPI=1；容量随着 stride 变化
+- nano BTB 是 96-entry，1 cycle latency，对于 uncond 分支可以做到一次预测两条分支，大小不随着 stride 变化，对应全相连结构
+- main BTB 是 8K-entry，2 cycle latency，对于 uncond 分支可以做到一次预测两条分支，此时可以达到 CPI=1；容量随着 stride 变化，对应组相连结构
 - 64KB ICache 很多时候会比 main BTB 更早成为瓶颈
 
 也总结一下前面发现了各种没有解释的遗留问题：
 
-- stride=4B uncond/cond 的情况下，main BTB 没有像预期那样工作
-- cond 分支情况下，没有 2 predicted branches per cycle，此时两级 BTB 分别可以做到 CPI=1 和 CPI=2，同时 nano BTB 容量减半到 48
-- stride=8B uncond 的情况下，4096 条分支处出现了性能下降
-- stride=16B uncond 的情况下，2048 条分支处出现了性能下降
-- stride=32B uncond 的情况下，1024 条分支处出现了性能下降
-- stride=32B uncond 的情况下，main BTB 导致的拐点应该在 8192，但实际上在右侧
-- stride=16B cond 的情况下，64KB ICache 应该在 4096 条分支导致瓶颈，但是实际没有观察到
+- cond 分支情况下，没有 2 predicted branches per cycle，此时两级 BTB 分别可以做到 CPI=1 和 CPI=2，同时 nano BTB 容量减半到 48：解释见后
+- stride=4B uncond/cond 的情况下，main BTB 没有像预期那样工作：解释见后
+- stride=8B/16B/32B uncond 的情况下，4096/2048/1024 条分支处出现了性能下降：暂无解释
+- stride=32B uncond 的情况下，main BTB 导致的拐点应该在 8192，但实际上在 8192 右侧：暂无解释
+- stride=16B cond 的情况下，64KB ICache 应该在 4096 条分支导致瓶颈，但是实际没有观察到：暂无解释
 
 接下来尝试解析一下这些遗留问题背后的原理。部分遗留问题，并没有被解释出来，欢迎读者提出猜想。
 
 ## 解析遗留问题
+
+### cond 分支情况下，没有 2 predicted branches per cycle，同时 nano BTB 只有 48 的容量
+
+比较相同 stride 下，cond 和 uncond 的情况，可以看到，cond 情况下两级 BTB 的 CPI 都翻倍，这意味着，当遇到全是 cond 分支时，大概是因为条件分支预测器的带宽问题，不能一次性预测两个 cond 分支的方向，而只能预测第一条 cond 分支，那么第二条 cond 分支的信息，即使通过 BTB 读取出来，也不能立即使用，还得等下一次的预测。
+
+为了验证这个猜想，额外做了一组实验：把分支按照 cond, uncond, cond, uncond, ... 的顺序排列，也就是每个 cond 分支的目的地址有一条 uncond 分支。此时测出来的结果，和 uncond 相同，也就是可以做到 2 predicted branches per cycle。此时，BTB 依然一次提供了两条分支的信息，只不过条件分支预测器只预测了第一个 cond 的方向。如果它预测为不跳转，那么下一个 PC 就是 cond 分支的下一条指令；如果它预测为跳转，那么下一个 PC 就是 uncond 分支的目的地址。
+
+nano BTB 的容量减半，意味着 nano BTB 的 96 的容量，实际上是 48 个 entry，每个 entry 最多记录两条分支。考虑到 nano BTB 的容量不随 stride 变化，大概率是全相连，并且是根据第一条分支的地址进行全相连匹配，这样，在 cond + cond 这种情况下，就只能表现出 48 的容量。
+
+main BTB 的容量不变，意味着它在 cond + cond 的情况下，会退化为普通的 BTB，此时所有容量都可以用来保存 cond 分支，并且都能匹配到。
+
+小结，Neoverse V1 在满足如下条件时，可以做到 2 predicted branches per cycle：
+
+- uncond + uncond
+- cond + uncond
+
+### stride=4B uncond/cond 的情况下，main BTB 没有像预期那样工作
+
+类似的情况，我们在分析 [Neoverse N1](./arm-neoverse-n1-btb.md) 的时候就遇到了。Neoverse N1 的情况是，每对齐的 32B 块内，由于 6 路组相连，最多记录 6 条分支，而 stride=4B 时，有 8 条分支，所以出现了性能问题。
+
+那么 Neoverse V1 是不是还是类似的情况呢？查阅 [Neoverse V1 TRM](https://developer.arm.com/documentation/101427/latest/)，可以看到它的 L1 (main) BTB 的描述是：
+
+- Index: [15:4]
+- Data: [91:0]
+
+回想之前 Neoverse N1 的 main BTB 容量：Index 是 [14:5]，意味着有 1024 个 set；3 个 Way，每个 Way 里面是 82 bit 的数据，每个分支占用 41 bit，所以一共可以存 `1024*3*2=6K` 条分支。
+
+类比一下，Neoverse V1 的 main BTB 容量也就可以计算得出：Index 是 [15:4]，意味着有 4096 个 set；没有 Way，说明就是直接映射；92 bit 的数据，大概率也是每个分支占用一半也就是 46 bit，所以一共可以存 `4096*2=8K` 条分支，和官方数据吻合。
+
+那么，在 stride=4B 的情况下，对齐的 16B 块内的分支会被放到同一个 set 内，而每个 set 只能放两条分支，而 stride=4B 时需要放四条分支，这就导致了 main BTB 出现性能问题。
+
+但比较奇怪的是，main BTB 的容量，在 stride=32B 时是 8192，而 stride=64B 时是 4096，这和 Index 是 PC[15:4] 不符，这成为了新的遗留问题。
 
 ## 总结
 
@@ -216,3 +246,5 @@ stride=64B cond 的情况：
 
 - 96-entry nano BTB, 1 cycle latency, at most 2 predicted branches per cycle
 - 8K-entry main BTB, 2 cycle latency, at most 2 predicted branches every 2 cycles
+
+2 predicted branches per cycle 通常也被称为 2 taken branches per cycle，简称 2 taken。
