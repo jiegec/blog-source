@@ -289,7 +289,7 @@ index 7b8532f..76c009c 100644
 
 测试的过程中，发现用 hdc 传文件到电脑比传手机更快：Pura 70 Pro+ 是 24 MB/s，MateBook Pro 是 31 MB/s。
 
-开源的鸿蒙应用也可以编译+运行：
+开源的鸿蒙应用也可以编译 + 运行：
 
 - <https://gitee.com/smdsbz/moonlight-ohos>
 
