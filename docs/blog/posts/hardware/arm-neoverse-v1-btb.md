@@ -225,7 +225,7 @@ main BTB 的容量不变，意味着它在 cond + cond 的情况下，会退化�
 
 然后下一个周期从 second branch target 开始继续预测。根据官方信息，Neoverse V1 的 L1 ICache 支持 2x32B 的带宽，这个 2x 代表了可以从两个不同的地方读取指令，也就是 L1 ICache 至少是双 bank 甚至双端口的 SRAM。考虑到前面的测试中，CPI=0.5 的范围跨越了各种 stride，认为 L1 ICache 是双 bank 的可能写比较小，不然应该会观测到 bank conflict，大概率就是双端口了。
 
-此外，考虑到 fetch bundle 的长度限制，first branch target 到 second branch pc 不能太远。在上面的测试中，这个距离总是 0；读者如果感兴趣，可以尝试把距离拉长，看看超过 32B 以后，是不是会让 2 predicted branches per cycle 失效。类似的表述，在 [AMD Zen 4 Software Optimization Guide](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/software-optimization-guides/57647.zip) 中也有出现:
+此外，考虑到 fetch bundle 的长度限制，first branch target 到 second branch pc 不能太远。在上面的测试中，这个距离总是 0；读者如果感兴趣，可以尝试把距离拉长，看看超过 32B 以后，是不是会让 2 predicted branches per cycle 失效。类似的表述，在 [AMD Zen 4 Software Optimization Guide](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/software-optimization-guides/57647.zip) 中也有出现：
 
 ```
 The branch target buffer (BTB) is a two-level structure accessed using the fetch address of the previous fetch block.
@@ -254,19 +254,49 @@ Predicting with BTB pairs allows two fetches to be predicted in one prediction c
 
 回想之前 Neoverse N1 的 main BTB 容量：Index 是 [14:5]，意味着有 1024 个 set；3 个 Way，每个 Way 里面是 82 bit 的数据，每个分支占用 41 bit，所以一共可以存 `1024*3*2=6K` 条分支。
 
-类比一下，Neoverse V1 的 main BTB 容量也就可以计算得出：Index 是 [15:4]，意味着有 4096 个 set；没有 Way，说明就是直接映射；92 bit 的数据，大概率也是每个分支占用一半也就是 46 bit，所以一共可以存 `4096*2=8K` 条分支，和官方数据吻合。
+类比一下，Neoverse V1 的 main BTB 容量也就可以计算得出：Index 是 [15:4]，意味着有 4096 个 set；没有 Way，说明就是直接映射；92 bit 的数据，大概率也是每个分支占用一半也就是 46 bit，所以一共可以存 `4096*2=8K` 条分支，和官方数据吻合。在需要 2 predicted branches 的时候，就把这两个分支放到同一个 92-bit entry 内即可。
 
 那么，在 stride=4B 的情况下，对齐的 16B 块内的分支会被放到同一个 set 内，而每个 set 只能放两条分支，而 stride=4B 时需要放四条分支，这就导致了 main BTB 出现性能问题。
 
-但比较奇怪的是，main BTB 的容量，在 stride=32B 时是 8192，而 stride=64B 时是 4096，这和 Index 是 PC[15:4] 不符，这成为了新的遗留问题。
+但比较奇怪的是，main BTB 的容量，在 stride=32B 时是 8192，而 stride=64B 时是 4096，这和 Index 是 PC[15:4] 不符，这成为了新的遗留问题。有一种可能，就是 TRM 写的不准确，Index 并非 PC[15:4]。
+
+抛开 TRM，根据 JamesAslan 在 [偷懒的 BTB？ARM Cortex X1 初探](https://zhuanlan.zhihu.com/p/595585895) 中的测试，Main BTB 是四路组相连。如果按照四路组相连来考虑，那么 8K 条分支，实际上应该是 2048 个 set，2 个 way，一共是 4K 个 entry，每个 entry 最多保存两条分支。此时 Index 应该有 11 个 bit。在 2 way 每 way 两条分支等效为 4 way 的情况下，stride=4B 出现分支数比 way 数量更多的情况，stride=8B 则不会，意味着参与到 Index 的最低的 PC 应该是 PC[5]，即每个对齐的 32B 块内，最多放四条分支（Neoverse N1 上是每个对齐的 32B 块内最多放六条分支）。这样的话，Index 可能实际上是 PC[15:5]。
 
 ## 总结
 
 最后总结一下 Neoverse V1 的 BTB：
 
-- 96-entry nano BTB, 1 cycle latency, at most 2 predicted branches per cycle
-- 8K-entry main BTB, 2 cycle latency, at most 2 predicted branches every 2 cycles
+- 48-entry(96 branches) nano BTB, at most 2 branches per entry, 1 cycle latency, at most 2 predicted branches every 1 cycle, fully associative
+- 4K-entry(8K branches) main BTB, at most 2 branches per entry, 2 cycle latency, at most 2 predicted branches every 2 cycles, 2 way set-associative, index PC[15:5]
 
 当 uncond + uncond 或者 cond + uncond 时，可以实现每次预测两条分支；对于 cond + cond，每次只能预测一条分支。
 
 2 predicted branches per cycle 通常也被称为 2 taken branches per cycle，简称 2 taken。
+
+## 附录
+
+### Neoverse N2（代号 Perseus）的 BTB 结构分析
+
+根据官方信息，Neoverse N2 和 Neoverse V1 的 BTB 配置十分类似，从数字来看只有 nano BTB 缩小到了 32-entry(64 branches)，其余是相同的，例如 main BTB 容量也是 8K branches。实测下来，BTB 测试图像和 Neoverse V1 基本一样，只有 nano BTB 容量的区别。因此本文也可以认为是对 Neoverse N2 的 BTB 结构分析。考虑到 Neoverse N2 和 Neoverse V1 的发布时间相同，可以认为它们用的就是相同的前端设计，只是改了一下参数。
+
+### 各代 Neoverse 处理器的 BTB 结构对比
+
+比较一下 Neoverse V1 和 Neoverse N1 的设计：
+
+- Neoverse N1 设计了三级 BTB（16+64+6K），分别对应 1-3 的周期的延迟，特别地，main BTB 设计了 fastpath 来实现一定情况下的 2 周期延迟
+- Neoverse V1 设计了两级 BTB（96+8K），分别对应 1-2 的周期的延迟，并且都支持 2 taken
+
+Neoverse V1 相比 Neoverse N1，在容量和延迟上都有比较明显的提升，还额外给两级 BTB 都引入了 2 taken 的支持，进一步提升了吞吐。
+
+下面是一个对比表格：
+
+| uArch               | Neoverse N1   | Neoverse V1   | Neoverse N2   |
+|---------------------|---------------|---------------|---------------|
+| Nano BTB size       | 16 branches   | 48*2 branches | 32*2 branches |
+| Nano BTB latency    | 1 cycle       | 1 cycle       | 1 cycle       |
+| Nano BTB throughput | 1 branch      | 1-2 branches  | 1-2 branches  |
+| Micro BTB size      | 64 branches   | N/A           | N/A           |
+| Micro BTB latency   | 2 cycles      | N/A           | N/A           |
+| Main BTB size       | 3K*2 branches | 4K*2 branches | 4K*2 branches |
+| Main BTB latency    | 2-3 cycles    | 2 cycle       | 2 cycle       |
+| Main BTB throughput | 1 branch      | 1-2 branches  | 1-2 branches  |
