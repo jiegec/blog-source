@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-ARM Neoverse V1 是 ARM Neoverse N1 的下一代服务器 CPU，之前我们分析过 [Neoverse N1 的 BTB 设计](./arm-neoverse-v1-btb.md)。而 ARM Neoverse V1 在很多地方都和 Cortex-X1 类似，有了一些改进，在这里对它的 BTB 做一些分析。
+ARM Neoverse V1 是 ARM Neoverse N1 的下一代服务器 CPU，之前我们分析过 [Neoverse N1 的 BTB 设计](./arm-neoverse-v1-btb.md)。而 ARM Neoverse V1 在很多地方都和 Cortex-X1 类似，相比 Neoverse N1/Cortex-A76 有了一些改进，在这里对它的 BTB 做一些分析。
 
 <!-- more -->
 
@@ -22,9 +22,9 @@ ARM Neoverse V1 是 ARM Neoverse N1 的下一代服务器 CPU，之前我们分�
     - 64KB L1 ICache, 2x32B bandwidth
     - 8K-entry main BTB
     - 96-entry nano BTB, 0 cycle bubble
-    - 2 stage prediction pipeline: P1 & P2
+    - 2 stage prediction pipeline: P1 & P2，大概率 nano BTB 在 P1，main BTB 在 P2
 - [Arm Neoverse V2 platform: Leadership Performance and Power Efficiency for Next-Generation Cloud Computing, ML and HPC Workloads](https://hc2023.hotchips.org/assets/program/conference/day1/CPU1/HC2023.Arm.MagnusBruce.v04.FINAL.pdf)
-    - 2 predicted branches per cycle
+    - 2 predicted branches per cycle，每周期最多预测两条分支
 
 简单整理一下官方信息，大概有两级 BTB：
 
@@ -36,7 +36,7 @@ ARM Neoverse V1 是 ARM Neoverse N1 的下一代服务器 CPU，之前我们分�
 
 ## 微架构测试
 
-在之前的博客里，我们已经测试了各种处理器的 BTB，在这里也是一样的：按照一定的 stride 分布无条件（uncond）或有条件（cond）直接分支，构成一个链条，然后测量 CPI。
+在之前的博客里，我们已经测试了各种处理器的 BTB，在这里也是一样的：按照一定的 stride 分布无条件（uncond）或有条件（cond）直接分支，构成一个链条，然后测量 CPI。在先前的 [Neoverse N1 测试](./arm-neoverse-n1-btb.md) 里，我们只测试了无条件分支，但实际上，在 Neoverse N1 上用条件分支测出来的结果也是一样的，但在 Neoverse V1 上就不同了，所以在这里要分开讨论。
 
 ### stride=4B uncond
 
@@ -47,7 +47,7 @@ ARM Neoverse V1 是 ARM Neoverse N1 的下一代服务器 CPU，之前我们分�
 可以看到，图像上出现了如下比较显著的台阶：
 
 - 第一个台阶到接近 64 条分支，CPI=1，对应了 96-entry 的 nano BTB，但是没有体现出完整的 96 的容量
-- 第二个台阶到 16384 条分支，CPI 在 5 到 6 之间，大于 main BTB 的 3 cycle latency，说明此时没有命中 main BTB，而是要等到取指和译码后，计算出正确的目的地址再回滚，导致了 5+ cycle latency；16384 对应 64KB L1 ICache 容量
+- 第二个台阶到 16384 条分支，CPI 在 5 到 6 之间，大于 main BTB 的 2 cycle latency，说明此时没有命中 main BTB，而是要等到取指和译码后，计算出正确的目的地址再回滚，导致了 5+ cycle latency；16384 对应 64KB L1 ICache 容量
 
 那么 stride=4B uncond 的情况下就遗留了如下问题：
 
@@ -64,7 +64,7 @@ stride=4B cond 的情况：
 可以看到，图像上出现了如下比较显著的台阶：
 
 - 第一个台阶到 48 条分支，CPI=1，对应了 96-entry 的 nano BTB，但是没有体现出完整的 96 的容量
-- 之后没有明显的分界点，性能波动剧烈
+- 之后没有明显的分界点，性能波动剧烈，没有观察到 main BTB 的台阶
 
 nano BTB 只表现出 48 的容量，刚好是 96 的一半；同时没有观察到 2 predicted branches per cycle。考虑这两点，可以认为 nano BTB 的组织方式和分支类型有关，当分支过于密集（stride=4B）或者用条件分支（cond）时，不能得到完整的 96-entry 的大小，此时也会回落到 CPI=1 的情况。
 
@@ -267,7 +267,7 @@ Predicting with BTB pairs allows two fetches to be predicted in one prediction c
 最后总结一下 Neoverse V1 的 BTB：
 
 - 48-entry(96 branches) nano BTB, at most 2 branches per entry, 1 cycle latency, at most 2 predicted branches every 1 cycle, fully associative
-- 4K-entry(8K branches) main BTB, at most 2 branches per entry, 2 cycle latency, at most 2 predicted branches every 2 cycles, 2 way set-associative, index PC[15:5]
+- 4K-entry(8K branches) main BTB, at most 2 branches per entry, 2 cycle latency, at most 2 predicted branches every 2 cycles, 2-way(4-branch-way) set-associative, index PC[15:5]
 
 当 uncond + uncond 或者 cond + uncond 时，可以实现每次预测两条分支；对于 cond + cond，每次只能预测一条分支。
 

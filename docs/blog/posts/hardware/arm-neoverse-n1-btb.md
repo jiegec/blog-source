@@ -580,4 +580,4 @@ stride=128B：
 
 - 16-entry Nano BTB, fully associative, 1 cycle latency
 - 64-entry Micro BTB, fully associative, 2 cycle latency
-- 3072-entry(6144 branches) Main BTB, 3-way set associative, 2-3 cycle latency, each entry at most 2 branches, index PC[14:5]
+- 3072-entry(6144 branches) Main BTB, 3-way(6-branch-way) set associative, 2-3 cycle latency, each entry at most 2 branches, index PC[14:5]
