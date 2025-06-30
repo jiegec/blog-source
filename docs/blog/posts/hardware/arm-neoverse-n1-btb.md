@@ -199,7 +199,7 @@ L1 BTB cache format:
 - replacement policy
 - part of target address
 
-除非保存了完整的 target address 和 tag，是达不到 82 bit 这么多的。但是这样又显得很浪费，可能还有其他的可能写。
+除非保存了完整的 target address 和 tag，是达不到 82 bit 这么多的。但是这样又显得很浪费，可能还有其他的可能性。
 
 考虑到上面出现的两位的 Way 编号，并且有 3 的素数因子，只能是 3-way 组相连了。如果按 3-way 组相连，1024 个 set 来算，只有 3072 个 entry，距离 Main BTB 的容量 6144 个 entry 刚好只有一半。一个想法诞生了：如果一个 BTB entry 可以保存两个分支的信息呢？82 bit 正好是 2 的倍数，除以二是 41 bit，每个分支存 41 bit 的数据是比较合理的数据。这样，就可以推导出来，它 Main BTB 的组织方式是：
 
@@ -215,7 +215,7 @@ L1 BTB cache format:
 
 那么如果跳转距离比较远，Main BTB 的容量将会只有一半。感兴趣的读者可以设计实验来验证这一点。
 
-小结：Main BTB 是 1024 set，3 way set associative 的结构，一共 3072 个 entry，每个 entry 可以保存两条分支，Index 是 PC[14:5]。stride=4B 的情况下，会出现一个 set 内 8 条分支的情况，无法在 3 个 entry 内放下，所以总是会出现缺失。
+小结：Main BTB 是 1024 set，3 way set associative 的结构，一共 3072 个 entry，每个 entry 可以保存两条分支，Index 是 PC[14:5]。stride=4B 的情况下，会出现一个 set 内 8 条分支的情况，无法在 3 个 entry 内放下，所以总是会出现缺失。一共占用 `3072*82=251904` bit 也就是 30.75 KB 的空间。
 
 ### stride=8B 的情况下，只观察到 4096 的 Main BTB 容量，而不是 6144
 
