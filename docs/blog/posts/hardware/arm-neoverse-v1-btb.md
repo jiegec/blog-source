@@ -300,3 +300,4 @@ Neoverse V1 相比 Neoverse N1，在容量和延迟上都有比较明显的提�
 | Main BTB size       | 3K*2 branches | 4K*2 branches | 4K*2 branches |
 | Main BTB latency    | 2-3 cycles    | 2 cycle       | 2 cycle       |
 | Main BTB throughput | 1 branch      | 1-2 branches  | 1-2 branches  |
+| Main BTB area       | 3K*82=246 Kb  | 4K*92=368 Kb  | 4K*92=368 Kb  |
