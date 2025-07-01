@@ -12,6 +12,8 @@ categories:
 
 最近针对各种条件分支预测器（Conditional Branch Predictor）做了在各种 benchmark 上的实验，在此记录一下做这个实验的流程。
 
+代码已开源：[jiegec/cbp-experiments](https://github.com/jiegec/cbp-experiments)。
+
 <!-- more -->
 
 ## 流程
