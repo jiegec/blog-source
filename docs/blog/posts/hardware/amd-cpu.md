@@ -189,15 +189,18 @@ Ryzen Z2 系列：
 
 ## EPYC 系列
 
-| 代号    | 编号 | 最大核心数 | 微架构 | 插槽 |
-|---------|------|------------|--------|------|
-| Naples  | 7001 | 32         | Zen 1  | SP3  |
-| Rome    | 7002 | 64         | Zen 2  | SP3  |
-| Milan   | 7003 | 64         | Zen 3  | SP3  |
-| Milan-X | 7003 | 64         | Zen 3  | SP3  |
-| Genoa   | 9004 | 96         | Zen 4  | SP5  |
-| Genoa-X | 9004 | 96         | Zen 4  | SP5  |
-| Bergamo | 97X4 | 128        | Zen 4c | SP5  |
+| 代号        | 编号 | 最大核心数 | 微架构 | 插槽 |
+|-------------|------|------------|--------|------|
+| Naples      | 7001 | 32         | Zen 1  | SP3  |
+| Rome        | 7002 | 64         | Zen 2  | SP3  |
+| Milan       | 7003 | 64         | Zen 3  | SP3  |
+| Milan-X     | 7003 | 64         | Zen 3  | SP3  |
+| Genoa       | 9004 | 96         | Zen 4  | SP5  |
+| Genoa-X     | 9004 | 96         | Zen 4  | SP5  |
+| Bergamo     | 97X4 | 128        | Zen 4c | SP5  |
+| Grado       | 4005 | 16         | Zen 5  | AM5  |
+| Turin       | 9005 | 128        | Zen 5  | SP5  |
+| Turin Dense | 9005 | 192        | Zen 5c | SP5  |
 
 ### 参考资料
 
