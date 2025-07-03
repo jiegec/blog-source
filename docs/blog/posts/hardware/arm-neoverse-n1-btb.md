@@ -350,10 +350,11 @@ stride=32B 或更大的时候，对齐的 32B 块内都只有一条分支，满�
 // 3072-entry Main BTB, 3-way set associative, 2-3 cycle latency, each entry at
 // most 2 branches, index PC[14:5].
 
-#include <cassert>
+#include <assert.h>
 #include <set>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <utility>
 #include <vector>
 
@@ -367,16 +368,20 @@ typedef BTBEntry NanoBTBEntry;
 typedef BTBEntry MicroBTBEntry;
 typedef BTBEntry MainBTBEntry;
 
-struct BTB {
+struct Model {
   NanoBTBEntry nanoBTB[16];
   MicroBTBEntry microBTB[64];
   // pretend as 6-way
   MainBTBEntry mainBTB[1024][6];
+  // 64KB ICache, pretend as direct mapped
+  // index: PC[15:6]
+  // tag: PC[:16]
+  uint64_t iCache[64 * 1024 / 64];
 
   // return latency
   // use pc to predict a branch at pc, i.e. pva = pc
   int match(uint64_t pc, uint64_t target) {
-    int result = 5; // miss penalty
+    int result = 5; // BTB miss penalty
     // Nano BTB at P1
     for (int i = 0; i < 16; i++) {
       if (nanoBTB[i].pc == pc && nanoBTB[i].target == target) {
@@ -492,20 +497,30 @@ struct BTB {
 
   end:
     // BTB miss
+
+    // compute icache penalty
+    index = (pc >> 6) % 1024;
+    tag = pc >> 16;
+    if (iCache[index] != tag) {
+      // extra 4 cycle penalty
+      result += 4;
+      iCache[index] = tag;
+    }
+
     return result;
   }
 };
 
 int main() {
   FILE *fp = fopen("btb_size.csv", "w");
-  int min_size = 2;
-  int max_size = 8192;
-  int max_product = 1048576;
+  uint64_t min_size = 2;
+  uint64_t max_size = 16384;
+  uint64_t max_product = 1048576;
   std::vector<int> mults = {1,  3,  5,  7,  9,  11, 13, 15, 17, 19,
                             21, 23, 25, 27, 29, 31, 33, 35, 37, 39};
 
   fprintf(fp, "pattern,size,stride,min,avg,max\n");
-  for (int stride = 4; stride <= 128; stride *= 2) {
+  for (uint64_t stride = 4; stride <= 128; stride *= 2) {
     std::set<int> sizes;
     for (uint64_t size_base = min_size; size_base <= max_product / stride;
          size_base *= 2) {
@@ -520,22 +535,22 @@ int main() {
     }
 
     for (int size : sizes) {
-      BTB btb;
-      memset(&btb, 0, sizeof(btb));
+      Model model;
+      memset(&model, 0, sizeof(model));
       int cycles = 0;
       int branch_count = 1000 * size;
       // warmup
       for (int i = 0; i < branch_count; i++) {
         uint64_t pc = ((i % size) * stride);
         uint64_t target = (((i + 1) % size) * stride);
-        btb.match(pc, target);
+        model.match(pc, target);
       }
 
       // test
       for (int i = 0; i < branch_count; i++) {
         uint64_t pc = ((i % size) * stride);
         uint64_t target = (((i + 1) % size) * stride);
-        cycles += btb.match(pc, target);
+        cycles += model.match(pc, target);
       }
       float cpi = (float)cycles / branch_count;
       fprintf(fp, "0,%d,%d,%.2f,%.2f,%.2f\n", size, stride, cpi, cpi, cpi);
