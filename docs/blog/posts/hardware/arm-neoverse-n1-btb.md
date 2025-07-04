@@ -49,7 +49,7 @@ ARM Neoverse N1 是比较早的一代 ARM 服务器的处理器，它在很多�
 可以看到，图像上出现了三个比较显著的台阶：
 
 - 第一个台阶到 16 条分支，CPI=1，对应了 16-entry 的 Nano BTB
-- 第二个台阶到 80 条分支，CPI=2，其中 `80=16+64`，多出来的部分对应了 64-entry 的 Micro BTB
+- 第二个台阶到 80 条分支，CPI=2，其中 `80=16+64`，多出来的部分对应了 64-entry 的 Micro BTB，意味着 Micro BTB 相对 Nano BTB 是 Victim BTB 的地位：Nano BTB 被替换出去的 entry 会进入到 Micro BTB，而命中 Micro BTB 的 entry 会被移动到 Nano BTB
 - 第三个台阶到 8192 条分支，CPI=5，大于 Main BTB 的 3 cycle latency，说明此时没有命中 Main BTB，而是要等到取指和译码后，计算出正确的目的地址再回滚，导致了 5 cycle latency；8192 的性能下降原因还需要进一步研究，16384 的性能下降对应了 64KB 的 ICache，因为 `4B*16384=64KB`
 
 那么 stride=4B 的情况下就遗留了两个问题：为什么没有命中 Main BTB；8192 处为什么出现了性能下降。
@@ -594,5 +594,5 @@ stride=128B：
 最后总结一下 Neoverse N1 的 BTB：
 
 - 16-entry Nano BTB, fully associative, 1 cycle latency
-- 64-entry Micro BTB, fully associative, 2 cycle latency
+- 64-entry Micro BTB, fully associative, 2 cycle latency, behave as victim BTB of Nano BTB
 - 3072-entry(6144 branches) Main BTB, 3-way(6-branch-way) set associative, 2-3 cycle latency, each entry at most 2 branches, index PC[14:5]
