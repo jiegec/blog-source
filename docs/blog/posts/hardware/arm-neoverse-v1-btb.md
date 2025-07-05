@@ -290,14 +290,15 @@ Neoverse V1 相比 Neoverse N1，在容量和延迟上都有比较明显的提�
 
 下面是一个对比表格：
 
-| uArch               | Neoverse N1   | Neoverse V1   | Neoverse N2   |
-|---------------------|---------------|---------------|---------------|
-| Nano BTB size       | 16 branches   | 48*2 branches | 32*2 branches |
-| Nano BTB latency    | 1 cycle       | 1 cycle       | 1 cycle       |
-| Nano BTB throughput | 1 branch      | 1-2 branches  | 1-2 branches  |
-| Micro BTB size      | 64 branches   | N/A           | N/A           |
-| Micro BTB latency   | 2 cycles      | N/A           | N/A           |
-| Main BTB size       | 3K*2 branches | 4K*2 branches | 4K*2 branches |
-| Main BTB latency    | 2-3 cycles    | 2 cycle       | 2 cycle       |
-| Main BTB throughput | 1 branch      | 1-2 branches  | 1-2 branches  |
-| Main BTB area       | 3K*82=246 Kb  | 4K*92=368 Kb  | 4K*92=368 Kb  |
+| uArch                | Neoverse N1   | Neoverse V1   | Neoverse N2   |
+|----------------------|---------------|---------------|---------------|
+| Nano BTB size        | 16 branches   | 48*2 branches | 32*2 branches |
+| Nano BTB latency     | 1 cycle       | 1 cycle       | 1 cycle       |
+| Nano BTB throughput  | 1 branch      | 1-2 branches  | 1-2 branches  |
+| Micro BTB size       | 64 branches   | N/A           | N/A           |
+| Micro BTB latency    | 2 cycles      | N/A           | N/A           |
+| Main BTB size        | 3K*2 branches | 4K*2 branches | 4K*2 branches |
+| Main BTB latency     | 2-3 cycles    | 2 cycle       | 2 cycle       |
+| Main BTB throughput  | 1 branch      | 1-2 branches  | 1-2 branches  |
+| Main BTB area (bits) | 3K*82=251904  | 4K*92=376832  | 4K*92=376832  |
+| Main BTB area (KiB)  | 30.75         | 46            | 46            |
