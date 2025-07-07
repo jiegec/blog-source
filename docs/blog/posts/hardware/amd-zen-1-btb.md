@@ -113,10 +113,10 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 一种可能的猜想：
 
 - 如果没有出现连续的 CU，那么每个 branch 占用一个 entry，那么容量就是 2048 个 branch
-- 如果出现了一组 CU，那么一个 64B cacheline 里的 4 个 branch 对应 3 个 entry，那么前 2048 个 branch 对应 1536 个 entry，还剩下 512 个 entry，这些 entry 每个 entry 只放 1 个 branch（？），所以最后容量是 `2048+512=2560` 个 branch
+- 如果出现了一组 CU，那么一个 64B cacheline 里的 4 个 branch 对应 3 个 entry，那么前 2048 个 branch 对应 1536 个 entry，还剩下 512 个 entry，这些 entry 每个 entry 只放 1 个 branch（讨论见后），所以最后容量是 `2048+512=2560` 个 branch
 - 如果出现了两组 CU，那么每一组 CU 的两个 branch 对应一个 entry，容量是 4096 个 branch
 
-但是这个猜想有一个没有回答的问题，就是只有一组 CU 的情况下，为啥剩下的 512 个 entry 只放 512 个 branch，而不能放 1024 个 branch？
+但是也遗留了一个问题，就是只有一组 CU 的情况下，为啥剩下的 512 个 entry 只放 512 个 branch，而不能放 1024 个 branch？
 
 ### stride=32B
 
