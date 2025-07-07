@@ -89,6 +89,35 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 
 相比 stride=4B/8B，L0 BTB 的行为没有变化；L1 BTB 的容量减半到了 128，意味着 L1 BTB 采用了组相连，此时有一半的 set 不能被用上。此外，比较特别的是，从 stride=16B 开始，CPI=5 的平台出现了波动，CPI 从 5 变到 4 再变到了 5，猜测此时 L1 BTB 也有一定的比例会介入。L2 BTB 在 mix (uncond + cond) 模式下，拐点从 3072 前移到 2560。
 
+针对这个 2560 的拐点，做了一系列测试，下面是 64B cacheline 内四条分支的类型的不同组合（U 代表 Uncond，C 代表 Cond），对应的容量：
+
+- CCCC: 2048
+- CCCU: 2560
+- CCUC: 2560
+- CCUU: 2560
+- CUCC: 2560
+- CUCU: 4096
+- CUUC: 2560
+- CUUU: 2560
+- UCCC: 2048
+- UCCU: 2560
+- UCUC: 2560
+- UCUU: 2560
+- UUCC: 2048
+- UUCU: 2560
+- UUUC: 2048
+- UUUU: 2048
+
+可以观察到，如果没有出现连续的 CU（CCCC/UCCC/UUCC/UUUC/UUUU），容量是 2048；如果出现了一组 CU（CC**CU**/C**CU**C/C**CU**U/**CU**CC/**CU**UC/**CU**UU/UC**CU**/U**CU**C/U**CU**U/UU**CU**），容量是 2560；出现了两组 CU（**CUCU**），就是 mix (cond + uncond) 模式，容量是 4096。
+
+一种可能的猜想：
+
+- 如果没有出现连续的 CU，那么每个 branch 占用一个 entry，那么容量就是 2048 个 branch
+- 如果出现了一组 CU，那么一个 64B cacheline 里的 4 个 branch 对应 3 个 entry，那么前 2048 个 branch 对应 1536 个 entry，还剩下 512 个 entry，这些 entry 每个 entry 只放 1 个 branch（？），所以最后容量是 `2048+512=2560` 个 branch
+- 如果出现了两组 CU，那么每一组 CU 的两个 branch 对应一个 entry，容量是 4096 个 branch
+
+但是这个猜想有一个没有回答的问题，就是只有一组 CU 的情况下，为啥剩下的 512 个 entry 只放 512 个 branch，而不能放 1024 个 branch？
+
 ### stride=32B
 
 继续观察 stride=32B 的情况：
