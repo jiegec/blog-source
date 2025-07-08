@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-AMD Zen 1 是 AMD 的 Zen 系列的第一代微架构。在之前，我们分析了 ARM Neoverse [N1](./amd-zen-1-btb.md) 和 [V1](./arm-neoverse-v1-btb.md) 的 BTB，那么现在也把视线转到 AMD 上，看看 AMD 的 Zen 系列的 BTB 是如何演进的。
+AMD Zen 1 是 AMD 的 Zen 系列的第一代微架构。在之前，我们分析了 ARM Neoverse [N1](./arm-neoverse-n1-btb.md) 和 [V1](./arm-neoverse-v1-btb.md) 的 BTB，那么现在也把视线转到 AMD 上，看看 AMD 的 Zen 系列的 BTB 是如何演进的。
 
 <!-- more -->
 
@@ -25,6 +25,22 @@ Zen 1 的 BTB 有三级，是用当前 fetch block 的地址去查询。
 > Each BTB entry includes information for branches and their targets. Each BTB entry can hold up to two branches if the branches reside in the same 64-byte aligned cache line and the first branch is a conditional branch.
 
 Zen 1 的 BTB entry 有一定的压缩能力，一个 entry 最多保存两条分支，前提是两条分支在同一个 64B 缓存行中，并且第一条分支是条件分支。这样，如果第二条分支是无条件分支，分支预测的时候，可以根据第一条分支的方向预测的结果，决定要用哪条分支的目的地址作为下一个 fetch block 的地址。虽然有压缩能力，但是没有提到单个周期预测两条分支，所以只是扩大了等效 BTB 容量。
+
+例如，有这么一段代码：
+
+```asm
+# fetch block entrypoint
+entrypoint:
+# do something
+jnz targetA
+# do something
+jmp targetB
+```
+
+那么 jnz 和 jmp 指令可以放到同一个 entry 当中，一次读出来，然后对 jnz 指令进行分支方向预测：
+
+- 如果 jnz 预测为跳转，那么当前 fetch block 从 entrypoint 开始，到 jnz 结束；下一个 fetch block 从 targetA 开始
+- 如果 jnz 预测为不跳转，那么当前 fetch block 从 entrypoint 开始，到 jmp 结束；下一个 fetch block 从 targetB 开始
 
 > L0BTB holds 4 forward taken branches and 4 backward taken branches, and predicts with zero bubbles.
 
@@ -103,7 +119,7 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 
 ![](./amd-zen-1-btb-64b.png)
 
-相比 stride=16B，L0 BTB 的行为没有变化；L1 BTB 的容量进一步减到了 32，符合组相连的预期；L2 BTB 在  mix (cond + uncond) 模式下只能体现出 2048 的容量，此时每个 64B cacheline 都只有一条分支，不满足两条分支共享一个 entry 的条件。
+相比 stride=32B，L0 BTB 的行为没有变化；L1 BTB 的容量进一步减到了 32，符合组相连的预期；L2 BTB 在  mix (cond + uncond) 模式下只能体现出 2048 的容量，此时每个 64B cacheline 都只有一条分支，不满足两条分支共享一个 entry 的条件。
 
 ### stride=128B
 
@@ -111,7 +127,7 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 
 ![](./amd-zen-1-btb-128b.png)
 
-相比 stride=16B，L0 BTB 的行为没有变化；L1 BTB 的容量进一步减到了 16，符合组相连的预期；L2 BTB 的容量减半到了 1024，意味着 L2 BTB 也是组相连结构。
+相比 stride=64B，L0 BTB 的行为没有变化；L1 BTB 的容量进一步减到了 16，符合组相连的预期；L2 BTB 的容量减半到了 1024，意味着 L2 BTB 也是组相连结构。
 
 ## 小结
 
