@@ -1,6 +1,7 @@
 ---
 layout: post
-date: 2025-07-08
+# to appear after zen 2
+date: 2025-07-08T00:00:01
 tags: [cpu,amd,zen,btb]
 categories:
     - hardware
