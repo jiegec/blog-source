@@ -12,7 +12,7 @@ categories:
 
 ## 背景
 
-ARM Neoverse N1 是比较早的一代 ARM 服务器的处理器，它在很多地方都和 Cortex-A76 类似。它的 BTB 结构比较有意思，所以在这里对它的 BTB 做一些分析。
+ARM Neoverse N1 是 2019 年发布的比较早的一代 ARM 服务器的处理器，它在很多地方都和 Cortex-A76 类似。它的 BTB 结构比较有意思，所以在这里对它的 BTB 做一些分析。
 
 <!-- more -->
 

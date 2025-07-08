@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-AMD Zen 1 是 AMD 的 Zen 系列的第一代微架构。在之前，我们分析了 ARM Neoverse [N1](./arm-neoverse-n1-btb.md) 和 [V1](./arm-neoverse-v1-btb.md) 的 BTB，那么现在也把视线转到 AMD 上，看看 AMD 的 Zen 系列的 BTB 是如何演进的。
+AMD Zen 1 是 AMD 在 2017 年发布的 Zen 系列第一代微架构。在之前，我们分析了 ARM Neoverse [N1](./arm-neoverse-n1-btb.md) 和 [V1](./arm-neoverse-v1-btb.md) 的 BTB，那么现在也把视线转到 AMD 上，看看 AMD 的 Zen 系列的 BTB 是如何演进的。
 
 <!-- more -->
 

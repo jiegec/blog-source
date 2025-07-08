@@ -11,7 +11,7 @@ categories:
 
 ## 背景
 
-在之前，我们分析了 [AMD Zen 1](./amd-zen-1-btb.md) 和 [AMD Zen 2](./amd-zen-2-btb.md) 的 BTB，接下来分析它的再下一代微架构：AMD Zen 3 的 BTB，看看 AMD 的 Zen 系列的 BTB 是如何演进的。
+在之前，我们分析了 [AMD Zen 1](./amd-zen-1-btb.md) 和 [AMD Zen 2](./amd-zen-2-btb.md) 的 BTB，接下来分析它的再下一代微架构：2020 年发布的 AMD Zen 3 的 BTB，看看 AMD 的 Zen 系列的 BTB 是如何演进的。
 
 <!-- more -->
 

@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-ARM Neoverse V1 是 ARM Neoverse N1 的下一代服务器 CPU，之前我们分析过 [Neoverse N1 的 BTB 设计](./arm-neoverse-v1-btb.md)。而 ARM Neoverse V1 在很多地方都和 Cortex-X1 类似，相比 Neoverse N1/Cortex-A76 有了一些改进，在这里对它的 BTB 做一些分析。
+ARM Neoverse V1 是 ARM Neoverse N1 的下一代服务器 CPU，在 2020 年发布。此前我们分析过 [Neoverse N1 的 BTB 设计](./arm-neoverse-v1-btb.md)。而 ARM Neoverse V1 在很多地方都和 Cortex-X1 类似，相比 Neoverse N1/Cortex-A76 有了一些改进，在这里对它的 BTB 做一些分析。
 
 <!-- more -->
 
