@@ -161,7 +161,7 @@ AMD Zen 2 和 ARM Neoverse N1 都是在 2019 发布的处理器，下面对它�
 
 可见 AMD Zen 2 在 BTB 容量上有优势，但是延迟要更长；两者都在最后一级 BTB 上做了压缩，但是压缩的方法和目的不同：
 
-- AMD Zen 2 的压缩方法是，把同一个 64B cacheline 内一条 cond 和一条 uncond 指令放在同一个 entry 当中。这样做的好处是，当预测到 cond 分支不跳转的时候，可以直接根据 uncond 指令的信息，得到下一个 fetch block 的地址
-- ARM Neoverse N1 的压缩方法是，根据立即数范围对分支进行分类，如果分支的立即数范围比较小，就只占用一个 entry 的一半也就是 41 bit；如果分支的立即数范围过大，就占用一个完整的 82 bit 的 entry；这主要是一个减少 SRAM 占用的优化，避免了所有的分支都要记录完整的 82 bit 信息
+- AMD Zen 2 的压缩方法是，把同一个 64B cacheline 内一条 cond 和一条 uncond 指令放在同一个 entry 当中。这样做的好处是，当预测到 cond 分支不跳转的时候，可以直接根据 uncond 指令的信息，得到下一个 fetch block 的地址；但是也对代码的结构有要求，必须是在同一个 cacheline 中，依次出现一个 cond 和一个 uncond
+- ARM Neoverse N1 的压缩方法是，根据立即数范围对分支进行分类，如果分支的立即数范围比较小，就只占用一个 entry 的一半也就是 41 bit；如果分支的立即数范围过大，就占用一个完整的 82 bit 的 entry；这主要是一个减少 SRAM 占用的优化，避免了所有的分支都要记录完整的 82 bit 信息；对代码的结构要求比较小，只要是跳转距离不太远的分支，都可以存到 41 bit 内
 
 二者都没有实现一个周期预测两条分支，即 two taken（ARM 的说法是 two predicted branches per cycle）。这要等到 2020 年的 ARM Neoverse N2/V1，或者 2022 年的 AMD Zen 4 才被实现。
