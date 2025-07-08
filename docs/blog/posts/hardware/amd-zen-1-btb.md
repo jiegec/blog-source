@@ -180,3 +180,5 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 首先回忆一下，在 [ARM Neoverse N1](./arm-neoverse-n1-btb.md) 中，连续的 32B 内能放 6 个分支，但是 stride=8B 的时候，一次就会往同一个 set 里增加 4 个分支，于是一个 set 内的分支数从 0 变到 4 再变到 8，拐点出现在 4 个分支，而不是 6 个分支。因此为了达到前面出现的 3072 和 2560 的拐点，新增的分支也得均匀地分到各个 set 当中。
 
 前面根据 L2 BTB 的容量分析到，L2 BTB 的 Index 可能是 PC[n:6]，但肯定不是简单的这么取，否则也会出现 ARM Neoverse N1 类似的问题。只能说明 PC[6] 往上有若干个 bit 是单独出现在 L2 BTB 的 Index 当中的，而 PC[5] 以下的 bit，可能以某种哈希函数的形式，参与到 Index 当中。
+
+所以，L2 BTB 可能是以 PC[n:6] 作为 Index 去访问，然后内部有多个 bank，每个 bank 内部是 2 路组相连。bank index 是通过 PC 经过哈希计算得来，使得在 stride=4B/8B 的时候，体现出 2 路组相连，而在 stride=16B 的时候，体现出 4 路组相连。同时，分支还能够均匀地分布到各个 bank 当中，避免了和 ARM Neoverse N1 类似的情况的发生。
