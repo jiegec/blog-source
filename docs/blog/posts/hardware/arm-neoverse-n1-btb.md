@@ -8,6 +8,8 @@ categories:
 
 # ARM Neoverse N1 (代号 Ares) 的 BTB 结构分析
 
+本文同步发布到本人的[知乎](https://zhuanlan.zhihu.com/p/1926041649617826619)。
+
 ## 背景
 
 ARM Neoverse N1 是比较早的一代 ARM 服务器的处理器，它在很多地方都和 Cortex-A76 类似。它的 BTB 结构比较有意思，所以在这里对它的 BTB 做一些分析。
