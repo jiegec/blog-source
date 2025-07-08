@@ -63,6 +63,8 @@ plugins:
   - wavedrom:
       embed_svg: true
       pymdownx: true
+  - social:
+      enabled: !ENV [DEPLOY, false]
 
 markdown_extensions:
   - toc:
