@@ -155,7 +155,7 @@ CPI=3.25 可能是来自于 1 和 4 的加权平均：25% 的时候是 1 周期�
 
 Zen 3 在 Zen 2 的基础上，没有更换制程，而是通过 previous fetch block 的方式，减少 L1 BTB 的延迟到 1 cycle，顺带去掉了 L0 BTB。L2 BTB 的大小进行了调整，减少了共享的部分，而增加了不限制分支类型的 BTB entry 数量，同时减少了一个周期的延迟，不确定这个延迟是单纯通过优化容量实现的，还是说也依赖了 previous fetch block 的方法来减少周期，更倾向于是后者，因为 L1 和 L2 BTB 都减少了一个周期的延迟。
 
-如果按照 Intel 的 tick-tock 说法，那么 Zen 2 相比 Zen 1 是一次 tick，更换制程，微架构上做少量改动；Zen 3 相比 Zen 2 是一次 tock，不更换制程，但是在微架构上做较多改动。
+如果按照 Intel 的 tick-tock 说法，那么 Zen 2 相比 Zen 1 是一次 tick，更换制程，微架构上做少量改动；Zen 3 相比 Zen 2 是一次 tock，不更换制程，但是在微架构上做较多改动。Zen 4 是 2022 年发布的，使用的是 5nm 制程；Zen 5 是 2024 年发布的，使用的是 4nm 制程。总结一下规律，AMD 会花费两年的时间来升级制程，并且实际上，Zen 4 和 Zen 5 不仅更新了制程，还在前端微架构上有较大的改动。
 
 ## AMD Zen 3 和 ARM Neoverse V1 的 BTB 的对比
 

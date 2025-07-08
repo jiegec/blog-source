@@ -165,3 +165,11 @@ AMD Zen 2 和 ARM Neoverse N1 都是在 2019 发布的处理器，下面对它�
 - ARM Neoverse N1 的压缩方法是，根据立即数范围对分支进行分类，如果分支的立即数范围比较小，就只占用一个 entry 的一半也就是 41 bit；如果分支的立即数范围过大，就占用一个完整的 82 bit 的 entry；这主要是一个减少 SRAM 占用的优化，避免了所有的分支都要记录完整的 82 bit 信息；对代码的结构要求比较小，只要是跳转距离不太远的分支，都可以存到 41 bit 内
 
 二者都没有实现一个周期预测两条分支，即 two taken（ARM 的说法是 two predicted branches per cycle）。这要等到 2020 年的 ARM Neoverse N2/V1，或者 2022 年的 AMD Zen 4 才被实现。
+
+注意到 AMD 的 [Software Optimization Guide for AMD EPYC™ 7002 Processors (Publication No. 56305)](https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/software-optimization-guides/56305.zip) 文档里，有这么一段表述：
+
+> Branches whose target crosses a half-megabyte aligned boundary are unable to be installed in the L0 BTB or to share BTB entries with other branches.
+
+也就是说，如果两个分支要共享一个 BTB entry，那么它们的目的地址不能跨越 512KB 边界，也就是和分支地址的偏移量不超过 19 位。按 48 位虚拟地址计算，如果 BTB entry 只记录一条分支，最多需要记录目的地址的完整 48 位地址；如果现在 BTB entry 要存两条分支，这两条分支的目的地址都只需要记录 19 位，加起来也就 38 位，还可以空余 10 位的信息用来维护 BTB sharing 所需的额外信息。
+
+所以说到底，无论是 AMD 还是 ARM，做的事情都是对一个固定长度的 entry 设置了不同的格式，一个格式保存的地址位数多，但是只能保存一个分支；另一个格式保存的地址位数少，但是可以保存两个分支。区别就是 AMD 对两个分支的类型和位置有要求，而 ARM 允许这两个分支毫无关系。这就是不同厂商的取舍了。
