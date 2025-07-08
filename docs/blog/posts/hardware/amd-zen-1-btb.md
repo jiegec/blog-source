@@ -89,35 +89,6 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 
 相比 stride=4B/8B，L0 BTB 的行为没有变化；L1 BTB 的容量减半到了 128，意味着 L1 BTB 采用了组相连，此时有一半的 set 不能被用上。此外，比较特别的是，从 stride=16B 开始，CPI=5 的平台出现了波动，CPI 从 5 变到 4 再变到了 5，猜测此时 L1 BTB 也有一定的比例会介入。L2 BTB 在 mix (uncond + cond) 模式下，拐点从 3072 前移到 2560。
 
-针对这个 2560 的拐点，做了一系列测试，下面是 64B cacheline 内四条分支的类型的不同组合（U 代表 Uncond，C 代表 Cond），对应的容量：
-
-- CCCC: 2048
-- CCCU: 2560
-- CCUC: 2560
-- CCUU: 2560
-- CUCC: 2560
-- CUCU: 4096
-- CUUC: 2560
-- CUUU: 2560
-- UCCC: 2048
-- UCCU: 2560
-- UCUC: 2560
-- UCUU: 2560
-- UUCC: 2048
-- UUCU: 2560
-- UUUC: 2048
-- UUUU: 2048
-
-可以观察到，如果没有出现连续的 CU（CCCC/UCCC/UUCC/UUUC/UUUU），容量是 2048；如果出现了一组 CU（CC**CU**/C**CU**C/C**CU**U/**CU**CC/**CU**UC/**CU**UU/UC**CU**/U**CU**C/U**CU**U/UU**CU**），容量是 2560；出现了两组 CU（**CUCU**），就是 mix (cond + uncond) 模式，容量是 4096。
-
-一种可能的猜想：
-
-- 如果没有出现连续的 CU，那么每个 branch 占用一个 entry，那么容量就是 2048 个 branch
-- 如果出现了一组 CU，那么一个 64B cacheline 里的 4 个 branch 对应 3 个 entry，那么前 2048 个 branch 对应 1536 个 entry，还剩下 512 个 entry，这些 entry 每个 entry 只放 1 个 branch（讨论见后），所以最后容量是 `2048+512=2560` 个 branch
-- 如果出现了两组 CU，那么每一组 CU 的两个 branch 对应一个 entry，容量是 4096 个 branch
-
-但是也遗留了一个问题，就是只有一组 CU 的情况下，为啥剩下的 512 个 entry 只放 512 个 branch，而不能放 1024 个 branch？
-
 ### stride=32B
 
 继续观察 stride=32B 的情况：
@@ -142,7 +113,7 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 
 相比 stride=16B，L0 BTB 的行为没有变化；L1 BTB 的容量进一步减到了 16，符合组相连的预期；L2 BTB 的容量减半到了 1024，意味着 L2 BTB 也是组相连结构。
 
-### 总结
+## 小结
 
 测试到这里就差不多了，更大的 stride 得到的也是类似的结果，总结一下前面的发现：
 
@@ -152,7 +123,60 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 
 也总结一下前面发现了各种没有解释的遗留问题：
 
-- stride=4B/8B/16B 且为 mix (uncond + cond) 模式时，L2 BTB 体现出 3072/3072/2560 的容量，而非 4096
-- L2 BTB 对应的 CPI=5 的台阶出现比较明显的，在 4-5 之间的波动
+- stride=4B/8B/16B 且为 mix (uncond + cond) 模式时，L2 BTB 体现出 3072/3072/2560 的容量，而非 4096：解析见后
+- L2 BTB 对应的 CPI=5 的台阶出现比较明显的，在 4-5 之间的波动：暂无解释
 
-欢迎读者提出猜想。
+接下来尝试解析一下这些遗留问题背后的原理。部分遗留问题，并没有被解释出来，欢迎读者提出猜想。
+
+## 解析遗留问题
+
+### stride=4B/8B/16B 且为 mix (uncond + cond) 模式时，L2 BTB 体现出 3072/3072/2560 的容量，而非 4096
+
+前面测试出来，观察到两个奇怪的容量：3072 和 2560，分别有 3 和 5 的因子。下面通过进一步的实验，观察它的来源。
+
+#### stride=16B 对应 2560 的 L2 BTB 容量
+
+首先针对这个 2560 的拐点，做了一系列测试，在 stride=16B 的情况下，测试不同的 uncond/cond 分支的组合，下面是 64B cacheline 内四条分支的类型的不同组合（U 代表 Uncond，C 代表 Cond），以及该组合对应的容量：
+
+- CCCC: 2048（即 cond 模式）
+- CCCU: 2560
+- CCUC: 2560
+- CCUU: 2560
+- CUCC: 2560
+- CUCU: 4096（即 mix (cond + uncond) 模式）
+- CUUC: 2560
+- CUUU: 2560
+- UCCC: 2048
+- UCCU: 2560
+- UCUC: 2560（即 mix (uncond + cond) 模式）
+- UCUU: 2560
+- UUCC: 2048
+- UUCU: 2560
+- UUUC: 2048
+- UUUU: 2048（即 uncond 模式）
+
+可以观察到，如果没有出现连续的 CU（CCCC/UCCC/UUCC/UUUC/UUUU），容量是 2048；如果出现了一组 CU（CC**CU**/C**CU**C/C**CU**U/**CU**CC/**CU**UC/**CU**UU/UC**CU**/U**CU**C/U**CU**U/UU**CU**），容量是 2560；出现了两组 CU（**CUCU**），就是 mix (cond + uncond) 模式，容量是 4096。
+
+一种可能的猜想：
+
+- 如果没有出现连续的 CU，那么每个 branch 占用一个 entry，那么容量就是 2048 个 branch
+- 如果出现了一组 CU，那么一个 64B cacheline 里的 4 个 branch 对应 3 个 entry，那么前 2048 个 branch 对应 1536 个 entry，还剩下 512 个 entry，这些 entry 每个 entry 只放 1 个 branch（讨论见后），所以最后容量是 `2048+512=2560` 个 branch
+- 如果出现了两组 CU，那么每一组 CU 的两个 branch 对应一个 entry，容量是 4096 个 branch
+
+但是也遗留了一个问题，就是只有一组 CU 的情况下，为啥剩下的 512 个 entry 只放 512 个 branch，而不能放 1024 个 branch，按理说是可能再次出现 cond + uncond 合并？这个问题暂时还没有解释。
+
+由此可以看出，2560 的来源是 4 路组相连，然后其中一路发生了 cond + uncond 的合并，所以最终是 5 个分支保存到 4 路当中，再来一条分支就会放不下。
+
+#### stride=4B/8B 对应 3072 的 L2 BTB 容量
+
+带着上面的分析，再去观察 stride=4B/8B 时的 3072：3072 有 3 的因子，所以大概率是从 2 路组相连得来，其中一路出现了 cond + uncond 的合并，所以出现了 3 个 branch 占用 2 个 entry 的情况，最后体现出来就是 3072 的 L2 BTB 容量。
+
+似乎到这里，3072 和 2560 分别的 3 和 5 的因子都能解释了，剩下的就是解析具体的组相连的结构。
+
+#### 组相连分析
+
+那么到底是 2 路组相连，还是 4 路组相连呢，另外这个组相连的 set 是怎么构成的呢？
+
+首先回忆一下，在 [ARM Neoverse N1](./arm-neoverse-n1-btb.md) 中，连续的 32B 内能放 6 个分支，但是 stride=8B 的时候，一次就会往同一个 set 里增加 4 个分支，于是一个 set 内的分支数从 0 变到 4 再变到 8，拐点出现在 4 个分支，而不是 6 个分支。因此为了达到前面出现的 3072 和 2560 的拐点，新增的分支也得均匀地分到各个 set 当中。
+
+前面根据 L2 BTB 的容量分析到，L2 BTB 的 Index 可能是 PC[n:6]，但肯定不是简单的这么取，否则也会出现 ARM Neoverse N1 类似的问题。只能说明 PC[6] 往上有若干个 bit 是单独出现在 L2 BTB 的 Index 当中的，而 PC[5] 以下的 bit，可能以某种哈希函数的形式，参与到 Index 当中。
