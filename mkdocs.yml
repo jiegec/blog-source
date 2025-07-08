@@ -65,6 +65,9 @@ plugins:
       pymdownx: true
   - social:
       enabled: !ENV [DEPLOY, false]
+      cards_layout_options:
+        font_family: Noto Sans SC
+
 
 markdown_extensions:
   - toc:
