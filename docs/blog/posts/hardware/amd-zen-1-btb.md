@@ -16,7 +16,7 @@ AMD Zen 1 是 AMD 的 Zen 系列的第一代微架构。在之前，我们分析
 
 ## 官方信息
 
-AMD 在 Software Optimization Guide for AMD Family 17h Processors 中有如下的表述：
+AMD 在 [Software Optimization Guide for AMD Family 17h Processors (Publication No. 55723)](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/software-optimization-guides/55723_3_01_0.zip) 中有如下的表述：
 
 > The branch target buffer (BTB) is a three-level structure accessed using the fetch address of the current fetch block.
 
@@ -135,7 +135,7 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 
 - L0 BTB 是 (4+4)-entry，1 cycle latency，不随着 stride 变化，全相连
 - L1 BTB 是 256-entry，2 cycle latency，容量随着 stride 变化，大概率是 PC[n:3] 这一段被用于 index，使得 stride=16B 开始容量不断减半
-- L2 BTB 是 2048-entry，5 cycle latency，容量随着 stride 变化，大概率是 PC[n:6] 这一段被用于 index，使得 stride=128B 开始容量不断减半；每个 entry 最多保存两条分支，前提是这两条分支在同一个 cacheline 当中，并且第一条是 cond，第二条是 uncond
+- L2 BTB 是 2048-entry，5 cycle latency，容量随着 stride 变化，大概率是 PC[n:6] 这一段被用于 index，使得 stride=128B 开始容量不断减半；每个 entry 最多保存两条分支，前提是这两条分支在同一个 cacheline 当中，并且第一条是 cond，第二条是 uncond；因此最多保存 4096 个分支
 
 也总结一下前面发现了各种没有解释的遗留问题：
 

@@ -302,3 +302,4 @@ Neoverse V1 相比 Neoverse N1，在容量和延迟上都有比较明显的提�
 | Main BTB throughput  | 1 branch      | 1-2 branches  | 1-2 branches  |
 | Main BTB area (bits) | 3K*82=251904  | 4K*92=376832  | 4K*92=376832  |
 | Main BTB area (KiB)  | 30.75         | 46            | 46            |
+| Technology Node      | 7nm           | 5nm           | 5nm           |
