@@ -68,8 +68,8 @@ Zen 2 的第三级 BTB 可以保存 7168 个 entry，但不确定这个 entry �
 
 可以看到，图像上出现了三个比较显著的台阶：
 
-- 三种分支模式下，第一个台阶都是到 8 条分支，CPI=1，8 对应了 8-entry 的 L0 BTB
-- 三种分支模式下，第二个台阶都是到 256 条分支，CPI=2，对应了 512-entry 的 L1 BTB，只体现出了一半的容量；但在 mix (uncond + cond) 和 mix (cond + uncond) 模式下，分支从 256 到 512 时 CPI 缓慢上升，意味着 L1 BTB 的 512-entry 还是可以完整访问，只是带来了一定的开销：CPI 从 2 增加到了 2.5
+- 所有分支模式下，第一个台阶都是到 8 条分支，CPI=1，8 对应了 8-entry 的 L0 BTB
+- 所有分支模式下，第二个台阶都是到 256 条分支，CPI=2，对应了 512-entry 的 L1 BTB，只体现出了一半的容量；但在 mix (uncond + cond) 和 mix (cond + uncond) 模式下，分支从 256 到 512 时 CPI 缓慢上升，意味着 L1 BTB 的 512-entry 还是可以完整访问，只是带来了一定的开销：CPI 从 2 增加到了 2.5
 - 在 uncond 和 cond 模式下，第三个台阶到 4096 条分支，CPI=5，对应 L2 BTB，没有显现出完整的 7168 的大小
 - 在 mix (uncond + cond) 模式下，第三个台阶延伸到了 5120，超出了 4096，依然没有显现出完整的 7168 的大小
 - 在 mix (cond + uncond) 模式下，第三个台阶延伸到了 7168，显现出完整的 7168 的大小
@@ -139,6 +139,8 @@ Zen 2 的 L2 BTB 依然是带有压缩的，只有在 mix (cond + uncond) 模式
 | L2 BTB size w/o sharing | 2K branches  | 4K branches  |
 | L2 BTB size w/ sharing  | 4K branches  | 7K branches  |
 | L2 BTB latency          | 5 cycles     | 5 cycles     |
+| Technology Node         | 14nm         | 7nm          |
+| Release Year            | 2017         | 2019         |
 
 可见 Zen 2 在容量上做了一定的扩展，但机制上比较类似；特别地，可能是观察到 cond + uncond 的压缩能够生效的比例没有那么高，所以只允许其中一部分 entry 被压缩，例如 4 路组相连，只有前 3 个 way 是可以保存两条分支；剩下的一个 way 只能保存一条分支。
 
@@ -146,18 +148,18 @@ Zen 2 的 L2 BTB 依然是带有压缩的，只有在 mix (cond + uncond) 模式
 
 AMD Zen 2 和 ARM Neoverse N1 都是在 2019 发布的处理器，下面对它们进行一个对比：
 
-| uArch                        | AMD Zen 2    | Neoverse N1   |
-|------------------------------|--------------|---------------|
-| L0/Nano BTB size             | 8+8 branches | 16 branches   |
-| L0/Nano BTB latency          | 1 cycle      | 1 cycle       |
-| L1/Micro BTB size            | 512 branches | 64 branches   |
-| L1/Micro BTB latency         | 2 cycles     | 2 cycles      |
-| L2/Main BTB size w/o sharing | 4K branches  | 3K*2 branches |
-| L2/Main BTB size w/ sharing  | 7K branches  | 3K*2 branches |
-| L2/Main BTB latency          | 5 cycles     | 2-3 cycles    |
-| Technology Node              | 7nm          | 7nm           |
+| uArch                        | AMD Zen 2    | ARM Neoverse N1 |
+|------------------------------|--------------|-----------------|
+| L0/Nano BTB size             | 8+8 branches | 16 branches     |
+| L0/Nano BTB latency          | 1 cycle      | 1 cycle         |
+| L1/Micro BTB size            | 512 branches | 64 branches     |
+| L1/Micro BTB latency         | 2 cycles     | 2 cycles        |
+| L2/Main BTB size w/o sharing | 4K branches  | 3K*2 branches   |
+| L2/Main BTB size w/ sharing  | 7K branches  | 3K*2 branches   |
+| L2/Main BTB latency          | 5 cycles     | 2-3 cycles      |
+| Technology Node              | 7nm          | 7nm             |
 
-可见 Zen 2 在 BTB 容量上有优势，但是延迟要更长；两者都在最后一级 BTB 上做了压缩，但是压缩的方法和目的不同：
+可见 AMD Zen 2 在 BTB 容量上有优势，但是延迟要更长；两者都在最后一级 BTB 上做了压缩，但是压缩的方法和目的不同：
 
 - AMD Zen 2 的压缩方法是，把同一个 64B cacheline 内一条 cond 和一条 uncond 指令放在同一个 entry 当中。这样做的好处是，当预测到 cond 分支不跳转的时候，可以直接根据 uncond 指令的信息，得到下一个 fetch block 的地址
 - ARM Neoverse N1 的压缩方法是，根据立即数范围对分支进行分类，如果分支的立即数范围比较小，就只占用一个 entry 的一半也就是 41 bit；如果分支的立即数范围过大，就占用一个完整的 82 bit 的 entry；这主要是一个减少 SRAM 占用的优化，避免了所有的分支都要记录完整的 82 bit 信息
