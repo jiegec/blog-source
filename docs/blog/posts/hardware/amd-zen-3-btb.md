@@ -81,7 +81,21 @@ Zen 3 的第二级 BTB 可以保存 6656 个 entry，但不确定这个 entry �
 - 第一个拐点是 4 条分支，CPI=1，对应 L1 BTB，没有达到完整容量，可能是因为分支太过密集
 - 第二个拐点是 2048 条分支，CPI=3.6；第三个拐点是 4096 条分支，CPI=4/4.2/4.4
 
-Zen 3 在 stride=4B 的情况下 L1 BTB 表现比较一般，应该是牺牲了高密度分支下的性能；而主要命中的是 L2 BTB，在不同的分支模式下，测出来差不多的结果。
+Zen 3 在 stride=4B 的情况下 L1 BTB 表现比较一般，应该是牺牲了高密度分支下的性能；而主要命中的是 L2 BTB，在不同的分支模式下，测出来差不多的结果。为了验证这一点，统计了如下的性能计数器（来源：[Processor Programming Reference (PPR) for AMD Family 19h Model 21h, Revision B0 Processors](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/56214-B0-PUB.zip)）：
+
+> PMCx08B [L2 Branch Prediction Overrides Existing Prediction (speculative)] (Core::X86::Pmc::Core::BpL2BTBCorrect)
+
+它代表了 L2 BTB 提供预测的次数，当分支数不大于 4 的时候，这个计数器的值约等于零；此后快速上升，说明后续都是 L2 BTB 在提供预测。
+
+更进一步观察，发现 2048 到 4096 的 CPI 上升，来自于 L1 BTB 完全失效：2048 条分支时，L1 BTB 还能提供约 10% 的预测，所以 CPI=`0.1*1+0.9*4=3.7`，但到 4096 条分支的时候，完全由 L2 BTB 提供分支，此时 CPI=4。
+
+超过 4096 以后，则 L2 BTB 也开始缺失，出现了译码时才能发现的分支，如果这是一条 uncond 分支，那么会在译码时回滚，这一点可以通过如下性能计数器的提升来证明（来源：[Processor Programming Reference (PPR) for AMD Family 19h Model 21h, Revision B0 Processors](https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/56214-B0-PUB.zip)）：
+
+> PMCx091 [Decode Redirects] (Core::X86::Pmc::Core::BpDeReDirect): The number of times the instruction decoder overrides the predicted target.
+
+但在 L2 BTB 缺失后，如果译码器发现了 cond 分支，会把它预测为不跳转，所以要等到执行才能发现分支预测错误。这就导致了 cond 模式下 L2 BTB 溢出时 CPI=16，而 uncond 模式下 L2 BTB 溢出时 CPI=12，提前在译码阶段发现了 uncond 分支并纠正。
+
+但译码器的纠正能力不是万能的：假如它首先发现了一条 cond 分支，在它其后又发现了一条 uncond 分支，它会用 uncond 分支去纠正，但实际上前面的 cond 分支会跳转，所以此时译码器纠正也无法提升性能。
 
 ### stride=8B
 
@@ -92,7 +106,7 @@ Zen 3 在 stride=4B 的情况下 L1 BTB 表现比较一般，应该是牺牲了�
 - 第一个台阶在所有分支模式下都是 1024 个分支，CPI=1，对应 1024-entry 的 L1 BTB
 - 第二个台阶不太明显，但是在 4096 附近在所有分支模式下都是一个拐点，CPI=4，对应 L2 BTB；在 mix (uncond + cond) 模式下，超过 4096 分支后 CPI 缓慢上升，到 6144 条分支 CPI=4.25，到 6656 条分支 CPI=4.85，之后 CPI 快速上升；在 mix (cond + uncond) 模式下，到 5888 条分支 CPI=5。
 
-L2 BTB 的容量不太确定，超过 4096 后需要一个 entry 保存两条分支才能获得更多容量，但也带来了一定的额外的延迟。
+L2 BTB 的容量不太确定，超过 4096 后需要一个 entry 保存两条分支才能获得更多容量，但也带来了一定的额外的延迟。与此同时 4096 也对应了 32KB ICache 的容量，这会对分析带来干扰。
 
 ### stride=16B
 
@@ -100,9 +114,9 @@ L2 BTB 的容量不太确定，超过 4096 后需要一个 entry 保存两条分
 
 ![](./amd-zen-3-btb-16b.png)
 
-相比 stride=8B，L1 BTB 的行为没有变化。4096 对应的 CPI 有所下降，可能是 L1 BTB 起了一定的作用。在 mix (cond + uncond) 模式下，直到 5632 条分支还维持了 CPI=3.25，之后 CPI 缓慢上升，到 6656 条分支时 CPI=3.75，到 6912 条分支时 CPI=4。
+相比 stride=8B，L1 BTB 的行为没有变化。4096 对应的 CPI 有所下降，从 BpL2BTBCorrect 性能计数器可以发现是 L1 BTB 起了一定的作用。在 mix (cond + uncond) 模式下，直到 5632 条分支还维持了 CPI=3.25，之后 CPI 缓慢上升，到 6656 条分支时 CPI=3.75，到 6912 条分支时 CPI=4。
 
-CPI=3.25 可能是来自于 1 和 4 的加权平均：25% 的时候是 1 周期，75% 的时候是 4 周期，平均下来就是 `1*0.25+4*0.75=3.25`。这意味着 L1 BTB 还要保持 25% 的命中率。依此类推，CPI=3.75 来自于 1/12 的时候是 1 周期，11/12 的时候是 4 周期，那么 `1*1/12+4*11/12=3.75`。
+CPI=3.25 可能是来自于 1 和 4 的加权平均：25% 的时候是 1 周期，75% 的时候是 4 周期，平均下来就是 `1*0.25+4*0.75=3.25`。这意味着 L1 BTB 还要保持 25% 的命中率。观察 BpL2BTBCorrect 性能计数器，发现它的取值等于 75% 的分支执行次数，意味着 L1 BTB 确实提供了 25% 的预测，L2 BTB 提供了剩下 75% 的预测。
 
 ### stride=32B
 
@@ -110,7 +124,19 @@ CPI=3.25 可能是来自于 1 和 4 的加权平均：25% 的时候是 1 周期�
 
 ![](./amd-zen-3-btb-32b.png)
 
-相比 stride=16B，L1 BTB 的行为没有变化，但是出现了一些性能波动。所有分支模式下，L2 BTB 的拐点都出现在 5120，但性能波动比较大，mix (cond + uncond) 模式下的 CPI 达到了 4.6。
+相比 stride=16B，L1 BTB 的行为没有变化，但是出现了一些性能波动。所有分支模式下，L2 BTB 的拐点都出现在 5120，但性能波动比较大，mix (cond + uncond) 模式下的 CPI 达到了 4.6。通过 BpDeReDirect 性能计数器的变化，可以确认这个拐点确实是来自于 L2 BTB 的缺失。
+
+前面提到，译码器的纠正能力可能会给出错误的答案，在 stride=32B 时，就会出现一个很有意思的现象：
+
+- 超出 L2 BTB 容量后，mix (uncond + cond) 模式下 BpDeReDirect 占分支数量的 50%
+- 超出 L2 BTB 容量后，mix (cond + uncond) 模式下 BpDeReDirect 占分支数量的接近 100%
+
+解释起来也并不复杂：stride=32B 的情况下，一个 64B cacheline 只有两条分支，那么：
+
+- mix (uncond + cond) 模式下，第一条分支是 uncond，译码器会发现并 redirect；第二条分支是 cond，译码器会无视它，不进行 redirect；所以最后是 50% 的 redirect 比例
+- mix (cond + uncond) 模式下，第一条分支是 cond，译码器会看到后面的 uncond 分支并 redirect；第二条分支是 uncond，译码器会发现并 redirect；所以最后是接近 100% 的 redirect 比例
+
+顺带一提，uncond 模式下的 BpDeReDirect 占分支数量的接近 100%，cond 模式下的 BpDeReDirect 占分支数量的 0%，都是符合预期的。
 
 ### stride=64B
 
@@ -118,7 +144,7 @@ CPI=3.25 可能是来自于 1 和 4 的加权平均：25% 的时候是 1 周期�
 
 ![](./amd-zen-3-btb-64b.png)
 
-相比 stride=32B，L1 BTB 的容量减半，达到了 512。之后出现了比较明显的性能波动，但四种分支模式下，拐点依然都是出现在 5120 条分支的位置。
+相比 stride=32B，L1 BTB 的容量减半，达到了 512。之后出现了比较明显的性能波动，但四种分支模式下，拐点依然都是出现在 5120 条分支的位置。通过 BpDeReDirect 性能计数器的变化，可以确认这个拐点确实是来自于 L2 BTB 的缺失。
 
 ### stride=128B
 
