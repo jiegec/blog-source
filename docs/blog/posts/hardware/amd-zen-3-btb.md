@@ -85,7 +85,7 @@ Zen 3 在 stride=4B 的情况下 L1 BTB 表现比较一般，应该是牺牲了�
 
 > PMCx08B [L2 Branch Prediction Overrides Existing Prediction (speculative)] (Core::X86::Pmc::Core::BpL2BTBCorrect)
 
-它代表了 L2 BTB 提供预测的次数，当分支数不大于 4 的时候，这个计数器的值约等于零；此后快速上升，说明后续都是 L2 BTB 在提供预测。
+它代表了 L2 BTB 提供预测（准确地说，L2 BTB 提供了预测且和 L1 BTB 提供的预测结果不同，覆盖了 L1 BTB 的预测结果）的次数，当分支数不大于 4 的时候，这个计数器的值约等于零；此后快速上升，说明后续都是 L2 BTB 在提供预测。
 
 更进一步观察，发现 2048 到 4096 的 CPI 上升，来自于 L1 BTB 完全失效：2048 条分支时，L1 BTB 还能提供约 10% 的预测，所以 CPI=`0.1*1+0.9*4=3.7`，但到 4096 条分支的时候，完全由 L2 BTB 提供分支，此时 CPI=4。
 
