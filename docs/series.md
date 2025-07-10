@@ -8,6 +8,10 @@ permalink: /series/
 
 下面列举了我的博客里的一些系列文章。
 
+## BTB 结构分析
+
+[#btb](/tags/#tag:btb)
+
 ## 微架构评测
 
 [#uarch-review](/tags/#tag:uarch-review)
