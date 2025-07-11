@@ -88,6 +88,7 @@ permalink: /benchmark/
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.70](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [10.7](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [8.71](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto-ljemalloc_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto -ljemalloc`）: [9.25](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto-ljemalloc_001.txt)
 
@@ -102,6 +103,7 @@ permalink: /benchmark/
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto`）: [6.37](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto`）: [8.30](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto`）: [8.62](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto_001.txt)
 
@@ -118,6 +120,7 @@ permalink: /benchmark/
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [6.08](./data/int2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.03](./data/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [8.05](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data/int2017_rate1/Loongson_3A6000_O3_002.txt)
 - Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_O3_001.txt)
 - Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
@@ -506,6 +509,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -march=native`）: [3.89](./data/fp2017_rate1/Apple_M1_E-Core_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -march=native`）: [11.0](./data/fp2017_rate1/Intel_Xeon_w9-3595X_O3-march=native_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.73](./data/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
 
@@ -527,6 +531,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [6.90](./data/fp2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.31](./data/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [10.6](./data/fp2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.56](./data/fp2017_rate1/Loongson_3A6000_O3_001.txt)
 - Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [6.08](./data/fp2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
 - Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [8.07](./data/fp2017_rate1/Qualcomm_8cx_Gen3_O3_001.txt)
@@ -1143,6 +1148,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Intel Xeon Platinum 8358P: Sunny Cove, Ice Lake
 - Intel Xeon Platinum 8576C(TencentCloud s8.medium8, 2C 8G): Raptor Cove, Emerald Rapids, w/o PMU
 - Intel Xeon Platinum 8581C(GCP c4-standard-2, 2C 7G): Raptor Cove, Emerald Rapids
+- Intel Xeon w9-3595X: Golden Cove, Sapphire Rapids
 - Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.2, 4C 8G)
 - Kunpeng 920: TaiShan V110
 - Loongson 3A6000: LA664
@@ -1156,6 +1162,8 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 更新历史
 
+- 2025.07.11:
+      - 测试 Intel Xeon w9-3595X 的性能
 - 2025.06.11:
       - 测试 Huawei Kirin X90 在虚拟机中的性能
 - 2025.06.06:
