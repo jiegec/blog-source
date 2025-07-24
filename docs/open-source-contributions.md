@@ -66,6 +66,10 @@ permalink: /open-source-contributions/
 - [bug#23909: 25.1.50; `button-label' must be called in the buffer where ...](https://lists.gnu.org/archive/html/bug-gnu-emacs/2016-07/msg00307.html)
 	- [button-* function doc string clarifications](https://github.com/emacs-mirror/emacs/commit/9eda79fc8c2b3e66ff6934ef0a8f2b747c27d245)
 
+## flashrom
+
+- [jlink_spi: add cs=tms option to jlink_spi programmer](https://github.com/flashrom/flashrom/commit/592c1c3e5fd9ae42a261966c82ddd83f777ce2b6)
+
 ## FloPoCo
 
 - [two more bug fixes by Jiajie Chen](https://gitlab.com/flopoco/flopoco/-/commit/4672586b731b22562d2ce6994c5c78e41846a452)
