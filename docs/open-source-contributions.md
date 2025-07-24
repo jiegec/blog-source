@@ -12,13 +12,13 @@ permalink: /open-source-contributions/
 
 我主要参与如下开源项目的维护：
 
-- [lsof-org/lsof](https://github.com/lsof-org/lsof)
 - [AOSC-Dev](https://github.com/AOSC-Dev)
-- [NixOS/nixpkgs](https://github.com/nixos/nixpkgs)
+- [NixOS](https://github.com/nixos)
+- [Termony](https://github.com/TermonyHQ)
 - [canokeys](https://github.com/canokeys)
+- [capstone-rs](https://github.com/capstone-rust)
+- [lsof](https://github.com/lsof-org)
 - [nfcim](https://github.com/nfcim)
-- [AOSC-Dev](https://github.com/AOSC-Dev)
-- [capstone-rust](https://github.com/capstone-rust)
 
 ## aosc-os-abbs
 
