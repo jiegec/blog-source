@@ -92,10 +92,13 @@ categories:
 
 显卡的 Compute Capability 可以在 https://developer.nvidia.com/cuda-gpus 找到：
 
+- RTX 5090: 120
 - B200: 100
 - H100: 90
 - RTX 4090: 89
+- RTX 3090: 86
 - A100: 80
+- RTX 2080: 75
 - V100: 70
 - P100: 60
 
