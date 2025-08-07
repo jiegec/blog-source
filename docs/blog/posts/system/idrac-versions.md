@@ -58,4 +58,4 @@ categories:
 
 ## 在线升级
 
-iDRAC 可以在线从 Dell 官网下载新版本升级，在网页上选择通过 HTTPS 升级，域名写 <downloads.dell.com> ，具体见[文档](https://www.dell.com/support/kbdoc/zh-cn/000130533/dell-poweredge-how-to-update-the-firmware-via-https-connection-to-idrac?lang=en)。
+iDRAC 可以在线从 Dell 官网下载新版本升级，在网页上选择通过 HTTPS 升级，域名写 `downloads.dell.com`，具体见[文档](https://www.dell.com/support/kbdoc/zh-cn/000130533/dell-poweredge-how-to-update-the-firmware-via-https-connection-to-idrac?lang=en)。
