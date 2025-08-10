@@ -253,6 +253,7 @@ permalink: /benchmark/
 
 桌面平台：
 
+- Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.31](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data-trixie/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data-trixie/int2017_rate1/Loongson_3A6000_O3_002.txt)
 
