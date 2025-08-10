@@ -134,8 +134,8 @@ permalink: /benchmark/
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [8.93](./data/int2017_rate1/Apple_M1_P-Core_O3-flto-ljemalloc_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto -ljemalloc`）: [3.52](./data/int2017_rate1/Apple_M1_E-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.70](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [10.7](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto-ljemalloc_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [10.7](./data/int2017_rate1/Intel_Core_i9-12900KS_P-Core_O3-flto-ljemalloc_001.txt)
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto-ljemalloc_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [8.71](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto-ljemalloc_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto -ljemalloc`）: [9.25](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto-ljemalloc_001.txt)
 
@@ -146,8 +146,8 @@ permalink: /benchmark/
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.24](./data/int2017_rate1/Apple_M1_P-Core_O3-flto_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto`）: [3.29](./data/int2017_rate1/Apple_M1_E-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto`）: [6.37](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_P-Core_O3-flto_001.txt)
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto_002.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto`）: [8.30](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto`）: [8.62](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto_001.txt)
 
@@ -160,9 +160,9 @@ permalink: /benchmark/
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.15](./data/int2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Huawei Kirin X90 VM P-Core @ 2.3 GHz（`-O3`）: [4.07](./data/int2017_rate1/Huawei_Kirin_X90_VM_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3`）: [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [9.62](./data/int2017_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [6.08](./data/int2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.03](./data/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [8.05](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
 - Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_O3_001.txt)
@@ -326,8 +326,8 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 6. Zen 3(AMD 5700X): MPKI=4.68 Mispred=2.64%
 7. Zen 2(AMD 7742): MPKI=4.77 Mispred=2.69%
 8. Redwood Cove(Intel 6982P-C): MPKI=4.77 Mispred=2.71%
-9. Sunny Cove(Intel 8358P)/Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=4.86 Mispred=2.75%
-10. Gracemont(Intel 12900KS/Intel 14900K): MPKI=5.15 Mispred=2.92%
+9. Sunny Cove(Intel 8358P)/Golden Cove(Intel 12900KS P-Core)/Raptor Cove(Intel 14900K P-Core/Intel 8581C): MPKI=4.86 Mispred=2.75%
+10. Gracemont(Intel 12900KS P-Core/Intel 14900K P-Core): MPKI=5.15 Mispred=2.92%
 11. Skylake(Intel D-2146NT)/Cascade Lake(Intel 10980XE): MPKI=5.50 Mispred=3.13%
 12. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
 13. Haswell(Intel E5-2680 v3)/Broadwell(Intel E5-2680 v4): MPKI=5.98 Mispred=3.34%
@@ -340,7 +340,7 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）：
 4. Zen 3(AMD 5700X): MPKI=5.55 Mispred=3.19%
 5. Zen 4(AMD 9T24/AMD 9R14): MPKI=5.57 Mispred=3.19%
 6. Redwood Cove(Intel 6982P-C): MPKI=5.70 Mispred=3.29%
-7. Golden Cove(Intel 12900KS)/Raptor Cove(Intel 14900K/Intel 8581C): MPKI=5.81 Mispred=3.37%
+7. Golden Cove(Intel 12900KS P-Core)/Raptor Cove(Intel 14900K P-Core/Intel 8581C): MPKI=5.81 Mispred=3.37%
 8. Cascade Lake(Intel 10980XE): MPKI=6.55 Mispred=3.83%
 9. Zen 1(AMD 7551): MPKI=6.86 Mispred=4.02%
 
@@ -642,9 +642,9 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Apple M1 P-Core @ 3.1 GHz Firestorm（`-O3`）: [11.6](./data/fp2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.89](./data/fp2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
-- Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [6.90](./data/fp2017_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.31](./data/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [10.6](./data/fp2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
 - Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [6.08](./data/fp2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
