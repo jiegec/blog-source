@@ -40,7 +40,7 @@ categories:
 
 ## Benchmark
 
-Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark.md)。
+Qualcomm Oryon 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ## 环境准备
 

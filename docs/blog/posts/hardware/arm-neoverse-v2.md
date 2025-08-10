@@ -37,7 +37,7 @@ ARM 关于 Neoverse V2 微架构有如下公开信息：
 
 ## Benchmark
 
-Neoverse V2 (AWS Graviton 4) 的性能测试结果见 [SPEC](../../../benchmark.md)。
+Neoverse V2 (AWS Graviton 4) 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ## MOP vs uOP
 

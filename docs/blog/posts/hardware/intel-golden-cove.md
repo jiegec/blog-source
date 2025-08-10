@@ -40,7 +40,7 @@ Intel 关于 Golden Cove 微架构有这些官方的信息：
 
 ## Benchmark
 
-Intel Golden Cove 的性能测试结果见 [SPEC](../../../benchmark.md)。
+Intel Golden Cove 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ## 前端
 

@@ -40,7 +40,7 @@ AMD 一向公开得比较大方，关于 Zen 5 的信息有：
 
 ## Benchmark
 
-AMD Zen 5 的性能测试结果见 [SPEC](../../../benchmark.md)。
+AMD Zen 5 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ## MOP vs uOP
 

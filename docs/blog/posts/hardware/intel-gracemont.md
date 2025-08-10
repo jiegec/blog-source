@@ -33,7 +33,7 @@ Intel 关于 Gracemont 微架构有这些官方的信息：
 
 ## Benchmark
 
-Intel Gracemont 的性能测试结果见 [SPEC](../../../benchmark.md)。
+Intel Gracemont 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ## 前端
 

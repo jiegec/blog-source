@@ -37,7 +37,7 @@ Apple M1 的官方信息乏善可陈，关于微架构的信息几乎为零，�
 
 ## Benchmark
 
-Apple Firestorm/Icestorm 的性能测试结果见 [SPEC](../../../benchmark.md)。
+Apple Firestorm/Icestorm 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ## 环境准备
 
