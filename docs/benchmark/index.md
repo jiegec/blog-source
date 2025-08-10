@@ -45,6 +45,8 @@ permalink: /benchmark/
 
 ### 数据总览
 
+#### Debian Bookworm
+
 ![](./data/int2017_rate1_score.svg)
 
 ![](./data/int2017_rate1_table.svg)
@@ -77,7 +79,43 @@ permalink: /benchmark/
 
     ![](./data/int2017_rate1_inst.svg)
 
+#### Debian Trixie
+
+![](./data-trixie/int2017_rate1_score.svg)
+
+![](./data-trixie/int2017_rate1_table.svg)
+
+??? note "分数/GHz"
+
+    ![](./data-trixie/int2017_rate1_score_per_ghz.svg)
+
+??? note "每项分数"
+
+    ![](./data-trixie/int2017_rate1_ratio.svg)
+
+??? note "IPC"
+
+    ![](./data-trixie/int2017_rate1_ipc.svg)
+
+??? note "分支预测 MPKI"
+
+    ![](./data-trixie/int2017_rate1_mpki.svg)
+
+??? note "分支预测错误率"
+
+    ![](./data-trixie/int2017_rate1_mispred.svg)
+
+??? note "频率"
+
+    ![](./data-trixie/int2017_rate1_freq.svg)
+
+??? note "指令数"
+
+    ![](./data-trixie/int2017_rate1_inst.svg)
+
 ### 原始数据
+
+#### Debian Bookworm
 
 桌面平台（LTO + Jemalloc）：
 
@@ -89,7 +127,6 @@ permalink: /benchmark/
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [10.7](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.1](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto-ljemalloc_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [8.71](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto-ljemalloc_001.txt)
-- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto -ljemalloc`）: [9.25](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
@@ -104,7 +141,6 @@ permalink: /benchmark/
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto`）: [8.30](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto_001.txt)
-- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -flto`）: [8.62](./data/int2017_rate1/Qualcomm_X1E80100_O3-flto_001.txt)
 
 桌面平台：
@@ -121,7 +157,6 @@ permalink: /benchmark/
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data/int2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.03](./data/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [8.05](./data/int2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
-- Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data/int2017_rate1/Loongson_3A6000_O3_002.txt)
 - Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [5.73](./data/int2017_rate1/Qualcomm_8cx_Gen3_O3_001.txt)
 - Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [4.11](./data/int2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [8.31](./data/int2017_rate1/Qualcomm_X1E80100_O3_001.txt)
@@ -145,7 +180,6 @@ permalink: /benchmark/
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [6.87](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto -ljemalloc`）: [3.57](./data/int2017_rate1/Kunpeng_920_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto -ljemalloc`）: [6.03](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto-ljemalloc_001.txt)
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto -ljemalloc`）: [4.54](./data/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
 
 服务器平台（LTO）：
 
@@ -165,7 +199,6 @@ permalink: /benchmark/
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -flto`）: [6.67](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.26](./data/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [5.71](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data/int2017_rate1/Loongson_3C6000_O3-flto_001.txt) [4.37](./data/int2017_rate1/Loongson_3C6000_O3-flto_002.txt)
 
 服务器平台：
 
@@ -197,8 +230,6 @@ permalink: /benchmark/
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [6.52](./data/int2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.10](./data/int2017_rate1/Kunpeng_920_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.53](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
-- Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data/int2017_rate1/Loongson_3C5000_O3_001.txt)
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data/int2017_rate1/Loongson_3C6000_O3_001.txt) [4.14](./data/int2017_rate1/Loongson_3C6000_O3_002.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 
 手机平台（LTO）：
@@ -207,7 +238,34 @@ permalink: /benchmark/
 - Huawei Kirin 9010 P-Core Best @ 2.3 GHz（`-O3 -flto`）: [4.18](./data/int2017_rate1/Huawei_Kirin_9010_P-Core_Best_O3-flto_001.txt)
 - Huawei Kirin 9010 P-Core Full @ 2.3 GHz（`-O3 -flto`）: [3.96](./data/int2017_rate1/Huawei_Kirin_9010_P-Core_Full_O3-flto_001.txt)
 
-注：
+#### Debian Trixie
+
+桌面平台（LTO + Jemalloc）：
+
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
+
+桌面平台（LTO）：
+
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
+
+桌面平台：
+
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data-trixie/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data-trixie/int2017_rate1/Loongson_3A6000_O3_002.txt)
+
+服务器平台（LTO + Jemalloc）：
+
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto -ljemalloc`）: [4.54](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
+
+服务器平台（LTO）：
+
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_001.txt) [4.37](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_002.txt)
+
+服务器平台：
+
+- Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data-trixie/int2017_rate1/Loongson_3C5000_O3_001.txt)
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data-trixie/int2017_rate1/Loongson_3C6000_O3_001.txt) [4.14](./data-trixie/int2017_rate1/Loongson_3C6000_O3_002.txt)
+
+#### 备注
 
 1. SPEC INT 2017 Rate-1 结果受 `-flto`（分数 +4%，主要优化 mcf/deepsjeng）和 `-ljemalloc`（分数 +4-10%，主要优化 omnetpp/xalancbmk）影响很明显。`-Ofast` 和 `-O3` 区别很小，`-march=native` 影响很小。
 2. 在部分处理器上，Linux 不能保证程序被调度到性能最高的核心上，例如：
@@ -467,6 +525,8 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 ### 数据总览
 
+#### Debian Bookworm
+
 ![](./data/fp2017_rate1_score.svg)
 
 ![](./data/fp2017_rate1_table.svg)
@@ -499,7 +559,43 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
     ![](./data/fp2017_rate1_inst.svg)
 
+#### Debian Trixie
+
+![](./data-trixie/fp2017_rate1_score.svg)
+
+![](./data-trixie/fp2017_rate1_table.svg)
+
+??? note "分数/GHz"
+
+    ![](./data-trixie/fp2017_rate1_score_per_ghz.svg)
+
+??? note "每项分数"
+
+    ![](./data-trixie/fp2017_rate1_ratio.svg)
+
+??? note "IPC"
+
+    ![](./data-trixie/fp2017_rate1_ipc.svg)
+
+??? note "分支预测 MPKI"
+
+    ![](./data-trixie/fp2017_rate1_mpki.svg)
+
+??? note "分支预测错误率"
+
+    ![](./data-trixie/fp2017_rate1_mispred.svg)
+
+??? note "频率"
+
+    ![](./data-trixie/fp2017_rate1_freq.svg)
+
+??? note "指令数"
+
+    ![](./data-trixie/fp2017_rate1_inst.svg)
+
 ### 原始数据
+
+#### Debian Bookworm
 
 桌面平台（`-march=native`）：
 
@@ -510,7 +606,6 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -march=native`）: [11.0](./data/fp2017_rate1/Intel_Xeon_w9-3595X_O3-march=native_001.txt)
-- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.73](./data/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
 
 桌面平台（LTO）：
@@ -532,7 +627,6 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3`）: [16.1](./data/fp2017_rate1/Intel_Core_i9-14900K_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.31](./data/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [10.6](./data/fp2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
-- Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.56](./data/fp2017_rate1/Loongson_3A6000_O3_001.txt)
 - Qualcomm 8cx Gen3 E-Core @ 2.4 GHz Cortex-A78C（`-O3`）: [6.08](./data/fp2017_rate1/Qualcomm_8cx_Gen3_E-Core_O3_001.txt)
 - Qualcomm 8cx Gen3 @ 3.0 GHz Cortex-X1C（`-O3`）: [8.07](./data/fp2017_rate1/Qualcomm_8cx_Gen3_O3_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3_001.txt)
@@ -554,8 +648,6 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3 -march=native`）: [8.60](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3-march=native_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -march=native`）: [3.17](./data/fp2017_rate1/Kunpeng_920_O3-march=native_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -march=native`）: [8.01](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-march=native_001.txt)
-- Loongson 3C5000 @ 2.2 GHz LA464（`-O3 -march=native`）: [3.09](./data/fp2017_rate1/Loongson_3C5000_O3-march=native_001.txt)
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -march=native`）: [4.93](./data/fp2017_rate1/Loongson_3C6000_O3-march=native_001.txt)
 
 服务器平台：
 
@@ -586,8 +678,6 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Xeon Platinum 8581C @ 3.4 GHz Raptor Cove（`-O3`）: [8.42](./data/fp2017_rate1/Intel_Xeon_Platinum_8581C_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.13](./data/fp2017_rate1/Kunpeng_920_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [8.17](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
-- Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data/fp2017_rate1/Loongson_3C5000_O3_001.txt)
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.75](./data/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data/fp2017_rate1/Loongson_3C6000_O3_003.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [7.63](./data/fp2017_rate1/T-Head_Yitian_710_O3_001.txt)
 
 手机平台（LTO）：
@@ -596,7 +686,27 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Huawei Kirin 9010 P-Core Best @ 2.3 GHz（`-O3 -flto`）: [6.22](./data/fp2017_rate1/Huawei_Kirin_9010_P-Core_Best_O3-flto_001.txt)
 - Huawei Kirin 9010 P-Core Full @ 2.3 GHz（`-O3 -flto`）: [5.86](./data/fp2017_rate1/Huawei_Kirin_9010_P-Core_Full_O3-flto_001.txt)
 
-注：
+#### Debian Trixie
+
+桌面平台（`-march=native`）：
+
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.73](./data-trixie/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
+
+桌面平台：
+
+- Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.56](./data-trixie/fp2017_rate1/Loongson_3A6000_O3_001.txt)
+
+服务器平台（`-march=native`）：
+
+- Loongson 3C5000 @ 2.2 GHz LA464（`-O3 -march=native`）: [3.09](./data-trixie/fp2017_rate1/Loongson_3C5000_O3-march=native_001.txt)
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -march=native`）: [4.93](./data-trixie/fp2017_rate1/Loongson_3C6000_O3-march=native_001.txt)
+
+服务器平台：
+
+- Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data-trixie/fp2017_rate1/Loongson_3C5000_O3_001.txt)
+- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_003.txt)
+
+#### 备注
 
 1. SPEC FP 2017 Rate-1 结果在 AMD64 平台下受 `-march=native` 影响很明显，特别是有 AVX-512 的平台，因为不开 `-march=native` 时，默认情况下 SIMD 最多用到 SSE。ARM64 平台下 `-march=native` 没有什么影响，甚至有一定的劣化。
 2. 部分内核版本（大约 6.7-6.11，在 6.12/6.11.7 中修复）会显著影响 503.bwaves_r 和 507.cactuBSSN_r 项目的性能，详见 [Intel Spots A 3888.9% Performance Improvement In The Linux Kernel From One Line Of Code](https://www.phoronix.com/news/Intel-Linux-3888.9-Performance)、[mm, mmap: limit THP alignment of anonymous mappings to PMD-aligned sizes](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d4148aeab412432bf928f311eca8a2ba52bb05df) 和 [kernel 6.10 THP causes abysmal performance drop](https://bugzilla.suse.com/show_bug.cgi?id=1229012)。

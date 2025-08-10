@@ -28,7 +28,8 @@ jobs:
           python-version: '3.13' 
       - uses: Gr1N/setup-poetry@v9
       - run: poetry install
-      - run: cd docs/benchmark/data && poetry run python3 plot.py
+      - run: cd docs/benchmark/data && poetry run python3 ../scripts/plot.py
+      - run: cd docs/benchmark/data-trixie && poetry run python3 ../scripts/plot.py
       - run: DEPLOY=true poetry run mkdocs build
       - run: cd site && ln -s feed_rss_updated.xml feed.xml
       - name: Deploy to external repository
