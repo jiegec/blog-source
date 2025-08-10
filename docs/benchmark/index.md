@@ -131,7 +131,7 @@ permalink: /benchmark/
 
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto -ljemalloc`）: [9.13](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3-flto-ljemalloc_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto -ljemalloc`）: [12.9](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto-ljemalloc_001.txt)
-- Apple M1 @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [8.93](./data/int2017_rate1/Apple_M1_O3-flto-ljemalloc_001.txt)
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [8.93](./data/int2017_rate1/Apple_M1_P-Core_O3-flto-ljemalloc_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto -ljemalloc`）: [3.52](./data/int2017_rate1/Apple_M1_E-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.70](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [10.7](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto-ljemalloc_001.txt)
@@ -143,7 +143,7 @@ permalink: /benchmark/
 
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto`）: [8.44](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3-flto_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
-- Apple M1 @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.24](./data/int2017_rate1/Apple_M1_O3-flto_001.txt)
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.24](./data/int2017_rate1/Apple_M1_P-Core_O3-flto_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto`）: [3.29](./data/int2017_rate1/Apple_M1_E-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto`）: [6.37](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
@@ -156,7 +156,7 @@ permalink: /benchmark/
 - AMD Ryzen 5 7500F @ 5.0 GHz Zen 4（`-O3`）: [9.51](./data/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3`）: [7.87](./data/int2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [11.3](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt)
-- Apple M1 @ 3.2 GHz Firestorm（`-O3`）: [7.85](./data/int2017_rate1/Apple_M1_O3_001.txt)
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [7.85](./data/int2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.15](./data/int2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Huawei Kirin X90 VM P-Core @ 2.3 GHz（`-O3`）: [4.07](./data/int2017_rate1/Huawei_Kirin_X90_VM_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3`）: [6.24](./data/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
@@ -349,7 +349,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 1. Neoverse V2(AWS Graviton 4): MPKI=4.50 Mispred=2.47%
 2. Oryon(Qualcomm X1E80100): MPKI=4.71 Mispred=2.58%
 3. Neoverse N2(Aliyun Yitian 710): MPKI=4.80 Mispred=2.64%
-4. Firestorm(Apple M1): MPKI=4.81 Mispred=2.62%
+4. Firestorm(Apple M1 P-Core): MPKI=4.81 Mispred=2.62%
 5. Neoverse V1(AWS Graviton 3/AWS Graviton 3E)/Cortex X1C(Qualcomm 8cx Gen3): MPKI=4.91 Mispred=2.69%
 6. HuaweiCloud kc2: MPKI=5.17 Mispred=2.85%
 7. Neoverse N1(Ampere Altra)/Cortex A78C(Qualcomm 8cx Gen3 E-Core): MPKI=5.21 Mispred=2.87%
@@ -360,7 +360,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`）�
 
 1. Neoverse V2(AWS Graviton 4): MPKI=5.19 Mispred=3.03%
 2. Oryon(Qualcomm X1E80100): MPKI=5.41 Mispred=3.13%
-3. Firestorm(Apple M1): MPKI=5.45 Mispred=3.14%
+3. Firestorm(Apple M1 P-Core): MPKI=5.45 Mispred=3.14%
 4. Neoverse V1(AWS Graviton 3): MPKI=5.64 Mispred=3.27%
 5. HuaweiCloud kc2: MPKI=6.00 Mispred=3.50%
 6. Icestorm(Apple M1 E-Core): MPKI=6.10 Mispred=3.56%
@@ -627,7 +627,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native`）: [11.4](./data/fp2017_rate1/AMD_Ryzen_7_5700X_O3-march=native_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -march=native`）: [17.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3-march=native_001.txt)
-- Apple M1 @ 3.1 GHz Firestorm（`-O3 -march=native`）: [11.6](./data/fp2017_rate1/Apple_M1_O3-march=native_001.txt)
+- Apple M1 P-Core @ 3.1 GHz Firestorm（`-O3 -march=native`）: [11.6](./data/fp2017_rate1/Apple_M1_P-Core_O3-march=native_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -march=native`）: [3.89](./data/fp2017_rate1/Apple_M1_E-Core_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
@@ -639,7 +639,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD Ryzen 5 7500F Zen 4（`-O3`）: [11.6](./data/fp2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3`）: [9.91](./data/fp2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [16.3](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [16.6](./data/fp2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt)
-- Apple M1 @ 3.1 GHz Firestorm（`-O3`）: [11.6](./data/fp2017_rate1/Apple_M1_O3_001.txt)
+- Apple M1 P-Core @ 3.1 GHz Firestorm（`-O3`）: [11.6](./data/fp2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.89](./data/fp2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.91](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3`）: [14.3](./data/fp2017_rate1/Intel_Core_i9-12900KS_O3_001.txt)
