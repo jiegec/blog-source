@@ -119,6 +119,14 @@ $ for i in $(seq 0 15); do echo -n "$i:" && numactl -C $i perf stat -e cycles,ta
 15:     5,377,887,646      cycles:u                         #    5.394 GHz
 ```
 
+fish 版本的命令：
+
+```fish
+for i in (seq 0 15)
+    echo -n "$i:" && numactl -C $i perf stat -e cycles,task-clock stress --cpu 1 --timeout 1s 2>&1 | grep GHz && sleep 1
+end
+```
+
 分数高的可以冲到 5.7 GHz，分数低一些的就只能到 5.4 GHz 了。
 
 注：根据 David Huang 提供的信息，AMD 的 Linux 内核维护者已经提交 [Patch](https://lore.kernel.org/lkml/20241203201129.31957-1-mario.limonciello@amd.com/) 来修改这个行为，使得进程尽量调度到分数更高的核，无论它在哪个 CCD。这样一来，即使不绑核，也可以保证单核负载会稳定跑在频率最高的核上。
