@@ -244,6 +244,7 @@ permalink: /benchmark/
 
 桌面平台（LTO + Jemalloc）：
 
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.6](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto-ljemalloc_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
