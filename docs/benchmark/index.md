@@ -113,6 +113,16 @@ permalink: /benchmark/
 
     ![](./data-trixie/int2017_rate1_inst.svg)
 
+#### HarmonyOS
+
+![](./data-harmonyos/int2017_rate1_score.svg)
+
+![](./data-harmonyos/int2017_rate1_table.svg)
+
+??? note "每项分数"
+
+    ![](./data-harmonyos/int2017_rate1_ratio.svg)
+
 ### 原始数据
 
 #### Debian Bookworm
@@ -135,8 +145,6 @@ permalink: /benchmark/
 - AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3 -flto`）: [11.7](./data/int2017_rate1/AMD_Ryzen_9_9950X_O3-flto_001.txt)
 - Apple M1 @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.24](./data/int2017_rate1/Apple_M1_O3-flto_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto`）: [3.29](./data/int2017_rate1/Apple_M1_E-Core_O3-flto_001.txt)
-- Huawei Kirin X90 E-Core @ 2.0 GHz（`-O3 -flto`）: [4.28](./data/int2017_rate1/Huawei_Kirin_X90_E-Core_O3-flto_001.txt)
-- Huawei Kirin X90 P-Core @ 2.3 GHz（`-O3 -flto`）: [4.87](./data/int2017_rate1/Huawei_Kirin_X90_P-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.8 GHz Cascade Lake（`-O3 -flto`）: [6.37](./data/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Intel Core i9-12900KS @ 5.5 GHz Golden Cove（`-O3 -flto`）: [9.97](./data/int2017_rate1/Intel_Core_i9-12900KS_O3-flto_001.txt)
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_001.txt) [11.7](./data/int2017_rate1/Intel_Core_i9-14900K_O3-flto_002.txt)
@@ -232,12 +240,6 @@ permalink: /benchmark/
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [5.53](./data/int2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [5.79](./data/int2017_rate1/T-Head_Yitian_710_O3_001.txt)
 
-手机平台（LTO）：
-
-- Huawei Kirin 9010 E-Core Full @ 2.2 GHz（`-O3 -flto`）: [3.21](./data/int2017_rate1/Huawei_Kirin_9010_E-Core_Full_O3-flto_001.txt)
-- Huawei Kirin 9010 P-Core Best @ 2.3 GHz（`-O3 -flto`）: [4.18](./data/int2017_rate1/Huawei_Kirin_9010_P-Core_Best_O3-flto_001.txt)
-- Huawei Kirin 9010 P-Core Full @ 2.3 GHz（`-O3 -flto`）: [3.96](./data/int2017_rate1/Huawei_Kirin_9010_P-Core_Full_O3-flto_001.txt)
-
 #### Debian Trixie
 
 桌面平台（LTO + Jemalloc）：
@@ -264,6 +266,19 @@ permalink: /benchmark/
 
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data-trixie/int2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data-trixie/int2017_rate1/Loongson_3C6000_O3_001.txt) [4.14](./data-trixie/int2017_rate1/Loongson_3C6000_O3_002.txt)
+
+#### HarmonyOS
+
+桌面平台（LTO）：
+
+- Huawei Kirin X90 E-Core @ 2.0 GHz（`-O3 -flto`）: [4.28](./data-harmonyos/int2017_rate1/Huawei_Kirin_X90_E-Core_O3-flto_001.txt)
+- Huawei Kirin X90 P-Core @ 2.3 GHz（`-O3 -flto`）: [4.87](./data-harmonyos/int2017_rate1/Huawei_Kirin_X90_P-Core_O3-flto_001.txt)
+
+手机平台（LTO）：
+
+- Huawei Kirin 9010 E-Core Full @ 2.2 GHz（`-O3 -flto`）: [3.21](./data-harmonyos/int2017_rate1/Huawei_Kirin_9010_E-Core_Full_O3-flto_001.txt)
+- Huawei Kirin 9010 P-Core Best @ 2.3 GHz（`-O3 -flto`）: [4.18](./data-harmonyos/int2017_rate1/Huawei_Kirin_9010_P-Core_Best_O3-flto_001.txt)
+- Huawei Kirin 9010 P-Core Full @ 2.3 GHz（`-O3 -flto`）: [3.96](./data-harmonyos/int2017_rate1/Huawei_Kirin_9010_P-Core_Full_O3-flto_001.txt)
 
 #### 备注
 
@@ -593,6 +608,16 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
     ![](./data-trixie/fp2017_rate1_inst.svg)
 
+#### HarmonyOS
+
+![](./data-harmonyos/fp2017_rate1_score.svg)
+
+![](./data-harmonyos/fp2017_rate1_table.svg)
+
+??? note "每项分数"
+
+    ![](./data-trixie/fp2017_rate1_ratio.svg)
+
 ### 原始数据
 
 #### Debian Bookworm
@@ -607,12 +632,6 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -march=native`）: [11.0](./data/fp2017_rate1/Intel_Xeon_w9-3595X_O3-march=native_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
-
-桌面平台（LTO）：
-
-- Huawei Kirin X90 E-Core @ 2.0 GHz（`-O3 -flto`）: [6.52](./data/fp2017_rate1/Huawei_Kirin_X90_E-Core_O3-flto_001.txt)
-- Huawei Kirin X90 P-Core @ 2.3 GHz（`-O3 -flto`）: [7.42](./data/fp2017_rate1/Huawei_Kirin_X90_P-Core_O3-flto_001.txt)
-
 
 桌面平台：
 
@@ -680,12 +699,6 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [8.17](./data/fp2017_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 - T-Head Yitian 710 @ 3.0 GHz Neoverse N2（`-O3`）: [7.63](./data/fp2017_rate1/T-Head_Yitian_710_O3_001.txt)
 
-手机平台（LTO）：
-
-- Huawei Kirin 9010 E-Core Full @ 2.2 GHz（`-O3 -flto`）: [4.72](./data/fp2017_rate1/Huawei_Kirin_9010_E-Core_Full_O3-flto_001.txt)
-- Huawei Kirin 9010 P-Core Best @ 2.3 GHz（`-O3 -flto`）: [6.22](./data/fp2017_rate1/Huawei_Kirin_9010_P-Core_Best_O3-flto_001.txt)
-- Huawei Kirin 9010 P-Core Full @ 2.3 GHz（`-O3 -flto`）: [5.86](./data/fp2017_rate1/Huawei_Kirin_9010_P-Core_Full_O3-flto_001.txt)
-
 #### Debian Trixie
 
 桌面平台（`-march=native`）：
@@ -705,6 +718,19 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data-trixie/fp2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_003.txt)
+
+#### HarmonyOS
+
+桌面平台（LTO）：
+
+- Huawei Kirin X90 E-Core @ 2.0 GHz（`-O3 -flto`）: [6.52](./data-harmonyos/fp2017_rate1/Huawei_Kirin_X90_E-Core_O3-flto_001.txt)
+- Huawei Kirin X90 P-Core @ 2.3 GHz（`-O3 -flto`）: [7.42](./data-harmonyos/fp2017_rate1/Huawei_Kirin_X90_P-Core_O3-flto_001.txt)
+
+手机平台（LTO）：
+
+- Huawei Kirin 9010 E-Core Full @ 2.2 GHz（`-O3 -flto`）: [4.72](./data-harmonyos/fp2017_rate1/Huawei_Kirin_9010_E-Core_Full_O3-flto_001.txt)
+- Huawei Kirin 9010 P-Core Best @ 2.3 GHz（`-O3 -flto`）: [6.22](./data-harmonyos/fp2017_rate1/Huawei_Kirin_9010_P-Core_Best_O3-flto_001.txt)
+- Huawei Kirin 9010 P-Core Full @ 2.3 GHz（`-O3 -flto`）: [5.86](./data-harmonyos/fp2017_rate1/Huawei_Kirin_9010_P-Core_Full_O3-flto_001.txt)
 
 #### 备注
 

@@ -169,6 +169,9 @@ def plot_score_per_ghz(flavor):
             freq.append(mean(data[x][f"{bench}/clock"]) / 1000)
         y_data.append(mean(data[x]["all"]) / mean(freq))
 
+    if len(y_data) == 0:
+        return
+
     # sort by opt flags first, then y: https://stackoverflow.com/a/9764364/2148614
     y_data, x_data = (
         list(t)

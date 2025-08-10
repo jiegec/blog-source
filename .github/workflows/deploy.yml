@@ -30,6 +30,7 @@ jobs:
       - run: poetry install
       - run: cd docs/benchmark/data && poetry run python3 ../scripts/plot.py
       - run: cd docs/benchmark/data-trixie && poetry run python3 ../scripts/plot.py
+      - run: cd docs/benchmark/data-harmonyos && poetry run python3 ../scripts/plot.py
       - run: DEPLOY=true poetry run mkdocs build
       - run: cd site && ln -s feed_rss_updated.xml feed.xml
       - name: Deploy to external repository
