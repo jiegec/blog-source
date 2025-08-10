@@ -122,7 +122,7 @@ $ for i in $(seq 0 15); do echo -n "$i:" && numactl -C $i perf stat -e cycles,ta
 fish 版本的命令：
 
 ```fish
-for i in (seq 0 15)
+for i in (seq 0 (nproc))
     echo -n "$i:" && numactl -C $i perf stat -e cycles,task-clock stress --cpu 1 --timeout 1s 2>&1 | grep GHz && sleep 1
 end
 ```
