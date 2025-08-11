@@ -258,7 +258,7 @@ permalink: /benchmark/
 
 桌面平台：
 
-- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [7.81](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3_001.txt)
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [7.92](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.31](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.18](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
