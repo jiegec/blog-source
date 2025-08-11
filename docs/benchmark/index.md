@@ -244,12 +244,15 @@ permalink: /benchmark/
 
 桌面平台（LTO + Jemalloc）：
 
+- Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.96](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
+- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto -ljemalloc`）: [7.90](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.6](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto-ljemalloc_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
 
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto`）: [6.57](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
+- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto`）: [7.43](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [12.1](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
 
@@ -257,6 +260,7 @@ permalink: /benchmark/
 
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [7.81](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.31](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
+- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.18](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data-trixie/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data-trixie/int2017_rate1/Loongson_3A6000_O3_002.txt)
 
@@ -635,7 +639,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Apple M1 P-Core @ 3.1 GHz Firestorm（`-O3 -march=native`）: [11.6](./data/fp2017_rate1/Apple_M1_P-Core_O3-march=native_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -march=native`）: [3.89](./data/fp2017_rate1/Apple_M1_E-Core_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [7.24](./data/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
-- Intel Core i9-14900K @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_O3-march=native_001.txt)
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [16.6](./data/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3-march=native_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -march=native`）: [11.0](./data/fp2017_rate1/Intel_Xeon_w9-3595X_O3-march=native_001.txt)
 - Qualcomm X1E80100 @ 4.0 GHz X Elite（`-O3 -march=native`）: [14.4](./data/fp2017_rate1/Qualcomm_X1E80100_O3-march=native_001.txt)
 
@@ -709,10 +713,15 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 桌面平台（`-march=native`）：
 
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -march=native`）: [12.1](./data-trixie/fp2017_rate1/Apple_M1_P-Core_O3-march=native_001.txt)
+- Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -march=native`）: [7.85](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [18.0](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3-march=native_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.73](./data-trixie/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 
 桌面平台：
 
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [11.5](./data-trixie/fp2017_rate1/Apple_M1_P-Core_O3_001.txt)
+- Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [7.24](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [16.8](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.56](./data-trixie/fp2017_rate1/Loongson_3A6000_O3_001.txt)
 
