@@ -716,6 +716,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -march=native`）: [12.1](./data-trixie/fp2017_rate1/Apple_M1_P-Core_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -march=native`）: [7.85](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
+- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -march=native`）: [7.70](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3-march=native_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [18.0](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3-march=native_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.73](./data-trixie/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 
