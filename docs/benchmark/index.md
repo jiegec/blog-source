@@ -244,6 +244,7 @@ permalink: /benchmark/
 
 桌面平台（LTO + Jemalloc）：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [3.49](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [9.08](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.96](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto -ljemalloc`）: [7.90](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto-ljemalloc_001.txt)
@@ -252,6 +253,7 @@ permalink: /benchmark/
 
 桌面平台（LTO）：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.28](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.33](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto`）: [6.57](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto`）: [7.43](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto_001.txt)
@@ -260,6 +262,7 @@ permalink: /benchmark/
 
 桌面平台：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.12](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [7.92](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.31](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.18](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
@@ -731,11 +734,13 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 服务器平台（`-march=native`）：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native`）: [4.42](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3-march=native_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3 -march=native`）: [3.09](./data-trixie/fp2017_rate1/Loongson_3C5000_O3-march=native_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -march=native`）: [4.93](./data-trixie/fp2017_rate1/Loongson_3C6000_O3-march=native_001.txt)
 
 服务器平台：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [4.15](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data-trixie/fp2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_003.txt)
 
