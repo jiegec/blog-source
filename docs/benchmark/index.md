@@ -271,14 +271,17 @@ permalink: /benchmark/
 
 服务器平台（LTO + Jemalloc）：
 
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto -ljemalloc`）: [3.65](./data-trixie/int2017_rate1/Kunpeng_920_O3-flto-ljemalloc_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto -ljemalloc`）: [4.54](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
 
 服务器平台（LTO）：
 
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.32](./data-trixie/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_001.txt) [4.37](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_002.txt)
 
 服务器平台：
 
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.17](./data-trixie/int2017_rate1/Kunpeng_920_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data-trixie/int2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data-trixie/int2017_rate1/Loongson_3C6000_O3_001.txt) [4.14](./data-trixie/int2017_rate1/Loongson_3C6000_O3_002.txt)
 
@@ -735,12 +738,14 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 服务器平台（`-march=native`）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native`）: [4.42](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3-march=native_001.txt)
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -march=native`）: [3.19](./data-trixie/fp2017_rate1/Kunpeng_920_O3-march=native_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3 -march=native`）: [3.09](./data-trixie/fp2017_rate1/Loongson_3C5000_O3-march=native_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -march=native`）: [4.93](./data-trixie/fp2017_rate1/Loongson_3C6000_O3-march=native_001.txt)
 
 服务器平台：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [4.15](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.17](./data-trixie/fp2017_rate1/Kunpeng_920_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data-trixie/fp2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_003.txt)
 
