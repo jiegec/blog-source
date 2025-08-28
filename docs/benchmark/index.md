@@ -11,11 +11,9 @@ permalink: /benchmark/
 测试环境如下：
 
 1. 大部分测试：Debian Bookworm, GCC 12.2.0
-2. LoongArch 测试：Debian Trixie, GCC 14.2.0，因为 Debian Bookworm 并不支持 LoongArch
+2. LoongArch 以及 Debian Trixie 发布后的测试：Debian Trixie, GCC 14.2.0
 3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.1.7，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)；X90 带有 VM 的代表是在 Linux 虚拟机中测试
 4. 此外有针对不同编译器和编译器版本对比的测试，相关测试结果都进行了标注
-
-预计等 Debian Trixie 发布后，尽量重跑一遍测试。经过测试，GCC 14 相比 GCC 12 对 SPEC 没有太多的性能影响，所以大体是可以比较的。而 GCC 15 则会对测试结果产生显著的差异。
 
 ## 注意事项
 
