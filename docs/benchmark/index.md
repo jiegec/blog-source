@@ -248,6 +248,7 @@ permalink: /benchmark/
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.96](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto -ljemalloc`）: [7.90](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.6](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto-ljemalloc_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [8.96](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto-ljemalloc_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto -ljemalloc`）: [4.86](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto-ljemalloc_001.txt)
 
 桌面平台（LTO）：
@@ -258,6 +259,7 @@ permalink: /benchmark/
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto`）: [6.57](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto`）: [7.43](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [12.1](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto`）: [8.41](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
 
 桌面平台：
@@ -268,6 +270,7 @@ permalink: /benchmark/
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.31](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.18](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [8.23](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data-trixie/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data-trixie/int2017_rate1/Loongson_3A6000_O3_002.txt)
 
 服务器平台（LTO + Jemalloc）：
@@ -731,6 +734,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -march=native`）: [7.85](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -march=native`）: [7.70](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3-march=native_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [18.0](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3-march=native_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -march=native`）: [11.9](./data-trixie/fp2017_rate1/Intel_Xeon_w9-3595X_O3-march=native_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -march=native`）: [5.73](./data-trixie/fp2017_rate1/Loongson_3A6000_O3-march=native_001.txt)
 
 桌面平台：
@@ -741,6 +745,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [7.24](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.42](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [16.8](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [11.0](./data-trixie/fp2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [5.56](./data-trixie/fp2017_rate1/Loongson_3A6000_O3_001.txt)
 
 服务器平台（`-march=native`）：
