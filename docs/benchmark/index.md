@@ -242,7 +242,7 @@ permalink: /benchmark/
 
 桌面平台（LTO + Jemalloc）：
 
-- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [3.49](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto -ljemalloc`）: [9.31](./data-trixie/int2017_rate1/AMD_Ryzen_7_5700X_O3-flto-ljemalloc_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto -ljemalloc`）: [3.58](./data-trixie/int2017_rate1/Apple_M1_E-Core_O3-flto-ljemalloc_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [9.08](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.96](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
@@ -252,7 +252,7 @@ permalink: /benchmark/
 
 桌面平台（LTO）：
 
-- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.28](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto`）: [8.57](./data-trixie/int2017_rate1/AMD_Ryzen_7_5700X_O3-flto_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto`）: [3.34](./data-trixie/int2017_rate1/Apple_M1_E-Core_O3-flto_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.33](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto`）: [6.57](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
@@ -262,7 +262,7 @@ permalink: /benchmark/
 
 桌面平台：
 
-- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.12](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3`）: [8.19](./data-trixie/int2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.20](./data-trixie/int2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [7.92](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.31](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
@@ -272,16 +272,19 @@ permalink: /benchmark/
 
 服务器平台（LTO + Jemalloc）：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [3.49](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto -ljemalloc`）: [3.65](./data-trixie/int2017_rate1/Kunpeng_920_O3-flto-ljemalloc_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto -ljemalloc`）: [4.54](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
 
 服务器平台（LTO）：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.28](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.32](./data-trixie/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_001.txt) [4.37](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_002.txt)
 
 服务器平台：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.12](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.17](./data-trixie/int2017_rate1/Kunpeng_920_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data-trixie/int2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data-trixie/int2017_rate1/Loongson_3C6000_O3_001.txt) [4.14](./data-trixie/int2017_rate1/Loongson_3C6000_O3_002.txt)
@@ -722,6 +725,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 桌面平台（`-march=native`）：
 
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native`）: [11.7](./data-trixie/fp2017_rate1/AMD_Ryzen_7_5700X_O3-march=native_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -march=native`）: [3.93](./data-trixie/fp2017_rate1/Apple_M1_E-Core_O3-march=native_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -march=native`）: [12.1](./data-trixie/fp2017_rate1/Apple_M1_P-Core_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -march=native`）: [7.85](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
@@ -731,6 +735,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 
 桌面平台：
 
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3`）: [10.9](./data-trixie/fp2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.93](./data-trixie/fp2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [12.0](./data-trixie/fp2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [7.24](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
