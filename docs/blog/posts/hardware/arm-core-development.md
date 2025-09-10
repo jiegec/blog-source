@@ -39,7 +39,20 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 ### Cortex X925
 
-- [Arm Unveils 2024 CPU Core Designs, Cortex X925, A725 and A520: Arm v9.2 Redefined For 3nm](https://www.anandtech.com/show/21399/arm-unveils-2024-cpu-core-designs-cortex-x925-a725-and-a520-arm-v9-2-redefined-for-3nm-/2)
+- [Arm Unveils 2024 CPU Core Designs, Cortex X925, A725 and A520: Arm v9.2 Redefined For 3nm](https://www.anandtech.com/show/21399/arm-unveils-2024-cpu-core-designs-cortex-x925-a725-and-a520-arm-v9-2-redefined-for-3nm-/2) [Archive](https://web.archive.org/web/20250626065356/https://www.anandtech.com/show/21399/arm-unveils-2024-cpu-core-designs-cortex-x925-a725-and-a520-arm-v9-2-redefined-for-3nm-/2)
+    - Decode & Dispatch: 10-wide
+    - SIMD/FP execution: 6x 128b
+    - Integer ALU pipelines: 1- and 2-cycle operations
+    - Integer multiply execution: 4x versus Cortex-X4
+    - FP compare execution: 2x versus Cortex-X4
+    - >2x increase in SIMD/FP issue queues
+    - 2x increase in max instruction-window capacity
+    - Sign-extension instruction elimination
+    - Branch prediction: 2x instruction window size
+    - Instruction Fetch: 2x increase in L1 I$ available bandwidth, 2x increase in L1 iTLB size, Fold out unconditional direct branches
+    - 3 -> 4 load pipelines
+    - 2x increase in L1 D$ available bandwidth
+    - 25-40% in back-end OoO growth
 - [Arm® Cortex-X925 Core Technical Reference Manual](https://developer.arm.com/documentation/102807/0001)
 - [Arm® Cortex-X925 Core Software Optimization Guide](https://developer.arm.com/documentation/109842/latest/)
 
