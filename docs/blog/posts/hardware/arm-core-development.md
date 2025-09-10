@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2025-09-20
+date: 2025-09-10
 tags: [cpu,arm,neoverse,cortex,c1]
 categories:
     - hardware
