@@ -16,7 +16,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 ## 2025 年
 
-### C1
+### C1-Ultra
 
 - [Inside Arm's New C1‑Ultra CPU: Double‑Digit IPC Gains Again!](https://www.youtube.com/watch?v=U1tPpV0RWNw)
     - C1-Ultra: successor to Cortex X925
@@ -25,6 +25,26 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Out of order window size growth: Up to 25% growth, Up to ~2K instruction in flight
     - 2x L1 data cache capacity (128KB)
     - Data prefetchers: array-indexing coverage
+- [Arm® C1-Ultra Core Technical Reference Manual](https://developer.arm.com/documentation/108014/latest/)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - Implementation of the Scalable Matrix Extension (SME) and Scalable Matrix Extension 2 (SME2), and support for the C1-SME2 unit
+    - configure the L2 cache to be 2048KB or 3072KB
+    - A 64KB, 4-way set associative L1 instruction cache with 64-byte cache lines
+    - A fully associative L1 instruction Translation Lookaside Buﬀer (TLB) with native support for 4KB, 16KB, 64KB, and 2MB page sizes
+    - A 128KB, 4-way set associative cache with 64-byte cache lines
+    - A fully associative L1 data TLB with native support for 4KB, 16KB, and 64KB page sizes and 2MB and 512MB block sizes
+    - L2 cache is private to the core and can be configured to be 2MB 8-way set associative or 3MB 12-way set associative
+    - L1 instruction TLB, Fully associative, 128 entries
+    - L1 data TLB, Fully associative, 96 entries
+    - L1 Statistical Profiling Extension (SPE) TLB, Located in the SPE block, VA to PA translations of any page and block size, 1 entry
+    - L1 TRace Buﬀer Extension (TRBE) TLB, VA to PA translations of any page and block size, 1 entry
+    - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
+    - L1 instruction cache, 64KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT), Pseudo-Least Recently Used (LRU) cache replacement policy for L1, 32 bytes per cycle interface with L2
+    - L1 data cache, 128KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT), Re-Reference Interval Prediction (RRIP) replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
+    - L2 cache, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, Physically Indexed, Physically Tagged (PIPT), Dynamic biased cache replacement policy, One CHI Issue E compliant interfaces with 256-bit read and write DAT channel widths
+
+### C1-Pro
+
 - [Arm Lumex C1-Pro CPU Core: What You Need to Know](https://www.youtube.com/watch?v=yUqEhahvAVE)
     - C1-Pro: successor to Cortex-A725
     - Larger direction predictor and branch history
@@ -57,7 +77,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
     - configure the L2 cache to be 2048KB or 3072KB
     - A 64KB, 4-way set associative L1 instruction cache with 64-byte cache lines
-    - A fully associative L1 instruction Translation Lookaside Buﬀer (TLB) with native support for 4KB, 16KB, 64KB, and 2MB page sizes.
+    - A fully associative L1 instruction Translation Lookaside Buﬀer (TLB) with native support for 4KB, 16KB, 64KB, and 2MB page sizes
     - A 64KB, 4-way set associative cache with 64-byte cache lines
     - A fully associative L1 data TLB with native support for 4KB, 16KB and 64KB page sizes and 2MB and 512MB block sizes
     - L2 cache is private to the core and can be configured to be 2MB 8-way set associative or 3MB 12-way set associative
