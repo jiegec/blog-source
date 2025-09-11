@@ -45,7 +45,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Integer ALU pipelines: 1- and 2-cycle operations
     - Integer multiply execution: 4x versus Cortex-X4
     - FP compare execution: 2x versus Cortex-X4
-    - >2x increase in SIMD/FP issue queues
+    - `>2x` increase in SIMD/FP issue queues
     - 2x increase in max instruction-window capacity
     - Sign-extension instruction elimination
     - Branch prediction: 2x instruction window size
@@ -160,7 +160,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - 64KB Instruction cache
     - 1.5K entry Mop Cache
     - 16-entry Fetch Queue, 1.33x improvement
-    - Fetch Width: 4 instr from i$, 5 instr from MOP$, Up to 1.5x improvement
+    - Fetch Width: 4 instr from `i$`, 5 instr from `MOP$`, Up to 1.5x improvement
     - Early branch redirect: uncond + cond
     - Decode width: 4 (I-cache) or 5 (Mop cache), Up to 1.25x improvement
     - Branch predict up to 16-inst/cycle, 2-taken/cycle
