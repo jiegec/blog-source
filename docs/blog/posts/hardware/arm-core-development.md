@@ -60,8 +60,32 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 ### Cortex X4
 
-- [Arm Unveils 2023 Mobile CPU Core Designs: Cortex-X4, A720, and A520 - the Armv9.2 Family](https://www.anandtech.com/show/18871/arm-unveils-armv92-mobile-architecture-cortex-x4-a720-and-a520-64bit-exclusive/2)
+- [Arm Unveils 2023 Mobile CPU Core Designs: Cortex-X4, A720, and A520 - the Armv9.2 Family](https://www.anandtech.com/show/18871/arm-unveils-armv92-mobile-architecture-cortex-x4-a720-and-a520-64bit-exclusive/2) [Archive](https://web.archive.org/web/20250622110728/http://www4.anandtech.com/show/18871/arm-unveils-armv92-mobile-architecture-cortex-x4-a720-and-a520-64bit-exclusive/2)
+    - Support for larger L2 (2M)
+    - Dispatch width: 10 instrs vs Cortex-X3 (6 instrs `I$`, 8 instrs `Mop$`)
+    - Overall pipeline depth (branch mispredict penalty): 10 cycles vs Cortex-X3 (11 cycles `I$`, 9 cycles `Mop$`)
+    - ALUs: 8 vs 6 (Cortex-X3)
+    - Branch units: 3 vs 2 (Cortex-X3)
+    - Integer MAC: 2 vs 1 (Cortex-X3)
+    - Pipelined FP divider / sqrt: Y vs N (Cortex-X3)
+    - MCA capacity: 320x2 -> 384x2
+    - 4th LS address generation: LS LS LD -> LS LD LD ST
+    - New L1 temporal data prefetcher
+    - Reduced L1 data bank conflicts
+    - Larger L1 data TLB: 48 -> 96
 - [Arm® Cortex-X4 Core Technical Reference Manual](https://developer.arm.com/documentation/102484/latest/)
+
+### Cortex A720
+
+- [Arm Unveils 2023 Mobile CPU Core Designs: Cortex-X4, A720, and A520 - the Armv9.2 Family](https://www.anandtech.com/show/18871/arm-unveils-armv92-mobile-architecture-cortex-x4-a720-and-a520-64bit-exclusive/3) [Archive](https://web.archive.org/web/20250522224324/https://www.anandtech.com/show/18871/arm-unveils-armv92-mobile-architecture-cortex-x4-a720-and-a520-64bit-exclusive/3)
+    - 11-cycle mispredict penalty, vs 12 (Cortex-A715)
+    - Improved 2-taken branch prediction
+    - Pipelined FDIV/FSQRT unit
+    - Faster transfers from Floating-Point/NEON/SVE2 to Integer
+    - Earlier deallocation of mops from Load-Store Issue Queues
+    - Lower latency for L2 cache hits, 9-cycle latency to access L2, vs 10 (Cortex-A715)
+    - Up to 2x memset(0) bandwidth in L2
+    - New L2 spatial-prefetch engine
 
 ## 2022 年
 
@@ -215,16 +239,29 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 ### Cortex X1
 
-- [Arm's New Cortex-A78 and Cortex-X1 Microarchitectures: An Efficiency and Performance Divergence](https://www.anandtech.com/show/15813/arm-cortex-a78-cortex-x1-cpu-ip-diverging/3)
-- [Arm Cortex-X1: The First From The Cortex-X Custom Program](https://fuse.wikichip.org/news/3543/arm-cortex-x1-the-first-from-the-cortex-x-custom-program/)
+- [Arm's New Cortex-A78 and Cortex-X1 Microarchitectures: An Efficiency and Performance Divergence](https://www.anandtech.com/show/15813/arm-cortex-a78-cortex-x1-cpu-ip-diverging/3) [Archive](https://web.archive.org/web/20250716133719/https://www.anandtech.com/show/15813/arm-cortex-a78-cortex-x1-cpu-ip-diverging/3)
+    - 50% larger L0-BTB capacity, 96 entries, zero-cycle bubble taken-branch latency
+    - Increased fetch bandwidth available, 5 instruction fetch from the instruction cache, 8 Mop fetch from the Mop cache
+    - 2x Mop cache capacity over Cortex-A77, 3K entries
     - 33% increase in dispatch bandwidth, up to 8-instr/cycle
     - 40% increase in out-of-order window size, 224 entry instruction window
     - 2x FP/ASIMD execution bandwidth, 4x128b total bandwidth
     - Doubling available L1-D, L2 bandwidth
-    - DOubleing of maximum L2 capacity
+    - Doubleing of maximum L2 capacity
     - Up to 33% increase in window growth for in-flight loads and stores
     - 66% larger L2-TLB capacity, 2K entries
+- [Arm Cortex-X1: The First From The Cortex-X Custom Program](https://fuse.wikichip.org/news/3543/arm-cortex-x1-the-first-from-the-cortex-x-custom-program/)
 - [Arm® Cortex®‑X1 Core Technical Reference Manual](https://developer.arm.com/documentation/101433/0102)
+
+### Cortex A78
+
+- [Arm's New Cortex-A78 and Cortex-X1 Microarchitectures: An Efficiency and Performance Divergence](https://www.anandtech.com/show/15813/arm-cortex-a78-cortex-x1-cpu-ip-diverging/2) [Archive](https://web.archive.org/web/20250529000334/https://www.anandtech.com/show/15813/arm-cortex-a78-cortex-x1-cpu-ip-diverging/2)
+    - Expand prediction support to 2 taken branches per cycles
+    - Additional IMUL bandwidth, up to 2x per cycle
+    - 50% increase in load bandwidth over Cortex-A77, additional load AGU / result
+    - Double store-data bandwidth, 32B per cycle
+    - Double L2 interface bandwidth
+
 
 ## 2019 年
 
