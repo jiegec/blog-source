@@ -66,7 +66,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Integer multiply execution: 4x versus Cortex-X4
     - FP compare execution: 2x versus Cortex-X4
     - `>2x` increase in SIMD/FP issue queues
-    - 2x increase in max instruction-window capacity
+    - 2x increase in max instruction-window capacity（注：Cortex X4 是 384x2，推测 Cortex X925 是 768x2）
     - Sign-extension instruction elimination
     - Branch prediction: 2x instruction window size
     - Instruction Fetch: 2x increase in L1 I$ available bandwidth, 2x increase in L1 iTLB size, Fold out unconditional direct branches
