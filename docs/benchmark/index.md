@@ -1193,9 +1193,9 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Intel Core i9-10980XE: Cascade Lake
 - Intel Core i9-12900KS: Golden Cove + Gracemont, Alder Lake
 - Intel Core i9-14900K: Raptor Cove + Gracemont, Raptor Lake
+- Intel Xeon 6975P-C(AWS m8i.xlarge, 4C 16G): Redwood Cove, Granite Rapids
 - Intel Xeon 6981E(TencentCloud s9.large8, 4C 8G): Crestmont, Sierra Forest, w/o PMU
 - Intel Xeon 6982P-C(Aliyun g9i.xlarge, 4C 16G): Redwood Cove, Granite Rapids
-- Intel Xeon 6975P-C(AWS m8i.xlarge, 4C 16G): Redwood Cove, Granite Rapids
 - Intel Xeon D-2146NT: Skylake
 - Intel Xeon E5-2603 v4: Broadwell
 - Intel Xeon E5-2680 v3: Haswell
