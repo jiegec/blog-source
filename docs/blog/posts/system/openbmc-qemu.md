@@ -6,7 +6,7 @@ categories:
     - system
 ---
 
-# 在 QEMU 中运行 OpenBMC 
+# 在 QEMU 中运行 OpenBMC
 
 ## 背景
 
