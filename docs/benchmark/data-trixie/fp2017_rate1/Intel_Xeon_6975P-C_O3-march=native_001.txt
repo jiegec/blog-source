@@ -1,0 +1,163 @@
+Built with GCC 14.2.0 from Debian Trixie with -O3 -march=native
+Running on Linux kernel 6.12.41+deb13-cloud-amd64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        244      41.2   S
+503.bwaves_r          1        244      41.1   *
+503.bwaves_r          1        245      40.9   S
+507.cactuBSSN_r       1        122      10.4   S
+507.cactuBSSN_r       1        118      10.8   S
+507.cactuBSSN_r       1        119      10.7   *
+508.namd_r            1        126       7.53  S
+508.namd_r            1        127       7.51  *
+508.namd_r            1        127       7.49  S
+510.parest_r          1        278       9.41  S
+510.parest_r          1        277       9.44  S
+510.parest_r          1        278       9.42  *
+511.povray_r          1        219      10.7   S
+511.povray_r          1        217      10.7   *
+511.povray_r          1        217      10.8   S
+519.lbm_r             1        122       8.66  S
+519.lbm_r             1        121       8.69  S
+519.lbm_r             1        121       8.68  *
+521.wrf_r             1        221      10.1   *
+521.wrf_r             1        221      10.1   S
+521.wrf_r             1        220      10.2   S
+526.blender_r         1        184       8.30  *
+526.blender_r         1        184       8.28  S
+526.blender_r         1        183       8.32  S
+527.cam4_r            1        161      10.9   *
+527.cam4_r            1        161      10.9   S
+527.cam4_r            1        161      10.9   S
+538.imagick_r         1        249       9.98  S
+538.imagick_r         1        249      10.0   *
+538.imagick_r         1        248      10.0   S
+544.nab_r             1        188       8.95  *
+544.nab_r             1        188       8.95  S
+544.nab_r             1        188       8.95  S
+549.fotonik3d_r       1        263      14.8   S
+549.fotonik3d_r       1        264      14.8   S
+549.fotonik3d_r       1        264      14.8   *
+554.roms_r            1        169       9.41  S
+554.roms_r            1        170       9.35  S
+554.roms_r            1        169       9.39  *
+=================================================================================
+503.bwaves_r          1        244      41.1   *
+507.cactuBSSN_r       1        119      10.7   *
+508.namd_r            1        127       7.51  *
+510.parest_r          1        278       9.42  *
+511.povray_r          1        217      10.7   *
+519.lbm_r             1        121       8.68  *
+521.wrf_r             1        221      10.1   *
+526.blender_r         1        184       8.30  *
+527.cam4_r            1        161      10.9   *
+538.imagick_r         1        249      10.0   *
+544.nab_r             1        188       8.95  *
+549.fotonik3d_r       1        264      14.8   *
+554.roms_r            1        169       9.39  *
+ Est. SPECrate(R)2017_fp_base            11.0
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+503.bwaves_r: time (ms) = 244096
+503.bwaves_r: clock freq (MHz) = 3861.1731
+503.bwaves_r: instructions = 2.00735e+12
+503.bwaves_r: branch instructions = 9.8977e+10
+503.bwaves_r: ipc = 2.1298
+503.bwaves_r: misprediction rate (%) = 0.1233
+503.bwaves_r: mpki = 0.0608
+507.cactuBSSN_r: time (ms) = 119524
+507.cactuBSSN_r: clock freq (MHz) = 3860.0277
+507.cactuBSSN_r: instructions = 9.99954e+11
+507.cactuBSSN_r: branch instructions = 2.27106e+10
+507.cactuBSSN_r: ipc = 2.1674
+507.cactuBSSN_r: misprediction rate (%) = 0.0699
+507.cactuBSSN_r: mpki = 0.0159
+508.namd_r: time (ms) = 126507
+508.namd_r: clock freq (MHz) = 3870.3118
+508.namd_r: instructions = 1.7975e+12
+508.namd_r: branch instructions = 4.12093e+10
+508.namd_r: ipc = 3.6712
+508.namd_r: misprediction rate (%) = 4.2897
+508.namd_r: mpki = 0.9834
+510.parest_r: time (ms) = 277543
+510.parest_r: clock freq (MHz) = 3859.2119
+510.parest_r: instructions = 2.9833e+12
+510.parest_r: branch instructions = 4.0664e+11
+510.parest_r: ipc = 2.7853
+510.parest_r: misprediction rate (%) = 2.1253
+510.parest_r: mpki = 2.8968
+511.povray_r: time (ms) = 217812
+511.povray_r: clock freq (MHz) = 3872.1870
+511.povray_r: instructions = 3.07728e+12
+511.povray_r: branch instructions = 5.34982e+11
+511.povray_r: ipc = 3.6486
+511.povray_r: misprediction rate (%) = 0.2559
+511.povray_r: mpki = 0.4448
+519.lbm_r: time (ms) = 121419
+519.lbm_r: clock freq (MHz) = 3859.2296
+519.lbm_r: instructions = 1.30685e+12
+519.lbm_r: branch instructions = 1.55173e+10
+519.lbm_r: ipc = 2.7889
+519.lbm_r: misprediction rate (%) = 0.0634
+519.lbm_r: mpki = 0.0075
+521.wrf_r: time (ms) = 220801
+521.wrf_r: clock freq (MHz) = 3844.9718
+521.wrf_r: instructions = 1.40054e+12
+521.wrf_r: branch instructions = 1.4313e+11
+521.wrf_r: ipc = 1.6497
+521.wrf_r: misprediction rate (%) = 1.1369
+521.wrf_r: mpki = 1.1619
+526.blender_r: time (ms) = 183489
+526.blender_r: clock freq (MHz) = 3865.6963
+526.blender_r: instructions = 1.62635e+12
+526.blender_r: branch instructions = 2.99947e+11
+526.blender_r: ipc = 2.2929
+526.blender_r: misprediction rate (%) = 2.2677
+526.blender_r: mpki = 4.1822
+527.cam4_r: time (ms) = 160715
+527.cam4_r: clock freq (MHz) = 3851.0798
+527.cam4_r: instructions = 1.39989e+12
+527.cam4_r: branch instructions = 1.8567e+11
+527.cam4_r: ipc = 2.2618
+527.cam4_r: misprediction rate (%) = 0.8645
+527.cam4_r: mpki = 1.1467
+538.imagick_r: time (ms) = 248734
+538.imagick_r: clock freq (MHz) = 3876.2026
+538.imagick_r: instructions = 3.67545e+12
+538.imagick_r: branch instructions = 4.04467e+11
+538.imagick_r: ipc = 3.8121
+538.imagick_r: misprediction rate (%) = 0.4148
+538.imagick_r: mpki = 0.4564
+544.nab_r: time (ms) = 188001
+544.nab_r: clock freq (MHz) = 3879.1887
+544.nab_r: instructions = 1.62217e+12
+544.nab_r: branch instructions = 2.05715e+11
+544.nab_r: ipc = 2.2243
+544.nab_r: misprediction rate (%) = 2.7200
+544.nab_r: mpki = 3.4494
+549.fotonik3d_r: time (ms) = 263552
+549.fotonik3d_r: clock freq (MHz) = 3865.5577
+549.fotonik3d_r: instructions = 7.24408e+11
+549.fotonik3d_r: branch instructions = 3.01721e+10
+549.fotonik3d_r: ipc = 0.7111
+549.fotonik3d_r: misprediction rate (%) = 0.2190
+549.fotonik3d_r: mpki = 0.0912
+554.roms_r: time (ms) = 169283
+554.roms_r: clock freq (MHz) = 3843.5745
+554.roms_r: instructions = 8.01719e+11
+554.roms_r: branch instructions = 7.60792e+10
+554.roms_r: ipc = 1.2322
+554.roms_r: misprediction rate (%) = 0.4345
+554.roms_r: mpki = 0.4123
+all: time (ms) = 2.54148e+06
+all: clock freq (MHz) = 3862.5778
+all: instructions = 2.34228e+13
+all: branch instructions = 2.46522e+12
+
+System Info:
+CPU Name: Intel Xeon 6975P-C
+Enabled: 2 cores, 1 chip, 2 threads/core
+Memory: 1x Not Specified Not Specified 16 GB 7200
