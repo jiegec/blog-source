@@ -238,6 +238,31 @@ NZCV 重命名则比整数寄存器少得多，只有 120+，也是考虑到 ARM
 
 不太确定的是高通官方的表述里 `Up to 4 Load-Store operations per cycle` 对于 4 Store ops per cycle 以什么方式成立，因为从 IPC 来看，只能达到 2 Store Per Cycle。
 
+一种猜想是，它每周期可以给四条 Store 指令计算地址，但只能维持每周期执行两条 Store 指令的吞吐，这样的好处是可以更快地计算出 Store 的地址。这一点，在 [Intel 关于 Skymont 的采访](https://old.chipsandcheese.com/2025/10/09/interviewing-intels-chief-architect-of-x86-cores-at-intel-tech-tour-2025/) 中也有提到：
+
+```
+George Cozma: So sort of an interesting quirk that I noticed about Skymont is
+that it has four store ports and three load ports. Why the four store ports?
+Usually you see more load ports than store ports. Why more store ports in this
+case?
+
+Stephen Robinson: Yeah. So let’s, let’s break it down into address generation
+versus execution. So, when you have three load execution ports, you need three
+load address generators. And so that’s there. On the store side, we have four
+store address generation units. But we only sustain two stores into the data
+cache.
+
+So we have a little bit of asymmetry on the store side. So you’re right. Why on
+earth do we have more store address units than store ports? The answer is, we
+have hazards between loads and stores. And sometimes loads get blocked on stores
+because we don’t know the store address because we’re all out of order. So by
+increasing the store address bandwidth, that reduces the latency to resolving
+unknown stores.
+
+So basically we get performance by just spending more time and effort generating
+store addresses so that loads don’t end up blocking.
+```
+
 #### L1 DCache 分 Bank
 
 考虑到 L1 DCache 需要单周期支持 4 条 Load 指令，如果要用单读口的 SRAM，一般的做法是设计 4 个 Bank，每个 Bank 对应一组 SRAM。为了测试 Bank 的粒度，使用不同跨步（Stride）的 Load，观察 IPC：
