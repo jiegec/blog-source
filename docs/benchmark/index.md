@@ -246,6 +246,7 @@ permalink: /benchmark/
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto -ljemalloc`）: [3.58](./data-trixie/int2017_rate1/Apple_M1_E-Core_O3-flto-ljemalloc_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [9.08](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [6.96](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [10.6](./data-trixie/int2017_rate1/Intel_Core_i9-12900KS_P-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto -ljemalloc`）: [7.90](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [12.6](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto-ljemalloc_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [8.96](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto-ljemalloc_001.txt)
@@ -257,6 +258,7 @@ permalink: /benchmark/
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -flto`）: [3.34](./data-trixie/int2017_rate1/Apple_M1_E-Core_O3-flto_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto`）: [8.33](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto`）: [6.57](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -flto`）: [10.0](./data-trixie/int2017_rate1/Intel_Core_i9-12900KS_P-Core_O3-flto_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto`）: [7.43](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [12.1](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto`）: [8.41](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto_001.txt)
@@ -268,6 +270,7 @@ permalink: /benchmark/
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.20](./data-trixie/int2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [7.92](./data-trixie/int2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [6.31](./data-trixie/int2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [9.74](./data-trixie/int2017_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.18](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [11.3](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [8.23](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
@@ -738,6 +741,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3 -march=native`）: [3.93](./data-trixie/fp2017_rate1/Apple_M1_E-Core_O3-march=native_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -march=native`）: [12.1](./data-trixie/fp2017_rate1/Apple_M1_P-Core_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -march=native`）: [7.85](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
+- Intel Core i9-12900KS P-Core @ 4.5 GHz Golden Cove（`-O3 -march=native`）: [15.4](./data-trixie/fp2017_rate1/Intel_Core_i9-12900KS_P-Core_O3-march=native_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -march=native`）: [7.70](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3-march=native_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -march=native`）: [18.0](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3-march=native_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -march=native`）: [11.9](./data-trixie/fp2017_rate1/Intel_Xeon_w9-3595X_O3-march=native_001.txt)
@@ -749,6 +753,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.93](./data-trixie/fp2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [12.0](./data-trixie/fp2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [7.24](./data-trixie/fp2017_rate1/Intel_Core_i9-10980XE_O3_001.txt)
+- Intel Core i9-12900KS P-Core @ 4.5 GHz Golden Cove（`-O3`）: [14.4](./data-trixie/fp2017_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.42](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [16.8](./data-trixie/fp2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 - Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [11.0](./data-trixie/fp2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
@@ -1221,6 +1226,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - 2025.10.09:
       - 在 AWS m8i.xlarge 实例上测试 Intel Xeon 6975P-C 的性能
       - 在 AWS m8a.xlarge 实例上测试 AMD EPYC 9R45 的性能
+      - 测试 Intel Core i9-12900KS 的性能
 - 2025.08.10:
       - 开始在 Debian Trixie 上重复实验
 - 2025.07.11:
