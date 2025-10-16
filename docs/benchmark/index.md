@@ -282,6 +282,7 @@ permalink: /benchmark/
 服务器平台（LTO + Jemalloc）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [3.49](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto -ljemalloc`）: [5.48](./data-trixie/int2017_rate1/AMD_EPYC_7742_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -flto -ljemalloc`）: [10.3](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3-flto-ljemalloc_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -flto -ljemalloc`）: [8.03](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -flto -ljemalloc`）: [4.95](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3-flto-ljemalloc_001.txt)
@@ -291,6 +292,7 @@ permalink: /benchmark/
 服务器平台（LTO）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.28](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.05](./data-trixie/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -flto`）: [9.49](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3-flto_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -flto`）: [7.65](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3-flto_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -flto`）: [4.59](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3-flto_001.txt)
@@ -300,6 +302,7 @@ permalink: /benchmark/
 服务器平台：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.12](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [4.78](./data-trixie/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3`）: [9.07](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3`）: [7.38](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3`）: [4.39](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
@@ -770,6 +773,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 服务器平台（`-march=native`）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native`）: [4.42](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3-march=native_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -march=native`）: [7.96](./data-trixie/fp2017_rate1/AMD_EPYC_7742_O3-march=native_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -march=native`）: [16.2](./data-trixie/fp2017_rate1/AMD_EPYC_9R45_O3-march=native_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -march=native`）: [11.0](./data-trixie/fp2017_rate1/Intel_Xeon_6975P-C_O3-march=native_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -march=native`）: [5.58](./data-trixie/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3-march=native_001.txt)
@@ -780,6 +784,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 服务器平台：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [4.15](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [7.37](./data-trixie/fp2017_rate1/AMD_EPYC_7742_O3_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3`）: [14.5](./data-trixie/fp2017_rate1/AMD_EPYC_9R45_O3_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3`）: [10.3](./data-trixie/fp2017_rate1/Intel_Xeon_6975P-C_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3`）: [5.49](./data-trixie/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
