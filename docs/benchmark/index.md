@@ -286,6 +286,7 @@ permalink: /benchmark/
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -flto -ljemalloc`）: [10.3](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3-flto-ljemalloc_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -flto -ljemalloc`）: [8.03](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -flto -ljemalloc`）: [4.95](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3-flto-ljemalloc_001.txt)
+- Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [5.39](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto -ljemalloc`）: [3.65](./data-trixie/int2017_rate1/Kunpeng_920_O3-flto-ljemalloc_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto -ljemalloc`）: [4.54](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
 
@@ -296,6 +297,7 @@ permalink: /benchmark/
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -flto`）: [9.49](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3-flto_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -flto`）: [7.65](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3-flto_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -flto`）: [4.59](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3-flto_001.txt)
+- Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto`）: [5.16](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [3.32](./data-trixie/int2017_rate1/Kunpeng_920_O3-flto_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [4.39](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_001.txt) [4.37](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_002.txt)
 
@@ -306,6 +308,7 @@ permalink: /benchmark/
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3`）: [9.07](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3`）: [7.38](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3`）: [4.39](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
+- Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [4.97](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.17](./data-trixie/int2017_rate1/Kunpeng_920_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [2.63](./data-trixie/int2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.19](./data-trixie/int2017_rate1/Loongson_3C6000_O3_001.txt) [4.14](./data-trixie/int2017_rate1/Loongson_3C6000_O3_002.txt)
@@ -777,6 +780,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -march=native`）: [16.2](./data-trixie/fp2017_rate1/AMD_EPYC_9R45_O3-march=native_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -march=native`）: [11.0](./data-trixie/fp2017_rate1/Intel_Xeon_6975P-C_O3-march=native_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -march=native`）: [5.58](./data-trixie/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3-march=native_001.txt)
+- Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -march=native`）: [7.64](./data-trixie/fp2017_rate1/Intel_Xeon_Gold_6430_O3-march=native_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -march=native`）: [3.19](./data-trixie/fp2017_rate1/Kunpeng_920_O3-march=native_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3 -march=native`）: [3.09](./data-trixie/fp2017_rate1/Loongson_3C5000_O3-march=native_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -march=native`）: [4.93](./data-trixie/fp2017_rate1/Loongson_3C6000_O3-march=native_001.txt)
@@ -788,6 +792,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3`）: [14.5](./data-trixie/fp2017_rate1/AMD_EPYC_9R45_O3_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3`）: [10.3](./data-trixie/fp2017_rate1/Intel_Xeon_6975P-C_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3`）: [5.49](./data-trixie/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
+- Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [7.01](./data-trixie/fp2017_rate1/Intel_Xeon_Gold_6430_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [3.17](./data-trixie/fp2017_rate1/Kunpeng_920_O3_001.txt)
 - Loongson 3C5000 @ 2.2 GHz LA464（`-O3`）: [3.00](./data-trixie/fp2017_rate1/Loongson_3C5000_O3_001.txt)
 - Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_001.txt) [4.77](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_002.txt) [4.75](./data-trixie/fp2017_rate1/Loongson_3C6000_O3_003.txt)
@@ -1224,6 +1229,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Intel Xeon Platinum 8358P: Sunny Cove, Ice Lake
 - Intel Xeon Platinum 8576C(TencentCloud s8.medium8, 2C 8G): Raptor Cove, Emerald Rapids, w/o PMU
 - Intel Xeon Platinum 8581C(GCP c4-standard-2, 2C 7G): Raptor Cove, Emerald Rapids
+- Intel Xeon Gold 6430: Golden Cove, Sapphire Rapids
 - Intel Xeon w9-3595X: Golden Cove, Sapphire Rapids
 - Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.2, 4C 8G)
 - Kunpeng 920: TaiShan V110
@@ -1238,6 +1244,8 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 更新历史
 
+- 2025.10.20:
+      - 测试 Intel Xeon Gold 6430 的性能
 - 2025.10.09:
       - 在 AWS m8i.xlarge 实例上测试 Intel Xeon 6975P-C 的性能
       - 在 AWS m8a.xlarge 实例上测试 AMD EPYC 9R45 的性能
