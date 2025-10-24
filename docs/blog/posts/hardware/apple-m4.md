@@ -18,6 +18,8 @@ categories:
 
 Apple M4 的官方信息乏善可陈，关于微架构的信息几乎为零，但能从操作系统汇报的硬件信息中找到一些内容。
 
+UPDATE: 后来苹果发布了 [Apple Silicon CPU Optimization Guide](https://developer.apple.com/download/apple-silicon-cpu-optimization-guide/)，算是为数不多的官方信息了。
+
 ## 现有评测
 
 网上已经有针对 Apple M4 微架构的评测和分析，建议阅读：
@@ -63,6 +65,8 @@ hw.perflevel0.l1icachesize: 196608
 hw.perflevel1.l1icachesize: 131072
 ```
 
+根据 Apple Silicon CPU Optimization Guide，从 M1 Family 到 M4 Family，A14 Bionic 到 A18 Family，P-Core 的 L1 ICache 的配置都是 192KiB, 6-way, 64B lines；对应处理器的 E-Core 的 L1 ICache 都是 192KiB, 64B lines，其中 M1 Family 和 A14 Bionic 是 8-way，其余处理器（M2 Family 和 A15 Bionic 开始）是 4-way。
+
 延续了从 Apple M1 以来的大小。
 
 #### P-Core
@@ -71,7 +75,7 @@ hw.perflevel1.l1icachesize: 131072
 
 ![](./apple-m4-p-core-fetch-bandwidth.png)
 
-可以看到 footprint 在 192 KB 之前时可以达到 10 IPC，之后则快速降到 2.5 IPC，这里的 192 KB 就对应了 M4 P-Core 的 L1 ICache 的容量。虽然 Fetch 可以每周期 16 条指令，也就是一条 64B 的缓存行，由于后端的限制，只能观察到 10 的 IPC。
+可以看到 footprint 在 192 KB 之前时可以达到 10 IPC，之后则快速降到 2.5 IPC，这里的 192 KB 就对应了 M4 P-Core 的 L1 ICache 的容量，和官方信息一致。虽然 Fetch 可以每周期 16 条指令，也就是一条 64B 的缓存行，由于后端的限制，只能观察到 10 的 IPC。
 
 #### E-Core
 
@@ -79,7 +83,7 @@ hw.perflevel1.l1icachesize: 131072
 
 ![](./apple-m4-e-core-fetch-bandwidth.png)
 
-可以看到 footprint 在 128 KB 之前时可以达到 5 IPC，之后则快速降到 2.0 IPC，这里的 128 KB 就对应了 M4 E-Core 的 L1 ICache 的容量。
+可以看到 footprint 在 128 KB 之前时可以达到 5 IPC，之后则快速降到 2.0 IPC，这里的 128 KB 就对应了 M4 E-Core 的 L1 ICache 的容量，和官方信息一致。
 
 ### BTB
 
@@ -165,13 +169,17 @@ ret
 
 ### L1 ITLB
 
+官方信息：根据 Apple Silicon CPU Optimization Guide，从 M1 Family 到 M4 Family，A14 Bionic 到 A18 Family，其 P-Core 的 L1 ITLB 配置都是一样的：192 entries，考虑到每个页是 16 KiB，对应 3 MiB 的内存；E-Core 的话，M1 Family 和 A14 Bionic 的 L1 ITLB 是 128 entries，之后的处理器（M2 Family 和 A15 Bionic 开始）则 E-Core 也是 192 entries。
+
+因此，M4 的 P-Core L1 ITLB 是 192 entries，E-Core L1 ITLB 也是 192 entries。
+
 #### P-Core
 
 构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈，在 M4 P-Core 上进行测试：
 
 ![](./apple-m4-p-core-itlb.png)
 
-第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 12 Cycle，则对应了 192 项的 L1 ITLB 容量。这和 M1 P-Core 是一样的。
+第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 12 Cycle，则对应了 192 项的 L1 ITLB 容量，和官方信息一致。这和 M1 P-Core 是一样的。
 
 #### E-Core
 
@@ -179,11 +187,13 @@ ret
 
 ![](./apple-m4-e-core-itlb.png)
 
-第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 10 Cycle，则对应了 192 项的 L1 ITLB 容量。相比 M1 E-Core 的 128 项，容量变大了，和 M4 P-Core 看齐。
+第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 10 Cycle，则对应了 192 项的 L1 ITLB 容量，和官方信息一致。相比 M1 E-Core 的 128 项，容量变大了，和 M4 P-Core 看齐。
 
 ### Decode
 
-从前面的测试来看，M4 P-Core 最大观察到 10 IPC，M4 E-Core 最大观察到 5 IPC，那么 Decode 宽度也至少是这么多，暂时也不能排除有更大的 Decode 宽度。相比 M1 的 P-Core 8 IPC，E-Core 4 IPC 都有拓宽。
+官方信息：根据 Apple Silicon CPU Optimization Guide，M1 Family 的 Sustained uops Per Cycle 最大值，P-Core 是 8，E-Core 是 4；M2 Family 的 P-Core 不变，E-Core 提升到了 5；M3 Family 的 P-Core 提升到了 9，E-Core 和 M2 持平；M4 Family 的 P-Core 进一步提升到了 10，E-Core 继续和 M2 持平。
+
+从前面的测试来看，M4 P-Core 最大观察到 10 IPC，M4 E-Core 最大观察到 5 IPC，那么 Decode 宽度也至少是这么多，暂时也不能排除有更大的 Decode 宽度，和官方信息一致。相比 M1 的 P-Core 8 IPC，E-Core 4 IPC 都有拓宽。
 
 ### Return Stack
 
@@ -235,6 +245,8 @@ hw.perflevel0.l1dcachesize: 131072
 hw.perflevel1.l1dcachesize: 65536
 ```
 
+根据 Apple Silicon CPU Optimization Guide，从 M1 Family 到 M4 Family，从 A14 Bionic 到 A18 Family，P-Core 的 L1 DCache 都是 128KiB, 8-way, 64B lines 的配置，E-Core 的 L1 DCache 都是 64KiB, 8-way, 64B lines 的配置。
+
 和 M1 相同。
 
 ##### P-Core
@@ -243,7 +255,7 @@ hw.perflevel1.l1dcachesize: 65536
 
 ![](./apple-m4-p-core-l1dc.png)
 
-可以看到 128KB 出现了拐点，对应的就是 128KB 的 L1 DCache 容量。当 footprint 比较小的时候，由于 Load Address/Value Predictor 的介入，打破了依赖链，所以出现了 latency 小于正常 load to use 的 3 cycle latency 的情况。
+可以看到 128KB 出现了拐点，对应的就是 128KB 的 L1 DCache 容量，和官方信息一致。当 footprint 比较小的时候，由于 Load Address/Value Predictor 的介入，打破了依赖链，所以出现了 latency 小于正常 load to use 的 3 cycle latency 的情况。
 
 ##### E-Core
 
@@ -255,9 +267,13 @@ M4 E-Core 上的结果：
 
 ![](./apple-m4-e-core-l1dc-2.png)
 
-此时 64KB 对应的就是 64KB 的 L1 DCache 容量。L1 DCache 范围内延迟是 3 cycle，之后提升到 14+ cycle。由此可见 M4 E-Core 没有 Load Address/Value Predictor，不能打断依赖链。
+此时 64KB 对应的就是 64KB 的 L1 DCache 容量，和官方信息一致。L1 DCache 范围内延迟是 3 cycle，之后提升到 14+ cycle。由此可见 M4 E-Core 没有 Load Address/Value Predictor，不能打断依赖链。
 
 #### L1 DTLB 容量
+
+官方信息：根据 Apple Silicon CPU Optimization Guide，对于 P-Core 来说，除了 M2 Family、A14 Bionic 和 A15 Bionic 的 L1 DTLB 是 256 entries 以外，其余的 M1 Family、M3 Family 到 M4 Family，A16 Bionic 到 A18 Family 的 L1 DTLB 都是 160 entries。对于 E-Core 来说，除了 M1 Family 和 A14 Bionic 是 129 entries，其余的从 M2 Family 到 M4 Family，A15 Bionic 到 A18 Family 都是 192 entries。
+
+因此，M4 的 P-Core L1 DTLB 容量是 160，E-Core L1 DTLB 容量是 192。
 
 ##### P-Core
 
@@ -265,7 +281,7 @@ M4 E-Core 上的结果：
 
 ![](./apple-m4-p-core-l1dtlb.png)
 
-从 160 个页开始性能下降，到 200 个页时性能稳定在 9 CPI，认为 M4 P-Core 的 L1 DTLB 有 160 项，大小和 M1 P-Core 相同。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟。中间有时性能特别快，是 Load Address/Value Predictor 的功劳。
+从 160 个页开始性能下降，到 200 个页时性能稳定在 9 CPI，认为 M4 P-Core 的 L1 DTLB 有 160 项，大小和 M1 P-Core 相同，和官方信息一致。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟。中间有时性能特别快，是 Load Address/Value Predictor 的功劳。
 
 ##### E-Core
 
@@ -273,7 +289,7 @@ M4 E-Core 测试结果：
 
 ![](./apple-m4-e-core-l1dtlb.png)
 
-从 192 个页开始性能下降，到 224 个页时性能稳定在 9 CPI，认为 M4 E-Core 的 L1 DTLB 有 192 项，比 M1 E-Core 的 128 项更大，甚至大过了 P-Core。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟，比 M1 E-Core 少了一个周期。
+从 192 个页开始性能下降，到 224 个页时性能稳定在 9 CPI，认为 M4 E-Core 的 L1 DTLB 有 192 项，和官方信息一致，比 M1 E-Core 的 128 项更大，甚至大过了 P-Core。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟，比 M1 E-Core 少了一个周期。
 
 #### Load/Store 带宽
 
@@ -356,6 +372,8 @@ M4 E-Core:
 
 #### Load to use latency
 
+官方信息：根据 Apple Silicon CPU Optimization Guide，Apple 实现了 fast pointer chasing with a 3-cycle latency，要求后一个 load 的 base register 和前一个 load 的 destination register 相同。
+
 ##### P-Core
 
 实测 M4 P-Core 的 Load to use latency 针对 pointer chasing 场景做了优化，在下列的场景下可以达到 3 cycle:
@@ -429,6 +447,51 @@ Apple 从 M2 开始引入 Load Address Predictor，从 M3 开始引入 Load Valu
 M4 E-Core 没有实现 Load Address/Value Predictor。
 
 ### 执行单元
+
+官方信息：根据 Apple Silicon CPU Optimization Guide，M4 Family 的 P-Core 包括如下计算单元：
+
+1. ALU/f, BRc/i
+2. ALU/f, BRc
+3. ALU/f
+4. ALU/f, PRED/f
+5. ALU, MUL, MISC
+6. ALU, DIV
+7. ALU, MUL
+8. ALU, MUL
+10. GENERAL, MOVE2GPR, FCMPf, FCSELf, FDIV, MUL, SHA
+11. GENERAL, MOVE2GPR, FCSELf, MUL
+12. GENERAL, MUL
+13. GENERAL, MUL
+
+从 M3 开始，P-Core 整数计算单元从 6 个增加到 8 个。浮点部分没有变化。
+
+P-Core 访存：
+
+- Burst: 3 load uops, 2 store uops (address part), and 2 store uops (data part)
+    - 即 3 load, 2 sta, 2 std
+- Sustained: 4 uops, 2 write into the cache
+
+和 M1 E-Core 相同。
+
+M4 Family 的 E-Core 包括如下计算单元：
+
+1. ALU/f, MUL, MAC, MISC, PRED/f
+2. ALU/F, BRi, DIV
+3. ALU/f, BRc
+4. ALU/f
+5. GENERAL, MOVE2GPR, FCMPf, FCSELf, FDIV, MUL, SHA
+6. GENERAL, MOVE2GPR, FCMPf, FCSELf, MUL
+7. GENERAL
+
+从 M3 开始，E-Core 整数计算单元从 3 个增加到 4 个。从 M3 Max/M4 Family 开始，E-Core 浮点单元从 2 个增加到 3 个。注意 M3/M3 Pro 的 E-Core 依然是 2 个浮点单元。
+
+E-Core 访存：
+
+- Burst: 3 load uops, 2 store uops (address part), and 2 store uops (data part)
+    - 即 3 load, 2 sta, 2 std
+- Sustained: 4 uops, 2 write into the cache
+
+和 M1 E-Core 相同。
 
 #### P-Core
 
@@ -648,7 +711,7 @@ M4 E-Core 没有实现 Load Address/Value Predictor。
 15. basic fp/asimd ops + aes
 16. basic fp/asimd ops + aes
 
-相比 M1 P-Core，只在整数方面有扩充。
+相比 M1 P-Core，只在整数方面有扩充。和官方的信息，除了 store data/address 部分没有探测出来以外都一致。
 
 #### E-Core
 
@@ -791,7 +854,10 @@ M4 E-Core 没有实现 Load Address/Value Predictor。
 8. basic fp/asimd ops + aes + fmov f2i + fmul
 9. basic fp/asimd ops + aes
 
-相比 M1 E-Core，整数和浮点方面都有扩充。
+相比 M1 E-Core，整数和浮点方面都有扩充。和官方的信息，除了 store data/address 部分没有探测出来以外都一致，更具体来说，应该更接近：
+
+1. load + sta
+2. load + sta + std
 
 ### Scheduler
 
@@ -886,7 +952,27 @@ hw.perflevel1.l2cachesize: 4194304
 hw.perflevel1.cpusperl2: 6
 ```
 
+根据 Apple Silicon CPU Optimization Guide，L2 Cache 配置如下：
+
+- M1 Family/A14 Bionic：P-Core cluster 12MiB, 12-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
+- M2/M3/M4 Family/A16 Bionic/A17 Pro/A18 Pro：P-Core cluster 16MiB, 16-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
+- A14 Bionic/A18：P-Core cluster 8MiB, 16-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
+
+### Memory Cache
+
+官方信息：根据 Apple Silicon CPU Optimization Guide，Memory Cache（在别的处理器也叫 System Level Cache，就是 Last Level Cache）的配置如下：
+
+- M1/M2/M3/M4: 8MiB, 16-way, 128B lines
+- M3 Pro/A18: 12MiB, 16-way, 128B lines
+- A14 Bionic: 16MiB, 16-way, 128B lines
+- M1 Pro/M2 Pro/M4 Pro/A16 Bionic/A17 Pro/A18 Pro: 24MiB, 12-way, 128B lines
+- A15 Bionic: 32MiB, 16-way, 128B lines
+- M1 Max/M2 Max/M3 Max/M4 Max: 48MiB, 12-way, 128B lines
+- M1 Ultra/M2 Ultra/M3 Ultra: 96MiB, 12-way, 128B lines
+
 ### L2 TLB
+
+官方信息：根据 Apple Silicon CPU Optimization Guide，P-Core 的 L2 TLB 容量，从 M1 Family 到 M4 Family，从 A14 Bionic 到 A18 Family，都是 3072 entries；E-Core 的 L2 TLB 容量，M1 Family 和 A14 Bionic 是 1024 entries，M2 Family 到 M4 Family 和 A15 Bionic 到 A18 Family 都是 2048 entries。
 
 #### P-Core
 
@@ -894,7 +980,7 @@ hw.perflevel1.cpusperl2: 6
 
 ![](./apple-m4-p-core-l2tlb.png)
 
-可以看到拐点是 3072 个 Page，说明 M4 P-Core 的 L2 TLB 容量是 3072 项。这和 M1 P-Core 是一样的。
+可以看到拐点是 3072 个 Page，说明 M4 P-Core 的 L2 TLB 容量是 3072 项，和官方信息一致。这和 M1 P-Core 是一样的。
 
 #### E-Core
 
@@ -902,7 +988,7 @@ hw.perflevel1.cpusperl2: 6
 
 ![](./apple-m4-e-core-l2tlb.png)
 
-可以看到拐点是 1024 个 Page，说明 M4 E-Core 的 L2 TLB 容量是 1024 项。这和 M4 E-Core 是一样的。
+可以看到拐点是 1024 个 Page，说明 M4 E-Core 的 L2 TLB 容量是 1024 项，和官方信息不一致，官方信息写的是 2048 项。这和 M1 E-Core 测出来是一样的。
 
 ## 总结
 
