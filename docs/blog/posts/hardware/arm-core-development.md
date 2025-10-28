@@ -18,7 +18,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 ### C1-Ultra
 
-- [Armの新しいCPU「C1」は2桁パーセントの性能アップ。電力効率も大幅改善](https://pc.watch.impress.co.jp/docs/column/ubiq/2046162.html)
+- [Arm の新しい CPU「C1」は 2 桁パーセントの性能アップ。電力効率も大幅改善](https://pc.watch.impress.co.jp/docs/column/ubiq/2046162.html)
 - [Inside Arm's New C1‑Ultra CPU: Double‑Digit IPC Gains Again!](https://www.youtube.com/watch?v=U1tPpV0RWNw)
     - C1-Ultra: successor to Cortex X925
     - Branch prediction: Additional tracking for local/per-PC history

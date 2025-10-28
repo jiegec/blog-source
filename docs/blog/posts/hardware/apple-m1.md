@@ -901,9 +901,9 @@ hw.perflevel1.cpusperl2: 4
 
 根据 Apple Silicon CPU Optimization Guide，L2 Cache 配置如下：
 
-- M1 Family/A14 Bionic：P-Core cluster 12MiB, 12-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
-- M2/M3/M4 Family/A16 Bionic/A17 Pro/A18 Pro：P-Core cluster 16MiB, 16-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
-- A14 Bionic/A18：P-Core cluster 8MiB, 16-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
+- M1 Family/A14 Bionic: P-Core cluster 12MiB, 12-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
+- M2/M3/M4 Family/A16 Bionic/A17 Pro/A18 Pro: P-Core cluster 16MiB, 16-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
+- A14 Bionic/A18: P-Core cluster 8MiB, 16-way, 128B lines; E-Core cluster 4MiB, 16-way, 128B lines
 
 ### Memory Cache
 
