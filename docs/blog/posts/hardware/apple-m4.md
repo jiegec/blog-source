@@ -438,6 +438,8 @@ Apple 从 M2 开始引入 Load Address Predictor，从 M3 开始引入 Load Valu
 
 网上已有针对这两个 Predictor 的逆向和攻击：[SLAP: Data Speculation Attacks via Load Address Prediction on Apple Silicon;FLOP Breaking the Apple M3 CPU via False Load Output Predictions](https://predictors.fail/)。
 
+苹果还有一个后续的专利：[Managing table accesses for tagged geometric length (TAGE) load value prediction](https://patents.google.com/patent/US12159142B1/)，暗示了苹果可能会使用 VTAGE 算法来实现 load value prediction，只是不知道会不会实装，会在哪代处理器上实装，是不是已经实装在已经发布的处理器上了。
+
 ##### P-Core
 
 构造依赖链，但是实际测试可以观察到打破依赖链的情况，比串行执行要更快。测试下来，大概可以跟踪 60 条 Load 指令的地址并实现预测。
