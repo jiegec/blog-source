@@ -19,7 +19,7 @@ categories:
 
 首先介绍一些背景知识。要逆向工程条件分支预测器，需要先了解其工作原理。条件分支预测器的基本思路是：
 
-1. 条件分支的跳转行为（跳或不跳）通常是高度可预测的
+1. 条件分支的跳转行为（跳转或不跳转）通常是高度可预测的
 2. 预测器的输入包括条件分支的地址，以及近期执行的若干条分支的历史记录；输出则是预测该条件分支是否跳转
 
 为了在硬件上实现这一算法，处理器会维护一个预测表，表中每一项包含一个 2 位饱和计数器，用于预测跳转方向。查表时，系统会对条件分支地址以及近期执行的分支历史进行哈希运算，使用哈希结果作为索引读取表项，然后根据计数器的值来预测分支的跳转方向。
@@ -53,7 +53,7 @@ $\mathrm{PHR}_{\mathrm{new}} = (\mathrm{PHR}_{\mathrm{old}} \ll \mathrm{shamt}) 
 
 ### 历史长度
 
-首先分析这个更新公式：它将最近的 $\lceil n / \mathrm{shamt} \rceil$ 条跳转分支的信息压缩存储在 $n$ 位的 $\mathrm{PHR}$ 寄存器中。随着移位操作的累积，更早的分支历史信息对 $mathrm{PHR}$ 的贡献最终会变为零。
+首先分析这个更新公式：它将最近的 $\lceil n / \mathrm{shamt} \rceil$ 条跳转分支的信息压缩存储在 $n$ 位的 $\mathrm{PHR}$ 寄存器中。随着移位操作的累积，更早的分支历史信息对 $\mathrm{PHR}$ 的贡献最终会变为零。
 
 第一个实验的目标是确定 $\mathrm{PHR}$ 能够记录多少条最近分支的历史。具体方法是构建一个分支历史序列：
 
@@ -86,15 +86,15 @@ size,min,avg,max,cycles
 
 测试结果表明阈值为 100：在 Apple M1 Firestorm 上，最多可以记录最近 100 条分支的历史信息。
 
-!!! question "分支预测错误率是怎么测量的？"
+??? question "分支预测错误率是怎么测量的？"
 
-    处理器内置了性能计数器，会记录分支预测错误次数。在 Linux 上，可以用 perf 子系统来读取；在 macOS 上，可以用 kpep 私有 API 来获取。我开源的代码中对这些 API 进行了封装，可以实现跨平台的性能计数器读取。
+    处理器内置了性能计数器，会记录分支预测错误次数。在 Linux 上，可以用 perf 子系统来读取；在 macOS 上，可以用 kpep 私有 API 来获取。我开源的代码中对这些 API 进行了[封装](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/utils.cpp)，可以实现跨平台的性能计数器读取。
 
 ### 分支地址 B 的贡献
 
-接下来需要推测 $mathrm{footprint}$ 的计算方法，即分支地址和目的地址如何参与 $\mathrm{PHR}$ 的更新过程。约定分支地址记为 $B$（Branch 的首字母），目的地址记为 $T$（Target 的首字母），用 $B[i]$ 表示分支地址从低到高第 $i$ 位（下标从 0 开始）的值，$T[i]$ 同理。假设 $\mathrm{footprint}$ 的每一位都由若干个 $B[i]$ 和 $T[i]$ 通过异或运算得到。
+接下来需要推测 $\mathrm{footprint}$ 的计算方法，即分支地址和目的地址如何参与 $\mathrm{PHR}$ 的更新过程。约定分支地址记为 $B$（Branch 的首字母），目的地址记为 $T$（Target 的首字母），用 $B[i]$ 表示分支地址从低到高第 $i$ 位（下标从 0 开始）的值，$T[i]$ 同理。假设 $\mathrm{footprint}$ 的每一位都由若干个 $B[i]$ 和 $T[i]$ 通过异或运算得到。
 
-!!! question "分支指令本身占用了多个字节，那么分支地址指的是哪一个字节的地址呢？"
+??? question "分支指令本身占用了多个字节，那么分支地址指的是哪一个字节的地址呢？"
 
     经过测试，AMD64 架构下，分支地址用的是分支指令最后一个字节的地址，而 ARM64 架构下，分支指令用的是分支指令第一个字节的地址。这大概是因为 AMD64 架构下分支指令是变长的，并且可以跨越页的边界；ARM64 则是定长的，并且不会跨越页的边界。
 
@@ -199,20 +199,28 @@ end:
 
 ![](./cbp-reverse-engineer-phrt.png)
 
-!!! question "为了测试 T[31]，岂不是得插入很多个 NOP，一方面二进制很大，其次还要执行很长时间？"
+??? question "为了测试 T[31]，岂不是得插入很多个 NOP，一方面二进制很大，其次还要执行很长时间？"
 
     是的，所以这里在测试的时候，采用的是类似 JIT 的方法，通过 mmap `MAP_FIXED` 在内存中特定位置分配并写入代码，避免了用汇编器生成一个巨大的 ELF。同时，为了避免执行大量的 NOP，考虑到前面已经发现 $B[6]$ 或更高的位没有参与到 $\mathrm{PHR}$ 计算当中，所以可以添加额外的一组无条件分支来跳过大量的 NOP，它们的目的地址相同，分支地址低位相同，因此对 PHR 不会产生影响。
 
 由此我们终于找到了分支历史最长记录 100 条分支是怎么来的：$T[2]$ 会经过 $\mathrm{footprint}$ 被异或到 $\mathrm{PHR}$ 的最低位，然后每次执行一个跳转的分支左移一次，直到移动 100 次才被移出 $\mathrm{PHR}$。类似地，$T[3]$ 只需要 99 次就能移出 $\mathrm{PHR}$，说明 $T[3]$ 被异或到了 $\mathrm{PHR}[1]$。依此类推，可以知道涉及到 $T$ 的 $\mathrm{footprint} = T[31:2]$，其中 $T[31:2]$ 代表一个 30 位的数，每一位从高到低分别对应 $T[31], T[30], \cdots, T[2]$。
 
+### 小结
+
 那么，问题来了，前面测试 $B$ 的时候，移位次数那么少，明显少于 $T$ 的移位次数。这有两种可能：
 
 1. 硬件上只有一个 $\mathrm{PHR}$ 寄存器，然后 $T[31:2]$ 被异或到 $\mathrm{PHR}$ 的低位，而 $B[5:2]$ 被异或到 $\mathrm{PHR}$ 的中间的位置
-2. 硬件上有两个 $\mathrm{PHR}$ 寄存器，其中一个是 100 位，只记录 $T[31:2]$ 的历史，记为 $\mathrm{PHRT}$；另一个是 28 位，只记录 $B[5:2]$ 的历史，记为 $\mathrm{PHRB}$
+2. 硬件上有两个 $\mathrm{PHR}$ 寄存器，其中一个是 100 位，它的 $\mathrm{footprint} = T[31:2]$，记为 $\mathrm{PHRT}$；另一个是 28 位，它的 $\mathrm{footprint} = B[5:2]$，记为 $\mathrm{PHRB}$
 
-随着后续的测试，基本确认硬件实现的是第二种。有意思的是，在我的论文发表后不久，在 Apple 公开的专利 [Managing table accesses for tagged geometric length (TAGE) load value prediction](https://patents.google.com/patent/US12159142B1/en) 当中，就出现了相关的表述，证明了逆向结果的正确性。
+经过后续的测试，基本确认硬件实现的是第二种。用数学公式来表达：
 
-按照这个方法，我还逆向了 Apple、Qualcomm、ARM 和 Intel 的多代处理器的分支历史的记录方法，[并进行了公开](https://jia.je/cpu/cbp.html)。
+$\mathrm{PHRT}_{\mathrm{new}} = (\mathrm{PHRT}_{\mathrm{old}} \ll 1) \oplus \mathrm{T}[31:2]$
+
+$\mathrm{PHRB}_{\mathrm{new}} = (\mathrm{PHRB}_{\mathrm{old}} \ll 1) \oplus \mathrm{B}[5:2]$
+
+有意思的是，在我的论文发表后不久，在 Apple 公开的专利 [Managing table accesses for tagged geometric length (TAGE) load value prediction](https://patents.google.com/patent/US12159142B1/en) 当中，就出现了相关的表述，证明了逆向结果的正确性。
+
+按照这个方法，我还逆向了 Apple、Qualcomm、ARM 和 Intel 的多代处理器的分支历史的记录方法，[并进行了公开](https://jia.je/cpu/cbp.html)，供感兴趣的读者阅读，也欢迎读者把测试代码移植到更多处理器上，并贡献对其逆向的结果。
 
 ## 引用文献
 
