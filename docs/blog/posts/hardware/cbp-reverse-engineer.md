@@ -70,6 +70,8 @@ $\mathrm{PHR}_{\mathrm{new}} = (\mathrm{PHR}_{\mathrm{old}} \ll \mathrm{shamt}) 
 
 经过[测试](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/phr_size_gen.cpp)：
 
+![](./cbp-reverse-engineer-phr-len.png)
+
 ```csv
 # 第一列：第二步插入的无条件分支数量加一
 # 第二列到第四列：分支预测错误概率的 min/avg/max
@@ -201,7 +203,45 @@ end:
 
 ??? question "为了测试 T[31]，岂不是得插入很多个 NOP，一方面二进制很大，其次还要执行很长时间？"
 
-    是的，所以这里在测试的时候，采用的是类似 JIT 的方法，通过 mmap `MAP_FIXED` 在内存中特定位置分配并写入代码，避免了用汇编器生成一个巨大的 ELF。同时，为了避免执行大量的 NOP，考虑到前面已经发现 $B[6]$ 或更高的位没有参与到 $\mathrm{PHR}$ 计算当中，所以可以添加额外的一组无条件分支来跳过大量的 NOP，它们的目的地址相同，分支地址低位相同，因此对 PHR 不会产生影响。
+    是的，所以这里在测试的时候，采用的是类似 JIT 的方法，通过 mmap `MAP_FIXED` 在内存中特定位置分配并写入代码，避免了用汇编器生成一个巨大的 ELF。同时，为了避免执行大量的 NOP，考虑到前面已经发现 $B[6]$ 或更高的位没有参与到 $\mathrm{PHR}$ 计算当中，所以可以添加额外的一组无条件分支来跳过大量的 NOP，它们的目的地址相同，分支地址低位相同，因此对 PHR 不会产生影响。对应的代码大概是：
+
+    ```c
+    // step 1.
+    // 100 jumps forward
+    goto jump_0;
+    jump_0: goto jump_1;
+    // ...
+    jump_98: goto jump_99;
+    jump_99:
+
+    // step 2.
+    int d = rand();
+    // indirect branch
+    // the follow two targets differ in T[i]
+    auto targets[2] = {target0, target1};
+    goto targets[d % 2];
+    target0:
+    // skip over nops, while keeping B[5:2]=0
+    goto target2;
+    // add many nops
+    target1:
+    goto target2;
+
+    target2:
+
+    // step 3.
+    // variable number of jumps forward
+    goto varjump_0;
+    varjump_0: goto varjump_1;
+    // ...
+    varjump_k: goto last;
+
+    // step 4.
+    // conditional branch
+    last:
+    if (d % 2 == 0) goto end;
+    end:
+    ```
 
 由此我们终于找到了分支历史最长记录 100 条分支是怎么来的：$T[2]$ 会经过 $\mathrm{footprint}$ 被异或到 $\mathrm{PHR}$ 的最低位，然后每次执行一个跳转的分支左移一次，直到移动 100 次才被移出 $\mathrm{PHR}$。类似地，$T[3]$ 只需要 99 次就能移出 $\mathrm{PHR}$，说明 $T[3]$ 被异或到了 $\mathrm{PHR}[1]$。依此类推，可以知道涉及到 $T$ 的 $\mathrm{footprint} = T[31:2]$，其中 $T[31:2]$ 代表一个 30 位的数，每一位从高到低分别对应 $T[31], T[30], \cdots, T[2]$。
 
@@ -221,6 +261,97 @@ $\mathrm{PHRB}_{\mathrm{new}} = (\mathrm{PHRB}_{\mathrm{old}} \ll 1) \oplus \mat
 有意思的是，在我的论文发表后不久，在 Apple 公开的专利 [Managing table accesses for tagged geometric length (TAGE) load value prediction](https://patents.google.com/patent/US12159142B1/en) 当中，就出现了相关的表述，证明了逆向结果的正确性。
 
 按照这个方法，我还逆向了 Apple、Qualcomm、ARM 和 Intel 的多代处理器的分支历史的记录方法，[并进行了公开](https://jia.je/cpu/cbp.html)，供感兴趣的读者阅读，也欢迎读者把测试代码移植到更多处理器上，并贡献对其逆向的结果。
+
+## TAGE 表的逆向
+
+接下来，把目光转向 TAGE 表的逆向。TAGE 表和缓存的结构类似，也是一个多路组相连的结构，通过 index 访问若干路，然后对每一路进行 tag 匹配，匹配正确的那一路提供预测。TAGE 在预测的时候，输入是历史寄存器，也就是上面逆向得到的 $\mathrm{PHRT}$ 和 $\mathrm{PHRB}$，以及分支的地址，目前这两个输入都是可控的。为了避免多个表同时提供预测，首先来逆向工程使用分支历史最长的表的参数：它的容量是多少，index 是如何计算，tag 是如何计算的，几路组相连。
+
+怎么保证是使用分支历史最长的表提供预测呢？其实还是利用分支历史的特性，把随机数注入到 $PHR$ 当中，例如前面的间接分支，让两个目的地址只在 $T[2]$ 上不同：
+
+```c
+// add some unconditional jumps to reset phr to some constant value
+// 100 jumps forward
+goto jump_0;
+jump_0: goto jump_1;
+// ...
+jump_98: goto jump_99;
+jump_99:
+
+// inject
+int d = rand();
+// indirect branch
+// the follow two targets differ in T[2]
+auto targets[2] = {target0, target1};
+goto targets[d % 2];
+target0:
+// add nop here
+target1:
+
+// add some unconditional jumps to shift the injected bit left
+goto varjump_0;
+varjump_0: goto varjump_1;
+// ...
+varjump_k: goto last;
+last:
+```
+
+根据前面的分析，$T[2]$ 会被异或到 $\mathrm{PHRT}$ 的最低位上，每执行一次无条件分支，就左移一位。因此，通过若干个无条件分支，可以把 `d % 2` 这个随机数注入到 $\mathrm{PHRT}$ 的任意一位上。之后我们还会很多次地进行这种随机数的注入。
+
+把随机数注入到 $\mathrm{PHRT}$ 高位以后，再预测一个根据随机数跳转或不跳转的分支，就可以保证它只能由使用分支历史最长的表来进行预测了。
+
+### 逆向工程 PC 输入
+
+首先，我们希望去推断 PC 是如何参与到 index 或 tag 计算当中的。通常，TAGE 只会采用一部分的 PC 位来参与到 index 或 tag 计算当中。换句话说，如果两个分支在 PC 上不同的部分，并没有参与到 index 或 tag 计算当中，那么 TAGE 是无法区分这两条分支的。如果这两个分支跳转方向是相反的，并且用相同的 PHR 进行预测，那么一定会出现错误的预测。思路如下：
+
+1. 用 100 个无条件分支，保证 PHR 变成一个确定的值
+2. 注入随机数 `d % 2` 到 PHRT，并移动到高位（例如 $PHRT[99]$），使用前面所述的方法
+2. 执行两个条件分支，它们在分支地址上只有一位 $PC[i]$ 不同，它们的跳转条件相反，当第一个条件分支不跳转的时候，会执行第二个条件分支，它会跳转
+
+对应代码类似于：
+
+```c
+// step 1. inject phrt
+int d = rand();
+inject_phrt(d % 2, 99);
+
+// step 2. a pair of conditional branches with different direction
+// their PC differs in one bit
+if (d % 2 == 0) goto end;
+if (d % 2 == 1) goto end;
+
+end:
+```
+
+经过测试，PC 的输入 是 $PC[18:2]$，其余的没有。
+
+### 逆向工程表的相连度和 index 函数的 PC 输入
+
+接下来是比较复杂的一步，同时逆向工程表的相连度和 index 函数的 PC 输入。这是因为，这两部分是紧密耦合的，只有知道了相连度，才能知道预测出来的分支数对应几个 set；但是不知道 index 函数，又无法控制分支被放到了几个 set 当中。首先，为了避免 PHR 的干扰，还是只注入一个随机数到 $PHRT[99]$ 上（事实上，$PHRT[99]$ 不是随便选择的，而是需要在 index 函数当中，但是通过测试，可以找到满足要求的位）。其次，构造一系列分支，它们的地址满足：第 i 条分支（i 从 0 开始）的分支地址是 $i2^k$，其中 $k$ 是接下来要遍历的参数。当 $k=3$ 时，分支会被放到 $0x0, 0x8, 0x10, 0x18, 0x20$ 等等的地址，涉及到的 PC 的位数随着分支数的增加越来越多。接下来，我们来分类讨论：
+
+- 假如涉及到的 PC 的位都在 tag 中，并没有出现在 index 中：那么这些分支都会被映射到同一个 set 内，那么一旦分支数量超出了相连度，就会出现预测错误
+- 假如涉及到的 PC 的位有一部分出现在了 index 中：那么每有一个 PC 位出现在 index 中，这些分支可以被分配到的 set 数量就翻倍，直到这些 set 都满了以后，才会出现预测错误
+- 假如涉及到的 PC 的位有一部分超出了 PC 输入的范围（如前面逆向工程得到的 $PC[18:2]$）：那么超出输入的部分地址会被忽略，使得 set 内出现冲突
+
+实验结果如下图：
+
+![](./cbp-reverse-engineer-assoc.png)
+
+纵坐标就是上面的 $k$，横坐标是测试的条件分支数，颜色表示预测的错误率。当颜色从深色变浅，就说明出现了预测错误。观察：
+
+- $PC[3]$ 的情况下，只能预测 4 个分支，而 $PC[4]$ 或 $PC[5]$ 可以预测 8 个分支，暗示了四路组相连，然后 $PC[4]$ 和 $PC[5]$ 对应到了两个 set，所以能够正确预测 8 个分支
+- $PC[6]$ 的情况下，可以预测 16 个分支，对应 4 个 set；后续 $PC[7]$ 和 $PC[8]$ 又可以预测 8 个分支，对应 2 个 set；意味着 $PC[6]$ 在 index 当中，给 $PC[4]$ 和 $PC[5]$ 提供了两倍的 set；$PC[9]$ 在 index 当中，给 $PC[6]$、$PC[7]$ 和 $PC[8]$ 提供了两倍的 set
+- 后续更高的 PC 位，没有受到 index 函数的影响，因此都是 4，直到最后超出 PC 输入范围
+
+这就说明它是四路组相连，PC[6] 和 PC[9] 参与到了 index 函数当中。
+
+下面给读者一个小练习，下面是在 Qualcomm Oryon 上测得的结果，可以看到，它噪声比较大，你能推断出它是几路组相连，有哪些 PC 参与到了 index 计算吗？
+
+![](./cbp-reverse-engineer-assoc-oryon.png)
+
+??? question "揭晓答案"
+
+    四路组相连，$PC[6]$ 和 $PC[7]$ 参与到了 index 函数
+
 
 ## 引用文献
 
