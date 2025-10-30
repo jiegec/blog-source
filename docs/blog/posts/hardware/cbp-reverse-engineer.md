@@ -2,7 +2,6 @@
 layout: post
 date: 2025-10-28
 tags: [cpu,apple,m1,firestorm,cbp,re]
-draft: true
 categories:
     - hardware
 ---
