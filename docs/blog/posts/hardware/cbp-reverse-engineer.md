@@ -332,7 +332,7 @@ end:
 - 假如涉及到的 PC 的位有一部分出现在了 index 中：那么每有一个 PC 位出现在 index 中，这些分支可以被分配到的 set 数量就翻倍，直到这些 set 都满了以后，才会出现预测错误
 - 假如涉及到的 PC 的位有一部分超出了 PC 输入的范围（如前面逆向工程得到的 $PC[18:2]$）：那么超出输入的部分地址会被忽略，使得 set 内出现冲突
 
-实验结果如下图：
+[实验](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/pht_associativity_gen.cpp)结果如下图：
 
 ![](./cbp-reverse-engineer-assoc.png)
 
@@ -352,6 +352,17 @@ end:
 
     四路组相连，$PC[6]$ 和 $PC[7]$ 参与到了 index 函数
 
+那么，这种测试是怎么构造的呢？即需要用相同的 PHR 去预测 $PC=i2^k$ 的多条分支。思路比较复杂：
+
+- 首先执行一条间接分支，目的地址是 $i2^{k-1}$，那么它对 PHRT 的贡献是 $\mathrm{PHRT}_1 = (\mathrm{PHRT}_0 \ll 1) \oplus (i2^{k-3})$
+- 接下来，在 $i2^{k-1}$ 的位置，再执行一条直接分支，目的地址是 $i2^k$，那么它对 PHRT 的贡献是 $\mathrm{PHRT}_2 = (\mathrm{PHRT}_1 \ll 1) \oplus (i2^{k-2}) = (((\mathrm{PHRT}_0 \ll 1) \oplus (i2^{k-3})) \ll 1) \oplus (i2^{k-2}) = \mathrm{PHRT}_0 \ll 2$
+
+可见经过两步以后，PHRT 是保持不变的。针对 PHRB，只要 $i2^{k-1}$ 没有涉及到 $PC[5:2]$，就能保证相同。那么如果 $k$ 足够小，也有办法：
+
+- 首先执行一条间接分支，目的地址是 $i2^{k-1}$
+- 接下来执行大量的 NOP，使得 $B$ 的低位等于 0，然后再执行一条直接分支，目的地址是 $i2^k$
+
+因此我们总是可以通过两次分支，实现用相同的 PHR 预测不同 PC 上的多条分支。
 
 ## 引用文献
 
