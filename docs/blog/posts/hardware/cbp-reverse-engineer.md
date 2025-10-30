@@ -11,7 +11,7 @@ categories:
 
 ## 背景
 
-去年我完成了针对 Apple 和 Qualcomm 条件分支预测器（Conditional Branch Predictor）的逆向工程研究，相关论文已发表在 [arXiv](https://arxiv.org/abs/2411.13900) 上，并公开了[源代码](https://arxiv.org/abs/2411.13900)。考虑到许多读者对处理器逆向工程感兴趣，但可能因其复杂性而望而却步，本文将以 Apple M1 Firestorm 为例，详细介绍条件分支预测器的逆向工程方法，作为对原论文的补充说明。
+去年我完成了针对 Apple 和 Qualcomm 条件分支预测器（Conditional Branch Predictor）的逆向工程研究，相关论文已发表在 [arXiv](https://arxiv.org/abs/2411.13900) 上，并公开了[源代码](https://github.com/jiegec/cpu-micro-benchmarks)。考虑到许多读者对处理器逆向工程感兴趣，但可能因其复杂性而望而却步，本文将以 Apple M1 Firestorm 为例，详细介绍条件分支预测器的逆向工程方法，作为对原论文的补充说明。
 
 <!-- more -->
 
@@ -141,7 +141,7 @@ if (d % 2 == 0) goto end;
 end:
 ```
 
-第二步中条件分支跳转与否，会影响分支历史中 $B[i]$ 一个位的变化，它会经过哈希函数，影响到 $\mathrm{footprint}$ 当中，进而异或到 $\mathrm{PHR}$ 当中。通过调整第三步执行的无条件分支个数，可以把 $B[i]$ 对 $\mathrm{PHR}$ 的影响左移到不同的位置。如果 $B[i]$ 对 $\mathrm{PHR}$ 造成了影响，那就可以正确预测最后一条条件分支指令的方向。当左移的次数足够多，就会使得 $B[i]$ 对 $\mathrm{PHR}$ 的贡献为零，那么对最后一条条件分支指令的方向预测只有 50% 的正确率。在 Apple M1 Firestorm 上[测试](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/phr_branch_bits_location_gen.cpp)，得到如下结果：
+第二步中条件分支跳转与否，会影响分支历史中 $B[i]$ 一个位的变化，它会经过哈希函数，影响到 $\mathrm{footprint}$ 当中，进而异或到 $\mathrm{PHR}$ 当中。通过调整第三步执行的无条件分支个数，可以把 $B[i]$ 对 $\mathrm{PHR}$ 的影响左移到不同的位置。如果 $B[i]$ 对 $\mathrm{PHR}$ 造成了影响，就可以正确预测最后一条条件分支指令的方向。当左移的次数足够多，就会使得 $B[i]$ 对 $\mathrm{PHR}$ 的贡献为零，那么对最后一条条件分支指令的方向预测只有 50% 的正确率。在 Apple M1 Firestorm 上[测试](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/phr_branch_bits_location_gen.cpp)，得到如下结果：
 
 ![](./cbp-reverse-engineer-phrb.png)
 
@@ -149,7 +149,7 @@ end:
 
 从这个图可以得到什么信息呢？首先观察 $B[2]$ 对应的这一行，可以看到它确实参与到了 $\mathrm{PHR}$ 的计算当中，但是，仅仅经过 28 次移位，这个贡献就被移出了 $\mathrm{PHR}$，为了保留在 $\mathrm{PHR}$ 内，最多移动 27 次。类似地，在移出 $\mathrm{PHR}$ 之前，$B[3]$ 最多移动 26 次，$B[4]$ 最多移动 25 次，$B[5]$ 最多移动 24 次。
 
-但实际上，这些 $B$ 是同时进入 $\mathrm{PHR}$ 的：这暗示了，它们对应了 $\mathrm{footprint}$ 的不同位置。如果某个 $B[i]$ 出现在 $\mathrm{footprint}$ 更高位的地方，它也会进入 $\mathrm{PHR}$ 更高位的地址，经过更少的移位次数就会被移出 $\mathrm{PHR}$；反之，如果 $B[i]$ 出现中 $\mathrm{footprint}$ 更低位的地方，它能够在 $\mathrm{PHR}$ 中停留更长的时间。
+但实际上，这些 $B$ 是同时进入 $\mathrm{PHR}$ 的：这暗示了，它们对应了 $\mathrm{footprint}$ 的不同位置。如果某个 $B[i]$ 出现在 $\mathrm{footprint}$ 更高位的地方，它也会进入 $\mathrm{PHR}$ 更高位的地址，经过更少的移位次数就会被移出 $\mathrm{PHR}$；反之，如果 $B[i]$ 出现在 $\mathrm{footprint}$ 更低位的地方，它能够在 $\mathrm{PHR}$ 中停留更长的时间。
 
 根据上面的实验，可见 $B[5], B[4], B[3], B[2]$ 参与到了 $\mathrm{footprint}$ 计算当中，而 $B$ 其他的位则没有。但比较奇怪的是，$\mathrm{PHR}$ 理应可以记录最近 100 条分支的信息，但实际上只观察到了 28。所以一定另外有别的信息。
 
@@ -260,11 +260,11 @@ $\mathrm{PHRB}_{\mathrm{new}} = (\mathrm{PHRB}_{\mathrm{old}} \ll 1) \oplus \mat
 
 有意思的是，在我的论文发表后不久，在 Apple 公开的专利 [Managing table accesses for tagged geometric length (TAGE) load value prediction](https://patents.google.com/patent/US12159142B1/en) 当中，就出现了相关的表述，证明了逆向结果的正确性。
 
-按照这个方法，我还逆向了 Apple、Qualcomm、ARM 和 Intel 的多代处理器的分支历史的记录方法，[并进行了公开](https://jia.je/cpu/cbp.html)，供感兴趣的读者阅读，也欢迎读者把测试代码移植到更多处理器上，并贡献对其逆向的结果。
+按照这个方法，我还逆向了 Apple、Qualcomm、ARM 和 Intel 的多代处理器的分支历史的记录方法，[并进行了公开](https://jia.je/cpu/cbp.html)，供感兴趣的读者阅读，也欢迎读者将测试代码移植到更多处理器上，并贡献对其逆向的结果。
 
 ## TAGE 表的逆向
 
-接下来，把目光转向 TAGE 表的逆向。TAGE 表和缓存的结构类似，也是一个多路组相连的结构，通过 index 访问若干路，然后对每一路进行 tag 匹配，匹配正确的那一路提供预测。TAGE 在预测的时候，输入是历史寄存器，也就是上面逆向得到的 $\mathrm{PHRT}$ 和 $\mathrm{PHRB}$，以及分支的地址，目前这两个输入都是可控的。为了避免多个表同时提供预测，首先来逆向工程使用分支历史最长的表的参数：它的容量是多少，index 是如何计算，tag 是如何计算的，几路组相连。
+接下来，把目光转向 TAGE 表的逆向。TAGE 表和缓存的结构类似，也是一个多路组相连的结构，通过 index 访问若干路，然后对每一路进行 tag 匹配，匹配正确的那一路提供预测。TAGE 在预测的时候，输入是历史寄存器，也就是上面逆向得到的 $\mathrm{PHRT}$ 和 $\mathrm{PHRB}$，以及分支的地址，目前这两个输入都是可控的。为了避免多个表同时提供预测，首先来逆向工程使用分支历史最长的表的参数：它的容量是多少，index 是如何计算的，tag 是如何计算的，以及几路组相连。
 
 怎么保证是使用分支历史最长的表提供预测呢？其实还是利用分支历史的特性，把随机数注入到 $PHR$ 当中，例如前面的间接分支，让两个目的地址只在 $T[2]$ 上不同：
 
@@ -297,15 +297,15 @@ last:
 
 根据前面的分析，$T[2]$ 会被异或到 $\mathrm{PHRT}$ 的最低位上，每执行一次无条件分支，就左移一位。因此，通过若干个无条件分支，可以把 `d % 2` 这个随机数注入到 $\mathrm{PHRT}$ 的任意一位上。之后我们还会很多次地进行这种随机数的注入。
 
-把随机数注入到 $\mathrm{PHRT}$ 高位以后，再预测一个根据随机数跳转或不跳转的分支，就可以保证它只能由使用分支历史最长的表来进行预测了。
+把随机数注入到 $\mathrm{PHRT}$ 高位以后，再预测一个根据随机数跳转或不跳转的分支，就可以保证它只能由使用分支历史最长的表来进行预测。
 
 ### 逆向工程 PC 输入
 
-首先，我们希望去推断 PC 是如何参与到 index 或 tag 计算当中的。通常，TAGE 只会采用一部分的 PC 位来参与到 index 或 tag 计算当中。换句话说，如果两个分支在 PC 上不同的部分，并没有参与到 index 或 tag 计算当中，那么 TAGE 是无法区分这两条分支的。如果这两个分支跳转方向是相反的，并且用相同的 PHR 进行预测，那么一定会出现错误的预测。思路如下：
+首先，我们希望推断 PC 是如何参与到 index 或 tag 计算当中的。通常，TAGE 只会采用一部分的 PC 位来参与到 index 或 tag 计算当中。换句话说，如果两个分支在 PC 上不同的部分，并没有参与到 index 或 tag 计算当中，那么 TAGE 是无法区分这两条分支的。如果这两个分支跳转方向是相反的，并且用相同的 PHR 进行预测，那么一定会出现错误的预测。思路如下：
 
 1. 用 100 个无条件分支，保证 PHR 变成一个确定的值；
 2. 注入随机数 `d % 2` 到 PHRT，并移动到高位（例如 $PHRT[99]$），使用前面所述的方法；
-2. 执行两个条件分支，它们在分支地址上只有一位 $PC[i]$ 不同，它们的跳转条件相反，当第一个条件分支不跳转的时候，会执行第二个条件分支，它总是会跳转。
+3. 执行两个条件分支，它们在分支地址上只有一位 $PC[i]$ 不同，它们的跳转条件相反，当第一个条件分支不跳转的时候，会执行第二个条件分支，它总是会跳转。
 
 对应代码类似于：
 
@@ -322,7 +322,7 @@ if (d % 2 == 1) goto end;
 end:
 ```
 
-经过测试，PC 的输入 是 $PC[18:2]$，其余的没有。
+经过测试，PC 的输入是 $PC[18:2]$，其余的没有。
 
 ### 逆向工程相连度和 index 函数的 PC 输入
 
