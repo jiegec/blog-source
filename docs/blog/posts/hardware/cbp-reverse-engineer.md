@@ -89,7 +89,7 @@ size,min,avg,max,cycles
 
 ??? question "分支预测错误率是怎么测量的？"
 
-    处理器内置了性能计数器，会记录分支预测错误次数。在 Linux 上，可以用 perf 子系统来读取；在 macOS 上，可以用 kpep 私有 API 来获取。我开源的代码中对这些 API 进行了[封装](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/utils.cpp)，可以实现跨平台的性能计数器读取。
+    处理器内置了性能计数器，会记录分支预测错误次数。在 Linux 上，可以用 perf 子系统来读取；在 macOS 上，可以用 kpep 私有 API 来获取。我开源的代码中对这些 API 进行了[封装](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/utils.cpp)，可以实现跨平台的性能计数器读取。更进一步，我们还逆向了 Qualcomm Oryon 的针对条件分支的预测错误次数的隐藏性能计数器用于后续的实验。
 
 ### 分支地址 B 的贡献
 
