@@ -488,7 +488,7 @@ PHRB 的注入就比较复杂了，例如要注入 $B[2]=k$，我们需要进行
 - [完整结果](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/reports/dissecting_cbp_of_apple_firestorm_and_qualcomm_oryon/README.md)
 - [代码开源](https://github.com/jiegec/cpu-micro-benchmarks/)
 
-有兴趣的读者可以试着自己复现一下，看看能不能得到对应的实验结果，然后从结果中分析出硬件的参数。
+有兴趣的读者可以试着自己复现一下，看看能不能得到对应的实验结果，然后从结果中分析出硬件的参数。有意思的是，我们逆向出来 Qualcomm Oryon 的分支预测器的大小（6 个表一共 80KB 的空间），与官方在 Hot Chips 上公开的是一致的。
 
 ## 总结
 
