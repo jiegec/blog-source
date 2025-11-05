@@ -438,7 +438,23 @@ Intel 的处理器通过 MSR 1A4H 可以配置各个预取器：
 
 [Spatial Prefetching](https://www.sciencedirect.com/science/article/pii/S0065245821000784) 的思想是这样的：程序经常会访问数组，那么对数组每个元素的访问模式，应该是类似的。比如访问数组前十个元素有某种规律，那么访问接下来的十个元素应该也有类似的规律，只是地址变了而已。如果这个数组的元素的结构比较复杂，这个访存模式（例如从 0、256 和 320 三个偏移分别读取数据）可能既不满足 Stride 又不满足 Stream，此时就需要 Spatial Prefetcher 来介入。例如程序在同一个物理页内，总是会从 A、B、C 和 D 四个页内偏移读取数据，那么当程序从页内偏移 A 读取一个新的物理页的数据时，大概率新的物理页内 B、C 和 D 偏移处的数据将来会被读取，那就预取进来。
 
-一种 Spatial Prefetcher 实现是 Spatial Memory Streaming (SMS)。它的做法是，把内存分成很多个相同大小的 Region，当缓存出现缺失时，创建一个 Region，记录这次访存指令的 PC 以及访存的地址相对 Region 的偏移，然后开始跟踪这个 Region 内哪些数据被读取了，直到这个 Region 的数据被换出 Cache，就结束记录，把信息保存下来。以上面的 0、256 和 320 为例子，访问 0 时出现缓存缺失，那就创建一个 Region，然后把 256 和 320 这两个偏移记下来。当同一条访存指令又出现缺失，并且偏移和之前一样时，根据之前保存的信息，把 Region 里曾经读过的地址预取一遍，按上面的例子，也就是 256 和 320。这里的核心是只匹配偏移而不是完整的地址，忽略了地址的高位，最后预取的时候，也是拿新的导致缓存缺失的地址去加偏移，自然而然实现了平移。从 AMD 的专利 [DATA CACHE REGION PREFETCHER](https://patentimages.storage.googleapis.com/a8/85/e2/35618e755d6ad3/US20180052779A1.pdf) 来看，AMD 的 L1 Region Prefetcher 应该采用的是 SMS 的思想，缓存缺失时，创建一个 Region，记录这个 Region 中哪些数据被访问了。
+一种 Spatial Prefetcher 实现是 [Spatial Memory Streaming (SMS)](https://ieeexplore.ieee.org/document/1635957/)。它的做法是，把内存分成很多个相同大小的 Region（通常一个 Region 是多个连续 Cacheline），在访问缓存时，维护当前 Region 的信息，记录这次访存指令的 PC 以及访存的地址相对 Region 的偏移，然后开始跟踪这个 Region 内哪些数据被读取了，直到这个 Region 的数据被换出 Cache，就结束记录，把信息保存下来。以上面的 0、256 和 320 为例子，访问 0 时创建一个 Region，然后把 256 和 320 这两个偏移记下来。当同一条访存指令访问到了和之前一样的偏移时，根据之前保存的信息，把 Region 里曾经读过的地址预取一遍，按上面的例子，也就是 256 和 320。这里的核心是只匹配偏移而不是完整的地址，忽略了地址的高位，最后预取的时候，也是拿新的导致缓存缺失的地址去加偏移，自然而然实现了平移。从 AMD 的专利 [DATA CACHE REGION PREFETCHER](https://patentimages.storage.googleapis.com/a8/85/e2/35618e755d6ad3/US20180052779A1.pdf) 来看，AMD 的 L1 Region Prefetcher 应该采用的是 SMS 的思想，缓存缺失时，创建一个 Region，记录这个 Region 中哪些数据被访问了。
+
+具体来说，Spatial Memory Streaming 维护了一个 Active Generation Table（缩写 AGT）来记录上面所述的 Region 内哪些数据被读取的信息，当这个 Region 里的数据被换出 Cache，对应的信息就会被保存到 Pattern History Table（缩写 PHT）当中，后续会根据 PHT 来预测预取的地址。其中 Active Generation Table 又包括了 Accumulation Table 和 Filter Table，这样做是为了减少不必要的分配，只有一个 Region 出现至少两次访问才会被分配到 Accmuluation Table 当中。具体步骤：
+
+![](./brief-into-ooo-2-agt.png)
+
+![](./brief-into-ooo-2-pht.png)
+
+（图源 [Spatial Memory Streaming](https://ieeexplore.ieee.org/document/1635957/)）
+
+1. 当一个 Region 第一次被访问的时候，此时 Accumuation Table 还没有对应的表项，把访存的 PC 和 Region 内 offset 记录到 Filter Table 当中
+2. 当一个 Region 第二次被访问的时候，此时 Filter Table 中应当有对应的表项，把表项挪到 Accumulation Table 当中，用 Bitmap 维护一个 Region 内哪些 Cacheline 被访问过的信息
+3. 当一个 Region 内第三次或更多次被访问的时候，继续更新 Region 内哪些 Cacheline 被访问过的信息
+4. 当 Region 内缓存被换出 Cache 时，认为这个 Region 已经学习完毕，把对应的信息移动到 Pattern History Table 中，注意 Region 地址信息不会被记录在 Pattern History Table 上，这样它就可以被用来预测多个 Region
+5. 与此同时，查询 Pattern History Table，如果有 PC 和 offset 匹配的 entry，就把 Region 内被访问过的 Cacheline 预取进来
+
+Gem5 实现了 [Spartial Memory Stream 预取器](https://github.com/gem5/gem5/blob/stable/src/mem/cache/prefetch/sms.cc)，基本就是按照上面的思路实现的。
 
 另一种 Spatial Prefetcher 实现是 Variable length delta prefetcher (VLDP)，它的思路是，对访存序列求差分，即用第 k 次访存地址减去第 k-1 次访存地址，得到 Delta 序列，然后对当前的 Delta 序列，预测下一个 Delta，那么预取的地址，就是 Delta 加上最后一次访存的地址。从 Intel 的专利 [Systems and methods for adaptive multipath probability (amp) prefetcher](https://patents.google.com/patent/US20190138451) 来看，它的 AMP Prefetcher 实现思路和 VLDP 类似，专利中给出了一个例子：
 
