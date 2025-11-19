@@ -284,6 +284,7 @@ permalink: /benchmark/
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [3.49](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto -ljemalloc`）: [5.48](./data-trixie/int2017_rate1/AMD_EPYC_7742_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -flto -ljemalloc`）: [10.3](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3-flto-ljemalloc_001.txt)
+- AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3 -flto -ljemalloc`）: [8.80](./data-trixie/int2017_rate1/AMD_EPYC_9T95_O3-flto-ljemalloc_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -flto -ljemalloc`）: [8.03](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -flto -ljemalloc`）: [4.95](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3-flto-ljemalloc_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [5.39](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3-flto-ljemalloc_001.txt)
@@ -295,6 +296,7 @@ permalink: /benchmark/
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.28](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.05](./data-trixie/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -flto`）: [9.49](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3-flto_001.txt)
+- AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3 -flto`）: [8.18](./data-trixie/int2017_rate1/AMD_EPYC_9T95_O3-flto_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -flto`）: [7.65](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3-flto_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -flto`）: [4.59](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3-flto_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto`）: [5.16](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3-flto_001.txt)
@@ -306,6 +308,7 @@ permalink: /benchmark/
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [3.12](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [4.78](./data-trixie/int2017_rate1/AMD_EPYC_7742_O3_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3`）: [9.07](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3_001.txt)
+- AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3`）: [7.83](./data-trixie/int2017_rate1/AMD_EPYC_9T95_O3_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3`）: [7.38](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3`）: [4.39](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [4.97](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3_001.txt)
@@ -778,6 +781,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native`）: [4.42](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3-march=native_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -march=native`）: [7.96](./data-trixie/fp2017_rate1/AMD_EPYC_7742_O3-march=native_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -march=native`）: [16.2](./data-trixie/fp2017_rate1/AMD_EPYC_9R45_O3-march=native_001.txt)
+- AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3 -march=native`）: [13.9](./data-trixie/fp2017_rate1/AMD_EPYC_9T95_O3-march=native_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -march=native`）: [11.0](./data-trixie/fp2017_rate1/Intel_Xeon_6975P-C_O3-march=native_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3 -march=native`）: [5.58](./data-trixie/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3-march=native_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -march=native`）: [7.64](./data-trixie/fp2017_rate1/Intel_Xeon_Gold_6430_O3-march=native_001.txt)
@@ -790,6 +794,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [4.15](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [7.37](./data-trixie/fp2017_rate1/AMD_EPYC_7742_O3_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3`）: [14.5](./data-trixie/fp2017_rate1/AMD_EPYC_9R45_O3_001.txt)
+- AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3`）: [12.5](./data-trixie/fp2017_rate1/AMD_EPYC_9T95_O3_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3`）: [10.3](./data-trixie/fp2017_rate1/Intel_Xeon_6975P-C_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.2 GHz Broadwell（`-O3`）: [5.49](./data-trixie/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [7.01](./data-trixie/fp2017_rate1/Intel_Xeon_Gold_6430_O3_001.txt)
@@ -1204,6 +1209,7 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - AMD EPYC 9R14(AWS c7a.xlarge, 4C 8G): Zen 4, Genoa
 - AMD EPYC 9R45(AWS m8a.xlarge, 4C 16G): Zen 5, Turin
 - AMD EPYC 9T24(Aliyun g8a.xlarge, 4C 16G): Zen 4, Genoa
+- AMD EPYC 9T95(Aliyun g9ae.xlarge, 4C 16G): Zen 5c, Turin Dense
 - AMD Ryzen 5 7500F: Zen 4, Raphael
 - AMD Ryzen 7 5700X: Zen 3, Vermeer
 - AMD Ryzen 9 9950X: Zen 5, Granite Ridge
@@ -1244,6 +1250,8 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 更新历史
 
+- 2025.11.18:
+      - 在 Aliyun g9ae.xlarge 实例上测试 AMD EPYC 9T95 的性能
 - 2025.10.20:
       - 测试 Intel Xeon Gold 6430 的性能
 - 2025.10.09:
