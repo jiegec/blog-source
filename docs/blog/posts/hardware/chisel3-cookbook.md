@@ -270,6 +270,8 @@ object AddPrefix {
 
 这个方法的灵感来自 @sequencer。唯一的缺点就是比较 Hack，建议 SiFive 把相关的类也开源出来用。
 
+到了 Chisel 7.0，模块名称前缀的功能已经内置：[Module Prefixing](https://www.chisel-lang.org/docs/explanations/moduleprefix)。
+
 ## 关闭 RTL 级别的优化
 
 Chisel3 生成 Verilog/System Verilog 的时候会进行一些优化。如果想要关闭这些优化，可以使用：
