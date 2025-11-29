@@ -14,6 +14,12 @@ categories:
 
 <!-- more -->
 
+![](apple-m4.png)
+
+??? note "图片来源"
+
+    使用 [Z-Image](https://github.com/Tongyi-MAI/Z-Image) 生成，提示词： `Create a cover iamge for Apple M4 微架构评测, with a proper Apple M4 MacBookAir in the middle with M4 in the background, your text must be accurate`
+
 ## 官方信息
 
 Apple M4 的官方信息乏善可陈，关于微架构的信息几乎为零，但能从操作系统汇报的硬件信息中找到一些内容。
