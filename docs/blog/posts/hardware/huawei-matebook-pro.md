@@ -233,6 +233,12 @@ UPDATE: 开了个坑：<https://github.com/jiegec/Termony>，目前已经能跑�
 
 UPDATE: 2025-06-21 推送了 1.0.3 版本。实测在 shell 里面输入括号，不会出现括号补全跑到错误的位置的问题了。
 
+UPDATE: 2025-12-01 尝试 CodeArts 1.0.9 版本，可以创建 C++ 项目了，编译没问题并且有自签名的提示，但是执行编译出来的程序还是会报错，估计还是自签名的机制还有问题。
+
+### DevEco Studio
+
+2025-12-01 拿到了 DevEco Studio 的内测资格（直接网上申请即可），测试了一下 DevEco Studio 6.0.5.220 鸿蒙预览版。目前能够构建 hap，并且安装在鸿蒙电脑上，通过 USB 连接鸿蒙手机也可以正常安装。
+
 ## 虚拟机
 
 目前应用商城有两家虚拟机：Oseasy 和铠大师。两者都是提示安装 ARM64 版本的 Windows，尝试了一下给它一个 Debian 的安装 ISO，它不认。用的 unattended install，不需要进行什么操作。Oseasy 和铠大师的虚拟机不能同时开，但是可以一边安装完，再去安装另一边的 Windows。
