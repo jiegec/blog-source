@@ -1,0 +1,14 @@
+.redacted {
+    color: #000; /* 文字颜色设为黑色 */
+    background-color: #000; /* 背景颜色设为黑色 */
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-shadow: 0 0 0 #000; /* 确保文字完全隐藏 */
+}
+
+.redacted:hover {
+    color: inherit; /* 悬停时恢复原始文字颜色 */
+    background-color: transparent; /* 悬停时背景透明 */
+    text-shadow: none; /* 移除文字阴影 */
+}
