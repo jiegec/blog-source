@@ -131,6 +131,13 @@ Intel Core i 系列：
   - X/XE：桌面，高高性能，可超频
   - Y：特别节能
 
+### Intel® Core™ Ultra Series 3 processors
+
+- [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/245528/intel-core-ultra-series-3-processors.html)
+- 发布时间：Q1'26
+- 代号：Panther Lake，大小核
+- 用途：移动
+
 ### Intel® Core™ Ultra Processors (Series 2)
 
 - [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/241071/intel-core-ultra-processors-series-2.html)
