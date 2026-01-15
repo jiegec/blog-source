@@ -370,13 +370,23 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 
 如果通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，即关闭 L1 data cache IP prefetcher，就会观察到上述 Stride 预取的行为消失，不会预取将要访问的下一个 cache line。
 
-进一步测试，发现它最少需要三次访问才可能会去预取第四次，但并不稳定，如果访问了四次，才会比较稳定地去预取第五次。并且，这种预取可以跨越页的边界，并且是采用虚拟地址来进行预取，也就是说可以预取到新的虚拟页当中。
+进一步测试，发现它最少需要三次访问才可能会去预取第四次，但并不稳定，如果访问了四次，才会比较稳定地去预取第五次。
 
 把相同的代码放到 Gracemont 上运行，会看到它的预取器会预取将要访问的未来两个 cache line：
 
 ![](./intel-golden-cove-prefetcher-gracemont-comparison.png)
 
 可见不同微架构的预取器的策略是不同的。
+
+#### 是否跨页
+
+进一步测试，发现 Golden Cove 的预取可以跨越页的边界（见下图，四次 Access 在第一个页，Prefetch 在第二个页），并且是采用虚拟地址来进行预取（排除了两个页的物理地址是连续的情况），也就是说可以预取到新的虚拟页当中。
+
+![](./intel-golden-cove-prefetcher-cross-page.png)
+
+类似的跨页预取行为在 Gracemont 上也可以观察到：
+
+![](./intel-golden-cove-prefetcher-gracemont-cross-page.png)
 
 ### ReOrder Buffer
 
