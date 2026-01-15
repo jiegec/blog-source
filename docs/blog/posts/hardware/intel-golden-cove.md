@@ -334,6 +334,10 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 - MSR_1A4H[2]: the L1 data cache prefetcher, which fetches the next cache line into L1 data cache. 这个应该属于 Next Line Prefetcher
 - MSR_1A4H[3]: the L1 data cache IP prefetcher, which uses sequential load history (based on instruction pointer of previous loads) to determine whether to prefetch additional lines.
 
+此外，在 MSR_48H Speculation Control 中可以配置是否开启 Data Dependent Prefetcher:
+
+- MSR_48H[8] (DDPD_U): If 1, disables the Data Dependent Prefetcher that examines data values in memory while CPL = 3. Note that setting bit 2 (SSBD) also disables this.
+
 #### 预取延迟
 
 在 Golden Cove 上按 64B 的跳步进行访存，测量每次访存的延迟，得到如下结果：
@@ -365,6 +369,8 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 ![](./intel-golden-cove-prefetcher-13.png)
 
 如果通过 `wrmsr -p 0 0x1a4 0x8` 把 `DCU_IP_PREFETCHER_DISABLE` 设为 1，即关闭 L1 data cache IP prefetcher，就会观察到上述 Stride 预取的行为消失，不会预取将要访问的下一个 cache line。
+
+进一步测试，发现它最少需要三次访问才可能会去预取第四次，但并不稳定，如果访问了四次，才会比较稳定地去预取第五次。并且，这种预取可以跨越页的边界，并且是采用虚拟地址来进行预取，也就是说可以预取到新的虚拟页当中。
 
 把相同的代码放到 Gracemont 上运行，会看到它的预取器会预取将要访问的未来两个 cache line：
 
