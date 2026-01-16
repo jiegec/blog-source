@@ -115,21 +115,45 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 官方信息：40-entry（128 Virtual）Store Reorder queue，44-entry（128 Virtual）Load Reorder Queue
 
-### L1 DTLB (aka primary Data Effective-to-Real Address Translation, DERAT)
-
-官方信息：48-entry(ST)/96-entry(SMT), fully associative
-
-### L2 DTLB (aka secondary Data Effective-to-Real Address Translation, DERAT)
-
-官方信息：256-entry（ST 模式下全可见，SMT 模式下每个线程只有一半可见）, fully associative
-
-### L3 TLB
-
-官方信息：2048-entry, 4-way set associative, 4 concurrent page table walk
-
 ### L1 DCache
 
 官方信息：64KB, 8-way set associative, 128B cache line, 4 read port, 1 write port，3 cycle load to use latency, store-through（写入会同时写 L1 DCache 和 L2），所以 store miss 不分配 cache line, 16 MSHR(aka Load Miss Queue)
+
+构造不同大小 footprint 的 pointer chasing 链，测试不同 footprint 下每条 load 指令耗费的时间：
+
+![](./ibm-power8-l1dc-size.png)
+
+可以看到 64KB 出现了明显的拐点，对应的就是 64KB 的 L1 DCache 容量。第二个拐点在 512KB，对应的是 L2 Cache 的容量。第三个拐点是 3MB，对应的是 L1 DTLB 的容量：`48*64KB=3MB`。
+
+### L1 DTLB (aka primary Data Effective-to-Real Address Translation, DERAT)
+
+官方信息：**48-entry**(ST)/96-entry(SMT), fully associative
+
+用类似测 L1 DCache 的方法测试 L1 DTLB 容量，只不过这次 pointer chasing 链的指针分布在不同的 64KB page 上，使得 DTLB 成为瓶颈：
+
+![](./ibm-power8-dtlb-size.png)
+
+可以看到 48 Page 出现了明显的拐点，对应的就是 48 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 3 cycle。最终出现一个 18.8 cycle 的平台。
+
+### L2 DTLB (aka secondary Data Effective-to-Real Address Translation, DERAT)
+
+官方信息：**256-entry**（ST 模式下全可见，SMT 模式下每个线程只有一半可见）, fully associative
+
+继续扩大 DTLB 测试规模，可以看到在 256 处出现了新的拐点，其中 256 的地方出现周期数的骤降，是触发了 Linux 的大页合并功能：
+
+![](./ibm-power8-dtlb-size-l2.png)
+
+关掉 THP(Transparent Huge Page) 后，周期数的骤降消失，256 的拐点之后周期数增加而不是减少：
+
+![](./ibm-power8-dtlb-size-l2-no-thp.png)
+
+### L3 TLB
+
+官方信息：**2048-entry**, 4-way set associative, 4 concurrent page table walk
+
+继续扩大 DTLB 测试规模，在 2048 处出现了拐点，注意要关闭 THP，否则拐点会消失，因为实际上没有用到 2048 个页：
+
+![](./ibm-power8-dtlb-size-l3.png)
 
 #### Banking
 
