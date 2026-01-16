@@ -115,6 +115,19 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 官方信息：40-entry（128 Virtual）Store Reorder queue，44-entry（128 Virtual）Load Reorder Queue
 
+##### Load to use latency
+
+官方信息：3-cycle latency
+
+实测在下列的场景下可以达到 3 cycle:
+
+- `ldr 4, 0(4)`: load 结果转发到基地址，无偏移
+- `ldr 4, 8(4)`：load 结果转发到基地址，有立即数偏移
+- `ldx 4, 4, 6`：load 结果转发到基地址，有寄存器偏移
+- `ldx 4, 6, 4`：load 结果转发到寄存器偏移
+
+如果访存跨越了 128B 边界，则退化到 16 cycle。
+
 ### L1 DCache
 
 官方信息：64KB, 8-way set associative, 128B cache line, 4 read port, 1 write port，3 cycle load to use latency, store-through（写入会同时写 L1 DCache 和 L2），所以 store miss 不分配 cache line, 16 MSHR(aka Load Miss Queue)
