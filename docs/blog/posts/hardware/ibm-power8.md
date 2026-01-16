@@ -125,6 +125,10 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 可以看到 64KB 出现了明显的拐点，对应的就是 64KB 的 L1 DCache 容量。第二个拐点在 512KB，对应的是 L2 Cache 的容量。第三个拐点是 3MB，对应的是 L1 DTLB 的容量：`48*64KB=3MB`。
 
+#### Banking
+
+官方信息：L1 DCache 由 16 个 macro 组成，每个 macro 是 16 个 bank，一共是 256 个 bank；sram 用的是 2R 或 1W，所以每个 bank 可以支持每周期 2R 或 1W
+
 ### L1 DTLB (aka primary Data Effective-to-Real Address Translation, DERAT)
 
 官方信息：**48-entry**(ST)/96-entry(SMT), fully associative
@@ -154,10 +158,6 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 继续扩大 DTLB 测试规模，在 2048 处出现了拐点，注意要关闭 THP，否则拐点会消失，因为实际上没有用到 2048 个页：
 
 ![](./ibm-power8-dtlb-size-l3.png)
-
-#### Banking
-
-官方信息：L1 DCache 由 16 个 macro 组成，每个 macro 是 16 个 bank，一共是 256 个 bank；sram 用的是 2R 或 1W，所以每个 bank 可以支持每周期 2R 或 1W
 
 ### Prefetcher
 
