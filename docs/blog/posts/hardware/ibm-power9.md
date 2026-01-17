@@ -109,3 +109,15 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 官方信息：20-way 10MB eDRAM L3 cache per core
 
 ### Prefetcher
+
+参考 [Battling the Prefetcher: Exploring Coffee Lake (Part 1)](https://abertschi.ch/blog/2022/prefetching/) 的方式，研究预取器的行为：分配一片内存，把数据从缓存中 flush 掉，再按照特定的访存模式访问，触发预取器，最后测量访问每个缓存行的时间，从而得到预取器预取了哪些缓存行的信息。
+
+首先是连续访问若干个 128B cacheline，观察哪些被预取了进来：
+
+![](./ibm-power9-prefetcher-cacheline-1.png)
+
+预取的行为相比 POWER8 更加激进：有更多的缓存行被预取到了更近的 L1（或者是 L2？）。
+
+如果是访问了几个分立的缓存行，有时会表现出 Next 3 Line 的行为，但都是到 L3：
+
+![](./ibm-power9-prefetcher-cacheline-2.png)
