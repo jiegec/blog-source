@@ -84,8 +84,6 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 官方信息：54 instructions per SMT4 core, 108 instructions per SMT8 core
 
-### Load Store Unit
-
 ### L1 DCache
 
 官方信息：32KB(SMT4)/64KB(SMT8, split into two regions)
@@ -97,8 +95,6 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 ![](./ibm-power9-dtlb-size.png)
 
 可以看到 256 Page 出现了明显的拐点，对应的就是 256 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 4 cycle。
-
-### L2 TLB
 
 ### L2 Cache
 
