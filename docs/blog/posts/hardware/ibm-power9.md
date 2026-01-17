@@ -40,6 +40,8 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 测试环境是 SMT4 Core，所以只有 32KB 的容量。超出 L1 ICache 容量后，IPC 从 6 降低到了 4.7。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
+
 ### 取指带宽
 
 官方信息：32 bytes/cycle
@@ -58,6 +60,8 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 随着指令数进一步增加，最终瓶颈在每周期执行的 NOP 指令数，因此两条线重合。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/if_width_gen.cpp)。
+
 ### L1 ITLB
 
 为了测试 L1 ITLB 的容量，构造 b 序列，每个 b 在一个单独的页（64KB 的页大小）中，观察 b 的性能：
@@ -65,6 +69,8 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 ![](./ibm-power9-itlb-size.png)
 
 可以看到明显的 256 pages 的拐点，对应了 256 entry 的 L1 ITLB。CPI 从 3 升高到了 28。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/itlb_size_lib.cpp)。
 
 ### BTB (aka Branch Target Address Calculator, BTAC)
 
@@ -77,6 +83,8 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 ![](./ibm-power9-ras-size.png)
 
 可以看到 64 的拐点，对应的就是 RAS 的大小。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/ras_size_gen.cpp)。
 
 ### CBP (Conditional Branch Predictor)
 
@@ -98,6 +106,8 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 拐点在 256 附近。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/rob_size_gen.cpp)。
+
 ### Issue Queue
 
 官方信息：54 instructions per SMT4 core, 108 instructions per SMT8 core
@@ -113,6 +123,8 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 ![](./ibm-power9-dtlb-size.png)
 
 可以看到 256 Page 出现了明显的拐点，对应的就是 256 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 4 cycle。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
 
 ### L2 Cache
 
@@ -135,3 +147,5 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 如果是访问了几个分立的缓存行，有时会表现出 Next 3 Line 的行为，但都是到 L3：
 
 ![](./ibm-power9-prefetcher-cacheline-2.png)
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/prefetcher_cacheline.cpp)。

@@ -39,6 +39,8 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 超出 L1 ICache 容量后，IPC 从 6 降低到了 2.4。其中 6 IPC 来自于，IBM POWER8 在 ST 模式下每周期可以发射 8 条指令，但其中分支指令最多两条，非分支指令最多六条，所以执行 NOP 指令的 IPC 只能达到 6。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
+
 ### L1 ITLB (aka Instruction Effective to Real Address translation Table, IERAT)
 
 官方信息：**64-entry**, fully associative
@@ -48,6 +50,8 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 ![](./ibm-power8-itlb-size.png)
 
 可以看到明显的 64 pages 的拐点，对应了 64 entry 的 L1 ITLB。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/itlb_size_lib.cpp)。
 
 ### BTB (Branch Target Buffer)
 
@@ -70,6 +74,8 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 类似地，在其余七个逻辑核上分别运行 stress 负载，得到 SMT8 模式下的 RAS 大小为 8：
 
 ![](./ibm-power8-ras-size-smt8.png)
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/ras_size_gen.cpp)。
 
 ### CBP (Conditional Branch Predictor)
 
@@ -94,6 +100,8 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 ![](./ibm-power8-rob-size.png)
 
 拐点大致在 168 附近，因为每 6 条 NOP 指令对应一个 Group，所以只能容纳 `28*6=168` 条指令。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/rob_size_gen.cpp)。
 
 ### Register File
 
@@ -138,6 +146,8 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 可以看到 64KB 出现了明显的拐点，对应的就是 64KB 的 L1 DCache 容量。第二个拐点在 512KB，对应的是 L2 Cache 的容量。第三个拐点是 3MB，对应的是 L1 DTLB 的容量：`48*64KB=3MB`。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/memory_latency.cpp)。
+
 #### Banking
 
 官方信息：L1 DCache 由 16 个 macro 组成，每个 macro 是 16 个 bank，一共是 256 个 bank；sram 用的是 2R 或 1W，所以每个 bank 可以支持每周期 2R 或 1W
@@ -152,6 +162,8 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 可以看到 48 Page 出现了明显的拐点，对应的就是 48 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 3 cycle。最终出现一个 18.8 cycle 的平台。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
+
 ### L2 DTLB (aka secondary Data Effective-to-Real Address Translation, DERAT)
 
 官方信息：**256-entry**（ST 模式下全可见，SMT 模式下每个线程只有一半可见）, fully associative
@@ -164,6 +176,8 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./ibm-power8-dtlb-size-l2-no-thp.png)
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
+
 ### L3 TLB
 
 官方信息：**2048-entry**, 4-way set associative, 4 concurrent page table walk
@@ -171,6 +185,8 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 继续扩大 DTLB 测试规模，在 2048 处出现了拐点，注意要关闭 THP，否则拐点会消失，因为实际上没有用到 2048 个页：
 
 ![](./ibm-power8-dtlb-size-l3.png)
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
 
 ### Prefetcher
 
@@ -187,3 +203,5 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 如果是访问了几个分立的缓存行，行为变成了 Next 3 Line：
 
 ![](./ibm-power8-prefetcher-cacheline-2.png)
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/prefetcher_cacheline.cpp)。

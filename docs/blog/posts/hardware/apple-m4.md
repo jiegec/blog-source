@@ -62,6 +62,8 @@ UPDATE: 后来苹果发布了 [Apple Silicon CPU Optimization Guide](https://dev
 
 由于两个曲线汇合的点太前（NOP 指令执行得不够快），无法确定 M4 E-Core 的取指宽度，但可以确认的是它每周期取值不少于 10 条指令，比 Apple M1 的 E-Core 要更快。如果读者想到什么办法来确认 M4 E-Core 的取指宽度，欢迎在评论区给出。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/if_width_gen.cpp)。
+
 ### L1 ICache
 
 官方信息：通过 sysctl 可以看到，P-Core 具有 192KB L1 ICache，E-Core 具有 128KB L1 ICache：
@@ -90,6 +92,8 @@ hw.perflevel1.l1icachesize: 131072
 ![](./apple-m4-e-core-fetch-bandwidth.png)
 
 可以看到 footprint 在 128 KB 之前时可以达到 5 IPC，之后则快速降到 2.0 IPC，这里的 128 KB 就对应了 M4 E-Core 的 L1 ICache 的容量，和官方信息一致。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
 ### BTB
 
@@ -173,6 +177,8 @@ ret
 
 可见 M4 E-Core 的前端设计和 M4 P-Core 有较大的不同。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/btb_size_basic_gen.cpp)。
+
 ### L1 ITLB
 
 官方信息：根据 Apple Silicon CPU Optimization Guide，从 M1 Family 到 M4 Family，A14 Bionic 到 A18 Family，其 P-Core 的 L1 ITLB 配置都是一样的：192 entries，考虑到每个页是 16 KiB，对应 3 MiB 的内存；E-Core 的话，M1 Family 和 A14 Bionic 的 L1 ITLB 是 128 entries，之后的处理器（M2 Family 和 A15 Bionic 开始）则 E-Core 也是 192 entries。
@@ -194,6 +200,8 @@ ret
 ![](./apple-m4-e-core-itlb.png)
 
 第一个拐点是由于 L1 BTB 的冲突缺失，之后在 192 个页时从 3 Cycle 快速增加到 10 Cycle，则对应了 192 项的 L1 ITLB 容量，和官方信息一致。相比 M1 E-Core 的 128 项，容量变大了，和 M4 P-Core 看齐。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/itlb_size_lib.cpp)。
 
 ### Decode
 
@@ -219,6 +227,8 @@ ret
 
 可以看到调用链深度为 40 时性能突然变差，因此 M4 E-Core 的 Return Stack 深度为 40，比 M1 E-Core 的 32 要更大。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/ras_size_gen.cpp)。
+
 ## 后端
 
 ### 物理寄存器堆
@@ -239,6 +249,8 @@ ret
 #### E-Core
 
 在 M4 E-Core 上复现相同的测试，发现性能非常不稳定，不确定是什么原因。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/register_file_size_gen.cpp)。
 
 ### Load Store Unit + L1 DCache
 
@@ -275,6 +287,8 @@ M4 E-Core 上的结果：
 
 此时 64KB 对应的就是 64KB 的 L1 DCache 容量，和官方信息一致。L1 DCache 范围内延迟是 3 cycle，之后提升到 14+ cycle。由此可见 M4 E-Core 没有 Load Address/Value Predictor，不能打断依赖链。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/memory_latency.cpp)。
+
 #### L1 DTLB 容量
 
 官方信息：根据 Apple Silicon CPU Optimization Guide，对于 P-Core 来说，除了 M2 Family、A14 Bionic 和 A15 Bionic 的 L1 DTLB 是 256 entries 以外，其余的 M1 Family、M3 Family 到 M4 Family，A16 Bionic 到 A18 Family 的 L1 DTLB 都是 160 entries。对于 E-Core 来说，除了 M1 Family 和 A14 Bionic 是 129 entries，其余的从 M2 Family 到 M4 Family，A15 Bionic 到 A18 Family 都是 192 entries。
@@ -296,6 +310,8 @@ M4 E-Core 测试结果：
 ![](./apple-m4-e-core-l1dtlb.png)
 
 从 192 个页开始性能下降，到 224 个页时性能稳定在 9 CPI，认为 M4 E-Core 的 L1 DTLB 有 192 项，和官方信息一致，比 M1 E-Core 的 128 项更大，甚至大过了 P-Core。9 CPI 包括了 L1 DTLB miss L2 TLB hit 带来的额外延迟，比 M1 E-Core 少了一个周期。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
 
 #### Load/Store 带宽
 
@@ -919,6 +935,8 @@ Scheduler 大小相比 M1 P-Core 有比较大的扩充，Non Scheduling Queue �
 
 在 M4 E-Core 上测试，结果很不稳定，需要进一步研究。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/sched_size_gen.cpp)。
+
 ### Reorder Buffer
 
 #### P-Core
@@ -997,6 +1015,8 @@ hw.perflevel1.cpusperl2: 6
 ![](./apple-m4-e-core-l2tlb.png)
 
 可以看到拐点是 1024 个 Page，说明 M4 E-Core 的 L2 TLB 容量是 1024 项，和官方信息不一致，官方信息写的是 2048 项。这和 M1 E-Core 测出来是一样的。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
 
 ## 总结
 
