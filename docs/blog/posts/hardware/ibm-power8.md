@@ -101,7 +101,7 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ### Issue Queue
 
-官方信息：15-entry Branch Issue Queue，8-entry Condition Register Queue，64-entry UniQueue 用于其他指令；没周期最多 Issue 10 条指令：1x Branch, 1x Condition Register Logical, 2x Fixed Point, 2x Load/Store/Fixed Point to LSU, 2x Load/Fixed Point to LU, 2x Vector-Scalar to VSU/DFU(Decimal Floating point Unit)/Crypto
+官方信息：15-entry Branch Issue Queue，8-entry Condition Register Queue，64-entry UniQueue 用于其他指令；每周期最多 Issue 10 条指令：1x Branch, 1x Condition Register Logical, 2x Fixed Point, 2x Load/Store/Fixed Point to LSU, 2x Load/Fixed Point to LU, 2x Vector-Scalar to VSU/DFU(Decimal Floating point Unit)/Crypto
 
 ### 执行单元
 
@@ -115,7 +115,7 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 官方信息：40-entry（128 Virtual）Store Reorder queue，44-entry（128 Virtual）Load Reorder Queue
 
-##### Load to use latency
+#### Load to use latency
 
 官方信息：3-cycle latency
 
@@ -182,7 +182,7 @@ IBM POWER8 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./ibm-power8-prefetcher-cacheline-1.png)
 
-可以看到后面有 12 个 cacheline 都被预取了，但是预取到了不同的 cache 层次，距离越近的 4 个 cacheline 预取到 L1，更远的 2 个到 L2，其余的 6 个到 L3。
+可以看到后面有 12 个 cacheline 都被预取了，但是预取到了不同的 cache 层次，猜测距离越近的 4 个 cacheline 预取到 L1，更远的 2 个到 L2，其余的 6 个到 L3。
 
 如果是访问了几个分立的缓存行，行为变成了 Next 3 Line：
 
