@@ -128,6 +128,8 @@ uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP�
 
 从这个结果来看，L1 ITLB 对于 4K 页应该是 32 Set 8 Way。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/itlb_size_lib.cpp)。
+
 ### L1 ICache
 
 官方信息：
@@ -140,6 +142,8 @@ uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP�
 
 可以看到 footprint 在 32 KB 之前时可以达到 6 IPC，之后则降到 4 IPC，这里的 32 KB 就对应了 L1 ICache 的容量。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
+
 ### Return Stack
 
 构造不同深度的调用链，测试每次调用花费的平均时间，得到下面的图：
@@ -147,6 +151,8 @@ uOP Cache 的组织方式通常是组相连，每个 entry 保存了几条 uOP�
 ![](./intel-golden-cove-rs.png)
 
 可以看到调用链深度为 20 时性能突然变差，因此 Return Stack 深度为 20。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/ras_size_gen.cpp)。
 
 ### Instruction Decode Queue (IDQ) + Loop Stream Detector (LSD)
 
@@ -278,6 +284,8 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 可以看到 48KB 出现了明显的拐点，对应的就是 48KB 的 L1 DCache 容量。第二个拐点在 384KB，对应的是 L1 DTLB 的容量。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/memory_latency.cpp)。
+
 ### L1 DTLB
 
 官方信息：
@@ -293,6 +301,8 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 可以看到 96 Page 出现了明显的拐点，对应的就是 96 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 5 cycle；超出 L1 DTLB 容量后，Load to use latency 是 12 cycle，说明 L1 DTLB miss 带来了 7 cycle 的损失。
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
+
 ### L2 TLB
 
 官方信息：
@@ -305,6 +315,8 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 ![](./intel-golden-cove-l2tlb.png)
 
 第一个拐点是 96 个 Page，对应 L1 DTLB，此时 CPI 从 5 提升到 12；第二个拐点是 768，对应 L1 DCache，此时 CPI 从 12 提升到 23；第三个拐点是 1600 左右，而没有到 2048，猜测有 QoS 限制了数据对 L2 TLB 的占用。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
 
 ### L2 Cache
 
@@ -321,6 +333,8 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 - 第一个拐点在 48KB，对应 L1 DCache 的容量，CPI 从 5 提升到 16
 - 第二个拐点在 384KB，对应 L1 DTLB 的容量，CPI 从 16 提升到 23
 - 第三个拐点在 1280KB，对应 L2 Cache 的容量
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/memory_latency.cpp)。
 
 ### Prefetcher
 
@@ -388,6 +402,8 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 
 ![](./intel-golden-cove-prefetcher-gracemont-cross-page.png)
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/prefetcher_cacheline.cpp)。
+
 ### ReOrder Buffer
 
 官方信息：
@@ -400,3 +416,5 @@ Intel Golden Cove 的处理器通过 MSR 1A4H 可以配置各个预取器（来�
 ![](./intel-golden-cove-rob.png)
 
 当 NOP 数量达到 512 时，性能开始急剧下滑，说明 Golden Cove 的 ROB 大小是 512。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/rob_size_gen.cpp)。
