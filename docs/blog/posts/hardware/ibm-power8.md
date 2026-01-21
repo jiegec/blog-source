@@ -2,7 +2,6 @@
 layout: post
 date: 2026-01-15
 tags: [cpu,ibm,power8,ppc64le,performance,uarch-review]
-draft: true
 categories:
     - hardware
 ---
