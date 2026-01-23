@@ -557,6 +557,21 @@ sed -i 's/1\*)/1.\*)/g' /mnt/tools/src/perl-5.24.0/Configure
 sed -i 's/timegm(0,0,0,1,0,70)/timegm(0,0,0,1,0,1970)/g' /mnt/tools/src/TimeDate-2.30/t/getdate.t
 # fix re.o generated instead of re.so
 sed -i 's/main/int main/g' /mnt/tools/src/perl-5.24.0/hints/linux.sh
+# GCC 15 default C23 fixes:
+# 1. missing __alignof_is_defined && alignof macro
+sed -i 's/#include <stdalign.h>/#define __alignof_is_defined 1\n#define alignof _Alignof\n\0/' /mnt/tools/src/specsum/tests/test-stdalign.c
+# 2. hack stdbool.h detection
+sed -i 's/#ifdef HAVE_STDBOOL_H/#if 1/' /mnt/tools/src/specinvoke/specinvoke.h
+# 3. fix conflicting types for cleanup_os
+sed -i 's/cleanup_os();/cleanup_os(specinvoke_state_t *si);/' /mnt/tools/src/specinvoke/specinvoke.h
+# 4. fix char ** incompatible conversion to char*
+sed -i 's/safesysrealloc(environ,/safesysrealloc((char*)environ,/' /mnt/tools/src/perl-5.24.0/util.c
+sed -i 's/safesysfree(environ);/safesysfree((char*)environ);/' /mnt/tools/src/perl-5.24.0/perl.c
+# 5. fix SDBM_FILE* incompatible conversion to char *
+sed -i 's/safefree(db)/safefree((char*)db)/' /mnt/tools/src/perl-5.24.0/ext/SDBM_File/SDBM_File.xs
+# 6. fix conflicting types for malloc/free
+sed -i 's/extern Malloc_t malloc/extern void *malloc/' /mnt/tools/src/perl-5.24.0/ext/SDBM_File/sdbm.c
+sed -i 's/extern Free_t free proto((Malloc_t))/extern void free proto((void *))/' /mnt/tools/src/perl-5.24.0/ext/SDBM_File/sdbm.c
 # build tools
 cd /mnt && echo 'y' | SKIPTOOLSINTRO=1 FORCE_UNSAFE_CONFIGURE=1 MAKEFLAGS=-j16 ./tools/src/buildtools
 ```
