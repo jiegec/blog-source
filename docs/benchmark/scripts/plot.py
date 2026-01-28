@@ -110,6 +110,7 @@ def get_isa(name):
         or "Apple" in name
         or "Ampere" in name
         or "Yitian" in name
+        or "Axion" in name
     ):
         return "arm64"
     elif "Loongson" in name:
