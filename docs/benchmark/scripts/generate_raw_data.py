@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Generate raw data markdown content for SPEC FP 2017 Rate-1"""
+"""Generate raw data markdown content for SPEC CPU 2017 Rate-1 (both INT and FP)"""
 
 import os
 import glob
@@ -37,11 +37,13 @@ PLATFORMS = {
 }
 
 # Define compilation option groups
+# IMPORTANT: Order matters! More specific groups must come before general ones
+# For example, 'O3 -flto -ljemalloc' must come before 'O3 -flto'
 OPT_FLAGS_GROUPS = {
+    'O3 -flto -ljemalloc': ['-flto', '-ljemalloc'],
+    'O3 -flto': ['-flto'],
     'O3 -march=native': ['-march=native'],
     'O3': ['-O3'],
-    'O3 -flto': ['-flto'],
-    'O3 -flto -ljemalloc': ['-flto', '-ljemalloc'],
 }
 
 # CPU info mapping table (frequency, microarchitecture)
@@ -51,7 +53,7 @@ OPT_FLAGS_GROUPS = {
 # If opt_flags is None, it represents default value
 CPU_INFO = [
     # Desktop - AMD
-    ('AMD Ryzen 5 7500F', {None: 'Zen 4'}),  # No frequency in original
+    ('AMD Ryzen 5 7500F', {None: '@ 5.0 GHz Zen 4'}),
     ('AMD Ryzen 7 5700X', {None: '@ 4.65 GHz Zen 3'}),
     ('AMD Ryzen 9 9950X', {None: '@ 5.7 GHz Zen 5'}),
     # Desktop - Apple
@@ -117,6 +119,7 @@ CPU_INFO = [
     # Mobile - Huawei Kirin
     ('Huawei Kirin X90 E-Core', {None: '@ 2.0 GHz'}),
     ('Huawei Kirin X90 P-Core', {None: '@ 2.3 GHz'}),
+    ('Huawei Kirin X90 VM P-Core', {None: '@ 2.3 GHz'}),
     ('Huawei Kirin 9010 E-Core Full', {None: '@ 2.2 GHz'}),
     ('Huawei Kirin 9010 P-Core Best', {None: '@ 2.3 GHz'}),
     ('Huawei Kirin 9010 P-Core Full', {None: '@ 2.3 GHz'}),
@@ -191,12 +194,25 @@ def format_score(score):
             return f"{score:.2f}"
 
 
-def parse_score_from_file(filepath):
-    """Extract score from SPEC result file"""
+def parse_score_from_file(filepath, test_type='fp2017'):
+    """Extract score from SPEC result file
+
+    Args:
+        filepath: Path to the result file
+        test_type: 'int2017' or 'fp2017'
+    """
+    # Determine the score pattern based on test type
+    if test_type == 'int2017':
+        score_pattern = 'SPECrate(R)2017_int_base'
+        est_pattern = 'Est. SPECrate(R)2017_int_base'
+    else:  # fp2017
+        score_pattern = 'SPECrate(R)2017_fp_base'
+        est_pattern = 'Est. SPECrate(R)2017_fp_base'
+
     with open(filepath, 'r', encoding='utf-8') as f:
         for line in f:
             # Look for score line
-            if 'SPECrate(R)2017_fp_base' in line:
+            if score_pattern in line:
                 # Format: SPECrate(R)2017_fp_base                 11.6
                 parts = line.strip().split()
                 if len(parts) >= 2:
@@ -204,7 +220,7 @@ def parse_score_from_file(filepath):
                         return float(parts[-1])
                     except ValueError:
                         pass
-            elif 'Est. SPECrate(R)2017_fp_base' in line:
+            elif est_pattern in line:
                 # Format: Est. SPECrate(R)2017_fp_base            9.91
                 parts = line.strip().split()
                 if len(parts) >= 2:
@@ -236,7 +252,11 @@ def get_platform_type(cpu_name):
 
 
 def group_by_opt_flags(data):
-    """Group by compilation flags"""
+    """Group by compilation flags
+
+    IMPORTANT: Order matters! More specific groups (with more flags) must come first.
+    This is handled by the order in OPT_FLAGS_GROUPS.
+    """
     groups = {}
 
     for group_name, group_flags in OPT_FLAGS_GROUPS.items():
@@ -247,10 +267,13 @@ def group_by_opt_flags(data):
         opt_flags = item.get('opt_flags', '')
 
         # Determine which group it belongs to
+        # Try to match the most specific group first (by order in OPT_FLAGS_GROUPS)
         matched = False
         for group_name, group_flags in OPT_FLAGS_GROUPS.items():
-            # Check if it contains all required flags
+            # Check if opt_flags contains all flags in this group
             if all(flag in opt_flags for flag in group_flags):
+                # Also make sure we don't match a less specific group when a more specific one exists
+                # For example, -O3-flto-ljemalloc should match 'O3 -flto -ljemalloc', not 'O3 -flto' or 'O3'
                 groups[group_name].append(item)
                 matched = True
                 break
@@ -266,17 +289,20 @@ def format_opt_flags_for_display(opt_flags):
     """Format optimization flags for display with proper spacing"""
     if not opt_flags:
         return opt_flags
-    # Add space between -O3 and other flags
-    # -O3-march=native -> -O3 -march=native
-    # -O3-flto -> -O3 -flto
-    # -O3-flto-ljemalloc -> -O3 -flto -ljemalloc
+
     result = opt_flags
-    if result.startswith('-O3'):
-        result = result.replace('-O3-flto', '-O3 -flto')
+
+    # Handle specific patterns in order (most specific first)
+    # -O3-flto-ljemalloc -> -O3 -flto -ljemalloc
+    if '-O3-flto-ljemalloc' in result:
+        result = result.replace('-O3-flto-ljemalloc', '-O3 -flto -ljemalloc')
+    # -O3-march=native -> -O3 -march=native
+    elif '-O3-march=native' in result:
         result = result.replace('-O3-march=native', '-O3 -march=native')
-        # Handle -O3-flto-ljemalloc -> -O3 -flto -ljemalloc
-        if '-ljemalloc' in result and '-flto' in result:
-            result = result.replace('-O3 -flto', '-O3 -flto -ljemalloc').replace('-ljemalloc', '-ljemalloc').replace('-O3 -flto -ljemalloc -ljemalloc', '-O3 -flto -ljemalloc')
+    # -O3-flto -> -O3 -flto
+    elif '-O3-flto' in result:
+        result = result.replace('-O3-flto', '-O3 -flto')
+
     return result
 
 
@@ -315,23 +341,36 @@ def merge_duplicate_cpus(items):
     return merged
 
 
-def generate_section_markdown(data_dir, section_name):
-    """Generate markdown content for a data directory (e.g., data, data-trixie, data-harmonyos)"""
-    fp2017_dir = data_dir / 'fp2017_rate1'
+def generate_section_markdown(data_dir, section_name, test_type='fp2017'):
+    """Generate markdown content for a data directory (e.g., data, data-trixie, data-harmonyos)
 
-    if not fp2017_dir.exists():
+    Args:
+        data_dir: Path to data directory
+        section_name: Name of the section for the header
+        test_type: 'int2017' or 'fp2017'
+    """
+    # Determine the subdirectory name based on test type
+    if test_type == 'int2017':
+        test_dir = data_dir / 'int2017_rate1'
+    else:  # fp2017
+        test_dir = data_dir / 'fp2017_rate1'
+
+    if not test_dir.exists():
         return ""
 
     # Scan all files
-    files = list(fp2017_dir.glob('*.txt'))
+    files = list(test_dir.glob('*.txt'))
 
     if not files:
         return ""
 
+    # Determine the relative path prefix
+    rel_path_prefix = f'./{data_dir.name}/{test_dir.name}'
+
     # Parse all data
     data = []
     for f in files:
-        score = parse_score_from_file(f)
+        score = parse_score_from_file(f, test_type)
         if score is not None:
             cpu_display, opt_flags = parse_cpu_name(f.name)
             platform_type = get_platform_type(cpu_display)
@@ -341,25 +380,34 @@ def generate_section_markdown(data_dir, section_name):
                 'score': score,
                 'platform_type': platform_type,
                 'filename': f.name,
-                'rel_path': f'./{data_dir.name}/fp2017_rate1/{f.name}',
+                'rel_path': f'{rel_path_prefix}/{f.name}',
             })
 
     # Group by compilation flags first
     opt_groups = group_by_opt_flags(data)
 
-    # Define compilation option group order
-    # For Debian Bookworm/Trixie
-    opt_group_order = [
-        ('O3 -march=native', '-march=native'),
-        ('O3', '-O3'),
-        ('O3 -flto', '-flto'),
-        ('O3 -flto -ljemalloc', '-flto -ljemalloc'),
-    ]
-
-    # For HarmonyOS, use different grouping
+    # Define compilation option group order based on test type
+    # FP 2017 has -march=native data, order: -march=native -> O3 -> LTO -> LTO+Jemalloc
+    # INT 2017 has no -march=native data, order: LTO+Jemalloc -> LTO -> O3
     if 'HarmonyOS' in section_name:
+        # For HarmonyOS, use different grouping
         opt_group_order = [
             ('O3 -flto', '-flto'),
+        ]
+    elif test_type == 'int2017':
+        # INT 2017: LTO+Jemalloc -> LTO -> O3
+        opt_group_order = [
+            ('O3 -flto -ljemalloc', '-flto -ljemalloc'),
+            ('O3 -flto', '-flto'),
+            ('O3', '-O3'),
+        ]
+    else:
+        # FP 2017: -march=native -> O3 -> LTO -> LTO+Jemalloc
+        opt_group_order = [
+            ('O3 -march=native', '-march=native'),
+            ('O3', '-O3'),
+            ('O3 -flto', '-flto'),
+            ('O3 -flto -ljemalloc', '-flto -ljemalloc'),
         ]
 
     # Generate markdown
@@ -402,26 +450,10 @@ def generate_section_markdown(data_dir, section_name):
 
         # Process desktop platforms in opt flag order
         for opt_group_keys, header_flags in opt_group_order:
-            # Find the group that matches this combination
-            matched_group = None
-            for group_name in opt_groups.keys():
-                if group_name == 'O3 -march=native' and header_flags == '-march=native':
-                    matched_group = opt_groups[group_name]
-                    break
-                elif group_name == 'O3' and header_flags == '-O3':
-                    matched_group = opt_groups[group_name]
-                    break
-                elif group_name == 'O3 -flto' and header_flags == '-flto':
-                    matched_group = opt_groups[group_name]
-                    break
-                elif group_name == 'O3 -flto -ljemalloc' and header_flags == '-flto -ljemalloc':
-                    matched_group = opt_groups[group_name]
-                    break
-                elif header_flags in group_name:
-                    matched_group = opt_groups[group_name]
-                    break
+            # Get the group directly using opt_group_keys (which is the key in opt_groups)
+            matched_group = opt_groups.get(opt_group_keys, [])
 
-            if not matched_group or not matched_group:
+            if not matched_group:
                 continue
 
             # Filter to desktop items only
@@ -433,11 +465,16 @@ def generate_section_markdown(data_dir, section_name):
             # Merge duplicate CPUs
             desktop_items = merge_duplicate_cpus(desktop_items)
 
-            # Add header
-            # Add blank line before `-O3` group (transition from -march=native)
-            if header_flags == '-O3' and md_lines and not md_lines[-1].endswith('\n\n'):
-                md_lines.append('\n')
+            # Add blank line before certain sections
+            # For FP 2017: add before `-O3` (transition from -march=native)
+            # For INT 2017: add before `-O3` (transition from LTO) and before `LTO` (transition from LTO+Jemalloc)
+            if md_lines and not md_lines[-1].endswith('\n\n'):
+                if header_flags == '-O3':
+                    md_lines.append('\n')
+                elif header_flags == '-flto' and test_type == 'int2017':
+                    md_lines.append('\n')
 
+            # Generate title based on header_flags
             if '-march=native' in header_flags:
                 md_lines.append("桌面平台（`-march=native`）：\n\n")
             elif '-flto' in header_flags:
@@ -445,7 +482,7 @@ def generate_section_markdown(data_dir, section_name):
                     md_lines.append("桌面平台（LTO + Jemalloc）：\n\n")
                 else:
                     md_lines.append("桌面平台（LTO）：\n\n")
-            elif header_flags == '-O3':
+            else:  # -O3 only
                 md_lines.append("桌面平台：\n\n")
 
             for item in sorted(desktop_items, key=lambda x: x['cpu_name']):
@@ -465,26 +502,10 @@ def generate_section_markdown(data_dir, section_name):
 
         # Process server platforms in opt flag order
         for opt_group_keys, header_flags in opt_group_order:
-            # Find the group that matches this combination
-            matched_group = None
-            for group_name in opt_groups.keys():
-                if group_name == 'O3 -march=native' and header_flags == '-march=native':
-                    matched_group = opt_groups[group_name]
-                    break
-                elif group_name == 'O3' and header_flags == '-O3':
-                    matched_group = opt_groups[group_name]
-                    break
-                elif group_name == 'O3 -flto' and header_flags == '-flto':
-                    matched_group = opt_groups[group_name]
-                    break
-                elif group_name == 'O3 -flto -ljemalloc' and header_flags == '-flto -ljemalloc':
-                    matched_group = opt_groups[group_name]
-                    break
-                elif header_flags in group_name:
-                    matched_group = opt_groups[group_name]
-                    break
+            # Get the group directly using opt_group_keys (which is the key in opt_groups)
+            matched_group = opt_groups.get(opt_group_keys, [])
 
-            if not matched_group or not matched_group:
+            if not matched_group:
                 continue
 
             # Filter to server items only
@@ -496,10 +517,14 @@ def generate_section_markdown(data_dir, section_name):
             # Merge duplicate CPUs
             server_items = merge_duplicate_cpus(server_items)
 
-            # Add header
-            # Add blank line before `-O3` group (transition from -march=native)
-            if header_flags == '-O3' and md_lines and not md_lines[-1].endswith('\n\n'):
-                md_lines.append('\n')
+            # Add blank line before certain sections
+            # For FP 2017: add before `-O3` (transition from -march=native)
+            # For INT 2017: add before `-O3` (transition from LTO) and before `LTO` (transition from LTO+Jemalloc)
+            if md_lines and not md_lines[-1].endswith('\n\n'):
+                if header_flags == '-O3':
+                    md_lines.append('\n')
+                elif header_flags == '-flto' and test_type == 'int2017':
+                    md_lines.append('\n')
 
             if '-march=native' in header_flags:
                 md_lines.append("服务器平台（`-march=native`）：\n\n")
@@ -522,8 +547,12 @@ def generate_section_markdown(data_dir, section_name):
     return ''.join(md_lines)
 
 
-def update_index_md():
-    """Update index.md file"""
+def update_index_md(test_type='fp2017'):
+    """Update index.md file
+
+    Args:
+        test_type: 'int2017' or 'fp2017'
+    """
     # Generate new raw data content
     data_dirs = [
         (BASE_DIR / 'data', 'Debian Bookworm'),
@@ -533,7 +562,7 @@ def update_index_md():
 
     md_content = []
     for data_dir, section_name in data_dirs:
-        section_md = generate_section_markdown(data_dir, section_name)
+        section_md = generate_section_markdown(data_dir, section_name, test_type)
         if section_md:
             md_content.append(section_md)
 
@@ -545,22 +574,26 @@ def update_index_md():
     with open(index_md_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # Find the fp2017 section (the second "### 原始数据" in the file)
+    # Find the correct section based on test_type
     # First occurrence is for int2017, second is for fp2017
     lines = content.split('\n')
     start_idx = -1
     end_idx = -1
     raw_data_count = 0
 
+    # Determine which occurrence we need (1 for int2017, 2 for fp2017)
+    target_occurrence = 1 if test_type == 'int2017' else 2
+
     for i, line in enumerate(lines):
         if line == "### 原始数据":
             raw_data_count += 1
-            if raw_data_count == 2:  # Second occurrence is fp2017
+            if raw_data_count == target_occurrence:
                 start_idx = i
                 break
 
     if start_idx == -1:
-        print("Could not find SPEC FP 2017 Rate-1 raw data section start")
+        test_name = "SPEC INT 2017" if test_type == 'int2017' else "SPEC FP 2017"
+        print(f"Could not find {test_name} Rate-1 raw data section start")
         print("\nGenerated raw data content:")
         print(new_content)
         return
@@ -572,7 +605,8 @@ def update_index_md():
             break
 
     if end_idx == -1:
-        print("Could not find SPEC FP 2017 Rate-1 raw data section end")
+        test_name = "SPEC INT 2017" if test_type == 'int2017' else "SPEC FP 2017"
+        print(f"Could not find {test_name} Rate-1 raw data section end")
         print("\nGenerated raw data content:")
         print(new_content)
         return
@@ -592,17 +626,58 @@ def update_index_md():
     with open(index_md_path, 'w', encoding='utf-8') as f:
         f.write(new_index_md)
 
+    test_name = "SPEC INT 2017" if test_type == 'int2017' else "SPEC FP 2017"
     print(f"Updated {index_md_path}")
-    print(f"Replaced SPEC FP 2017 Rate-1 raw data section")
+    print(f"Replaced {test_name} Rate-1 raw data section")
 
 
 def main():
     """Main function"""
     import sys
+    import argparse
 
-    if len(sys.argv) > 1 and sys.argv[1] == '--update':
+    parser = argparse.ArgumentParser(
+        description='Generate raw data markdown for SPEC CPU 2017',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  # Generate INT 2017 data and print to stdout
+  %(prog)s --type int2017
+
+  # Generate FP 2017 data and print to stdout
+  %(prog)s --type fp2017
+
+  # Generate both and update index.md
+  %(prog)s --type both --update
+
+  # Generate INT 2017 data and update index.md
+  %(prog)s --type int2017 --update
+        '''
+    )
+    parser.add_argument(
+        '--type',
+        choices=['int2017', 'fp2017', 'both'],
+        default='both',
+        help='Type of SPEC test to generate (default: fp2017)'
+    )
+    parser.add_argument(
+        '--update',
+        action='store_true',
+        help='Update index.md file instead of printing to stdout'
+    )
+
+    args = parser.parse_args()
+
+    # Determine which test types to process
+    if args.type == 'both':
+        test_types = ['int2017', 'fp2017']
+    else:
+        test_types = [args.type]
+
+    if args.update:
         # Update index.md
-        update_index_md()
+        for test_type in test_types:
+            update_index_md(test_type)
     else:
         # Only print generated markdown content
         data_dirs = [
@@ -611,14 +686,22 @@ def main():
             (BASE_DIR / 'data-harmonyos', 'HarmonyOS'),
         ]
 
-        md_content = []
-        for data_dir, section_name in data_dirs:
-            section_md = generate_section_markdown(data_dir, section_name)
-            if section_md:
-                md_content.append(section_md)
+        for test_type in test_types:
+            if len(test_types) > 1:
+                # Print separator if processing both types
+                print("=" * 80)
+                print(f"# {test_type.upper()}")
+                print("=" * 80)
+                print()
 
-        # Print generated markdown content
-        print(''.join(md_content))
+            md_content = []
+            for data_dir, section_name in data_dirs:
+                section_md = generate_section_markdown(data_dir, section_name, test_type)
+                if section_md:
+                    md_content.append(section_md)
+
+            # Print generated markdown content
+            print(''.join(md_content))
 
 
 if __name__ == '__main__':
