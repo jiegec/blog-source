@@ -3,3 +3,5 @@
 
 /.quarto/
 /site/
+
+__pycache__
