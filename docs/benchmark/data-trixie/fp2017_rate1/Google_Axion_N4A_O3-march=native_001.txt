@@ -1,0 +1,68 @@
+Built with GCC 14.2.0 from Debian Trixie with -O3 -march=native
+Running on Linux kernel 6.1.0-42-cloud-arm64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        253      39.6   *
+503.bwaves_r          1        264      38.0   S
+503.bwaves_r          1        250      40.1   S
+507.cactuBSSN_r       1        195       6.48  *
+507.cactuBSSN_r       1        273       4.64  S
+507.cactuBSSN_r       1        185       6.82  S
+508.namd_r            1        173       5.49  *
+508.namd_r            1        173       5.48  S
+508.namd_r            1        172       5.52  S
+510.parest_r          1        332       7.89  *
+510.parest_r          1        367       7.13  S
+510.parest_r          1        311       8.41  S
+511.povray_r          1        282       8.28  S
+511.povray_r          1        290       8.06  S
+511.povray_r          1        284       8.22  *
+519.lbm_r             1        195       5.42  *
+519.lbm_r             1        196       5.38  S
+519.lbm_r             1        194       5.43  S
+521.wrf_r             1        233       9.63  *
+521.wrf_r             1        247       9.06  S
+521.wrf_r             1        218      10.3   S
+526.blender_r         1        202       7.52  *
+526.blender_r         1        213       7.15  S
+526.blender_r         1        188       8.10  S
+527.cam4_r            1        196       8.92  *
+527.cam4_r            1        205       8.55  S
+527.cam4_r            1        186       9.41  S
+538.imagick_r         1        326       7.63  S
+538.imagick_r         1        326       7.64  *
+538.imagick_r         1        325       7.66  S
+544.nab_r             1        266       6.32  *
+544.nab_r             1        268       6.28  S
+544.nab_r             1        265       6.34  S
+549.fotonik3d_r       1        221      17.6   S
+549.fotonik3d_r       1        204      19.1   S
+549.fotonik3d_r       1        205      19.0   *
+554.roms_r            1        243       6.54  S
+554.roms_r            1        201       7.90  *
+554.roms_r            1        199       7.99  S
+=================================================================================
+503.bwaves_r          1        253      39.6   *
+507.cactuBSSN_r       1        195       6.48  *
+508.namd_r            1        173       5.49  *
+510.parest_r          1        332       7.89  *
+511.povray_r          1        284       8.22  *
+519.lbm_r             1        195       5.42  *
+521.wrf_r             1        233       9.63  *
+526.blender_r         1        202       7.52  *
+527.cam4_r            1        196       8.92  *
+538.imagick_r         1        326       7.64  *
+544.nab_r             1        266       6.32  *
+549.fotonik3d_r       1        205      19.0   *
+554.roms_r            1        201       7.90  *
+ Est. SPECrate(R)2017_fp_base            8.94
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+
+System Info:
+CPU Name: Neoverse-N3
+Enabled: 4 cores, 1 chip
+Memory: 1x Not Specified Not Specified 16 GB

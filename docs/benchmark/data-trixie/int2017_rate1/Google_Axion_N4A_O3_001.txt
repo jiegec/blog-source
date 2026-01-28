@@ -1,0 +1,56 @@
+Built with GCC 14.2.0 from Debian Trixie with -O3
+Running on Linux kernel 6.1.0-42-cloud-arm64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r       1        250       6.38  *
+500.perlbench_r       1        251       6.34  S
+500.perlbench_r       1        248       6.42  S
+502.gcc_r             1        165       8.59  S
+502.gcc_r             1        163       8.66  S
+502.gcc_r             1        164       8.63  *
+505.mcf_r             1        232       6.97  *
+505.mcf_r             1        232       6.96  S
+505.mcf_r             1        232       6.98  S
+520.omnetpp_r         1        294       4.46  S
+520.omnetpp_r         1        267       4.92  S
+520.omnetpp_r         1        275       4.78  *
+523.xalancbmk_r       1        173       6.09  *
+523.xalancbmk_r       1        173       6.12  S
+523.xalancbmk_r       1        174       6.07  S
+525.x264_r            1        122      14.4   S
+525.x264_r            1        122      14.4   *
+525.x264_r            1        122      14.3   S
+531.deepsjeng_r       1        211       5.44  *
+531.deepsjeng_r       1        210       5.45  S
+531.deepsjeng_r       1        211       5.44  S
+541.leela_r           1        281       5.89  S
+541.leela_r           1        281       5.89  S
+541.leela_r           1        281       5.89  *
+548.exchange2_r       1        147      17.8   S
+548.exchange2_r       1        147      17.8   S
+548.exchange2_r       1        147      17.8   *
+557.xz_r              1        283       3.82  S
+557.xz_r              1        281       3.84  S
+557.xz_r              1        282       3.83  *
+=================================================================================
+500.perlbench_r       1        250       6.38  *
+502.gcc_r             1        164       8.63  *
+505.mcf_r             1        232       6.97  *
+520.omnetpp_r         1        275       4.78  *
+523.xalancbmk_r       1        173       6.09  *
+525.x264_r            1        122      14.4   *
+531.deepsjeng_r       1        211       5.44  *
+541.leela_r           1        281       5.89  *
+548.exchange2_r       1        147      17.8   *
+557.xz_r              1        282       3.83  *
+ Est. SPECrate(R)2017_int_base           7.16
+ Est. SPECrate(R)2017_int_peak                                         Not Run
+
+
+System Info:
+CPU Name: Neoverse-N3
+Enabled: 4 cores, 1 chip
+Memory: 1x Not Specified Not Specified 16 GB
