@@ -95,6 +95,7 @@ CPU_INFO = [
     ('Ampere Altra', {None: '@ 3.0 GHz Neoverse N1'}),
     ('Hygon C86 7390', {None: ''}),
     ('IBM POWER8NVL', {None: '@ 4.0 GHz POWER8'}),
+    ('Google Axion C4A', {None: '@ Neoverse V2'}),
     ('Google Axion N4A', {None: '@ Neoverse N3'}),
     ('Kunpeng 920 HuaweiCloud kc2', {None: '@ 2.9 GHz'}),  # Must come before Kunpeng 920
     ('Kunpeng 920', {None: '@ 2.6 GHz TaiShan V110'}),
