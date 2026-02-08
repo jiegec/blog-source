@@ -308,9 +308,9 @@ Neoverse V1 相比 Neoverse N1，在容量和延迟上都有比较明显的提�
 | Main BTB area (KiB)  | 30.75         | 41            | 46            | 46            |
 | Technology Node      | 7nm           | 7nm           | 5nm           | 5nm           |
 
-注：各代 Cortex 与 Neoverse 对应关系：
+注：各代 Cortex 与 Neoverse 对应关系以及代号：
 
-- Cortex-A76/Neoverse-N1
-- Cortex-A77
-- Cortex-A78/Cortex-X1/Neoverse-V1(based on Cortex-X1)
-- Cortex-A710/Cortex-X2/Neoverse-N2(based on Cortex-A710)
+- Cortex-A76(Enyo)/Neoverse-N1(Ares)
+- Cortex-A77(Deimos)
+- Cortex-A78(Hercules)/Cortex-X1(Hera)/Neoverse-V1(Zeus, based on Cortex-X1)
+- Cortex-A710(Matterhorn)/Cortex-X2(Matterhorn ELP)/Neoverse-N2(Perseus, based on Cortex-A710)
