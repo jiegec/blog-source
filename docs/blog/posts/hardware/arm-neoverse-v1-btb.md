@@ -288,28 +288,45 @@ Predicting with BTB pairs allows two fetches to be predicted in one prediction c
 - Neoverse N1 设计了三级 BTB（16+64+6K），分别对应 1-3 的周期的延迟，特别地，main BTB 设计了 fastpath 来实现一定情况下的 2 周期延迟
 - Neoverse V1 设计了两级 BTB（96+8K），分别对应 1-2 的周期的延迟，并且都支持 2 taken
 
+Neoverse V1 相比 Neoverse N1，在容量和延迟上都有比较明显的提升，还额外给两级 BTB 都引入了 2 taken 的支持，进一步提升了吞吐。
+
 Neoverse N1 是基于 Cortex A76 设计的，Neoverse V1 是基于 Cortex X1 设计的，中间还隔了一代 Cortex A77，根据[官方信息](https://www.smartprix.com/bytes/cortex-a77-vs-cortex-a76-cores/)，它的 1-cycle latency L1 BTB（即 Nano BTB）容量从 Cortex A76 的 16 变成了 64，main BTB 从 6K 扩到了 8K，而没有提 Micro BTB。同时也没有提到 two taken 的事情。由此推断，Cortex A77 扩大了 Nano BTB 和 Main BTB 的容量，去掉了 Micro BTB，因为 Nano BTB 的容量已经和原来 Neoverse N1 的 Micro BTB 一样大了，其他应该没有变化。再结合 [Arm® Cortex®‑A77 Core Technical Reference Manual](https://developer.arm.com/documentation/101111/0101) 可知它的 BTB index 是 `[15:4]`，每个 entry 是 82 bits，位宽和 Neoverse N1 一致，所以应该只是扩了容量。
 
-Neoverse V1 相比 Neoverse N1，在容量和延迟上都有比较明显的提升，还额外给两级 BTB 都引入了 2 taken 的支持，进一步提升了吞吐。
+再往前找 Cortex A73，根据 [Chips and Cheese](https://chipsandcheese.com/p/arms-cortex-a73-resource-limits-what-are-those) 的实验数据，Cortex A73 有两级 BTB，第一级 BTB 是 48-entry 2-cycle latency（奇怪的是，[官方信息](https://www.theregister.com/2016/06/01/arm_cortex_a73/) 中声称是 64 entry Micro BTAC，容量对不上，但还是更加相信实验数据），第二级 BTB 是 3K-entry 3-cycle latency。
 
 下面是一个对比表格：
 
-| uArch                | Neoverse N1   | Cortex A77    | Neoverse V1   | Neoverse N2   |
-|----------------------|---------------|---------------|---------------|---------------|
-| Nano BTB size        | 16 branches   | 64 branches   | 48*2 branches | 32*2 branches |
-| Nano BTB latency     | 1 cycle       | 1 cycle       | 1 cycle       | 1 cycle       |
-| Nano BTB throughput  | 1 branch      | 1 branch      | 1-2 branches  | 1-2 branches  |
-| Micro BTB size       | 64 branches   | N/A           | N/A           | N/A           |
-| Micro BTB latency    | 2 cycles      | N/A           | N/A           | N/A           |
-| Main BTB size        | 3K*2 branches | 4K*2 branches | 4K*2 branches | 4K*2 branches |
-| Main BTB latency     | 2-3 cycles    | 2-3 cycles    | 2 cycle       | 2 cycle       |
-| Main BTB throughput  | 1 branch      | 1 branch      | 1-2 branches  | 1-2 branches  |
-| Main BTB area (bits) | 3K*82=251904  | 4K*82=335872  | 4K*92=376832  | 4K*92=376832  |
-| Main BTB area (KiB)  | 30.75         | 41            | 46            | 46            |
-| Technology Node      | 7nm           | 7nm           | 5nm           | 5nm           |
+| uArch                | Cortex A73  | Neoverse N1   | Cortex A77    | Neoverse V1   | Neoverse N2   |
+|----------------------|-------------|---------------|---------------|---------------|---------------|
+| Nano BTB size        | N/A         | 16 branches   | 64 branches   | 48*2 branches | 32*2 branches |
+| Nano BTB latency     | N/A         | 1 cycle       | 1 cycle       | 1 cycle       | 1 cycle       |
+| Nano BTB throughput  | N/A         | 1 branch      | 1 branch      | 1-2 branches  | 1-2 branches  |
+| Micro BTB size       | 48 branches | 64 branches   | N/A           | N/A           | N/A           |
+| Micro BTB latency    | 2 cycles    | 2 cycles      | N/A           | N/A           | N/A           |
+| Micro BTB throughput | 1 branch    | 1 branch      | N/A           | N/A           | N/A           |
+| Main BTB size        | 3K branches | 3K*2 branches | 4K*2 branches | 4K*2 branches | 4K*2 branches |
+| Main BTB latency     | 3 cycles    | 2-3 cycles    | 2-3 cycles    | 2 cycle       | 2 cycle       |
+| Main BTB throughput  | 1 branch    | 1 branch      | 1 branch      | 1-2 branches  | 1-2 branches  |
+| Main BTB area (bits) | ?           | 3K*82=251904  | 4K*82=335872  | 4K*92=376832  | 4K*92=376832  |
+| Main BTB area (KiB)  | ?           | 30.75         | 41            | 46            | 46            |
+| Technology Node      | 10nm        | 7nm           | 7nm           | 5nm           | 5nm           |
+
+由此可以看出 ARM 在 BTB 上的优化脉络：
+
+- Neoverse N1 相比 Cortex A73：
+    - 把 Micro BTB 拆分成 Nano 和 Micro 两级，从而降低无条件分支的延迟
+    - 通过引入 BTB 压缩优化（即一个 Entry 可以保存 1-2 条分支），使得 Main BTB 能容纳更多的分支
+    - 针对 Main BTB 引入 fast path，当只有一个 way 匹配时，只需要 2 周期即可提供预测
+- Cortex A77 相比 Neoverse N1：
+    - 通过扩大 Nano BTB，去掉了 Micro BTB，让更多分支可以享受 1 周期的延迟
+    - 继续扩大 Main BTB
+- Neoverse V1 相比 Cortex A77：
+    - 在 Nano 和 Main BTB 上引入 two taken 预测，增加吞吐
+    - 减少 Main BTB 延迟，从 2-3 周期变成固定 2 周期
 
 注：各代 Cortex 与 Neoverse 对应关系以及代号：
 
+- Cortex-A73(Artemis)
 - Cortex-A76(Enyo)/Neoverse-N1(Ares)
 - Cortex-A77(Deimos)
 - Cortex-A78(Hercules)/Cortex-X1(Hera)/Neoverse-V1(Zeus, based on Cortex-X1)
