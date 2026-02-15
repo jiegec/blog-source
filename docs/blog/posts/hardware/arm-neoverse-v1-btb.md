@@ -315,7 +315,7 @@ Neoverse N1 是基于 Cortex A76 设计的，Neoverse V1 是基于 Cortex X1 设
 
 - Cortex A75 相比 Cortex A73：
     - 降低第一级 BTB 的延迟，从 2 周期的 Micro BTB 变成 1 周期的 Nano BTB，从而降低无条件分支的延迟，代价是容量变小了一些
-- Neoverse N1 相比 Cortex A73：
+- Neoverse N1 相比 Cortex A75：
     - 把 Nano BTB 拆分成 Nano 和 Micro 两级，从而增加容量
     - 通过引入 BTB 压缩优化（即一个 Entry 可以保存 1-2 条分支），使得 Main BTB 能容纳更多的分支
     - 针对 Main BTB 引入 fast path，当只有一个 way 匹配时，只需要 2 周期即可提供预测
