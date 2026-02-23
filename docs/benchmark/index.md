@@ -287,6 +287,8 @@ permalink: /benchmark/
 - AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3 -flto -ljemalloc`）: [8.80](./data-trixie/int2017_rate1/AMD_EPYC_9T95_O3-flto-ljemalloc_001.txt)
 - Google Axion C4A @ Neoverse V2（`-O3 -flto -ljemalloc`）: [8.23](./data-trixie/int2017_rate1/Google_Axion_C4A_O3-flto-ljemalloc_001.txt)
 - Google Axion N4A @ Neoverse N3（`-O3 -flto -ljemalloc`）: [7.97](./data-trixie/int2017_rate1/Google_Axion_N4A_O3-flto-ljemalloc_001.txt)
+- IBM POWER8 @ 3.2 GHz POWER8（`-O3 -flto -ljemalloc`）: [3.63](./data-trixie/int2017_rate1/IBM_POWER8_O3-flto-ljemalloc_001.txt)
+- IBM POWER9 @ 3.2 GHz POWER9（`-O3 -flto -ljemalloc`）: [3.53](./data-trixie/int2017_rate1/IBM_POWER9_O3-flto-ljemalloc_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -flto -ljemalloc`）: [8.03](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto -ljemalloc`）: [4.95](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3-flto-ljemalloc_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [5.39](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3-flto-ljemalloc_001.txt)
@@ -302,6 +304,8 @@ permalink: /benchmark/
 - AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3 -flto`）: [8.18](./data-trixie/int2017_rate1/AMD_EPYC_9T95_O3-flto_001.txt)
 - Google Axion C4A @ Neoverse V2（`-O3 -flto`）: [7.68](./data-trixie/int2017_rate1/Google_Axion_C4A_O3-flto_001.txt)
 - Google Axion N4A @ Neoverse N3（`-O3 -flto`）: [7.44](./data-trixie/int2017_rate1/Google_Axion_N4A_O3-flto_001.txt)
+- IBM POWER8 @ 3.2 GHz POWER8（`-O3 -flto`）: [3.45](./data-trixie/int2017_rate1/IBM_POWER8_O3-flto_001.txt)
+- IBM POWER9 @ 3.2 GHz POWER9（`-O3 -flto`）: [3.30](./data-trixie/int2017_rate1/IBM_POWER9_O3-flto_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -flto`）: [7.65](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3-flto_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto`）: [4.59](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3-flto_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto`）: [5.16](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3-flto_001.txt)
@@ -317,6 +321,8 @@ permalink: /benchmark/
 - AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3`）: [7.83](./data-trixie/int2017_rate1/AMD_EPYC_9T95_O3_001.txt)
 - Google Axion C4A @ Neoverse V2（`-O3`）: [7.25](./data-trixie/int2017_rate1/Google_Axion_C4A_O3_001.txt)
 - Google Axion N4A @ Neoverse N3（`-O3`）: [7.16](./data-trixie/int2017_rate1/Google_Axion_N4A_O3_001.txt)
+- IBM POWER8 @ 3.2 GHz POWER8（`-O3`）: [3.24](./data-trixie/int2017_rate1/IBM_POWER8_O3_001.txt)
+- IBM POWER9 @ 3.2 GHz POWER9（`-O3`）: [3.01](./data-trixie/int2017_rate1/IBM_POWER9_O3_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3`）: [7.38](./data-trixie/int2017_rate1/Intel_Xeon_6975P-C_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [4.39](./data-trixie/int2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [4.97](./data-trixie/int2017_rate1/Intel_Xeon_Gold_6430_O3_001.txt)
@@ -810,6 +816,8 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3`）: [12.5](./data-trixie/fp2017_rate1/AMD_EPYC_9T95_O3_001.txt)
 - Google Axion C4A @ Neoverse V2（`-O3`）: [10.8](./data-trixie/fp2017_rate1/Google_Axion_C4A_O3_001.txt)
 - Google Axion N4A @ Neoverse N3（`-O3`）: [9.18](./data-trixie/fp2017_rate1/Google_Axion_N4A_O3_001.txt)
+- IBM POWER8 @ 3.2 GHz POWER8（`-O3`）: [3.47](./data-trixie/fp2017_rate1/IBM_POWER8_O3_001.txt)
+- IBM POWER9 @ 3.2 GHz POWER9（`-O3`）: [3.84](./data-trixie/fp2017_rate1/IBM_POWER9_O3_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3`）: [10.3](./data-trixie/fp2017_rate1/Intel_Xeon_6975P-C_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [5.49](./data-trixie/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [7.01](./data-trixie/fp2017_rate1/Intel_Xeon_Gold_6430_O3_001.txt)
@@ -1239,6 +1247,8 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 - Huawei Kirin 9010
 - Hygon C86 7390(Aliyun g7h.large, 2C 8G): w/o PMU
 - IBM POWER8NVL
+- IBM POWER8(SMT8)
+- IBM POWER9(SMT4)
 - Intel Core i9-10980XE: Cascade Lake
 - Intel Core i9-12900KS: Golden Cove + Gracemont, Alder Lake
 - Intel Core i9-14900K: Raptor Cove + Gracemont, Raptor Lake
@@ -1268,6 +1278,8 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
 
 ## 更新历史
 
+- 2026.02.23:
+      - 测试 IBM POWER8 和 IBM POWER9 性能
 - 2026.01.28:
       - 在 GCP n4a-standard-4 实例上测试 Google Axion N4A 的性能
       - 在 GCP c4a-standard-4 实例上测试 Google Axion C4A 的性能
