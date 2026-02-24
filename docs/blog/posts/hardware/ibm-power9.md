@@ -37,7 +37,7 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./ibm-power9-fetch-bandwidth.png)
 
-测试环境是 SMT4 Core，所以只有 32KB 的容量。超出 L1 ICache 容量后，IPC 从 6 降低到了 4.7。
+测试环境是 SMT4 Core，所以只有 32KB 的容量。超出 L1 ICache 容量后，IPC 从 6 降低到了 4.7。相比 POWER8，容量不变，超出 ICache 容量后的 IPC 提高了。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
@@ -67,7 +67,7 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./ibm-power9-itlb-size.png)
 
-可以看到明显的 256 pages 的拐点，对应了 256 entry 的 L1 ITLB。CPI 从 3 升高到了 28。
+可以看到明显的 256 pages 的拐点，对应了 256 entry 的 L1 ITLB。CPI 从 3 升高到了 28。相比 POWER8 的 64-entry L1 ITLB 容量有所提升。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/itlb_size_lib.cpp)。
 
@@ -103,7 +103,7 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./ibm-power9-rob-size.png)
 
-拐点在 256 附近。
+拐点在 256 附近。相比 POWER8 的 `28*6=168` 有所提升
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/rob_size_gen.cpp)。
 
@@ -121,7 +121,7 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./ibm-power9-dtlb-size.png)
 
-可以看到 256 Page 出现了明显的拐点，对应的就是 256 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 4 cycle。
+可以看到 256 Page 出现了明显的拐点，对应的就是 256 的 L1 DTLB 容量。没有超出 L1 DTLB 容量前，Load to use latency 是 4 cycle。L1 DTLB 容量相比 POWER8 的 48(ST)/96(SMT) 有所提升，和 POWER8 的 256-entry L2 DTLB 容量相同。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/dtlb_size.cpp)。
 
