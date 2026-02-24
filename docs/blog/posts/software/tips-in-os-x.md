@@ -2,10 +2,11 @@
 layout: post
 date: 2016-02-17
 tags: [tips, osx, macos]
-title: Screen Capturing Tips in macOS
 categories:
     - software
 ---
+
+# Screen Capturing Tips in macOS
 
 I'm sure many people have already known this. But i haven't memorize it yet.
 
