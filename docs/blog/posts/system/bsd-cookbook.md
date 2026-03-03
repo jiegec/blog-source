@@ -137,8 +137,8 @@ ifconfig_net1="up"
 ### 启用 SSH
 
 ```shell
-server sshd enable
-server sshd start
+service sshd enable
+service sshd start
 ```
 
 ### 换源
