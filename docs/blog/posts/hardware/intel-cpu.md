@@ -48,14 +48,14 @@ categories:
 - 用途：Server
 - 旗舰：Xeon Platinum 8593Q(64C128T，320 MB L3)
 
-### 4th Generation Intel® Xeon® Scalable Processors/Xeon CPU Max Series
+### 4th Generation Intel® Xeon® Scalable Processors
 
-- [CPU 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/228622/4th-generation-intel-xeon-scalable-processors.html) [Xeon CPU Max 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/232643/intel-xeon-cpu-max-series.html)
+- [CPU 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/228622/4th-generation-intel-xeon-scalable-processors.html)
 - 发布时间：Q1'23
-- 代号：Sapphire Rapids/Sapphire Rapids HBM
+- 代号：Sapphire Rapids
 - 微架构：Golden Cove
 - 用途：Server
-- 旗舰：Xeon CPU Max 9480(56C112T，112.5 MB L3，HBM)/Xeon Platinum 8490H(60C120T，112.5 MB L3)/Xeon Platinum 8480+(56C112T，105 MB L3)
+- 旗舰：Xeon Platinum 8490H(60C120T，112.5 MB L3)/Xeon Platinum 8480+(56C112T，105 MB L3)
 
 ### 3rd Generation Intel® Xeon® Scalable Processors
 
@@ -73,16 +73,32 @@ categories:
 - 发布时间：Q1'20, Q2'19
 - 代号：Cascade Lake
 - 用途：Server
-- 旗舰：Xeon Platinum 9282(56C112T)，Xeon Platinum 8280(28C56T，38.5 MB L3)
+- 旗舰：Xeon Platinum 9282(56C112T)
 - 相关阅读：[Cascade Lake](https://www.anandtech.com/show/14146/intel-xeon-scalable-cascade-lake-deep-dive-now-with-optane)
 
-### 1st Generation Intel® Xeon® Scalable Processors
+### Intel® Xeon® Scalable Processors
 
 - [CPU 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/125191/intel-xeon-scalable-processors.html)
 - 发布时间：Q2'18, Q3'17
 - 代号：Skylake
 - 用途：Server
 - 旗舰：Xeon Platinum 8180(28C56T)
+
+### Intel® Xeon® CPU Max Series
+
+- [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/232643/intel-xeon-cpu-max-series.html)
+- 发布时间：Q1'23
+- 代号：Sapphire Rapids HBM
+- 用途：Server
+- 旗舰：Xeon CPU Max 9480(56C112T)
+
+### Intel® Xeon® E Processor
+
+- [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/134861/intel-xeon-e-processor.html)
+- 发布时间：Q4'23，Q3'21，Q2'19，Q2'18，Q4'17
+- 代号：Raptor Lake/Rocket Lake/Coffee Lake
+- 用途：Server
+- 旗舰：Xeon E-2488(8C16T)
 
 ## Core 系列
 
