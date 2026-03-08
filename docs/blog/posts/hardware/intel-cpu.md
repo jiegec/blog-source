@@ -158,7 +158,7 @@ Intel Core i 系列：
 
 - [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/241071/intel-core-ultra-processors-series-2.html)
 - 发布时间：Q1'25
-- 代号：Arrow Lake，大小核
+- 代号：Lunar Lake/Arrow Lake，大小核
 - 用途：移动/桌面
 
 ### Intel® Core™ processors (Series 2)
@@ -211,7 +211,7 @@ Intel Core i 系列：
 
 - [i9 CPU 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/202984/11th-generation-intel-core-i9-processors.html)
 - 发布时间：Q2'21，Q1'21
-- 代号：Rocket Lake
+- 代号：Tiger Lake/Rocket Lake
 - 旗舰：i9-11900K（8C16T）
 
 ### 10th Generation Intel® Core™ Processors
@@ -220,3 +220,23 @@ Intel Core i 系列：
 - 发布时间：Q3'20，Q2'20，Q4'19
 - 代号：Comet Lake
 - 旗舰：i9-10900K（10C20T，Comet Lake）；特别地，在 X-series 系列中还有 i9-10980XE（18C36T，Cascade Lake）
+
+### 9th Generation Intel® Core™ Processors
+
+- [i9 CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/186673/9th-generation-intel-core-i9-processors.html)
+- 发布时间：Q4'19，Q2'19，Q1'19，Q4'18
+- 代号：Coffee Lake
+- 旗舰：i9-9900KS（8C16T）
+
+### 8th Generation Intel® Core™ Processors
+
+- [i9 CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/134928/8th-generation-intel-core-i9-processors.html)
+- 发布时间：Q2'18
+- 代号：Coffee Lake
+- 旗舰：i9-8950HK（6C12T）
+
+### 7th Generation Intel® Core™ Processors
+
+- [i7 CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/95544/7th-generation-intel-core-i7-processors.html)
+- 发布时间：Q1'17，Q3'16
+- 代号：Kaby Lake
