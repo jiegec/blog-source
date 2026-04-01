@@ -253,6 +253,10 @@ Oseasy 虚拟机只允许开到 8 个核心，实测下来，会优先调度到 
 
 UPDATE: 能跑 Linux 了，见 [在鸿蒙电脑上的虚拟机内启动 Linux](../software/linux-vm-on-harmonyos-computer.md)。
 
+### 融合开发引擎
+
+2026/04/01 更新：《融合开发引擎》App 在应用市场的应用尝鲜上架，可以获得一个 Linux 环境，Linux 6.6.0 内核的 openeuler。使用可见网络上的视频 [鸿蒙电脑官方欧拉虚拟机上线](https://www.bilibili.com/video/BV13z95BhEox/)。想用 Debian 的话，也可以按照 [HarmonyOS 6 Linux 容器替换成 debian trixie](https://www.bilibili.com/opus/1186292133496094724) 换成 Debian。
+
 ## 外设
 
 把 Type-C Hub 接到 MateBook Pro 上，显示器，键盘鼠标都正常工作了。
