@@ -32,7 +32,7 @@ categories:
 
 1. Op：需要执行的操作
 2. Qj，Qk：操作数依赖的指令目前所在的保留站 ID
-3. Vj，Qk：操作数的值
+3. Vj，Vk：操作数的值
 4. Rj，Rk：操作数是否 ready（或者用特殊的 Qj，Qk 值表示是否 ready）
 5. Busy：这个保留站被占用
 
