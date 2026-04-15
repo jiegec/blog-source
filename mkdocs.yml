@@ -112,5 +112,7 @@ extra:
   social:
     - icon: fontawesome/brands/github 
       link: https://github.com/jiegec
+    - icon: fontawesome/solid/robot
+      link: /llms.txt
   analytics:
     provider: custom
