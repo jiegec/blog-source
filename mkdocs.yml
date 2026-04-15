@@ -68,6 +68,10 @@ plugins:
       enabled: !ENV [DEPLOY, false]
       cards_layout_options:
         font_family: Noto Sans SC
+  - llmstxt:
+      sections:
+        Blog:
+        - "*.md"
 
 
 markdown_extensions:
