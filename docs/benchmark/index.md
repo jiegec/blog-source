@@ -10,7 +10,7 @@ permalink: /benchmark/
 
 测试环境如下：
 
-1. 大部分测试：Debian Bookworm, GCC 12.2.0
+1. Debian Trixie 发布前的测试：Debian Bookworm, GCC 12.2.0
 2. LoongArch 以及 Debian Trixie 发布后的测试：Debian Trixie, GCC 14.2.0
 3. HarmonyOS NEXT 测试：HarmonyOS NEXT 5，Clang 15.0.4 + Flang 20.1.7，详见 [jiegec/SPECCPU2017Harmony](https://github.com/jiegec/SPECCPU2017Harmony/tree/master/results)；X90 带有 VM 的代表是在 Linux 虚拟机中测试
 4. 此外有针对不同编译器和编译器版本对比的测试，相关测试结果都进行了标注
