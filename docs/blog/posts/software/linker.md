@@ -601,7 +601,7 @@ Simple function
 如果动态链接库调用了其他动态链接库的函数，也可以用类似的方法，但是实践起来稍有不同。函数也在 GOT 表的 PLT 表里有实际的地址，但动态链接库不会自动替换，而是让编译器生成一个 PLT stub。PLT stub 做的事情是：
 
 1. 如果初始化过，那么直接跳转到实际的函数
-2. 如果没有初始化过，调用 ld.so 提供的函数，函数会找到实际的函数，并且对 PLT 进行初始化
+2. 如果没有初始化过，调用 ld.so 提供的函数，函数会找到实际的函数，并且把地址保存到 GOT 表中相应的表项
 
 这一系列的做法都是为了让动态库的大部分内容保持不变，只修改少部分数据使得 relocation 可以工作。完整的内容建议阅读[PLT and GOT - the key to code sharing and dynamic libraries](https://www.technovelty.org/linux/plt-and-got-the-key-to-code-sharing-and-dynamic-libraries.html)。
 
