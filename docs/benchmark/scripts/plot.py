@@ -56,7 +56,7 @@ opt_flags = [
 def parse_data(flavor):
     for f in glob.glob(f"{flavor}2017_rate1/*.txt"):
         print(f"Processing {f}")
-        name = f.split("/")[-1].split(".")[0]
+        name = ".".join(f.split("/")[-1].split(".")[:-1])
         parts = name.split("_")
         core = " ".join(parts[:-2])
         flag = parts[-2]
