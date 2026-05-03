@@ -4,8 +4,8 @@
 
 下面贴出自己测的数据（SPECint2006，Estimated，speed，base），不保证满足 SPEC 的要求，仅供参考。
 
-- Intel Core i9-14900K Raptor Cove（`-O3`）: [91.9](./data/int2006_speed/Intel_Core_i9-14900K_O3_001.txt)
-- Intel Core i9-14900K Raptor Cove（`-O2`）: [87.2](./data/int2006_speed/Intel_Core_i9-14900K_O2_001.txt)
+- Intel Core i9-14900K Raptor Cove（`-O3`）: [91.9](./data-bookworm/int2006_speed/Intel_Core_i9-14900K_O3_001.txt)
+- Intel Core i9-14900K Raptor Cove（`-O2`）: [87.2](./data-bookworm/int2006_speed/Intel_Core_i9-14900K_O2_001.txt)
 - Intel Core i9-13900K Raptor Cove（`-Ofast -fomit-frame-pointer -march=native -mtune=native`）: 85.3 86.8
 - Intel Core i9-13900K Raptor Cove（`-O2`）: 79.6
 - Intel Core i9-12900KS Golden Cove（`-O2`）: 74.4
