@@ -70,6 +70,7 @@ CPU_INFO = [
     ('Intel Core i7-13700K E-Core', {None: '@ 4.2 GHz Gracemont'}),
     ('Intel Core i9-14900K P-Core', {None: '@ 6.0 GHz Raptor Cove'}),
     ('Intel Core i9-14900K E-Core', {None: '@ 4.4 GHz Gracemont'}),
+    ('Intel Core i5-1135G7', {None: '@ 4.2 GHz Willow Cove'}),
     ('Intel Xeon w9-3595X', {None: '@ 4.5 GHz Golden Cove'}),
     # Desktop - Qualcomm
     ('Qualcomm 8cx Gen3 E-Core', {None: '@ 2.4 GHz Cortex-A78C'}),
