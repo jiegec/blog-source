@@ -349,7 +349,7 @@ def merge_duplicate_cpus(items):
 
 
 def generate_section_markdown(data_dir, section_name, test_type='fp2017'):
-    """Generate markdown content for a data directory (e.g., data, data-trixie, data-harmonyos)
+    """Generate markdown content for a data directory (e.g., data-bookworm, data-trixie, data-harmonyos)
 
     Args:
         data_dir: Path to data directory
@@ -562,7 +562,7 @@ def update_index_md(test_type='fp2017'):
     """
     # Generate new raw data content
     data_dirs = [
-        (BASE_DIR / 'data', 'Debian Bookworm'),
+        (BASE_DIR / 'data-bookworm', 'Debian Bookworm'),
         (BASE_DIR / 'data-trixie', 'Debian Trixie'),
         (BASE_DIR / 'data-harmonyos', 'HarmonyOS'),
     ]
@@ -688,7 +688,7 @@ Examples:
     else:
         # Only print generated markdown content
         data_dirs = [
-            (BASE_DIR / 'data', 'Debian Bookworm'),
+            (BASE_DIR / 'data-bookworm', 'Debian Bookworm'),
             (BASE_DIR / 'data-trixie', 'Debian Trixie'),
             (BASE_DIR / 'data-harmonyos', 'HarmonyOS'),
         ]

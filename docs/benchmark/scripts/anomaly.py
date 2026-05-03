@@ -4,7 +4,7 @@ from pathlib import Path
 # Parent directory of script (docs/benchmark)
 BASE_DIR = Path(__file__).parent.parent.absolute()
 
-for data in ["data", "data-trixie"]:
+for data in ["data-bookworm", "data-trixie", "data-harmonyos"]:
     for flavor in ["int", "fp"]:
         for f in glob.glob(f"{BASE_DIR}/{data}/{flavor}2017_rate1/*.txt"):
             # parse
