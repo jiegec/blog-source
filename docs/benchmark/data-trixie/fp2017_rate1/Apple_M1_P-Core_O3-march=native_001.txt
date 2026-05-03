@@ -1,161 +1,161 @@
 Built with GCC 14.2.0 from Debian Trixie with -O3 -march=native
-Running on Linux kernel 6.14.5-aosc-asahi
+Running on Linux kernel 6.18.25-aosc-asahi
 
                        Estimated                       Estimated
                  Base     Base        Base        Peak     Peak        Peak
 Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
 --------------- -------  ---------  ---------    -------  ---------  ---------
 503.bwaves_r          1      176        56.9   S
-503.bwaves_r          1      176        56.9   *
-503.bwaves_r          1      176        56.9   S
-507.cactuBSSN_r       1      202         6.26  *
-507.cactuBSSN_r       1      202         6.27  S
-507.cactuBSSN_r       1      202         6.26  S
-508.namd_r            1       99.3       9.57  S
-508.namd_r            1       99.3       9.56  S
-508.namd_r            1       99.3       9.56  *
-510.parest_r          1      350         7.48  S
+503.bwaves_r          1      175        57.4   S
+503.bwaves_r          1      175        57.2   *
+507.cactuBSSN_r       1      199         6.35  *
+507.cactuBSSN_r       1      199         6.35  S
+507.cactuBSSN_r       1      199         6.35  S
+508.namd_r            1       99.2       9.57  S
+508.namd_r            1       99.1       9.59  *
+508.namd_r            1       99.0       9.59  S
 510.parest_r          1      349         7.49  *
+510.parest_r          1      349         7.50  S
 510.parest_r          1      349         7.49  S
-511.povray_r          1      215        10.9   S
+511.povray_r          1      214        10.9   S
 511.povray_r          1      214        10.9   S
 511.povray_r          1      214        10.9   *
-519.lbm_r             1      123         8.60  *
-519.lbm_r             1      122         8.61  S
-519.lbm_r             1      123         8.60  S
-521.wrf_r             1      153        14.6   S
-521.wrf_r             1      154        14.6   S
-521.wrf_r             1      153        14.6   *
-526.blender_r         1      167         9.14  *
-526.blender_r         1      167         9.14  S
-526.blender_r         1      166         9.15  S
-527.cam4_r            1      129        13.5   *
-527.cam4_r            1      129        13.6   S
-527.cam4_r            1      129        13.5   S
-538.imagick_r         1      196        12.7   *
-538.imagick_r         1      197        12.7   S
+519.lbm_r             1      121         8.74  S
+519.lbm_r             1      121         8.74  S
+519.lbm_r             1      121         8.74  *
+521.wrf_r             1      151        14.8   *
+521.wrf_r             1      152        14.8   S
+521.wrf_r             1      151        14.8   S
+526.blender_r         1      164         9.28  *
+526.blender_r         1      164         9.30  S
+526.blender_r         1      164         9.27  S
+527.cam4_r            1      127        13.8   S
+527.cam4_r            1      127        13.8   S
+527.cam4_r            1      127        13.8   *
 538.imagick_r         1      196        12.7   S
-544.nab_r             1      167        10.1   S
-544.nab_r             1      166        10.1   S
-544.nab_r             1      167        10.1   *
-549.fotonik3d_r       1      187        20.9   S
-549.fotonik3d_r       1      186        20.9   *
+538.imagick_r         1      196        12.7   S
+538.imagick_r         1      196        12.7   *
+544.nab_r             1      164        10.3   S
+544.nab_r             1      164        10.3   S
+544.nab_r             1      164        10.3   *
+549.fotonik3d_r       1      186        21.0   S
 549.fotonik3d_r       1      186        20.9   S
-554.roms_r            1      163         9.77  S
-554.roms_r            1      163         9.76  S
-554.roms_r            1      163         9.77  *
+549.fotonik3d_r       1      186        21.0   *
+554.roms_r            1      162         9.84  S
+554.roms_r            1      161         9.84  *
+554.roms_r            1      161         9.85  S
 =================================================================================
-503.bwaves_r          1      176        56.9   *
-507.cactuBSSN_r       1      202         6.26  *
-508.namd_r            1       99.3       9.56  *
+503.bwaves_r          1      175        57.2   *
+507.cactuBSSN_r       1      199         6.35  *
+508.namd_r            1       99.1       9.59  *
 510.parest_r          1      349         7.49  *
 511.povray_r          1      214        10.9   *
-519.lbm_r             1      123         8.60  *
-521.wrf_r             1      153        14.6   *
-526.blender_r         1      167         9.14  *
-527.cam4_r            1      129        13.5   *
+519.lbm_r             1      121         8.74  *
+521.wrf_r             1      151        14.8   *
+526.blender_r         1      164         9.28  *
+527.cam4_r            1      127        13.8   *
 538.imagick_r         1      196        12.7   *
-544.nab_r             1      167        10.1   *
-549.fotonik3d_r       1      186        20.9   *
-554.roms_r            1      163         9.77  *
- Est. SPECrate(R)2017_fp_base            12.1
+544.nab_r             1      164        10.3   *
+549.fotonik3d_r       1      186        21.0   *
+554.roms_r            1      161         9.84  *
+ Est. SPECrate(R)2017_fp_base            12.2
  Est. SPECrate(R)2017_fp_peak                                          Not Run
 
-503.bwaves_r: time (ms) = 176166
-503.bwaves_r: clock freq (MHz) = 3141.0451
-503.bwaves_r: instructions = 1.86161e+12
-503.bwaves_r: branch instructions = 1.02315e+11
-503.bwaves_r: ipc = 3.3643
-503.bwaves_r: misprediction rate (%) = 0.1192
+503.bwaves_r: time (ms) = 175322
+503.bwaves_r: clock freq (MHz) = 3156.8987
+503.bwaves_r: instructions = 1.8572e+12
+503.bwaves_r: branch instructions = 1.01292e+11
+503.bwaves_r: ipc = 3.3555
+503.bwaves_r: misprediction rate (%) = 0.1201
 503.bwaves_r: mpki = 0.0655
-507.cactuBSSN_r: time (ms) = 202122
-507.cactuBSSN_r: clock freq (MHz) = 3145.7794
-507.cactuBSSN_r: instructions = 1.4831e+12
-507.cactuBSSN_r: branch instructions = 1.81643e+10
-507.cactuBSSN_r: ipc = 2.3325
-507.cactuBSSN_r: misprediction rate (%) = 5.7032
-507.cactuBSSN_r: mpki = 0.6985
-508.namd_r: time (ms) = 99305.1
-508.namd_r: clock freq (MHz) = 3142.3061
-508.namd_r: instructions = 1.68729e+12
-508.namd_r: branch instructions = 4.10603e+10
-508.namd_r: ipc = 5.4072
-508.namd_r: misprediction rate (%) = 4.2089
+507.cactuBSSN_r: time (ms) = 199388
+507.cactuBSSN_r: clock freq (MHz) = 3199.5069
+507.cactuBSSN_r: instructions = 1.48281e+12
+507.cactuBSSN_r: branch instructions = 1.81068e+10
+507.cactuBSSN_r: ipc = 2.3244
+507.cactuBSSN_r: misprediction rate (%) = 5.7216
+507.cactuBSSN_r: mpki = 0.6987
+508.namd_r: time (ms) = 99096.8
+508.namd_r: clock freq (MHz) = 3148.9541
+508.namd_r: instructions = 1.6872e+12
+508.namd_r: branch instructions = 4.10435e+10
+508.namd_r: ipc = 5.4068
+508.namd_r: misprediction rate (%) = 4.2104
 508.namd_r: mpki = 1.0242
-510.parest_r: time (ms) = 349380
-510.parest_r: clock freq (MHz) = 3192.6738
-510.parest_r: instructions = 3.13149e+12
-510.parest_r: branch instructions = 4.73518e+11
-510.parest_r: ipc = 2.8074
-510.parest_r: misprediction rate (%) = 1.5138
-510.parest_r: mpki = 2.2891
-511.povray_r: time (ms) = 214431
-511.povray_r: clock freq (MHz) = 3142.4979
-511.povray_r: instructions = 3.00135e+12
-511.povray_r: branch instructions = 5.30746e+11
-511.povray_r: ipc = 4.4540
-511.povray_r: misprediction rate (%) = 0.3760
-511.povray_r: mpki = 0.6648
-519.lbm_r: time (ms) = 122480
-519.lbm_r: clock freq (MHz) = 3142.5880
-519.lbm_r: instructions = 1.33268e+12
-519.lbm_r: branch instructions = 1.19663e+10
-519.lbm_r: ipc = 3.4624
-519.lbm_r: misprediction rate (%) = 0.0660
+510.parest_r: time (ms) = 349044
+510.parest_r: clock freq (MHz) = 3197.1447
+510.parest_r: instructions = 3.13115e+12
+510.parest_r: branch instructions = 4.73458e+11
+510.parest_r: ipc = 2.8058
+510.parest_r: misprediction rate (%) = 1.5148
+510.parest_r: mpki = 2.2905
+511.povray_r: time (ms) = 214009
+511.povray_r: clock freq (MHz) = 3149.3259
+511.povray_r: instructions = 3.00122e+12
+511.povray_r: branch instructions = 5.30727e+11
+511.povray_r: ipc = 4.4530
+511.povray_r: misprediction rate (%) = 0.3753
+511.povray_r: mpki = 0.6637
+519.lbm_r: time (ms) = 120562
+519.lbm_r: clock freq (MHz) = 3195.8306
+519.lbm_r: instructions = 1.33252e+12
+519.lbm_r: branch instructions = 1.19353e+10
+519.lbm_r: ipc = 3.4584
+519.lbm_r: misprediction rate (%) = 0.0661
 519.lbm_r: mpki = 0.0059
-521.wrf_r: time (ms) = 153388
-521.wrf_r: clock freq (MHz) = 3146.3293
-521.wrf_r: instructions = 1.84773e+12
-521.wrf_r: branch instructions = 1.71252e+11
-521.wrf_r: ipc = 3.8286
-521.wrf_r: misprediction rate (%) = 3.3124
-521.wrf_r: mpki = 3.0700
-526.blender_r: time (ms) = 166560
-526.blender_r: clock freq (MHz) = 3143.1297
-526.blender_r: instructions = 1.4974e+12
-526.blender_r: branch instructions = 2.78176e+11
-526.blender_r: ipc = 2.8602
-526.blender_r: misprediction rate (%) = 2.1109
-526.blender_r: mpki = 3.9215
-527.cam4_r: time (ms) = 129015
-527.cam4_r: clock freq (MHz) = 3141.8266
-527.cam4_r: instructions = 1.66052e+12
-527.cam4_r: branch instructions = 2.04669e+11
-527.cam4_r: ipc = 4.0966
-527.cam4_r: misprediction rate (%) = 0.8806
-527.cam4_r: mpki = 1.0854
-538.imagick_r: time (ms) = 196507
-538.imagick_r: clock freq (MHz) = 3141.8786
-538.imagick_r: instructions = 3.54733e+12
-538.imagick_r: branch instructions = 3.94153e+11
+521.wrf_r: time (ms) = 151404
+521.wrf_r: clock freq (MHz) = 3191.3474
+521.wrf_r: instructions = 1.84553e+12
+521.wrf_r: branch instructions = 1.70748e+11
+521.wrf_r: ipc = 3.8195
+521.wrf_r: misprediction rate (%) = 3.3064
+521.wrf_r: mpki = 3.0591
+526.blender_r: time (ms) = 164087
+526.blender_r: clock freq (MHz) = 3196.9494
+526.blender_r: instructions = 1.49707e+12
+526.blender_r: branch instructions = 2.78112e+11
+526.blender_r: ipc = 2.8539
+526.blender_r: misprediction rate (%) = 2.1110
+526.blender_r: mpki = 3.9217
+527.cam4_r: time (ms) = 126533
+527.cam4_r: clock freq (MHz) = 3192.0819
+527.cam4_r: instructions = 1.65808e+12
+527.cam4_r: branch instructions = 2.04111e+11
+527.cam4_r: ipc = 4.1051
+527.cam4_r: misprediction rate (%) = 0.8852
+527.cam4_r: mpki = 1.0897
+538.imagick_r: time (ms) = 196261
+538.imagick_r: clock freq (MHz) = 3145.6063
+538.imagick_r: instructions = 3.54708e+12
+538.imagick_r: branch instructions = 3.94104e+11
 538.imagick_r: ipc = 5.7456
-538.imagick_r: misprediction rate (%) = 0.5536
-538.imagick_r: mpki = 0.6152
-544.nab_r: time (ms) = 166426
-544.nab_r: clock freq (MHz) = 3150.3513
-544.nab_r: instructions = 1.67322e+12
-544.nab_r: branch instructions = 1.82352e+11
-544.nab_r: ipc = 3.1914
-544.nab_r: misprediction rate (%) = 3.0722
-544.nab_r: mpki = 3.3482
-549.fotonik3d_r: time (ms) = 186264
-549.fotonik3d_r: clock freq (MHz) = 3161.7924
-549.fotonik3d_r: instructions = 1.36458e+12
-549.fotonik3d_r: branch instructions = 3.28617e+10
-549.fotonik3d_r: ipc = 2.3171
-549.fotonik3d_r: misprediction rate (%) = 0.1756
-549.fotonik3d_r: mpki = 0.0423
-554.roms_r: time (ms) = 162643
-554.roms_r: clock freq (MHz) = 3141.7902
-554.roms_r: instructions = 1.37911e+12
-554.roms_r: branch instructions = 8.43126e+10
-554.roms_r: ipc = 2.6989
-554.roms_r: misprediction rate (%) = 0.9579
-554.roms_r: mpki = 0.5856
-all: time (ms) = 2.32469e+06
-all: clock freq (MHz) = 3152.4778
-all: instructions = 2.54674e+13
-all: branch instructions = 2.52555e+12
+538.imagick_r: misprediction rate (%) = 0.5562
+538.imagick_r: mpki = 0.6180
+544.nab_r: time (ms) = 163895
+544.nab_r: clock freq (MHz) = 3199.3369
+544.nab_r: instructions = 1.67307e+12
+544.nab_r: branch instructions = 1.82327e+11
+544.nab_r: ipc = 3.1907
+544.nab_r: misprediction rate (%) = 3.0728
+544.nab_r: mpki = 3.3486
+549.fotonik3d_r: time (ms) = 185894
+549.fotonik3d_r: clock freq (MHz) = 3187.4172
+549.fotonik3d_r: instructions = 1.36427e+12
+549.fotonik3d_r: branch instructions = 3.27991e+10
+549.fotonik3d_r: ipc = 2.3025
+549.fotonik3d_r: misprediction rate (%) = 0.1763
+549.fotonik3d_r: mpki = 0.0424
+554.roms_r: time (ms) = 161371
+554.roms_r: clock freq (MHz) = 3197.6159
+554.roms_r: instructions = 1.37876e+12
+554.roms_r: branch instructions = 8.42434e+10
+554.roms_r: ipc = 2.6720
+554.roms_r: misprediction rate (%) = 0.9590
+554.roms_r: mpki = 0.5860
+all: time (ms) = 2.30687e+06
+all: clock freq (MHz) = 3182.0632
+all: instructions = 2.5456e+13
+all: branch instructions = 2.52301e+12
 
 System Info:
 CPU Name: Multiple
