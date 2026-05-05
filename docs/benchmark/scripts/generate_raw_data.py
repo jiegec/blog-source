@@ -555,7 +555,7 @@ def generate_section_markdown(data_dir, section_name, test_type='fp2017'):
 
 
 def update_index_md(test_type='fp2017'):
-    """Update index.md file
+    """Update spec-cpu-2017-rate.md file
 
     Args:
         test_type: 'int2017' or 'fp2017'
@@ -576,8 +576,8 @@ def update_index_md(test_type='fp2017'):
     # Join sections with blank lines between them
     new_content = '\n'.join(md_content)
 
-    # Read index.md
-    index_md_path = BASE_DIR / 'index.md'
+    # Read spec-cpu-2017-rate.md
+    index_md_path = BASE_DIR / 'spec-cpu-2017-rate.md'
     with open(index_md_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
@@ -654,10 +654,10 @@ Examples:
   # Generate FP 2017 data and print to stdout
   %(prog)s --type fp2017
 
-  # Generate both and update index.md
+  # Generate both and update spec-cpu-2017-rate.md
   %(prog)s --type both --update
 
-  # Generate INT 2017 data and update index.md
+  # Generate INT 2017 data and update spec-cpu-2017-rate.md
   %(prog)s --type int2017 --update
         '''
     )
@@ -670,7 +670,7 @@ Examples:
     parser.add_argument(
         '--update',
         action='store_true',
-        help='Update index.md file instead of printing to stdout'
+        help='Update spec-cpu-2017-rate.md file instead of printing to stdout'
     )
 
     args = parser.parse_args()
@@ -682,7 +682,7 @@ Examples:
         test_types = [args.type]
 
     if args.update:
-        # Update index.md
+        # Update spec-cpu-2017-rate.md
         for test_type in test_types:
             update_index_md(test_type)
     else:
