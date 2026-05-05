@@ -46,216 +46,6 @@ permalink: /benchmark/
 - [SPEC CPU INT/FP 2017 Speed](./spec-cpu-2017-speed.md)
 - [SPEC CPU INT/FP 2006 Rate/Speed](./spec-cpu-2006.md)
 
-## SPEC 运行配置
-
-### SPEC CPU 2006
-
-```
-# match spec result standard
-reportable = yes
-# skip peak
-basepeak = yes
-# show live output
-teeout = yes
-
-# optimization flags for base
-default=base=default=default:
-COPTIMIZE = -O3 -fgnu89-inline -fcommon -fno-strict-aliasing
-CXXOPTIMIZE = -O3 -fpermissive --std=c++98 -fno-strict-aliasing
-FOPTIMIZE = -O3 -std=legacy -fno-strict-aliasing
-
-# specify compilers
-default=default=default=default:
-CC = /usr/bin/gcc
-CXX = /usr/bin/g++
-FC = /usr/bin/gfortran
-
-# fix compilation
-default=base=default=default:
-PORTABILITY = -DSPEC_CPU_LP64
-
-400.perlbench=default=default=default:
-CPORTABILITY = -DSPEC_CPU_LINUX_X64
-
-462.libquantum=default=default=default:
-CPORTABILITY = -DSPEC_CPU_LINUX
-
-483.xalancbmk=default=default=default:
-CXXPORTABILITY = -DSPEC_CPU_LINUX
-
-481.wrf=default=default=default:
-CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
-```
-
-运行方式：
-
-```shell
-# int speed
-cd /mnt && . ./shrc && runspec int
-```
-
-### SPEC CPU 2017
-
-```
-# match spec result standard
-reportable = yes
-# skip peak
-basepeak = yes
-# show live output
-teeout = yes
-# speedup compilation
-makeflags = --jobs=%{nproc}
-
-# compilers
-default:
-   preENV_LD_LIBRARY_PATH  = /usr/lib64:/usr/lib:/lib64
-   SPECLANG                = /usr/bin/
-%if %{clang} eq "1"
-   CC                      = $(SPECLANG)clang -std=c99
-   CXX                     = $(SPECLANG)clang++
-%else
-   CC                      = $(SPECLANG)gcc -std=c99
-   CXX                     = $(SPECLANG)g++
-%endif
-%if %{flang} eq "1"
-   FC                      = $(SPECLANG)flang-new
-%else
-   FC                      = $(SPECLANG)gfortran
-%endif
-# allow to override compilers
-%ifdef %{override-cc}
-   CC                      = %{override-cc} -std=c99
-%endif
-%ifdef %{override-cxx}
-   CXX                     = %{override-cxx}
-%endif
-%ifdef %{override-fc}
-   FC                      = %{override-fc}
-%endif
-   # How to say "Show me your version, please"
-   CC_VERSION_OPTION       = -v
-   CXX_VERSION_OPTION      = -v
-   FC_VERSION_OPTION       = -v
-
-# perf: use runcpu --define perf=1 --noreportable to enable
-%if %{perf} eq "1"
-# override branch-misses counter if necessary
-# e.g. on ARMv8 PMUv3, use r22 for branch misses
-# e.g. on Apple M1, use rcb for branch misses
-%ifndef %{perf-branchmisses}
-%define perf-branchmisses branch-misses
-%endif
-# override branches counter if necessary
-# e.g. on Apple M1, use r8d for branches
-%ifndef %{perf-branches}
-%define perf-branches branches
-%endif
-default:
-   command_add_redirect = 1
-# bind to core if requested
-%ifdef %{bindcore}
-   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,%{perf-branches},%{perf-branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
-%else
-   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,%{perf-branches},%{perf-branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
-%endif
-%endif
-
-# portability flags
-default:
-   EXTRA_PORTABILITY = -DSPEC_LP64
-500.perlbench_r,600.perlbench_s:  #lang='C'
-%if %{machine} eq "x86_64"
-   PORTABILITY    = -DSPEC_LINUX_X64
-%else
-   PORTABILITY    = -DSPEC_LINUX_AARCH64
-%endif
-
-521.wrf_r,621.wrf_s:  #lang='F,C'
-   CPORTABILITY  = -DSPEC_CASE_FLAG
-   FPORTABILITY  = -fconvert=big-endian
-
-523.xalancbmk_r,623.xalancbmk_s:  #lang='CXX'
-   PORTABILITY   = -DSPEC_LINUX
-
-526.blender_r:  #lang='CXX,C'
-   PORTABILITY   = -funsigned-char -DSPEC_LINUX
-%if %{clang} eq "1"
-# from config/Example-aocc-linux-x86.cfg
-   CXXPORTABILITY = -D__BOOL_DEFINED
-%endif
-
-527.cam4_r,627.cam4_s:  #lang='F,C'
-   PORTABILITY   = -DSPEC_CASE_FLAG
-
-628.pop2_s:  #lang='F,C'
-   CPORTABILITY    = -DSPEC_CASE_FLAG
-   FPORTABILITY    = -fconvert=big-endian
-
-intspeed,fpspeed:
-   EXTRA_OPTIMIZE = -fopenmp -DSPEC_OPENMP
-fpspeed:
-   #
-   # 627.cam4 needs a big stack; the preENV will apply it to all
-   # benchmarks in the set, as required by the rules.
-   #
-   preENV_OMP_STACKSIZE = 120M
-
-default=base:         # flags for all base
-%ifdef %{extralibs}
-   EXTRA_LIBS     = %{extralibs}
-%endif
-%ifdef %{optflags}
-   OPTIMIZE       = %{optflags}
-%else
-   OPTIMIZE       = -O3
-%endif
-   # -std=c++03 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
-   CXXOPTIMIZE    = -std=c++03
-%if %{flang} ne "1"
-   # -fallow-argument-mismatch required for https://www.spec.org/cpu2017/Docs/benchmarks/521.wrf_r.html
-   FOPTIMIZE      = -fallow-argument-mismatch
-%endif
-
-intrate,intspeed=base: # flags for integer base
-   EXTRA_COPTIMIZE = -fno-strict-aliasing -fno-unsafe-math-optimizations -fno-finite-math-only -fgnu89-inline -fcommon
-# Notes about the above
-#  - 500.perlbench_r/600.perlbench_s needs -fno-strict-aliasing, -fno-unsafe-math-optimizations and -fno-finite-math-only
-#  - 502.gcc_r/602.gcc_s             needs -fgnu89-inline or -z muldefs
-#  - 525.x264_r/625.x264_s           needs -fcommon
-#  - For 'base', all benchmarks in a set must use the same options.
-#  - Therefore, all base benchmarks get the above.  See:
-#       https://www.spec.org/cpu2017/Docs/runrules.html#BaseFlags
-#       https://www.spec.org/cpu2017/Docs/benchmarks/500.perlbench_r.html
-#       https://www.spec.org/cpu2017/Docs/benchmarks/502.gcc_r.html
-#       https://www.spec.org/cpu2017/Docs/benchmarks/525.x264_r.html
-
-%if %{clang} eq "1"
-# https://github.com/llvm/llvm-project/issues/96859
-# 523.xalancbmk_r
-   EXTRA_CXXOPTIMIZE = -fdelayed-template-parsing
-%endif
-
-%if %{gcc15} eq "1"
-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116064
-# 523.xalamcbmk_r
-   EXTRA_CXXOPTIMIZE += -Wno-error=template-body
-%endif
-
-fprate,fpspeed=base: # flags for fp base
-   EXTRA_COPTIMIZE = -Wno-error=implicit-int
-# Notes about the above
-#  - 527.cam4_r,627.cam4_s needs -Wno-error=implicit-int
-```
-
-运行方式：
-
-```shell
-# int speed
-cd /mnt && . ./shrc && runcpu intspeed
-# fp speed
-ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
-```
-
 ## 浮点峰值性能
 
 | uArch             | DP FLOP/cycle | SP FLOP/cycle | ISA       |
@@ -469,3 +259,213 @@ ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
       - 在腾讯云 s8.medium8 实例上测试 Intel Xeon Platinum 8576C 的性能
       - 在腾讯云 sa3.medium4 实例上测试 AMD EPYC 7K83 的性能
       - 在腾讯云 sa5.medium2 实例上测试 AMD EPYC 9754 的性能
+
+## SPEC 运行配置
+
+### SPEC CPU 2017
+
+```
+# match spec result standard
+reportable = yes
+# skip peak
+basepeak = yes
+# show live output
+teeout = yes
+# speedup compilation
+makeflags = --jobs=%{nproc}
+
+# compilers
+default:
+   preENV_LD_LIBRARY_PATH  = /usr/lib64:/usr/lib:/lib64
+   SPECLANG                = /usr/bin/
+%if %{clang} eq "1"
+   CC                      = $(SPECLANG)clang -std=c99
+   CXX                     = $(SPECLANG)clang++
+%else
+   CC                      = $(SPECLANG)gcc -std=c99
+   CXX                     = $(SPECLANG)g++
+%endif
+%if %{flang} eq "1"
+   FC                      = $(SPECLANG)flang-new
+%else
+   FC                      = $(SPECLANG)gfortran
+%endif
+# allow to override compilers
+%ifdef %{override-cc}
+   CC                      = %{override-cc} -std=c99
+%endif
+%ifdef %{override-cxx}
+   CXX                     = %{override-cxx}
+%endif
+%ifdef %{override-fc}
+   FC                      = %{override-fc}
+%endif
+   # How to say "Show me your version, please"
+   CC_VERSION_OPTION       = -v
+   CXX_VERSION_OPTION      = -v
+   FC_VERSION_OPTION       = -v
+
+# perf: use runcpu --define perf=1 --noreportable to enable
+%if %{perf} eq "1"
+# override branch-misses counter if necessary
+# e.g. on ARMv8 PMUv3, use r22 for branch misses
+# e.g. on Apple M1, use rcb for branch misses
+%ifndef %{perf-branchmisses}
+%define perf-branchmisses branch-misses
+%endif
+# override branches counter if necessary
+# e.g. on Apple M1, use r8d for branches
+%ifndef %{perf-branches}
+%define perf-branches branches
+%endif
+default:
+   command_add_redirect = 1
+# bind to core if requested
+%ifdef %{bindcore}
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,%{perf-branches},%{perf-branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+%else
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,%{perf-branches},%{perf-branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+%endif
+%endif
+
+# portability flags
+default:
+   EXTRA_PORTABILITY = -DSPEC_LP64
+500.perlbench_r,600.perlbench_s:  #lang='C'
+%if %{machine} eq "x86_64"
+   PORTABILITY    = -DSPEC_LINUX_X64
+%else
+   PORTABILITY    = -DSPEC_LINUX_AARCH64
+%endif
+
+521.wrf_r,621.wrf_s:  #lang='F,C'
+   CPORTABILITY  = -DSPEC_CASE_FLAG
+   FPORTABILITY  = -fconvert=big-endian
+
+523.xalancbmk_r,623.xalancbmk_s:  #lang='CXX'
+   PORTABILITY   = -DSPEC_LINUX
+
+526.blender_r:  #lang='CXX,C'
+   PORTABILITY   = -funsigned-char -DSPEC_LINUX
+%if %{clang} eq "1"
+# from config/Example-aocc-linux-x86.cfg
+   CXXPORTABILITY = -D__BOOL_DEFINED
+%endif
+
+527.cam4_r,627.cam4_s:  #lang='F,C'
+   PORTABILITY   = -DSPEC_CASE_FLAG
+
+628.pop2_s:  #lang='F,C'
+   CPORTABILITY    = -DSPEC_CASE_FLAG
+   FPORTABILITY    = -fconvert=big-endian
+
+intspeed,fpspeed:
+   EXTRA_OPTIMIZE = -fopenmp -DSPEC_OPENMP
+fpspeed:
+   #
+   # 627.cam4 needs a big stack; the preENV will apply it to all
+   # benchmarks in the set, as required by the rules.
+   #
+   preENV_OMP_STACKSIZE = 120M
+
+default=base:         # flags for all base
+%ifdef %{extralibs}
+   EXTRA_LIBS     = %{extralibs}
+%endif
+%ifdef %{optflags}
+   OPTIMIZE       = %{optflags}
+%else
+   OPTIMIZE       = -O3
+%endif
+   # -std=c++03 required for https://www.spec.org/cpu2017/Docs/benchmarks/510.parest_r.html
+   CXXOPTIMIZE    = -std=c++03
+%if %{flang} ne "1"
+   # -fallow-argument-mismatch required for https://www.spec.org/cpu2017/Docs/benchmarks/521.wrf_r.html
+   FOPTIMIZE      = -fallow-argument-mismatch
+%endif
+
+intrate,intspeed=base: # flags for integer base
+   EXTRA_COPTIMIZE = -fno-strict-aliasing -fno-unsafe-math-optimizations -fno-finite-math-only -fgnu89-inline -fcommon
+# Notes about the above
+#  - 500.perlbench_r/600.perlbench_s needs -fno-strict-aliasing, -fno-unsafe-math-optimizations and -fno-finite-math-only
+#  - 502.gcc_r/602.gcc_s             needs -fgnu89-inline or -z muldefs
+#  - 525.x264_r/625.x264_s           needs -fcommon
+#  - For 'base', all benchmarks in a set must use the same options.
+#  - Therefore, all base benchmarks get the above.  See:
+#       https://www.spec.org/cpu2017/Docs/runrules.html#BaseFlags
+#       https://www.spec.org/cpu2017/Docs/benchmarks/500.perlbench_r.html
+#       https://www.spec.org/cpu2017/Docs/benchmarks/502.gcc_r.html
+#       https://www.spec.org/cpu2017/Docs/benchmarks/525.x264_r.html
+
+%if %{clang} eq "1"
+# https://github.com/llvm/llvm-project/issues/96859
+# 523.xalancbmk_r
+   EXTRA_CXXOPTIMIZE = -fdelayed-template-parsing
+%endif
+
+%if %{gcc15} eq "1"
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116064
+# 523.xalamcbmk_r
+   EXTRA_CXXOPTIMIZE += -Wno-error=template-body
+%endif
+
+fprate,fpspeed=base: # flags for fp base
+   EXTRA_COPTIMIZE = -Wno-error=implicit-int
+# Notes about the above
+#  - 527.cam4_r,627.cam4_s needs -Wno-error=implicit-int
+```
+
+运行方式：
+
+```shell
+# int speed
+cd /mnt && . ./shrc && runcpu intspeed
+# fp speed
+ulimit -s unlimited && cd /mnt && . ./shrc && runcpu fpspeed
+```
+
+### SPEC CPU 2006
+
+```
+# match spec result standard
+reportable = yes
+# skip peak
+basepeak = yes
+# show live output
+teeout = yes
+
+# optimization flags for base
+default=base=default=default:
+COPTIMIZE = -O3 -fgnu89-inline -fcommon -fno-strict-aliasing
+CXXOPTIMIZE = -O3 -fpermissive --std=c++98 -fno-strict-aliasing
+FOPTIMIZE = -O3 -std=legacy -fno-strict-aliasing
+
+# specify compilers
+default=default=default=default:
+CC = /usr/bin/gcc
+CXX = /usr/bin/g++
+FC = /usr/bin/gfortran
+
+# fix compilation
+default=base=default=default:
+PORTABILITY = -DSPEC_CPU_LP64
+
+400.perlbench=default=default=default:
+CPORTABILITY = -DSPEC_CPU_LINUX_X64
+
+462.libquantum=default=default=default:
+CPORTABILITY = -DSPEC_CPU_LINUX
+
+483.xalancbmk=default=default=default:
+CXXPORTABILITY = -DSPEC_CPU_LINUX
+
+481.wrf=default=default=default:
+CPORTABILITY = -DSPEC_CPU_CASE_FLAG -DSPEC_CPU_LINUX
+```
+
+运行方式：
+
+```shell
+# int speed
+cd /mnt && . ./shrc && runspec int
+```
