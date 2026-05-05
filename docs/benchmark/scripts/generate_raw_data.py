@@ -562,8 +562,8 @@ def update_index_md(test_type='fp2017'):
     """
     # Generate new raw data content
     data_dirs = [
-        (BASE_DIR / 'data-bookworm', 'Debian Bookworm'),
         (BASE_DIR / 'data-trixie', 'Debian Trixie'),
+        (BASE_DIR / 'data-bookworm', 'Debian Bookworm'),
         (BASE_DIR / 'data-harmonyos', 'HarmonyOS'),
     ]
 
@@ -688,8 +688,8 @@ Examples:
     else:
         # Only print generated markdown content
         data_dirs = [
-            (BASE_DIR / 'data-bookworm', 'Debian Bookworm'),
             (BASE_DIR / 'data-trixie', 'Debian Trixie'),
+            (BASE_DIR / 'data-bookworm', 'Debian Bookworm'),
             (BASE_DIR / 'data-harmonyos', 'HarmonyOS'),
         ]
 
