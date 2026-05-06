@@ -28,7 +28,7 @@ categories:
 
 虽然事故解决了，但这个过程中暴露了很多问题：
 
-- 首先就是循环依赖：ESXi 的 DS LACP 依赖 vCSA，vCSA 依赖 DNS，DNS 依赖主网关。如果没有准备好备用网关，且备用网关恰好没有用 DS LACP 因此不受影响，那么修复起来就更麻烦了。解决循环依赖的办法也很简单，对于一些重要的虚拟机（如网关），它所依赖的功能越简单越好。
+- 首先就是循环依赖：ESXi 的 DS LACP 依赖 vCSA，vCSA 依赖 DNS，DNS 依赖主网关，主网关通过 DS LACP 访问互联网。如果没有准备好备用网关，且备用网关恰好没有用 DS LACP 因此不受影响，那么修复起来就更麻烦了。解决循环依赖的办法也很简单，对于一些重要的虚拟机（如网关），它所依赖的功能越简单越好。
 - 备用网关的 NAT 功能在升级 Debian 版本后，因为没有仔细阅读 sysctl 的[变化](https://www.debian.org/releases/trixie/release-notes/issues.en.html#etc-sysctl-conf-is-no-longer-honored)而失效了，升级后缺少对功能的检查。
 - keepalived 只判断机器是否在线，但没有判断机器是否可以正常连接互联网、承担起网关的职能。
 - ESXi + vCSA 这类闭源软件，修复起来还是比较痛苦的，很多内部的工作原理并不清楚，可调试性也比较差，以后还是会谨慎选择。
