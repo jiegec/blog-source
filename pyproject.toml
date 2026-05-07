@@ -11,10 +11,10 @@ mkdocs = "^1.5.2"
 mkdocs-material = {extras = ["imaging"], version = "^9.6.15"}
 mkdocs-rss-plugin = "^1.8.0"
 mkdocs-git-revision-date-localized-plugin = "^1.2.0"
-mkdocs-wavedrom-plugin = {git = "https://github.com/jiegec/mkdocs-wavedrom-plugin.git"}
 matplotlib = "^3.10.0"
 lxml = "^6.0.2"
 mkdocs-llmstxt = "^0.5.0"
+zensical-wavedrom-plugin = "^0.1.1"
 
 [build-system]
 requires = ["poetry-core"]

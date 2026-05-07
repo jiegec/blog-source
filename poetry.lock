@@ -1431,30 +1431,6 @@ docs = ["mkdocs-git-committers-plugin-2 (>=2.4.1,<2.6)", "mkdocs-git-revision-da
 test = ["feedparser (>=6.0.12,<6.1)", "jsonfeed-util (>=1.2,<2)", "mkdocs-material[imaging] (>=9.7,<9.8)", "mkdocs-materialx[imaging] (>=10.1.3,<11)", "pytest-cov (>=6.9.1,<8)", "validator-collection (>=1.5,<1.6)"]
 
 [[package]]
-name = "mkdocs-wavedrom-plugin"
-version = "0.1.2"
-description = "A MkDocs plugin for support wavedrom charts in markdown file"
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = []
-develop = false
-
-[package.dependencies]
-beautifulsoup4 = ">=4.6.3"
-mkdocs = ">=1.4.0"
-wavedrom = ">=2.0.3"
-
-[package.extras]
-dev = ["pytest (>=8.0)"]
-
-[package.source]
-type = "git"
-url = "https://github.com/jiegec/mkdocs-wavedrom-plugin.git"
-reference = "HEAD"
-resolved_reference = "e4f51355ff9f5dc628129b0b4773692c866b02f5"
-
-[[package]]
 name = "msgpack"
 version = "1.1.2"
 description = "MessagePack serializer"
@@ -2196,7 +2172,27 @@ files = [
     {file = "webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
 ]
 
+[[package]]
+name = "zensical-wavedrom-plugin"
+version = "0.1.1"
+description = "A Zensical extension for rendering WaveDrom diagrams in Markdown"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "zensical_wavedrom_plugin-0.1.1-py3-none-any.whl", hash = "sha256:37cfe42595260a29fc6f6603aee2ec2d2524491a708a441d953aa6d5a7fb31d6"},
+    {file = "zensical_wavedrom_plugin-0.1.1.tar.gz", hash = "sha256:31b6d468e1420dc721212112f13346202c0f7b7d7196d81b9231b98003bb41ee"},
+]
+
+[package.dependencies]
+beautifulsoup4 = ">=4.6"
+markdown = ">=3.7"
+wavedrom = ">=2.0.3"
+
+[package.extras]
+dev = ["pytest (>=9.0.3)"]
+
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "8c5f8a3010640114d04bad549d58b9b6c857fbf0f47237381e25c78d6a6b610f"
+content-hash = "bc3dc3d4d920f0ce313c47e5582626b16901983c9a73e0fd729fb5988fe7b56a"

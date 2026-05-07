@@ -90,6 +90,8 @@ document$.subscribe(() => {
 
 这样 Instant Navigation 在“重新加载”页面的时候，才会重新调用 `WaveDrom.ProcessAll`。
 
+UPDATE: 为了迁移到 Zensical，我又开发了 [zensical-wavedrom-plugin](https://github.com/jiegec/zensical-wavedrom-plugin)，支持了在 Zensical 和 Mkdocs 中渲染 Wavedrom。
+
 ## Math
 
 和 WaveDrom 类似，Arithmatex 扩展默认情况下，也会给数学公式生成 `<script>` tag，只不过这次是 [MathJax 的旧格式](https://github.com/facelessuser/pymdown-extensions/blob/main/docs/src/markdown/extensions/arithmatex.md#mathjax-output-format)：
