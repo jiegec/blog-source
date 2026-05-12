@@ -150,6 +150,8 @@ permalink: /benchmark/
 
 ## 更新历史
 
+- 2026.05.12:
+      - 测试 Apple M2 的性能
 - 2026.05.02:
       - 测试 IBM POWER9 3.8 GHz (44C176T) 性能
       - 测试 Intel Core i5-1135G7 性能

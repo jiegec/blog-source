@@ -59,6 +59,8 @@ CPU_INFO = [
     # Desktop - Apple
     ('Apple M1 E-Core', {None: '@ 2.1 GHz Icestorm'}),
     ('Apple M1 P-Core', {None: '@ 3.2 GHz Firestorm'}),
+    ('Apple M2 E-Core', {None: '@ 2.4 GHz Blizzard'}),
+    ('Apple M2 P-Core', {None: '@ 3.5 GHz Avalanche'}),
     # Desktop - Intel
     ('Intel Core i9-10980XE', {
         'O3-march=native': '@ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake',
