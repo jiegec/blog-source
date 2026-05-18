@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Generate raw data markdown content for SPEC CPU 2017 Rate-1 (both INT and FP)"""
+"""Generate raw data markdown content for SPEC CPU 2017/2026 Rate-1 (both INT and FP)"""
 
 from pathlib import Path
 
 # Parent directory of script (docs/benchmark)
 BASE_DIR = Path(__file__).parent.parent.absolute()
 
-BENCHMARKS_INT_RATE = [
+BENCHMARKS_INT_2017_RATE = [
     "500.perlbench_r",
     "502.gcc_r",
     "505.mcf_r",
@@ -20,7 +20,7 @@ BENCHMARKS_INT_RATE = [
     "557.xz_r",
 ]
 
-BENCHMARKS_FP_RATE = [
+BENCHMARKS_FP_2017_RATE = [
     "503.bwaves_r",
     "507.cactuBSSN_r",
     "508.namd_r",
@@ -34,6 +34,38 @@ BENCHMARKS_FP_RATE = [
     "544.nab_r",
     "549.fotonik3d_r",
     "554.roms_r",
+]
+
+BENCHMARKS_INT_2026_RATE = [
+    "706.stockfish_r",
+    "707.ntest_r",
+    "708.sqlite_r",
+    "710.omnetpp_r",
+    "714.cpython_r",
+    "721.gcc_r",
+    "723.llvm_r",
+    "727.cppcheck_r",
+    "729.abc_r",
+    "734.vpr_r",
+    "735.gem5_r",
+    "750.sealcrypto_r",
+    "753.ns3_r",
+    "777.zstd_r",
+]
+
+BENCHMARKS_FP_2026_RATE = [
+    "709.cactus_r",
+    "722.palm_r",
+    "731.astcenc_r",
+    "736.ocio_r",
+    "737.gmsh_r",
+    "748.flightdm_r",
+    "749.fotonik3d_r",
+    "765.roms_r",
+    "766.femflow_r",
+    "767.nest_r",
+    "772.marian_r",
+    "782.lbm_r",
 ]
 
 # Define platform categories
@@ -245,15 +277,21 @@ def parse_score_from_file(filepath, test_type="fp2017"):
 
     Args:
         filepath: Path to the result file
-        test_type: 'int2017' or 'fp2017'
+        test_type: 'int2017', 'fp2017', 'int2026', or 'fp2026'
     """
     # Determine the score pattern based on test type
     if test_type == "int2017":
         score_pattern = "SPECrate(R)2017_int_base"
         est_pattern = "Est. SPECrate(R)2017_int_base"
-    else:  # fp2017
+    elif test_type == "fp2017":
         score_pattern = "SPECrate(R)2017_fp_base"
         est_pattern = "Est. SPECrate(R)2017_fp_base"
+    elif test_type == "int2026":
+        score_pattern = "SPECrate(R)2026_int_base"
+        est_pattern = "Est. SPECrate(R)2026_int_base"
+    else:  # fp2026
+        score_pattern = "SPECrate(R)2026_fp_base"
+        est_pattern = "Est. SPECrate(R)2026_fp_base"
 
     with open(filepath, "r", encoding="utf-8") as f:
         for line in f:
@@ -398,8 +436,12 @@ def generate_section_markdown(data_dir, section_name, test_type="fp2017"):
     # Determine the subdirectory name based on test type
     if test_type == "int2017":
         test_dir = data_dir / "int2017_rate1"
-    else:  # fp2017
+    elif test_type == "fp2017":
         test_dir = data_dir / "fp2017_rate1"
+    elif test_type == "int2026":
+        test_dir = data_dir / "int2026_rate1"
+    else:  # fp2026
+        test_dir = data_dir / "fp2026_rate1"
 
     if not test_dir.exists():
         return ""
@@ -617,12 +659,18 @@ def generate_section_markdown(data_dir, section_name, test_type="fp2017"):
     return "".join(md_lines)
 
 
-def update_index_md(test_type="fp2017"):
-    """Update spec-cpu-2017-rate.md file
+def update_index_md(test_type="fp2017", output_md="spec-cpu-2017-rate.md"):
+    """Update a spec-cpu-XXXX-rate.md file
 
     Args:
-        test_type: 'int2017' or 'fp2017'
+        test_type: 'int2017', 'fp2017', 'int2026', or 'fp2026'
+        output_md: output markdown filename (default: spec-cpu-2017-rate.md)
     """
+    # Determine display name
+    year = "2026" if "2026" in test_type else "2017"
+    type_label = "INT" if "int" in test_type else "FP"
+    test_display = f"SPEC {type_label} {year}"
+
     # Generate new raw data content
     data_dirs = [
         (BASE_DIR / "data-trixie", "Debian Trixie"),
@@ -639,20 +687,20 @@ def update_index_md(test_type="fp2017"):
     # Join sections with blank lines between them
     new_content = "\n".join(md_content)
 
-    # Read spec-cpu-2017-rate.md
-    index_md_path = BASE_DIR / "spec-cpu-2017-rate.md"
+    # Read the target markdown file
+    index_md_path = BASE_DIR / output_md
     with open(index_md_path, "r", encoding="utf-8") as f:
         content = f.read()
 
     # Find the correct section based on test_type
-    # First occurrence is for int2017, second is for fp2017
+    # First occurrence is for INT, second is for FP
     lines = content.split("\n")
     start_idx = -1
     end_idx = -1
     raw_data_count = 0
 
-    # Determine which occurrence we need (1 for int2017, 2 for fp2017)
-    target_occurrence = 1 if test_type == "int2017" else 2
+    # Determine which occurrence we need (1 for INT, 2 for FP)
+    target_occurrence = 1 if "int" in test_type else 2
 
     for i, line in enumerate(lines):
         if line == "### 原始数据":
@@ -662,8 +710,7 @@ def update_index_md(test_type="fp2017"):
                 break
 
     if start_idx == -1:
-        test_name = "SPEC INT 2017" if test_type == "int2017" else "SPEC FP 2017"
-        print(f"Could not find {test_name} Rate-1 raw data section start")
+        print(f"Could not find {test_display} Rate-1 raw data section start")
         print("\nGenerated raw data content:")
         print(new_content)
         return
@@ -675,8 +722,7 @@ def update_index_md(test_type="fp2017"):
             break
 
     if end_idx == -1:
-        test_name = "SPEC INT 2017" if test_type == "int2017" else "SPEC FP 2017"
-        print(f"Could not find {test_name} Rate-1 raw data section end")
+        print(f"Could not find {test_display} Rate-1 raw data section end")
         print("\nGenerated raw data content:")
         print(new_content)
         return
@@ -696,9 +742,8 @@ def update_index_md(test_type="fp2017"):
     with open(index_md_path, "w", encoding="utf-8") as f:
         f.write(new_index_md)
 
-    test_name = "SPEC INT 2017" if test_type == "int2017" else "SPEC FP 2017"
     print(f"Updated {index_md_path}")
-    print(f"Replaced {test_name} Rate-1 raw data section")
+    print(f"Replaced {test_display} Rate-1 raw data section")
 
 
 # ──────────────────────────────────────────────
@@ -833,11 +878,17 @@ def detect_isa(cpu_name):
 def parse_per_benchmark_data(filepath, test_type="fp2017"):
     """Parse per-benchmark scores and perf data from a SPEC result file."""
     if test_type == "int2017":
-        benchmark_names = set(BENCHMARKS_INT_RATE)
+        benchmark_names = set(BENCHMARKS_INT_2017_RATE)
         score_marker = "SPECrate(R)2017_int_base"
-    else:
-        benchmark_names = set(BENCHMARKS_FP_RATE)
+    elif test_type == "fp2017":
+        benchmark_names = set(BENCHMARKS_FP_2017_RATE)
         score_marker = "SPECrate(R)2017_fp_base"
+    elif test_type == "int2026":
+        benchmark_names = set(BENCHMARKS_INT_2026_RATE)
+        score_marker = "SPECrate(R)2026_int_base"
+    else:  # fp2026
+        benchmark_names = set(BENCHMARKS_FP_2026_RATE)
+        score_marker = "SPECrate(R)2026_fp_base"
 
     per_benchmark = {}
     found_delim = False
@@ -910,7 +961,7 @@ def generate_json_data():
         (BASE_DIR / "data-bookworm", "bookworm"),
         (BASE_DIR / "data-harmonyos", "harmonyos"),
     ]
-    test_types = ["int2017", "fp2017"]
+    test_types = ["int2017", "fp2017", "int2026", "fp2026"]
 
     result = {"version": 3, "data": {}}
 
@@ -920,9 +971,15 @@ def generate_json_data():
             if test_type == "int2017":
                 test_dir = data_dir / "int2017_rate1"
                 suite_key = "int2017_rate1"
-            else:
+            elif test_type == "fp2017":
                 test_dir = data_dir / "fp2017_rate1"
                 suite_key = "fp2017_rate1"
+            elif test_type == "int2026":
+                test_dir = data_dir / "int2026_rate1"
+                suite_key = "int2026_rate1"
+            else:  # fp2026
+                test_dir = data_dir / "fp2026_rate1"
+                suite_key = "fp2026_rate1"
 
             if not test_dir.exists():
                 continue
@@ -999,21 +1056,21 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Generate raw data markdown for SPEC CPU 2017",
+        description="Generate raw data markdown for SPEC CPU 2017/2026",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Generate INT 2017 data and print to stdout
   %(prog)s --type int2017
 
-  # Generate FP 2017 data and print to stdout
-  %(prog)s --type fp2017
+  # Generate FP 2026 data and print to stdout
+  %(prog)s --type fp2026
 
-  # Generate both and update spec-cpu-2017-rate.md
-  %(prog)s --type both --update
+  # Generate INT 2026 data and update spec-cpu-2026-rate.md
+  %(prog)s --type int2026 --update
 
-  # Generate INT 2017 data and update spec-cpu-2017-rate.md
-  %(prog)s --type int2017 --update
+  # Generate all data and update both markdown files
+  %(prog)s --type all --update
 
   # Generate JSON for the web viewer
   %(prog)s --json
@@ -1021,14 +1078,15 @@ Examples:
     )
     parser.add_argument(
         "--type",
-        choices=["int2017", "fp2017", "both"],
-        default="both",
-        help="Type of SPEC test to generate (default: fp2017)",
+        choices=["int2017", "fp2017", "int2026", "fp2026", "all"],
+        default="all",
+        help="Type of SPEC test to generate (default: all)",
+
     )
     parser.add_argument(
         "--update",
         action="store_true",
-        help="Update spec-cpu-2017-rate.md file instead of printing to stdout",
+        help="Update markdown file(s) instead of printing to stdout",
     )
     parser.add_argument(
         "--json",
@@ -1046,15 +1104,22 @@ Examples:
         return
 
     # Determine which test types to process
-    if args.type == "both":
-        test_types = ["int2017", "fp2017"]
-    else:
-        test_types = [args.type]
+    type_map = {
+        "int2017": ["int2017"],
+        "fp2017": ["fp2017"],
+        "int2026": ["int2026"],
+        "fp2026": ["fp2026"],
+        "all": ["int2017", "fp2017", "int2026", "fp2026"],
+    }
+    test_types = type_map[args.type]
 
     if args.update:
-        # Update spec-cpu-2017-rate.md
+        # Update the appropriate markdown file(s)
         for test_type in test_types:
-            update_index_md(test_type)
+            if "2026" in test_type:
+                update_index_md(test_type, output_md="spec-cpu-2026-rate.md")
+            else:
+                update_index_md(test_type, output_md="spec-cpu-2017-rate.md")
     else:
         # Only print generated markdown content
         data_dirs = [
