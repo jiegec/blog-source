@@ -24,6 +24,16 @@ h1 { font-size: 1.4rem; margin-bottom: 12px; }
 .btn:hover { background: #357abd; }
 .btn-outline { background: transparent; color: #4a90d9; }
 .btn-outline:hover { background: #e8f0fe; }
+.modal { display: none; position: fixed; inset: 0; z-index: 1000;
+         background: rgba(0,0,0,0.4); align-items: center; justify-content: center; }
+.modal.show { display: flex; }
+.modal-content { background: #fff; border-radius: 8px; max-width: 900px; width: 90%;
+                 max-height: 85vh; overflow-y: auto; padding: 16px; position: relative; }
+.modal-close { position: absolute; top: 8px; right: 12px; font-size: 1.2rem;
+               cursor: pointer; color: #666; background: none; border: none; }
+.modal-close:hover { color: #000; }
+.modal h2 { font-size: 1rem; margin-bottom: 8px; padding-right: 24px; }
+.modal table { font-size: 0.75rem; }
 .chart-box { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
              padding: 8px; margin-bottom: 12px; overflow: hidden; }
 #chart { width: 100%; height: 600px; }
@@ -82,6 +92,14 @@ tr.sep td { border-top: 2px solid #4a90d9; }
     <tbody id="table-body"></tbody>
   </table>
 </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close">&times;</button>
+    <h2 id="modal-title"></h2>
+    <div id="modal-body"></div>
+  </div>
 </div>
 
 <script>
@@ -276,7 +294,14 @@ function render(chart) {
   const isaSet = unique(data.map(e => e.isa));
   legendEl.innerHTML = '<span style="font-weight:600;margin-right:8px;">ISA:</span>' +
     isaSet.map(isa => `<span class="legend-item"><span class="legend-dot" style="background:${COLORS[isa]||'#95a5a6'}"></span>${isa}</span>`).join('') +
-    ' <span style="margin-left:16px;font-weight:600;">Hover bars for details</span>';
+    ' <span style="margin-left:16px;font-weight:600;">Click bars for per-benchmark details</span>';
+
+  // click handler for modal
+  chart.off('click');
+  chart.on('click', function(params) {
+    const item = data[params.dataIndex];
+    if (item && item.benchmarks) showDetail(item);
+  });
 
   // table
   renderTable(data);
@@ -307,6 +332,43 @@ function renderTable(data) {
 }
 
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function fmt(v) {
+  if (v === undefined || v === null) return '-';
+  if (typeof v !== 'number') return v;
+  if (Math.abs(v) >= 1e9) return (v / 1e9).toFixed(2) + 'B';
+  if (Math.abs(v) >= 1e6) return (v / 1e6).toFixed(2) + 'M';
+  if (Number.isInteger(v)) return v.toString();
+  return v.toFixed(4);
+}
+
+function showDetail(item) {
+  const bm = item.benchmarks;
+  if (!bm) return;
+  const names = Object.keys(bm);
+  const suiteLabel = item.test_type === 'int2017_rate1' ? 'INT' : 'FP';
+  document.getElementById('modal-title').textContent =
+    `${item.cpu_name} (${item.opt_flags}) — ${suiteLabel} 2017 Rate-1 — Score: ${item.score}`;
+  const cols = ['Benchmark', 'Ratio', 'Time (ms)', 'Clock (MHz)', 'IPC', 'MPKI', 'Mispred (%)', 'Instructions', 'Branch Insn'];
+  const keys = ['ratio', 'time', 'clock', 'ipc', 'mpki', 'misprediction_rate', 'instructions', 'branch_instructions'];
+  let html = '<table><thead><tr>' + cols.map(c => '<th>' + c + '</th>').join('') + '</tr></thead><tbody>';
+  for (const n of names) {
+    const d = bm[n];
+    html += '<tr><td>' + esc(n) + '</td>';
+    for (const k of keys) html += '<td>' + fmt(d[k]) + '</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal').classList.add('show');
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('show');
+});
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) document.getElementById('modal').classList.remove('show');
+});
 
 // ── events: auto-refresh on any input change ──
 function onInputChange() {
