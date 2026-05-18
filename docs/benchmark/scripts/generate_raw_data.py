@@ -2,12 +2,23 @@
 # -*- coding: utf-8 -*-
 """Generate raw data markdown content for SPEC CPU 2017 Rate-1 (both INT and FP)"""
 
-import os
-import glob
 from pathlib import Path
 
 # Parent directory of script (docs/benchmark)
 BASE_DIR = Path(__file__).parent.parent.absolute()
+
+BENCHMARKS_INT_RATE = [
+    "500.perlbench_r", "502.gcc_r", "505.mcf_r", "520.omnetpp_r",
+    "523.xalancbmk_r", "525.x264_r", "531.deepsjeng_r", "541.leela_r",
+    "548.exchange2_r", "557.xz_r",
+]
+
+BENCHMARKS_FP_RATE = [
+    "503.bwaves_r", "507.cactuBSSN_r", "508.namd_r", "510.parest_r",
+    "511.povray_r", "519.lbm_r", "521.wrf_r", "526.blender_r",
+    "527.cam4_r", "538.imagick_r", "544.nab_r", "549.fotonik3d_r",
+    "554.roms_r",
+]
 
 # Define platform categories
 PLATFORMS = {
@@ -640,9 +651,283 @@ def update_index_md(test_type='fp2017'):
     print(f"Replaced {test_name} Rate-1 raw data section")
 
 
+# ──────────────────────────────────────────────
+# Metadata helpers for JSON export
+# ──────────────────────────────────────────────
+
+VENDOR_MAP = [
+    ('AMD', 'AMD'),
+    ('Intel', 'Intel'),
+    ('Apple', 'Apple'),
+    ('Qualcomm', 'Qualcomm'),
+    ('AWS', 'AWS'),
+    ('Ampere', 'Ampere'),
+    ('Hygon', 'Hygon'),
+    ('IBM', 'IBM'),
+    ('Kunpeng', 'Huawei'),
+    ('T-Head', 'T-Head'),
+    ('Loongson', 'Loongson'),
+    ('Google', 'Google'),
+    ('Huawei', 'Huawei'),
+]
+
+
+def detect_vendor(cpu_name):
+    for pattern, vendor in VENDOR_MAP:
+        if pattern in cpu_name:
+            return vendor
+    assert False, cpu_name
+
+
+def detect_launch_date(cpu_name):
+    """Launch year based on CPU name."""
+    mapping = [
+        ('AMD EPYC 7551', '2017'),
+        ('AMD EPYC 7742', '2019'),
+        ('AMD EPYC 7H12', '2019'),
+        ('AMD EPYC 7K83', '2021'),
+        ('AMD EPYC 9754', '2023'),
+        ('AMD EPYC 9755', '2024'),
+        ('AMD EPYC 9K65', '2024'),
+        ('AMD EPYC 9K85', '2024'),
+        ('AMD EPYC 9R14', '2023'),
+        ('AMD EPYC 9R45', '2024'),
+        ('AMD EPYC 9T24', '2023'),
+        ('AMD EPYC 9T95', '2024'),
+        ('AMD Ryzen 5 7500F', '2024'),
+        ('AMD Ryzen 7 5700X', '2022'),
+        ('AMD Ryzen 9 9950X', '2024'),
+        ('AWS Graviton 3', '2022'),
+        ('AWS Graviton 3E', '2022'),
+        ('AWS Graviton 4', '2023'),
+        ('Ampere Altra', '2021'),
+        ('Apple M1', '2020'),
+        ('Apple M2', '2022'),
+        ('Google Axion C4A', '2024'),
+        ('Google Axion N4A', '2024'),
+        ('Huawei Kirin 9010', '2024'),
+        ('Huawei Kirin X90', '2025'),
+        ('Hygon C86 7390', '2023'),
+        ('IBM POWER8', '2014'),
+        ('IBM POWER8NVL', '2016'),
+        ('IBM POWER9', '2018'),
+        ('Intel Core i5-1135G7', '2020'),
+        ('Intel Core i7-13700K', '2022'),
+        ('Intel Core i9-10980XE', '2019'),
+        ('Intel Core i9-12900KS', '2022'),
+        ('Intel Core i9-14900K', '2023'),
+        ('Intel Xeon 6975P-C', '2024'),
+        ('Intel Xeon 6981E', '2024'),
+        ('Intel Xeon 6982P-C', '2024'),
+        ('Intel Xeon D-2146NT', '2018'),
+        ('Intel Xeon E5-2603 v4', '2016'),
+        ('Intel Xeon E5-2680 v3', '2014'),
+        ('Intel Xeon E5-2680 v4', '2016'),
+        ('Intel Xeon E5-4610 v2', '2014'),
+        ('Intel Xeon Gold 6430', '2023'),
+        ('Intel Xeon Platinum 8358P', '2021'),
+        ('Intel Xeon Platinum 8576C', '2023'),
+        ('Intel Xeon Platinum 8581C', '2023'),
+        ('Intel Xeon w9-3595X', '2024'),
+        ('Kunpeng 920', '2019'),
+        ('Loongson 3A6000', '2023'),
+        ('Loongson 3C5000', '2022'),
+        ('Loongson 3C6000', '2024'),
+        ('Qualcomm 8cx Gen3', '2022'),
+        ('Qualcomm X Elite', '2023'),
+        ('Qualcomm X1E80100', '2024'),
+        ('T-Head Yitian 710', '2022'),
+    ]
+    for pattern, year in mapping:
+        if pattern in cpu_name:
+            return year
+    assert False, cpu_name
+
+
+def detect_sector(cpu_name):
+    """Determine sector from CPU name."""
+    mobile_keywords = ['Kirin']
+    for kw in mobile_keywords:
+        if kw in cpu_name:
+            return 'mobile'
+    return get_platform_type(cpu_name)
+
+
+def detect_isa(cpu_name):
+    if 'Intel' in cpu_name or 'AMD' in cpu_name or 'Hygon' in cpu_name:
+        return 'amd64'
+    candidates = ['Graviton', 'Huawei', 'Kunpeng', 'Qualcomm', 'Apple',
+                  'Ampere', 'Yitian', 'Axion']
+    if any(c in cpu_name for c in candidates):
+        return 'arm64'
+    if 'Loongson' in cpu_name:
+        return 'loong64'
+    if 'POWER' in cpu_name:
+        return 'ppc64el'
+    assert False, cpu_name
+
+
+# ──────────────────────────────────────────────
+# JSON export
+# ──────────────────────────────────────────────
+
+def parse_per_benchmark_data(filepath, test_type='fp2017'):
+    """Parse per-benchmark scores and perf data from a SPEC result file."""
+    if test_type == 'int2017':
+        benchmark_names = set(BENCHMARKS_INT_RATE)
+        score_marker = 'SPECrate(R)2017_int_base'
+    else:
+        benchmark_names = set(BENCHMARKS_FP_RATE)
+        score_marker = 'SPECrate(R)2017_fp_base'
+
+    per_benchmark = {}
+    found_delim = False
+    passed_score = False
+
+    key_map = {
+        'time': 'time',
+        'clock freq': 'clock',
+        'instructions': 'instructions',
+        'branch instructions': 'branch_instructions',
+        'ipc': 'ipc',
+        'misprediction rate': 'misprediction_rate',
+        'mpki': 'mpki',
+    }
+
+    with open(filepath, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith("===="):
+                found_delim = True
+                continue
+
+            parts = line.strip().split()
+            parts = [p for p in parts if len(p) > 0]
+
+            if line.strip() == "System Info:":
+                break
+
+            if found_delim:
+                if '*' in line and len(parts) >= 4:
+                    bm = parts[0]
+                    if bm in benchmark_names:
+                        try:
+                            ratio = float(parts[3])
+                        except ValueError:
+                            continue
+                        per_benchmark.setdefault(bm, {})['ratio'] = ratio
+
+                if score_marker in line:
+                    passed_score = True
+
+                if passed_score and ':' in line and not line.startswith(' '):
+                    colon = line.split(':', 1)
+                    if len(colon) != 2:
+                        continue
+                    bm = colon[0].strip()
+                    if bm not in benchmark_names:
+                        continue
+                    rest = colon[1].strip()
+                    if ' = ' not in rest:
+                        continue
+                    kv = rest.split(' = ', 1)
+                    key_raw = kv[0].strip()
+                    try:
+                        value = float(kv[1].strip())
+                    except ValueError:
+                        continue
+                    # strip units in parentheses
+                    key_clean = key_raw.split(' (')[0].strip()
+                    norm_key = key_map.get(key_clean, key_clean.replace(' ', '_'))
+                    per_benchmark.setdefault(bm, {})[norm_key] = value
+    return per_benchmark
+
+
+def generate_json_data():
+    """Generate a JSON-serialisable data structure with full metadata."""
+    import json
+
+    data_dirs = [
+        (BASE_DIR / 'data-trixie', 'trixie'),
+        (BASE_DIR / 'data-bookworm', 'bookworm'),
+        (BASE_DIR / 'data-harmonyos', 'harmonyos'),
+    ]
+    test_types = ['int2017', 'fp2017']
+
+    result = {'version': 3, 'data': {}}
+
+    for data_dir, os_name in data_dirs:
+        os_entry = {}
+        for test_type in test_types:
+            if test_type == 'int2017':
+                test_dir = data_dir / 'int2017_rate1'
+                suite_key = 'int2017_rate1'
+            else:
+                test_dir = data_dir / 'fp2017_rate1'
+                suite_key = 'fp2017_rate1'
+
+            if not test_dir.exists():
+                continue
+
+            files = list(test_dir.glob('*.txt'))
+            if not files:
+                continue
+
+            entries = []
+            for f in files:
+                score = parse_score_from_file(f, test_type)
+                if score is None:
+                    continue
+                cpu_display, opt_flags = parse_cpu_name(f.name)
+                cpu_raw = cpu_display.split('@')[0].strip()
+                opt_flags_display = format_opt_flags_for_display(opt_flags) if opt_flags else '-O3'
+                per_bm = parse_per_benchmark_data(f, test_type)
+                entry = {
+                    'cpu_name': cpu_display,
+                    'cpu_raw': cpu_raw,
+                    'opt_flags': opt_flags_display,
+                    'score': score,
+                    'vendor': detect_vendor(cpu_raw),
+                    'launch_date': detect_launch_date(cpu_raw),
+                    'sector': detect_sector(cpu_raw),
+                    'isa': detect_isa(cpu_raw),
+                    'os': os_name,
+                    'test_type': suite_key,
+                    'filename': f.name,
+                    'rel_path': f'./{data_dir.name}/{test_dir.name}/{f.name}',
+                }
+                if per_bm:
+                    entry['benchmarks'] = {}
+                    for bm, bm_data in per_bm.items():
+                        entry['benchmarks'][bm] = {}
+                        if 'ratio' in bm_data:
+                            entry['benchmarks'][bm]['ratio'] = bm_data['ratio']
+                        for k in ('time', 'clock', 'instructions',
+                                  'branch_instructions', 'ipc',
+                                  'misprediction_rate', 'mpki'):
+                            if k in bm_data:
+                                entry['benchmarks'][bm][k] = bm_data[k]
+                entries.append(entry)
+            if entries:
+                os_entry[suite_key] = entries
+        if os_entry:
+            result['data'][os_name] = os_entry
+
+    return result
+
+
+def write_json(output_path=None):
+    """Write benchmark data as JSON."""
+    import json
+    data = generate_json_data()
+    if output_path is None:
+        output_path = BASE_DIR / 'benchmark_data.json'
+    with open(output_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    print(f"Wrote {output_path}")
+
+
 def main():
     """Main function"""
-    import sys
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -661,6 +946,9 @@ Examples:
 
   # Generate INT 2017 data and update spec-cpu-2017-rate.md
   %(prog)s --type int2017 --update
+
+  # Generate JSON for the web viewer
+  %(prog)s --json
         '''
     )
     parser.add_argument(
@@ -674,8 +962,20 @@ Examples:
         action='store_true',
         help='Update spec-cpu-2017-rate.md file instead of printing to stdout'
     )
+    parser.add_argument(
+        '--json',
+        nargs='?',
+        const='default',
+        metavar='OUTPUT_PATH',
+        help='Generate JSON data file for the web viewer (default: ../benchmark_data.json)'
+    )
 
     args = parser.parse_args()
+
+    if args.json is not None:
+        output_path = None if args.json == 'default' else args.json
+        write_json(output_path)
+        return
 
     # Determine which test types to process
     if args.type == 'both':
