@@ -18,7 +18,7 @@ for data in ["data-bookworm", "data-trixie", "data-harmonyos"]:
                     break
                 parts = line.strip().split(" ")
                 parts = list(filter(lambda s: len(s) > 0, parts))
-                if found_delim and parts[1] == '1':
+                if found_delim and parts[1] == "1":
                     times.append(float(parts[2]))
 
                     if len(times) == 3:
@@ -26,8 +26,7 @@ for data in ["data-bookworm", "data-trixie", "data-harmonyos"]:
                         if times[1] / times[0] > 1.1:
                             print(f"Anomaly found in {f}: {times} {line}")
                         times = []
-                    
+
                     ratio = float(parts[3])
                     if ratio < 1.0:
                         print(f"Anomaly found in {f}: {ratio} {line}")
-
