@@ -573,7 +573,7 @@ def generate_section_markdown(data_dir, section_name, test_type="fp2017"):
             if md_lines and not md_lines[-1].endswith("\n\n"):
                 if header_flags == "-O3":
                     md_lines.append("\n")
-                elif header_flags == "-flto" and test_type == "int2017":
+                elif header_flags == "-flto" and (test_type == "int2017" or test_type == "int2026"):
                     md_lines.append("\n")
 
             # Generate title based on header_flags
