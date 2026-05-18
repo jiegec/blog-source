@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPEC CPU 2017 Rate Benchmark Viewer</title>
+<title>SPEC CPU Rate Benchmark Viewer</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -66,7 +66,7 @@ tr.sep td { border-top: 2px solid #4a90d9; }
 </head>
 <body>
 <div class="container">
-<h1>SPEC CPU 2017 Rate-1 Benchmark Viewer</h1>
+<h1>SPEC CPU Rate-1 Benchmark Viewer</h1>
 
 <div class="filters">
   <label>OS <select id="filter-os"></select></label>
@@ -195,6 +195,8 @@ function populateFilters() {
   const suiteSel = document.getElementById('filter-suite');
   addOption(suiteSel, 'int2017_rate1', 'int2017_rate1');
   addOption(suiteSel, 'fp2017_rate1', 'fp2017_rate1');
+  addOption(suiteSel, 'int2026_rate1', 'int2026_rate1');
+  addOption(suiteSel, 'fp2026_rate1', 'fp2026_rate1');
   const flgSel = document.getElementById('filter-flags');
   addOption(flgSel, 'All', 'All');
   unique(all.map(e => e.opt_flags)).forEach(v => addOption(flgSel, v, v));
@@ -385,7 +387,8 @@ function showDetail(item) {
   const bm = item.benchmarks;
   if (!bm) return;
   const names = Object.keys(bm);
-  const suiteLabel = item.test_type === 'int2017_rate1' ? 'INT' : 'FP';
+  const suiteYear = item.test_type.startsWith('int') ? 'INT' : 'FP';
+  const suiteLabel = suiteYear + (item.test_type.includes('2026') ? ' 2026' : ' 2017');
   document.getElementById('modal-title').innerHTML =
     `${esc(item.cpu_name)} <span style="font-weight:normal;font-size:0.85rem;color:#666">(${esc(item.opt_flags)})</span>`;
   const metaHtml = `<div style="font-size:0.8rem;color:#555;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:4px 16px;">
