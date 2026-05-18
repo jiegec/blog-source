@@ -242,8 +242,12 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  ['filter-os','filter-suite','filter-flags','filter-sector','filter-isa','filter-vendor']
+  ['filter-os','filter-suite','filter-sector','filter-isa','filter-vendor']
     .forEach(id => { const s = document.getElementById(id); if (s.options.length) s.selectedIndex = 0; });
+  const flgSel = document.getElementById('filter-flags');
+  for (let i = 0; i < flgSel.options.length; i++) {
+    if (flgSel.options[i].value === '-O3') { flgSel.selectedIndex = i; break; }
+  }
   document.getElementById('filter-search').value = '';
 }
 
