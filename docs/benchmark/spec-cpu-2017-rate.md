@@ -358,7 +358,37 @@
 
 ### 分支预测器比较
 
-x86 平台的分支预测准确率（Average）由高到低（`-O3`，Debian Bookworm）：
+#### Debian Trixie
+
+x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
+
+1. Zen 5(AMD 9R45): MPKI=4.52
+2. Zen 5c(AMD 9T95): MPKI=4.52
+3. Zen 3(AMD 5700X): MPKI=4.75
+4. Zen 2(AMD 7742): MPKI=4.80
+5. Redwood Cove(Intel 6975P-C): MPKI=4.81
+6. Golden Cove(Intel 12900KS P-Core)/Raptor Cove(Intel 13700K P-Core/Intel 14900K P-Core): MPKI=4.92
+7. Willow Cove(Intel i5-1135G7): MPKI=4.96
+8. Gracemont(Intel 12900KS E-Core/Intel 13700K E-Core/Intel 14900K E-Core): MPKI=5.19
+9. Cascade Lake(Intel 10980XE): MPKI=5.51
+10. Zen 1(AMD 7551): MPKI=5.90
+11. Broadwell(Intel E5-2680 v4): MPKI=6.05
+
+ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
+
+1. Neoverse V2(Google Axion C4A): MPKI=4.59
+2. Avalanche(Apple M2 P-Core): MPKI=4.62
+3. Firestorm(Apple M1 P-Core): MPKI=4.89
+4. Icestorm(Apple M1 E-Core): MPKI=5.47
+
+LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）：
+
+1. LA664(3A6000/3C6000): MPKI=5.01
+2. LA464(3C5000): MPKI=8.39
+
+#### Debian Bookworm
+
+x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
 1. Zen 5(AMD 9950X/AMD 9755/AMD 9K85): MPKI=4.48 Mispred=2.52%
 2. Zen 5c(AMD 9K65): MPKI=4.51 Mispred=2.54%
@@ -374,19 +404,7 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3`，Debian Boo
 12. Zen 1(AMD 7551): MPKI=5.82 Mispred=3.31%
 13. Haswell(Intel E5-2680 v3)/Broadwell(Intel E5-2680 v4): MPKI=5.98 Mispred=3.34%
 
-x86 平台的分支预测准确率（Average）由高到低（`-O3 -flto`，Debian Bookworm）：
-
-1. Zen 5(AMD 9950X/AMD 9755): MPKI=5.35 Mispred=3.07%
-2. Zen 5c(AMD 9K65)/Zen 5(AMD 9K85): MPKI=5.42 Mispred=3.10%
-3. Zen 2(AMD 7742): MPKI=5.52 Mispred=3.17%
-4. Zen 3(AMD 5700X): MPKI=5.55 Mispred=3.19%
-5. Zen 4(AMD 9T24/AMD 9R14): MPKI=5.57 Mispred=3.19%
-6. Redwood Cove(Intel 6982P-C): MPKI=5.70 Mispred=3.29%
-7. Golden Cove(Intel 12900KS P-Core)/Raptor Cove(Intel 14900K P-Core/Intel 8581C): MPKI=5.81 Mispred=3.37%
-8. Cascade Lake(Intel 10980XE): MPKI=6.55 Mispred=3.83%
-9. Zen 1(AMD 7551): MPKI=6.86 Mispred=4.02%
-
-ARM64 平台的分支预测准确率（Average）由高到低（`-O3`，Debian Bookworm）：
+ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
 1. Neoverse V2(AWS Graviton 4): MPKI=4.50 Mispred=2.47%
 2. Oryon(Qualcomm X1E80100): MPKI=4.71 Mispred=2.58%
@@ -397,21 +415,6 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`，Debian B
 7. Neoverse N1(Ampere Altra)/Cortex A78C(Qualcomm 8cx Gen3 E-Core): MPKI=5.21 Mispred=2.87%
 8. Icestorm(Apple M1 E-Core): MPKI=5.41 Mispred=2.99%
 9. TSV110(Hisilicon Kunpeng 920): MPKI=6.54 Mispred=3.58%
-
-ARM64 平台的分支预测准确率（Average）由高到低（`-O3 -flto`，Debian Bookworm）：
-
-1. Neoverse V2(AWS Graviton 4): MPKI=5.19 Mispred=3.03%
-2. Oryon(Qualcomm X1E80100): MPKI=5.41 Mispred=3.13%
-3. Firestorm(Apple M1 P-Core): MPKI=5.45 Mispred=3.14%
-4. Neoverse V1(AWS Graviton 3): MPKI=5.64 Mispred=3.27%
-5. HuaweiCloud kc2: MPKI=6.00 Mispred=3.50%
-6. Icestorm(Apple M1 E-Core): MPKI=6.10 Mispred=3.56%
-7. TSV110(Hisilicon Kunpeng 920): MPKI=6.74 Mispred=3.98%
-
-LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`，Debian Trixie）：
-
-1. LA664(3A6000/3C6000): MPKI=5.01 Mispred=2.79%
-2. LA464(3C5000): MPKI=8.39 Mispred=4.21%
 
 ### 网上的数据
 
