@@ -129,6 +129,7 @@ async function init() {
   }
 
   populateFilters();
+  loadFromUrl();
   applyFilters();
   render(chart);
 }
@@ -151,6 +152,37 @@ function unique(arr) { return [...new Set(arr)].sort(); }
 function addOption(sel, value, text) {
   const o = document.createElement('option'); o.value = value; o.textContent = text; sel.appendChild(o);
 }
+
+function syncUrl() {
+  const params = new URLSearchParams();
+  ['filter-os','filter-suite','filter-flags','filter-sector','filter-isa','filter-vendor'].forEach(id => {
+    const v = document.getElementById(id).value;
+    if (v) params.set(id.replace('filter-', ''), v);
+  });
+  const q = document.getElementById('filter-search').value.trim();
+  if (q) params.set('q', q);
+  const url = new URL(window.location);
+  url.search = params.toString();
+  window.history.replaceState(null, '', url);
+}
+
+function loadFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const map = { os: 'filter-os', suite: 'filter-suite', flags: 'filter-flags',
+                sector: 'filter-sector', isa: 'filter-isa', vendor: 'filter-vendor' };
+  for (const [key, id] of Object.entries(map)) {
+    const v = params.get(key);
+    if (v) {
+      const sel = document.getElementById(id);
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === v) { sel.selectedIndex = i; break; }
+      }
+    }
+  }
+  const q = params.get('q');
+  if (q) document.getElementById('filter-search').value = q;
+}
+
 function populateFilters() {
   const all = allEntries();
   const osSel = document.getElementById('filter-os');
@@ -372,6 +404,7 @@ document.getElementById('modal').addEventListener('click', (e) => {
 
 // ── events: auto-refresh on any input change ──
 function onInputChange() {
+  syncUrl();
   const chart = echarts.getInstanceByDom(document.getElementById('chart'));
   if (chart) refresh(chart);
 }
