@@ -25,6 +25,7 @@ PLATFORMS = {
     'desktop': [
         'AMD Ryzen',
         'Apple M1',
+        'Apple M2',
         'Intel Core',
         'Intel Xeon w9-3595X',  # Workstation CPU
         'Qualcomm 8cx Gen3',

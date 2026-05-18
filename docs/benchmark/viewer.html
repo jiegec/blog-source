@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPEC CPU 2017 Rate Benchmark Viewer</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+       background: #f5f5f5; color: #333; padding: 16px; }
+.container { max-width: 1400px; margin: 0 auto; }
+h1 { font-size: 1.4rem; margin-bottom: 12px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 12px;
+           align-items: center; background: #fff; padding: 10px 14px;
+           border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.filters label { font-size: 0.85rem; font-weight: 600; display: flex;
+                 align-items: center; gap: 4px; }
+.filters select { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px;
+                  font-size: 0.85rem; background: #fff; }
+.filters .stat { margin-left: auto; font-size: 0.85rem; color: #666; }
+.btn { padding: 4px 12px; border: 1px solid #4a90d9; border-radius: 4px;
+       background: #4a90d9; color: #fff; cursor: pointer; font-size: 0.85rem; }
+.btn:hover { background: #357abd; }
+.btn-outline { background: transparent; color: #4a90d9; }
+.btn-outline:hover { background: #e8f0fe; }
+.chart-box { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+             padding: 8px; margin-bottom: 12px; overflow: hidden; }
+#chart { width: 100%; height: 600px; }
+.table-wrap { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+              padding: 8px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+th, td { padding: 4px 8px; text-align: right; border-bottom: 1px solid #eee;
+         white-space: nowrap; }
+th { background: #fafafa; font-weight: 600; position: sticky; top: 0; }
+td:first-child, th:first-child { text-align: left; }
+tr:hover { background: #f0f6ff; }
+tr.sep td { border-top: 2px solid #4a90d9; }
+.badge { display: inline-block; padding: 1px 6px; border-radius: 3px;
+         font-size: 0.7rem; font-weight: 600; }
+.badge-amd64 { background: #e3f2fd; color: #1565c0; }
+.badge-arm64 { background: #fce4ec; color: #c62828; }
+.badge-loong64 { background: #f3e5f5; color: #6a1b9a; }
+.badge-ppc64el { background: #e8f5e9; color: #2e7d32; }
+.badge-desktop { background: #e8eaf6; color: #283593; }
+.badge-server { background: #e0f2f1; color: #00695c; }
+.badge-mobile { background: #fce4ec; color: #880e4f; }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.78rem;
+          padding: 4px 0; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.error { color: #c62828; padding: 20px; text-align: center; }
+.loading { padding: 40px; text-align: center; color: #888; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>SPEC CPU 2017 Rate-1 Benchmark Viewer</h1>
+
+<div class="filters">
+  <label>OS <select id="filter-os"></select></label>
+  <label>Suite <select id="filter-suite"></select></label>
+  <label>Opt Flags <select id="filter-flags"></select></label>
+  <label>Sector <select id="filter-sector"></select></label>
+  <label>ISA <select id="filter-isa"></select></label>
+  <label>Vendor <select id="filter-vendor"></select></label>
+  <label>Search <input type="text" id="filter-search" placeholder="CPU name..." style="width:120px;padding:3px 6px;font-size:0.85rem;"></label>
+  <button class="btn btn-outline" id="btn-reset">Reset</button>
+  <span class="stat" id="stat-count"></span>
+  <span style="font-size:0.75rem;color:#999;margin-left:auto;">Inspired by <a href="https://benchview.hjc.im/" target="_blank">benchview</a></span>
+</div>
+
+<div class="chart-box">
+  <div class="legend" id="legend-area"></div>
+  <div id="chart"></div>
+</div>
+
+<div class="table-wrap" id="table-wrap">
+  <table id="data-table">
+    <thead><tr id="table-head"></tr></thead>
+    <tbody id="table-body"></tbody>
+  </table>
+</div>
+</div>
+
+<script>
+// ── state ──
+let rawData = null;
+let filtered = [];
+
+const COLORS = {
+  amd64: '#5470c6', arm64: '#ee6666', loong64: '#9b59b6', ppc64el: '#27ae60', unknown: '#95a5a6'
+};
+const SECTOR_COLORS = { desktop: '#5470c6', server: '#91cc75', mobile: '#ee6666' };
+
+// ── init ──
+async function init() {
+  const chart = echarts.init(document.getElementById('chart'));
+  window.addEventListener('resize', () => chart.resize());
+
+  try {
+    const resp = await fetch('benchmark_data.json');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    rawData = await resp.json();
+  } catch (e) {
+    document.getElementById('chart').outerHTML =
+      `<div class="error">Failed to load benchmark_data.json: ${e.message}.<br>
+       Run <code>python3 generate_raw_data.py --json</code> to generate it.</div>`;
+    return;
+  }
+
+  populateFilters();
+  applyFilters();
+  render(chart);
+}
+
+// ── filter helpers ──
+function allEntries() {
+  const out = [];
+  for (const os in rawData.data) {
+    for (const suite in rawData.data[os]) {
+      for (const e of rawData.data[os][suite]) {
+        out.push(e);
+      }
+    }
+  }
+  return out;
+}
+
+function unique(arr) { return [...new Set(arr)].sort(); }
+
+function addOption(sel, value, text) {
+  const o = document.createElement('option'); o.value = value; o.textContent = text; sel.appendChild(o);
+}
+function populateFilters() {
+  const all = allEntries();
+  const osSel = document.getElementById('filter-os');
+  // trixie first = default
+  const osOrder = ['trixie', 'bookworm', 'harmonyos'];
+  const osSet = new Set(all.map(e => e.os));
+  osOrder.filter(v => osSet.has(v)).forEach(v => addOption(osSel, v, v));
+  osSet.forEach(v => { if (!osOrder.includes(v)) addOption(osSel, v, v); });
+  const suiteSel = document.getElementById('filter-suite');
+  addOption(suiteSel, 'int2017_rate1', 'int2017_rate1');
+  addOption(suiteSel, 'fp2017_rate1', 'fp2017_rate1');
+  const flgSel = document.getElementById('filter-flags');
+  unique(all.map(e => e.opt_flags)).forEach(v => addOption(flgSel, v, v));
+  const secSel = document.getElementById('filter-sector');
+  addOption(secSel, '', 'All');
+  unique(all.map(e => e.sector)).forEach(v => addOption(secSel, v, v));
+  const isaSel = document.getElementById('filter-isa');
+  addOption(isaSel, '', 'All');
+  unique(all.map(e => e.isa)).forEach(v => addOption(isaSel, v, v));
+  const venSel = document.getElementById('filter-vendor');
+  addOption(venSel, '', 'All');
+  unique(all.map(e => e.vendor)).forEach(v => addOption(venSel, v, v));
+}
+
+function applyFilters() {
+  const os = document.getElementById('filter-os').value;
+  const suite = document.getElementById('filter-suite').value;
+  const flags = document.getElementById('filter-flags').value;
+  const sector = document.getElementById('filter-sector').value;
+  const isa = document.getElementById('filter-isa').value;
+  const vendor = document.getElementById('filter-vendor').value;
+  const search = document.getElementById('filter-search').value.toLowerCase().trim();
+
+  let entries = [];
+  for (const osKey in rawData.data) {
+    if (os && osKey !== os) continue;
+    for (const suiteKey in rawData.data[osKey]) {
+      if (suite && suiteKey !== suite) continue;
+      for (const e of rawData.data[osKey][suiteKey]) {
+        if (flags && e.opt_flags !== flags) continue;
+        if (sector && e.sector !== sector) continue;
+        if (isa && e.isa !== isa) continue;
+        if (vendor && e.vendor !== vendor) continue;
+        if (search && !e.cpu_name.toLowerCase().includes(search)) continue;
+        entries.push(e);
+      }
+    }
+  }
+  filtered = entries;
+  document.getElementById('stat-count').textContent = `${filtered.length} results`;
+}
+
+function resetFilters() {
+  ['filter-os','filter-suite','filter-flags','filter-sector','filter-isa','filter-vendor']
+    .forEach(id => { const s = document.getElementById(id); if (s.options.length) s.selectedIndex = 0; });
+  document.getElementById('filter-search').value = '';
+}
+
+function refresh(chart) {
+  applyFilters();
+  render(chart);
+}
+
+// ── chart ──
+function render(chart) {
+  chart.clear();
+  let data = [...filtered];
+  if (data.length === 0) {
+    chart.setOption({ title: { text: 'No matching results', left: 'center', top: 'center' } });
+    document.getElementById('table-body').innerHTML = '';
+    return;
+  }
+
+  // sort by score ascending so highest is on top (last category = top)
+  data.sort((a, b) => a.score - b.score);
+
+  const yNames = data.map(e => `${e.cpu_name} (${e.opt_flags})`);
+  const scores = data.map(e => e.score);
+  const colors = data.map(e => COLORS[e.isa] || '#95a5a6');
+
+  const option = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'shadow' },
+      formatter: function(params) {
+        const p = params[0];
+        if (!p) return '';
+        const item = data[p.dataIndex];
+        if (!item) return p.name;
+        return `<strong>${item.cpu_name}</strong><br>
+                Score: <strong>${item.score}</strong><br>
+                OS: ${item.os} | Suite: ${item.test_type}<br>
+                Flags: ${item.opt_flags}<br>
+                Vendor: ${item.vendor} | Launch: ${item.launch_date}<br>
+                Sector: ${item.sector} | ISA: ${item.isa}`;
+      }
+    },
+    grid: { left: 200, right: '15%', top: 30, bottom: 30, containLabel: true },
+    xAxis: {
+      type: 'value',
+      name: 'Estimated SPECrate Score',
+      nameLocation: 'middle',
+      nameGap: 25
+    },
+    yAxis: {
+      type: 'category',
+      data: yNames,
+      axisLabel: { fontSize: 11 },
+      splitLine: { show: false }
+    },
+    series: [{
+      type: 'bar',
+      data: scores.map((v, i) => ({
+        value: v,
+        itemStyle: { color: colors[i] }
+      })),
+      barMaxWidth: 24,
+      label: {
+        show: true,
+        position: 'right',
+        formatter: (p) => p.value.toFixed(2),
+        fontSize: 10
+      }
+    }],
+    dataZoom: [
+      { type: 'inside', orient: 'vertical', minValueSpan: 10 },
+      { type: 'slider', orient: 'vertical', right: 10, top: 30, bottom: 30,
+        minSpan: 10 }
+    ]
+  };
+
+  chart.setOption(option);
+
+  // legend
+  const legendEl = document.getElementById('legend-area');
+  const isaSet = unique(data.map(e => e.isa));
+  legendEl.innerHTML = '<span style="font-weight:600;margin-right:8px;">ISA:</span>' +
+    isaSet.map(isa => `<span class="legend-item"><span class="legend-dot" style="background:${COLORS[isa]||'#95a5a6'}"></span>${isa}</span>`).join('') +
+    ' <span style="margin-left:16px;font-weight:600;">Hover bars for details</span>';
+
+  // table
+  renderTable(data);
+}
+
+function renderTable(data) {
+  const sorted = [...data].sort((a, b) => b.score - a.score);
+  const head = document.getElementById('table-head');
+  head.innerHTML = '<th>CPU</th><th>Score</th><th>OS</th><th>Flags</th><th>Vendor</th><th>Launch</th><th>Sector</th><th>ISA</th>';
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+  let lastFlags = null;
+  for (const e of sorted) {
+    const tr = document.createElement('tr');
+    if (lastFlags !== null && e.opt_flags !== lastFlags) tr.classList.add('sep');
+    lastFlags = e.opt_flags;
+    tr.innerHTML = `
+      <td>${esc(e.cpu_name)}</td>
+      <td><strong>${e.score.toFixed(2)}</strong></td>
+      <td>${esc(e.os)}</td>
+      <td>${esc(e.opt_flags)}</td>
+      <td>${esc(e.vendor)}</td>
+      <td>${esc(e.launch_date)}</td>
+      <td><span class="badge badge-${esc(e.sector)}">${esc(e.sector)}</span></td>
+      <td><span class="badge badge-${esc(e.isa)}">${esc(e.isa)}</span></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── events: auto-refresh on any input change ──
+function onInputChange() {
+  const chart = echarts.getInstanceByDom(document.getElementById('chart'));
+  if (chart) refresh(chart);
+}
+document.querySelectorAll('.filters select, .filters input').forEach(el => {
+  el.addEventListener('change', onInputChange);
+  el.addEventListener('input', onInputChange);
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  resetFilters();
+  onInputChange();
+});
+
+init();
+</script>
+</body>
+</html>
