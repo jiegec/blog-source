@@ -136,7 +136,7 @@ CPU_INFO = [
     ("IBM POWER8NVL", {None: "@ 4.0 GHz POWER8"}),
     ("IBM POWER8", {None: "@ 3.2 GHz POWER8"}),
     ("IBM POWER9 3.2 GHz", {None: "@ 3.2 GHz POWER9"}),
-    ("IBM POWER9 3.8 GHz", {None: "@ 3.2 GHz POWER9"}),
+    ("IBM POWER9 3.8 GHz", {None: "@ 3.8 GHz POWER9"}),
     ("Google Axion C4A", {None: "@ Neoverse V2"}),
     ("Google Axion N4A", {None: "@ Neoverse N3"}),
     (
