@@ -265,6 +265,117 @@ permalink: /benchmark/
 
 ## SPEC 运行配置
 
+### SPEC CPU 2026
+
+```
+# match spec result standard
+reportable = yes
+# skip peak
+basepeak = yes
+# show live output
+teeout = yes
+# speedup compilation
+makeflags = --jobs=%{nproc}
+
+# compilers
+default:
+   preENV_LD_LIBRARY_PATH  = /usr/lib64:/usr/lib:/lib64
+   SPECLANG                = /usr/bin/
+%if %{clang} eq "1"
+   CC                      = $(SPECLANG)clang -std=c18
+   CXX                     = $(SPECLANG)clang++ -std=c++17
+%else
+   CC                      = $(SPECLANG)gcc -std=c18
+   CXX                     = $(SPECLANG)g++ -std=c++17
+%endif
+%if %{flang} eq "1"
+   FC                      = $(SPECLANG)flang-new -std=f2018
+%else
+   FC                      = $(SPECLANG)gfortran -std=f2018
+%endif
+# allow to override compilers
+%ifdef %{override-cc}
+   CC                      = %{override-cc} -std=c99
+%endif
+%ifdef %{override-cxx}
+   CXX                     = %{override-cxx}
+%endif
+%ifdef %{override-fc}
+   FC                      = %{override-fc}
+%endif
+   # How to say "Show me your version, please"
+   CC_VERSION_OPTION       = -v
+   CXX_VERSION_OPTION      = -v
+   FC_VERSION_OPTION       = -v
+
+# perf: use runcpu --define perf=1 --noreportable to enable
+%if %{perf} eq "1"
+# override branch-misses counter if necessary
+# e.g. on ARMv8 PMUv3, use r22 for branch misses
+# e.g. on Apple M1, use rcb for branch misses
+%ifndef %{perf-branchmisses}
+%define perf-branchmisses branch-misses
+%endif
+# override branches counter if necessary
+# e.g. on Apple M1, use r8d for branches
+%ifndef %{perf-branches}
+%define perf-branches branches
+%endif
+default:
+   command_add_redirect = 1
+# bind to core if requested
+%ifdef %{bindcore}
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; taskset -c %{bindcore} perf stat -x \\; -e instructions,cycles,%{perf-branches},%{perf-branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+%else
+   monitor_wrapper = mkdir -p $[top]/result/perf.$lognum; echo "$command" > $[top]/result/perf.$lognum/$benchmark.cmd.$iter.\$\$; perf stat -x \\; -e instructions,cycles,%{perf-branches},%{perf-branchmisses},task-clock -o $[top]/result/perf.$lognum/$benchmark.perf.$iter.\$\$ $command
+%endif
+%endif
+
+# portability flags
+800.pot3d_s:
+  PORTABILITY = -DSPEC_SUPPRESS_LOCAL_AND_REDUCE
+
+710.omnetpp_r:
+   PORTABILITY = -fno-finite-math-only
+
+734.vpr_r,834.vpr_s:
+   PORTABILITY = -fno-finite-math-only
+
+735.gem5_r,835.gem5_s:
+   # add -Ulinux to fix error: expected identifier before numeric constant
+   # TODO: is it a PORTABILITY flag?
+   PORTABILITY = -fno-finite-math-only -Ulinux
+
+736.ocio_r:
+   PORTABILITY = -fno-finite-math-only
+
+737.gmsh_r:
+   PORTABILITY = -fno-fast-math
+
+748.flightdm_r:
+   PORTABILITY = -fno-fast-math
+
+753.ns3_r,853.ns3_s:
+   PORTABILITY = -fno-finite-math-only
+
+767.nest_r,867.nest_s:
+   PORTABILITY = -fno-finite-math-only
+   PORTABILITY_LIBS = -lstdc++fs
+
+default:
+   EXTRA_FFLAGS = -fallow-argument-mismatch
+
+default=base:         # flags for all base
+%ifdef %{extralibs}
+   EXTRA_LIBS     = %{extralibs}
+%endif
+%ifdef %{optflags}
+   OPTIMIZE       = %{optflags}
+%else
+   OPTIMIZE       = -O3
+%endif
+```
+
 ### SPEC CPU 2017
 
 ```
