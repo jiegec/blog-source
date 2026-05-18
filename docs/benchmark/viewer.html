@@ -145,7 +145,12 @@ function populateFilters() {
   addOption(suiteSel, 'int2017_rate1', 'int2017_rate1');
   addOption(suiteSel, 'fp2017_rate1', 'fp2017_rate1');
   const flgSel = document.getElementById('filter-flags');
+  addOption(flgSel, '', 'All');
   unique(all.map(e => e.opt_flags)).forEach(v => addOption(flgSel, v, v));
+  // default to -O3
+  for (let i = 0; i < flgSel.options.length; i++) {
+    if (flgSel.options[i].value === '-O3') { flgSel.selectedIndex = i; break; }
+  }
   const secSel = document.getElementById('filter-sector');
   addOption(secSel, '', 'All');
   unique(all.map(e => e.sector)).forEach(v => addOption(secSel, v, v));
