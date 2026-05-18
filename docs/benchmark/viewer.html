@@ -132,6 +132,7 @@ async function init() {
   loadFromUrl();
   applyFilters();
   render(chart);
+  syncUrl();
 }
 
 // ── filter helpers ──
@@ -195,7 +196,7 @@ function populateFilters() {
   addOption(suiteSel, 'int2017_rate1', 'int2017_rate1');
   addOption(suiteSel, 'fp2017_rate1', 'fp2017_rate1');
   const flgSel = document.getElementById('filter-flags');
-  addOption(flgSel, '', 'All');
+  addOption(flgSel, 'All', 'All');
   unique(all.map(e => e.opt_flags)).forEach(v => addOption(flgSel, v, v));
   // default to -O3
   for (let i = 0; i < flgSel.options.length; i++) {
@@ -227,7 +228,7 @@ function applyFilters() {
     for (const suiteKey in rawData.data[osKey]) {
       if (suite && suiteKey !== suite) continue;
       for (const e of rawData.data[osKey][suiteKey]) {
-        if (flags && e.opt_flags !== flags) continue;
+        if (flags && flags !== 'All' && e.opt_flags !== flags) continue;
         if (sector && e.sector !== sector) continue;
         if (isa && e.isa !== isa) continue;
         if (vendor && e.vendor !== vendor) continue;
@@ -348,6 +349,8 @@ function renderTable(data) {
   let lastFlags = null;
   for (const e of sorted) {
     const tr = document.createElement('tr');
+    tr.style.cursor = 'pointer';
+    tr.addEventListener('click', () => { if (e.benchmarks) showDetail(e); });
     if (lastFlags !== null && e.opt_flags !== lastFlags) tr.classList.add('sep');
     lastFlags = e.opt_flags;
     tr.innerHTML = `
@@ -379,19 +382,68 @@ function showDetail(item) {
   if (!bm) return;
   const names = Object.keys(bm);
   const suiteLabel = item.test_type === 'int2017_rate1' ? 'INT' : 'FP';
-  document.getElementById('modal-title').textContent =
-    `${item.cpu_name} (${item.opt_flags}) — ${suiteLabel} 2017 Rate-1 — Score: ${item.score}`;
-  const cols = ['Benchmark', 'Ratio', 'Time (ms)', 'Clock (MHz)', 'IPC', 'MPKI', 'Mispred (%)', 'Instructions', 'Branch Insn'];
+  document.getElementById('modal-title').innerHTML =
+    `${esc(item.cpu_name)} <span style="font-weight:normal;font-size:0.85rem;color:#666">(${esc(item.opt_flags)})</span>`;
+  const metaHtml = `<div style="font-size:0.8rem;color:#555;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:4px 16px;">
+    <span>Score: <strong>${item.score}</strong></span>
+    <span>OS: ${esc(item.os)}</span>
+    <span>Suite: ${suiteLabel}</span>
+    <span>Vendor: ${esc(item.vendor)}</span>
+    <span>Launch: ${esc(item.launch_date)}</span>
+    <span>Sector: ${esc(item.sector)}</span>
+    <span>ISA: ${esc(item.isa)}</span>
+  </div>`;
+
+  const cols = [
+    { label: 'Benchmark', title: '' },
+    { label: 'Ratio', title: 'Estimated SPECrate ratio for this benchmark' },
+    { label: 'Time (ms)', title: 'Elapsed wall-clock time in milliseconds' },
+    { label: 'Clock (MHz)', title: 'Average CPU clock frequency' },
+    { label: 'IPC', title: 'Instructions Per Cycle (instructions ÷ cycles)' },
+    { label: 'MPKI', title: 'Cache Misses Per Thousand Instructions' },
+    { label: 'Mispred (%)', title: 'Branch misprediction rate as percentage' },
+    { label: 'Instructions', title: 'Total dynamic instruction count' },
+    { label: 'Branch Insn', title: 'Total dynamic branch instruction count' },
+  ];
   const keys = ['ratio', 'time', 'clock', 'ipc', 'mpki', 'misprediction_rate', 'instructions', 'branch_instructions'];
-  let html = '<table><thead><tr>' + cols.map(c => '<th>' + c + '</th>').join('') + '</tr></thead><tbody>';
+  const sums = {};
+  keys.forEach(k => { sums[k] = []; });
+  let html = '<table><thead><tr>' + cols.map(c => {
+    const titleAttr = c.title ? ' title="' + esc(c.title) + '"' : '';
+    return '<th' + titleAttr + '>' + esc(c.label) + '</th>';
+  }).join('') + '</tr></thead><tbody>';
   for (const n of names) {
     const d = bm[n];
-    html += '<tr><td>' + esc(n) + '</td>';
-    for (const k of keys) html += '<td>' + fmt(d[k]) + '</td>';
+    html += '<tr><td><strong>' + esc(n) + '</strong></td>';
+    for (const k of keys) {
+      const v = d[k];
+      html += '<td>' + fmt(v) + '</td>';
+      if (v !== undefined && v !== null && typeof v === 'number') sums[k].push(v);
+    }
+    html += '</tr>';
+  }
+  // summary rows: geo mean for ratio, arithmetic mean for the rest
+  if (names.length > 1) {
+    html += '<tr style="border-top:2px solid #4a90d9;font-weight:600"><td>Arithmetic Mean</td>';
+    for (const k of keys) {
+      const vals = sums[k];
+      html += '<td>' + (vals.length ? fmt(vals.reduce((a, b) => a + b, 0) / vals.length) : '-') + '</td>';
+    }
+    html += '</tr>';
+    html += '<tr style="font-weight:600"><td>Geo Mean</td>';
+    for (const k of keys) {
+      const vals = sums[k];
+      if (k === 'ratio' && vals.length) {
+        const gm = Math.pow(vals.reduce((a, b) => a * b, 1), 1 / vals.length);
+        html += '<td>' + fmt(gm) + '</td>';
+      } else {
+        html += '<td>-</td>';
+      }
+    }
     html += '</tr>';
   }
   html += '</tbody></table>';
-  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-body').innerHTML = metaHtml + html;
   document.getElementById('modal').classList.add('show');
 }
 
