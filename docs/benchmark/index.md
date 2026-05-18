@@ -43,7 +43,6 @@ permalink: /benchmark/
 
 - [SPEC CPU INT/FP 2026 Rate](./spec-cpu-2026-rate.md)
 - [SPEC CPU INT/FP 2017 Rate](./spec-cpu-2017-rate.md)
-- [SPEC CPU INT/FP 2017 Speed](./spec-cpu-2017-speed.md)
 - [SPEC CPU INT/FP 2006 Rate/Speed](./spec-cpu-2006.md)
 
 ## 浮点峰值性能
