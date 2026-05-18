@@ -705,7 +705,7 @@ def detect_launch_date(cpu_name):
         ('Apple M1', '2020'),
         ('Apple M2', '2022'),
         ('Google Axion C4A', '2024'),
-        ('Google Axion N4A', '2024'),
+        ('Google Axion N4A', '2026'),
         ('Huawei Kirin 9010', '2024'),
         ('Huawei Kirin X90', '2025'),
         ('Hygon C86 7390', '2023'),
