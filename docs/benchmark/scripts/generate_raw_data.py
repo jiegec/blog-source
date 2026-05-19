@@ -952,6 +952,50 @@ def parse_per_benchmark_data(filepath, test_type="fp2017"):
     return per_benchmark
 
 
+def parse_compiler_from_file(filepath):
+    """Parse compiler info from the first line of a SPEC result file.
+    Format: 'Built with GCC 14.2.0 from Debian Trixie with -O3'
+    """
+    with open(filepath, "r", encoding="utf-8") as f:
+        first_line = f.readline().strip()
+    if first_line.startswith("Built with "):
+        parts = first_line.split()
+        if len(parts) >= 4:
+            return f"{parts[2]} {parts[3]}"
+    return None
+
+
+def parse_memory_from_file(filepath):
+    """Parse memory info from a SPEC result file.
+    Format: 'Memory: 4x Crucial Technology CT32G48C40U5.M16A1 32 GB 2 rank 4400'
+    """
+    with open(filepath, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.startswith("Memory:"):
+                return simplify_memory(line[len("Memory:"):].strip())
+    return None
+
+
+def simplify_memory(mem_str):
+    """Simplify memory string e.g. '4x 32 GB @ 4400'"""
+    parts = mem_str.split()
+    if not parts:
+        return mem_str
+    count = parts[0]
+    size = ""
+    for i, p in enumerate(parts):
+        if p in ("GB", "MB") and i > 0:
+            size = parts[i - 1] + " " + p
+            break
+    speed = parts[-1]
+    result = count
+    if size:
+        result += " " + size
+    if speed.isdigit():
+        result += " @" + speed
+    return result
+
+
 def generate_json_data():
     """Generate a JSON-serialisable data structure with full metadata."""
     import json
@@ -963,7 +1007,7 @@ def generate_json_data():
     ]
     test_types = ["int2017", "fp2017", "int2026", "fp2026"]
 
-    result = {"version": 3, "data": {}}
+    result = {"version": 4, "data": {}}
 
     for data_dir, os_name in data_dirs:
         os_entry = {}
@@ -1012,6 +1056,8 @@ def generate_json_data():
                     "test_type": suite_key,
                     "filename": f.name,
                     "rel_path": f"./{data_dir.name}/{test_dir.name}/{f.name}",
+                    "compiler": parse_compiler_from_file(f),
+                    "memory": parse_memory_from_file(f),
                 }
                 if per_bm:
                     entry["benchmarks"] = {}

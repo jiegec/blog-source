@@ -354,6 +354,8 @@ function render(chart) {
                 Score: <strong>${item.score}</strong><br>
                 OS: ${item.os} | Suite: ${item.test_type}<br>
                 Flags: ${item.opt_flags}<br>
+                Compiler: ${esc(item.compiler||'')}<br>
+                Memory: ${esc(item.memory||'')}<br>
                 Vendor: ${item.vendor} | Launch: ${item.launch_date}<br>
                 Sector: ${item.sector} | ISA: ${item.isa}`;
       }
@@ -415,7 +417,7 @@ function render(chart) {
 function renderTable(data) {
   const sorted = [...data].sort((a, b) => b.score - a.score);
   const head = document.getElementById('table-head');
-  head.innerHTML = '<th class="chk"><input type="checkbox" id="select-all" title="Select/deselect all"></th><th>CPU</th><th>Score</th><th>OS</th><th>Flags</th><th>Vendor</th><th>Launch</th><th>Sector</th><th>ISA</th>';
+  head.innerHTML = '<th class="chk"><input type="checkbox" id="select-all" title="Select/deselect all"></th><th>CPU</th><th>Score</th><th>OS</th><th>Compiler</th><th>Memory</th><th>Flags</th><th>Vendor</th><th>Launch</th><th>Sector</th><th>ISA</th>';
   const tbody = document.getElementById('table-body');
   tbody.innerHTML = '';
   let lastFlags = null;
@@ -442,6 +444,8 @@ function renderTable(data) {
     const cells = [
       { v: e.score.toFixed(2), html: true },
       { v: e.os },
+      { v: e.compiler || '-' },
+      { v: e.memory || '-' },
       { v: e.opt_flags },
       { v: e.vendor },
       { v: e.launch_date },
@@ -513,6 +517,8 @@ function showDetail(item) {
   const metaHtml = `<div style="font-size:0.8rem;color:#555;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:4px 16px;">
     <span>Score: <strong>${item.score}</strong></span>
     <span>OS: ${esc(item.os)}</span>
+    <span>Compiler: ${esc(item.compiler||'-')}</span>
+    <span>Memory: ${esc(item.memory||'-')}</span>
     <span>Suite: ${suiteLabel}</span>
     <span>Vendor: ${esc(item.vendor)}</span>
     <span>Launch: ${esc(item.launch_date)}</span>
@@ -592,7 +598,7 @@ function openCompare() {
 
   // meta header
   const metaHtml = entries.map((e, i) =>
-    `<span style="margin-right:16px;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — Score: ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.isa)}</span>`
+    `<span style="margin-right:16px;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — Score: ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.isa)}</span>`
   ).join('');
   document.getElementById('compare-meta').innerHTML = metaHtml;
 
@@ -648,7 +654,7 @@ function renderCompareTable(entries, bmNames) {
   let html = '<table><thead><tr><th>Benchmark</th>';
   for (let ei = 0; ei < entries.length; ei++) {
     const e = entries[ei];
-    html += `<th>#${ei+1} ${esc(e.cpu_name)}<br><span style="font-weight:normal;font-size:0.7rem;">${esc(e.opt_flags)} | ${esc(e.os)}</span></th>`;
+    html += `<th>#${ei+1} ${esc(e.cpu_name)}<br><span style="font-weight:normal;font-size:0.7rem;">${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.opt_flags)} | ${esc(e.os)}</span></th>`;
   }
   html += '<th style="color:#888;">Max/Min</th>';
   html += '</tr></thead><tbody>';
