@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPEC CPU Rate Benchmark Viewer</title>
+<title data-i18n="title">SPEC CPU Rate-1 Benchmark Viewer</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -66,23 +66,27 @@ th.chk input { cursor: pointer; }
 .error { color: #c62828; padding: 20px; text-align: center; }
 .loading { padding: 40px; text-align: center; color: #888; }
 .hidden { display: none; }
+#lang-toggle { cursor: pointer; min-width: 48px; text-align: center; }
 </style>
 </head>
 <body>
 <div class="container">
-<h1>SPEC CPU Rate-1 Benchmark Viewer</h1>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+<h1 style="margin:0;flex:1;" data-i18n="title">SPEC CPU Rate-1 Benchmark Viewer</h1>
+<button id="lang-toggle" class="btn btn-outline" style="padding:2px 10px;font-size:0.8rem;flex-shrink:0;">中文</button>
+</div>
 
 <div class="filters">
-  <label>OS <select id="filter-os"></select></label>
-  <label>Suite <select id="filter-suite"></select></label>
-  <label>Opt Flags <select id="filter-flags"></select></label>
-  <label>Sector <select id="filter-sector"></select></label>
-  <label>ISA <select id="filter-isa"></select></label>
-  <label>Vendor <select id="filter-vendor"></select></label>
-  <label>Search <input type="text" id="filter-search" placeholder="CPU name..." style="width:120px;padding:3px 6px;font-size:0.85rem;"></label>
-  <button class="btn btn-outline" id="btn-reset">Reset</button>
+  <label><span data-i18n="filter_os">OS</span> <select id="filter-os"></select></label>
+  <label><span data-i18n="filter_suite">Suite</span> <select id="filter-suite"></select></label>
+  <label><span data-i18n="filter_flags">Opt Flags</span> <select id="filter-flags"></select></label>
+  <label><span data-i18n="filter_sector">Sector</span> <select id="filter-sector"></select></label>
+  <label><span data-i18n="filter_isa">ISA</span> <select id="filter-isa"></select></label>
+  <label><span data-i18n="filter_vendor">Vendor</span> <select id="filter-vendor"></select></label>
+  <label><span data-i18n="filter_search">Search</span> <input type="text" id="filter-search" data-i18n-placeholder="filter_search_placeholder" placeholder="CPU name..." style="width:120px;padding:3px 6px;font-size:0.85rem;"></label>
+  <button class="btn btn-outline" id="btn-reset" data-i18n="reset">Reset</button>
   <span class="stat" id="stat-count"></span>
-  <span style="font-size:0.75rem;color:#999;margin-left:auto;">Inspired by <a href="https://benchview.hjc.im/" target="_blank">benchview</a></span>
+  <span style="font-size:0.75rem;color:#999;margin-left:auto;"><span data-i18n="inspired_by">Inspired by</span> <a href="https://benchview.hjc.im/" target="_blank">benchview</a></span>
 </div>
 
 <div class="chart-box">
@@ -91,8 +95,8 @@ th.chk input { cursor: pointer; }
 </div>
 
 <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
-  <button class="btn" id="btn-compare" disabled>Compare Selected</button>
-  <span id="compare-hint" style="font-size:0.75rem;color:#999;">Select 2 or more entries to compare per-benchmark metrics</span>
+  <button class="btn" id="btn-compare" disabled data-i18n="compare_selected">Compare Selected</button>
+  <span id="compare-hint" style="font-size:0.75rem;color:#999;" data-i18n="compare_hint">Select 2 or more entries to compare per-benchmark metrics</span>
 </div>
 
 <div class="table-wrap" id="table-wrap">
@@ -103,9 +107,87 @@ th.chk input { cursor: pointer; }
 </div>
 
 <div style="margin-top:12px;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:10px 18px;font-size:0.78rem;color:#555;">
-<div style="font-weight:600;font-size:0.82rem;margin-bottom:8px;">Caveats &amp; Disclaimer</div>
-<div style="line-height:1.5;">
-<ol style="padding-left:20px;margin:0;">
+<div style="font-weight:600;font-size:0.82rem;margin-bottom:8px;" data-i18n="caveat_title">Caveats &amp; Disclaimer</div>
+<div id="caveat-body" style="line-height:1.5;"></div>
+</div>
+
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close">&times;</button>
+    <h2 id="modal-title"></h2>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div class="modal" id="compare-modal">
+  <div class="modal-content" style="max-width:1200px;">
+    <button class="modal-close" id="compare-modal-close">&times;</button>
+    <h2 id="compare-modal-title" data-i18n="compare_title">Benchmark Comparison</h2>
+    <div id="compare-meta" style="font-size:0.8rem;color:#555;margin-bottom:10px;"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;">
+      <label style="font-size:0.78rem;font-weight:600;"><span data-i18n="metric_label">Metric</span>
+        <select id="compare-metric" style="padding:2px 6px;border:1px solid #ccc;border-radius:4px;font-size:0.78rem;">
+          <option value="ratio" data-i18n="metric_ratio">Ratio</option>
+          <option value="time" data-i18n="metric_time">Time (ms)</option>
+          <option value="clock" data-i18n="metric_clock">Clock (MHz)</option>
+          <option value="ipc" data-i18n="metric_ipc">IPC</option>
+          <option value="mpki" data-i18n="metric_mpki">MPKI</option>
+          <option value="misprediction_rate" data-i18n="metric_mispred">Mispred (%)</option>
+        </select>
+      </label>
+      <span style="font-size:0.75rem;color:#999;" data-i18n="legend_toggle_hint">Click legend items to toggle series</span>
+    </div>
+    <div id="compare-chart" style="width:100%;height:500px;"></div>
+    <div id="compare-table-wrap" style="overflow-x:auto;margin-top:12px;"></div>
+  </div>
+</div>
+
+<script>
+// ── i18n ──
+const i18n = {
+  en: {
+    title: 'SPEC CPU Rate-1 Benchmark Viewer',
+    filter_os: 'OS', filter_suite: 'Suite', filter_flags: 'Opt Flags',
+    filter_sector: 'Sector', filter_isa: 'ISA', filter_vendor: 'Vendor',
+    filter_search: 'Search', filter_search_placeholder: 'CPU name...',
+    reset: 'Reset',
+    inspired_by: 'Inspired by',
+    compare_selected: 'Compare Selected',
+    compare_hint: 'Select 2 or more entries to compare per-benchmark metrics',
+    caveat_title: 'Caveats & Disclaimer',
+    metric_label: 'Metric',
+    metric_ratio: 'Ratio', metric_time: 'Time (ms)', metric_clock: 'Clock (MHz)',
+    metric_ipc: 'IPC', metric_mpki: 'MPKI', metric_mispred: 'Mispred (%)',
+    legend_toggle_hint: 'Click legend items to toggle series',
+    compare_title: 'Benchmark Comparison',
+    no_matching: 'No matching results',
+    chart_score_axis: 'Estimated SPECrate Score',
+    isa_label: 'ISA:',
+    click_bar_hint: 'Click bars for per-benchmark details',
+    tbl_cpu: 'CPU', tbl_score: 'Score', tbl_os: 'OS', tbl_compiler: 'Compiler',
+    tbl_memory: 'Memory', tbl_flags: 'Flags', tbl_vendor: 'Vendor', tbl_launch: 'Launch',
+    tbl_sector: 'Sector', tbl_isa: 'ISA',
+    results_fmt: '{n} results',
+    cmp_selected_fmt: 'Compare Selected ({n})',
+    detail_score: 'Score', detail_os: 'OS', detail_compiler: 'Compiler',
+    detail_memory: 'Memory', detail_suite: 'Suite', detail_vendor: 'Vendor',
+    detail_launch: 'Launch', detail_sector: 'Sector', detail_isa: 'ISA',
+    col_benchmark: 'Benchmark', col_ratio: 'Ratio', col_time: 'Time (ms)',
+    col_clock: 'Clock (MHz)', col_ipc: 'IPC', col_mpki: 'MPKI',
+    col_mispred: 'Mispred (%)', col_instructions: 'Instructions',
+    col_branch: 'Branch Insn',
+    col_maxmin: 'Max/Min',
+    select_all_title: 'Select/deselect all',
+    arithmetic_mean: 'Arithmetic Mean',
+    geo_mean: 'Geo Mean',
+    compare_title_fmt: 'Benchmark Comparison ({n} entries, {m} benchmarks)',
+    tooltip_score: 'Score:', tooltip_os: 'OS:', tooltip_suite: 'Suite:',
+    tooltip_flags: 'Flags:', tooltip_compiler: 'Compiler:', tooltip_memory: 'Memory:',
+    tooltip_vendor: 'Vendor:', tooltip_launch: 'Launch:', tooltip_sector: 'Sector:',
+    tooltip_isa: 'ISA:',
+    caveat_body: `<ol style="padding-left:20px;margin:0;">
 <li style="margin-bottom:6px;">Scores can only be used to compare performance of CPUs with the <strong>same ISA</strong> when variables are controlled (i.e., measured with the same binary as commonly said; additional variables that affect performance are listed below). This allows comparison through test results for:
   <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
     <li>Performance of Intel and AMD CPUs on the AMD64 ISA</li>
@@ -128,44 +210,115 @@ th.chk input { cursor: pointer; }
 </ol>
 <p style="margin:6px 0 0 0;">In short, scores given without complete test environment information are unreliable.</p>
 <p style="margin:6px 0 0 0;">If you need to cite any test results on this page, please always list the test environment used for that result and make sure you have a thorough understanding of the above caveats.</p>
-<p style="margin:6px 0 0 0;">Original benchmark data: <a href="/benchmark/" target="_blank">/benchmark/</a></p>
-</div>
-</div>
+<p style="margin:6px 0 0 0;">Original benchmark data: <a href="/benchmark/" target="_blank">/benchmark/</a></p>`,
+    unit_ratio: '', unit_time: ' ms', unit_clock: ' MHz', unit_ipc: '',
+    unit_mpki: '', unit_mispred: ' %',
+  },
+  zh: {
+    title: 'SPEC CPU Rate-1 基准测试查看器',
+    filter_os: '操作系统', filter_suite: '测试集', filter_flags: '编译选项',
+    filter_sector: '领域', filter_isa: '指令集', filter_vendor: '厂商',
+    filter_search: '搜索', filter_search_placeholder: 'CPU 名称...',
+    reset: '重置',
+    inspired_by: '灵感来自',
+    compare_selected: '比较选中项',
+    compare_hint: '选择 2 个以上条目以比较各基准测试指标',
+    caveat_title: '注意事项与免责声明',
+    metric_label: '指标',
+    metric_ratio: '比率', metric_time: '时间（毫秒）', metric_clock: '频率（MHz）',
+    metric_ipc: 'IPC', metric_mpki: 'MPKI', metric_mispred: '误预测率（%）',
+    legend_toggle_hint: '点击图例切换显示',
+    compare_title: '基准测试对比',
+    no_matching: '无匹配结果',
+    chart_score_axis: '估计 SPECrate 分数',
+    isa_label: '指令集：',
+    click_bar_hint: '点击柱状图查看各基准测试详情',
+    tbl_cpu: 'CPU', tbl_score: '分数', tbl_os: '系统', tbl_compiler: '编译器',
+    tbl_memory: '内存', tbl_flags: '编译选项', tbl_vendor: '厂商', tbl_launch: '发布',
+    tbl_sector: '领域', tbl_isa: '指令集',
+    results_fmt: '{n} 个结果',
+    cmp_selected_fmt: '比较选中项（{n}）',
+    detail_score: '分数', detail_os: '系统', detail_compiler: '编译器',
+    detail_memory: '内存', detail_suite: '测试集', detail_vendor: '厂商',
+    detail_launch: '发布', detail_sector: '领域', detail_isa: '指令集',
+    col_benchmark: '基准测试', col_ratio: '比率', col_time: '时间（毫秒）',
+    col_clock: '频率（MHz）', col_ipc: 'IPC', col_mpki: 'MPKI',
+    col_mispred: '误预测率（%）', col_instructions: '指令数',
+    col_branch: '分支指令数',
+    col_maxmin: '最大/最小比',
+    select_all_title: '全选/取消全选',
+    arithmetic_mean: '算术平均',
+    geo_mean: '几何平均',
+    compare_title_fmt: '基准测试对比（{n} 个条目，{m} 个基准测试）',
+    tooltip_score: '分数：', tooltip_os: '系统：', tooltip_suite: '测试集：',
+    tooltip_flags: '编译选项：', tooltip_compiler: '编译器：', tooltip_memory: '内存：',
+    tooltip_vendor: '厂商：', tooltip_launch: '发布：', tooltip_sector: '领域：',
+    tooltip_isa: '指令集：',
+    caveat_body: `<ol style="padding-left:20px;margin:0;">
+<li style="margin-bottom:6px;">分数只能在变量受控时用于比较<strong>相同指令集</strong>架构下的 CPU 性能（即通常所说的使用相同二进制文件测量；其他影响性能的变量见下）。可用于比较：
+  <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
+    <li>AMD64 指令集下 Intel 与 AMD CPU 的性能</li>
+    <li>ARM64 指令集下 Apple、ARM、华为、高通 CPU 的性能</li>
+    <li>LoongArch 指令集下不同 CPU 的性能</li>
+  </ol>
+</li>
+<li style="margin-bottom:6px;">使用分数比较<strong>不同指令集</strong>间的 CPU 性能缺乏说服力。</li>
+<li style="margin-bottom:6px;">即使硬件完全相同，以下因素也会<strong>显著影响</strong>结果：
+  <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
+    <li>不同的编译器（例如 GCC 通常比相同编译选项下的 Clang 更快）</li>
+    <li>不同的编译器版本（新版本通常更快，但也有例外）</li>
+    <li>不同的编译选项（例如是否启用 LTO、是否设置 <code>-march=native</code>）</li>
+    <li>不同的内存分配器实现（例如 libc 自带的 malloc 或 jemalloc）</li>
+    <li>不同的 C 标准库实现（例如 glibc 或 musl）</li>
+    <li>不同的频率缩放、调度器或 CPU 亲和性策略（例如不当的核绑定可能导致频率从 4.0&thinsp;GHz 降至 3.4&thinsp;GHz）</li>
+    <li>不同的内核版本（某些版本可能显著降低性能）</li>
+  </ol>
+</li>
+</ol>
+<p style="margin:6px 0 0 0;">简而言之，缺少完整测试环境信息的分数是不可靠的。</p>
+<p style="margin:6px 0 0 0;">如需引用本页面上的任何测试结果，请务必列出该结果所使用的测试环境，并确保你已充分理解上述注意事项。</p>
+<p style="margin:6px 0 0 0;">原始基准数据：<a href="/benchmark/" target="_blank">/benchmark/</a></p>`,
+    unit_ratio: '', unit_time: ' 毫秒', unit_clock: ' MHz', unit_ipc: '',
+    unit_mpki: '', unit_mispred: ' %',
+  }
+};
+let currentLang = 'en';
 
-</div>
+function _t(key) { return i18n[currentLang][key] || i18n.en[key] || key; }
 
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <button class="modal-close" id="modal-close">&times;</button>
-    <h2 id="modal-title"></h2>
-    <div id="modal-body"></div>
-  </div>
-</div>
+function detectLang() {
+  const stored = localStorage.getItem('lang');
+  if (stored === 'zh' || stored === 'en') return stored;
+  return (navigator.language || '').startsWith('zh') ? 'zh' : 'en';
+}
 
-<div class="modal" id="compare-modal">
-  <div class="modal-content" style="max-width:1200px;">
-    <button class="modal-close" id="compare-modal-close">&times;</button>
-    <h2 id="compare-modal-title">Benchmark Comparison</h2>
-    <div id="compare-meta" style="font-size:0.8rem;color:#555;margin-bottom:10px;"></div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;">
-      <label style="font-size:0.78rem;font-weight:600;">Metric
-        <select id="compare-metric" style="padding:2px 6px;border:1px solid #ccc;border-radius:4px;font-size:0.78rem;">
-          <option value="ratio">Ratio</option>
-          <option value="time">Time (ms)</option>
-          <option value="clock">Clock (MHz)</option>
-          <option value="ipc">IPC</option>
-          <option value="mpki">MPKI</option>
-          <option value="misprediction_rate">Mispred (%)</option>
-        </select>
-      </label>
-      <span style="font-size:0.75rem;color:#999;">Click legend items to toggle series</span>
-    </div>
-    <div id="compare-chart" style="width:100%;height:500px;"></div>
-    <div id="compare-table-wrap" style="overflow-x:auto;margin-top:12px;"></div>
-  </div>
-</div>
+function applyLang() {
+  currentLang = detectLang();
+  document.documentElement.lang = currentLang;
+  // update [data-i18n] elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = _t(el.getAttribute('data-i18n'));
+  });
+  // update [data-i18n-placeholder] elements
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = _t(el.getAttribute('data-i18n-placeholder'));
+  });
+  // update caveat body
+  const caveat = document.getElementById('caveat-body');
+  if (caveat) caveat.innerHTML = _t('caveat_body');
+  // toggle button text
+  const btn = document.getElementById('lang-toggle');
+  if (btn) btn.textContent = currentLang === 'en' ? '中文' : 'English';
+  // re-render if data loaded
+  const chart = echarts.getInstanceByDom(document.getElementById('chart'));
+  if (chart && rawData) refresh(chart);
+}
 
-<script>
+document.getElementById('lang-toggle').addEventListener('click', () => {
+  localStorage.setItem('lang', currentLang === 'en' ? 'zh' : 'en');
+  applyLang();
+});
+
 // ── state ──
 let rawData = null;
 let filtered = [];
@@ -306,7 +459,7 @@ function applyFilters() {
     }
   }
   filtered = entries;
-  document.getElementById('stat-count').textContent = `${filtered.length} results`;
+  document.getElementById('stat-count').textContent = _t('results_fmt').replace('{n}', filtered.length);
 }
 
 function resetFilters() {
@@ -329,7 +482,7 @@ function render(chart) {
   chart.clear();
   let data = [...filtered];
   if (data.length === 0) {
-    chart.setOption({ title: { text: 'No matching results', left: 'center', top: 'center' } });
+    chart.setOption({ title: { text: _t('no_matching'), left: 'center', top: 'center' } });
     document.getElementById('table-body').innerHTML = '';
     return;
   }
@@ -351,19 +504,19 @@ function render(chart) {
         const item = data[p.dataIndex];
         if (!item) return p.name;
         return `<strong>${item.cpu_name}</strong><br>
-                Score: <strong>${item.score}</strong><br>
-                OS: ${item.os} | Suite: ${item.test_type}<br>
-                Flags: ${item.opt_flags}<br>
-                Compiler: ${esc(item.compiler||'')}<br>
-                Memory: ${esc(item.memory||'')}<br>
-                Vendor: ${item.vendor} | Launch: ${item.launch_date}<br>
-                Sector: ${item.sector} | ISA: ${item.isa}`;
+                ${_t('tooltip_score')} <strong>${item.score}</strong><br>
+                ${_t('tooltip_os')} ${item.os} | ${_t('tooltip_suite')} ${item.test_type}<br>
+                ${_t('tooltip_flags')} ${item.opt_flags}<br>
+                ${_t('tooltip_compiler')} ${esc(item.compiler||'')}<br>
+                ${_t('tooltip_memory')} ${esc(item.memory||'')}<br>
+                ${_t('tooltip_vendor')} ${item.vendor} | ${_t('tooltip_launch')} ${item.launch_date}<br>
+                ${_t('tooltip_sector')} ${item.sector} | ${_t('tooltip_isa')} ${item.isa}`;
       }
     },
     grid: { left: 200, right: '15%', top: 30, bottom: 30, containLabel: true },
     xAxis: {
       type: 'value',
-      name: 'Estimated SPECrate Score',
+      name: _t('chart_score_axis'),
       nameLocation: 'middle',
       nameGap: 25
     },
@@ -399,9 +552,9 @@ function render(chart) {
   // legend
   const legendEl = document.getElementById('legend-area');
   const isaSet = unique(data.map(e => e.isa));
-  legendEl.innerHTML = '<span style="font-weight:600;margin-right:8px;">ISA:</span>' +
+  legendEl.innerHTML = '<span style="font-weight:600;margin-right:8px;">' + _t('isa_label') + '</span>' +
     isaSet.map(isa => `<span class="legend-item"><span class="legend-dot" style="background:${COLORS[isa]||'#95a5a6'}"></span>${isa}</span>`).join('') +
-    ' <span style="margin-left:16px;font-weight:600;">Click bars for per-benchmark details</span>';
+    ' <span style="margin-left:16px;font-weight:600;">' + _t('click_bar_hint') + '</span>';
 
   // click handler for modal
   chart.off('click');
@@ -417,7 +570,8 @@ function render(chart) {
 function renderTable(data) {
   const sorted = [...data].sort((a, b) => b.score - a.score);
   const head = document.getElementById('table-head');
-  head.innerHTML = '<th class="chk"><input type="checkbox" id="select-all" title="Select/deselect all"></th><th>CPU</th><th>Score</th><th>OS</th><th>Compiler</th><th>Memory</th><th>Flags</th><th>Vendor</th><th>Launch</th><th>Sector</th><th>ISA</th>';
+  const th = (k) => _t('tbl_' + k);
+  head.innerHTML = '<th class="chk"><input type="checkbox" id="select-all" title="' + esc(_t('select_all_title')) + '"></th><th>' + th('cpu') + '</th><th>' + th('score') + '</th><th>' + th('os') + '</th><th>' + th('compiler') + '</th><th>' + th('memory') + '</th><th>' + th('flags') + '</th><th>' + th('vendor') + '</th><th>' + th('launch') + '</th><th>' + th('sector') + '</th><th>' + th('isa') + '</th>';
   const tbody = document.getElementById('table-body');
   tbody.innerHTML = '';
   let lastFlags = null;
@@ -491,7 +645,7 @@ function updateCompareBtn() {
   const hint = document.getElementById('compare-hint');
   const n = selectedIndices.size;
   btn.disabled = n < 2;
-  btn.textContent = n >= 2 ? `Compare Selected (${n})` : 'Compare Selected';
+  btn.textContent = n >= 2 ? _t('cmp_selected_fmt').replace('{n}', n) : _t('compare_selected');
   hint.style.display = n >= 2 ? 'none' : '';
 }
 
@@ -510,33 +664,26 @@ function showDetail(item) {
   const bm = item.benchmarks;
   if (!bm) return;
   const names = Object.keys(bm);
-  const suiteYear = item.test_type.startsWith('int') ? 'INT' : 'FP';
+  const isInt = item.test_type.startsWith('int');
+  const suiteYear = isInt ? 'INT' : 'FP';
   const suiteLabel = suiteYear + (item.test_type.includes('2026') ? ' 2026' : ' 2017');
   document.getElementById('modal-title').innerHTML =
     `${esc(item.cpu_name)} <span style="font-weight:normal;font-size:0.85rem;color:#666">(${esc(item.opt_flags)})</span>`;
+  const dl = (k, v) => `<span>${_t('detail_' + k)}: <strong>${v}</strong></span>`;
   const metaHtml = `<div style="font-size:0.8rem;color:#555;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:4px 16px;">
-    <span>Score: <strong>${item.score}</strong></span>
-    <span>OS: ${esc(item.os)}</span>
-    <span>Compiler: ${esc(item.compiler||'-')}</span>
-    <span>Memory: ${esc(item.memory||'-')}</span>
-    <span>Suite: ${suiteLabel}</span>
-    <span>Vendor: ${esc(item.vendor)}</span>
-    <span>Launch: ${esc(item.launch_date)}</span>
-    <span>Sector: ${esc(item.sector)}</span>
-    <span>ISA: ${esc(item.isa)}</span>
+    ${dl('score', item.score)}
+    ${dl('os', esc(item.os))}
+    ${dl('compiler', esc(item.compiler||'-'))}
+    ${dl('memory', esc(item.memory||'-'))}
+    ${dl('suite', suiteLabel)}
+    ${dl('vendor', esc(item.vendor))}
+    ${dl('launch', esc(item.launch_date))}
+    ${dl('sector', esc(item.sector))}
+    ${dl('isa', esc(item.isa))}
   </div>`;
 
-  const cols = [
-    { label: 'Benchmark', title: '' },
-    { label: 'Ratio', title: 'Estimated SPECrate ratio for this benchmark' },
-    { label: 'Time (ms)', title: 'Elapsed wall-clock time in milliseconds' },
-    { label: 'Clock (MHz)', title: 'Average CPU clock frequency' },
-    { label: 'IPC', title: 'Instructions Per Cycle (instructions ÷ cycles)' },
-    { label: 'MPKI', title: 'Cache Misses Per Thousand Instructions' },
-    { label: 'Mispred (%)', title: 'Branch misprediction rate as percentage' },
-    { label: 'Instructions', title: 'Total dynamic instruction count' },
-    { label: 'Branch Insn', title: 'Total dynamic branch instruction count' },
-  ];
+  const colKeys = ['benchmark', 'ratio', 'time', 'clock', 'ipc', 'mpki', 'mispred', 'instructions', 'branch'];
+  const cols = colKeys.map(k => ({ label: _t('col_' + k), title: '' }));
   const keys = ['ratio', 'time', 'clock', 'ipc', 'mpki', 'misprediction_rate', 'instructions', 'branch_instructions'];
   const sums = {};
   keys.forEach(k => { sums[k] = []; });
@@ -556,13 +703,13 @@ function showDetail(item) {
   }
   // summary rows: geo mean for ratio, arithmetic mean for the rest
   if (names.length > 1) {
-    html += '<tr style="border-top:2px solid #4a90d9;font-weight:600"><td>Arithmetic Mean</td>';
+    html += '<tr style="border-top:2px solid #4a90d9;font-weight:600"><td>' + esc(_t('arithmetic_mean')) + '</td>';
     for (const k of keys) {
       const vals = sums[k];
       html += '<td>' + (vals.length ? fmt(vals.reduce((a, b) => a + b, 0) / vals.length) : '-') + '</td>';
     }
     html += '</tr>';
-    html += '<tr style="font-weight:600"><td>Geo Mean</td>';
+    html += '<tr style="font-weight:600"><td>' + esc(_t('geo_mean')) + '</td>';
     for (const k of keys) {
       const vals = sums[k];
       if (k === 'ratio' && vals.length) {
@@ -598,13 +745,13 @@ function openCompare() {
 
   // meta header
   const metaHtml = entries.map((e, i) =>
-    `<span style="margin-right:16px;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — Score: ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.isa)}</span>`
+    `<span style="margin-right:16px;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — ${_t('tooltip_score')} ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.isa)}</span>`
   ).join('');
   document.getElementById('compare-meta').innerHTML = metaHtml;
 
   // title
   document.getElementById('compare-modal-title').textContent =
-    `Benchmark Comparison (${entries.length} entries, ${sortedBm.length} benchmarks)`;
+    _t('compare_title_fmt').replace('{n}', entries.length).replace('{m}', sortedBm.length);
 
   renderCompareTable(entries, sortedBm);
   // show modal first so chart container has dimensions
@@ -637,7 +784,7 @@ function renderCompareChart(entries, bmNames, metric) {
     });
   }
 
-  const unitMap = { ratio: '', time: ' ms', clock: ' MHz', ipc: '', mpki: '', misprediction_rate: ' %' };
+  const unitMap = { ratio: _t('unit_ratio'), time: _t('unit_time'), clock: _t('unit_clock'), ipc: _t('unit_ipc'), mpki: _t('unit_mpki'), misprediction_rate: _t('unit_mispred') };
   chart.setOption({
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     legend: { type: 'scroll', bottom: 0 },
@@ -651,12 +798,12 @@ function renderCompareChart(entries, bmNames, metric) {
 
 function renderCompareTable(entries, bmNames) {
   const metric = document.getElementById('compare-metric').value;
-  let html = '<table><thead><tr><th>Benchmark</th>';
+  let html = '<table><thead><tr><th>' + esc(_t('col_benchmark')) + '</th>';
   for (let ei = 0; ei < entries.length; ei++) {
     const e = entries[ei];
     html += `<th>#${ei+1} ${esc(e.cpu_name)}<br><span style="font-weight:normal;font-size:0.7rem;">${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.opt_flags)} | ${esc(e.os)}</span></th>`;
   }
-  html += '<th style="color:#888;">Max/Min</th>';
+  html += '<th style="color:#888;">' + esc(_t('col_maxmin')) + '</th>';
   html += '</tr></thead><tbody>';
 
   for (const n of bmNames) {
@@ -735,6 +882,7 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   onInputChange();
 });
 
+applyLang();
 init();
 </script>
 </body>
