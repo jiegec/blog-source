@@ -101,35 +101,34 @@ th.chk input { cursor: pointer; }
     <tbody id="table-body"></tbody>
   </table>
 </div>
-</div>
 
-<details style="margin-top:12px;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:8px 14px;font-size:0.78rem;color:#555;">
+<details style="margin-top:12px;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:10px 18px;font-size:0.78rem;color:#555;">
 <summary style="cursor:pointer;font-weight:600;font-size:0.82rem;">Caveats &amp; Disclaimer <span style="font-weight:normal;color:#999;">(click to expand)</span></summary>
-<div style="margin-top:8px;line-height:1.6;">
-<ol>
-<li>Scores can only be used to compare CPUs with the <strong>same ISA</strong> under controlled variables (i.e., running the same binary). Some variables that can affect performance are listed below:
-  <ol type="a">
-    <li>AMD64: compare Intel vs AMD CPUs</li>
-    <li>ARM64: compare Apple vs ARM vs Huawei vs Qualcomm CPUs</li>
-    <li>LoongArch: compare different LoongArch CPUs</li>
+<div style="margin-top:8px;line-height:1.5;">
+<ol style="padding-left:20px;margin:0;">
+<li style="margin-bottom:6px;">Scores can only be used to compare performance of CPUs with the <strong>same ISA</strong> when variables are controlled (i.e., measured with the same binary as commonly said; additional variables that affect performance are listed below). This allows comparison through test results for:
+  <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
+    <li>Performance of Intel and AMD CPUs on the AMD64 ISA</li>
+    <li>Performance of Apple, ARM, Huawei, and Qualcomm CPUs on the ARM64 ISA</li>
+    <li>Performance of different CPUs on the LoongArch ISA</li>
   </ol>
 </li>
-<li>Using scores to compare CPUs across <strong>different ISAs</strong> is less meaningful.</li>
-<li>Even with identical hardware, the following factors can <strong>significantly affect</strong> results:
-  <ol type="a">
-    <li>Different compilers (e.g., GCC is usually faster than Clang with the same flags)</li>
+<li style="margin-bottom:6px;">Using scores to compare CPUs across <strong>different ISAs</strong> is less convincing.</li>
+<li style="margin-bottom:6px;">Even with identical hardware, the following factors can <strong>significantly affect</strong> results:
+  <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
+    <li>Different compilers (e.g., GCC is usually faster than Clang with the same compilation flags)</li>
     <li>Different compiler versions (newer versions are usually faster, but there are exceptions)</li>
-    <li>Different compiler flags (e.g., LTO, <code>-march=native</code>)</li>
-    <li>Different memory allocator implementations (e.g., libc malloc vs jemalloc)</li>
-    <li>Different libc implementations (e.g., glibc vs musl)</li>
+    <li>Different compiler flags (e.g., whether LTO is enabled, whether <code>-march=native</code> is set)</li>
+    <li>Different memory allocator implementations (e.g., libc's built-in malloc or jemalloc)</li>
+    <li>Different C standard library implementations (e.g., glibc or musl)</li>
     <li>Different frequency scaling, scheduler, or CPU affinity policies (e.g., improper pinning can drop frequency from 4.0&thinsp;GHz to 3.4&thinsp;GHz)</li>
     <li>Different kernel versions (some versions can significantly degrade performance)</li>
   </ol>
 </li>
 </ol>
-<p>In short, scores without complete test environment information are unreliable.</p>
-<p>If you need to cite any test results from this page, please always list the full test environment and make sure you have a thorough understanding of the above caveats.</p>
-<p>Original benchmark data: <a href="/benchmark/" target="_blank">/benchmark/</a></p>
+<p style="margin:6px 0 0 0;">In short, scores given without complete test environment information are unreliable.</p>
+<p style="margin:6px 0 0 0;">If you need to cite any test results on this page, please always list the test environment used for that result and make sure you have a thorough understanding of the above caveats.</p>
+<p style="margin:6px 0 0 0;">Original benchmark data: <a href="/benchmark/" target="_blank">/benchmark/</a></p>
 </div>
 </details>
 
