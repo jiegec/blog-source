@@ -59,6 +59,10 @@ tr.sep td { border-top: 2px solid #4a90d9; }
           padding: 4px 0; align-items: center; }
 .legend-item { display: flex; align-items: center; gap: 4px; }
 .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+td.chk, th.chk { width: 32px; text-align: center; }
+td.chk input { cursor: pointer; }
+th.chk input { cursor: pointer; }
+.selected-row { background: #e8f0fe !important; }
 .error { color: #c62828; padding: 20px; text-align: center; }
 .loading { padding: 40px; text-align: center; color: #888; }
 .hidden { display: none; }
@@ -86,12 +90,49 @@ tr.sep td { border-top: 2px solid #4a90d9; }
   <div id="chart"></div>
 </div>
 
+<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+  <button class="btn" id="btn-compare" disabled>Compare Selected</button>
+  <span id="compare-hint" style="font-size:0.75rem;color:#999;">Select 2 or more entries to compare per-benchmark metrics</span>
+</div>
+
 <div class="table-wrap" id="table-wrap">
   <table id="data-table">
     <thead><tr id="table-head"></tr></thead>
     <tbody id="table-body"></tbody>
   </table>
 </div>
+</div>
+
+<details style="margin-top:12px;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:8px 14px;font-size:0.78rem;color:#555;">
+<summary style="cursor:pointer;font-weight:600;font-size:0.82rem;">Caveats &amp; Disclaimer <span style="font-weight:normal;color:#999;">(click to expand)</span></summary>
+<div style="margin-top:8px;line-height:1.6;">
+<ol>
+<li>Scores can only be used to compare CPUs with the <strong>same ISA</strong> under controlled variables (i.e., running the same binary). Some variables that can affect performance are listed below:
+  <ol type="a">
+    <li>AMD64: compare Intel vs AMD CPUs</li>
+    <li>ARM64: compare Apple vs ARM vs Huawei vs Qualcomm CPUs</li>
+    <li>LoongArch: compare different LoongArch CPUs</li>
+  </ol>
+</li>
+<li>Using scores to compare CPUs across <strong>different ISAs</strong> is less meaningful.</li>
+<li>Even with identical hardware, the following factors can <strong>significantly affect</strong> results:
+  <ol type="a">
+    <li>Different compilers (e.g., GCC is usually faster than Clang with the same flags)</li>
+    <li>Different compiler versions (newer versions are usually faster, but there are exceptions)</li>
+    <li>Different compiler flags (e.g., LTO, <code>-march=native</code>)</li>
+    <li>Different memory allocator implementations (e.g., libc malloc vs jemalloc)</li>
+    <li>Different libc implementations (e.g., glibc vs musl)</li>
+    <li>Different frequency scaling, scheduler, or CPU affinity policies (e.g., improper pinning can drop frequency from 4.0&thinsp;GHz to 3.4&thinsp;GHz)</li>
+    <li>Different kernel versions (some versions can significantly degrade performance)</li>
+  </ol>
+</li>
+</ol>
+<p>In short, scores without complete test environment information are unreliable.</p>
+<p>If you need to cite any test results from this page, please always list the full test environment and make sure you have a thorough understanding of the above caveats.</p>
+<p>Original benchmark data: <a href="/benchmark/" target="_blank">/benchmark/</a></p>
+</div>
+</details>
+
 </div>
 
 <div class="modal" id="modal">
@@ -102,10 +143,34 @@ tr.sep td { border-top: 2px solid #4a90d9; }
   </div>
 </div>
 
+<div class="modal" id="compare-modal">
+  <div class="modal-content" style="max-width:1200px;">
+    <button class="modal-close" id="compare-modal-close">&times;</button>
+    <h2 id="compare-modal-title">Benchmark Comparison</h2>
+    <div id="compare-meta" style="font-size:0.8rem;color:#555;margin-bottom:10px;"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;">
+      <label style="font-size:0.78rem;font-weight:600;">Metric
+        <select id="compare-metric" style="padding:2px 6px;border:1px solid #ccc;border-radius:4px;font-size:0.78rem;">
+          <option value="ratio">Ratio</option>
+          <option value="time">Time (ms)</option>
+          <option value="clock">Clock (MHz)</option>
+          <option value="ipc">IPC</option>
+          <option value="mpki">MPKI</option>
+          <option value="misprediction_rate">Mispred (%)</option>
+        </select>
+      </label>
+      <span style="font-size:0.75rem;color:#999;">Click legend items to toggle series</span>
+    </div>
+    <div id="compare-chart" style="width:100%;height:500px;"></div>
+    <div id="compare-table-wrap" style="overflow-x:auto;margin-top:12px;"></div>
+  </div>
+</div>
+
 <script>
 // ── state ──
 let rawData = null;
 let filtered = [];
+let selectedIndices = new Set();
 
 const COLORS = {
   amd64: '#5470c6', arm64: '#ee6666', loong64: '#9b59b6', ppc64el: '#27ae60', unknown: '#95a5a6'
@@ -216,6 +281,8 @@ function populateFilters() {
 }
 
 function applyFilters() {
+  selectedIndices.clear();
+  updateCompareBtn();
   const os = document.getElementById('filter-os').value;
   const suite = document.getElementById('filter-suite').value;
   const flags = document.getElementById('filter-flags').value;
@@ -349,27 +416,80 @@ function render(chart) {
 function renderTable(data) {
   const sorted = [...data].sort((a, b) => b.score - a.score);
   const head = document.getElementById('table-head');
-  head.innerHTML = '<th>CPU</th><th>Score</th><th>OS</th><th>Flags</th><th>Vendor</th><th>Launch</th><th>Sector</th><th>ISA</th>';
+  head.innerHTML = '<th class="chk"><input type="checkbox" id="select-all" title="Select/deselect all"></th><th>CPU</th><th>Score</th><th>OS</th><th>Flags</th><th>Vendor</th><th>Launch</th><th>Sector</th><th>ISA</th>';
   const tbody = document.getElementById('table-body');
   tbody.innerHTML = '';
   let lastFlags = null;
-  for (const e of sorted) {
+  for (let i = 0; i < sorted.length; i++) {
+    const e = sorted[i];
+    const origIdx = filtered.indexOf(e);
     const tr = document.createElement('tr');
-    tr.style.cursor = 'pointer';
-    tr.addEventListener('click', () => { if (e.benchmarks) showDetail(e); });
+    if (selectedIndices.has(origIdx)) tr.classList.add('selected-row');
+    const chk = document.createElement('input');
+    chk.type = 'checkbox';
+    chk.checked = selectedIndices.has(origIdx);
+    chk.addEventListener('click', (ev) => { ev.stopPropagation(); toggleSelect(origIdx, tr); });
+    const tdChk = document.createElement('td');
+    tdChk.className = 'chk';
+    tdChk.appendChild(chk);
+    tr.appendChild(tdChk);
+    const labelTd = document.createElement('td');
+    labelTd.style.cursor = 'pointer';
+    labelTd.textContent = e.cpu_name;
+    labelTd.addEventListener('click', () => { if (e.benchmarks) showDetail(e); });
+    tr.appendChild(labelTd);
     if (lastFlags !== null && e.opt_flags !== lastFlags) tr.classList.add('sep');
     lastFlags = e.opt_flags;
-    tr.innerHTML = `
-      <td>${esc(e.cpu_name)}</td>
-      <td><strong>${e.score.toFixed(2)}</strong></td>
-      <td>${esc(e.os)}</td>
-      <td>${esc(e.opt_flags)}</td>
-      <td>${esc(e.vendor)}</td>
-      <td>${esc(e.launch_date)}</td>
-      <td><span class="badge badge-${esc(e.sector)}">${esc(e.sector)}</span></td>
-      <td><span class="badge badge-${esc(e.isa)}">${esc(e.isa)}</span></td>`;
+    const cells = [
+      { v: e.score.toFixed(2), html: true },
+      { v: e.os },
+      { v: e.opt_flags },
+      { v: e.vendor },
+      { v: e.launch_date },
+      { v: `<span class="badge badge-${esc(e.sector)}">${esc(e.sector)}</span>`, html: true },
+      { v: `<span class="badge badge-${esc(e.isa)}">${esc(e.isa)}</span>`, html: true },
+    ];
+    for (const c of cells) {
+      const td = document.createElement('td');
+      if (c.html) td.innerHTML = c.v;
+      else td.textContent = c.v;
+      tr.appendChild(td);
+    }
     tbody.appendChild(tr);
   }
+  // select-all
+  const selAll = document.getElementById('select-all');
+  if (selAll) {
+    selAll.checked = selectedIndices.size === sorted.length && sorted.length > 0;
+    selAll.addEventListener('change', () => {
+      selectedIndices.clear();
+      if (selAll.checked) {
+        for (let j = 0; j < sorted.length; j++) {
+          const idx = filtered.indexOf(sorted[j]);
+          selectedIndices.add(idx);
+        }
+      }
+      renderTable(data);
+      updateCompareBtn();
+    });
+  }
+}
+
+function toggleSelect(idx, tr) {
+  if (selectedIndices.has(idx)) { selectedIndices.delete(idx); tr.classList.remove('selected-row'); }
+  else { selectedIndices.add(idx); tr.classList.add('selected-row'); }
+  updateCompareBtn();
+  const selAll = document.getElementById('select-all');
+  if (selAll) selAll.checked = selectedIndices.size === filtered.length && filtered.length > 0;
+}
+
+function updateCompareBtn() {
+  const btn = document.getElementById('btn-compare');
+  const hint = document.getElementById('compare-hint');
+  const n = selectedIndices.size;
+  btn.disabled = n < 2;
+  btn.textContent = n >= 2 ? `Compare Selected (${n})` : 'Compare Selected';
+  hint.style.display = n >= 2 ? 'none' : '';
 }
 
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -459,6 +579,140 @@ document.getElementById('modal-close').addEventListener('click', () => {
 });
 document.getElementById('modal').addEventListener('click', (e) => {
   if (e.target === e.currentTarget) document.getElementById('modal').classList.remove('show');
+});
+
+// ── compare ──
+function openCompare() {
+  const indices = Array.from(selectedIndices).filter(i => i >= 0 && i < filtered.length);
+  if (indices.length < 2) return;
+  const entries = indices.map(i => filtered[i]);
+  const bmNames = new Set();
+  entries.forEach(e => { if (e.benchmarks) Object.keys(e.benchmarks).forEach(n => bmNames.add(n)); });
+  const sortedBm = Array.from(bmNames).sort();
+  const metric = document.getElementById('compare-metric').value;
+
+  // meta header
+  const metaHtml = entries.map((e, i) =>
+    `<span style="margin-right:16px;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — Score: ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.isa)}</span>`
+  ).join('');
+  document.getElementById('compare-meta').innerHTML = metaHtml;
+
+  // title
+  document.getElementById('compare-modal-title').textContent =
+    `Benchmark Comparison (${entries.length} entries, ${sortedBm.length} benchmarks)`;
+
+  renderCompareTable(entries, sortedBm);
+  // show modal first so chart container has dimensions
+  document.getElementById('compare-modal').classList.add('show');
+  renderCompareChart(entries, sortedBm, metric);
+}
+
+function renderCompareChart(entries, bmNames, metric) {
+  const chartDom = document.getElementById('compare-chart');
+  if (!chartDom) return;
+  let chart = echarts.getInstanceByDom(chartDom);
+  if (!chart) chart = echarts.init(chartDom);
+
+  const series = [];
+  const colorPalette = ['#5470c6','#ee6666','#91cc75','#fac858','#9b59b6','#27ae60','#ff7f50','#8dd3c7'];
+  for (let ei = 0; ei < entries.length; ei++) {
+    const e = entries[ei];
+    const data = bmNames.map(n => {
+      if (!e.benchmarks || !e.benchmarks[n]) return null;
+      const v = e.benchmarks[n][metric];
+      return v !== undefined && v !== null && typeof v === 'number' ? v : null;
+    });
+    series.push({
+      name: `#${ei+1} ${e.cpu_name}`,
+      type: 'bar',
+      data: data,
+      barMaxWidth: 20,
+      itemStyle: { color: colorPalette[ei % colorPalette.length] },
+      label: { show: false },
+    });
+  }
+
+  const unitMap = { ratio: '', time: ' ms', clock: ' MHz', ipc: '', mpki: '', misprediction_rate: ' %' };
+  chart.setOption({
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    legend: { type: 'scroll', bottom: 0 },
+    grid: { left: 100, right: 40, top: 60, bottom: 70, containLabel: true },
+    xAxis: { type: 'category', data: bmNames, axisLabel: { rotate: 45, fontSize: 10 } },
+    yAxis: { type: 'value', name: metric + (unitMap[metric] || '') },
+    series: series,
+  }, true);
+  chart.resize();
+}
+
+function renderCompareTable(entries, bmNames) {
+  const metric = document.getElementById('compare-metric').value;
+  let html = '<table><thead><tr><th>Benchmark</th>';
+  for (let ei = 0; ei < entries.length; ei++) {
+    const e = entries[ei];
+    html += `<th>#${ei+1} ${esc(e.cpu_name)}<br><span style="font-weight:normal;font-size:0.7rem;">${esc(e.opt_flags)} | ${esc(e.os)}</span></th>`;
+  }
+  html += '<th style="color:#888;">Max/Min</th>';
+  html += '</tr></thead><tbody>';
+
+  for (const n of bmNames) {
+    html += `<tr><td><strong>${esc(n)}</strong></td>`;
+    const vals = [];
+    for (let ei = 0; ei < entries.length; ei++) {
+      const e = entries[ei];
+      let v = null, tip = '';
+      if (e.benchmarks && e.benchmarks[n]) {
+        const d = e.benchmarks[n];
+        v = d[metric];
+        const ratio = d.ratio;
+        const time = d.time;
+        const clock = d.clock;
+        const ipc = d.ipc;
+        const mpki = d.mpki;
+        const mispred = d.misprediction_rate;
+        tip = `ratio=${fmt(ratio)} time=${fmt(time)}ms clock=${fmt(clock)}MHz IPC=${fmt(ipc)} MPKI=${fmt(mpki)} mispred=${fmt(mispred)}`;
+      }
+      const valid = v !== undefined && v !== null && typeof v === 'number';
+      if (valid) vals.push(v);
+      const title = tip ? ` title="${esc(tip)}"` : '';
+      html += `<td${title}>${valid ? fmt(v) : '-'}</td>`;
+    }
+    // ratio column
+    if (vals.length >= 2) {
+      const mx = Math.max(...vals), mn = Math.min(...vals);
+      html += `<td style="color:#888;">${mn > 0 ? (mx / mn).toFixed(3) + 'x' : '-'}</td>`;
+    } else {
+      html += '<td style="color:#888;">-</td>';
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('compare-table-wrap').innerHTML = html;
+}
+
+// compare event handlers
+document.getElementById('btn-compare').addEventListener('click', openCompare);
+document.getElementById('compare-modal-close').addEventListener('click', () => {
+  document.getElementById('compare-modal').classList.remove('show');
+  const cd = document.getElementById('compare-chart');
+  const ch = echarts.getInstanceByDom(cd);
+  if (ch) ch.dispose();
+});
+document.getElementById('compare-modal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('compare-modal').classList.remove('show');
+    const cd = document.getElementById('compare-chart');
+    const ch = echarts.getInstanceByDom(cd);
+    if (ch) ch.dispose();
+  }
+});
+document.getElementById('compare-metric').addEventListener('change', () => {
+  const indices = Array.from(selectedIndices).filter(i => i >= 0 && i < filtered.length);
+  if (indices.length < 2) return;
+  const entries = indices.map(i => filtered[i]);
+  const bmNames = new Set();
+  entries.forEach(e => { if (e.benchmarks) Object.keys(e.benchmarks).forEach(n => bmNames.add(n)); });
+  renderCompareChart(entries, Array.from(bmNames).sort(), document.getElementById('compare-metric').value);
+  renderCompareTable(entries, Array.from(bmNames).sort());
 });
 
 // ── events: auto-refresh on any input change ──
