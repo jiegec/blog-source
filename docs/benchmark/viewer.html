@@ -135,6 +135,8 @@ th.chk input { cursor: pointer; }
           <option value="ipc" data-i18n="metric_ipc">IPC</option>
           <option value="mpki" data-i18n="metric_mpki">MPKI</option>
           <option value="misprediction_rate" data-i18n="metric_mispred">Mispred (%)</option>
+          <option value="instructions" data-i18n="metric_instructions">Instructions</option>
+          <option value="branch_instructions" data-i18n="metric_branch">Branch Insn</option>
         </select>
       </label>
       <span style="font-size:0.75rem;color:#999;" data-i18n="legend_toggle_hint">Click legend items to toggle series</span>
@@ -160,6 +162,7 @@ const i18n = {
     metric_label: 'Metric',
     metric_ratio: 'Ratio', metric_time: 'Time (ms)', metric_clock: 'Clock (MHz)',
     metric_ipc: 'IPC', metric_mpki: 'MPKI', metric_mispred: 'Mispred (%)',
+    metric_instructions: 'Instructions', metric_branch: 'Branch Insn',
     legend_toggle_hint: 'Click legend items to toggle series',
     compare_title: 'Benchmark Comparison',
     no_matching: 'No matching results',
@@ -227,6 +230,7 @@ const i18n = {
     metric_label: '指标',
     metric_ratio: '比率', metric_time: '时间（毫秒）', metric_clock: '频率（MHz）',
     metric_ipc: 'IPC', metric_mpki: 'MPKI', metric_mispred: '误预测率（%）',
+    metric_instructions: '指令数', metric_branch: '分支指令数',
     legend_toggle_hint: '点击图例切换显示',
     compare_title: '基准测试对比',
     no_matching: '没有匹配的结果',
@@ -784,7 +788,7 @@ function renderCompareChart(entries, bmNames, metric) {
     });
   }
 
-  const metricLabelMap = { ratio: 'metric_ratio', time: 'metric_time', clock: 'metric_clock', ipc: 'metric_ipc', mpki: 'metric_mpki', misprediction_rate: 'metric_mispred' };
+  const metricLabelMap = { ratio: 'metric_ratio', time: 'metric_time', clock: 'metric_clock', ipc: 'metric_ipc', mpki: 'metric_mpki', misprediction_rate: 'metric_mispred', instructions: 'metric_instructions', branch_instructions: 'metric_branch' };
   chart.setOption({
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     legend: { type: 'scroll', bottom: 0 },
