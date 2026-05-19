@@ -10,19 +10,10 @@
 
 #### Debian Trixie
 
-桌面平台：
+桌面平台（`-march=native` + LTO + Jemalloc）：
 
-- Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [2.73](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
-- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [4.84](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
-- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [3.05](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
-- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [5.27](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -march=native -flto -ljemalloc`）: [5.43](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 
-桌面平台（LTO）：
-
-- Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3 -flto`）: [2.78](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3-flto_001.txt)
-- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -flto`）: [4.94](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_P-Core_O3-flto_001.txt)
-- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto`）: [3.10](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_E-Core_O3-flto_001.txt)
-- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [5.39](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3-flto_001.txt)
 桌面平台（LTO + Jemalloc）：
 
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3 -flto -ljemalloc`）: [2.96](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3-flto-ljemalloc_001.txt)
@@ -30,6 +21,19 @@
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto -ljemalloc`）: [3.28](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_E-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [5.63](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3-flto-ljemalloc_001.txt)
 
+桌面平台（LTO）：
+
+- Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3 -flto`）: [2.78](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3-flto_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -flto`）: [4.94](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_P-Core_O3-flto_001.txt)
+- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto`）: [3.10](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_E-Core_O3-flto_001.txt)
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [5.39](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3-flto_001.txt)
+
+桌面平台：
+
+- Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [2.73](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
+- Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [4.84](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
+- Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [3.05](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
+- Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [5.27](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 
 #### 备注
 
@@ -65,7 +69,6 @@
 - Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [6.44](./data-trixie/fp2026_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [3.66](./data-trixie/fp2026_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [7.02](./data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
-
 
 #### 备注
 

@@ -100,6 +100,7 @@ PLATFORMS = {
 # IMPORTANT: Order matters! More specific groups must come before general ones
 # For example, 'O3 -flto -ljemalloc' must come before 'O3 -flto'
 OPT_FLAGS_GROUPS = {
+    "O3 -march=native -flto -ljemalloc": ["-march=native", "-flto", "-ljemalloc"],
     "O3 -flto -ljemalloc": ["-flto", "-ljemalloc"],
     "O3 -flto": ["-flto"],
     "O3 -march=native": ["-march=native"],
@@ -376,16 +377,12 @@ def format_opt_flags_for_display(opt_flags):
 
     result = opt_flags
 
-    # Handle specific patterns in order (most specific first)
+    # Format flags
     # -O3-flto-ljemalloc -> -O3 -flto -ljemalloc
-    if "-O3-flto-ljemalloc" in result:
-        result = result.replace("-O3-flto-ljemalloc", "-O3 -flto -ljemalloc")
     # -O3-march=native -> -O3 -march=native
-    elif "-O3-march=native" in result:
-        result = result.replace("-O3-march=native", "-O3 -march=native")
     # -O3-flto -> -O3 -flto
-    elif "-O3-flto" in result:
-        result = result.replace("-O3-flto", "-O3 -flto")
+    assert result[0] == "-"
+    result = "-" + result[1:].replace("-", " -")
 
     return result
 
@@ -484,9 +481,10 @@ def generate_section_markdown(data_dir, section_name, test_type="fp2017"):
         opt_group_order = [
             ("O3 -flto", "-flto"),
         ]
-    elif test_type == "int2017":
-        # INT 2017: LTO+Jemalloc -> LTO -> O3
+    elif (test_type == "int2017" or test_type == "int2026"):
+        # INT 2017: -march=native+LTO+Jemalloc -> LTO+Jemalloc -> LTO -> O3
         opt_group_order = [
+            ("O3 -march=native -flto -ljemalloc", "-march=native -flto -ljemalloc"),
             ("O3 -flto -ljemalloc", "-flto -ljemalloc"),
             ("O3 -flto", "-flto"),
             ("O3", "-O3"),
@@ -525,8 +523,7 @@ def generate_section_markdown(data_dir, section_name, test_type="fp2017"):
                     )
 
         if mobile_data:
-            # Add blank line before mobile platforms section
-            if md_lines and not md_lines[-1].endswith("\n\n"):
+            if md_lines and md_lines[-1].startswith("- "):
                 md_lines.append("\n")
             md_lines.append("手机平台（LTO）：\n\n")
             mobile_items = merge_duplicate_cpus(mobile_data)
@@ -543,118 +540,51 @@ def generate_section_markdown(data_dir, section_name, test_type="fp2017"):
                     )
     else:
         # For Debian Bookworm/Trixie, group by platform type first (desktop/server), then by opt flags
-        # Desktop platforms
-        desktop_data = [x for x in data if x["platform_type"] == "desktop"]
-
-        # Process desktop platforms in opt flag order
-        for opt_group_keys, header_flags in opt_group_order:
-            # Get the group directly using opt_group_keys (which is the key in opt_groups)
-            matched_group = opt_groups.get(opt_group_keys, [])
-
-            if not matched_group:
+        for platform_type, platform_title in [("desktop", "桌面"), ("server", "服务器")]:
+            platform_items = [x for x in data if x["platform_type"] == platform_type]
+            if not platform_items:
                 continue
 
-            # Filter to desktop items only
-            desktop_items = [
-                x
-                for x in matched_group
-                if get_platform_type(x["cpu_name"]) == "desktop"
-            ]
+            # Process platform in opt flag order
+            for opt_group_keys, header_flags in opt_group_order:
+                matched_group = opt_groups.get(opt_group_keys, [])
+                if not matched_group:
+                    continue
 
-            if not desktop_items:
-                continue
+                items = [x for x in matched_group if get_platform_type(x["cpu_name"]) == platform_type]
+                if not items:
+                    continue
 
-            # Merge duplicate CPUs
-            desktop_items = merge_duplicate_cpus(desktop_items)
+                items = merge_duplicate_cpus(items)
 
-            # Add blank line before certain sections
-            # For FP 2017: add before `-O3` (transition from -march=native)
-            # For INT 2017: add before `-O3` (transition from LTO) and before `LTO` (transition from LTO+Jemalloc)
-            if md_lines and not md_lines[-1].endswith("\n\n"):
-                if header_flags == "-O3":
-                    md_lines.append("\n")
-                elif header_flags == "-flto" and (test_type == "int2017" or test_type == "int2026"):
+                # Add blank line if previous section had entries
+                if md_lines and md_lines[-1].startswith("- "):
                     md_lines.append("\n")
 
-            # Generate title based on header_flags
-            if "-march=native" in header_flags:
-                md_lines.append("桌面平台（`-march=native`）：\n\n")
-            elif "-flto" in header_flags:
+                parts = []
+                if "-march=native" in header_flags:
+                    parts.append("`-march=native`")
+                if "-flto" in header_flags:
+                    parts.append("LTO")
                 if "-ljemalloc" in header_flags:
-                    md_lines.append("桌面平台（LTO + Jemalloc）：\n\n")
+                    parts.append("Jemalloc")
+
+                if len(parts) > 0:
+                    md_lines.append(f"{platform_title}平台（{' + '.join(parts)}）：\n\n")
                 else:
-                    md_lines.append("桌面平台（LTO）：\n\n")
-            else:  # -O3 only
-                md_lines.append("桌面平台：\n\n")
+                    md_lines.append(f"{platform_title}平台：\n\n")
 
-            for item in sorted(desktop_items, key=lambda x: x["cpu_name"]):
-                opt_flags_display = format_opt_flags_for_display(item["opt_flags"])
-                if "all_links" in item:
-                    md_lines.append(
-                        f"- {item['cpu_name']}（`{opt_flags_display}`）: {item['all_links']}\n"
-                    )
-                else:
-                    score_str = format_score(item["score"])
-                    md_lines.append(
-                        f"- {item['cpu_name']}（`{opt_flags_display}`）: [{score_str}]({item['rel_path']})\n"
-                    )
-
-        # Server platforms
-        server_data = [x for x in data if x["platform_type"] == "server"]
-
-        # Add blank line before server platforms section
-        if md_lines and not md_lines[-1].endswith("\n\n"):
-            md_lines.append("\n")
-
-        # Process server platforms in opt flag order
-        for opt_group_keys, header_flags in opt_group_order:
-            # Get the group directly using opt_group_keys (which is the key in opt_groups)
-            matched_group = opt_groups.get(opt_group_keys, [])
-
-            if not matched_group:
-                continue
-
-            # Filter to server items only
-            server_items = [
-                x for x in matched_group if get_platform_type(x["cpu_name"]) == "server"
-            ]
-
-            if not server_items:
-                continue
-
-            # Merge duplicate CPUs
-            server_items = merge_duplicate_cpus(server_items)
-
-            # Add blank line before certain sections
-            # For FP 2017: add before `-O3` (transition from -march=native)
-            # For INT 2017: add before `-O3` (transition from LTO) and before `LTO` (transition from LTO+Jemalloc)
-            if md_lines and not md_lines[-1].endswith("\n\n"):
-                if header_flags == "-O3":
-                    md_lines.append("\n")
-                elif header_flags == "-flto" and test_type == "int2017":
-                    md_lines.append("\n")
-
-            if "-march=native" in header_flags:
-                md_lines.append("服务器平台（`-march=native`）：\n\n")
-            elif "-flto" in header_flags:
-                if "-ljemalloc" in header_flags:
-                    md_lines.append("服务器平台（LTO + Jemalloc）：\n\n")
-                else:
-                    md_lines.append("服务器平台（LTO）：\n\n")
-            elif header_flags == "-O3":
-                md_lines.append("服务器平台：\n\n")
-
-            for item in sorted(server_items, key=lambda x: x["cpu_name"]):
-                opt_flags_display = format_opt_flags_for_display(item["opt_flags"])
-                if "all_links" in item:
-                    md_lines.append(
-                        f"- {item['cpu_name']}（`{opt_flags_display}`）: {item['all_links']}\n"
-                    )
-                else:
-                    score_str = format_score(item["score"])
-                    md_lines.append(
-                        f"- {item['cpu_name']}（`{opt_flags_display}`）: [{score_str}]({item['rel_path']})\n"
-                    )
+                for item in sorted(items, key=lambda x: x["cpu_name"]):
+                    opt_flags_display = format_opt_flags_for_display(item["opt_flags"])
+                    if "all_links" in item:
+                        md_lines.append(
+                            f"- {item['cpu_name']}（`{opt_flags_display}`）: {item['all_links']}\n"
+                        )
+                    else:
+                        score_str = format_score(item["score"])
+                        md_lines.append(
+                            f"- {item['cpu_name']}（`{opt_flags_display}`）: [{score_str}]({item['rel_path']})\n"
+                        )
 
     return "".join(md_lines)
 
@@ -972,7 +902,7 @@ def parse_memory_from_file(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
         for line in f:
             if line.startswith("Memory:"):
-                return simplify_memory(line[len("Memory:"):].strip())
+                return simplify_memory(line[len("Memory:") :].strip())
     return None
 
 
@@ -1127,7 +1057,6 @@ Examples:
         choices=["int2017", "fp2017", "int2026", "fp2026", "all"],
         default="all",
         help="Type of SPEC test to generate (default: all)",
-
     )
     parser.add_argument(
         "--update",
