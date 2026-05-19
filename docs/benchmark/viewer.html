@@ -284,7 +284,7 @@ const i18n = {
 };
 let currentLang = 'en';
 
-function _t(key) { return i18n[currentLang][key] || i18n.en[key] || key; }
+function _t(key) { return i18n[currentLang][key] ?? i18n.en[key] ?? key; }
 
 function detectLang() {
   const stored = localStorage.getItem('lang');
