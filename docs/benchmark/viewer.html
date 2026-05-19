@@ -7,73 +7,163 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-       background: #f5f5f5; color: #333; padding: 16px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+  background: #f0f2f5; color: #1a1a2e; padding: 20px; line-height: 1.5;
+}
 .container { max-width: 1400px; margin: 0 auto; }
-h1 { font-size: 1.4rem; margin-bottom: 12px; }
-.filters { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 12px;
-           align-items: center; background: #fff; padding: 10px 14px;
-           border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-.filters label { font-size: 0.85rem; font-weight: 600; display: flex;
-                 align-items: center; gap: 4px; }
-.filters select { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px;
-                  font-size: 0.85rem; background: #fff; }
-.filters .stat { margin-left: auto; font-size: 0.85rem; color: #666; }
-.btn { padding: 4px 12px; border: 1px solid #4a90d9; border-radius: 4px;
-       background: #4a90d9; color: #fff; cursor: pointer; font-size: 0.85rem; }
-.btn:hover { background: #357abd; }
-.btn-outline { background: transparent; color: #4a90d9; }
-.btn-outline:hover { background: #e8f0fe; }
-.modal { display: none; position: fixed; inset: 0; z-index: 1000;
-         background: rgba(0,0,0,0.4); align-items: center; justify-content: center; }
-.modal.show { display: flex; }
-.modal-content { background: #fff; border-radius: 8px; max-width: 900px; width: 90%;
-                 max-height: 85vh; overflow-y: auto; padding: 16px; position: relative; }
-.modal-close { position: absolute; top: 8px; right: 12px; font-size: 1.2rem;
-               cursor: pointer; color: #666; background: none; border: none; }
-.modal-close:hover { color: #000; }
-.modal h2 { font-size: 1rem; margin-bottom: 8px; padding-right: 24px; }
-.modal table { font-size: 0.75rem; }
-.chart-box { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-             padding: 8px; margin-bottom: 12px; overflow: hidden; }
+
+/* ── Header ── */
+h1 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+.header-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+
+/* ── Filters ── */
+.filters {
+  display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center;
+  background: #fff; padding: 14px 18px;
+  border-radius: 12px; margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.03);
+}
+.filters label {
+  font-size: 0.78rem; font-weight: 600; color: #5a6178;
+  display: flex; align-items: center; gap: 6px;
+}
+.filters select, .filters input[type="text"] {
+  padding: 5px 10px; border: 1.5px solid #e2e6ed; border-radius: 6px;
+  font-size: 0.82rem; background: #fff; color: #1a1a2e;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.filters #filter-flags { max-width: 130px; }
+.filters select:hover { border-color: #b0b8c8; }
+.filters select:focus, .filters input[type="text"]:focus {
+  border-color: #4f6ef7; outline: none; box-shadow: 0 0 0 3px rgba(79,110,247,0.1);
+}
+.filters .stat { font-size: 0.82rem; color: #6b7280; white-space: nowrap; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 5px 14px; border: none; border-radius: 6px;
+  background: #4f6ef7; color: #fff; cursor: pointer;
+  font-size: 0.82rem; font-weight: 500;
+  transition: all 0.15s ease; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; line-height: 1.4;
+}
+.btn:hover { background: #3b5de7; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(79,110,247,0.25); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn-outline {
+  background: transparent; color: #4f6ef7; border: 1.5px solid #4f6ef7;
+}
+.btn-outline:hover { background: rgba(79,110,247,0.06); transform: none; box-shadow: none; }
+
+#lang-toggle { cursor: pointer; min-width: 48px; text-align: center; font-size: 0.8rem; padding: 2px 10px; flex-shrink: 0; }
+
+/* ── Chart ── */
+.chart-box {
+  background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.03); overflow: hidden;
+}
 #chart { width: 100%; height: 600px; }
-.table-wrap { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-              padding: 8px; overflow-x: auto; }
+
+/* ── Legend ── */
+.legend {
+  display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.8rem;
+  padding: 6px 4px 10px; align-items: center;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+
+/* ── Table ── */
+.table-wrap {
+  background: #fff; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.03);
+}
 table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-th, td { padding: 4px 8px; text-align: right; border-bottom: 1px solid #eee;
-         white-space: nowrap; }
-th { background: #fafafa; font-weight: 600; position: sticky; top: 0; }
+th, td {
+  padding: 6px 10px; text-align: right; white-space: nowrap;
+}
+th {
+  background: #f8f9fb; font-weight: 600; position: sticky; top: 0;
+  border-bottom: 1.5px solid #e2e6ed; color: #4b5563; font-size: 0.76rem;
+  text-transform: uppercase; letter-spacing: 0.03em;
+}
 td:first-child, th:first-child { text-align: left; }
-tr:hover { background: #f0f6ff; }
-tr.sep td { border-top: 2px solid #4a90d9; }
-.badge { display: inline-block; padding: 1px 6px; border-radius: 3px;
-         font-size: 0.7rem; font-weight: 600; }
-.badge-amd64 { background: #e3f2fd; color: #1565c0; }
-.badge-arm64 { background: #fce4ec; color: #c62828; }
-.badge-loong64 { background: #f3e5f5; color: #6a1b9a; }
-.badge-ppc64el { background: #e8f5e9; color: #2e7d32; }
-.badge-desktop { background: #e8eaf6; color: #283593; }
-.badge-server { background: #e0f2f1; color: #00695c; }
-.badge-mobile { background: #fce4ec; color: #880e4f; }
-.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.78rem;
-          padding: 4px 0; align-items: center; }
-.legend-item { display: flex; align-items: center; gap: 4px; }
-.legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
-td.chk, th.chk { width: 32px; text-align: center; }
-td.chk input { cursor: pointer; }
-th.chk input { cursor: pointer; }
-.selected-row { background: #e8f0fe !important; }
-.error { color: #c62828; padding: 20px; text-align: center; }
-.loading { padding: 40px; text-align: center; color: #888; }
+tbody tr { transition: background 0.1s ease; }
+tbody tr:nth-child(even) { background: #fafbfc; }
+tbody tr:hover { background: #eef1ff; }
+tr.sep td { border-top: 2px solid #4f6ef7; }
+
+/* ── Checkbox column ── */
+td.chk, th.chk { width: 36px; text-align: center; }
+td.chk input, th.chk input { cursor: pointer; }
+.selected-row { background: #eef1ff !important; }
+.selected-row td:first-child { box-shadow: inset 3px 0 0 #4f6ef7; }
+
+/* ── Badges ── */
+.badge {
+  display: inline-block; padding: 2px 7px; border-radius: 4px;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.02em;
+}
+.badge-amd64 { background: #eef1ff; color: #4f6ef7; }
+.badge-arm64 { background: #fde8ea; color: #e8525e; }
+.badge-loong64 { background: #f3e8ff; color: #9333ea; }
+.badge-ppc64el { background: #e8f5e9; color: #16a34a; }
+.badge-desktop { background: #eef1ff; color: #4f6ef7; }
+.badge-server { background: #e8f5e9; color: #16a34a; }
+.badge-mobile { background: #fde8ea; color: #e8525e; }
+
+/* ── Modal ── */
+.modal {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.35); align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal.show { display: flex; }
+.modal-content {
+  background: #fff; border-radius: 14px; max-width: 900px; width: 92%;
+  max-height: 85vh; overflow-y: auto; padding: 20px; position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+.modal-close {
+  position: absolute; top: 10px; right: 14px; font-size: 1.3rem; line-height: 1;
+  cursor: pointer; color: #9ca3af; background: none; border: none;
+  transition: color 0.15s ease; padding: 4px;
+}
+.modal-close:hover { color: #1a1a2e; }
+.modal h2 { font-size: 1.05rem; margin-bottom: 10px; padding-right: 28px; }
+.modal table { font-size: 0.75rem; }
+
+/* ── Compare section ── */
+.compare-controls {
+  display: flex; gap: 10px; margin-bottom: 12px; align-items: center; flex-wrap: wrap;
+}
+.compare-hint { font-size: 0.75rem; color: #9ca3af; }
+
+/* ── Caveat ── */
+.caveat-box {
+  margin-top: 16px; background: #fff; border-radius: 12px; padding: 14px 20px;
+  font-size: 0.78rem; color: #6b7280; line-height: 1.6;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.03);
+}
+.caveat-title { font-weight: 700; font-size: 0.82rem; margin-bottom: 8px; color: #374151; }
+
+/* ── Utilities ── */
+.error { color: #e8525e; padding: 32px; text-align: center; }
+.loading { padding: 40px; text-align: center; color: #9ca3af; }
 .hidden { display: none; }
-#lang-toggle { cursor: pointer; min-width: 48px; text-align: center; }
+
+/* ── Scrollbar ── */
+.table-wrap::-webkit-scrollbar { height: 6px; }
+.table-wrap::-webkit-scrollbar-track { background: transparent; }
+.table-wrap::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+.table-wrap::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 </style>
 </head>
 <body>
 <div class="container">
-<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-<h1 style="margin:0;flex:1;" data-i18n="title">SPEC CPU Rate-1 Benchmark Viewer</h1>
-<button id="lang-toggle" class="btn btn-outline" style="padding:2px 10px;font-size:0.8rem;flex-shrink:0;">中文</button>
+<div class="header-row">
+<h1 style="flex:1;" data-i18n="title">SPEC CPU Rate-1 Benchmark Viewer</h1>
+<button id="lang-toggle" class="btn btn-outline">中文</button>
 </div>
 
 <div class="filters">
@@ -85,8 +175,10 @@ th.chk input { cursor: pointer; }
   <label><span data-i18n="filter_vendor">Vendor</span> <select id="filter-vendor"></select></label>
   <label><span data-i18n="filter_search">Search</span> <input type="text" id="filter-search" data-i18n-placeholder="filter_search_placeholder" placeholder="CPU name..." style="width:120px;padding:3px 6px;font-size:0.85rem;"></label>
   <button class="btn btn-outline" id="btn-reset" data-i18n="reset">Reset</button>
-  <span class="stat" id="stat-count"></span>
-  <span style="font-size:0.75rem;color:#999;margin-left:auto;"><span data-i18n="inspired_by">Inspired by</span> <a href="https://benchview.hjc.im/" target="_blank">benchview</a></span>
+  <span style="margin-left:auto;display:flex;align-items:center;gap:14px;flex-shrink:0;">
+    <span class="stat" id="stat-count"></span>
+    <span style="font-size:0.75rem;color:#9ca3af;"><span data-i18n="inspired_by">Inspired by</span> <a href="https://benchview.hjc.im/" target="_blank" style="color:#4f6ef7;text-decoration:none;">benchview</a></span>
+  </span>
 </div>
 
 <div class="chart-box">
@@ -94,9 +186,9 @@ th.chk input { cursor: pointer; }
   <div id="chart"></div>
 </div>
 
-<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+<div class="compare-controls">
   <button class="btn" id="btn-compare" disabled data-i18n="compare_selected">Compare Selected</button>
-  <span id="compare-hint" style="font-size:0.75rem;color:#999;" data-i18n="compare_hint">Select 2 or more entries to compare per-benchmark metrics</span>
+  <span id="compare-hint" class="compare-hint" data-i18n="compare_hint">Select 2 or more entries to compare per-benchmark metrics</span>
 </div>
 
 <div class="table-wrap" id="table-wrap">
@@ -106,9 +198,9 @@ th.chk input { cursor: pointer; }
   </table>
 </div>
 
-<div style="margin-top:12px;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:10px 18px;font-size:0.78rem;color:#555;">
-<div style="font-weight:600;font-size:0.82rem;margin-bottom:8px;" data-i18n="caveat_title">Caveats &amp; Disclaimer</div>
-<div id="caveat-body" style="line-height:1.5;"></div>
+<div class="caveat-box">
+<div class="caveat-title" data-i18n="caveat_title">Caveats &amp; Disclaimer</div>
+<div id="caveat-body"></div>
 </div>
 
 </div>
@@ -125,10 +217,10 @@ th.chk input { cursor: pointer; }
   <div class="modal-content" style="max-width:1200px;">
     <button class="modal-close" id="compare-modal-close">&times;</button>
     <h2 id="compare-modal-title" data-i18n="compare_title">Benchmark Comparison</h2>
-    <div id="compare-meta" style="font-size:0.8rem;color:#555;margin-bottom:10px;"></div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;">
+    <div id="compare-meta" style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;line-height:1.6;"></div>
+    <div class="compare-controls">
       <label style="font-size:0.78rem;font-weight:600;"><span data-i18n="metric_label">Metric</span>
-        <select id="compare-metric" style="padding:2px 6px;border:1px solid #ccc;border-radius:4px;font-size:0.78rem;">
+        <select id="compare-metric" style="padding:3px 8px;border:1.5px solid #e2e6ed;border-radius:6px;font-size:0.78rem;background:#fff;">
           <option value="ratio" data-i18n="metric_ratio">Ratio</option>
           <option value="time" data-i18n="metric_time">Time (ms)</option>
           <option value="clock" data-i18n="metric_clock">Clock (MHz)</option>
@@ -329,9 +421,9 @@ let filtered = [];
 let selectedIndices = new Set();
 
 const COLORS = {
-  amd64: '#5470c6', arm64: '#ee6666', loong64: '#9b59b6', ppc64el: '#27ae60', unknown: '#95a5a6'
+  amd64: '#4f6ef7', arm64: '#e8525e', loong64: '#9333ea', ppc64el: '#16a34a', unknown: '#94a3b8'
 };
-const SECTOR_COLORS = { desktop: '#5470c6', server: '#91cc75', mobile: '#ee6666' };
+const SECTOR_COLORS = { desktop: '#4f6ef7', server: '#16a34a', mobile: '#e8525e' };
 
 // ── init ──
 async function init() {
@@ -496,7 +588,7 @@ function render(chart) {
 
   const yNames = data.map(e => `${e.cpu_name} (${e.opt_flags})`);
   const scores = data.map(e => e.score);
-  const colors = data.map(e => COLORS[e.isa] || '#95a5a6');
+  const colors = data.map(e => COLORS[e.isa] || '#94a3b8');
 
   const option = {
     tooltip: {
@@ -557,7 +649,7 @@ function render(chart) {
   const legendEl = document.getElementById('legend-area');
   const isaSet = unique(data.map(e => e.isa));
   legendEl.innerHTML = '<span style="font-weight:600;margin-right:8px;">' + _t('isa_label') + '</span>' +
-    isaSet.map(isa => `<span class="legend-item"><span class="legend-dot" style="background:${COLORS[isa]||'#95a5a6'}"></span>${isa}</span>`).join('') +
+    isaSet.map(isa => `<span class="legend-item"><span class="legend-dot" style="background:${COLORS[isa]||'#94a3b8'}"></span>${isa}</span>`).join('') +
     ' <span style="margin-left:16px;font-weight:600;">' + _t('click_bar_hint') + '</span>';
 
   // click handler for modal
@@ -674,7 +766,7 @@ function showDetail(item) {
   document.getElementById('modal-title').innerHTML =
     `${esc(item.cpu_name)} <span style="font-weight:normal;font-size:0.85rem;color:#666">(${esc(item.opt_flags)})</span>`;
   const dl = (k, v) => `<span>${_t('detail_' + k)}: <strong>${v}</strong></span>`;
-  const metaHtml = `<div style="font-size:0.8rem;color:#555;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:4px 16px;">
+  const metaHtml = `<div style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px 18px;">
     ${dl('score', item.score)}
     ${dl('os', esc(item.os))}
     ${dl('compiler', esc(item.compiler||'-'))}
@@ -707,7 +799,7 @@ function showDetail(item) {
   }
   // summary rows: geo mean for ratio, arithmetic mean for the rest
   if (names.length > 1) {
-    html += '<tr style="border-top:2px solid #4a90d9;font-weight:600"><td>' + esc(_t('arithmetic_mean')) + '</td>';
+    html += '<tr style="border-top:2px solid #4f6ef7;font-weight:600"><td>' + esc(_t('arithmetic_mean')) + '</td>';
     for (const k of keys) {
       const vals = sums[k];
       html += '<td>' + (vals.length ? fmt(vals.reduce((a, b) => a + b, 0) / vals.length) : '-') + '</td>';
@@ -749,7 +841,7 @@ function openCompare() {
 
   // meta header
   const metaHtml = entries.map((e, i) =>
-    `<span style="margin-right:16px;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — ${_t('tooltip_score')} ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.isa)}</span>`
+    `<span style="margin-right:18px;line-height:1.6;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — ${_t('tooltip_score')} ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.isa)}</span>`
   ).join('');
   document.getElementById('compare-meta').innerHTML = metaHtml;
 
@@ -770,7 +862,7 @@ function renderCompareChart(entries, bmNames, metric) {
   if (!chart) chart = echarts.init(chartDom);
 
   const series = [];
-  const colorPalette = ['#5470c6','#ee6666','#91cc75','#fac858','#9b59b6','#27ae60','#ff7f50','#8dd3c7'];
+  const colorPalette = ['#4f6ef7','#e8525e','#16a34a','#f59e0b','#9333ea','#06b6d4','#f97316','#8b5cf6'];
   for (let ei = 0; ei < entries.length; ei++) {
     const e = entries[ei];
     const data = bmNames.map(n => {
