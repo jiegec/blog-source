@@ -216,67 +216,67 @@ const i18n = {
   },
   zh: {
     title: 'SPEC CPU Rate-1 基准测试查看器',
-    filter_os: '操作系统', filter_suite: '测试集', filter_flags: '编译选项',
+    filter_os: '操作系统', filter_suite: '测试套件', filter_flags: '编译选项',
     filter_sector: '领域', filter_isa: '指令集', filter_vendor: '厂商',
-    filter_search: '搜索', filter_search_placeholder: 'CPU 名称...',
+    filter_search: '搜索', filter_search_placeholder: '搜索 CPU 名称...',
     reset: '重置',
-    inspired_by: '灵感来自',
-    compare_selected: '比较选中项',
-    compare_hint: '选择 2 个以上条目以比较各基准测试指标',
+    inspired_by: '灵感来源于',
+    compare_selected: '对比选中项',
+    compare_hint: '选择至少 2 个条目进行对比',
     caveat_title: '注意事项与免责声明',
     metric_label: '指标',
     metric_ratio: '比率', metric_time: '时间（毫秒）', metric_clock: '频率（MHz）',
     metric_ipc: 'IPC', metric_mpki: 'MPKI', metric_mispred: '误预测率（%）',
     legend_toggle_hint: '点击图例切换显示',
     compare_title: '基准测试对比',
-    no_matching: '无匹配结果',
+    no_matching: '没有匹配的结果',
     chart_score_axis: '估计 SPECrate 分数',
     isa_label: '指令集：',
     click_bar_hint: '点击柱状图查看各基准测试详情',
-    tbl_cpu: 'CPU', tbl_score: '分数', tbl_os: '系统', tbl_compiler: '编译器',
-    tbl_memory: '内存', tbl_flags: '编译选项', tbl_vendor: '厂商', tbl_launch: '发布',
+    tbl_cpu: 'CPU', tbl_score: '分数', tbl_os: '操作系统', tbl_compiler: '编译器',
+    tbl_memory: '内存', tbl_flags: '编译选项', tbl_vendor: '厂商', tbl_launch: '上市',
     tbl_sector: '领域', tbl_isa: '指令集',
     results_fmt: '{n} 个结果',
-    cmp_selected_fmt: '比较选中项（{n}）',
-    detail_score: '分数', detail_os: '系统', detail_compiler: '编译器',
-    detail_memory: '内存', detail_suite: '测试集', detail_vendor: '厂商',
-    detail_launch: '发布', detail_sector: '领域', detail_isa: '指令集',
+    cmp_selected_fmt: '对比选中项（{n}）',
+    detail_score: '分数', detail_os: '操作系统', detail_compiler: '编译器',
+    detail_memory: '内存', detail_suite: '测试套件', detail_vendor: '厂商',
+    detail_launch: '上市', detail_sector: '领域', detail_isa: '指令集',
     col_benchmark: '基准测试', col_ratio: '比率', col_time: '时间（毫秒）',
     col_clock: '频率（MHz）', col_ipc: 'IPC', col_mpki: 'MPKI',
     col_mispred: '误预测率（%）', col_instructions: '指令数',
     col_branch: '分支指令数',
-    col_maxmin: '最大/最小比',
+    col_maxmin: '最大/最小',
     select_all_title: '全选/取消全选',
     arithmetic_mean: '算术平均',
     geo_mean: '几何平均',
     compare_title_fmt: '基准测试对比（{n} 个条目，{m} 个基准测试）',
-    tooltip_score: '分数：', tooltip_os: '系统：', tooltip_suite: '测试集：',
+    tooltip_score: '分数：', tooltip_os: '操作系统：', tooltip_suite: '测试套件：',
     tooltip_flags: '编译选项：', tooltip_compiler: '编译器：', tooltip_memory: '内存：',
-    tooltip_vendor: '厂商：', tooltip_launch: '发布：', tooltip_sector: '领域：',
+    tooltip_vendor: '厂商：', tooltip_launch: '上市：', tooltip_sector: '领域：',
     tooltip_isa: '指令集：',
     caveat_body: `<ol style="padding-left:20px;margin:0;">
-<li style="margin-bottom:6px;">分数只能在变量受控时用于比较<strong>相同指令集</strong>架构下的 CPU 性能（即通常所说的使用相同二进制文件测量；其他影响性能的变量见下）。可用于比较：
+<li style="margin-bottom:6px;">分数仅适用于<strong>相同变量</strong>下 CPU 性能的横向对比（即常说的"同一套二进制"，其他变量见下文），前提是控制好相关变量。具体可用于：
   <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
-    <li>AMD64 指令集下 Intel 与 AMD CPU 的性能</li>
-    <li>ARM64 指令集下 Apple、ARM、华为、高通 CPU 的性能</li>
-    <li>LoongArch 指令集下不同 CPU 的性能</li>
+    <li>AMD64 指令集下 Intel 与 AMD CPU 的性能对比</li>
+    <li>ARM64 指令集下 Apple、ARM、华为、高通 CPU 的性能对比</li>
+    <li>LoongArch 指令集下不同 CPU 的性能对比</li>
   </ol>
 </li>
-<li style="margin-bottom:6px;">使用分数比较<strong>不同指令集</strong>间的 CPU 性能缺乏说服力。</li>
-<li style="margin-bottom:6px;">即使硬件完全相同，以下因素也会<strong>显著影响</strong>结果：
+<li style="margin-bottom:6px;">用分数去比<strong>不同指令集</strong>间的 CPU 性能，说服力就不太够了。</li>
+<li style="margin-bottom:6px;">就算硬件一模一样，以下因素也可能<strong>大幅影响</strong>跑分结果：
   <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
-    <li>不同的编译器（例如 GCC 通常比相同编译选项下的 Clang 更快）</li>
-    <li>不同的编译器版本（新版本通常更快，但也有例外）</li>
+    <li>不同的编译器（例如相同编译选项下 GCC 通常比 Clang 更快）</li>
+    <li>不同的编译器版本（新版通常更快，但也有例外）</li>
     <li>不同的编译选项（例如是否启用 LTO、是否设置 <code>-march=native</code>）</li>
     <li>不同的内存分配器实现（例如 libc 自带的 malloc 或 jemalloc）</li>
     <li>不同的 C 标准库实现（例如 glibc 或 musl）</li>
-    <li>不同的频率缩放、调度器或 CPU 亲和性策略（例如不当的核绑定可能导致频率从 4.0&thinsp;GHz 降至 3.4&thinsp;GHz）</li>
-    <li>不同的内核版本（某些版本可能显著降低性能）</li>
+    <li>不同的频率调节、调度器或 CPU 亲和性策略（例如核没绑好，频率可能从 4.0&thinsp;GHz 掉到 3.4&thinsp;GHz）</li>
+    <li>不同的内核版本（某些版本会明显拖累性能）</li>
   </ol>
 </li>
 </ol>
-<p style="margin:6px 0 0 0;">简而言之，缺少完整测试环境信息的分数是不可靠的。</p>
-<p style="margin:6px 0 0 0;">如需引用本页面上的任何测试结果，请务必列出该结果所使用的测试环境，并确保你已充分理解上述注意事项。</p>
+<p style="margin:6px 0 0 0;">总之，脱离完整测试环境信息的分数是不可靠的。</p>
+<p style="margin:6px 0 0 0;">如需引用本页上的任何测试结果，请务必注明该结果对应的测试环境，并确保已充分理解上述注意事项。</p>
 <p style="margin:6px 0 0 0;">原始基准数据：<a href="/benchmark/" target="_blank">/benchmark/</a></p>`,
     unit_ratio: '', unit_time: ' 毫秒', unit_clock: ' MHz', unit_ipc: '',
     unit_mpki: '', unit_mispred: ' %',
