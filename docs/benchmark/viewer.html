@@ -188,23 +188,23 @@ const i18n = {
     tooltip_vendor: 'Vendor:', tooltip_launch: 'Launch:', tooltip_sector: 'Sector:',
     tooltip_isa: 'ISA:',
     caveat_body: `<ol style="padding-left:20px;margin:0;">
-<li style="margin-bottom:6px;">Scores can only be used to compare performance of CPUs with the <strong>same ISA</strong> when variables are controlled (i.e., measured with the same binary as commonly said; additional variables that affect performance are listed below). This allows comparison through test results for:
+<li style="margin-bottom:6px;">Scores can only be used to compare CPUs with the <strong>same ISA</strong> when variables are controlled (i.e., measured with the same binary; additional variables that affect performance are listed below). This allows comparison through test results for:
   <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
-    <li>Performance of Intel and AMD CPUs on the AMD64 ISA</li>
-    <li>Performance of Apple, ARM, Huawei, and Qualcomm CPUs on the ARM64 ISA</li>
-    <li>Performance of different CPUs on the LoongArch ISA</li>
+    <li>Intel and AMD CPUs on the AMD64 ISA</li>
+    <li>Apple, ARM, Huawei, and Qualcomm CPUs on the ARM64 ISA</li>
+    <li>Different CPUs on the LoongArch ISA</li>
   </ol>
 </li>
 <li style="margin-bottom:6px;">Using scores to compare CPUs across <strong>different ISAs</strong> is less convincing.</li>
 <li style="margin-bottom:6px;">Even with identical hardware, the following factors can <strong>significantly affect</strong> results:
   <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
-    <li>Different compilers (e.g., GCC is usually faster than Clang with the same compilation flags)</li>
+    <li>Different compilers (e.g., GCC is usually faster than Clang given the same compilation flags)</li>
     <li>Different compiler versions (newer versions are usually faster, but there are exceptions)</li>
-    <li>Different compiler flags (e.g., whether LTO is enabled, whether <code>-march=native</code> is set)</li>
-    <li>Different memory allocator implementations (e.g., libc's built-in malloc or jemalloc)</li>
-    <li>Different C standard library implementations (e.g., glibc or musl)</li>
+    <li>Different compiler flags (e.g., whether LTO is enabled or <code>-march=native</code> is set)</li>
+    <li>Different memory allocator implementations (e.g., libc's built-in malloc vs. jemalloc)</li>
+    <li>Different C standard library implementations (e.g., glibc vs. musl)</li>
     <li>Different frequency scaling, scheduler, or CPU affinity policies (e.g., improper pinning can drop frequency from 4.0&thinsp;GHz to 3.4&thinsp;GHz)</li>
-    <li>Different kernel versions (some versions can significantly degrade performance)</li>
+    <li>Different kernel versions (some versions can noticeably degrade performance)</li>
   </ol>
 </li>
 </ol>
@@ -255,28 +255,28 @@ const i18n = {
     tooltip_vendor: '厂商：', tooltip_launch: '上市：', tooltip_sector: '领域：',
     tooltip_isa: '指令集：',
     caveat_body: `<ol style="padding-left:20px;margin:0;">
-<li style="margin-bottom:6px;">分数仅适用于<strong>相同变量</strong>下 CPU 性能的横向对比（即常说的"同一套二进制"，其他变量见下文），前提是控制好相关变量。具体可用于：
+<li style="margin-bottom:6px;">分数只有在控制变量时（即一般所说的"用相同二进制测得"，此外还有一些影响性能的变量见下）可以用来比较<strong>相同指令集</strong>的不同处理器的性能，即通过测试结果比较：
   <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
-    <li>AMD64 指令集下 Intel 与 AMD CPU 的性能对比</li>
-    <li>ARM64 指令集下 Apple、ARM、华为、高通 CPU 的性能对比</li>
-    <li>LoongArch 指令集下不同 CPU 的性能对比</li>
+    <li>AMD64 指令集的 Intel 和 AMD 处理器的性能</li>
+    <li>ARM64 指令集的 Apple、ARM、Huawei 和 Qualcomm 处理器的性能</li>
+    <li>LoongArch 指令集的不同处理器的性能</li>
   </ol>
 </li>
-<li style="margin-bottom:6px;">用分数去比<strong>不同指令集</strong>间的 CPU 性能，说服力就不太够了。</li>
-<li style="margin-bottom:6px;">就算硬件一模一样，以下因素也可能<strong>大幅影响</strong>跑分结果：
+<li style="margin-bottom:6px;">用分数来进行<strong>不同指令集</strong>的处理器之间的性能比较，则说服力较弱。</li>
+<li style="margin-bottom:6px;">即使是相同硬件，如下因素都可能对测试结果产生<strong>显著的影响</strong>：
   <ol type="a" style="padding-left:20px;margin:4px 0 0 0;">
-    <li>不同的编译器（例如相同编译选项下 GCC 通常比 Clang 更快）</li>
-    <li>不同的编译器版本（新版通常更快，但也有例外）</li>
-    <li>不同的编译选项（例如是否启用 LTO、是否设置 <code>-march=native</code>）</li>
-    <li>不同的内存分配器实现（例如 libc 自带的 malloc 或 jemalloc）</li>
-    <li>不同的 C 标准库实现（例如 glibc 或 musl）</li>
-    <li>不同的频率调节、调度器或 CPU 亲和性策略（例如核没绑好，频率可能从 4.0&thinsp;GHz 掉到 3.4&thinsp;GHz）</li>
-    <li>不同的内核版本（某些版本会明显拖累性能）</li>
+    <li>不同编译器（例如同等编译选项下 GCC 通常比 Clang 快）</li>
+    <li>不同编译器版本（通常新版本比旧版本快，但也有反例）</li>
+    <li>不同编译选项（例如是否开 LTO，是否设置 <code>-march=native</code>）</li>
+    <li>不同的内存分配器实现（libc 自带 malloc 或 jemalloc）</li>
+    <li>不同的标准库实现（比如 glibc 还是 musl）</li>
+    <li>不同的调频、调度或绑核策略（比如不当的绑核让频率从 4.0&thinsp;GHz 降到 3.4&thinsp;GHz）</li>
+    <li>不同的内核版本（比如部分内核版本会明显劣化性能）</li>
   </ol>
 </li>
 </ol>
-<p style="margin:6px 0 0 0;">总之，脱离完整测试环境信息的分数是不可靠的。</p>
-<p style="margin:6px 0 0 0;">如需引用本页上的任何测试结果，请务必注明该结果对应的测试环境，并确保已充分理解上述注意事项。</p>
+<p style="margin:6px 0 0 0;">简而言之，不给完整测试环境信息的前提下给出的分数，都是不靠谱的。</p>
+<p style="margin:6px 0 0 0;">如果您需要引用本文的测试结果，请一定要列出该测试结果所使用的测试环境，并保证您对以上注意事项有充分的理解。</p>
 <p style="margin:6px 0 0 0;">原始基准数据：<a href="/benchmark/" target="_blank">/benchmark/</a></p>`,
     unit_ratio: '', unit_time: ' 毫秒', unit_clock: ' MHz', unit_ipc: '',
     unit_mpki: '', unit_mispred: ' %',
