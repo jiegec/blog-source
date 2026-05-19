@@ -784,13 +784,13 @@ function renderCompareChart(entries, bmNames, metric) {
     });
   }
 
-  const unitMap = { ratio: _t('unit_ratio'), time: _t('unit_time'), clock: _t('unit_clock'), ipc: _t('unit_ipc'), mpki: _t('unit_mpki'), misprediction_rate: _t('unit_mispred') };
+  const metricLabelMap = { ratio: 'metric_ratio', time: 'metric_time', clock: 'metric_clock', ipc: 'metric_ipc', mpki: 'metric_mpki', misprediction_rate: 'metric_mispred' };
   chart.setOption({
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     legend: { type: 'scroll', bottom: 0 },
     grid: { left: 100, right: 40, top: 60, bottom: 70, containLabel: true },
     xAxis: { type: 'category', data: bmNames, axisLabel: { rotate: 45, fontSize: 10 } },
-    yAxis: { type: 'value', name: metric + (unitMap[metric] || '') },
+    yAxis: { type: 'value', name: _t(metricLabelMap[metric]) },
     series: series,
   }, true);
   chart.resize();
