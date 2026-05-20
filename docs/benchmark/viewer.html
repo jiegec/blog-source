@@ -685,10 +685,10 @@ function renderTable(data) {
     tdChk.appendChild(chk);
     tr.appendChild(tdChk);
     const labelTd = document.createElement('td');
-    labelTd.style.cursor = 'pointer';
     labelTd.textContent = e.cpu_name;
-    labelTd.addEventListener('click', () => { if (e.benchmarks) showDetail(e); });
     tr.appendChild(labelTd);
+    tr.style.cursor = 'pointer';
+    tr.addEventListener('click', () => { if (e.benchmarks) showDetail(e); });
     if (lastFlags !== null && e.opt_flags !== lastFlags) tr.classList.add('sep');
     lastFlags = e.opt_flags;
     const cells = [
