@@ -38,6 +38,10 @@
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [3.05](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [5.27](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 
+服务器平台（`-march=native` + LTO + Jemalloc）：
+
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native -flto -ljemalloc`）: [1.52](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-march=native-flto-ljemalloc_001.txt)
+
 服务器平台（LTO + Jemalloc）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [1.50](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
