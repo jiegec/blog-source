@@ -805,8 +805,33 @@ def detect_isa(cpu_name):
 # ──────────────────────────────────────────────
 
 
+def check_frequency_deviation(cpu_display, all_data, filepath, threshold_mhz=200):
+    """Report if aggregate clock frequency deviates from named frequency by more than threshold."""
+    import re
+
+    m = re.search(r"@\s*([\d.]+)\s*GHz", cpu_display)
+    if not m:
+        return
+
+    if "clock" not in all_data:
+        return
+
+    named_freq_mhz = float(m.group(1)) * 1000
+    measured_freq_mhz = all_data["clock"]
+    deviation = abs(measured_freq_mhz - named_freq_mhz)
+    if deviation > threshold_mhz:
+        print(
+            f"WARNING: {filepath}: measured clock {measured_freq_mhz:.0f} MHz "
+            f"deviates from named {named_freq_mhz:.0f} MHz by {deviation:.0f} MHz "
+            f"({cpu_display})"
+        )
+
+
 def parse_per_benchmark_data(filepath, test_type="fp2017"):
-    """Parse per-benchmark scores and perf data from a SPEC result file."""
+    """Parse per-benchmark scores and perf data from a SPEC result file.
+
+    Returns (per_benchmark, all_data) where all_data contains aggregate metrics.
+    """
     if test_type == "int2017":
         benchmark_names = set(BENCHMARKS_INT_2017_RATE)
         score_marker = "SPECrate(R)2017_int_base"
@@ -821,6 +846,7 @@ def parse_per_benchmark_data(filepath, test_type="fp2017"):
         score_marker = "SPECrate(R)2026_fp_base"
 
     per_benchmark = {}
+    all_data = {}
     found_delim = False
     passed_score = False
 
@@ -864,7 +890,11 @@ def parse_per_benchmark_data(filepath, test_type="fp2017"):
                     if len(colon) != 2:
                         continue
                     bm = colon[0].strip()
-                    if bm not in benchmark_names:
+                    if bm == "all":
+                        target = all_data
+                    elif bm in benchmark_names:
+                        target = per_benchmark.setdefault(bm, {})
+                    else:
                         continue
                     rest = colon[1].strip()
                     if " = " not in rest:
@@ -878,8 +908,8 @@ def parse_per_benchmark_data(filepath, test_type="fp2017"):
                     # strip units in parentheses
                     key_clean = key_raw.split(" (")[0].strip()
                     norm_key = key_map.get(key_clean, key_clean.replace(" ", "_"))
-                    per_benchmark.setdefault(bm, {})[norm_key] = value
-    return per_benchmark
+                    target[norm_key] = value
+    return per_benchmark, all_data
 
 
 def parse_compiler_from_file(filepath):
@@ -972,7 +1002,9 @@ def generate_json_data():
                 opt_flags_display = (
                     format_opt_flags_for_display(opt_flags) if opt_flags else "-O3"
                 )
-                per_bm = parse_per_benchmark_data(f, test_type)
+                per_bm, all_data = parse_per_benchmark_data(f, test_type)
+                if all_data:
+                    check_frequency_deviation(cpu_display, all_data, str(f))
                 entry = {
                     "cpu_name": cpu_display,
                     "cpu_raw": cpu_raw,
