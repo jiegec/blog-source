@@ -173,6 +173,7 @@ td.chk input, th.chk input { cursor: pointer; }
   <label><span data-i18n="filter_sector">Sector</span> <select id="filter-sector"></select></label>
   <label><span data-i18n="filter_isa">ISA</span> <select id="filter-isa"></select></label>
   <label><span data-i18n="filter_vendor">Vendor</span> <select id="filter-vendor"></select></label>
+  <label><span data-i18n="filter_compiler">Compiler</span> <select id="filter-compiler"><option value="">All</option></select></label>
   <label><span data-i18n="filter_search">Search</span> <input type="text" id="filter-search" data-i18n-placeholder="filter_search_placeholder" placeholder="CPU name..." style="width:120px;padding:3px 6px;font-size:0.85rem;"></label>
   <button class="btn btn-outline" id="btn-reset" data-i18n="reset">Reset</button>
   <span style="margin-left:auto;display:flex;align-items:center;gap:14px;flex-shrink:0;">
@@ -261,6 +262,7 @@ const i18n = {
     filter_os: 'OS', filter_suite: 'Suite', filter_flags: 'Opt Flags',
     filter_sector: 'Sector', filter_isa: 'ISA', filter_vendor: 'Vendor',
     filter_search: 'Search', filter_search_placeholder: 'CPU name...',
+    filter_compiler: 'Compiler',
     reset: 'Reset',
     inspired_by: 'Inspired by',
     compare_selected: 'Compare Selected',
@@ -335,6 +337,7 @@ const i18n = {
     filter_os: '操作系统', filter_suite: '测试套件', filter_flags: '编译选项',
     filter_sector: '领域', filter_isa: '指令集', filter_vendor: '厂商',
     filter_search: '搜索', filter_search_placeholder: '搜索 CPU 名称...',
+    filter_compiler: '编译器',
     reset: '重置',
     inspired_by: '灵感来源于',
     compare_selected: '对比选中项',
@@ -501,7 +504,7 @@ function addOption(sel, value, text) {
 
 function syncUrl() {
   const params = new URLSearchParams();
-  ['filter-os','filter-suite','filter-flags','filter-sector','filter-isa','filter-vendor'].forEach(id => {
+  ['filter-os','filter-suite','filter-flags','filter-sector','filter-isa','filter-vendor','filter-compiler'].forEach(id => {
     const v = document.getElementById(id).value;
     if (v) params.set(id.replace('filter-', ''), v);
   });
@@ -515,7 +518,8 @@ function syncUrl() {
 function loadFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const map = { os: 'filter-os', suite: 'filter-suite', flags: 'filter-flags',
-                sector: 'filter-sector', isa: 'filter-isa', vendor: 'filter-vendor' };
+                sector: 'filter-sector', isa: 'filter-isa', vendor: 'filter-vendor',
+                compiler: 'filter-compiler' };
   for (const [key, id] of Object.entries(map)) {
     const v = params.get(key);
     if (v) {
@@ -558,6 +562,8 @@ function populateFilters() {
   const venSel = document.getElementById('filter-vendor');
   addOption(venSel, '', 'All');
   unique(all.map(e => e.vendor)).forEach(v => addOption(venSel, v, v));
+  const compSel = document.getElementById('filter-compiler');
+  unique(all.map(e => e.compiler).filter(c => c)).forEach(v => addOption(compSel, v, v));
 }
 
 function applyFilters() {
@@ -569,6 +575,7 @@ function applyFilters() {
   const sector = document.getElementById('filter-sector').value;
   const isa = document.getElementById('filter-isa').value;
   const vendor = document.getElementById('filter-vendor').value;
+  const compiler = document.getElementById('filter-compiler').value;
   const search = document.getElementById('filter-search').value.toLowerCase().trim();
 
   let entries = [];
@@ -581,6 +588,7 @@ function applyFilters() {
         if (sector && e.sector !== sector) continue;
         if (isa && e.isa !== isa) continue;
         if (vendor && e.vendor !== vendor) continue;
+        if (compiler && e.compiler !== compiler) continue;
         if (search && !e.cpu_name.toLowerCase().includes(search)) continue;
         entries.push(e);
       }
@@ -591,7 +599,7 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  ['filter-os','filter-suite','filter-sector','filter-isa','filter-vendor']
+  ['filter-os','filter-suite','filter-sector','filter-isa','filter-vendor','filter-compiler']
     .forEach(id => { const s = document.getElementById(id); if (s.options.length) s.selectedIndex = 0; });
   const flgSel = document.getElementById('filter-flags');
   for (let i = 0; i < flgSel.options.length; i++) {
