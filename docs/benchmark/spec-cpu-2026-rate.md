@@ -38,6 +38,18 @@
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [3.05](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [5.27](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
 
+服务器平台（LTO + Jemalloc）：
+
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto -ljemalloc`）: [1.55](./data-trixie/int2026_rate1/Kunpeng_920_O3-flto-ljemalloc_001.txt)
+
+服务器平台（LTO）：
+
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [1.48](./data-trixie/int2026_rate1/Kunpeng_920_O3-flto_001.txt)
+
+服务器平台：
+
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [1.43](./data-trixie/int2026_rate1/Kunpeng_920_O3_001.txt)
+
 #### 备注
 
 ### 网上的数据
@@ -74,6 +86,14 @@
 - Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [6.44](./data-trixie/fp2026_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [3.66](./data-trixie/fp2026_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [7.02](./data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
+
+服务器平台（`-march=native`）：
+
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -march=native`）: [1.59](./data-trixie/fp2026_rate1/Kunpeng_920_O3-march=native_001.txt)
+
+服务器平台：
+
+- Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [1.52](./data-trixie/fp2026_rate1/Kunpeng_920_O3_001.txt)
 
 #### 备注
 
