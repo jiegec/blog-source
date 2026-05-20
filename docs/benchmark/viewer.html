@@ -329,6 +329,7 @@ const i18n = {
     suite_label: 'Suite', suite_int2017: 'INT 2017', suite_fp2017: 'FP 2017',
     suite_int2026: 'INT 2026', suite_fp2026: 'FP 2026',
     progression_note: 'Showing cumulative highest score up to each year (-O3 only)',
+    download_data: 'Download original data',
     unit_ratio: '', unit_time: ' ms', unit_clock: ' MHz', unit_ipc: '',
     unit_mpki: '', unit_mispred: ' %',
   },
@@ -404,6 +405,7 @@ const i18n = {
     suite_label: '测试套件', suite_int2017: 'INT 2017', suite_fp2017: 'FP 2017',
     suite_int2026: 'INT 2026', suite_fp2026: 'FP 2026',
     progression_note: '显示截至该年份的累积最高分数（仅 -O3）',
+    download_data: '下载原始数据',
     unit_ratio: '', unit_time: ' 毫秒', unit_clock: ' MHz', unit_ipc: '',
     unit_mpki: '', unit_mispred: ' %',
   }
@@ -805,7 +807,8 @@ function showDetail(item) {
   const suiteYear = isInt ? 'INT' : 'FP';
   const suiteLabel = suiteYear + (item.test_type.includes('2026') ? ' 2026' : ' 2017');
   document.getElementById('modal-title').innerHTML =
-    `${esc(item.cpu_name)} <span style="font-weight:normal;font-size:0.85rem;color:#666">(${esc(item.opt_flags)})</span>`;
+    `${esc(item.cpu_name)} <span style="font-weight:normal;font-size:0.85rem;color:#666">(${esc(item.opt_flags)})</span>` +
+    ` <a href="${esc(item.rel_path)}" target="_blank" class="btn" style="font-size:0.78rem;vertical-align:middle;margin-left:10px;">${_t('download_data')}</a>`;
   const dl = (k, v) => `<span>${_t('detail_' + k)}: <strong>${v}</strong></span>`;
   const metaHtml = `<div style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px 18px;">
     ${dl('score', item.score)}
