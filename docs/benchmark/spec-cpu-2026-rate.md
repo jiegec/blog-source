@@ -40,14 +40,17 @@
 
 服务器平台（LTO + Jemalloc）：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [1.50](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto -ljemalloc`）: [1.55](./data-trixie/int2026_rate1/Kunpeng_920_O3-flto-ljemalloc_001.txt)
 
 服务器平台（LTO）：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [1.42](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [1.48](./data-trixie/int2026_rate1/Kunpeng_920_O3-flto_001.txt)
 
 服务器平台：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [1.37](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [1.43](./data-trixie/int2026_rate1/Kunpeng_920_O3_001.txt)
 
 #### 备注
