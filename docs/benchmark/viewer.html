@@ -823,11 +823,13 @@ function showDetail(item) {
   document.getElementById('modal').classList.add('show');
 }
 
-document.getElementById('modal-close').addEventListener('click', () => {
-  document.getElementById('modal').classList.remove('show');
-});
+const closeModal = () => document.getElementById('modal').classList.remove('show');
+document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal').addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) document.getElementById('modal').classList.remove('show');
+  if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('modal').classList.contains('show') && (e.key === 'Escape' || e.key === 'q')) closeModal();
 });
 
 // ── compare ──
