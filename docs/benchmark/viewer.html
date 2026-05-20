@@ -787,12 +787,13 @@ function showDetail(item) {
     const titleAttr = c.title ? ' title="' + esc(c.title) + '"' : '';
     return '<th' + titleAttr + '>' + esc(c.label) + '</th>';
   }).join('') + '</tr></thead><tbody>';
+  const fmtCell = (k, v) => k === 'time' && typeof v === 'number' ? v.toFixed(1) : k === 'ratio' && typeof v === 'number' ? v.toFixed(2) : fmt(v);
   for (const n of names) {
     const d = bm[n];
     html += '<tr><td><strong>' + esc(n) + '</strong></td>';
     for (const k of keys) {
       const v = d[k];
-      html += '<td>' + fmt(v) + '</td>';
+      html += '<td>' + fmtCell(k, v) + '</td>';
       if (v !== undefined && v !== null && typeof v === 'number') sums[k].push(v);
     }
     html += '</tr>';
@@ -802,7 +803,7 @@ function showDetail(item) {
     html += '<tr style="border-top:2px solid #4f6ef7;font-weight:600"><td>' + esc(_t('arithmetic_mean')) + '</td>';
     for (const k of keys) {
       const vals = sums[k];
-      html += '<td>' + (vals.length ? fmt(vals.reduce((a, b) => a + b, 0) / vals.length) : '-') + '</td>';
+      html += '<td>' + (vals.length ? fmtCell(k, vals.reduce((a, b) => a + b, 0) / vals.length) : '-') + '</td>';
     }
     html += '</tr>';
     html += '<tr style="font-weight:600"><td>' + esc(_t('geo_mean')) + '</td>';
@@ -810,7 +811,7 @@ function showDetail(item) {
       const vals = sums[k];
       if (k === 'ratio' && vals.length) {
         const gm = Math.pow(vals.reduce((a, b) => a * b, 1), 1 / vals.length);
-        html += '<td>' + fmt(gm) + '</td>';
+        html += '<td>' + fmtCell(k, gm) + '</td>';
       } else {
         html += '<td>-</td>';
       }
