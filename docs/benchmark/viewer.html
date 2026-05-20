@@ -205,10 +205,11 @@ td.chk input, th.chk input { cursor: pointer; }
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
     <h2 style="font-size:1rem;font-weight:700;margin:0;" data-i18n="progression_title">Performance Progression Over Years</h2>
     <label style="font-size:0.78rem;font-weight:600;margin-left:auto;"><span data-i18n="group_by_label">Group by</span>
-      <select id="progression-group" style="padding:3px 8px;border:1.5px solid #e2e6ed;border-radius:6px;font-size:0.78rem;background:#fff;">
-        <option value="vendor" data-i18n="group_vendor">Vendor</option>
-        <option value="isa" data-i18n="group_isa">ISA</option>
-      </select>
+        <select id="progression-group" style="padding:3px 8px;border:1.5px solid #e2e6ed;border-radius:6px;font-size:0.78rem;background:#fff;">
+          <option value="vendor" data-i18n="group_vendor">Vendor</option>
+          <option value="uarch_vendor" data-i18n="group_uarch_vendor">UArch Vendor</option>
+          <option value="isa" data-i18n="group_isa">ISA</option>
+        </select>
     </label>
     <span style="font-size:0.75rem;color:#999;" data-i18n="progression_note">Showing highest score per year with -O3 flags only</span>
   </div>
@@ -328,7 +329,7 @@ const i18n = {
 <p style="margin:6px 0 0 0;">Original benchmark data: <a href="/benchmark/" target="_blank">/benchmark/</a></p>`,
     progression: 'Performance Progression',
     progression_title: 'Performance Progression Over Years',
-    group_by_label: 'Group by', group_vendor: 'Vendor', group_isa: 'ISA',
+    group_by_label: 'Group by', group_vendor: 'Vendor', group_uarch_vendor: 'UArch Vendor', group_isa: 'ISA',
     suite_label: 'Suite', suite_int2017: 'INT 2017', suite_fp2017: 'FP 2017',
     suite_int2026: 'INT 2026', suite_fp2026: 'FP 2026',
     progression_note: 'Showing cumulative highest score up to each year (-O3 only)',
@@ -406,7 +407,7 @@ const i18n = {
 <p style="margin:6px 0 0 0;">原始基准数据：<a href="/benchmark/" target="_blank">/benchmark/</a></p>`,
     progression: '性能进展',
     progression_title: '历年性能进展',
-    group_by_label: '分组依据', group_vendor: '厂商', group_isa: '指令集',
+    group_by_label: '分组依据', group_vendor: '厂商', group_uarch_vendor: '微架构厂商', group_isa: '指令集',
     suite_label: '测试套件', suite_int2017: 'INT 2017', suite_fp2017: 'FP 2017',
     suite_int2026: 'INT 2026', suite_fp2026: 'FP 2026',
     progression_note: '显示截至该年份的累积最高分数（仅 -O3）',
