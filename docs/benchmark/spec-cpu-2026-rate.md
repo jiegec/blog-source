@@ -76,7 +76,7 @@
 
 桌面平台（`-march=native`）：
 
-- Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [4.13](./data-trixie/fp2026_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
+- Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [4.22](./data-trixie/fp2026_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3 -march=native`）: [3.97](./data-trixie/fp2026_rate1/Intel_Core_i9-12900KS_E-Core_O3-march=native_001.txt)
 - Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -march=native`）: [8.09](./data-trixie/fp2026_rate1/Intel_Core_i9-12900KS_P-Core_O3-march=native_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -march=native`）: [4.19](./data-trixie/fp2026_rate1/Intel_Core_i9-14900K_E-Core_O3-march=native_001.txt)
@@ -84,7 +84,7 @@
 
 桌面平台：
 
-- Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [3.41](./data-trixie/fp2026_rate1/Intel_Core_i9-10980XE_O3_001.txt)
+- Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [3.55](./data-trixie/fp2026_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [3.46](./data-trixie/fp2026_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
 - Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [6.56](./data-trixie/fp2026_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [3.66](./data-trixie/fp2026_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
