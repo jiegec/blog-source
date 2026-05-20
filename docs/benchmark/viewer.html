@@ -198,6 +198,21 @@ td.chk input, th.chk input { cursor: pointer; }
   </table>
 </div>
 
+<div style="margin-top:20px;"></div>
+<div class="chart-box" id="progression-box">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+    <h2 style="font-size:1rem;font-weight:700;margin:0;" data-i18n="progression_title">Performance Progression Over Years</h2>
+    <label style="font-size:0.78rem;font-weight:600;margin-left:auto;"><span data-i18n="group_by_label">Group by</span>
+      <select id="progression-group" style="padding:3px 8px;border:1.5px solid #e2e6ed;border-radius:6px;font-size:0.78rem;background:#fff;">
+        <option value="vendor" data-i18n="group_vendor">Vendor</option>
+        <option value="isa" data-i18n="group_isa">ISA</option>
+      </select>
+    </label>
+    <span style="font-size:0.75rem;color:#999;" data-i18n="progression_note">Showing highest score per year with -O3 flags only</span>
+  </div>
+  <div id="progression-chart" style="width:100%;height:450px;"></div>
+</div>
+
 <div class="caveat-box">
 <div class="caveat-title" data-i18n="caveat_title">Caveats &amp; Disclaimer</div>
 <div id="caveat-body"></div>
@@ -306,6 +321,12 @@ const i18n = {
 <p style="margin:6px 0 0 0;">In short, scores given without complete test environment information are unreliable.</p>
 <p style="margin:6px 0 0 0;">If you need to cite any test results on this page, please always list the test environment used for that result and make sure you have a thorough understanding of the above caveats.</p>
 <p style="margin:6px 0 0 0;">Original benchmark data: <a href="/benchmark/" target="_blank">/benchmark/</a></p>`,
+    progression: 'Performance Progression',
+    progression_title: 'Performance Progression Over Years',
+    group_by_label: 'Group by', group_vendor: 'Vendor', group_isa: 'ISA',
+    suite_label: 'Suite', suite_int2017: 'INT 2017', suite_fp2017: 'FP 2017',
+    suite_int2026: 'INT 2026', suite_fp2026: 'FP 2026',
+    progression_note: 'Showing cumulative highest score up to each year (-O3 only)',
     unit_ratio: '', unit_time: ' ms', unit_clock: ' MHz', unit_ipc: '',
     unit_mpki: '', unit_mispred: ' %',
   },
@@ -374,6 +395,12 @@ const i18n = {
 <p style="margin:6px 0 0 0;">简而言之，不给完整测试环境信息的前提下给出的分数，都是不靠谱的。</p>
 <p style="margin:6px 0 0 0;">如果您需要引用本文的测试结果，请一定要列出该测试结果所使用的测试环境，并保证您对以上注意事项有充分的理解。</p>
 <p style="margin:6px 0 0 0;">原始基准数据：<a href="/benchmark/" target="_blank">/benchmark/</a></p>`,
+    progression: '性能进展',
+    progression_title: '历年性能进展',
+    group_by_label: '分组依据', group_vendor: '厂商', group_isa: '指令集',
+    suite_label: '测试套件', suite_int2017: 'INT 2017', suite_fp2017: 'FP 2017',
+    suite_int2026: 'INT 2026', suite_fp2026: 'FP 2026',
+    progression_note: '显示截至该年份的累积最高分数（仅 -O3）',
     unit_ratio: '', unit_time: ' 毫秒', unit_clock: ' MHz', unit_ipc: '',
     unit_mpki: '', unit_mispred: ' %',
   }
@@ -428,7 +455,11 @@ const SECTOR_COLORS = { desktop: '#4f6ef7', server: '#16a34a', mobile: '#e8525e'
 // ── init ──
 async function init() {
   const chart = echarts.init(document.getElementById('chart'));
-  window.addEventListener('resize', () => chart.resize());
+  window.addEventListener('resize', () => {
+    chart.resize();
+    const pc = echarts.getInstanceByDom(document.getElementById('progression-chart'));
+    if (pc) pc.resize();
+  });
 
   try {
     const resp = await fetch('benchmark_data.json');
@@ -445,6 +476,7 @@ async function init() {
   loadFromUrl();
   applyFilters();
   render(chart);
+  renderProgressionChart();
   syncUrl();
 }
 
@@ -858,6 +890,87 @@ function openCompare() {
   renderCompareChart(entries, sortedBm, metric);
 }
 
+function renderProgressionChart() {
+  const chartDom = document.getElementById('progression-chart');
+  if (!chartDom || !rawData) return;
+  let chart = echarts.getInstanceByDom(chartDom);
+  if (!chart) chart = echarts.init(chartDom);
+
+  const groupBy = document.getElementById('progression-group').value;
+  const suite = document.getElementById('filter-suite').value;
+
+  // Flatten all entries, filter to -O3 only and the selected suite
+  const entries = [];
+  for (const os of Object.keys(rawData.data)) {
+    const bySuite = rawData.data[os][suite];
+    if (!bySuite) continue;
+    for (const e of bySuite) {
+      if (e.opt_flags !== '-O3') continue;
+      entries.push(e);
+    }
+  }
+
+  // Group by year, then by groupBy key
+  const groups = {};
+  for (const e of entries) {
+    const year = e.launch_date;
+    const key = e[groupBy];
+    if (!year || !key) continue;
+    if (!groups[key]) groups[key] = {};
+    const prev = groups[key][year];
+    if (prev === undefined || e.score > prev) groups[key][year] = e.score;
+  }
+
+  // Collect all years
+  const allYears = new Set();
+  for (const key of Object.keys(groups)) {
+    for (const year of Object.keys(groups[key])) allYears.add(year);
+  }
+  const years = Array.from(allYears).sort();
+
+  // Apply non-decreasing transformation (cumulative max per group)
+  for (const key of Object.keys(groups)) {
+    let best = null;
+    for (const y of years) {
+      if (groups[key][y] !== undefined) {
+        if (best === null || groups[key][y] > best) best = groups[key][y];
+      }
+      if (best !== null) groups[key][y] = best;
+    }
+  }
+
+  // Build series
+  const colorPalette = ['#4f6ef7','#e8525e','#16a34a','#f59e0b','#9333ea','#06b6d4','#f97316','#8b5cf6','#ec4899','#14b8a6'];
+  const series = [];
+  let ci = 0;
+  for (const key of Object.keys(groups).sort()) {
+    const data = years.map(y => groups[key][y] ?? null);
+    series.push({
+      name: key,
+      type: 'line',
+      data: data,
+      smooth: false,
+      connectNulls: false,
+      lineStyle: { width: 2.5 },
+      symbolSize: 6,
+      itemStyle: { color: colorPalette[ci % colorPalette.length] },
+    });
+    ci++;
+  }
+
+  const suiteLabel = suite.startsWith('int') ? 'INT' : 'FP';
+  const suiteYear = suite.includes('2026') ? '2026' : '2017';
+  chart.setOption({
+    tooltip: { trigger: 'axis' },
+    legend: { type: 'scroll', bottom: 0 },
+    grid: { left: 80, right: 20, top: 40, bottom: 50, containLabel: true },
+    xAxis: { type: 'category', data: years, axisLabel: { fontSize: 11 } },
+    yAxis: { type: 'value', name: `SPEC ${suiteLabel} ${suiteYear} Rate-1 Score` },
+    series: series,
+  }, true);
+  chart.resize();
+}
+
 function renderCompareChart(entries, bmNames, metric) {
   const chartDom = document.getElementById('compare-chart');
   if (!chartDom) return;
@@ -1006,6 +1119,7 @@ function onInputChange() {
   syncUrl();
   const chart = echarts.getInstanceByDom(document.getElementById('chart'));
   if (chart) refresh(chart);
+  renderProgressionChart();
 }
 document.querySelectorAll('.filters select, .filters input').forEach(el => {
   el.addEventListener('change', onInputChange);
@@ -1015,6 +1129,7 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   resetFilters();
   onInputChange();
 });
+document.getElementById('progression-group').addEventListener('change', renderProgressionChart);
 
 applyLang();
 init();
