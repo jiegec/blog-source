@@ -716,8 +716,7 @@ const SORT_FIELDS = {
 function setSort(col) {
   if (sortBy === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
   else { sortBy = col; sortDir = 'asc'; }
-  const chart = echarts.getInstanceByDom(document.getElementById('chart'));
-  if (chart) refresh(chart);
+  renderTable(filtered);
 }
 
 function renderTable(data) {
