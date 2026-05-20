@@ -918,12 +918,12 @@ function renderCompareTable(entries, bmNames) {
         const ipc = d.ipc;
         const mpki = d.mpki;
         const mispred = d.misprediction_rate;
-        tip = `ratio=${fmt(ratio)} time=${fmt(time)}ms clock=${fmt(clock)}MHz IPC=${fmt(ipc)} MPKI=${fmt(mpki)} mispred=${fmt(mispred)}`;
+        tip = `ratio=${fmt(ratio, 'ratio')} time=${fmt(time, 'time')}ms clock=${fmt(clock)}MHz IPC=${fmt(ipc)} MPKI=${fmt(mpki)} mispred=${fmt(mispred)}`;
       }
       const valid = v !== undefined && v !== null && typeof v === 'number';
       if (valid) vals.push(v);
       const title = tip ? ` title="${esc(tip)}"` : '';
-      html += `<td${title}>${valid ? fmt(v) : '-'}</td>`;
+      html += `<td${title}>${valid ? fmt(v, metric) : '-'}</td>`;
     }
     // ratio column
     if (vals.length >= 2) {
