@@ -173,6 +173,7 @@ td.chk input, th.chk input { cursor: pointer; }
   <label><span data-i18n="filter_sector">Sector</span> <select id="filter-sector"></select></label>
   <label><span data-i18n="filter_isa">ISA</span> <select id="filter-isa"></select></label>
   <label><span data-i18n="filter_vendor">Vendor</span> <select id="filter-vendor"></select></label>
+  <label><span data-i18n="filter_uarch_vendor">UArch</span> <select id="filter-uarch-vendor"></select></label>
   <label><span data-i18n="filter_compiler">Compiler</span> <select id="filter-compiler"><option value="">All</option></select></label>
   <label><span data-i18n="filter_search">Search</span> <input type="text" id="filter-search" data-i18n-placeholder="filter_search_placeholder" placeholder="CPU name..." style="width:120px;padding:3px 6px;font-size:0.85rem;"></label>
   <button class="btn btn-outline" id="btn-reset" data-i18n="reset">Reset</button>
@@ -263,6 +264,7 @@ const i18n = {
     filter_sector: 'Sector', filter_isa: 'ISA', filter_vendor: 'Vendor',
     filter_search: 'Search', filter_search_placeholder: 'CPU name...',
     filter_compiler: 'Compiler',
+    filter_uarch_vendor: 'UArch Vendor',
     reset: 'Reset',
     inspired_by: 'Inspired by',
     compare_selected: 'Compare Selected',
@@ -279,12 +281,13 @@ const i18n = {
     isa_label: 'ISA:',
     click_bar_hint: 'Click bars for per-benchmark details',
     tbl_cpu: 'CPU', tbl_score: 'Score', tbl_os: 'OS', tbl_compiler: 'Compiler',
-    tbl_memory: 'Memory', tbl_flags: 'Flags', tbl_vendor: 'Vendor', tbl_launch: 'Launch',
+    tbl_memory: 'Memory', tbl_flags: 'Flags', tbl_vendor: 'Vendor',     tbl_uarch_vendor: 'UArch Vendor', tbl_launch: 'Launch',
     tbl_sector: 'Sector', tbl_isa: 'ISA',
     results_fmt: '{n} results',
     cmp_selected_fmt: 'Compare Selected ({n})',
     detail_score: 'Score', detail_os: 'OS', detail_compiler: 'Compiler',
     detail_memory: 'Memory', detail_suite: 'Suite', detail_vendor: 'Vendor',
+    detail_uarch_vendor: 'UArch Vendor',
     detail_launch: 'Launch', detail_sector: 'Sector', detail_isa: 'ISA',
     col_benchmark: 'Benchmark', col_ratio: 'Ratio', col_time: 'Time (ms)',
     col_clock: 'Clock (MHz)', col_ipc: 'IPC', col_mpki: 'MPKI',
@@ -297,7 +300,7 @@ const i18n = {
     compare_title_fmt: 'Benchmark Comparison ({n} entries, {m} benchmarks)',
     tooltip_score: 'Score:', tooltip_os: 'OS:', tooltip_suite: 'Suite:',
     tooltip_flags: 'Flags:', tooltip_compiler: 'Compiler:', tooltip_memory: 'Memory:',
-    tooltip_vendor: 'Vendor:', tooltip_launch: 'Launch:', tooltip_sector: 'Sector:',
+    tooltip_vendor: 'Vendor:',     tooltip_uarch_vendor: 'UArch Vendor:', tooltip_launch: 'Launch:', tooltip_sector: 'Sector:',
     tooltip_isa: 'ISA:',
     caveat_body: `<ol style="padding-left:20px;margin:0;">
 <li style="margin-bottom:6px;">Scores can only be used to compare CPUs with the <strong>same ISA</strong> when variables are controlled (i.e., measured with the same binary; additional variables that affect performance are listed below). This allows comparison through test results for:
@@ -339,6 +342,7 @@ const i18n = {
     filter_sector: '领域', filter_isa: '指令集', filter_vendor: '厂商',
     filter_search: '搜索', filter_search_placeholder: '搜索 CPU 名称...',
     filter_compiler: '编译器',
+    filter_uarch_vendor: '微架构厂商',
     reset: '重置',
     inspired_by: '灵感来源于',
     compare_selected: '对比选中项',
@@ -355,12 +359,13 @@ const i18n = {
     isa_label: '指令集：',
     click_bar_hint: '点击柱状图查看各基准测试详情',
     tbl_cpu: 'CPU', tbl_score: '分数', tbl_os: '操作系统', tbl_compiler: '编译器',
-    tbl_memory: '内存', tbl_flags: '编译选项', tbl_vendor: '厂商', tbl_launch: '上市',
+    tbl_memory: '内存', tbl_flags: '编译选项', tbl_vendor: '厂商',     tbl_uarch_vendor: '微架构厂商', tbl_launch: '上市',
     tbl_sector: '领域', tbl_isa: '指令集',
     results_fmt: '{n} 个结果',
     cmp_selected_fmt: '对比选中项（{n}）',
     detail_score: '分数', detail_os: '操作系统', detail_compiler: '编译器',
     detail_memory: '内存', detail_suite: '测试套件', detail_vendor: '厂商',
+    detail_uarch_vendor: '微架构厂商',
     detail_launch: '上市', detail_sector: '领域', detail_isa: '指令集',
     col_benchmark: '基准测试', col_ratio: '比率', col_time: '时间（毫秒）',
     col_clock: '频率（MHz）', col_ipc: 'IPC', col_mpki: 'MPKI',
@@ -373,7 +378,7 @@ const i18n = {
     compare_title_fmt: '基准测试对比（{n} 个条目，{m} 个基准测试）',
     tooltip_score: '分数：', tooltip_os: '操作系统：', tooltip_suite: '测试套件：',
     tooltip_flags: '编译选项：', tooltip_compiler: '编译器：', tooltip_memory: '内存：',
-    tooltip_vendor: '厂商：', tooltip_launch: '上市：', tooltip_sector: '领域：',
+    tooltip_vendor: '厂商：',     tooltip_uarch_vendor: '微架构厂商：', tooltip_launch: '上市：', tooltip_sector: '领域：',
     tooltip_isa: '指令集：',
     caveat_body: `<ol style="padding-left:20px;margin:0;">
 <li style="margin-bottom:6px;">分数只有在控制变量时（即一般所说的"用相同二进制测得"，此外还有一些影响性能的变量见下）可以用来比较<strong>相同指令集</strong>的不同处理器的性能，即通过测试结果比较：
@@ -508,7 +513,7 @@ function addOption(sel, value, text) {
 
 function syncUrl() {
   const params = new URLSearchParams();
-  ['filter-os','filter-suite','filter-flags','filter-sector','filter-isa','filter-vendor','filter-compiler'].forEach(id => {
+  ['filter-os','filter-suite','filter-flags','filter-sector','filter-isa','filter-vendor','filter-uarch-vendor','filter-compiler'].forEach(id => {
     const v = document.getElementById(id).value;
     if (v) params.set(id.replace('filter-', ''), v);
   });
@@ -523,7 +528,7 @@ function loadFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const map = { os: 'filter-os', suite: 'filter-suite', flags: 'filter-flags',
                 sector: 'filter-sector', isa: 'filter-isa', vendor: 'filter-vendor',
-                compiler: 'filter-compiler' };
+                'uarch-vendor': 'filter-uarch-vendor', compiler: 'filter-compiler' };
   for (const [key, id] of Object.entries(map)) {
     const v = params.get(key);
     if (v) {
@@ -566,6 +571,9 @@ function populateFilters() {
   const venSel = document.getElementById('filter-vendor');
   addOption(venSel, '', 'All');
   unique(all.map(e => e.vendor)).forEach(v => addOption(venSel, v, v));
+  const uarchSel = document.getElementById('filter-uarch-vendor');
+  addOption(uarchSel, '', 'All');
+  unique(all.map(e => e.uarch_vendor).filter(c => c)).forEach(v => addOption(uarchSel, v, v));
   const compSel = document.getElementById('filter-compiler');
   unique(all.map(e => e.compiler).filter(c => c)).forEach(v => addOption(compSel, v, v));
 }
@@ -579,6 +587,7 @@ function applyFilters() {
   const sector = document.getElementById('filter-sector').value;
   const isa = document.getElementById('filter-isa').value;
   const vendor = document.getElementById('filter-vendor').value;
+  const uarchVendor = document.getElementById('filter-uarch-vendor').value;
   const compiler = document.getElementById('filter-compiler').value;
   const search = document.getElementById('filter-search').value.toLowerCase().trim();
 
@@ -592,6 +601,7 @@ function applyFilters() {
         if (sector && e.sector !== sector) continue;
         if (isa && e.isa !== isa) continue;
         if (vendor && e.vendor !== vendor) continue;
+        if (uarchVendor && e.uarch_vendor !== uarchVendor) continue;
         if (compiler && e.compiler !== compiler) continue;
         if (search && !e.cpu_name.toLowerCase().includes(search)) continue;
         entries.push(e);
@@ -603,7 +613,7 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  ['filter-os','filter-suite','filter-sector','filter-isa','filter-vendor','filter-compiler']
+  ['filter-os','filter-suite','filter-sector','filter-isa','filter-vendor','filter-uarch-vendor','filter-compiler']
     .forEach(id => { const s = document.getElementById(id); if (s.options.length) s.selectedIndex = 0; });
   const flgSel = document.getElementById('filter-flags');
   for (let i = 0; i < flgSel.options.length; i++) {
@@ -649,7 +659,7 @@ function render(chart) {
                 ${_t('tooltip_flags')} ${item.opt_flags}<br>
                 ${_t('tooltip_compiler')} ${esc(item.compiler||'')}<br>
                 ${_t('tooltip_memory')} ${esc(item.memory||'')}<br>
-                ${_t('tooltip_vendor')} ${item.vendor} | ${_t('tooltip_launch')} ${item.launch_date}<br>
+                ${_t('tooltip_vendor')} ${item.vendor} | ${_t('tooltip_uarch_vendor')} ${item.uarch_vendor} | ${_t('tooltip_launch')} ${item.launch_date}<br>
                 ${_t('tooltip_sector')} ${item.sector} | ${_t('tooltip_isa')} ${item.isa}`;
       }
     },
@@ -712,8 +722,8 @@ function render(chart) {
 
 const SORT_FIELDS = {
   cpu: 'cpu_name', score: 'score', os: 'os', compiler: 'compiler',
-  memory: 'memory', flags: 'opt_flags', vendor: 'vendor', launch: 'launch_date',
-  sector: 'sector', isa: 'isa',
+  memory: 'memory', flags: 'opt_flags', vendor: 'vendor', uarch_vendor: 'uarch_vendor',
+  launch: 'launch_date', sector: 'sector', isa: 'isa',
 };
 
 function setSort(col) {
@@ -733,7 +743,7 @@ function renderTable(data) {
   });
   const head = document.getElementById('table-head');
   const th = (k) => _t('tbl_' + k);
-  const colKeys = ['cpu', 'score', 'os', 'compiler', 'memory', 'flags', 'vendor', 'launch', 'sector', 'isa'];
+  const colKeys = ['cpu', 'score', 'os', 'compiler', 'memory', 'flags', 'vendor', 'uarch_vendor', 'launch', 'sector', 'isa'];
   head.innerHTML = '<th class="chk"><input type="checkbox" id="select-all" title="' + esc(_t('select_all_title')) + '"></th>' +
     colKeys.map(k => {
       const arrow = sortBy === k ? (sortDir === 'asc' ? ' &#9650;' : ' &#9660;') : '';
@@ -772,6 +782,7 @@ function renderTable(data) {
       { v: e.memory || '-' },
       { v: e.opt_flags },
       { v: e.vendor },
+      { v: e.uarch_vendor || '-' },
       { v: e.launch_date },
       { v: `<span class="badge badge-${esc(e.sector)}">${esc(e.sector)}</span>`, html: true },
       { v: `<span class="badge badge-${esc(e.isa)}">${esc(e.isa)}</span>`, html: true },
@@ -849,6 +860,7 @@ function showDetail(item) {
     ${dl('memory', esc(item.memory||'-'))}
     ${dl('suite', suiteLabel)}
     ${dl('vendor', esc(item.vendor))}
+    ${dl('uarch_vendor', esc(item.uarch_vendor))}
     ${dl('launch', esc(item.launch_date))}
     ${dl('sector', esc(item.sector))}
     ${dl('isa', esc(item.isa))}
@@ -919,7 +931,7 @@ function openCompare() {
 
   // meta header
   const metaHtml = entries.map((e, i) =>
-    `<span style="margin-right:18px;line-height:1.6;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — ${_t('tooltip_score')} ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.isa)}</span>`
+    `<span style="margin-right:18px;line-height:1.6;"><strong>#${i+1}</strong> ${esc(e.cpu_name)} (${esc(e.opt_flags)}) — ${_t('tooltip_score')} ${e.score.toFixed(2)} | ${esc(e.os)} | ${esc(e.compiler||'-')} | ${esc(e.memory||'-')} | ${esc(e.vendor)} | ${esc(e.uarch_vendor)} | ${esc(e.isa)}</span>`
   ).join('');
   document.getElementById('compare-meta').innerHTML = metaHtml;
 

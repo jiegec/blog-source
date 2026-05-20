@@ -704,6 +704,31 @@ def detect_vendor(cpu_name):
     assert False, cpu_name
 
 
+UARCH_VENDOR_MAP = [
+    ("AMD", "AMD"),
+    ("Intel", "Intel"),
+    ("Apple", "Apple"),
+    ("AWS Graviton", "ARM"),
+    ("Google Axion", "ARM"),
+    ("Ampere Altra", "ARM"),
+    ("T-Head Yitian", "ARM"),
+    ("Qualcomm X", "Qualcomm"),
+    ("Qualcomm 8cx", "ARM"),
+    ("Loongson", "Loongson"),
+    ("IBM POWER", "IBM"),
+    ("Hygon", "Hygon"),
+    ("Kunpeng", "Huawei"),
+    ("Huawei", "Huawei"),
+]
+
+
+def detect_uarch_vendor(cpu_name):
+    for pattern, uarch_vendor in UARCH_VENDOR_MAP:
+        if pattern in cpu_name:
+            return uarch_vendor
+    assert False, cpu_name
+
+
 def detect_launch_date(cpu_name):
     """Launch year based on CPU name."""
     mapping = [
@@ -967,7 +992,7 @@ def generate_json_data():
     ]
     test_types = ["int2017", "fp2017", "int2026", "fp2026"]
 
-    result = {"version": 4, "data": {}}
+    result = {"version": 5, "data": {}}
 
     for data_dir, os_name in data_dirs:
         os_entry = {}
@@ -1011,6 +1036,7 @@ def generate_json_data():
                     "opt_flags": opt_flags_display,
                     "score": score,
                     "vendor": detect_vendor(cpu_raw),
+                    "uarch_vendor": detect_uarch_vendor(cpu_raw),
                     "launch_date": detect_launch_date(cpu_raw),
                     "sector": detect_sector(cpu_raw),
                     "isa": detect_isa(cpu_raw),
