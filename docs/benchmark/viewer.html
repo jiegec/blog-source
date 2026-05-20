@@ -864,6 +864,11 @@ function renderCompareChart(entries, bmNames, metric) {
   let chart = echarts.getInstanceByDom(chartDom);
   if (!chart) chart = echarts.init(chartDom);
 
+  const xLabels = [...bmNames];
+  const useGeoMean = metric === 'ratio';
+  if (bmNames.length > 1) xLabels.push('Arithmetic Mean');
+  if (useGeoMean) xLabels.push('Geometric Mean');
+
   const series = [];
   const colorPalette = ['#4f6ef7','#e8525e','#16a34a','#f59e0b','#9333ea','#06b6d4','#f97316','#8b5cf6'];
   for (let ei = 0; ei < entries.length; ei++) {
@@ -873,6 +878,14 @@ function renderCompareChart(entries, bmNames, metric) {
       const v = e.benchmarks[n][metric];
       return v !== undefined && v !== null && typeof v === 'number' ? v : null;
     });
+    const vals = data.filter(v => v !== null);
+    if (bmNames.length > 1) {
+      data.push(vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null);
+    }
+    if (useGeoMean) {
+      const gm = vals.length ? Math.pow(vals.reduce((a, b) => a * b, 1), 1 / vals.length) : null;
+      data.push(gm);
+    }
     series.push({
       name: `#${ei+1} ${e.cpu_name}`,
       type: 'bar',
@@ -888,7 +901,7 @@ function renderCompareChart(entries, bmNames, metric) {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     legend: { type: 'scroll', bottom: 0 },
     grid: { left: 100, right: 40, top: 60, bottom: 70, containLabel: true },
-    xAxis: { type: 'category', data: bmNames, axisLabel: { rotate: 45, fontSize: 10 } },
+    xAxis: { type: 'category', data: xLabels, axisLabel: { rotate: 45, fontSize: 10 } },
     yAxis: { type: 'value', name: _t(metricLabelMap[metric]) },
     series: series,
   }, true);
@@ -905,9 +918,9 @@ function renderCompareTable(entries, bmNames) {
   html += '<th style="color:#888;">' + esc(_t('col_maxmin')) + '</th>';
   html += '</tr></thead><tbody>';
 
+  const allVals = entries.map(() => []);
   for (const n of bmNames) {
     html += `<tr><td><strong>${esc(n)}</strong></td>`;
-    const vals = [];
     for (let ei = 0; ei < entries.length; ei++) {
       const e = entries[ei];
       let v = null, tip = '';
@@ -923,11 +936,12 @@ function renderCompareTable(entries, bmNames) {
         tip = `ratio=${fmt(ratio, 'ratio')} time=${fmt(time, 'time')}ms clock=${fmt(clock)}MHz IPC=${fmt(ipc)} MPKI=${fmt(mpki)} mispred=${fmt(mispred)}`;
       }
       const valid = v !== undefined && v !== null && typeof v === 'number';
-      if (valid) vals.push(v);
+      if (valid) allVals[ei].push(v);
       const title = tip ? ` title="${esc(tip)}"` : '';
       html += `<td${title}>${valid ? fmt(v, metric) : '-'}</td>`;
     }
-    // ratio column
+    // max/min column
+    const vals = entries.map(e => e.benchmarks?.[n]?.[metric]).filter(v => v !== undefined && v !== null);
     if (vals.length >= 2) {
       const mx = Math.max(...vals), mn = Math.min(...vals);
       html += `<td style="color:#888;">${mn > 0 ? (mx / mn).toFixed(3) + 'x' : '-'}</td>`;
@@ -936,6 +950,27 @@ function renderCompareTable(entries, bmNames) {
     }
     html += '</tr>';
   }
+
+  // arithmetic mean row
+  if (bmNames.length > 1) {
+    html += `<tr style="border-top:2px solid #4f6ef7;font-weight:600"><td>${esc(_t('arithmetic_mean'))}</td>`;
+    for (let ei = 0; ei < entries.length; ei++) {
+      const vals = allVals[ei];
+      html += `<td>${vals.length ? fmt(vals.reduce((a, b) => a + b, 0) / vals.length, metric) : '-'}</td>`;
+    }
+    html += '<td style="color:#888;">-</td></tr>';
+    // geometric mean row (only for ratio)
+    if (metric === 'ratio') {
+      html += `<tr style="font-weight:600"><td>${esc(_t('geo_mean'))}</td>`;
+      for (let ei = 0; ei < entries.length; ei++) {
+        const vals = allVals[ei];
+        const gm = vals.length ? Math.pow(vals.reduce((a, b) => a * b, 1), 1 / vals.length) : null;
+        html += `<td>${gm !== null ? fmt(gm, 'ratio') : '-'}</td>`;
+      }
+      html += '<td style="color:#888;">-</td></tr>';
+    }
+  }
+
   html += '</tbody></table>';
   document.getElementById('compare-table-wrap').innerHTML = html;
 }
