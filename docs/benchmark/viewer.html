@@ -619,9 +619,9 @@ function refresh(chart) {
 
 // ── chart ──
 function render(chart) {
-  chart.clear();
   let data = [...filtered];
   if (data.length === 0) {
+    chart.clear();
     chart.setOption({ title: { text: _t('no_matching'), left: 'center', top: 'center' } });
     document.getElementById('table-body').innerHTML = '';
     return;
@@ -680,6 +680,9 @@ function render(chart) {
         fontSize: 10
       }
     }],
+    animationDuration: 500,
+    animationDurationUpdate: 500,
+    animationEasing: 'cubicOut',
     dataZoom: [
       { type: 'inside', orient: 'vertical', minValueSpan: 10 },
       { type: 'slider', orient: 'vertical', right: 10, top: 30, bottom: 30,
@@ -687,7 +690,7 @@ function render(chart) {
     ]
   };
 
-  chart.setOption(option);
+  chart.setOption(option, { notMerge: true });
 
   // legend
   const legendEl = document.getElementById('legend-area');
