@@ -451,6 +451,8 @@ document.getElementById('lang-toggle').addEventListener('click', () => {
 let rawData = null;
 let filtered = [];
 let selectedIndices = new Set();
+let sortBy = 'score';
+let sortDir = 'desc';
 
 const COLORS = {
   amd64: '#4f6ef7', arm64: '#e8525e', loong64: '#9333ea', ppc64el: '#16a34a', unknown: '#94a3b8'
@@ -705,11 +707,39 @@ function render(chart) {
   renderTable(data);
 }
 
+const SORT_FIELDS = {
+  cpu: 'cpu_name', score: 'score', os: 'os', compiler: 'compiler',
+  memory: 'memory', flags: 'opt_flags', vendor: 'vendor', launch: 'launch_date',
+  sector: 'sector', isa: 'isa',
+};
+
+function setSort(col) {
+  if (sortBy === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortBy = col; sortDir = 'asc'; }
+  const chart = echarts.getInstanceByDom(document.getElementById('chart'));
+  if (chart) refresh(chart);
+}
+
 function renderTable(data) {
-  const sorted = [...data].sort((a, b) => b.score - a.score);
+  const sorted = [...data].sort((a, b) => {
+    const field = SORT_FIELDS[sortBy] || 'score';
+    const va = a[field], vb = b[field];
+    let cmp;
+    if (typeof va === 'number' && typeof vb === 'number') cmp = va - vb;
+    else cmp = String(va).localeCompare(String(vb));
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
   const head = document.getElementById('table-head');
   const th = (k) => _t('tbl_' + k);
-  head.innerHTML = '<th class="chk"><input type="checkbox" id="select-all" title="' + esc(_t('select_all_title')) + '"></th><th>' + th('cpu') + '</th><th>' + th('score') + '</th><th>' + th('os') + '</th><th>' + th('compiler') + '</th><th>' + th('memory') + '</th><th>' + th('flags') + '</th><th>' + th('vendor') + '</th><th>' + th('launch') + '</th><th>' + th('sector') + '</th><th>' + th('isa') + '</th>';
+  const colKeys = ['cpu', 'score', 'os', 'compiler', 'memory', 'flags', 'vendor', 'launch', 'sector', 'isa'];
+  head.innerHTML = '<th class="chk"><input type="checkbox" id="select-all" title="' + esc(_t('select_all_title')) + '"></th>' +
+    colKeys.map(k => {
+      const arrow = sortBy === k ? (sortDir === 'asc' ? ' &#9650;' : ' &#9660;') : '';
+      return `<th style="cursor:pointer;user-select:none;" data-sort="${k}">${th(k)}${arrow}</th>`;
+    }).join('');
+  head.querySelectorAll('[data-sort]').forEach(el => {
+    el.addEventListener('click', () => setSort(el.getAttribute('data-sort')));
+  });
   const tbody = document.getElementById('table-body');
   tbody.innerHTML = '';
   let lastFlags = null;
