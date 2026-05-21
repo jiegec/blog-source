@@ -97,10 +97,12 @@
 
 服务器平台（`-march=native`）：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native`）: [2.04](./data-trixie/fp2026_rate1/AMD_EPYC_7551_O3-march=native_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -march=native`）: [1.59](./data-trixie/fp2026_rate1/Kunpeng_920_O3-march=native_001.txt)
 
 服务器平台：
 
+- AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [1.86](./data-trixie/fp2026_rate1/AMD_EPYC_7551_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [1.52](./data-trixie/fp2026_rate1/Kunpeng_920_O3_001.txt)
 
 #### 备注
