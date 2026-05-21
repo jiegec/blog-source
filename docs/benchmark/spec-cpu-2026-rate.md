@@ -64,6 +64,8 @@
 
 #### 备注
 
+1. 对于除了苹果以外的 ARM64 核心，内核的 branch-misses 计数器考虑了 speculative 而不只是 retired，因此数字会偏高，此时要用 r22 计数替代。
+
 ### 网上的数据
 
 来自 SPEC 官网：
@@ -74,6 +76,8 @@
 | [AMD Ryzen AI 9 HX 370](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260210-00018.html) | 5.00  | -O3 -ffast-math -march=native -flto=full                                  |
 | [NVIDIA GB10](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260210-00020.html)           | 5.97  | -fuse-ld=lld -O3 -ffast-math -mcpu=native -flto=thin -fomit-frame-pointer |
 | [Apple M5 Pro](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260422-00243.html)          | 7.64  | -O3                                                                       |
+
+见 [David Huang](https://benchview.hjc.im)。
 
 ### 多版本 GCC 和 LLVM 性能比较
 
@@ -155,3 +159,5 @@
 | [AMD Ryzen AI 9 HX 370](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260210-00017.html) | 8.59  | -O3 -ffast-math -march=native -flto=full                                  |
 | [NVIDIA GB10](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260210-00019.html)           | 9.70  | -fuse-ld=lld -O3 -ffast-math -mcpu=native -flto=thin -fomit-frame-pointer |
 | [Apple M5 Pro](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260422-00245.html)          | 10.9  | -O3                                                                       |
+
+见 [David Huang](https://benchview.hjc.im)。
