@@ -75,6 +75,36 @@
 | [NVIDIA GB10](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260210-00020.html)           | 5.97  | -fuse-ld=lld -O3 -ffast-math -mcpu=native -flto=thin -fomit-frame-pointer |
 | [Apple M5 Pro](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260422-00243.html)          | 7.64  | -O3                                                                       |
 
+### 多版本 GCC 和 LLVM 性能比较
+
+在 Intel i9-12900KS @ 5.5 GHz 上用 -O3 测试几种编译器组合的性能：
+
+| Benchmark        | GCC 14 | LLVM 22 | LLVM 21 | LLVM 20 | LLVM 19 |
+|------------------|--------|---------|---------|---------|---------|
+| 706.stockfish_r  | 6.13   | 6.12    | 6.11    | 6.07    | 5.82    |
+| 707.ntest_r      | 4.03   | 4.52    | 4.49    | 4.49    | 4.49    |
+| 708.sqlite_r     | 4.52   | 4.33    | 4.26    | 4.30    | 4.18    |
+| 710.omnetpp_r    | 5.34   | 4.98    | 4.99    | 4.97    | 4.96    |
+| 714.cpython_r    | 6.40   | 5.74    | 5.78    | 5.72    | 5.72    |
+| 721.gcc_r        | 5.43   | 5.31    | 5.30    | 5.28    | 5.28    |
+| 723.llvm_r       | 4.09   | 4.05    | 4.05    | 4.03    | 4.01    |
+| 727.cppcheck_r   | 3.83   | 3.78    | 3.90    | 3.89    | 3.71    |
+| 729.abc_r        | 4.51   | 4.45    | 4.43    | 4.41    | 4.40    |
+| 734.vpr_r        | 4.90   | 4.85    | 4.86    | 4.83    | 4.71    |
+| 735.gem5_r       | 5.24   | 5.27    | 5.25    | 5.14    | 5.18    |
+| 750.sealcrypto_r | 4.82   | 10.2    | 4.99    | 4.98    | 4.93    |
+| 753.ns3_r        | 6.38   | 6.30    | 6.36    | 6.30    | 6.25    |
+| 777.zstd_r       | 4.41   | 4.30    | 4.27    | 4.29    | 4.26    |
+| geomean          | 4.94   | 5.13    | 4.88    | 4.86    | 4.80    |
+
+完整数据：
+
+- [GCC 14.2.0](./data-trixie/others/SPEC_INT_2026_Intel_i9-12900KS_O3_GCC_14.txt)
+- [LLVM 19.1.7](./data-trixie/others/SPEC_INT_2026_Intel_i9-12900KS_O3_LLVM_19.txt)
+- [LLVM 20.1.8](./data-trixie/others/SPEC_INT_2026_Intel_i9-12900KS_O3_LLVM_20.txt)
+- [LLVM 21.1.8](./data-trixie/others/SPEC_INT_2026_Intel_i9-12900KS_O3_LLVM_21.txt)
+- [LLVM 22.1.6](./data-trixie/others/SPEC_INT_2026_Intel_i9-12900KS_O3_LLVM_22.txt)
+
 ## SPEC FP 2026 Rate-1
 
 下面贴出自己测的数据（SPECfp2026，Estimated，rate，base，1 copy），不保证满足 SPEC 的要求，仅供参考。
