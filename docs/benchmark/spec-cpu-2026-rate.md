@@ -164,3 +164,32 @@
 | [Apple M5 Pro](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260422-00245.html)          | 10.9  | -O3                                                                       |
 
 见 [David Huang](https://benchview.hjc.im)。
+
+### 多版本 GCC 和 LLVM 性能比较
+
+在 Intel i9-12900KS @ 5.5 GHz 上用 -O3 测试几种编译器组合的 SPEC FP 2026 Rate-1 性能：
+
+| Benchmark       | GCC 16   | GCC 15   | GCC 14 | LLVM 22  | LLVM 21  | LLVM 20  |
+|-----------------|----------|----------|--------|----------|----------|----------|
+| 709.cactus_r    | 6.77     | 7.52     | 7.62   | 8.28     | **8.29** | 8.16     |
+| 722.palm_r      | 7.79     | 7.81     | 7.88   | **9.20** | 9.00     | 8.44     |
+| 731.astcenc_r   | 4.77     | 4.76     | 4.60   | 5.96     | 5.84     | **6.16** |
+| 736.ocio_r      | 6.20     | 6.25     | 6.26   | 6.81     | **6.87** | 6.84     |
+| 737.gmsh_r      | **4.55** | 4.53     | 4.50   | 4.40     | 4.38     | 4.40     |
+| 748.flightdm_r  | **7.76** | 7.54     | 7.42   | 7.05     | 7.09     | 7.11     |
+| 749.fotonik3d_r | 6.81     | 6.82     | 6.82   | 6.93     | **6.99** | 6.76     |
+| 765.roms_r      | 7.50     | 7.39     | 7.40   | **7.52** | 7.51     | 7.38     |
+| 766.femflow_r   | 9.92     | 7.97     | 8.16   | **12.1** | **12.1** | **12.1** |
+| 767.nest_r      | 7.17     | **8.60** | 8.50   | 8.15     | 8.18     | 8.15     |
+| 772.marian_r    | **10.3** | **10.3** | 6.58   | 4.78     | 4.78     | 4.78     |
+| 782.lbm_r       | **4.81** | **4.81** | 4.80   | 4.49     | 4.49     | 4.47     |
+| geomean         | 6.81     | **6.83** | 6.56   | 6.84     | **6.83** | 6.79     |
+
+完整数据：
+
+- [GCC 14.2.0](./data-trixie/others/SPEC_FP_2026_Intel_i9-12900KS_O3_GCC_14.txt)
+- [GCC 15.2.0](./data-trixie/others/SPEC_FP_2026_Intel_i9-12900KS_O3_GCC_15.txt)
+- [GCC 16.1.0](./data-trixie/others/SPEC_FP_2026_Intel_i9-12900KS_O3_GCC_16.txt)
+- [LLVM 20.1.8](./data-trixie/others/SPEC_FP_2026_Intel_i9-12900KS_O3_LLVM_20.txt)
+- [LLVM 21.1.8](./data-trixie/others/SPEC_FP_2026_Intel_i9-12900KS_O3_LLVM_21.txt)
+- [LLVM 22.1.6](./data-trixie/others/SPEC_FP_2026_Intel_i9-12900KS_O3_LLVM_22.txt)
