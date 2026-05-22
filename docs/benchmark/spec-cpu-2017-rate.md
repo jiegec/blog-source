@@ -43,7 +43,7 @@
 - Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -flto`）: [10.0](./data-trixie/int2017_rate1/Intel_Core_i9-12900KS_P-Core_O3-flto_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3 -flto`）: [7.43](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3-flto_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -flto`）: [12.1](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3-flto_001.txt)
-- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto`）: [8.41](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3 -flto`）: [8.60](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3-flto_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3 -flto`）: [4.56](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
 
 桌面平台：
@@ -61,7 +61,7 @@
 - Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3`）: [9.74](./data-trixie/int2017_rate1/Intel_Core_i9-12900KS_P-Core_O3_001.txt)
 - Intel Core i9-14900K E-Core @ 4.4 GHz Gracemont（`-O3`）: [7.18](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_E-Core_O3_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3`）: [11.6](./data-trixie/int2017_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)
-- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [8.23](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
+- Intel Xeon w9-3595X @ 4.5 GHz Golden Cove（`-O3`）: [8.29](./data-trixie/int2017_rate1/Intel_Xeon_w9-3595X_O3_001.txt)
 - Loongson 3A6000 @ 2.5 GHz LA664（`-O3`）: [4.35](./data-trixie/int2017_rate1/Loongson_3A6000_O3_001.txt) [4.39](./data-trixie/int2017_rate1/Loongson_3A6000_O3_002.txt)
 
 服务器平台（LTO + Jemalloc）：
