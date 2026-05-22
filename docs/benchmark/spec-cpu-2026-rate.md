@@ -12,12 +12,14 @@
 
 桌面平台（`-march=native` + LTO + Jemalloc）：
 
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -march=native -flto -ljemalloc`）: [4.31](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3 -march=native -flto -ljemalloc`）: [5.20](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -march=native -flto -ljemalloc`）: [5.55](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -march=native -flto -ljemalloc`）: [6.26](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 
 桌面平台（LTO + Jemalloc）：
 
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [4.31](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3-flto-ljemalloc_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3 -flto -ljemalloc`）: [5.10](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto -ljemalloc`）: [3.17](./data-trixie/int2026_rate1/Intel_Core_i9-10980XE_O3-flto-ljemalloc_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3 -flto -ljemalloc`）: [2.96](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3-flto-ljemalloc_001.txt)
@@ -27,6 +29,7 @@
 
 桌面平台（LTO）：
 
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto`）: [4.10](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3-flto_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3 -flto`）: [4.91](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3-flto_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3 -flto`）: [2.97](./data-trixie/int2026_rate1/Intel_Core_i9-10980XE_O3-flto_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3 -flto`）: [2.78](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3-flto_001.txt)
@@ -36,6 +39,7 @@
 
 桌面平台：
 
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [4.02](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3`）: [4.76](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [2.90](./data-trixie/int2026_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [2.73](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
@@ -126,6 +130,7 @@
 
 桌面平台（`-march=native`）：
 
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -march=native`）: [5.97](./data-trixie/fp2026_rate1/Apple_M1_P-Core_O3-march=native_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3 -march=native`）: [6.73](./data-trixie/fp2026_rate1/Apple_M2_P-Core_O3-march=native_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz (AVX-512 @ 4.0 GHz) Cascade Lake（`-O3 -march=native`）: [4.22](./data-trixie/fp2026_rate1/Intel_Core_i9-10980XE_O3-march=native_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3 -march=native`）: [3.97](./data-trixie/fp2026_rate1/Intel_Core_i9-12900KS_E-Core_O3-march=native_001.txt)
@@ -135,6 +140,7 @@
 
 桌面平台：
 
+- Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [5.80](./data-trixie/fp2026_rate1/Apple_M1_P-Core_O3_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3`）: [6.38](./data-trixie/fp2026_rate1/Apple_M2_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [3.55](./data-trixie/fp2026_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [3.46](./data-trixie/fp2026_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
