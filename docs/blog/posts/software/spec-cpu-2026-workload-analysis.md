@@ -55,7 +55,7 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 - `Stockfish::Eval::NNUE:evaluate(const Position& pos, bool adjusted)` 来自 `src/nnue/evaluate_nnue.cpp`：80.26%，主要耗时在 `affine_transform_non_ssse3` 的 `weights[offset + j] * input[j]`，即神经网络的推理过程，它的计算过程是，进行 int8_t 乘 uint8_t，再累加到 int32_t 类型的结果，默认编译选项下，只能用最基础的 SSE 指令，而不能用 AVX
 - `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 仅 5.27%，瓶颈和前面分析的一样是随机访存
 
-由此可见，nnue 在开了 `-march=native` 的情况下应当有明显的性能提升，实际测试也证明了这一点，开了 `-march=native` 后，时间从 73s 降低到 30s，`Stockfish::Eval::NNUE::evaluate` 时间占比降到 53.84%，主要的计算指令变为 [vpdpbusd](https://www.felixcloutier.com/x86/vpdpbusd)，即针对字节（weight 数组元素是 int8_t 类型，input 数组元素是 uint8_t 类型）元素的整数乘加融合指令，和的类型是 int32_t。核心循环如下：
+由此可见，nnue 在开了 `-march=native` 的情况下应当有明显的性能提升，实际测试也证明了这一点，开了 `-march=native` 后，时间从 73s 降低到 30s，`Stockfish::Eval::NNUE::evaluate` 时间占比降到 53.84%，主要的计算指令变为 [vpdpbusd (Multiply and Add Unsigned and Signed Bytes)](https://www.felixcloutier.com/x86/vpdpbusd)，即针对字节（weight 数组元素是 int8_t 类型，input 数组元素是 uint8_t 类型）元素的整数乘加融合指令，和的类型是 int32_t。核心循环如下：
 
 ```asm
 1:
@@ -67,6 +67,8 @@ jne 1b
 ```
 
 需要注意的是，单纯开 `-mavx2` 还是需要执行 70s，即使用了 AVX，由于没有开 AVX-VNNI，不能用 vpdpbusd，还是需要先进行格式转换再用 32 位的整数乘加指令。可以说，Stockfish 的 NNUE 这样的计算方式，就是奔着 vpdpbusd 这条指令去的。所以一些没有这种计算的 ISA，就会比较吃亏。
+
+例如在 ARM64 下，对应的 [USMMLA (Unsigned and signed 8-bit integer matrix multiply-accumulate to 32-bit integer (vector))](https://developer.arm.com/documentation/ddi0487/maa/-Part-C-The-AArch64-Instruction-Set/-Chapter-C7-A64-Advanced-SIMD-and-Floating-point-Instruction-Descriptions/-C7-2-Alphabetical-list-of-A64-Advanced-SIMD-and-floating-point-instructions/-C7-2-452-USMMLA--vector-) 指令被包括在 i8mm 扩展当中，有这个扩展的话，`-march=native` 性能提升显著，例如 Apple M2；而如果没有这个扩展，开不开 `-march=native` 就没什么区别，例如 Apple M1。
 
 #### 7to11_nnue
 
