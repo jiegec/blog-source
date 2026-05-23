@@ -48,6 +48,8 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 
 开了 `-march=native` 后，能观察到 `__popcountdi2` 被内联为 `popcnt` 指令。经过测试，开了 `-mpopcnt` 后，时间即从 46s 降低到 42s，接近 `-march=native` 的性能，可见在开启 popcnt 指令集的前提下，内联 `__popcountdi2` 调用就可以明显减少时间。
 
+`-O3` 编译选项下，1to6_classical 执行的指令数为 532.9B，其中分支指令有 56.1B 次，其中有 2.6B 次错误预测。可见，1to6_classical 的 MPKI 还是比较高的：`2.6B/532.9B*1000=4.88`，即使是在 SPEC INT 2017 当中，也是比较高的，高于 531.deepsjeng_r 的 3.16 和 557.xz_r 的 3.49，低于 505.mcf_r 的 6.24 和 541.leela_r 的 7.71。
+
 #### 1to6_nnue
 
 后两个命令的引擎从 classical 变为了 nnue，涉及神经网络，因此它的计算模式会不太一样。通过 `perf` 观察到 1to6_nnue 的主要耗时函数：
@@ -149,13 +151,25 @@ jne 1b
 
 可见，即使没有对口的 vpdpbusd 指令，仅用 SSE 还是有优化空间的，通过用 SSE 实现高效的有符号和无符号符号扩展，获得了介于 GCC 14 比较差的指令序列与专用 vpdpbusd 指令的性能。
 
+`-O3` 编译选项下，1to6_nnue 执行的指令数为 1342B，其中分支指令有 77.6B 次，其中有 1.6B 次错误预测。它的 MPKI 只有 `1.6B/1342B*1000=1.19`，主要瓶颈还是在上述的神经网络推理当中。
+
 #### 7to11_nnue
 
-7to11_nnue 的行为与 1to6_nnue 类似，瓶颈也是在 `Stockfish::Eval::NNUE:evaluate` 函数上。开启 `-march=native` 后，时间从 68s 降到了 30s。GCC 15/16 的性能提升也和 1to6_nnue 类似。
+7to11_nnue 的行为与 1to6_nnue 类似，瓶颈也是在 `Stockfish::Eval::NNUE:evaluate` 函数上。开启 `-march=native` 后，时间从 68s 降到了 30s。GCC 15/16 的性能提升也和 1to6_nnue 类似。`-O3` 编译选项下，7to11_nnue 执行的指令数为 1253B，其中分支指令有 75.5B 次，其中有 1.5B 次错误预测。它的 MPKI 只有 `1.5B/1253B*1000=1.20`，主要瓶颈还是在神经网络推理当中。
 
 #### 小结
 
-1to6_classical 比较像传统的各种棋类引擎，有一些比较复杂的分支和访存性能，当然它的 MPKI 不算高，只有 1.84，低于 SPEC INT 2017 的 deepsjeng，可能是因为它的计算和访存过程更加复杂。而 1to6_nnue 和 7to11_nnue 的主要瓶颈在于 i8 的矩阵运算，能否使用硬件的加速指令则对性能至关重要。
+1to6_classical 比较像传统的各种棋类引擎，有比较复杂的分支和访存，所以它的 MPKI 比较类似 SPEC CPU 2017 的 531.deepsjeng_r，属于比较高的一类。而 1to6_nnue 和 7to11_nnue 的主要瓶颈在于 i8 的矩阵运算，能否使用硬件的加速指令则对性能至关重要，分支预测瓶颈就明显小了。
+
+### 707.ntest_r
+
+测试会用如下参数运行：
+
+```shell
+ntest Othello.154.ggf 20 16
+```
+
+实测数据显示，运行这条命令耗费的时间是 133s。reftime 是 592s，对应 4.5 分。开启各项优化编译选项，`-flto` 带来 4% 的性能提升，进一步开启 `-march=native` 带来 10% 的性能提升。下面分析它的具体负载特性。
 
 ## SPEC FP 2026 Rate
 
