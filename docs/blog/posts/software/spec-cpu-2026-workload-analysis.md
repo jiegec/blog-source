@@ -52,32 +52,110 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 
 后两个命令的引擎从 classical 变为了 nnue，涉及神经网络，因此它的计算模式会不太一样。通过 `perf` 观察到 1to6_nnue 的主要耗时函数：
 
-- `Stockfish::Eval::NNUE:evaluate(const Position& pos, bool adjusted)` 来自 `src/nnue/evaluate_nnue.cpp`：80.26%，主要耗时在 `affine_transform_non_ssse3` 的 `weights[offset + j] * input[j]`，即神经网络的推理过程，它的计算过程是，进行 int8_t 乘 uint8_t，再累加到 int32_t 类型的结果，默认编译选项下，只能用最基础的 SSE 指令，而不能用 AVX
+- `Stockfish::Eval::NNUE:evaluate(const Position& pos, bool adjusted)` 来自 `src/nnue/evaluate_nnue.cpp`：80.26%，主要耗时在 `affine_transform_non_ssse3` 的 `sum += weights[offset + j] * input[j]`，即神经网络的推理过程，它的计算过程是，进行 int8_t 乘 uint8_t，再累加到 int32_t 类型的结果，默认编译选项下，只能用基础的 SSE 指令如 pmaddwd/paddd，而不能用 AVX
 - `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 仅 5.27%，瓶颈和前面分析的一样是随机访存
 
-由此可见，nnue 在开了 `-march=native` 的情况下应当有明显的性能提升，实际测试也证明了这一点，开了 `-march=native` 后，时间从 73s 降低到 30s，`Stockfish::Eval::NNUE::evaluate` 时间占比降到 53.84%，主要的计算指令变为 [vpdpbusd (Multiply and Add Unsigned and Signed Bytes)](https://www.felixcloutier.com/x86/vpdpbusd)，即针对字节（weight 数组元素是 int8_t 类型，input 数组元素是 uint8_t 类型）元素的整数乘加融合指令，和的类型是 int32_t。核心循环如下：
+分析 `Stockfish::Eval::NNUE:evalute` 的指令，可以看到，它为了实现上述逻辑，核心思路是采用 pmaddwd 指令，进行 4 次 16 位有符号的乘法计算，累加到 32 位的结果。但是，在这之前，需要先把输入的 8 位有符号 weights 和无符号 input 转换到 16 位有符号数。其中 8 位有符号 weights 转换比较简单，而 8 位无符号 weights 的处理逻辑比较复杂。首先，它对 input 的每个元素加上 128，然后当成有符号数来看待，这相当于对每个元素减去了 128，把 uint8_t 映射到了 int8_t。这样，input 就可以用和 weights 相同的方法进行符号扩展。但是，这样会导致结果计算错误，为了纠正这个偏差，又减去了 128 倍的 weights 之和。汇编代码如下：
 
 ```asm
 1:
+# 加载有符号 weights 的 16 个元素
+movdqu (%rdx,%rcx,1),%xmm2
+movdqa %xmm5,%xmm8
+# 加载无符号 input 的 16 个元素
+movdqa (%r12,%rcx,1),%xmm10
+add $0x10,%rcx
+# 对 weights 进行符号扩展
+pcmpgtb %xmm2,%xmm8
+movdqa %xmm2,%xmm9
+# 每个 input 元素加上 128，即减去 128 转为有符号 int8_t
+paddb %xmm6, %xmm10
+# 符号扩展 weights
+punpckhbw %xmm8,%xmm2
+punpcklbw %xmm8,%xmm9
+movdqa %xmm2,%xmm11
+movdqa %xmm9,%xmm8
+# 计算 weights 之和乘以 128
+pmaddwd %xmm3,%xmm11
+pmaddwd %xmm7,%xmm8
+paddd %xmm11,%xmm0
+paddd %xmm8,%xmm0
+paddd %xmm11,%xmm0
+movdqa %xmm5,%xmm11
+# 对 input 进行符号扩展
+pcmpgtb %xmm10,%xmm11
+paddd %xmm8,%xmm0
+movdqa %xmm10,%xmm8
+punpckhbw %xmm11,%xmm10
+punpcklbw %xmm11,%xmm8
+# 计算 weights * input
+pmaddwd %xmm10,%xmm2
+pmaddwd %xmm8,%xmm9
+# 结果累加
+paddd %xmm2,%xmm0
+paddd %xmm9,%xmm0
+cmp $0x400,%rcx
+jne 1b
+```
+
+经验告诉我们，对于这种适合 SIMD 的代码，在开了 `-march=native` 的情况下应当有明显的性能提升，实际测试也证明了这一点，开了 `-march=native` 后，时间从 73s 降低到 30s，`Stockfish::Eval::NNUE::evaluate` 时间占比降到 53.84%，次数主要的计算指令变为 [vpdpbusd (Multiply and Add Unsigned and Signed Bytes)](https://www.felixcloutier.com/x86/vpdpbusd)，即针对字节（weights 数组元素是 int8_t 类型，input 数组元素是 uint8_t 类型）元素的整数乘加融合指令，和的类型是 int32_t。核心循环如下：
+
+```asm
+1:
+# 加载无符号 input
 vmovdpa (%r8,%rcx,1),%ymm0
+# 加载有符号 weights 并计算 sum += weights[offset + j] * input[j]
 {vex} vpdpbusd (%rdx,%rcx,1),%ymm0,%ymm2
 add $0x20,%rcx
 cmp $0x400,%rcx
 jne 1b
 ```
 
-需要注意的是，单纯开 `-mavx2` 还是需要执行 70s，即使用了 AVX，由于没有开 AVX-VNNI，不能用 vpdpbusd，还是需要先进行格式转换再用 32 位的整数乘加指令。可以说，Stockfish 的 NNUE 这样的计算方式，就是奔着 vpdpbusd 这条指令去的。所以一些没有这种计算的 ISA，就会比较吃亏。
+需要注意的是，单纯开 `-mavx2` 还是需要执行 70s，即使开启了 AVX，由于没有开 AVX-VNNI，不能用 vpdpbusd，还是需要先格式转换到 16 位，再用 32 位累加器的 16 位整数乘加指令。可以说，Stockfish 的 NNUE 这样的计算方式，就是奔着 vpdpbusd 这条指令去的。所以一些没有这种计算的 ISA，就会比较吃亏。
 
 例如在 ARM64 下，对应的 [USMMLA (Unsigned and signed 8-bit integer matrix multiply-accumulate to 32-bit integer (vector))](https://developer.arm.com/documentation/ddi0487/maa/-Part-C-The-AArch64-Instruction-Set/-Chapter-C7-A64-Advanced-SIMD-and-Floating-point-Instruction-Descriptions/-C7-2-Alphabetical-list-of-A64-Advanced-SIMD-and-floating-point-instructions/-C7-2-452-USMMLA--vector-) 指令被包括在 i8mm 扩展当中，有这个扩展的话，`-march=native` 性能提升显著，例如 Apple M2；而如果没有这个扩展，开不开 `-march=native` 就没什么区别，例如 Apple M1。
 
+除了是否开启对应指令集扩展以外，还观察到 GCC 15/16 在 1to6_nnue 上相比 GCC 14 有明显的性能提升（编译选项为 `-O3`），时间从 73s 降低到了 50s。观察生成的指令，虽然它还是用的 SSE 指令，但指令序列更简洁：
+
+```asm
+# %xmm5 初始化为全零
+1:
+# 加载有符号 weights 的 16 个元素
+movdqu (%rdx,%rcx,1),%xmm4
+movdqa %xmm5,%xmm8
+# 加载无符号 input 的 16 个元素
+movdqa (%r12,%rcx,1),%xmm2
+add $0x10,%rcx
+# 将 weights 和零比较，非负得 0，负数得 0xFF
+pcmpgtb %xmm4,%xmm8
+movdqa %xmm2,%xmm6
+movdqa %xmm4,%xmm7
+# 把 input 从 8 位无符号扩展到 16 位，保存到 %xmm2 和 %xmm6
+punpckhbw %xmm5,%xmm2
+punpcklbw %xmm5,%xmm6
+# 结合前面的 pcmpgtb，把 weights 从 8 位有符号扩展到 16 位，保存到 %xmm4 和 %xmm7
+punpckhbw %xmm8,%xmm4
+punpcklbw %xmm8,%xmm7
+# 每条 pmaddwd 指令进行 4 次 16-bit * 16-bit + 16-bit * 16-bit = 32-bit 的计算
+# 两条 pmaddwd 共完成 8 次 16-bit 乘法和 8 次 32-bit 加法
+pmaddwd %xmm4,%xmm2
+pmaddwd %xmm7,%xmm6
+# 每条 paddd 指令进行 4 次 32 bit 的累加
+paddd %xmm2,%xmm0
+paddd %xmm6,%xmm0
+cmp $0x400,%rcx
+jne 1b
+```
+
+可见，即使没有对口的 vpdpbusd 指令，仅用 SSE 还是有优化空间的，通过用 SSE 实现高效的有符号和无符号符号扩展，获得了介于 GCC 14 比较差的指令序列与专用 vpdpbusd 指令的性能。
+
 #### 7to11_nnue
 
-7to11_nnue 的行为与 1to6_nnue 类似，瓶颈也是在 `Stockfish::Eval::NNUE:evaluate` 函数上。开启 `-march=native` 后，时间从 68s 降到了 30s。
+7to11_nnue 的行为与 1to6_nnue 类似，瓶颈也是在 `Stockfish::Eval::NNUE:evaluate` 函数上。开启 `-march=native` 后，时间从 68s 降到了 30s。GCC 15/16 的性能提升也和 1to6_nnue 类似。
 
 #### 小结
 
-1to6_classical 比较像传统的各种棋类引擎，有一些比较复杂的分支和访存性能，当然它的 MPKI 不算高，只有 1.84，低于 SPEC INT 2017 的 deepsjeng，可能是因为它的计算和访存过程更加复杂。
-
+1to6_classical 比较像传统的各种棋类引擎，有一些比较复杂的分支和访存性能，当然它的 MPKI 不算高，只有 1.84，低于 SPEC INT 2017 的 deepsjeng，可能是因为它的计算和访存过程更加复杂。而 1to6_nnue 和 7to11_nnue 的主要瓶颈在于 i8 的矩阵运算，能否使用硬件的加速指令则对性能至关重要。
 
 ## SPEC FP 2026 Rate
 
