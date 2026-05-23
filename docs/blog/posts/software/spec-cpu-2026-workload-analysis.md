@@ -23,7 +23,7 @@ categories:
 
 ### 706.stockfish_r
 
-测试会用如下三种参数分别运行：
+stockfish 是一个著名的国际象棋引擎，测试会用如下三种参数分别运行：
 
 ```shell
 # 1. 1to6_classical
@@ -159,17 +159,27 @@ jne 1b
 
 #### 小结
 
-1to6_classical 比较像传统的各种棋类引擎，有比较复杂的分支和访存，所以它的 MPKI 比较类似 SPEC CPU 2017 的 531.deepsjeng_r，属于比较高的一类。而 1to6_nnue 和 7to11_nnue 的主要瓶颈在于 i8 的矩阵运算，能否使用硬件的加速指令则对性能至关重要，分支预测瓶颈就明显小了。
+1to6_classical 比较像传统的各种棋类引擎，有比较复杂的分支和访存，所以它的 MPKI=4.88 比较类似 SPEC CPU 2017 的 531.deepsjeng_r（MPKI=3.16），属于比较高的一类。而 1to6_nnue 和 7to11_nnue 的主要瓶颈在于 i8 的矩阵运算，能否使用硬件的加速指令则对性能至关重要，分支预测瓶颈就明显小了。整体平均下来的 MPKI 是 1.85，并不算高。
 
 ### 707.ntest_r
 
-测试会用如下参数运行：
+ntest 是黑白棋的引擎，测试会用如下参数运行：
 
 ```shell
 ntest Othello.154.ggf 20 16
 ```
 
-实测数据显示，运行这条命令耗费的时间是 133s。reftime 是 592s，对应 4.5 分。开启各项优化编译选项，`-flto` 带来 4% 的性能提升，进一步开启 `-march=native` 带来 10% 的性能提升。下面分析它的具体负载特性。
+实测数据显示，运行这条命令耗费的时间是 133s。reftime 是 592s，对应 4.5 分。开启各项优化编译选项，`-flto` 带来 4% 的性能提升，进一步开启 `-march=native` 带来 10% 的性能提升。下面分析它的具体负载特性。通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
+
+- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.73%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，判断下子以后是否出现翻转，主要是一些数据依赖的访存
+- `solveNParity(int alpha, int beta, u64 mover, u64 enemy, u64 parity, EndgameSearch* search, bool hasPassed)` 来自 `src/solve.cpp`：14.29%，进行 alpha-beta 减枝的 minimax 算法，遍历棋盘上的位置，如果可以下子，就尝试下子进行递归，主要的瓶颈在访存以及依赖访存结果的分支（如判断位置是否为空）
+- `__popcountdi2`：9.65%，因为没开 `-march=native`，故需要它来代替 popcnt 指令，用来计算场面上各颜色棋子的数量等等
+- `solveNFlipParity`：9.00%，与 solveNParity 配合完成 minimax 算法
+- `solve2`：5.42%，minimax 算法的一部分，处理棋盘只有两个空位的最终局面
+
+这也是个比较典型的棋类引擎的模式了，整个 minimax 算法占了 70%+ 的时间，为了搜索局面，有大量的位运算和访存，还有根据访存结果决定方向的分支。果不其然，执行 2688B 条指令，其中有 228B 条是分支指令，有 6.1B 次错误预测，MPKI 达到了 `6.1B/2688B*1000=2.27`。和 706.stockfish_r 类似，它也有不少的 popcnt 调用，那么打开 `-mpopcnt` 就会得到不错的性能提升：时间从 133s 降低到 120s，减少 10% 时间。而即使开 `-march=native`，性能也只是进一步降到 115s，只有少量的地方用到了 AVX2。
+
+结合 706.stockfish_r 和 707.ntest_r，可以看到，popcnt 还是比较常用的，但可惜 AMD64 的基线并不提供这条指令，因此如果开了 x86-64-v2 或以上的编译优化选项，这类应用就可以获得性能提升，免去了 libgcc 的 __popcountdi2 开销，本来一条指令就能完成的事情，因为额外的 call 以及 PLT 开销，带来了可观的性能开销。
 
 ## SPEC FP 2026 Rate
 
