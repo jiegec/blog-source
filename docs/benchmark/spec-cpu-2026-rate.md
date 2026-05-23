@@ -89,7 +89,7 @@
 | [NVIDIA GB10](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260210-00020.html)           | 5.97  | -fuse-ld=lld -O3 -ffast-math -mcpu=native -flto=thin -fomit-frame-pointer |
 | [Apple M5 Pro](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260422-00243.html)          | 7.64  | -O3                                                                       |
 
-见 [David Huang](https://benchview.hjc.im)。
+另见 [David Huang](https://benchview.hjc.im)、[Chips and Cheese](https://chipsandcheese.com/p/evaluating-spec-cpu2026)。
 
 ### 多版本 GCC 和 LLVM 性能比较
 
@@ -180,7 +180,7 @@
 | [NVIDIA GB10](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260210-00019.html)           | 9.70  | -fuse-ld=lld -O3 -ffast-math -mcpu=native -flto=thin -fomit-frame-pointer |
 | [Apple M5 Pro](https://www.spec.org/cpu2026/results/res2026q2/cpu2026-20260422-00245.html)          | 10.9  | -O3                                                                       |
 
-见 [David Huang](https://benchview.hjc.im)。
+另见 [David Huang](https://benchview.hjc.im)、[Chips and Cheese](https://chipsandcheese.com/p/evaluating-spec-cpu2026)。
 
 ### 多版本 GCC 和 LLVM 性能比较
 
