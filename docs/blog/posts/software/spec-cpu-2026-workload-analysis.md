@@ -279,7 +279,7 @@ omnetpp_r -f queuenet.ini -c AllocDealloc
 - malloc、free 和 operator new
 - printf（`__printf_buffer`）
 
-此外还有一些 omnetpp 自己的函数，散落各处，每个函数都只占用不到 5% 的时间。对于这么大比例使用 libc/libstdc++ 中函数的情况，标准库和内存分配器的实现就很重要了。
+此外还有一些 omnetpp 自己的函数（如 `omnetpp::common::StringPool::obtain(const char *s)`，主要是对 `std::unordered_map<const char *,int,str_hash, str_eq> pool` 进行查询和修改操作），散落各处，每个函数都只占用不到 5% 的时间。对于这么大比例使用 libc/libstdc++ 中函数的情况，标准库和内存分配器的实现就很重要了。
 
 #### 小结
 
