@@ -15,7 +15,7 @@ categories:
 
 <!-- more -->
 
-本文测试环境：CPU 为 Intel i9-14900K P-Core @ 5.7 GHz，Linux 发行版为 Debian Trixie，编译器是 GCC 14.2.0。其实这款 CPU 最快能 Boost 到 6.0 GHz，但是时不时因为未知原因（防缩缸？）在只有单核负载的情况下也 Boost 不上去，故退而求其次，选择一个稳定的 5.7 GHz 频率来跑：`sudo cpupower -c 0 frequency-set -u 5.7g`。6.0 GHz 下的性能可以参考之前的测试结果：[INT](../../../benchmark/data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt) 和 [FP](../../../benchmark/data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)。
+本文测试环境：CPU 为 Intel i9-14900K P-Core @ 5.7 GHz，Linux 发行版为 Debian Trixie，编译器是 GCC 14.2.0。其实这款 CPU 最快能 Boost 到 6.0 GHz，但是时不时因为未知原因（防缩缸？）在只有单核负载的情况下也 Boost 不上去，现象是每跑一段时间负载，CPU 核心就会强制降频到 4.7 GHz，故退而求其次，选择在更容易稳定达到的 5.7 GHz 频率来跑，因为能跑 6.0 GHz 的就是那一个物理 P 核，其他的物理 P 核都能上 5.7 GHz，降频了只要换一个就好。6.0 GHz 下的性能可以参考之前的测试结果：[INT](../../../benchmark/data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt) 和 [FP](../../../benchmark/data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)。
 
 推荐阅读：[Evaluating SPEC CPU2026](https://chipsandcheese.com/p/evaluating-spec-cpu2026)
 
@@ -212,7 +212,7 @@ sqlite --memdb --size 1000 --testset fp --verify
 - `pcache1Fetch(sqlite3_pcache *p, unsigned int iKey, int createFlag)` 来自 `src/sqlite3.c`：8.26%，对应一个用哈希表维护的 Page Cache，用于在内存里缓存硬盘上的数据
 - `sqlite3GetVarint(const unsigned char *p, u64 *v)` 来自 `src/sqlite3.c`：3.70%，恢复内存中可变长度的整数
 
-都是一些比较经典的数据结构和算法的应用，Btree，Loop+Switch 的解释执行，加哈希表查询。主要瓶颈在内存上。
+都是一些比较经典的数据结构和算法的应用，Btree，Loop+Switch 的解释执行，加哈希表查询。主要瓶颈在内存上。执行了 897.6B 条指令，其中 178.2B 是分支指令，错误预测了 1.5B 次，MPKI 是 `1.5B/897.6B*1000=1.67`。
 
 #### cte
 
@@ -223,7 +223,7 @@ sqlite --memdb --size 1000 --testset fp --verify
 - `sqlite3VdbeSerialGet(const unsigned char *buf, u32 serial_type, Mem *pMem)` 来自 `src/sqlite3.c`：5.95%，反序列化，根据内存中保存的数据类型，解析对应的数据
 - `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：5.95%，实现排序
 
-瓶颈主要在解释器上，行为模式比较类似一些解释型语言的解释器，比如 CPython。
+瓶颈主要在解释器上，行为模式比较类似一些解释型语言的解释器，比如 CPython。执行了 307.2B 条指令，其中 62.8B 是分支指令，错误预测了 41M 次，MPKI 是 `41M/307.2B*1000=0.13`。
 
 #### fp
 
@@ -234,11 +234,64 @@ sqlite --memdb --size 1000 --testset fp --verify
 - `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：10.44%，实现排序
 - `sqlite3VdbeRecordCompareWithSkip(int nKey1, const void *pKey1, UnpackedRecord *pPKey2, int bSkip)` 来自 `src/sqlite3.c`：6.76%，比较表里的两个行
 
-瓶颈主要在解释器上，不过因为 SQL 语句的设计，有很多时间花在字符串转浮点数上。
+瓶颈主要在解释器上，不过因为 SQL 语句的设计，有很多时间花在字符串转浮点数上。执行了 555.5B 条指令，其中 111.7B 是分支指令，错误预测了 395M 次，MPKI 是 `395M/555.5B*1000=0.71`。
 
 #### 小结
 
-通过上面的分析，可见 sqlite_r 确实是比较难优化的那一类，大量访存、计算和分支混合在一起，对内存子系统的负担比较重，难以向量化，开 `-march=native` 后运行时间从 106s 增加到 112s。
+通过上面的分析，可见 sqlite_r 确实是比较难优化的那一类，大量访存、计算和分支混合在一起，对内存子系统的负担比较重，难以向量化，开 `-march=native` 后运行时间从 106s 增加到 112s。整体来看，执行了 1760B 条指令，其中有 353B 条是分支指令，MPKI 仅有 1.08，主要由 main 贡献。
+
+### 710.omnetpp_r
+
+SPEC INT 2017 就有的老面孔 520.omnetpp_r，不过跑的内容还是不太一样。520.omnetpp_r 做的是 10 Gbps 网络的模拟，而 710.omnetpp_r 有足足十项测试，负载的多样性有了明显的增强。十项测试的命令行参数如下：
+
+```shell
+omnetpp_r -f randomMesh.ini -c General
+omnetpp_r -f queuenet.ini -c OneFifo
+omnetpp_r -f queuenet.ini -c TandemFifos
+omnetpp_r -f queuenet.ini -c SmallCQN
+omnetpp_r -f queuenet.ini -c Ring
+omnetpp_r -f queuenet.ini -c Terminal
+omnetpp_r -f queuenet.ini -c CallCenter
+omnetpp_r -f queuenet.ini -c ForkJoin
+omnetpp_r -f queuenet.ini -c ResourceAllocation
+omnetpp_r -f queuenet.ini -c AllocDealloc
+```
+
+实测数据显示，十条命令耗费的时间分别是 24.6s、7.8s、3.8s、4.6s、9.1s、3.7s、2.6s、9.4s、6.6s 和 14.0s，共计 86.2s。reftime 是 486s，对应 5.6 分。
+
+#### randomMesh
+
+首先分析第一条命令的热点函数：
+
+- `omnetpp::cTopology::calculateUnweightedSingleShortestPathsTo(Node *_target)` 来自 `src/simulator/sim/ctopology.c`：16.22%，实现了经典的单源最短路算法，且每条边的权重都是一，所以就是 BFS
+- `__do_dyncast` 和 `__dynamic_cast` 来自 libstdc++.so：4.73%+3.24%+2.22%+0.81%=11.0%，代码中有一些 dynamic_cast 的使用，如上面的 Routing::handleMessage
+- `Routing::handleMessage(cMessage *msg)` 来自 `src/model/Routing.cc`：7.10%，模拟路由表的功能，主要逻辑是内联了一个 `std::map<int, int>` 的 `find` 操作（[Godbolt](https://godbolt.org/z/ne6oEb9Md)），在一个红黑树上进行查询
+- `cEvent::shouldPrecede(const cEvent *other)` 来自 `src/simulator/sim/cevent.cc`：4.64%，一个 cEvent 结构体的比较函数
+
+整体来看，它的瓶颈分散在比较多的地方。执行了 306B 条指令，其中有 62B 条是分支指令，错误预测 659M 次，MPKI 为 `659M/306B*1000=2.15`。
+
+#### 其余的 9 条 queuenet 命令
+
+用 `perf` 观察，其余 9 条 queuenet 命令的瓶颈主要集中在这些函数：
+
+- strcmp（`__strcmp_avx2`）
+- dynamic_cast（`__do_dyncast` 和 `__dynamic_cast`）
+- malloc、free 和 operator new
+- printf（`__printf_buffer`）
+
+此外还有一些 omnetpp 自己的函数，散落各处，每个函数都只占用不到 5% 的时间。对于这么大比例使用 libc/libstdc++ 中函数的情况，标准库和内存分配器的实现就很重要了。
+
+#### 小结
+
+针对上面的分析，尝试不同的编译选项：
+
+- 开了 `-ljemalloc` 后，十条命令的性能都有了一定的提升，总时间从 86.2s 降低到 80.6s，分数从 5.6 分提升到 6.0 分。
+- 开 `-flto` 也能带来不错的提升，总时间从 86.2s 降低到 76.1s，分数从 5.6 分提升到 6.4 分。
+- 同时开 `-flto -ljemalloc`，则总时间从 86.2s 降低到 69.7s，分数从 5.6 分提升到 7.0 分。
+
+类似的现象在 SPEC INT 2017 已经出现了，`-O3 -flto` 比 `-O3` 快 3%，`-O3 -flto -ljemalloc` 比 `-O3 -flto` 快 20%。
+
+`-O3` 下，执行的指令数是 1447B，其中 291B 是分支指令，MPKI 是 0.78。虽然 randomMesh 因为图计算，MPKI 比较高，但整体的 MPKI 被其余命令拉低了。
 
 ## SPEC FP 2026 Rate
 
