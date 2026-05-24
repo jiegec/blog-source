@@ -293,6 +293,51 @@ omnetpp_r -f queuenet.ini -c AllocDealloc
 
 `-O3` 下，执行的指令数是 1447B，其中 291B 是分支指令，MPKI 是 0.78。虽然 randomMesh 因为图计算，MPKI 比较高，但整体的 MPKI 被其余命令拉低了。
 
+### 714.cpython_r
+
+前面提到才提到过解释器，这就到 CPython 了。测试包含三条命令：
+
+```shell
+# 1. resnet
+cpython -I -B coreml_pb.py -i 2 -a -m Resnet50Headless.mlmodel -d 10
+# 2. mobilenet
+cpython -I -B coreml_pb.py -i 5 -a -c -m MobileNetV2.mlmodel -d 20
+# 3. dna
+cpython -I -B dna_bench.py 600000
+```
+
+三条命令的运行时间分别为 31s、20s 和 20s，总时间 71s，reftime 是 479s，对应 6.7 分。开启 `-flto` 后，三条命令的运行时间分别为 29s、19s 和 18s，总时间 66s，对应 7.3 分。`-ljemalloc` 影响很小，`-march=native` 有负优化。下面具体分析三条命令的负载特性。
+
+#### resnet
+
+还是用 `perf`，统计出热点函数：
+
+- `_PyEval_EvalFrameDefault(PyThreadState *tstate, _PyInterpreterFrame *frame, int throwflag)` 来自 `src/cpython/Python/ceval.c`：24.09%，解释器中的 Loop + Switch 核心代码，对 Python 字节码进行解释执行
+- `PyUnicode_FromFormatV(const char *format, va_list vargs)` 来自 `src/cpython/Objects/unicodeobject.c`，4.51%，把结果写到 Python 字符串的 sprintf 版本
+- `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：3.48%，释放 PyObject
+- `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.15%，分配 PyObject
+
+剩下就比较零散了，主要还是围绕着解释器的循环。执行了 653B 条指令，其中有 137B 是分支指令，错误预测 7.8M 次，MPKI 等于 `7.8M/653B*1000=0.01` 可以忽略不计。开启 `-flto` 后，热点函数不变，指令数降低为 618B，其中分支有 128B，错误预测 46M 次。
+
+#### mobilenet
+
+统计出热点函数，发现前四依然是上面四个，且时间占比差不多。可能是因为，resnet 和 mobilenet 测例用的是同一个 .py 源码，只是用的模型不同。执行了 439B 条指令，其中有 92B 是分支指令，错误预测 9.3M 次，MPKI 等于 `9.3M/439B*1000=0.02` 可以忽略不计。开启 `-flto` 后，热点函数不变，指令数降低为 417B，其中分支有 86B，错误预测 35M 次。
+
+#### dna
+
+统计热点函数：
+
+- `_PyEval_EvalFrameDefault(PyThreadState *tstate, _PyInterpreterFrame *frame, int throwflag)` 来自 `src/cpython/Python/ceval.c`：36.75%，解释器中的 Loop + Switch 核心代码，对 Python 字节码进行解释执行
+- `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：5.31%，释放 PyObject
+- `PyUnicode_Contains(PyObject *str, PyObject *substr)` 来自 `src/cpython/Objects/unicodeobject.c`，4.59%，Python 字符串的 contains 操作，对应 `data/all/input/knucleotide.py` 代码中的 `chat in "GATC"` 判断
+- `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.52%，分配 PyObject
+
+主要热点还是解释执行，不过因为字符串的 contains 调用次数较多，所以 `PyUnicode_Contains` 时间占比有所上升。执行了 394B 条指令，其中有 77B 是分支指令，错误预测 228M 次，MPKI 等于 `228M/394B*1000=0.58` 也还是很低。开启 `-flto` 后，热点函数不变，指令数降低为 380B，其中分支有 72B，错误预测 228M 次。
+
+#### 小结
+
+714.cpython_r 就是一个典型的字节码解释器，在一个 Loop + Switch 结构当中完成解释执行。整体 MPKI 很低，只有 0.17，即使开了 -flto，虽然预测错误多了，总指令数少了，MPKI 会变大，但绝对数字也还是很小，只有 0.23。
+
 ## SPEC FP 2026 Rate
 
 TODO
