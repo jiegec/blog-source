@@ -169,7 +169,7 @@ ntest 是黑白棋的引擎，测试会用如下参数运行：
 ntest_r Othello.154.ggf 20 16
 ```
 
-实测数据显示，运行这条命令耗费的时间是 140s。reftime 是 592s，对应 4.2 分。开启各项优化编译选项，`-flto` 带来 4% 的性能提升，进一步开启 `-march=native` 带来 10% 的性能提升。下面分析它的具体负载特性。通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
+实测数据显示，运行这条命令耗费的时间是 140s。reftime 是 592s，对应 4.2 分。开启各项优化编译选项，`-O3 -flto` 相比 `-O3` 能带来 4% 的性能提升，进一步 `-O3 -flto -march=native` 相比 `-O3 -flto` 还能带来 10% 的性能提升。下面分析它的具体负载特性。通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
 - `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，判断下子以后是否出现翻转，主要是一些数据依赖的访存
 - `solveNParity(int alpha, int beta, u64 mover, u64 enemy, u64 parity, EndgameSearch* search, bool hasPassed)` 来自 `src/solve.cpp`：14.21%，进行 alpha-beta 减枝的 minimax 算法，遍历棋盘上的位置，如果可以下子，就尝试下子进行递归，主要的瓶颈在访存以及依赖访存结果的分支（如判断位置是否为空）
@@ -285,13 +285,13 @@ omnetpp_r -f queuenet.ini -c AllocDealloc
 
 针对上面的分析，尝试不同的编译选项：
 
-- 开了 `-ljemalloc` 后，十条命令的性能都有了一定的提升，总时间从 86.2s 降低到 80.6s，分数从 5.6 分提升到 6.0 分。
-- 开 `-flto` 也能带来不错的提升，总时间从 86.2s 降低到 76.1s，分数从 5.6 分提升到 6.4 分。
-- 同时开 `-flto -ljemalloc`，则总时间从 86.2s 降低到 69.7s，分数从 5.6 分提升到 7.0 分。
+- 开 `-O3 -ljemalloc` 后，十条命令的性能都有了一定的提升，总时间从 86.2s 降低到 80.6s，分数从 5.6 分提升到 6.0 分。
+- 开 `-O3 -flto` 也能带来不错的提升，总时间从 86.2s 降低到 76.1s，分数从 5.6 分提升到 6.4 分。
+- 开 `-O3 -flto -ljemalloc`，则总时间从 86.2s 降低到 69.7s，分数从 5.6 分提升到 7.0 分。
 
 类似的现象在 SPEC INT 2017 已经出现了，`-O3 -flto` 比 `-O3` 快 3%，`-O3 -flto -ljemalloc` 比 `-O3 -flto` 快 20%。
 
-`-O3` 下，执行的指令数是 1447B，其中 291B 是分支指令，MPKI 是 0.78。虽然 randomMesh 因为图计算，MPKI 比较高，但整体的 MPKI 被其余命令拉低了。
+`-O3` 下，执行的指令数是 1447B，其中 291B 是分支指令，MPKI 是 0.78。虽然 randomMesh 因为图计算，MPKI 比较高，但整体的 MPKI 被其余命令拉低了。相比之下，SPEC INT 2017 Rate 的 520.omnetpp_r 的 MPKI 足足有 4.33。虽然还是同一个框架，但是负载行为还是出现了明显的变化。
 
 ### 714.cpython_r
 
@@ -306,7 +306,7 @@ cpython_r -I -B coreml_pb.py -i 5 -a -c -m MobileNetV2.mlmodel -d 20
 cpython_r -I -B dna_bench.py 600000
 ```
 
-三条命令的运行时间分别为 31s、20s 和 20s，总时间 71s，reftime 是 479s，对应 6.7 分。开启 `-flto` 后，三条命令的运行时间分别为 29s、19s 和 18s，总时间 66s，对应 7.3 分。`-ljemalloc` 影响很小，`-march=native` 有负优化。下面具体分析三条命令的负载特性。
+三条命令的运行时间分别为 31s、20s 和 20s，总时间 71s，reftime 是 479s，对应 6.7 分。开启 `-O3 -flto` 后，三条命令的运行时间分别为 29s、19s 和 18s，总时间 66s，对应 7.3 分。`-O3 -ljemalloc` 影响很小，`-O3 -march=native` 有负优化。下面具体分析三条命令的负载特性。
 
 #### resnet
 
@@ -317,11 +317,11 @@ cpython_r -I -B dna_bench.py 600000
 - `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：3.48%，释放 PyObject
 - `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.15%，分配 PyObject
 
-剩下就比较零散了，主要还是围绕着解释器的循环。执行了 653B 条指令，其中有 137B 是分支指令，错误预测 7.8M 次，MPKI 等于 `7.8M/653B*1000=0.01` 可以忽略不计。开启 `-flto` 后，热点函数不变，指令数降低为 618B，其中分支有 128B，错误预测 46M 次。
+剩下就比较零散了，主要还是围绕着解释器的循环。执行了 653B 条指令，其中有 137B 是分支指令，错误预测 7.8M 次，MPKI 等于 `7.8M/653B*1000=0.01` 可以忽略不计。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 618B，其中分支有 128B，错误预测 46M 次。
 
 #### mobilenet
 
-统计出热点函数，发现前四依然是上面四个，且时间占比差不多。可能是因为，resnet 和 mobilenet 测例用的是同一个 .py 源码，只是用的模型不同。执行了 439B 条指令，其中有 92B 是分支指令，错误预测 9.3M 次，MPKI 等于 `9.3M/439B*1000=0.02` 可以忽略不计。开启 `-flto` 后，热点函数不变，指令数降低为 417B，其中分支有 86B，错误预测 35M 次。
+统计出热点函数，发现前四依然是上面四个，且时间占比差不多。可能是因为，resnet 和 mobilenet 测例用的是同一个 .py 源码，只是用的模型不同。执行了 439B 条指令，其中有 92B 是分支指令，错误预测 9.3M 次，MPKI 等于 `9.3M/439B*1000=0.02` 可以忽略不计。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 417B，其中分支有 86B，错误预测 35M 次。
 
 #### dna
 
@@ -332,11 +332,11 @@ cpython_r -I -B dna_bench.py 600000
 - `PyUnicode_Contains(PyObject *str, PyObject *substr)` 来自 `src/cpython/Objects/unicodeobject.c`，4.59%，Python 字符串的 contains 操作，对应 `data/all/input/knucleotide.py` 代码中的 `chat in "GATC"` 判断
 - `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.52%，分配 PyObject
 
-主要热点还是解释执行，不过因为字符串的 contains 调用次数较多，所以 `PyUnicode_Contains` 时间占比有所上升。执行了 394B 条指令，其中有 77B 是分支指令，错误预测 228M 次，MPKI 等于 `228M/394B*1000=0.58` 也还是很低。开启 `-flto` 后，热点函数不变，指令数降低为 380B，其中分支有 72B，错误预测 228M 次。
+主要热点还是解释执行，不过因为字符串的 contains 调用次数较多，所以 `PyUnicode_Contains` 时间占比有所上升。执行了 394B 条指令，其中有 77B 是分支指令，错误预测 228M 次，MPKI 等于 `228M/394B*1000=0.58` 也还是很低。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 380B，其中分支有 72B，错误预测 228M 次。
 
 #### 小结
 
-714.cpython_r 就是一个典型的字节码解释器，在一个 Loop + Switch 结构当中完成解释执行。整体 MPKI 很低，只有 0.17，即使开了 -flto，虽然预测错误多了，总指令数少了，MPKI 会变大，但绝对数字也还是很小，只有 0.23。
+714.cpython_r 就是一个典型的字节码解释器，在一个 Loop + Switch 结构当中完成解释执行。整体 MPKI 很低，只有 0.17，即使开了 `-O3 -flto`，虽然预测错误多了，总指令数少了，MPKI 会变大，但绝对数字也还是很小，只有 0.23。
 
 ### 721.gcc_r
 
@@ -351,9 +351,58 @@ cc1_r gcc-smaller.c -O3 -fipa-pta -o gcc-smaller.c.opts-O3_-fipa-pta.s
 cc1_r ref32.c -O3 -finline-limit=12000 -fno-tree-vrp -o ref32.c.opts-O3_-finline-limit_12000_-fno-tree-vrp.s
 ```
 
-`-O3` 运行时间分别为 44s、21s 和 51s，总时间 116s，reftime 是 686s，对应 5.9 分。开了 `-flto` 后，时间略微降低到 115s，开 `-flto -ljemalloc` 后的时间进一步降低到 111s，主要针对的是占用时间约 2% 的 malloc/free。
+`-O3` 运行时间分别为 44s、21s 和 51s，总时间 116s，reftime 是 686s，对应 5.9 分。开了 `-O3 -flto` 后，时间略微降低到 115s，开 `-O3 -flto -ljemalloc` 后时间进一步降低到 111s，主要针对的是占用时间约 2% 的 malloc/free。开 `-march=native` 对性能几乎没有影响。
 
 与 502.gcc_r 的行为类似（见 [The Alberta Workloads for the SPEC CPU® 2017 Benchmark Suite 的分析](https://webdocs.cs.ualberta.ca/~amaral/AlbertaWorkloadsForSPECCPU2017/reports/gcc_report.html)），721.gcc_r 的时间分布在大量函数，除了 ref32 花费了 10.76% 的时间在 dominated_by_p、5.92% 的时间在 bitmap_set_bit 以外，其他函数的占用时间基本都在 3% 以下，没有一个特别明显的热点函数。
+
+三次运行的性能计数器如下：
+
+1. gcc-pp: 执行 471B 条指令，其中有 100B 条分支指令，错误预测 2.2B 次，MPKI 等于 `2.2B/471B*1000=4.67`
+2. gcc-smaller: 执行 244B 条指令，其中有 52B 条分支指令，错误预测 0.91B 次，MPKI 等于 `0.91B/244B*1000=3.72`
+3. ref32: 执行 405B 条指令，其中有 86B 条分支指令，错误预测 0.61B 次，MPKI 等于 `0.61B/405B*1000=1.51`
+
+整体指令数是 1120B，其中有 238B 条分支指令，MPKI 等于 3.37，在 SPEC INT 2026 中属于比较高的了。在 SPEC INT 2017 Rate 当中，502.gcc_r 的 MPKI 是 3.13，变化不大。
+
+意料之中的是，用 GCC 14 编译的 721.gcc_r，运行得比用 LLVM 22 编译的 721.gcc_r 更快。
+
+### 723.llvm_r
+
+随着 LLVM 的发展，SPEC CPU 2026 终于是把 LLVM 也加入了进来。和 721.gcc_r 类似，也是跑 LLVM 的优化器，只不过输入直接就是 .bc 中间代码文件，而不是 C 代码。它包括两条命令：
+
+```shell
+# 1. transformsplus
+llvm-opt_r transformsplus.bc -S -O3 -mcpu=pwr9
+# 2. codegen
+llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
+```
+
+`-O3` 运行时间分别为 62s 和 53s，总时间 115s，reftime 是 507s，对应 4.4 分。开 `-O3 -flto` 性能反而变差，不过开 `-O3 -ljemalloc` 有明显性能提升，运行时间降低为 59s 和 47s，总时间 106s，分数提高到 4.8 分。
+
+有意思的是，用 GCC 14 编译的 723.llvm_r，运行得比用 LLVM 22 编译的 723.llvm_r 更快，当然快得并不多。下面针对这两条命令进行具体的分析。
+
+#### transformsplus
+
+使用 `perf` 观察热点函数：
+
+- `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 4.06%，对 IR 中的 PHI 结点进行处理，这个函数还挺复杂的
+- `_int_malloc/cfree/malloc`：2.38%+0.89%+0.82%=4.09%，大量的内存分配和释放，因此 `-ljemalloc` 能带来不错的性能提升
+- `llvm::DenseMapBase::FindAndConstruct()`: 1.69%，LLVM 自己用数组实现的哈希表
+
+其他用很多小的函数，占时间比例不高，和 721.gcc_r 类似，也是时间分散得比较开。执行指令数为 575B，其中分支指令有 119B，错误预测有 3.5B 次，MPKI 等于 `3.5B/575B*1000=6.09`，挺高的。
+
+#### codegen
+
+使用 `perf` 观察热点函数：
+
+- `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 20.85%，对 IR 中的 PHI 结点进行处理
+- `_int_malloc/cfree/malloc`：1.91%+0.72%+0.65%=3.28%，大量的内存分配和释放，因此 `-ljemalloc` 能带来不错的性能提升
+- `llvm::DenseMapBase::FindAndConstruct()`: 1.29%，LLVM 自己用数组实现的哈希表
+
+整体的情况和 transformsplusplus 类似，只不过 `foldIntegerTypedPHI` 时间占比更高，其他还是有很多函数耗费很短的时间，分散得比较开。执行指令数为 417B，其中分支指令有 86B，错误预测有 2.4B 次，MPKI 等于 `2.4B/417B*1000=5.76`，依然挺很高。
+
+#### 小结
+
+llvm 和 gcc 同为编译器的双子星，在负载特性上也有类似之处：有很多的内存分配和释放，受益于 `-ljemalloc`；时间分布在大量小函数当中，热点不明显；MPKI 较高，尤其是 723.llvm_r 直接一跃成为 SPEC INT 2026 Rate 中 MPKI 最高的一项测试，可能是因为它有大量数据依赖的分支。723.llvm_r 整体的指令数仅有 991B，但有 205B 的分支数，MPKI 达到 5.98，即使是在人才济济的 SPEC INT 2017 Rate，也能紧紧地排在 505.mcf_r 和 541.leela_r 两位大哥身后成为第三大的 MPKI。
 
 ## SPEC FP 2026 Rate
 
