@@ -177,9 +177,26 @@ ntest Othello.154.ggf 20 16
 - `solveNFlipParity`：9.00%，与 solveNParity 配合完成 minimax 算法
 - `solve2`：5.42%，minimax 算法的一部分，处理棋盘只有两个空位的最终局面
 
-这也是个比较典型的棋类引擎的模式了，整个 minimax 算法占了 70%+ 的时间，为了搜索局面，有大量的位运算和访存，还有根据访存结果决定方向的分支。果不其然，执行 2688B 条指令，其中有 228B 条是分支指令，有 6.1B 次错误预测，MPKI 达到了 `6.1B/2688B*1000=2.27`。和 706.stockfish_r 类似，它也有不少的 popcnt 调用，那么打开 `-mpopcnt` 就会得到不错的性能提升：时间从 133s 降低到 120s，减少 10% 时间。而即使开 `-march=native`，性能也只是进一步降到 115s，只有少量的地方用到了 AVX2。
+这也是个比较典型的棋类引擎的模式了，整个 minimax 算法占了 70%+ 的时间，为了搜索局面，有大量的位运算和访存，还有根据访存结果决定方向的分支。果不其然，执行 2688B 条指令，其中有 228B 条是分支指令，有 6.1B 次错误预测，MPKI 达到了 `6.1B/2688B*1000=2.27`。和 706.stockfish_r 类似，它也有不少的 popcnt 调用，那么打开 `-mpopcnt` 就会得到不错的性能提升：时间从 133s 降低到 120s，减少 10% 时间。而即使开 `-march=native`，性能也只是进一步降到 116s，只有少量的地方用到了 AVX2。
 
-结合 706.stockfish_r 和 707.ntest_r，可以看到，popcnt 还是比较常用的，但可惜 AMD64 的基线并不提供这条指令，因此如果开了 x86-64-v2 或以上的编译优化选项，这类应用就可以获得性能提升，免去了 libgcc 的 __popcountdi2 开销，本来一条指令就能完成的事情，因为额外的 call 以及 PLT 开销，带来了可观的性能开销。
+另一方面，LLVM 22 的性能在 707.ntest_r 上比 GCC 14 要快：同样是 `-O3` 的编译选项，运行时间从 133s 降低到 120s。深入研究汇编发现，LLVM 22 在没有开 `-mpopcnt` 的时候，它的行为是，直接把类似 libgcc 的 `__popcountdi2` 的代码内联到了程序当中，省去了 call libgcc 的开销，不过代价就是代码体积会增加。
+
+结合 706.stockfish_r 和 707.ntest_r，可以看到，popcnt 还是比较常用的，但可惜 AMD64 的基线并不提供这条指令，因此如果开了 x86-64-v2 或以上的编译优化选项，这类应用就可以获得性能提升，免去了 libgcc 的 __popcountdi2 开销，本来一条指令就能完成的事情，因为额外的 call 以及 PLT 开销，带来了可观的性能开销。期待一个优雅的解决方法。
+
+### 708.sqlite_r
+
+sqlite 就是大名鼎鼎的数据库了，不必多介绍。测试中，又是包括三条命令：
+
+```shell
+# 1. main
+sqlite --memdb --size 2000 --testset main --verify
+# 2. cte
+sqlite --memdb --size 2000 --testset cte --verify
+# 3. fp
+sqlite --memdb --size 1000 --testset fp --verify
+```
+
+实测数据显示，三条命令耗费的时间分别是 65s、12s 和 24s，共计 101s。reftime 是 528s，对应 5.2 分。开启 -flto/-ljemalloc 对性能影响很小，-march=native 甚至带来了负优化。下面分别分析这三条命令的具体性能特性。
 
 ## SPEC FP 2026 Rate
 
