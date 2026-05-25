@@ -231,8 +231,8 @@ sqlite_r --memdb --size 1000 --testset fp --verify
 
 - `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：30.66%，主要时间花费在查询的执行，因为这个 fp 测例，其计算过程引入了不少浮点运算
 - `sqlite3AtoF(const char *z, double *pResult, int length, u8 enc)` 来自 `src/sqlite3.c`：19.18%，实现从字符串到浮点数的转换，因为 SQL 内有很多浮点字面量
-- `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：10.44%，实现排序
-- `sqlite3VdbeRecordCompareWithSkip(int nKey1, const void *pKey1, UnpackedRecord *pPKey2, int bSkip)` 来自 `src/sqlite3.c`：6.76%，比较表里的两个行
+- `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：10.44%，描述见上
+- `sqlite3VdbeRecordCompareWithSkip(int nKey1, const void *pKey1, UnpackedRecord *pPKey2, int bSkip)` 来自 `src/sqlite3.c`：6.76%，描述见上
 
 瓶颈主要在解释器上，不过因为 SQL 语句的设计，有很多时间花在字符串转浮点数上。执行了 555.5B 条指令，其中 111.7B 是分支指令，错误预测了 395M 次，MPKI 是 `395M/555.5B*1000=0.71`。
 
@@ -327,10 +327,10 @@ cpython_r -I -B dna_bench.py 600000
 
 统计热点函数：
 
-- `_PyEval_EvalFrameDefault(PyThreadState *tstate, _PyInterpreterFrame *frame, int throwflag)` 来自 `src/cpython/Python/ceval.c`：36.75%，解释器中的 Loop + Switch 核心代码，对 Python 字节码进行解释执行
-- `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：5.31%，释放 PyObject
+- `_PyEval_EvalFrameDefault(PyThreadState *tstate, _PyInterpreterFrame *frame, int throwflag)` 来自 `src/cpython/Python/ceval.c`：36.75%，描述见上
+- `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：5.31%，描述见上
 - `PyUnicode_Contains(PyObject *str, PyObject *substr)` 来自 `src/cpython/Objects/unicodeobject.c`，4.59%，Python 字符串的 contains 操作，对应 `data/all/input/knucleotide.py` 代码中的 `chat in "GATC"` 判断
-- `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.52%，分配 PyObject
+- `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.52%，描述见上
 
 主要热点还是解释执行，不过因为字符串的 contains 调用次数较多，所以 `PyUnicode_Contains` 时间占比有所上升。执行了 394B 条指令，其中有 77B 是分支指令，错误预测 228M 次，MPKI 等于 `228M/394B*1000=0.58` 也还是很低。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 380B，其中分支有 72B，错误预测 228M 次。
 
@@ -376,7 +376,7 @@ llvm-opt_r transformsplus.bc -S -O3 -mcpu=pwr9
 llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 ```
 
-`-O3` 运行时间分别为 62s 和 53s，总时间 115s，reftime 是 507s，对应 4.4 分。开 `-O3 -flto` 性能反而变差，不过开 `-O3 -ljemalloc` 有明显性能提升，运行时间降低为 59s 和 47s，总时间 106s，分数提高到 4.8 分。
+`-O3` 运行时间分别为 62s 和 53s，总时间 115s，reftime 是 507s，对应 4.4 分。开 `-O3 -flto` 性能反而变差，不过开 `-O3 -ljemalloc` 有明显性能提升，运行时间降低为 59s 和 47s，总时间 106s，分数提高到 4.8 分。开 `-march=native` 对性能几乎没有影响。
 
 有意思的是，用 GCC 14 编译的 723.llvm_r，运行得比用 LLVM 22 编译的 723.llvm_r 更快，当然快得并不多。下面针对这两条命令进行具体的分析。
 
@@ -394,15 +394,76 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 
 使用 `perf` 观察热点函数：
 
-- `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 20.85%，对 IR 中的 PHI 结点进行处理
-- `_int_malloc/cfree/malloc`：1.91%+0.72%+0.65%=3.28%，大量的内存分配和释放，因此 `-ljemalloc` 能带来不错的性能提升
-- `llvm::DenseMapBase::FindAndConstruct()`: 1.29%，LLVM 自己用数组实现的哈希表
+- `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 20.85%，描述见上
+- `_int_malloc/cfree/malloc`：1.91%+0.72%+0.65%=3.28%，描述见上
+- `llvm::DenseMapBase::FindAndConstruct()`: 1.29%，描述见上
 
 整体的情况和 transformsplusplus 类似，只不过 `foldIntegerTypedPHI` 时间占比更高，其他还是有很多函数耗费很短的时间，分散得比较开。执行指令数为 417B，其中分支指令有 86B，错误预测有 2.4B 次，MPKI 等于 `2.4B/417B*1000=5.76`，依然挺很高。
 
 #### 小结
 
-llvm 和 gcc 同为编译器的双子星，在负载特性上也有类似之处：有很多的内存分配和释放，受益于 `-ljemalloc`；时间分布在大量小函数当中，热点不明显；MPKI 较高，尤其是 723.llvm_r 直接一跃成为 SPEC INT 2026 Rate 中 MPKI 最高的一项测试，可能是因为它有大量数据依赖的分支。723.llvm_r 整体的指令数仅有 991B，但有 205B 的分支数，MPKI 达到 5.98，即使是在人才济济的 SPEC INT 2017 Rate，也能紧紧地排在 505.mcf_r 和 541.leela_r 两位大哥身后成为第三大的 MPKI。
+llvm 和 gcc 同为编译器的双子星，在负载特性上也有类似之处：有很多的内存分配和释放，受益于 `-ljemalloc`；时间分布在大量小函数当中，热点不明显；MPKI 较高，尤其是 723.llvm_r 直接一跃成为 SPEC INT 2026 Rate 中 MPKI 最高的一项测试，可能是因为它有大量数据依赖的分支。723.llvm_r 整体的指令数有 991B，其中有 205B 是分支指令，MPKI 达到 5.98，即使是在人才济济的 SPEC INT 2017 Rate，也能紧紧地排在 505.mcf_r 和 541.leela_r 两位大哥身后成为第三大的 MPKI。
+
+### 727.cppcheck_r
+
+cppcheck 是一个 cpp 静态分析工具，输入 C++ 文件，提供代码的分析报告，汇报数组越界访问或变量未初始化等等问题。它会分析三个不同的代码，根据命名来看，应该是从其他测例里找的，而且还有 747 和 770 这种不在 SPEC CPU 2026 当中的测例，应该是没有被选上，只有 738 diamond 以 838.diamond_s 被保留了下来：
+
+```shell
+# 1. 738-diamond
+cppcheck_r --force 738-diamond-record.cpp --checkers-report=738_report.txt --enable=all --output-file=738_bogey.txt
+# 2. 747-dealii
+cppcheck_r --force 747-dealii-data_out_base.cc --checkers-report=747_report.txt --enable=all --output-file=747_bogey.txt
+# 3. 770-7z
+cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --output-file=770_bogey.txt
+```
+
+三条指令的运行时间分别为 27s、22s 和 33s，共 82s，reftime 是 359s，对应 4.4 分。开 `-O3 -flto` 或 `-O3 -march=native` 仅能略微提升 1% 的性能，但 `-O3 -ljemalloc` 能显著提升性能，运行时间缩短到 24s、18s 和 29s，总时间 71s，对应 5.1 分。
+
+下面对这三条命令进行深入的分析。
+
+#### 738-diamond
+
+热点函数如下：
+
+- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：40.82%，字符串匹配函数，比如用 abc|def 去匹配一个 token
+- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：12.08%，也是类似的字符串匹配函数，语法有些不同，类似自研正则表达式子集
+- `ScopeInfo3::findScope(const std::string & scope)` 来自 `src/lib/tokenize.cpp`：5.49%，循环，从当前作用域开始寻找对应的符号，如果没有，则检查更高一级的作用域，一般用于从变量名找到作用域里定义的符号
+- `Tokenizer::simplifyUsing()`：3.57%，把 `using N::x;` 变为 `using x = N::x`，里面就会用到上面说的 `Token::Match`，参数是 `"using ::| %name% ::"`
+- `cfree/malloc/_int_malloc`：0.47%+0.33%+0.45%=1.25%，内存分配相关
+
+可以看到，主要的瓶颈是字符串匹配上，它的实现就是一个循环，用指针去扫描字符串，没有做数据结构上的优化。执行了 401B 条指令，其中有 109B 条分支指令，错误预测 174M 次，MPKI 等于 `174M/401B*1000=0.43` 不算高。
+
+#### 747-dealii
+
+热点函数类似：
+
+- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：27.42%，描述见上
+- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：14.55%，描述见上
+- `cfree/malloc/_int_malloc`：2.14%+1.57%+0.53%=4.24%，内存分配的比例更高
+- `Token::simpleMatch(const Token *tok, const char pattern[], size_t pattern_len)` 来自 `src/lib/token.cpp`：3.88%，又一个字符串匹配函数，换了种格式，比如 `"abc def"` 代表匹配 `abc` 或 `def`
+- `TemplateSimplifier::addInstantiation(Token *token, const std::string &scope)` 来自 `src/lib/templatesimplifier.cpp`：2.98%，在 token 级别上做一些代码简化的变换
+- `isAliasOf(const Token* tok, const Token* expr, int* indirect, bool* inconclusive)` 来自 `src/lib/astutils.cpp`：2.55%，判断两个变量是否 alias
+
+依然有大量的字符串匹配，不知道为啥还要搞好几种语法，实现好几个字符串匹配函数。执行了 304B 条指令，其中有 83B 条分支指令，错误预测 298M 次，MPKI 等于 `298M/304B*1000=0.98` 也不算高。
+
+#### 770-7z
+
+热点如下：
+
+- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：32.25%，描述见上
+- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：18.82%，描述见上
+- `__memcmp_avx2_movbe`：8.99%，被用于字符串匹配
+- `std::map<std::string>::equal_range`：7.34%，红黑树上的字符串匹配
+- `__strchr_avx2`：7.34%，被用于字符串匹配
+- `cfree/malloc/_int_malloc`：0.37%+0.27%+0.17%=0.81%，内存分配的比例较低
+
+依然是字符串匹配为主。执行了 506B 条指令，其中有 138B 条分支指令，错误预测 393M 次，MPKI 等于 `393M/506B*1000=0.78` 也不算高。
+
+#### 小结
+
+整体看下来，727.cppcheck_r 就是在不断地做字符串匹配。我就纳闷了，为啥不能直接过一遍 tokenizer，把 token 都转为数字呢，这样比较起来多快。在 token 级别上做各种变换，就在不停地对 token 进行字符串比较，导致最后的性能瓶颈，不是在 cppcheck 自己写的字符串比较，就是在 libc 的字符串比较里了。
+
+整体执行了 1211B 指令，其中有 329B 分支指令，分支指令的比例足足有 27%，傲视 SPEC INT 2026 Rate 全场，这都是拜字符串匹配所赐，读一点就比较一点。但同时，MPKI 仅为 0.71，在 SPEC INT 2026 Rate 中倒数第三，仅高于 714.cpython_r 的 0.17 和 750.sealcrypto_r 的 0.14，说明大部分字符串匹配的结果都是很好预测的，比如比较到第一个字节就对不上了。
 
 ## SPEC FP 2026 Rate
 
