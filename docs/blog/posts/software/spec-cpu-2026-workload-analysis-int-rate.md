@@ -893,7 +893,7 @@ zstd -b19 -e19 --verbose -i1 cld.tar
 
 ### 编译器版本对比
 
-本测试的主要编译器是 GCC 14.2.0，因为它是 Debian Trixie 的编译器版本。令人兴奋的是，即使在 2026 年，随着编译器版本的更新，在硬件不变的情况下，软件性能还在持续增长。例如 GCC 15 能否给 706.stockfish_r 生成更快的 SSE/AVX 指令序列，LLVM 22 能识别出 750.sealcrypto_r 的 64 位乘法模式等等。而且这里很多优化其实是很具体的，完全可以从 GCC 移植到 LLVM，或者从 LLVM 移植到 GCC。在 SPEC INT 2017 时代，基本是 GCC 的性能压制了 LLVM，而目前 LLVM 凭借 750.sealcrypto_r 的优化相比 GCC 14 扳回一城，又被 GCC 15/16 反超。随着对 SPEC CPU 2026 的研究深入，未来还会编译出更快的程序。
+本测试的主要编译器是 GCC 14.2.0，因为它是 Debian Trixie 的编译器版本。令人兴奋的是，即使在 2026 年，随着编译器版本的更新，在硬件不变的情况下，软件性能还在持续增长。例如 GCC 15 能否给 706.stockfish_r 生成更快的 SSE/AVX 指令序列，LLVM 22 能识别出 750.sealcrypto_r 的 64 位乘法模式等等。此外 LLVM 默认内联 popcount 的优化实现，而 GCC 会转化为对 libgcc 的 popcount 函数，前者会让代码体积膨胀，而后者会有额外的 call 开销，这些其实都会带来可观的性能差距。而且这里很多优化其实是很具体的，完全可以从 GCC 移植到 LLVM，或者从 LLVM 移植到 GCC。在 SPEC INT 2017 时代，基本是 GCC 的性能压制了 LLVM，而目前 LLVM 凭借 750.sealcrypto_r 的优化相比 GCC 14 扳回一城，又被 GCC 15/16 反超。随着对 SPEC CPU 2026 的研究深入，未来还会编译出更快的程序。
 
 ## 总结
 
