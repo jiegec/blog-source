@@ -894,11 +894,34 @@ zstd -b19 -e19 --verbose -i1 cld.tar
 
 本测试的主要编译器是 GCC 14.2.0，因为它是 Debian Trixie 的编译器版本。有意思的是，即使在 2026 年，随着编译器版本更新，硬件不变的情况下软件性能还在持续增长。GCC 15 能给 706.stockfish_r 生成更快的 SSE/AVX 指令序列，LLVM 22 能识别出 750.sealcrypto_r 的 64 位乘法模式，这些都是很好的例子。此外 LLVM 默认内联 popcount 的优化实现，而 GCC 会转化为对 libgcc 的 popcount 调用，前者代码体积膨胀，后者有额外的 call 开销，这些都会带来可观的性能差距。这些优化其实很具体，完全可以互相移植。在 SPEC INT 2017 时代，基本是 GCC 性能压制 LLVM，而目前 LLVM 凭借 750.sealcrypto_r 的优化相比 GCC 14 扳回一城，又被 GCC 15/16 反超。随着对 SPEC CPU 2026 的研究深入，未来还会编译出更快的程序。
 
+### 分支预测
+
+SPEC INT 2026 Rate 中 MPKI 较高的有：
+
+- 723.llvm_r MPKI=5.98
+- 729.abc_r MPKI=3.87
+- 777.zstd_r MPKI=3.58
+- 721.gcc_r MPKI=3.37
+- 734.vpr_r MPKI=2.52
+- 707.ntest_r MPKI=2.27
+- 735.gem5_r MPKI=2.05
+
+作为对比，SPEC INT 2017 Rate 的情况：
+
+- 505.mcf_r MPKI=14.39
+- 541.leela_r MPKI=12.62
+- 557.xz_r MPKI=5.29
+- 531.deepsjeng_r MPKI=4.40
+- 520.omnetpp_r MPKI=4.33
+- 502.gcc_r MPKI=3.13
+
+SPEC INT 2026 Rate 整体低了不少。当然，这是每个 benchmark 的平均值，个别子命令可能更高。但无论如何，终于不用和 505.mcf_r 的 `spec_qsort` 以及 541.leela_r 的 `if(randint(2) == 0)` 搏斗了。
+
 ### 局限性
 
-目前的测试仅限于 Intel i9-14900K P-Core，还需要在 ARM64/RISC-V/LoongArch 上做类似的分析。指令集不同，结论应该也会不一样。此外，目前的分析集中在 perf 统计的热点函数上，对程序行为的挖掘还不够深入，后续还可以做更细粒度的分析，比如统计各类指令的使用比例，以及 POPCNT/BMI/AVX 等指令扩展的使用情况。
+目前的测试仅限于 Intel i9-14900K P-Core，还需要在 ARM64/RISC-V/LoongArch 上做类似的分析。指令集不同，结论应该也会不一样。此外，目前的分析集中在 perf 统计的热点函数上，还可以做更细粒度的分析，比如统计各类指令的使用比例，以及 POPCNT/BMI/AVX 等指令扩展的使用情况。
 
-本文只跑了 Rate 1（单副本）。多副本下内存带宽和缓存竞争会更激烈，MPKI、IPC 等指标可能会有较大差异。此外，分析集中在指令级和分支预测层面，缺少微架构级的深入分析，例如 L1/L2/LLC 的缓存缺失率、TLB miss 等，这些对处理器设计者来说更直接。功耗数据也未纳入考量，综合能效比还需要用 RAPL 等工具进一步测量。最后，PGO（`-fprofile-generate` / `-fprofile-use`）也没有尝试。
+本文只跑了 Rate 1（单副本）。多副本下内存带宽和缓存竞争会更激烈，MPKI、IPC 等指标可能会有较大差异。此外，分析集中在指令级和分支预测层面，缺少微架构级的深入分析，例如 L1/L2/LLC 的缓存缺失率、TLB miss 等，这些对处理器设计者来说更直接。功耗数据也未纳入考量，综合能效比还需要用 RAPL 等工具进一步测量。最后，PGO（`-fprofile-generate` / `-fprofile-use`）也没有尝试，PGO 或许能带来不错的性能提升。
 
 ## 总结
 
