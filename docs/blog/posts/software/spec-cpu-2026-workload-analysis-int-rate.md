@@ -879,6 +879,22 @@ zstd -b19 -e19 --verbose -i1 cld.tar
 
 整体来看，`-O3` 下 777.zstd_r 执行 1827B 指令，其中 232B 是分支指令，但 MPKI 有 3.58，仅次于 729.abc_r 和 723.llvm_r。
 
+## 讨论
+
+### 编译器选项对比
+
+综合下来，编译选项对 SPEC INT 2026 Rate 的性能影响还是不小的，比如：
+
+- `-flto` 对 707.ntest_r、710.omnetpp_r、714.cpython_r、734.vpr_r、735.gem5_r、753.ns3_r 都有一定的性能提升，凡是热点分散在多个函数，且很多函数都很小的时候，开 LTO 能一定程度上带来优化，本质上就是挽回了提高可读性带来的文件拆分带来的性能开销
+- `-ljemalloc` 对 710.omnetpp_r、721.gcc_r、723.llvm_r、727.cppcheck_r、734.vpr_r、735.gem5_r、753.ns3_r 有性能提升，只能说这些软件做了太多的动态内存分配，有一些 benchmark 直接就是内存分配器 benchmark 了，此时替换 glibc 为 jemalloc/mimalloc 都有不错的性能提升，不过最新 glibc 也在改进 malloc 性能，不知道改进得怎样了？
+- `-march=native` 对 706.stockfish_r、707.ntest_r、735.gem5_r、777.zstd_r 有不错的提升，一方面是诸如 AVX 等 SIMD 指令，另一方面就是一些位运算指令，比如 popcnt 和 BMI 扩展；事实上，现在很多软件在实现的时候，就已经考虑了硬件的加速指令，实际编译的时候，往往会直接用对应的 intrinsics，但 SPEC 禁用了这些 intrinsics，退而使用它的 generic 版本，此时就非常依赖 -march=native，以及需要编译器正确识别并翻译为对应的优化指令
+
+此外还有一些常用的编译参数，比如 `-static`、`-fomit-frame-pointer`、`-Ofast`、`-ffast-math` 等等，目前没有做太多测试，以后说不定会加上。
+
+### 编译器版本对比
+
+本测试的主要编译器是 GCC 14.2.0，因为它是 Debian Trixie 的编译器版本。令人兴奋的是，即使在 2026 年，随着编译器版本的更新，在硬件不变的情况下，软件性能还在持续增长。例如 GCC 15 能否给 706.stockfish_r 生成更快的 SSE/AVX 指令序列，LLVM 22 能识别出 750.sealcrypto_r 的 64 位乘法模式等等。而且这里很多优化其实是很具体的，完全可以从 GCC 移植到 LLVM，或者从 LLVM 移植到 GCC。在 SPEC INT 2017 时代，基本是 GCC 的性能压制了 LLVM，而目前 LLVM 凭借 750.sealcrypto_r 的优化相比 GCC 14 扳回一城，又被 GCC 15/16 反超。随着对 SPEC CPU 2026 的研究深入，未来还会编译出更快的程序。
+
 ## 总结
 
 本文对 SPEC CPU 2026 中 INT Rate 的负载进行了深入的分析，以供编译器和处理器的设计者参考。从编译器的角度来说，可以集 GCC 和 LLVM 之长，进一步提升性能；从处理器的角度来说，针对程序的瓶颈进行优化，也能进一步提高分数。
