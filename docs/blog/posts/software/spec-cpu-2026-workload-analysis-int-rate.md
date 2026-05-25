@@ -38,7 +38,7 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 
 #### 1to6_classical
 
-通过 `perf` 观察性能瓶颈，运行第一个命令 1to6_classical 时，这几个函数耗费的时间占比较多：
+通过 `perf` 观察性能瓶颈，运行第一个命令 1to6_classical 时，这几个函数耗费的时间占比较多，百分比代表这个函数执行时间的占比，后续都用这个方法表示：
 
 - `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 19.26%，主要的瓶颈来自于随机访存，在 `first_entry(key)` 当中有 `&table[mul_hi64(key, clusterCount)].entry[0]`，其中 mul_hi64 计算两个 64 位整数乘法结果的高 64 位，因此访存地址是根据参数计算得出
 - `Stockfish::Eval::evaluate(const Position& pos)` 来自 `src/evaluate.cpp`: 17.23%，inline 了 `Evaluation<NO_TRACE>(pos).value()` 的调用，里面主要是对局面的评估，涉及比较多零散的访存和计算
@@ -698,6 +698,36 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 735.gem5_r 四个测试跑的是挺不一样的代码路径，第一个 o3 的主要瓶颈就是 O3CPU，第二个 timing 的主要瓶颈是 RISC-V 指令集相关的代码，第三个 traffic_21 主要是缓存和内存控制器，而 traffic_74_ruby 主要是用 ruby 模拟的内存子系统。由于 gem5 高度模块化，有些时候一些可以 inline 函数没有被 inline，所以 `-flto` 可以带来不错的性能提升。此外，gem5 很喜欢动态分配内存，运行过程中有很多动态产生的对象，比如 Packet 等等，所以用 `-ljemalloc` 能带来不错的提升。`-march=native` 确实不太有用武之地。
 
 整体下来，执行 1164B 条指令，其中有 246B 条分支指令，MPKI 等于 2.05，不算高，主要由后两个 traffic 测例贡献。
+
+### 750.sealcrypto_r
+
+sealcrypto 做的是同态加密，只有一条命令做测试：
+
+```shell
+sealcrypto_r refrate ecuador_province_capitals_refrate.csv Galapagos
+```
+
+运行时间 108s，reftime 是 536s，对应 5.0 分。
+
+很奇特的是，开 `-O3 -flto` 性能倒退，`-O3 -flto -ljemalloc` 性能没啥变化，开 `-O3 -march=native -flto -ljemalloc` 性能进一步倒退。但是，LLVM 22 异军突起，以接近两倍的性能超越了 GCC 和 LLVM 的其他版本，仅用 50.5s 跑完，对应 10.6 分。可以说，完全就靠 750.sealcrypto_r，才让 LLVM 22 在 SPEC INT 2026 整体性能上超越了 GCC 14。下面就来看看是怎么一回事。
+
+首先还是对 `-O3` 的 GCC 14 进行热点分析：
+
+- `seal::util::DWTHandler::transform_to_rev(ValueType *values, int log_n, const RootType *roots, const ScalarType *scalar = nullptr)` 来自 `src/seal/util/dwthandler.h`：25.65%，这里 DWT 是离散小波变换 Discrete Wavelet Transform，上一次看到小波变换还是 Ghost Hunter，没想到在这里又遇到了，具体到指令上，就是一堆 imul/add/shr/shl 的运算指令
+- `seal::util::DWTHandler::transform_from_rev(ValueType *values, int log_n, const RootType *roots, const ScalarType *scalar = nullptr)` 来自 `src/seal/util/DWTHandler.h`：16.58%，应该是 DWT 的逆过程，计算模式基本一样
+- `seal::util::multiply_uint64_generic(T operand1, S operand2, unsigned long long *result128)` 来自 `src/seal/util/uintarith.h`：11.60%，实现了 64 位乘以 64 位得到 128 位结果的乘法，也是一堆乘法、加法和位运算
+- `seal::util::dot_product_mod(const uint64_t *operand1, const uint64_t *operand2, size_t count, const Modulus &modulus)` 来自 `src/seal/util/uintarithsmallmod.cpp`：11.48%，实现的是点乘后取模的操作，调用 `multiply_accumulate_uint64` 函数进行乘法和累加，最后用 `barrett_reduce_128` 进行取模
+- `seal::util::dyadic_product_coeffmod(ConstCoeffIter operand1, ConstCoeffIter operand2, size_t coeff_count, const Modulus &modulus, CoeffIter result)` 来自 `src/seal/util/polyarithsmallmod.cpp`：9.08%，实现的是 element wise 的模乘
+- `seal::util::BaseConverter::fast_convert_array(ConstRNSIter in, RNSIter out, MemoryPoolHandle pool)` 来自 `src/seal/util/rns.cpp`：5.88%，这里的 RNS 应该是 Residue Numebr System 的缩写，指令上还是大量的 imul/add 等运算
+- `seal::util::RNSTool::sm_mrq(ConstRNSIter input, RNSIter destination, MemoryPoolHandle pool)` 来自 `src/seal/util/rns.cpp`：5.40%，不确定在做什么，也是大量的运算
+
+总而言之，既然是密码学，就会有大量的整数运算，其中有不少的乘法，在素数域下做各种操作。执行指令数足足有 3113.8B，但分支只有 78.6B，MPKI 只有 0.14，全场最低，甚至低于 714.cpython_r，同时 IPC 全场最高，达到了 5.09。
+
+开了 `-O3 -march=native` 后，确实生成了不少 AVX2 指令，但看下来，生成的指令序列还是挺复杂的，有大量的 vpunpcklqdq/vpunpckhqdq/vpermq/vpblendvb/vperm2i128 等指令，并没有在进行的计算，而是在不断地倒腾向量寄存器里数据的位置。虽然指令数减少了，但 IPC 降低更多，最后性能反而倒退，实际从 108s 增加到 116s。原来的 `-O3` 版本虽然每次只处理一个元素，但指令的并行度更高，IPC 弥补了指令数多的劣势。
+
+那么，LLVM 22 做了什么优化呢？执行的指令数直接降低到 1214B，分支只有 57.2B。以 `seal::util::DWTHandler::transform_to_rev` 为例，可以看到：seal 为了实现 64 位乘 64 位到 128 位的乘法，它自己实现了这个过程，不仅在 `seal::util::multiply_uint64_generic` 中有实现，实际上也内联到了 `seal::util::DWTHandler::transform_to_rev` 当中；GCC 14 忠实地实现了这个算法，因此指令数很多（见 [Godbolt](https://godbolt.org/z/KKTa1aMP8)）；但其实，AMD64 的 mul 指令本来就是一个 64 位乘 64 位得到 128 位的乘法，所以 LLVM 12 直接识别出这段代码做的事情，然后编译成了 mul 指令（见 [Godbolt](https://godbolt.org/z/bc6xPjEMc)）。当然，seal 的源码其实已经考虑了这个问题，在编译器支持的情况下，直接用 __int128 来完成[这件事情](https://github.com/microsoft/SEAL/blob/e3476fad1d5bb5e5222c51a551b5a4d7e2cb4f91/native/src/seal/util/gcc.h#L44)。然而，这类依赖编译器行为的代码，由于 SPEC CPU 2026 的编译器中立性，都被去掉了，都会回落到最通用的写法上。此时，就只能依赖编译器去自己识别了。
+
+但是，这样某种意义也无法反映在真实场景中，应用的优化情况了，因为很多应用已经实际上和处理器的指令集扩展/编译器扩展共进化，实现的时候，脑子里是默认有这些东西，再去做的调优。到最后，就是编译器又实现各种 pass，识别程序里的 fallback generic 代码，再映射回高效的实现。其实类似的事情之前就出现过，网上用来证明编译器很聪明的一个例子，就是说识别 popcount 的循环，直接翻译成 popcnt 指令，然而很多程序直接用 `__builtin_popcount` 而不会真的去手写，这次只不过是换了个 pattern 罢了。当然，好消息是，C++20 引入了 std::popcount，可以一定程度避免类似的情况发生，只是来得太晚了。
 
 ## 总结
 
