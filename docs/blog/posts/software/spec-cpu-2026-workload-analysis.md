@@ -486,7 +486,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 六个命令运行时间都不长，分别是 6.3s、10.1s、13.5s、32.3s、13.6s 和 17.0s，总时间 92.8s，reftime 是 459s，对应 4.9 分。
 
-开 -flto/-march=native/-ljemalloc 都没有什么提升，性能差距在 1% 之内。下面进行具体热点分析。
+开 -flto/-march=native/-ljemalloc 都没有什么提升，性能差距在 1% 之内，属于是油盐不进了。下面进行具体热点分析。
 
 #### twoexact
 
@@ -546,7 +546,61 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 #### 小结
 
-综合以上六条命令，可以看到它触碰了 abc 不同地方的代码，所以热点不尽相同，有 SAT，有看不懂的一些 EDA 相关逻辑，还有带字符串匹配的哈希表查询，其中 SAT 的占比是最大的。由于 SAT 的存在，最终的 MPKI 足足有 3.87，在 SPEC INT 2026 Rate 当中仅次于 723.llvm_r，超过了 721.gcc_r。共执行 1296B 条指令，其中有 213B 是分支指令，这个比例不算高，但预测错误率足够高。
+综合以上六条命令，可以看到它触碰了 abc 不同地方的代码，所以热点不尽相同，有 SAT，有看不懂的一些 EDA 相关逻辑，还有带字符串匹配的哈希表查询，其中 SAT 的占比是最大的。由于 SAT 的存在，最终的 MPKI 足足有 3.87，在 SPEC INT 2026 Rate 当中仅次于 723.llvm_r，超过了 721.gcc_r 和 777.zstd_r。共执行 1296B 条指令，其中有 213B 是分支指令，这个比例不算高，但预测错误率足够高。
+
+### 734.vpr_r
+
+接下来就到了 EDA 的下一步，逻辑综合后，就要进行布局（place）布线（route）了，这就是 vpr_r 干的活。测试分为四条命令：
+
+```shell
+# 1. jpeg_place
+vpr stratixiv_arch.timing.xml JPEG_stratixiv_arch_timing.blif --RL_agent_placement off --place_algorithm bounding_box --max_criticality 0.0 --init_t 512 --alpha_t 0.75 --exit_t 1 --router_initial_timing all_critical --routing_failure_predictor off --route_chan_width 300 --max_router_iterations 20 --router_lookahead classic --initial_pres_fac 1.0 --pres_fac_mult 2.0 --astar_fac 1.5 --router_profiler_astar_fac 1.5 --seed 3 --sdc_file JPEG_stratixiv_arch_timing.sdc --pack_verbosity 0 --netlist_verbosity 0 --base_cost_type demand_only --inner_num 4 --read_initial_place_file ref_JPEG_stratixiv_arch_timing.init.place --place
+# 2. jpeg_route
+vpr stratixiv_arch.timing.xml JPEG_stratixiv_arch_timing.blif --place_algorithm bounding_box --place_static_notiming_move_prob 50 25 25 --max_criticality 0.0 --router_initial_timing all_critical --routing_failure_predictor off --route_chan_width 300 --max_router_iterations 20 --router_lookahead classic --initial_pres_fac 1.0 --pres_fac_mult 2.0 --astar_fac 1.5 --router_profiler_astar_fac 1.5 --seed 3 --sdc_file JPEG_stratixiv_arch_timing.sdc --pack_verbosity 0 --netlist_verbosity 0 --base_cost_type demand_only --place_file ref_JPEG_stratixiv_arch_timing.place --analysis --route
+# 3. smithwaterman_place
+vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --RL_agent_placement off --place_algorithm bounding_box --max_criticality 0.0 --init_t 512 --alpha_t 0.75 --exit_t 1 --router_initial_timing all_critical --routing_failure_predictor off --route_chan_width 300 --max_router_iterations 20 --router_lookahead classic --initial_pres_fac 1.0 --pres_fac_mult 2.0 --astar_fac 1.5 --router_profiler_astar_fac 1.5 --seed 3 --sdc_file smithwaterman_stratixiv_arch_timing.sdc --pack_verbosity 0 --netlist_verbosity 0 --base_cost_type demand_only --inner_num 1.8 --read_initial_place_file ref_smithwaterman_stratixiv_arch_timing.init.place --place
+# 4. smithwaterman_route
+vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_algorithm bounding_box --place_static_notiming_move_prob 50 25 25 --max_criticality 0.0 --router_initial_timing all_critical --routing_failure_predictor off --route_chan_width 300 --max_router_iterations 20 --router_lookahead classic --initial_pres_fac 1.0 --pres_fac_mult 2.0 --astar_fac 1.5 --router_profiler_astar_fac 1.5 --seed 3 --sdc_file smithwaterman_stratixiv_arch_timing.sdc --pack_verbosity 0 --netlist_verbosity 0 --base_cost_type demand_only --place_file ref_smithwaterman_stratixiv_arch_timing.place --analysis --route
+```
+
+这里的 Stratix IV 是经典的 Altera FPGA，时代的眼泪了。四条命令的运行时间分别是 21s、29s、18s 和 19s，总时间 87s，reftime 是 461s，对应 5.3 分。开 `-O3 -flto` 后，时间降低到 19s、25s、17s 和 17s，总时间 78s，对应 5.9 分，提升显著。如果进一步开到 `-O3 -flto -ljemalloc`，时间进一步降低到 17s、24s、15s 和 16s，总时间 72s，对应 6.4 分，相比 `-O3` 提升了 20%。开 `-march=native` 只能带来不到 1% 的提升。
+
+下面进行具体分析。
+
+#### jpeg_place 和 smithwaterman_place
+
+因为这两条命令都是做的布局（place），所以就放在一起分析了。它们的热点函数是类似的：
+
+- `get_non_updateable_bb(ClusterNetId net_id, t_bb* bb_coord_new)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 13.98%，smithwaterman_place 占比 18.26%，遍历 pin，根据它的 x 和 y 坐标，找到 bounding box，即 xmin/xmax/ymin/ymax
+- `try_swap(...)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 12.39%，smithwaterman_place 占比 11.46%，里面做的事情还挺复杂的，看不太懂
+- `physical_tile_type(ClusterBlockId blk)` 来自 `src/vtr-vpr/vpr/src/util/vpr_utils.cpp`：jpeg_place 占比 7.59%，smithwaterman_place 占比 7.75%，看起来就是比较简单的访存，这个函数会在 `get_non_updateable_bb` 和 `get_bb_from_scratch` 等地方被频繁调用
+- `get_bb_from_scratch(ClusterNetId net_id, t_bb* coords, t_bb* num_on_edges)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 6.73%，smithwaterman_place 占比 2.78%，和 `get_non_updateable_bb` 类似，也是求 bounding box
+- `malloc/_int_mallloc/cfree` 来自 libc：jpeg_place 占比 1.62%+1.26%+1.06%=3.94%，smithwaterman_place 占比 1.76%+1.42%+1.11%=4.29%
+
+开 `-O3 -flto` 后，能看到的是 `physical_tile_type` 被内联了进去，节省了频繁调用函数的开销。考虑到这个内存分配和释放的时间占比，`-O3 -ljemalloc` 提升性能并不意外。
+
+`-O3` 下，jpeg_place 执行了 275B 条指令，其中分支有 52B 条，错误预测 785M 次，MPKI 等于 `785M/275B*1000=2.85`，不低。smithwaterman_place 执行了 247B 条指令，其中分支有 45.6B 条，错误预测 663M 次，MPKI 等于 `663M/247B*1000=2.68`。在 bounding box 计算 min/max 过程中，能看到一些 cmov 指令的使用，因此实际上已经少了一些容易预测错误的分支了。在一些没有 cmov 指令的 ISA 下，可能 MPKI 还会更高。
+
+#### jpeg_route 和 smithwaterman_route
+
+到了布线，热点函数出现了一些不同：
+
+- `ConnectionRouter<BinaryHeap>::evaluate_timing_driven_node_costs(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.35%，smithwaterman_route 占比 6.91%，有一些浮点运算，不知道具体在算什么
+- `ConnectionRouter<BinaryHeap>::timing_driven_add_to_heap(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.34%，smithwaterman_route 占比 6.82%，会调用 `evaluate_timing_driven_node_costs` 计算 cost，然后插入到 Binary Heap 当中
+- `ConnectionRouter<BinaryHeap>::timing_driven_expand_neighbours(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 8.14%，smithwaterman_route 占比 4.00%，不确定在干啥，看起来在遍历邻居结点，符合一定条件后，调用 `timing_driven_add_to_heap`
+- `ClassicLookahead::get_expected_delay_and_cong(...)` 来自 `src/vtr-vpr/vpr/src/route/router_lookahead.cpp`：jpeg_route 占比 7.86%，smithwaterman_route 占比 5.14%，看起来也是在进行一些延迟的计算，涉及到很多浮点数
+- `BinaryHeap::get_heap_head()` 来自 `src/vtr-vpr/vpr/src/route/binary_heap.cpp`：jpeg_route 占比 3.14%，smithwaterman_route 占比 1.64%，就是经典的最小二叉堆的实现，获取最小值
+- `malloc/_int_mallloc/cfree` 来自 libc：jpeg_route 占比 1.10%+1.02%+0.78%=2.90%，smithwaterman_route 占比 1.62%+1.49%+1.08%=4.19%
+
+虽然不清楚具体算法，但看起来，就像是在做一些 cost 计算，然后通过 BinaryHeap 选择最小的 cost 去做一些扩展，有点类似搜索算法。
+
+开 `-O3 -flto` 后，能看到的是 `evaluate_timing_driven_node_costs` 和 `timing_driven_add_to_heap` 被内联进 `timing_driven_expand_neighbours`，节省了频繁调用函数的开销，这个函数的时间占比提升到 jpeg_route 的 21.40% 和 smithwaterman_route 的 12.48%，类似的事情应该也发生在 `get_expected_delay_and_cong` 身上。考虑到这个内存分配和释放的时间占比，`-O3 -ljemalloc` 提升性能并不意外。
+
+`-O3` 下，jpeg_route 执行了 425B 条指令，其中分支有 79B 条，错误预测 1.1B 次，MPKI 等于 `1.1B/425B*1000=2.59`，不低。smithwaterman_route 执行了 307B 条指令，其中分支有 59.6B 条，错误预测 613M 次，MPKI 等于 `613M/307B*1000=2.00`。
+
+#### 小结
+
+734.vpr_r 的负载分为两部分，place 和 route，其中 place 主要在做 bounding box 的计算，route 主要在做搜索和优化。开 `-flto` 和 `-ljemalloc` 后有明显的性能提升，主要是靠内联了热点函数以及更快的性能分配。整体指令数为 1254B，分支指令数 237B，MPKI 是 2.51，处于中游偏高的水平。
 
 ## SPEC FP 2026 Rate
 
