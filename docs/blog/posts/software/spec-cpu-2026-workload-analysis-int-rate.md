@@ -15,7 +15,7 @@ categories:
 
 <!-- more -->
 
-本文测试环境：CPU 为 Intel i9-14900K P-Core @ 5.7 GHz，Linux 发行版为 Debian Trixie，编译器是 GCC 14.2.0，默认编译选项是 `-O3`。其实这款 CPU 最快能 Boost 到 6.0 GHz，但是时不时因为未知原因（防缩缸？）在只有单核负载的情况下也 Boost 不上去，现象是每跑一段时间负载，CPU 核心就会强制降频到 4.7 GHz，故退而求其次，选择在更容易稳定达到的 5.7 GHz 频率来跑，因为能跑 6.0 GHz 的就是那一个物理 P 核，其他的物理 P 核都能上 5.7 GHz，降频了只要换一个就好。6.0 GHz 下的性能可以参考之前的测试结果：[INT](../../../benchmark/data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt) 和 [FP](../../../benchmark/data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)，基本上，从 5.7 GHz 到 6.0 GHz，性能可以按频率线性放缩。本文所用的脚本已开源到 [jiegec/spec2026](github.com/jiegec/spec2026)。
+本文测试环境：CPU 为 Intel i9-14900K P-Core @ 5.7 GHz，Linux 发行版为 Debian Trixie，编译器是 GCC 14.2.0，默认编译选项是 `-O3`。其实这款 CPU 最快能 Boost 到 6.0 GHz，但是时不时因为未知原因（防缩缸？）在只有单核负载的情况下也 Boost 不上去，现象是每跑一段时间负载，CPU 核心就会强制降频到 4.7 GHz，故退而求其次，选择在更容易稳定达到的 5.7 GHz 频率来跑，因为能跑 6.0 GHz 的就是那一个物理 P 核，其他的物理 P 核都能上 5.7 GHz，降频了只要换一个就好。6.0 GHz 下的性能可以参考之前的测试结果：[INT](../../../benchmark/data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt) 和 [FP](../../../benchmark/data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)，基本上，从 5.7 GHz 到 6.0 GHz，性能可以按频率线性放缩。本文所用的脚本已开源到 [jiegec/spec2026](https://github.com/jiegec/spec2026)。
 
 推荐阅读：[Evaluating SPEC CPU2026](https://chipsandcheese.com/p/evaluating-spec-cpu2026) 和 [SPEC CPU2026: Characterization, Representativeness, and Cross-Suite Comparison](https://arxiv.org/abs/2605.03713v2)
 
@@ -897,7 +897,9 @@ zstd -b19 -e19 --verbose -i1 cld.tar
 
 ### 局限性
 
-目前的测试仅限于 Intel i9-14900K P-Core，但还应该在 ARM64/RISC-V/LoongArch 上做一些类似的分析。指令集不同，结论应该也会不一样，希望未来可以做更深入的分析。此外，对一些代码比较复杂的程序，目前的分支也是浅尝辄止，后续还需要进行进一步深入的分析，例如统计各类指令，不只是 Load/Store/Branch 之类，还可以统计一下指令扩展，比如 POPCNT/BMI/AVX 等等。
+目前的测试仅限于 Intel i9-14900K P-Core，还需要在 ARM64/RISC-V/LoongArch 上做类似的分析。指令集不同，结论应该也会不一样。此外，目前的分析集中在 perf 统计的热点函数上，对程序行为的挖掘还不够深入，后续还可以做更细粒度的分析，比如统计各类指令的使用比例，以及 POPCNT/BMI/AVX 等指令扩展的使用情况。
+
+本文只跑了 Rate 1（单副本）。多副本下内存带宽和缓存竞争会更激烈，MPKI、IPC 等指标可能会有较大差异。此外，分析集中在指令级和分支预测层面，缺少微架构级的深入分析，例如 L1/L2/LLC 的缓存缺失率、TLB miss 等，这些对处理器设计者来说更直接。功耗数据也未纳入考量，综合能效比还需要用 RAPL 等工具进一步测量。最后，PGO（`-fprofile-generate` / `-fprofile-use`）也没有尝试。
 
 ## 总结
 
