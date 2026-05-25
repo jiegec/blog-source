@@ -294,7 +294,7 @@ omnetpp_r -f queuenet.ini -c AllocDealloc
 
 ### 714.cpython_r
 
-前面提到才提到过解释器，这就到 CPython 了。测试包含三条命令：
+前面才提到过解释器，这就到 CPython 了。测试包含三条命令：
 
 ```shell
 # 1. resnet
