@@ -56,7 +56,7 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 - `Stockfish::Eval::NNUE:evaluate(const Position& pos, bool adjusted)` 来自 `src/nnue/evaluate_nnue.cpp`：80.59%，主要耗时在 `affine_transform_non_ssse3` 的 `sum += weights[offset + j] * input[j]`，即神经网络的推理过程，它的计算过程是，进行 int8_t 乘 uint8_t，再累加到 int32_t 类型的结果，默认编译选项下，只能用基础的 SSE 指令如 pmaddwd/paddd，而不能用 AVX
 - `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 仅 4.81%，瓶颈和前面分析的一样是随机访存
 
-分析 `Stockfish::Eval::NNUE:evalute` 的指令，可以看到，它为了实现上述逻辑，核心思路是采用 pmaddwd 指令，进行 4 次 16 位有符号的乘法计算，累加到 32 位的结果。但是，在这之前，需要先把输入的 8 位有符号 weights 和无符号 input 转换到 16 位有符号数。其中 8 位有符号 weights 转换比较简单，而 8 位无符号 weights 的处理逻辑比较复杂。首先，它对 input 的每个元素加上 128，然后当成有符号数来看待，这相当于对每个元素减去了 128，把 uint8_t 映射到了 int8_t。这样，input 就可以用和 weights 相同的方法进行符号扩展。但是，这样会导致结果计算错误，为了纠正这个偏差，又减去了 128 倍的 weights 之和。汇编代码如下（[Godbolt](https://godbolt.org/z/ox7q63Er8)）：
+分析 `Stockfish::Eval::NNUE:evaluate` 的指令，可以看到，它为了实现上述逻辑，核心思路是采用 pmaddwd 指令，进行 4 次 16 位有符号的乘法计算，累加到 32 位的结果。但是，在这之前，需要先把输入的 8 位有符号 weights 和无符号 input 转换到 16 位有符号数。其中 8 位有符号 weights 转换比较简单，而 8 位无符号 input 的处理逻辑比较复杂。首先，它对 input 的每个元素加上 128，然后当成有符号数来看待，这相当于对每个元素减去了 128，把 uint8_t 映射到了 int8_t。这样，input 就可以用和 weights 相同的方法进行符号扩展。但是，这样会导致结果计算错误，为了纠正这个偏差，又减去了 128 倍的 weights 之和。汇编代码如下（[Godbolt](https://godbolt.org/z/ox7q63Er8)）：
 
 ```asm
 1:
@@ -397,7 +397,7 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 - `_int_malloc/cfree/malloc`：1.91%+0.72%+0.65%=3.28%，描述见上
 - `llvm::DenseMapBase::FindAndConstruct()`: 1.29%，描述见上
 
-整体的情况和 transformsplusplus 类似，只不过 `foldIntegerTypedPHI` 时间占比更高，其他还是有很多函数耗费很短的时间，分散得比较开。执行指令数为 417B，其中分支指令有 86B，错误预测有 2.4B 次，MPKI 等于 `2.4B/417B*1000=5.76`，依然很高。
+整体的情况和 transformsplus 类似，只不过 `foldIntegerTypedPHI` 时间占比更高，其他还是有很多函数耗费很短的时间，分散得比较开。执行指令数为 417B，其中分支指令有 86B，错误预测有 2.4B 次，MPKI 等于 `2.4B/417B*1000=5.76`，依然很高。
 
 #### 小结
 
@@ -524,7 +524,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 - `Gia_ManSwiSimulate(Gia_Man_t * pAig, Gia_ParSwi_t * pPars)` 来自 `src/aig/gia/giaSwitch.c`：8.87%，依然看不懂在干啥，不过似乎是一些比较适合 SIMD 的循环，在 `-O3` 下能看到一些 SSE 指令
 - `Abc_AigAndLookup(Abc_Aig_t * pMan, Abc_Obj_t * p0, Abc_Obj_t * p1)` 来自 `src/base/abc/abcAig.c`：7.03%，主要时间是在内部一个循环当中，访存加位运算，不知道在实现什么功能
 - `If_ObjPerformMappingAnd(If_Man_t * p, If_Obj_t * pObj, int Mode, int fPreprocess, int fFirst)` 来自 `src/map/if/ifMap.c`：6.72%，又是一堆不知道在干啥的复杂位运算
-- `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeely-abc/src/opt/lpk/lpkCut.c`：5.47%，主要时间在循环里，不知道在实现什么
+- `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeley-abc/src/opt/lpk/lpkCut.c`：5.47%，主要时间在循环里，不知道在实现什么
 
 运行 209B 条指令，其中 40B 条分支指令，错误预测 535M 次，MPKI 等于 `535M/209B*1000=2.56`，不低。
 
@@ -632,13 +632,13 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 - `gem5::TimeBuffer<*>::advance()` 来自 `src/gem5/cpu/timebuf.hh`：3.05%+2.43%+2.39%+2.28+1.98%=12.13%，用于在各流水线级之间传递数据，维护一个滚动的时间窗口，主要的时间花在了 rep stos 对内存进行初始化，还有调用构造/析构函数，涉及到一些引用计数的更新
 - `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：3.32%，IEW 代表 Issue Execute Writeback，后端各执行单元的时序在这里模拟
 
-其他就是很多零散的函数了，每个函数的耗时都不高。开启 `-O3 lfto` 后，热点函数变为：
+其他就是很多零散的函数了，每个函数的耗时都不高。开启 `-O3 -flto` 后，热点函数变为：
 
 - `std::_Function_handler<void (), gem5::o3::CPU::CPU(gem5::BaseO3CPUParams const&)::{lambda()#1}>::_M_invoke(std::_Any_data const&)`：20.80% 实际上是 `tickEvent([this]{ tick(); }, "O3CPU tick", false, Event::CPU_Tick_Pri)` 当中调用 `tick()` 的 lambda，就是整个 O3 CPU 各种组件的单步模拟被融合到了一个巨大的函数里，仔细看里面的热点指令，其实还是 `gem5::TimeBuffer<*>::advance()` 相关的比较多
 - `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：8.58%，描述见上
 - `malloc/_int_malloc/cfree/_int_free_chunk/operator new` 来自 libc/libstdc++：5.55%+3.88%+3.72%+1.45%+1.22%=15.83%，随着其余部分被优化，内存分配的瓶颈更加明显了
 
-进一步开启 `-O3 -lfto -ljemalloc` 后，内存分配时间减少，热点函数：
+进一步开启 `-O3 -flto -ljemalloc` 后，内存分配时间减少，热点函数：
 
 - `std::_Function_handler<void (), gem5::o3::CPU::CPU(gem5::BaseO3CPUParams const&)::{lambda()#1}>::_M_invoke(std::_Any_data const&)`：23.20%，描述见上
 - `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：9.19%，描述见上
@@ -717,7 +717,7 @@ sealcrypto_r refrate ecuador_province_capitals_refrate.csv Galapagos
 - `seal::util::multiply_uint64_generic(T operand1, S operand2, unsigned long long *result128)` 来自 `src/seal/util/uintarith.h`：11.60%，实现了 64 位乘以 64 位得到 128 位结果的乘法，也是一堆乘法、加法和位运算
 - `seal::util::dot_product_mod(const uint64_t *operand1, const uint64_t *operand2, size_t count, const Modulus &modulus)` 来自 `src/seal/util/uintarithsmallmod.cpp`：11.48%，实现的是点乘后取模的操作，调用 `multiply_accumulate_uint64` 函数进行乘法和累加，最后用 `barrett_reduce_128` 进行取模
 - `seal::util::dyadic_product_coeffmod(ConstCoeffIter operand1, ConstCoeffIter operand2, size_t coeff_count, const Modulus &modulus, CoeffIter result)` 来自 `src/seal/util/polyarithsmallmod.cpp`：9.08%，实现的是 element wise 的模乘
-- `seal::util::BaseConverter::fast_convert_array(ConstRNSIter in, RNSIter out, MemoryPoolHandle pool)` 来自 `src/seal/util/rns.cpp`：5.88%，这里的 RNS 应该是 Residue Numebr System 的缩写，指令上还是大量的 imul/add 等运算
+- `seal::util::BaseConverter::fast_convert_array(ConstRNSIter in, RNSIter out, MemoryPoolHandle pool)` 来自 `src/seal/util/rns.cpp`：5.88%，这里的 RNS 应该是 Residue Number System 的缩写，指令上还是大量的 imul/add 等运算
 - `seal::util::RNSTool::sm_mrq(ConstRNSIter input, RNSIter destination, MemoryPoolHandle pool)` 来自 `src/seal/util/rns.cpp`：5.40%，不确定在做什么，也是大量的运算
 
 总而言之，既然是密码学，就会有大量的整数运算，其中有不少的乘法，在素数域下做各种操作。执行指令数足足有 3113.8B，但分支只有 78.6B，MPKI 只有 0.14，全场最低，甚至低于 714.cpython_r，同时 IPC 全场最高，达到了 5.09。
