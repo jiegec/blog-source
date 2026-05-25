@@ -15,7 +15,7 @@ categories:
 
 <!-- more -->
 
-本文测试环境：CPU 为 Intel i9-14900K P-Core @ 5.7 GHz，Linux 发行版为 Debian Trixie，编译器是 GCC 14.2.0。其实这款 CPU 最快能 Boost 到 6.0 GHz，但是时不时因为未知原因（防缩缸？）在只有单核负载的情况下也 Boost 不上去，现象是每跑一段时间负载，CPU 核心就会强制降频到 4.7 GHz，故退而求其次，选择在更容易稳定达到的 5.7 GHz 频率来跑，因为能跑 6.0 GHz 的就是那一个物理 P 核，其他的物理 P 核都能上 5.7 GHz，降频了只要换一个就好。6.0 GHz 下的性能可以参考之前的测试结果：[INT](../../../benchmark/data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt) 和 [FP](../../../benchmark/data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)。
+本文测试环境：CPU 为 Intel i9-14900K P-Core @ 5.7 GHz，Linux 发行版为 Debian Trixie，编译器是 GCC 14.2.0。其实这款 CPU 最快能 Boost 到 6.0 GHz，但是时不时因为未知原因（防缩缸？）在只有单核负载的情况下也 Boost 不上去，现象是每跑一段时间负载，CPU 核心就会强制降频到 4.7 GHz，故退而求其次，选择在更容易稳定达到的 5.7 GHz 频率来跑，因为能跑 6.0 GHz 的就是那一个物理 P 核，其他的物理 P 核都能上 5.7 GHz，降频了只要换一个就好。6.0 GHz 下的性能可以参考之前的测试结果：[INT](../../../benchmark/data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt) 和 [FP](../../../benchmark/data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)，基本上，从 5.7 GHz 到 6.0 GHz，性能可以按频率线性放缩。
 
 推荐阅读：[Evaluating SPEC CPU2026](https://chipsandcheese.com/p/evaluating-spec-cpu2026) 和 [SPEC CPU2026: Characterization, Representativeness, and Cross-Suite Comparison](https://arxiv.org/abs/2605.03713v2)
 
@@ -464,6 +464,89 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 整体看下来，727.cppcheck_r 就是在不断地做字符串匹配。我就纳闷了，为啥不能直接过一遍 tokenizer，把 token 都转为数字呢，这样比较起来多快。在 token 级别上做各种变换，就在不停地对 token 进行字符串比较，导致最后的性能瓶颈，不是在 cppcheck 自己写的字符串比较，就是在 libc 的字符串比较里了。
 
 整体执行了 1211B 指令，其中有 329B 分支指令，分支指令的比例足足有 27%，傲视 SPEC INT 2026 Rate 全场，这都是拜字符串匹配所赐，读一点就比较一点。但同时，MPKI 仅为 0.71，在 SPEC INT 2026 Rate 中倒数第三，仅高于 714.cpython_r 的 0.17 和 750.sealcrypto_r 的 0.14，说明大部分字符串匹配的结果都是很好预测的，比如比较到第一个字节就对不上了。
+
+### 729.abc_r
+
+之前第一次看到 abc 还是在 yosys，它是一个 EDA 软件，和后面的 734.vpr_r 都是开源 EDA 工具里的重量级人物，分别实现了逻辑综合以及布局布线。测试包括 6 条命令：
+
+```shell
+# 1. twoexact
+./abc_r -F twoexact.in
+# 2. beem6
+./abc_r -F beem6-fraig.in
+# 3. mem
+./abc_r -F mem_ctrl.in
+# 4. vga
+./abc_r -F vga_lcd_miter.in
+# 5. mcml
+./abc_r -F mcml.in
+# 6. des
+./abc_r -F des_system90.in
+```
+
+六个命令运行时间都不长，分别是 6.3s、10.1s、13.5s、32.3s、13.6s 和 17.0s，总时间 92.8s，reftime 是 459s，对应 4.9 分。
+
+开 -flto/-march=native/-ljemalloc 都没有什么提升，性能差距在 1% 之内。下面进行具体热点分析。
+
+#### twoexact
+
+主要的热点函数：
+
+- `sat_solver_propagate(sat_solver* s)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：75.33%，应该是 SAT Solver 中的 Unit Propagation，寻找那些只剩下一个变量还没确定的语句，给它进行赋值，然后传播到其他语句
+- `sat_solver_analyze(sat_solver* s, int h, veci* learnt)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver`：15.85%，应该是针对出现冲突的语句进行分析，属于 CDCL（Conflict Driven Clause Learning） 的一部分
+- `sat_solver_solve_internal(sat_solver* s)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：3.80%，是 SAT Solver 的入口函数
+
+很少能见到这种瓶颈如此高度集中的情况了，不过确实，SAT Solver 大部分时间都在做 Unit Propagation，出现冲突了就做 CDCL。唤起了很久以前在《软件分析与验证》课上写 DPLL SAT Solver 的[回忆](https://github.com/jiegec/dpll)，当然了，abc 的实现肯定比我那课程作业要更加复杂和高级。主要的瓶颈就是一堆访存以及依赖内存结果的分支，在 SAT 问题的解空间内进行搜索。
+
+指令数 53B，其中分支指令 8.4B，错误预测 606M，MPKI 等于 `606M/53B*1000=11.43`，非常的高，接近 SPEC INT 2017 的 541.leela_r 大帝。
+
+#### beem6
+
+主要的热点函数：
+
+- `Cec4_ManPackAddPatterns(Gia_Man_t * p, int iBit, Vec_Int_t * vLits)` 来自 `src/proof/cec/cecSatG2.c`：54.65%，CEC 指的是 Combinational Equivalence Checking，函数的用途没仔细研究，不过它就是一个两层循环，对数组元素进行访存和位运算
+- `Cec4_ManGeneratePatterns_rec(Gia_Man_t * p, Gia_Obj_t * pObj, int Value, Vec_Int_t * vPat, Vec_Int_t * vVisit)` 来自 `src/proof/cec/cecSatG2.c`：29.01%，看起来也是一堆复杂的访存和逻辑运算混合
+
+热点依然很集中，不过因为缺少领域知识，不太明白它在跑什么。运行 256B 条指令，其中分支有 40B，错误预测 192M 次，MPKI 等于 `192M/256B*1000=0.75`，相比 SAT 来说低了很多。
+
+#### mem
+
+热点函数依然是 sat solver 相关，相比 twoexact，`sat_solver_canceluntil` 时间占比高了一些，达到了 8.46%，不过整体的特性基本是一样的。运行 151B 条指令，其中分支有 24B，错误预测 1.2B，MPKI 等于 `1.2B/151B*1000=7.95`，非常高。
+
+#### vga
+
+热点函数依然是 sat solver，整体特性一致。运行 490B 条指令，分支有 77B，错误预测 2.1B 次，MPKI 等于 `2.1B/490B*1000=4.29`，还是很高。
+
+#### mcml
+
+热点函数终于有了新面孔：
+
+- `Abc_ObjDeleteFanin(Abc_Obj_t * pObj, Abc_Obj_t * pFanin)` 来自 `src/base/abc/abcFanio.c`：12.57%，逻辑很简单，就是调用 `Vec_IntRemove` 从数组里删除一个元素，遍历数组，找到匹配的元素，把后面的元素都往前挪
+- `Gia_ManSwiSimulate(Gia_Man_t * pAig, Gia_ParSwi_t * pPars)` 来自 `src/aig/gia/giaSwitch.c`：8.87%，依然看不懂在干啥，不过似乎是一些比较适合 SIMD 的循环，在 `-O3` 下能看到一些 SSE 指令
+- `Abc_AigAndLookup(Abc_Aig_t * pMan, Abc_Obj_t * p0, Abc_Obj_t * p1)` 来自 `src/base/abc/abcAig.c`：7.03%，主要时间是在内部一个循环当中，访存加位运算，不知道在实现什么功能
+- `If_ObjPerformMappingAnd(If_Man_t * p, If_Obj_t * pObj, int Mode, int fPreprocess, int fFirst)` 来自 `src/map/if/ifMap.c`：6.72%，又是一堆不知道在干啥的复杂位运算
+- `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeely-abc/src/opt/lpk/lpkCut.c`：5.47%，主要时间在循环里，不知道在实现什么
+
+运行 209B 条指令，其中 40B 条分支指令，错误预测 535M 次，MPKI 等于 `535M/209B*1000=2.56`，不低。
+
+#### des
+
+再次出现了新的热点函数：
+
+- `__strcmp_avx2` 来自 libc：22.04%，没想到瓶颈居然又出现在了 strcmp 上
+- `Nm_ManTableLookupId(Nm_Man_t * p, int ObjId)` 来自 `src/misc/nm/nmTable.c`：21.56%，遍历一个哈希表，哈希表的每个桶是个链表，遍历链表中的元素，寻找匹配
+- `Nm_ManTableAdd(Nm_Man_t * p, Nm_Entry_t * pEntry)` 来自 `src/misc/nm/nmTable.c`：12.19%，经典的哈希表插入算法，把新元素插入到对应桶的链表当中
+- `Nm_ManTableLookupName(Nm_Man_t * p, char * pName, int Type)` 来自 `src/misc/nm/nmTable.c`：5.78%，同样是遍历哈希表查询，只不过这次用的是字符串匹配，解释了为啥 strcmp 调用次数那么多，其实是在找哈希表的字符串匹配
+- `Gia_ManSwiSimulate` 来自 `src/aig/gia/giaSwitch.c`：5.49%，描述见上
+- `spec_qsort`：3.98%，好久不见的熟悉面孔，在 SPEC INT 2017 年代，在 505.mcf_r 中有出色表现（指瓶颈在 qsort 上，且很大一部分开销来自于调用 comparator 函数指针，开 -flto 后因为把函数指针调用内联，性能直接提升 13%）
+
+这次又是经典数据结构哈希表了，而且还混入了大量的字符串匹配，最后瓶颈都在查哈希表上了。
+
+运行 137B 条指令，其中有 23.5B 是分支指令，错误预测 374M 次，MPKI 等于 `374M/137B*1000=2.73`，依然不低。
+
+#### 小结
+
+综合以上六条命令，可以看到它触碰了 abc 不同地方的代码，所以热点不尽相同，有 SAT，有看不懂的一些 EDA 相关逻辑，还有带字符串匹配的哈希表查询，其中 SAT 的占比是最大的。由于 SAT 的存在，最终的 MPKI 足足有 3.87，在 SPEC INT 2026 Rate 当中仅次于 723.llvm_r，超过了 721.gcc_r。共执行 1296B 条指令，其中有 213B 是分支指令，这个比例不算高，但预测错误率足够高。
 
 ## SPEC FP 2026 Rate
 
