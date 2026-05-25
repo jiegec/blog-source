@@ -725,11 +725,95 @@ sealcrypto_r refrate ecuador_province_capitals_refrate.csv Galapagos
 
 开了 `-O3 -march=native` 后，确实生成了不少 AVX2 指令，但看下来，生成的指令序列还是挺复杂的，有大量的 vpunpcklqdq/vpunpckhqdq/vpermq/vpblendvb/vperm2i128 等指令，并没有在进行的计算，而是在不断地倒腾向量寄存器里数据的位置。虽然指令数减少了，但 IPC 降低更多，最后性能反而倒退，实际从 108s 增加到 116s。原来的 `-O3` 版本虽然每次只处理一个元素，但指令的并行度更高，IPC 弥补了指令数多的劣势。
 
-那么，LLVM 22 做了什么优化呢？执行的指令数直接降低到 1214B，分支只有 57.2B。以 `seal::util::DWTHandler::transform_to_rev` 为例，可以看到：seal 为了实现 64 位乘 64 位到 128 位的乘法，它自己实现了这个过程，不仅在 `seal::util::multiply_uint64_generic` 中有实现，实际上也内联到了 `seal::util::DWTHandler::transform_to_rev` 当中；GCC 14 忠实地实现了这个算法，因此指令数很多（见 [Godbolt](https://godbolt.org/z/KKTa1aMP8)）；但其实，AMD64 的 mul 指令本来就是一个 64 位乘 64 位得到 128 位的乘法，所以 LLVM 12 直接识别出这段代码做的事情，然后编译成了 mul 指令（见 [Godbolt](https://godbolt.org/z/bc6xPjEMc)），而且这种 64 位乘法保留高位的指令在各种 ISA 都挺常见的，比如 ARM64 的 umulh，RISC-V 的 mulhu，LoongArch 的 mulh.du。当然，seal 的源码其实已经考虑了这个问题，在编译器支持的情况下，直接用 __int128 来完成[这件事情](https://github.com/microsoft/SEAL/blob/e3476fad1d5bb5e5222c51a551b5a4d7e2cb4f91/native/src/seal/util/gcc.h#L44)。然而，这类依赖编译器行为或具体指令集扩展的代码，由于 SPEC CPU 2026 的编译器中立性，都被去掉了，都会回落到最通用的写法上。此时，就只能依赖编译器去自己识别和优化了。
+那么，LLVM 22 做了什么优化呢？执行的指令数直接降低到 1214B，分支只有 57.2B。以 `seal::util::DWTHandler::transform_to_rev` 为例，可以看到：seal 为了实现 64 位乘 64 位到 128 位的乘法，它自己实现了这个过程，不仅在 `seal::util::multiply_uint64_generic` 中有实现，实际上也内联到了 `seal::util::DWTHandler::transform_to_rev` 当中；GCC 14 忠实地实现了这个算法，因此指令数很多（见 [Godbolt](https://godbolt.org/z/KKTa1aMP8)）；但其实，AMD64 的 mul 指令本来就是一个 64 位乘 64 位得到 128 位的乘法，所以 LLVM 12 直接识别出这段代码做的事情，然后编译成了 mul 指令（见 [Godbolt](https://godbolt.org/z/bc6xPjEMc)，甚至如果开了 BMI2 扩展，还有 [mulx](https://www.felixcloutier.com/x86/mulx) 指令可以用），而且这种 64 位乘法保留高位的指令在各种 ISA 都挺常见的，比如 ARM64 的 umulh，RISC-V 的 mulhu，LoongArch 的 mulh.du。当然，seal 的源码其实已经考虑了这个问题，在编译器支持的情况下，直接用 __int128 来完成[这件事情](https://github.com/microsoft/SEAL/blob/e3476fad1d5bb5e5222c51a551b5a4d7e2cb4f91/native/src/seal/util/gcc.h#L44)。然而，这类依赖编译器行为或具体指令集扩展的代码，由于 SPEC CPU 2026 的编译器中立性，都被去掉了，都会回落到最通用的写法上。此时，就只能依赖编译器去自己识别和优化了。
 
 但是，这样某种意义也无法反映在真实场景中，应用的优化情况了，因为很多应用已经实际上和处理器的指令集扩展/编译器扩展共进化，实现的时候，脑子里是默认有这些东西，再去做的调优，甚至会写一些指令集相关的优化，用一些 intrinsics，比如原版 stockfish 就有针对 AVX512/AVX2/SSSE3/NEON_DOTPROD/LASX/LSX 的[优化](https://github.com/official-stockfish/Stockfish/blob/77a8f6ccf31846d63452f79e143fbc6dc62ae3a8/src/nnue/layers/affine_transform.h#L201)。到最后，就是编译器又实现各种 pass，识别程序里的 fallback generic 代码，再映射回高效的实现。其实类似的事情之前就出现过，网上用来证明编译器很聪明的一个例子，就是说识别 popcount 的循环，直接翻译成 popcnt 指令，然而很多程序直接用 `__builtin_popcount` 而不会真的去手写，这次只不过是换了个 pattern 罢了。当然，好消息是，C++20 引入了 std::popcount，可以一定程度避免类似的情况发生，只是来得太晚了。
 
 相比之下，Geekbench 对这类指令集扩展的优化就比较持开放态度，愿意针对指令集扩展进行针对性的优化，比如经典引入 AMX/SME 对分数的巨大影响，当然这也让它被人骂 AppleBench，只能说见仁见智了。
+
+### 753.ns3_r
+
+753.ns3_r 和 710.omnetpp_r 做的事情类似，也是网络中的离散事件模拟器。它包括这些命令：
+
+```shell
+# 1. mobile
+ns3_r mobile-scenario --simTimeMinutes=3 --RngSeed=1 --RngRun=1
+# 2. tcp
+ns3_r tcp-pacing --simulationEndTime=500 --useEcn=false --RngSeed=1 --RngRun=1
+# 3. lena
+ns3_r lena-radio-link-failure --numberOfEnbs=2 --interSiteDistance=800 --simTime=200 --RngSeed=1 --RngRun=1
+# 4. dctcp
+ns3_r dctcp-example --enableSwitchEcn=true --flowStartupWindow=0.4 --convergenceTime=0.4 --measurementWindow=0.4 --RngSeed=1 --RngRun=1
+# 5. wifi_mixed
+ns3_r wifi-mixed-network --isUdp=0 --payloadSize=3072 --simulationTime=25 --RngSeed=1 --RngRun=1
+# 6. wifi_eht
+ns3_r wifi-eht-network --simulationTime=0.2 --frequency=5 --useRts=1 --minExpectedThroughput=6 --maxExpectedThroughput=547 --RngSeed=1 --RngRun=1
+```
+
+六条命令的耗时分别为 18s、15s、3s、19s、23s 和 14s，一共 92s，reftime 是 613s，对应 6.7 分。各编译选项对性能影响：
+
+- `-O3 -flto`：时间降到 16s、14s、3s、17s、19s 和 13s，一共 82s，对应 7.5 分，相比 `-O3` 提升 12% 的性能
+- `-O3 -flto -ljemalloc`：时间进一步降到 14s、12s、3s、13s、18s 和 11s，一共 71s，对应 8.6 分，相比 `-O3 -flto` 又提升 15% 性能
+
+都有巨大提升，只有 `-march=native` 影响很小，仅 0.5%。下面来进行具体的分析。
+
+#### mobile
+
+热点分析：
+
+- `cfree/malloc/_int_malloc/_int_free_chunk/operator new` 来自 libc/libstdc++：6.99%+5.66%+4.15%+1.83%+1.81%=20.44%，又是内存分配密集型应用
+- `ns3::LteMiErrorModel::GetTbDecodificationStats(const SpectrumValue& sinr, const std::vector<int>& map, uint16_t size, uint8_t mcs, HarqProcessInfoList_t miHistory)` 来自 `src/ns-3.38/src/lte/model/lte-mi-error-model.cc`：9.57%，首先是一个循环，带有一些浮点运算，做一些累加和乘加操作，然后是一段二分查找，看起来主要瓶颈是在二分查找上面，此外在函数开头还会调用下面的 `Mib` 函数
+- `ns3::LteMiErrorModel::Mib(const SpectrumValue& sinr, const std::vector<int>& map, uint8_t mcs)` 来自 `src/ns-3.38/src/lte/model/lte-mi-error-model.cc`：4.39%，又是一些浮点运算，不知道在算什么
+- `ns3::LteMiErrorModel::MappingMiBler(double mib, uint8_t ecrId, uint16_t cbSize)` 来自 `src/ns-3.38/src/lte/model/lte-mi-error-model.cc`：3.53%，主要的开销是调用 erf 函数和做一些查表，`__erf` 函数占了总时间的 1.63%
+- `ns3::MapScheduler::Insert(const Event& ev)` 来自 `src/ns-3.38/src/core/model/map-scheduler.cc`：2.66%，对 `std::map` 红黑树的插入
+
+首先能看到的是，又是一个内存分配密集型应用。开了 `-O3 -flto` 后，`GetTbDecodificationStats` 把 `Mib` 内联了进去，时间占比提升到 12.68%，但还是内存分配占了最多的时间：7.82%+6.22%+4.51%+1.90%=20.45%。进一步开 `-O3 -flto -ljemalloc`，内存分配的时间占比终于降低到 6.23%+1.78%=8.01%，其实还是挺高的。
+
+比较少见的是，作为 SPEC INT 2026 Rate 的一员，mobile 涉及不少浮点运算，还包括一些对 libm 的调用，比如 erf/atan2/pow/log，但实际瓶颈又是内存分配，属于是半步踏入了 SPEC FP 2026，又被 libc 退了回来。
+
+`-O3` 下，执行指令 257B，其中分支指令有 54B，错误预测 627M，MPKI 等于 `627M/257B*1000=2.43`，并不低。
+
+#### tcp
+
+第二条命令测的又是不一样的代码了，这次的热点函数：
+
+- `cfree/malloc/_int_malloc/_int_free_chunk/operator new` 来自 libc/libstdc++：7.02%+5.20%+3.68%+2.29%+1.56%=19.75%，又是内存分配密集型应用
+- `ns3::TcpTxBuffer::NextSeg(SequenceNumber32* seq, SequenceNumber32* seqHigh, bool isRecovery)` 来自 `src/ns-3.38/src/internet/model/tcp-tx-buffer.cc`：4.35%，是一个的 TCP 协议栈实现，这里做的是 RFC 6675 SACK 的部分，想起来之前设计的 [TCP 实验](https://lab.cs.tsinghua.edu.cn/tcp/doc/)，这里主要的瓶颈是循环里对 sequence number 的更新
+- `ns3::MapScheduler::Insert(const Event& ev)` 来自 `src/ns-3.38/src/core/model/map-scheduler.cc`：4.05%，描述见上
+- `__do_dyncast/__dynamic_cast` 来自 libstdc++：1.80%+1.55%=3.35%
+
+`-O3` 下，执行指令 205B，其中分支指令有 45B，错误预测 148M，MPKI 等于 `148M/205B*1000=0.72`，比较低。
+
+#### lena
+
+第三条命令测的又是不一样的代码了，这次的热点函数：
+
+- `cfree/malloc/_int_malloc/_int_free_chunk/operator new` 来自 libc/libstdc++：7.78%+6.13%+3.13%+2.08%+1.52%=20.64%，又是内存分配密集型应用
+- `ns3::MapScheduler::Insert(const Event& ev)` 来自 `src/ns-3.38/src/core/model/map-scheduler.cc`：2.41%，描述见上
+- `__do_dyncast/__dynamic_cast` 来自 libstdc++：1.73%+0.82%=2.55%
+
+`-O3` 下，执行指令 467B，其中分支指令有 10B，错误预测 52M，MPKI 等于 `52M/467B*1000=0.11`，非常低。
+
+#### dctcp
+
+第四条命令测的又是不一样的代码了，这次的热点函数：
+
+- `cfree/malloc/_int_malloc/_int_free_chunk/operator new` 来自 libc/libstdc++：6.30%+5.56%+4.03%+1.53%+1.43%+1.12%=40.61%，又是内存分配密集型应用
+- `ns3::MapScheduler::Insert(const Event& ev)` 来自 `src/ns-3.38/src/core/model/map-scheduler.cc`：6.94%，描述见上
+
+`-O3` 下，执行指令 225B，其中分支指令有 52B，错误预测 295M，MPKI 等于 `295M/225B*1000=1.31`，略高一点。
+
+#### wifi_mixed
+
+热点函数就不列举了，基本还是内存分配，外加 `ns3::TcpTxBuffer::NextSeg`。`-O3` 下，执行指令 292B，其中分支指令有 67B，错误预测 202M，MPKI 等于 `202M/292B*1000=0.69`，不高。
+
+#### wifi_eht
+
+热点函数除了内存分配，多了 `ns3::InterferenceHelper::AppendEvent` 和 `ns3::WifiSpectrumValueHelper::GetBandPowerW`。`-O3` 下，执行指令 194B，其中分支指令有 44B，错误预测 371M，MPKI 等于 `371M/194B*1000=1.91`，略高。
+
+#### 小结
+
+与 727.cppcheck_r 类似，753.ns3_r 又是一个内存分配器 benchmark，大量时间花在 malloc/free 上了，此外还有不少 std::map 或 libm 的调用。`-O3` 下，执行指令 1221B，分支指令 273B，MPKI 是 1.39。
 
 ## 总结
 
