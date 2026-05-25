@@ -815,6 +815,70 @@ ns3_r wifi-eht-network --simulationTime=0.2 --frequency=5 --useRts=1 --minExpect
 
 与 727.cppcheck_r 类似，753.ns3_r 又是一个内存分配器 benchmark，大量时间花在 malloc/free 上了，此外还有不少 std::map 或 libm 的调用。`-O3` 下，执行指令 1221B，分支指令 273B，MPKI 是 1.39。
 
+### 777.zstd_r
+
+作为 SPEC INT 2026 中唯一一个压缩算法，把 SPEC INT 2017 的 557.xz_r 替换掉了，也能见到压缩算法的变迁。从没有被选中的 770.7z_r 来看，zstd 也是成功杀出重围，被认为是更加重要的压缩算法。它一共包括八条命令，但其实压缩的都是同一个文件，不像 557.xz_r 那样会压缩不同的输入文件，只是在代码里对输入数据做了随机修改：
+
+```shell
+# 1. b3
+zstd -b3 -e3 --verbose -i40 cld.tar
+# 2. b5
+zstd -b5 -e5 --verbose -i25 cld.tar
+# 3. b7
+zstd -b7 -e7 --verbose -i12 cld.tar
+# 4. b10
+zstd -b10 -e10 --verbose -i6 cld.tar
+# 5. b14
+zstd -b14 -e14 --verbose -i4 cld.tar
+# 6. b16
+zstd -b16 -e16 --verbose -i1 cld.tar
+# 7. b18
+zstd -b18 -e18 --verbose -i1 cld.tar
+# 8. b19
+zstd -b19 -e19 --verbose -i1 cld.tar
+```
+
+这里的 `-b` 代表 compression level 下界，`-e` 代表 compression level 上界，都相等，其实就是每次只测一种 compression level 的意思。8 条命令的运行时间：11.0s、14.5s、13.0s、11.6s、24.5s、10.9s、20.1s 和 25.5s，一共是 131.2s，reftime 是 644s，对应 4.9 分。
+
+开 `-O3 -flto` 或 `-O3 -ljemalloc` 没有什么性能提升，但 `-O3 -march=native` 提升不错，运行时间降低到 10.5s、13.7s、12.6s、11.4s、23.4s、10.3s、18.6s 和 23.5s，一共是 124.0s，对应 5.2 分，提升 6%。
+
+以第一条命令 b3 为例，热点函数：
+
+- `ZSTD_compressBlock_doubleFast_noDict_generic` 来自 `src/zstd-1.5.6/lib/compress/zstd_double_fast.c`：56.82%，主要在对数据计算哈希，寻找匹配，进而用于压缩，具体算法没有仔细看
+- `ZSTD_decompressBlock_internal.part.0` 来自 `src/zstd-1.5.6/lib/decompress/zstd_decompress_block.c`：16.63%，解压缩的主要逻辑，会调用 `ZSTD_decompressSequences`，挺复杂的
+- `ZSTD_encodeSequences` 来自 `src/zstd-1.5.6/lib/decompress/zstd_compress_sequences.c`：10.91%，分为 bmi2 和 generic 版本，不出意外 bmi2 版本也被 SPEC 禁用了，只能用 generic 版本，逻辑也挺复杂的，没有仔细看
+
+`-O3` 下，b3 执行 183B 条指令，其中有 19B 分支指令，错误预测 546M 次，MPKI 等于 `546M/183B*1000=2.98`，属于比较高的。
+
+第二条命令 b5 的热点函数：
+
+- `ZSTD_RowFindBestMatch.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：67.91%，对数组进行循环，找到匹配最长的一项
+- `ZSTD_compressBlock_lazy_generic.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：9.12%，也是比较复杂的匹配算法
+- `ZSTD_decompressBlock_internal.part.0` 来自 `src/zstd-1.5.6/lib/decompress/zstd_decompress_block.c`：7.80%，描述见上
+
+`-O3` 下，b5 执行 274B 条指令，其中有 28B 分支指令，错误预测 563M 次，MPKI 等于 `563M/274B*1000=2.05`，属于比较高的。
+
+第五条命令 b14 的热点函数：
+
+- `ZSTD_DUBT_findBestMatch` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：85.74%，也是在循环中做最长匹配
+- `ZSTD_searchMax.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：9.04%，根据 dict mode 派发到不同的实现，实现也挺复杂
+
+`-O3` 下，b14 执行 198B 条指令，其中有 29B 分支指令，错误预测 1608M 次，MPKI 等于 `1608M/198B*1000=8.12`，属于特别高的。
+
+第六条命令 b16 的热点函数：
+
+- `ZSTD_insertBtAndGetAllMatches` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：38.62%，这里 Bt 代表的是 binary tree 二叉树
+- `ZSTD_insertBt1` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：35.15%
+- `ZSTD_compressBlock_opt_generic.constprop.1` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：16.50%
+
+`-O3` 下，b16 执行 129B 条指令，其中有 18B 分支指令，错误预测 652M 次，MPKI 等于 `652M/129B*1000=5.05`，属于特别高的。
+
+第三/四条命令 b7/b10 的热点与第二条命令 b5 类似；第七/八条命令 b18/b19 的热点函数和第六条命令 b16 类似，就不重复了。可见 zstd 会根据 compression level 选择不同路径，从而在压缩率和性能之间做出权衡。
+
+那么开 `-march=native` 以后，发生了什么？能看到的是，由于 BMI 指令的引入，一些位运算的指令数变少了，比如 [bzhi](https://www.felixcloutier.com/x86/bzhi) 和 [tzcnt](https://www.felixcloutier.com/x86/tzcnt)，还有一些是三操作数且不影响 flags 的运算，如 [shrx](https://www.felixcloutier.com/x86/bzhi)，有点类似 RICV 指令集的对应指令。
+
+整体来看，`-O3` 下 777.zstd_r 执行 1827B 指令，其中 232B 是分支指令，但 MPKI 有 3.58，仅次于 729.abc_r 和 723.llvm_r。
+
 ## 总结
 
 本文对 SPEC CPU 2026 中 INT Rate 的负载进行了深入的分析，以供编译器和处理器的设计者参考。从编译器的角度来说，可以集 GCC 和 LLVM 之长，进一步提升性能；从处理器的角度来说，针对程序的瓶颈进行优化，也能进一步提高分数。
