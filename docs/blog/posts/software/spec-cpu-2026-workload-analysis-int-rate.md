@@ -320,14 +320,14 @@ omnetpp_r -f queuenet.ini -c AllocDealloc
 
 实测数据显示，十条命令耗费的时间分别是 24.6s、7.8s、3.8s、4.6s、9.1s、3.7s、2.6s、9.4s、6.6s 和 14.0s，共计 86.2s。reftime 是 486s，对应 5.6 分。
 
-#### randomMesh
+#### 1. randomMesh
 
 首先分析第一条命令的热点函数：
 
-- `omnetpp::cTopology::calculateUnweightedSingleShortestPathsTo(Node *_target)` 来自 `src/simulator/sim/ctopology.c`：16.22%，实现了经典的单源最短路算法，且每条边的权重都是一，所以就是 BFS
-- `__do_dyncast` 和 `__dynamic_cast` 来自 libstdc++.so：4.73%+3.24%+2.22%+0.81%=11.0%，代码中有一些 dynamic_cast 的使用，如上面的 Routing::handleMessage
-- `Routing::handleMessage(cMessage *msg)` 来自 `src/model/Routing.cc`：7.10%，模拟路由表的功能，主要逻辑是内联了一个 `std::map<int, int>` 的 `find` 操作（[Godbolt](https://godbolt.org/z/ne6oEb9Md)），在一个红黑树上进行查询
-- `cEvent::shouldPrecede(const cEvent *other)` 来自 `src/simulator/sim/cevent.cc`：4.64%，一个 cEvent 结构体的比较函数
+- `omnetpp::cTopology::calculateUnweightedSingleShortestPathsTo(Node *_target)` 来自 `src/simulator/sim/ctopology.c`：16.22%，实现了经典的单源最短路算法，且由于每条边的权重都是一，约等于 BFS，主要瓶颈来自于随机访存和计算距离的双精度浮点运算；
+- `__do_dyncast` 和 `__dynamic_cast` 来自 libstdc++.so：4.73%+3.24%+2.22%+0.81%=11.0%，代码中有一些 dynamic_cast 的使用，如 `Routing::handleMessage`；
+- `Routing::handleMessage(cMessage *msg)` 来自 `src/model/Routing.cc`：7.10%，模拟路由表的功能，主要逻辑是内联了一个 `std::map<int, int>` 的 `find` 操作（[Godbolt](https://godbolt.org/z/ne6oEb9Md)），在一个红黑树上进行查询，读取结点，比较 key，走左子树或右子树继续查询；
+- `cEvent::shouldPrecede(const cEvent *other)` 来自 `src/simulator/sim/cevent.cc`：4.64%，一个 cEvent 结构体的多关键字比较函数。
 
 整体来看，它的瓶颈分散在比较多的地方。执行了 306.4B 条指令，其中有 98.7B 条 Load 指令，50.2B 条 Store 指令，62.1B 条分支指令，错误预测 661.2M 次，MPKI 为 `661.2M/306.4B*1000=2.16`。开 `-O3 -flto` 后，指令数减少到 284.6B，其中有 91.3B 条 Load 指令，45.4B 条 Store 指令，55.7B 条分支指令。进一步开 `-O3 -flto -ljemalloc`，指令数进一步减少到 279.8B，其中有 90.3B 条 Load 指令，44.4B 条 Store 指令，54.3B 条分支指令。
 
@@ -337,7 +337,7 @@ omnetpp_r -f queuenet.ini -c AllocDealloc
 | GCC 14 `-O3 -flto`            | 284.6    | 91.3     | 45.4      | 55.7     |
 | GCC 14 `-O3 -flto -ljemalloc` | 279.8    | 90.3     | 44.4      | 54.3     |
 
-#### 其余的 9 条 queuenet 命令
+#### 其余的 2-10 共 9 条 queuenet 命令
 
 用 `perf` 观察，其余 9 条 queuenet 命令的瓶颈主要集中在这些函数：
 
@@ -375,29 +375,29 @@ cpython_r -I -B dna_bench.py 600000
 
 三条命令的运行时间分别为 31s、20s 和 20s，总时间 71s，reftime 是 479s，对应 6.7 分。开启 `-O3 -flto` 后，三条命令的运行时间分别为 29s、19s 和 18s，总时间 66s，对应 7.3 分。`-O3 -ljemalloc` 影响很小，`-O3 -march=native` 有负优化。下面具体分析三条命令的负载特性。
 
-#### resnet
+#### 1. resnet
 
 还是用 `perf`，统计出热点函数：
 
-- `_PyEval_EvalFrameDefault(PyThreadState *tstate, _PyInterpreterFrame *frame, int throwflag)` 来自 `src/cpython/Python/ceval.c`：24.09%，解释器中的 Loop + Switch 核心代码，对 Python 字节码进行解释执行
-- `PyUnicode_FromFormatV(const char *format, va_list vargs)` 来自 `src/cpython/Objects/unicodeobject.c`，4.51%，把结果写到 Python 字符串的 sprintf 版本
-- `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：3.48%，释放 PyObject
-- `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.15%，分配 PyObject
+- `_PyEval_EvalFrameDefault(PyThreadState *tstate, _PyInterpreterFrame *frame, int throwflag)` 来自 `src/cpython/Python/ceval.c`：24.09%，解释器中的 Loop + Switch 核心代码，对 Python 字节码进行解释执行，主要的瓶颈也是跳转表，根据 opcode 计算 case 地址然后 `jmp *%rax`；
+- `PyUnicode_FromFormatV(const char *format, va_list vargs)` 来自 `src/cpython/Objects/unicodeobject.c`，4.51%，把结果写到 Python 字符串的 sprintf 版本，主要瓶颈是格式化字符串的解析，找 `%` 的位置；
+- `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：3.48%，释放 PyObject，Python 有一个自己的针对 PyObject 的内存分配器，而不是直接使用 malloc/free；
+- `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.15%，分配 PyObject。
 
 剩下就比较零散了，主要还是围绕着解释器的循环。执行了 651.6B 条指令，其中有 180.4B 是 Load 指令，104.1B 是 Store 指令，136.6B 是分支指令，错误预测仅 7.9M 次，MPKI 等于 `7.9M/651.6B*1000=0.01` 可以忽略不计。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 618.0B，其中 Load 有 176.6B，Store 有 93.9B，分支有 128.6B，错误预测 48.6M 次。
 
-#### mobilenet
+#### 2. mobilenet
 
 统计出热点函数，发现前四依然是上面四个，且时间占比差不多。可能是因为，resnet 和 mobilenet 测例用的是同一个 .py 源码，只是用的模型不同。执行了 438.9B 条指令，其中有 121.4B 是 Load 指令，70.5B 是 Store 指令，91.6B 是分支指令，错误预测 9.1M 次，MPKI 等于 `9.1M/438.9B*1000=0.02` 可以忽略不计。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 416.4B，其中 Load 指令有 119.0B，Store 指令有 63.8B，分支有 86.2B，错误预测 35.0M 次。
 
-#### dna
+#### 3. dna
 
 统计热点函数：
 
-- `_PyEval_EvalFrameDefault(PyThreadState *tstate, _PyInterpreterFrame *frame, int throwflag)` 来自 `src/cpython/Python/ceval.c`：36.75%，描述见上
-- `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：5.31%，描述见上
-- `PyUnicode_Contains(PyObject *str, PyObject *substr)` 来自 `src/cpython/Objects/unicodeobject.c`，4.59%，Python 字符串的 contains 操作，对应 `data/all/input/knucleotide.py` 代码中的 `chat in "GATC"` 判断
-- `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.52%，描述见上
+- `_PyEval_EvalFrameDefault(PyThreadState *tstate, _PyInterpreterFrame *frame, int throwflag)` 来自 `src/cpython/Python/ceval.c`：36.75%，描述见上；
+- `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：5.31%，描述见上；
+- `PyUnicode_Contains(PyObject *str, PyObject *substr)` 来自 `src/cpython/Objects/unicodeobject.c`，4.59%，Python 字符串的 contains 操作，对应 `data/all/input/knucleotide.py` 代码中的 `chat in "GATC"` 判断；
+- `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.52%，描述见上。
 
 主要热点还是解释执行，不过因为字符串的 contains 调用次数较多，所以 `PyUnicode_Contains` 时间占比有所上升。执行了 394.9B 条指令，其中有 113.3B 是 Load 指令，62.1B 是 Store 指令，77.1B 是分支指令，错误预测 228.1M 次，MPKI 等于 `228M/394B*1000=0.58` 也还是很低。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 379.3B，其中 Load 有 113.4B，Store 有 58.5B，分支有 71.6B，错误预测 223.8M 次。
 
@@ -429,7 +429,9 @@ cc1_r ref32.c -O3 -finline-limit=12000 -fno-tree-vrp -o ref32.c.opts-O3_-finline
 
 `-O3` 运行时间分别为 44s、21s 和 51s，总时间 116s，reftime 是 686s，对应 5.9 分。开了 `-O3 -flto` 后，时间略微降低到 115s，开 `-O3 -flto -ljemalloc` 后时间进一步降低到 111s，主要针对的是占用时间约 2% 的 malloc/free。开 `-march=native` 对性能几乎没有影响。
 
-与 502.gcc_r 的行为类似（见 [The Alberta Workloads for the SPEC CPU® 2017 Benchmark Suite 的分析](https://webdocs.cs.ualberta.ca/~amaral/AlbertaWorkloadsForSPECCPU2017/reports/gcc_report.html)），721.gcc_r 的时间分布在大量函数，除了 ref32 花费了 10.76% 的时间在 dominated_by_p、5.92% 的时间在 bitmap_set_bit 以外，其他函数的占用时间基本都在 3% 以下，没有一个特别明显的热点函数。
+与 502.gcc_r 的行为类似（见 [The Alberta Workloads for the SPEC CPU® 2017 Benchmark Suite 的分析](https://webdocs.cs.ualberta.ca/~amaral/AlbertaWorkloadsForSPECCPU2017/reports/gcc_report.html)），721.gcc_r 的时间分布在大量函数，除了 ref32 花费了 10.76% 的时间在 `dominated_by_p`、5.92% 的时间在 `bitmap_set_bit` 以外，其他函数的占用时间基本都在 3% 以下，没有一个特别明显的热点函数。
+
+其中 `bitmap_set_bit(bitmap head, int bit)` 函数来自 `src/gcc/bitmap.cc`，通过位运算，在 bitmap 里把一个 bit 设为一，比较特别的是，这个 bitmap 可以有二叉树（splay tree）和链表两种保存格式。`dominated_by_p(enum cdi_direction dir, const_basic_block bb1, const_basic_block bb2)` 函数来自 `src/gcc/dominance.cc`，做的是基本块的 dominance 查询，A dom B 代表从函数入口到 B 一定会经过 A，这是编译器中很常见的一个查询，由于查询次数很多，会预先通过两遍 dfs（一遍从上往下，一遍从下往上，上对应入口，下对应出口）找到基本块的拓扑顺序，然后根据拓扑排序的结果来判断是否有 A dom B 的关系：`DFS_Number_In(A) <= DFS_Number_In(B) && DFS_Number_Out (A) >= DFS_Number_Out(B)`，也就是从上往下遍历（In）的时候，先到达 A，然后从下往上遍历（Out）的时候，先到达 B。其实这个函数并不复杂，但是因为它把两次比较做成了一次 `cmp+jl` 和一次 `cmp+setle`，导致容易出现分支预测错误。从逻辑上来说，这里可以改成完成两次比较，再对结果取 AND，但由于代码里是 `&&` 有短路的性质，理论上第一个条件成立了，就不该进行第二个条件，更何况第二个条件里还涉及两次访存。这种实现确实可能省下一些访存，但分支预测也变难了。如果改写代码，先进行两次比较，再进行 `&&` 操作，就没有分支指令了，不过访存次数也确实变多了：[Godbolt](https://godbolt.org/z/qKaKzT6a1)。
 
 三次运行的性能计数器如下：
 
@@ -462,7 +464,7 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 
 有意思的是，用 GCC 14 编译的 723.llvm_r，运行得比用 LLVM 22 编译的 723.llvm_r 更快，当然快得并不多。下面针对这两条命令进行具体的分析。
 
-#### transformsplus
+#### 1. transformsplus
 
 使用 `perf` 观察热点函数：
 
@@ -472,7 +474,7 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 
 其他用很多小的函数，占时间比例不高，和 721.gcc_r 类似，也是时间分散得比较开。执行指令数为 572.8B，其中分支指令有 118.7B，错误预测有 3.5B 次，MPKI 等于 `3.5B/572.8B*1000=6.11`，挺高的。
 
-#### codegen
+#### 2. codegen
 
 使用 `perf` 观察热点函数：
 
