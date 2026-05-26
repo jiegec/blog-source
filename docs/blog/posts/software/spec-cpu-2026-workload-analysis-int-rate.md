@@ -595,9 +595,9 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 主要的热点函数：
 
-- `sat_solver_propagate(sat_solver* s)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：75.33%，应该是 SAT Solver 中的 Unit Propagation，寻找那些只剩下一个变量还没确定的语句，给它进行赋值，然后传播到其他语句
-- `sat_solver_analyze(sat_solver* s, int h, veci* learnt)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver`：15.85%，应该是针对出现冲突的语句进行分析，属于 CDCL（Conflict Driven Clause Learning） 的一部分
-- `sat_solver_solve_internal(sat_solver* s)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：3.80%，是 SAT Solver 的入口函数
+- `sat_solver_propagate(sat_solver* s)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：75.33%，应该是 SAT Solver 中的 Unit Propagation，寻找那些只剩下一个变量还没确定的语句，给它进行赋值，然后传播到其他语句；
+- `sat_solver_analyze(sat_solver* s, int h, veci* learnt)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver`：15.85%，应该是针对出现冲突的语句进行分析，属于 CDCL（Conflict Driven Clause Learning） 的一部分；
+- `sat_solver_solve_internal(sat_solver* s)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：3.80%，是 SAT Solver 的入口函数。
 
 很少能见到这种瓶颈如此高度集中的情况了，不过确实，SAT Solver 大部分时间都在做 Unit Propagation，出现冲突了就做 CDCL。唤起了很久以前在《软件分析与验证》课上写 DPLL SAT Solver 的[回忆](https://github.com/jiegec/dpll)，当然了，abc 的实现肯定比我那课程作业要更加复杂和高级。主要的瓶颈就是一堆访存以及依赖内存结果的分支，在 SAT 问题的解空间内进行搜索。
 
@@ -609,8 +609,8 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 主要的热点函数：
 
-- `Cec4_ManPackAddPatterns(Gia_Man_t * p, int iBit, Vec_Int_t * vLits)` 来自 `src/proof/cec/cecSatG2.c`：54.65%，CEC 指的是 Combinational Equivalence Checking，函数的用途没仔细研究，不过它就是一个两层循环，对数组元素进行访存和位运算
-- `Cec4_ManGeneratePatterns_rec(Gia_Man_t * p, Gia_Obj_t * pObj, int Value, Vec_Int_t * vPat, Vec_Int_t * vVisit)` 来自 `src/proof/cec/cecSatG2.c`：29.01%，看起来也是一堆复杂的访存和逻辑运算混合
+- `Cec4_ManPackAddPatterns(Gia_Man_t * p, int iBit, Vec_Int_t * vLits)` 来自 `src/proof/cec/cecSatG2.c`：54.65%，CEC 指的是 Combinational Equivalence Checking，函数的用途没仔细研究，不过它就是一个两层循环，对数组元素进行访存和位运算；
+- `Cec4_ManGeneratePatterns_rec(Gia_Man_t * p, Gia_Obj_t * pObj, int Value, Vec_Int_t * vPat, Vec_Int_t * vVisit)` 来自 `src/proof/cec/cecSatG2.c`：29.01%，看起来也是一堆复杂的访存和逻辑运算混合。
 
 热点依然很集中，不过因为缺少领域知识，不太明白它在跑什么。运行 255.5B 条指令，其中 Load 有 57.2B，Store 有 7.3B，分支有 40.3B，错误预测 192.0M 次，MPKI 等于 `192.0M/255.5B*1000=0.75`，相比 SAT 来说低了很多。
 
@@ -626,11 +626,11 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 热点函数终于有了新面孔：
 
-- `Abc_ObjDeleteFanin(Abc_Obj_t * pObj, Abc_Obj_t * pFanin)` 来自 `src/base/abc/abcFanio.c`：12.57%，逻辑很简单，就是调用 `Vec_IntRemove` 从数组里删除一个元素，遍历数组，找到匹配的元素，把后面的元素都往前挪
-- `Gia_ManSwiSimulate(Gia_Man_t * pAig, Gia_ParSwi_t * pPars)` 来自 `src/aig/gia/giaSwitch.c`：8.87%，依然看不懂在干啥，不过似乎是一些比较适合 SIMD 的循环，在 `-O3` 下能看到一些 SSE 指令
-- `Abc_AigAndLookup(Abc_Aig_t * pMan, Abc_Obj_t * p0, Abc_Obj_t * p1)` 来自 `src/base/abc/abcAig.c`：7.03%，主要时间是在内部一个循环当中，访存加位运算，不知道在实现什么功能
-- `If_ObjPerformMappingAnd(If_Man_t * p, If_Obj_t * pObj, int Mode, int fPreprocess, int fFirst)` 来自 `src/map/if/ifMap.c`：6.72%，又是一堆不知道在干啥的复杂位运算
-- `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeley-abc/src/opt/lpk/lpkCut.c`：5.47%，主要时间在循环里，不知道在实现什么
+- `Abc_ObjDeleteFanin(Abc_Obj_t * pObj, Abc_Obj_t * pFanin)` 来自 `src/base/abc/abcFanio.c`：12.57%，逻辑很简单，就是调用 `Vec_IntRemove` 从数组里删除一个元素，遍历数组，找到匹配的元素，把后面的元素都往前挪，这个遍历匹配逻辑是主要的瓶颈，其次就是移动数据；
+- `Gia_ManSwiSimulate(Gia_Man_t * pAig, Gia_ParSwi_t * pPars)` 来自 `src/aig/gia/giaSwitch.c`：8.87%，依然看不懂在干啥，不过似乎是一些比较适合 SIMD 的循环，在 `-O3` 下能看到一些 SSE 指令，还有一个自己实现的 popcount 函数 `Gia_WordCountOnes`，它没有被识别并转化为 popcnt 指令，而是用 SSE 去向量化软件 popcount 实现；
+- `Abc_AigAndLookup(Abc_Aig_t * pMan, Abc_Obj_t * p0, Abc_Obj_t * p1)` 来自 `src/base/abc/abcAig.c`：7.03%，主要时间是在内部一个循环当中，访存加位运算，不知道在实现什么功能，瓶颈在一些间接访存上，一路指针访问 `pObj->pNtk->vObjs->pArray`；
+- `If_ObjPerformMappingAnd(If_Man_t * p, If_Obj_t * pObj, int Mode, int fPreprocess, int fFirst)` 来自 `src/map/if/ifMap.c`：6.72%，又是一堆不知道在干啥的复杂位运算；
+- `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeley-abc/src/opt/lpk/lpkCut.c`：5.47%，主要时间在循环里，不知道在实现什么，瓶颈在一些数据依赖的分支上。
 
 运行 208.0B 条指令，其中 50.1B 条 Load 指令，15.4B 条 Store 指令，39.8B 条分支指令，错误预测 534.8M 次，MPKI 等于 `534.8M/208.0B*1000=2.57`，不低。
 
@@ -638,14 +638,14 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 再次出现了新的热点函数：
 
-- `__strcmp_avx2` 来自 libc：22.04%，没想到瓶颈居然又出现在了 strcmp 上
-- `Nm_ManTableLookupId(Nm_Man_t * p, int ObjId)` 来自 `src/misc/nm/nmTable.c`：21.56%，遍历一个哈希表，哈希表的每个桶是个链表，遍历链表中的元素，寻找匹配
-- `Nm_ManTableAdd(Nm_Man_t * p, Nm_Entry_t * pEntry)` 来自 `src/misc/nm/nmTable.c`：12.19%，经典的哈希表插入算法，把新元素插入到对应桶的链表当中
-- `Nm_ManTableLookupName(Nm_Man_t * p, char * pName, int Type)` 来自 `src/misc/nm/nmTable.c`：5.78%，同样是遍历哈希表查询，只不过这次用的是字符串匹配，解释了为啥 strcmp 调用次数那么多，其实是在找哈希表的字符串匹配
-- `Gia_ManSwiSimulate` 来自 `src/aig/gia/giaSwitch.c`：5.49%，描述见上
-- `spec_qsort`：3.98%，好久不见的熟悉面孔，在 SPEC INT 2017 年代，在 505.mcf_r 中有出色表现（指瓶颈在 qsort 上，且很大一部分开销来自于调用 comparator 函数指针，开 -flto 后因为把函数指针调用内联，性能直接提升 13%）
+- `__strcmp_avx2` 来自 libc：22.04%，没想到瓶颈居然又出现在了 strcmp 上；
+- `Nm_ManTableLookupId(Nm_Man_t * p, int ObjId)` 来自 `src/misc/nm/nmTable.c`：21.56%，遍历一个哈希表，哈希表的每个桶是个链表，遍历链表中的元素，寻找匹配，主要瓶颈也是这个访问链表和匹配；
+- `Nm_ManTableAdd(Nm_Man_t * p, Nm_Entry_t * pEntry)` 来自 `src/misc/nm/nmTable.c`：12.19%，经典的哈希表插入算法，把新元素插入到对应桶的链表当中，主要瓶颈在判断哈希表中是否已经有相同 key 的元素；
+- `Nm_ManTableLookupName(Nm_Man_t * p, char * pName, int Type)` 来自 `src/misc/nm/nmTable.c`：5.78%，同样是遍历哈希表查询，只不过这次用的是字符串匹配，解释了为啥 strcmp 调用次数那么多，其实是在找哈希表的字符串匹配；
+- `Gia_ManSwiSimulate` 来自 `src/aig/gia/giaSwitch.c`：5.49%，描述见上；
+- `spec_qsort`：3.98%，好久不见的熟悉面孔，在 SPEC INT 2017 年代，在 505.mcf_r 中有出色表现（指瓶颈在 qsort 上，且很大一部分开销来自于调用 comparator 函数指针，开 -flto 后因为把函数指针调用内联，性能直接提升 13%）。
 
-这次又是经典数据结构哈希表了，而且还混入了大量的字符串匹配，最后瓶颈都在查哈希表上了。
+这次又是经典数据结构哈希表了，而且还混入了大量的字符串匹配，最后瓶颈都在查哈希表上了，然后对链表的访问的空间局部性也很差。
 
 运行 135.7B 条指令，其中有 29.7B 是 Load 指令，11.5B 是 Store 指令，23.3B 是分支指令，错误预测 372.9M 次，MPKI 等于 `372.9M/135.7B*1000=2.75`，依然不低，从 `perf record -e branch-misses:pp` 来看，错误预测主要出自 `__strcmp_avx2` 和 `spec_qsort`。
 
