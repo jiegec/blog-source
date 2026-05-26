@@ -49,6 +49,8 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 
 `-O3` 编译选项下，1to6_classical 执行的指令数为 531.8B（`instructions` 性能计数器），其中 Load 指令有 135.7B 条（`mem_inst_retired.all_loads` 性能计数器），Store 有 59.7B 条（`mem_inst_retired.all_stores` 性能计数器），分支指令有 56.0B 条（`branch-instructions` 性能计数器），其中有 2.6B 次错误预测（`branch-misses` 性能计数器）。可见，1to6_classical 的 MPKI 还是比较高的：`2.6B/532.9B*1000=4.88`，即使是在 SPEC INT 2017 当中，也是比较高的，高于 531.deepsjeng_r 的 3.16 和 557.xz_r 的 3.49，低于 505.mcf_r 的 6.24 和 541.leela_r 的 7.71。
 
+使用 `perf record -e branch-misses:pp`，观察到主要的分支错误预测来自于 `Stockfish::MovePicker::next_move()` 函数，贡献了 27.48% 的错误预测，主要是插入排序的部分，一是循环找到插入的位置，二是循环搬运数组内原有元素。其次是 `Stockfish::Eval::evalute()` 函数，贡献了 17.42% 的错误预测。再其次是 `Stockfish::search()` 函数，贡献了 13.06% 的错误预测。
+
 开 `-O3 -mpopcnt` 后，指令数减少到 453.9B，其中 Load 有 124.2B 条，Store 有 53.1B 条，分支指令有 46.1B 条，错误预测还是 2.6B 次，所以光是内联了 `__popcountdi2` 的调用，就可以少掉 77.9B，原来的约 15% 的指令。`__popcountdi2` 本身的实现包括 21 条指令，此外还有 `__popcountdi2@plt` 里的一次 jmp，和 `call __popcountdi2@plt` 本身和前后保存和恢复寄存器的开销。
 
 #### 2. 1to6_nnue
@@ -199,7 +201,9 @@ ntest_r Othello.154.ggf 20 16
 - `solveNFlipParity`：8.95%，与 solveNParity 配合完成 minimax 算法；
 - `solve2`：5.38%，minimax 算法的一部分，处理棋盘只有两个空位的最终局面，此时判断最终胜败是比较容易的。
 
-这也是个比较典型的棋类引擎的模式了，整个 minimax 算法占了 70%+ 的时间，为了搜索局面，有大量的位运算和访存，还有根据访存结果决定方向的分支。果不其然，执行 2688.3B 条指令，其中有 647.8B 条 Load 指令，255.2B 条 Store 指令，228.2B 条是分支指令，有 6.1B 次错误预测，MPKI 达到了 `6.1B/2688B*1000=2.27`。和 706.stockfish_r 类似，它也有不少的 popcnt 调用，那么打开 `-mpopcnt` 就会得到不错的性能提升：时间从 140s 降低到 126s，减少 11% 时间，指令数减少到 2286.9B，其中有 586.9B 条 Load 指令，206.7B 条 Store 指令，187.6B 条分支指令。而即使开 `-march=native`，性能也只是进一步降到 122s，只有少量的地方用到了 AVX2。
+这也是个比较典型的棋类引擎的模式了，整个 minimax 算法占了 70%+ 的时间，为了搜索局面，有大量的位运算和访存，还有根据访存结果决定方向的分支。果不其然，执行 2688.3B 条指令，其中有 647.8B 条 Load 指令，255.2B 条 Store 指令，228.2B 条是分支指令，有 6.1B 次错误预测，MPKI 达到了 `6.1B/2688B*1000=2.27`。通过 `perf record -e branch-misses:pp`，看到 `solveNParity` 和 `solveNFlipParity` 一起贡献了 60.37% 的错误预测，主要就是上面说的，循环内对 good 还是 bad parity 的判断，以及链表插入时是否为 NULL 的判断，都是方向依赖数据的分支。
+
+和 706.stockfish_r 类似，它也有不少的 popcnt 调用，那么打开 `-mpopcnt` 就会得到不错的性能提升：时间从 140s 降低到 126s，减少 11% 时间，指令数减少到 2286.9B，其中有 586.9B 条 Load 指令，206.7B 条 Store 指令，187.6B 条分支指令。而即使开 `-march=native`，性能也只是进一步降到 122s，只有少量的地方用到了 AVX2。
 
 另一方面，LLVM 22 的性能在 707.ntest_r 上比 GCC 14 要快：同样是 `-O3` 的编译选项，运行时间从 GCC 14 的 140s 降低到 126s。深入研究汇编发现，LLVM 22 在没有开 `-mpopcnt` 的时候，它的行为是，直接把类似 libgcc 的 `__popcountdi2` 的代码内联到了程序当中，省去了 call libgcc 的开销，不过代价就是代码体积会增加，实际执行了 2416.9B 条指令，其中有 542.7B 条 Load 指令，202.9B 条 Store 指令，168.2B 条分支指令。类似地，706.stockfish_r 的 1to6_classical 也是 LLVM 22 比 GCC 14 快，从 47s 降低到 44s。
 
@@ -431,7 +435,9 @@ cc1_r ref32.c -O3 -finline-limit=12000 -fno-tree-vrp -o ref32.c.opts-O3_-finline
 
 与 502.gcc_r 的行为类似（见 [The Alberta Workloads for the SPEC CPU® 2017 Benchmark Suite 的分析](https://webdocs.cs.ualberta.ca/~amaral/AlbertaWorkloadsForSPECCPU2017/reports/gcc_report.html)），721.gcc_r 的时间分布在大量函数，除了 ref32 花费了 10.76% 的时间在 `dominated_by_p`、5.92% 的时间在 `bitmap_set_bit` 以外，其他函数的占用时间基本都在 3% 以下，没有一个特别明显的热点函数。
 
-其中 `bitmap_set_bit(bitmap head, int bit)` 函数来自 `src/gcc/bitmap.cc`，通过位运算，在 bitmap 里把一个 bit 设为一，比较特别的是，这个 bitmap 可以有二叉树（splay tree）和链表两种保存格式。`dominated_by_p(enum cdi_direction dir, const_basic_block bb1, const_basic_block bb2)` 函数来自 `src/gcc/dominance.cc`，做的是基本块的 dominance 查询，A dom B 代表从函数入口到 B 一定会经过 A，这是编译器中很常见的一个查询，由于查询次数很多，会预先通过两遍 dfs（一遍从上往下，一遍从下往上，上对应入口，下对应出口）找到基本块的拓扑顺序，然后根据拓扑排序的结果来判断是否有 A dom B 的关系：`DFS_Number_In(A) <= DFS_Number_In(B) && DFS_Number_Out (A) >= DFS_Number_Out(B)`，也就是从上往下遍历（In）的时候，先到达 A，然后从下往上遍历（Out）的时候，先到达 B。其实这个函数并不复杂，但是因为它把两次比较做成了一次 `cmp+jl` 和一次 `cmp+setle`，导致容易出现分支预测错误。从逻辑上来说，这里可以改成完成两次比较，再对结果取 AND，但由于代码里是 `&&` 有短路的性质，理论上第一个条件成立了，就不该进行第二个条件，更何况第二个条件里还涉及两次访存。这种实现确实可能省下一些访存，但分支预测也变难了。如果改写代码，先进行两次比较，再进行 `&&` 操作，就没有分支指令了，不过访存次数也确实变多了：[Godbolt](https://godbolt.org/z/qKaKzT6a1)。
+其中 `bitmap_set_bit(bitmap head, int bit)` 函数来自 `src/gcc/bitmap.cc`，通过位运算，在 bitmap 里把一个 bit 设为一，比较特别的是，这个 bitmap 可以有二叉树（splay tree）和链表两种保存格式。从 `perf record -e branch-misses:pp` 来看，这个函数主要是在设置 bit 的时候出现了一些分支预测的错误：它首先读取 bitmap 原来的数值，判断该 bit 是否已经设置，只有之前没设置的情况下，才会更新 bitmap。这样的好处是，可以节省一些 Store 指令，但也带来了一些分支的错误预测。此外就是链表的插入逻辑，需要判断指针是否为空。
+
+另外，`dominated_by_p(enum cdi_direction dir, const_basic_block bb1, const_basic_block bb2)` 函数来自 `src/gcc/dominance.cc`，做的是基本块的 dominance 查询，A dom B 代表从函数入口到 B 一定会经过 A，这是编译器中很常见的一个查询，由于查询次数很多，会预先通过两遍 dfs（一遍从上往下，一遍从下往上，上对应入口，下对应出口）找到基本块的拓扑顺序，然后根据拓扑排序的结果来判断是否有 A dom B 的关系：`DFS_Number_In(A) <= DFS_Number_In(B) && DFS_Number_Out (A) >= DFS_Number_Out(B)`，也就是从上往下遍历（In）的时候，先到达 A，然后从下往上遍历（Out）的时候，先到达 B。其实这个函数并不复杂，但是因为它把两次比较做成了一次 `cmp+jl` 和一次 `cmp+setle`，导致容易出现分支预测错误。从逻辑上来说，这里可以改成完成两次比较，再对结果取 AND，但由于代码里是 `&&` 有短路的性质，理论上第一个条件成立了，就不该进行第二个条件，更何况第二个条件里还涉及两次访存。这种实现确实可能省下一些访存，但分支预测也变难了。如果改写代码，先进行两次比较，再进行 `&&` 操作，就没有分支指令了，不过访存次数也确实变多了：[Godbolt](https://godbolt.org/z/qKaKzT6a1)。
 
 三次运行的性能计数器如下：
 
@@ -473,6 +479,8 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 - `llvm::DenseMapBase::FindAndConstruct()`: 1.69%，LLVM 自己用数组实现的哈希表，主要瓶颈在读取哈希桶内的 entry 并比较 key，随机访存比较慢。
 
 其他有很多小的函数，占时间比例不高，和 721.gcc_r 类似，也是时间分散得比较开。执行指令数为 572.8B，其中 Load 指令有 137.7B，Store 指令有 78.6B，分支指令有 118.7B，错误预测有 3.5B 次，MPKI 等于 `3.5B/572.8B*1000=6.11`，挺高的。
+
+从 `perf record -e branch-misses:pp` 来看，错误预测挺分散在很多个函数，每个函数比例也不高。从 Top down 来看，有 40% 都在 Frontend Bound，有 19.2% 在 Bad Speculation。更进一步分析，发现它的 L1 ICache 缺失次数为 12.6B（`L1-icache-load-misses` 性能计数器），对应的 L1IC MPKI 足足有 `12.6B/572.8B*1000=22.0`，可见主要问题是 723.llvm_r 的代码量太大了，L1IC 存不下，BTB 也够呛。
 
 #### 2. codegen
 
@@ -583,7 +591,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 开 -flto/-march=native/-ljemalloc 都没有什么提升，性能差距在 1% 之内，属于是油盐不进了。下面进行具体热点分析。
 
-#### twoexact
+#### 1. twoexact
 
 主要的热点函数：
 
@@ -593,26 +601,28 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 很少能见到这种瓶颈如此高度集中的情况了，不过确实，SAT Solver 大部分时间都在做 Unit Propagation，出现冲突了就做 CDCL。唤起了很久以前在《软件分析与验证》课上写 DPLL SAT Solver 的[回忆](https://github.com/jiegec/dpll)，当然了，abc 的实现肯定比我那课程作业要更加复杂和高级。主要的瓶颈就是一堆访存以及依赖内存结果的分支，在 SAT 问题的解空间内进行搜索。
 
-指令数 53B，其中分支指令 8.4B，错误预测 606M，MPKI 等于 `606M/53B*1000=11.43`，非常的高，接近 SPEC INT 2017 的 541.leela_r 大帝。
+指令数 53.2B，其中 Load 指令 13.8B，Store 指令 3.2B，分支指令 8.4B，错误预测 606.2M，MPKI 等于 `606.2M/53.2B*1000=11.43`，非常的高，接近 SPEC INT 2017 的 541.leela_r 大帝。
 
-#### beem6
+通过 `perf record -e branch-misses:pp`，可以看到主要的分支预测错误来自 `sat_solver_propagate` 的几处变量取值的判断逻辑，都是依赖数据的分支，难以预测。
+
+#### 2. beem6
 
 主要的热点函数：
 
 - `Cec4_ManPackAddPatterns(Gia_Man_t * p, int iBit, Vec_Int_t * vLits)` 来自 `src/proof/cec/cecSatG2.c`：54.65%，CEC 指的是 Combinational Equivalence Checking，函数的用途没仔细研究，不过它就是一个两层循环，对数组元素进行访存和位运算
 - `Cec4_ManGeneratePatterns_rec(Gia_Man_t * p, Gia_Obj_t * pObj, int Value, Vec_Int_t * vPat, Vec_Int_t * vVisit)` 来自 `src/proof/cec/cecSatG2.c`：29.01%，看起来也是一堆复杂的访存和逻辑运算混合
 
-热点依然很集中，不过因为缺少领域知识，不太明白它在跑什么。运行 256B 条指令，其中分支有 40B，错误预测 192M 次，MPKI 等于 `192M/256B*1000=0.75`，相比 SAT 来说低了很多。
+热点依然很集中，不过因为缺少领域知识，不太明白它在跑什么。运行 255.5B 条指令，其中 Load 有 57.2B，Store 有 7.3B，分支有 40.3B，错误预测 192.0M 次，MPKI 等于 `192.0M/255.5B*1000=0.75`，相比 SAT 来说低了很多。
 
-#### mem
+#### 3. mem
 
-热点函数依然是 sat solver 相关，相比 twoexact，`sat_solver_canceluntil` 时间占比高了一些，达到了 8.46%，不过整体的特性基本是一样的。运行 151B 条指令，其中分支有 24B，错误预测 1.2B，MPKI 等于 `1.2B/151B*1000=7.95`，非常高。
+热点函数依然是 sat solver 相关，相比 twoexact，`sat_solver_canceluntil` 时间占比高了一些，达到了 8.46%，不过整体的特性基本是一样的。运行 151.0B 条指令，其中 Load 指令有 43.4B，Store 指令有 15.4B，分支有 24.2B，错误预测 1213.7M，MPKI 等于 `1213.7M/151.0B*1000=8.03`，非常高。
 
-#### vga
+#### 4. vga
 
-热点函数依然是 sat solver，整体特性一致。运行 490B 条指令，分支有 77B，错误预测 2.1B 次，MPKI 等于 `2.1B/490B*1000=4.29`，还是很高。
+热点函数依然是 sat solver，整体特性一致。运行 490.0B 条指令，Load 指令有 143.9B，Store 指令有 54.4B，分支有 76.9B，错误预测 2092.8M 次，MPKI 等于 `2092.8M/490B*1000=4.27`，还是很高。
 
-#### mcml
+#### 5. mcml
 
 热点函数终于有了新面孔：
 
@@ -622,9 +632,9 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 - `If_ObjPerformMappingAnd(If_Man_t * p, If_Obj_t * pObj, int Mode, int fPreprocess, int fFirst)` 来自 `src/map/if/ifMap.c`：6.72%，又是一堆不知道在干啥的复杂位运算
 - `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeley-abc/src/opt/lpk/lpkCut.c`：5.47%，主要时间在循环里，不知道在实现什么
 
-运行 209B 条指令，其中 40B 条分支指令，错误预测 535M 次，MPKI 等于 `535M/209B*1000=2.56`，不低。
+运行 208.0B 条指令，其中 50.1B 条 Load 指令，15.4B 条 Store 指令，39.8B 条分支指令，错误预测 534.8M 次，MPKI 等于 `534.8M/208.0B*1000=2.57`，不低。
 
-#### des
+#### 6. des
 
 再次出现了新的热点函数：
 
@@ -637,11 +647,20 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 这次又是经典数据结构哈希表了，而且还混入了大量的字符串匹配，最后瓶颈都在查哈希表上了。
 
-运行 137B 条指令，其中有 23.5B 是分支指令，错误预测 374M 次，MPKI 等于 `374M/137B*1000=2.73`，依然不低。
+运行 135.7B 条指令，其中有 29.7B 是 Load 指令，11.5B 是 Store 指令，23.3B 是分支指令，错误预测 372.9M 次，MPKI 等于 `372.9M/135.7B*1000=2.75`，依然不低，从 `perf record -e branch-misses:pp` 来看，错误预测主要出自 `__strcmp_avx2` 和 `spec_qsort`。
 
 #### 小结
 
-综合以上六条命令，可以看到它触碰了 abc 不同地方的代码，所以热点不尽相同，有 SAT，有看不懂的一些 EDA 相关逻辑，还有带字符串匹配的哈希表查询，其中 SAT 的占比是最大的。由于 SAT 的存在，最终的 MPKI 足足有 3.87，在 SPEC INT 2026 Rate 当中仅次于 723.llvm_r，超过了 721.gcc_r 和 777.zstd_r。共执行 1296B 条指令，其中有 213B 是分支指令，这个比例不算高，但预测错误率足够高。
+| 子测试   | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI  |
+|----------|--------------|----------|----------|----------|-----------|----------|--------------|-------|
+| twoexact | GCC 14 `-O3` | 6.3      | 53.2     | 13.8     | 3.2       | 8.4      | 606.2        | 11.43 |
+| beem6    | GCC 14 `-O3` | 10.1     | 255.5    | 57.2     | 7.3       | 40.3     | 192.0        | 0.75  |
+| mem      | GCC 14 `-O3` | 13.5     | 151.0    | 43.4     | 15.4      | 24.2     | 1213.7       | 8.03  |
+| vga      | GCC 14 `-O3` | 32.3     | 490.0    | 143.9    | 54.4      | 76.9     | 2092.8       | 4.27  |
+| mcml     | GCC 14 `-O3` | 13.6     | 208.0    | 50.1     | 15.4      | 39.8     | 534.8        | 2.57  |
+| des      | GCC 14 `-O3` | 17.0     | 135.7    | 29.7     | 11.5      | 23.3     | 372.9        | 2.75  |
+
+综合以上六条命令，可以看到它触碰了 abc 不同地方的代码，所以热点不尽相同，有 SAT，有看不懂的一些 EDA 相关逻辑，还有带字符串匹配的哈希表查询，其中 SAT 的占比是最大的。由于 SAT 的存在，最终的 MPKI 足足有 3.87，在 SPEC INT 2026 Rate 当中仅次于 723.llvm_r，超过了 721.gcc_r 和 777.zstd_r。
 
 ### 734.vpr_r
 
