@@ -284,7 +284,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 - `sqlite3VdbeSerialGet(const unsigned char *buf, u32 serial_type, Mem *pMem)` 来自 `src/sqlite3.c`：5.95%，反序列化，根据内存中保存的数据类型，解析对应的数据，比如整数或者浮点，它的 switch-case 也被 GCC 编译成了跳转表；
 - `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：5.95%，实现归并排序，主要时间是在通过函数指针调用比较器函数，以及根据比较结果进行归并。
 
-瓶颈主要在解释器上，与 CPython 解释器的行为模式类似。执行了 306.0B 条指令，其中 82.8B 是 Load 指令，39.6B 是 Store 指令，62.6B 是分支指令，错误预测了 40.9M 次，MPKI 是 `40.9M/30602B*1000=0.13`，处于很低的水平。
+瓶颈主要在解释器上，与 CPython 解释器的行为模式类似。执行了 306.0B 条指令，其中 82.8B 是 Load 指令，39.6B 是 Store 指令，62.6B 是分支指令，错误预测了 40.9M 次，MPKI 是 `40.9M/306.0B*1000=0.13`，处于很低的水平。
 
 #### 3. fp
 
@@ -409,7 +409,7 @@ cpython_r -I -B dna_bench.py 600000
 - `PyUnicode_Contains(PyObject *str, PyObject *substr)` 来自 `src/cpython/Objects/unicodeobject.c`，4.59%，Python 字符串的 contains 操作，对应 `data/all/input/knucleotide.py` 代码中的 `chat in "GATC"` 判断；
 - `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.52%，描述见上。
 
-主要热点还是解释执行，不过因为字符串的 contains 调用次数较多，所以 `PyUnicode_Contains` 时间占比有所上升。执行了 394.9B 条指令，其中有 113.3B 是 Load 指令，62.1B 是 Store 指令，77.1B 是分支指令，错误预测 228.1M 次，MPKI 等于 `228M/394B*1000=0.58` 也还是很低。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 379.3B，其中 Load 有 113.4B，Store 有 58.5B，分支有 71.6B，错误预测 223.8M 次。
+主要热点还是解释执行，不过因为字符串的 contains 调用次数较多，所以 `PyUnicode_Contains` 时间占比有所上升。执行了 394.9B 条指令，其中有 113.3B 是 Load 指令，62.1B 是 Store 指令，77.1B 是分支指令，错误预测 228.1M 次，MPKI 等于 `228M/394B*1000=0.58`，也还是很低。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 379.3B，其中 Load 有 113.4B，Store 有 58.5B，分支有 71.6B，错误预测 223.8M 次。
 
 #### 小结
 
@@ -540,7 +540,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 - `Tokenizer::simplifyUsing()`：3.57%，把 `using N::x;` 变为 `using x = N::x`，里面就会用到上面说的 `Token::Match`，参数如 `"using ::| %name% ::"`，来做一些模式的匹配并进行相应的简化；
 - `cfree/malloc/_int_malloc`：0.47%+0.33%+0.45%=1.25%，内存分配相关。
 
-可以看到，主要瓶颈在字符串匹配上，它的实现就是一个循环，用指针去扫描字符串，没有做数据结构上的优化。执行了 399.9B 条指令，其中有 81.2B 条 Load 指令，25.5B 条 Store 指令，108.9B 条分支指令，错误预测 173.2M 次，MPKI 等于 `173M/399.9B*1000=0.43` 不算高。
+可以看到，主要瓶颈在字符串匹配上，它的实现就是一个循环，用指针去扫描字符串，没有做数据结构上的优化。执行了 399.9B 条指令，其中有 81.2B 条 Load 指令，25.5B 条 Store 指令，108.9B 条分支指令，错误预测 173.2M 次，MPKI 等于 `173M/399.9B*1000=0.43`，不算高。
 
 #### 2. 747_dealii
 
@@ -553,7 +553,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 - `TemplateSimplifier::addInstantiation(Token *token, const std::string &scope)` 来自 `src/lib/templatesimplifier.cpp`：2.98%，在 token 级别上做一些代码简化的变换，主要的耗时在对 `std::list` 的遍历；
 - `isAliasOf(const Token* tok, const Token* expr, int* indirect, bool* inconclusive)` 来自 `src/lib/astutils.cpp`：2.55%，判断两个变量是否 alias。
 
-依然有大量的字符串匹配，不太理解为何要设计多种语法，并分别实现多个字符串匹配函数。执行了 303.9B 条指令，其中有 67.3B 条 Load 指令，31.5B 条 Store 指令，82.5B 条分支指令，错误预测 298.9M 次，MPKI 等于 `298.9M/303.9B*1000=0.98` 也不算高。
+依然有大量的字符串匹配，不太理解为何要设计多种语法，并分别实现多个字符串匹配函数。执行了 303.9B 条指令，其中有 67.3B 条 Load 指令，31.5B 条 Store 指令，82.5B 条分支指令，错误预测 298.9M 次，MPKI 等于 `298.9M/303.9B*1000=0.98`，也不算高。
 
 #### 3. 770_7z
 
@@ -566,7 +566,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 - `__strchr_avx2`：7.34%，被用于字符串匹配；
 - `cfree/malloc/_int_malloc`：0.37%+0.27%+0.17%=0.81%，这次内存分配的比例较低。
 
-依然是字符串匹配为主。执行了 505.2B 条指令，其中有 111.0B 条 Load 指令，43.8B 条 Store 指令，137.5B 条分支指令，错误预测 421.0M 次，MPKI 等于 `421M/505.2B*1000=0.83` 也不算高。
+依然是字符串匹配为主。执行了 505.2B 条指令，其中有 111.0B 条 Load 指令，43.8B 条 Store 指令，137.5B 条分支指令，错误预测 421.0M 次，MPKI 等于 `421M/505.2B*1000=0.83`，也不算高。
 
 #### 小结
 
@@ -603,7 +603,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 六个命令运行时间都不长，分别是 6.3s、10.1s、13.5s、32.3s、13.6s 和 17.0s，总时间 92.8s，reftime 是 459s，对应 4.9 分。
 
-开 `-flto`、`-march=native` 或 `-ljemalloc` 都没有什么提升，性能差距在 1% 以内，属于是油盐不进，各种优化都难以生效的情况。下面进行具体热点分析。
+开 `-flto`、`-march=native` 或 `-ljemalloc` 都没有什么提升，性能差距在 1% 以内，属于是油盐不进，各种优化都难以生效。下面进行具体热点分析。
 
 #### 1. twoexact
 
@@ -769,7 +769,7 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 第一个测例是用 O3 CPU 模拟 RISC-V Linux 内核启动，热点函数如下：
 
 - `malloc/_int_malloc/cfree/_int_free_chunk/operator new` 来自 libc/libstdc++：4.78%+3.46%+3.29%+1.35%+1.16%=13.29%，这个比例无敌了，不过确实，Gem5 有大量的动态内存分配，比如各种内存请求，都要 new 一个 Packet 出来；
-- `gem5::TimeBuffer<*>::advance()` 来自 `src/gem5/cpu/timebuf.hh`：3.05%+2.43%+2.39%+2.28+1.98%=12.13%，用于在各流水线级之间传递数据，维护一个滚动的时间窗口，主要的时间花在了 `rep stos` 或用 SSE 指令 `movups` 对内存进行初始化，还有调用构造/析构函数，涉及到一些引用计数的更新；
+- `gem5::TimeBuffer<*>::advance()` 来自 `src/gem5/cpu/timebuf.hh`：3.05%+2.43%+2.39%+2.28%+1.98%=12.13%，用于在各流水线级之间传递数据，维护一个滚动的时间窗口，主要的时间花在了 `rep stos` 或用 SSE 指令 `movups` 对内存进行初始化，还有调用构造/析构函数，涉及到一些引用计数的更新；
 - `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：3.32%，IEW 代表 Issue Execute Writeback，后端各执行单元的时序在这里模拟，瓶颈主要是 `rep stos` 指令，用于初始化数据。
 
 其他就是很多零散的函数了，每个函数的耗时都不高。开启 `-O3 -flto` 后，热点函数变为：
@@ -1087,7 +1087,7 @@ zstd -b19 -e19 --verbose -i1 cld.tar
 
 第三/四条命令 b7/b10 的热点与第二条命令 b5 类似；第七/八条命令 b18/b19 的热点函数和第六条命令 b16 类似，就不重复了。可见 zstd 会根据 compression level 选择不同路径，从而在压缩率和性能之间做出权衡。
 
-那么开 `-march=native` 以后，发生了什么？能看到的是，由于 BMI 指令的引入，一些位运算的指令数变少了，比如 [bzhi](https://www.felixcloutier.com/x86/bzhi) 和 [tzcnt](https://www.felixcloutier.com/x86/tzcnt)，还有一些是三操作数且不影响 flags 的运算，如 [shrx](https://www.felixcloutier.com/x86/bzhi)，有点类似一些 RISC 指令集（如 RISC-V）的对应指令。开 `-march=native` 前后各命令的情况如下表：
+那么开 `-march=native` 以后，发生了什么？能看到的是，由于 BMI 指令的引入，一些位运算的指令数变少了，比如 [bzhi](https://www.felixcloutier.com/x86/bzhi) 和 [tzcnt](https://www.felixcloutier.com/x86/tzcnt)，还有一些是三操作数且不影响 flags 的运算，如 [shrx](https://www.felixcloutier.com/x86/sarx:shlx:shrx)，有点类似一些 RISC 指令集（如 RISC-V）的对应指令。开 `-march=native` 前后各命令的情况如下表：
 
 | 子测试 | 编译器+选项                | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
 |--------|----------------------------|----------|----------|----------|-----------|----------|--------------|------|
