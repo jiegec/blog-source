@@ -273,7 +273,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 
 能看到它的实现方式是，扫描 test 表的每一行，读取 key 列，如果不等于 1，则直接进入下一行；如果等于 1，则把所有列读出来，加入到结果当中。
 
-这个测例的主要瓶颈在内存上。执行了 896.3B 条指令，其中 252.4B 是 Load 指令，105.1B 是 Store 指令，178.0B 是分支指令，错误预测了 1.5B 次，MPKI 是 `1.5B/897.6B*1000=1.67`。
+这个测例的主要瓶颈在内存上。执行了 896.3B 条指令，其中 252.4B 是 Load 指令，105.1B 是 Store 指令，178.0B 是分支指令，错误预测了 1.5B 次，MPKI 是 `1.5B/896.3B*1000=1.67`。
 
 #### 2. cte
 
@@ -841,7 +841,7 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 | o3              | GCC 14 `-O3` | 16       | 211.1    | 69.9     | 31.7      | 43.2     | 175.5        | 0.83 |
 | timing          | GCC 14 `-O3` | 21       | 333.9    | 113.9    | 57.8      | 69.8     | 202.9        | 0.61 |
 | traffic_21      | GCC 14 `-O3` | 21       | 226.4    | 65.5     | 31.3      | 50.8     | 749.3        | 3.31 |
-| traffic_74_ruby | GCC 14 `-O3` | 31       | 391.8    | 103.2    | 54.4      | 82.1     | 1246.0       | 3.18 |
+| traffic_74_ruby | GCC 14 `-O3` | 31       | 391.5    | 103.2    | 54.4      | 82.1     | 1246.0       | 3.18 |
 
 735.gem5_r 四个测试跑的是挺不一样的代码路径，第一个 o3 的主要瓶颈就是 O3CPU，第二个 timing 的主要瓶颈是 RISC-V 指令集相关的代码，第三个 traffic_21 主要是缓存和内存控制器，而 traffic_74_ruby 主要是用 ruby 模拟的内存子系统。由于 gem5 高度模块化，有些时候一些可以 inline 函数没有被 inline，所以 `-flto` 可以带来不错的性能提升。此外，gem5 很喜欢动态分配内存，运行过程中有很多动态产生的对象，比如 Packet 等等，所以用 `-ljemalloc` 能带来不错的提升。`-march=native` 确实不太有用武之地。
 
@@ -871,7 +871,7 @@ sealcrypto_r refrate ecuador_province_capitals_refrate.csv Galapagos
 
 总而言之，既然是密码学，就会有大量的整数运算，其中有不少的乘法和位运算，在素数域下做各种操作。执行指令数足足有 3113.4B，其中有 385.7B 条 Load 指令，161.3B 条 Store 指令，78.5B 条分支指令，错误预测 450.0M 次，MPKI 只有 `450.0M/3113.4B*1000=0.14`，全场最低，甚至低于 714.cpython_r，同时 IPC 全场最高，达到了 5.09。从 Top down 分析来看，80.7% 属于 Retiring，13.5% 属于 Backend Bound，说明处理器基本在全速跑指令。
 
-开了 `-O3 -march=native` 后，确实生成了不少 AVX2 指令，但看下来，生成的指令序列还是挺复杂的，有大量的 vpunpcklqdq/vpunpckhqdq/vpermq/vpblendvb/vperm2i128 等指令，并没有在进行计算，而是在不断地倒腾向量寄存器里数据的位置。此时指令数降低到 2757.7B，其中有 370.0B 条 Load 指令，126.7B 条 Store 指令，268.6B 条 256 位整数向量指令（`int_vec_retired.256bit` 性能计数器），76.1B 条分支指令，错误预测 431.0M 次，MPKI 等于 `431.0M/2757.5B*1000=0.16`。虽然指令数减少了，但 IPC 降低更多，最后性能反而倒退，实际从 108s 增加到 116s。原来的 `-O3` 版本虽然每次只处理一个元素，但指令的并行度更高，IPC 弥补了指令数多的劣势。
+开了 `-O3 -march=native` 后，确实生成了不少 AVX2 指令，但看下来，生成的指令序列还是挺复杂的，有大量的 vpunpcklqdq/vpunpckhqdq/vpermq/vpblendvb/vperm2i128 等指令，并没有在进行计算，而是在不断地倒腾向量寄存器里数据的位置。此时指令数降低到 2757.7B，其中有 370.0B 条 Load 指令，126.7B 条 Store 指令，268.6B 条 256 位整数向量指令（`int_vec_retired.256bit` 性能计数器），76.1B 条分支指令，错误预测 431.0M 次，MPKI 等于 `431.0M/2757.7B*1000=0.16`。虽然指令数减少了，但 IPC 降低更多，最后性能反而倒退，实际从 108s 增加到 116s。原来的 `-O3` 版本虽然每次只处理一个元素，但指令的并行度更高，IPC 弥补了指令数多的劣势。
 
 那么，LLVM 22 做了什么优化呢？执行的指令数直接降低到 1213.6B，其中 Load 指令有 302.8B，Store 指令有 109.2B，分支只有 57.2B，错误预测 1093.9M，MPKI 等于 `1093.9M/1213.6B*1000=0.90`。以 `seal::util::DWTHandler::transform_to_rev` 为例，可以看到：seal 为了实现 64 位乘 64 位到 128 位的乘法，它自己实现了这个过程，不仅在 `seal::util::multiply_uint64_generic` 中有实现，实际上也内联到了 `seal::util::DWTHandler::transform_to_rev` 当中；GCC 14 忠实地实现了这个算法，因此指令数很多（见 [Godbolt](https://godbolt.org/z/KKTa1aMP8)）；但其实，AMD64 的 mul 指令本来就是一个 64 位乘 64 位得到 128 位的乘法，所以 LLVM 22 直接识别出这段代码做的事情，然后编译成了 mul 指令（见 [Godbolt](https://godbolt.org/z/bc6xPjEMc)，甚至如果开了 BMI2 扩展，还有 [mulx](https://www.felixcloutier.com/x86/mulx) 指令可以用），而且这种 64 位乘法保留高位的指令在各种 ISA 都挺常见的，比如 ARM64 的 umulh，RISC-V 的 mulhu，LoongArch 的 mulh.du。当然，seal 的源码其实已经考虑了这个问题，在编译器支持的情况下，直接用 __int128 来完成[这件事情](https://github.com/microsoft/SEAL/blob/e3476fad1d5bb5e5222c51a551b5a4d7e2cb4f91/native/src/seal/util/gcc.h#L44)。类似的事情在 706.stockfish_r 的 1to6_classical 中也出现了。然而，这类依赖编译器行为或具体指令集扩展的代码，由于 SPEC CPU 2026 的编译器中立性，都被去掉了，都会回落到最通用的写法上。此时，就只能依赖编译器去自己识别和优化了。
 
