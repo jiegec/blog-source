@@ -750,71 +750,78 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 
 第一个测例是用 O3 CPU 模拟 RISC-V Linux 内核启动，热点函数如下：
 
-- `malloc/_int_malloc/cfree/_int_free_chunk/operator new` 来自 libc/libstdc++：4.78%+3.46%+3.29%+1.35%+1.16%=13.29%，这个比例无敌了，不过确实，Gem5 有大量的动态内存分配，比如各种内存请求，都要 new 一个 Packet 出来
-- `gem5::TimeBuffer<*>::advance()` 来自 `src/gem5/cpu/timebuf.hh`：3.05%+2.43%+2.39%+2.28+1.98%=12.13%，用于在各流水线级之间传递数据，维护一个滚动的时间窗口，主要的时间花在了 rep stos 对内存进行初始化，还有调用构造/析构函数，涉及到一些引用计数的更新
-- `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：3.32%，IEW 代表 Issue Execute Writeback，后端各执行单元的时序在这里模拟
+- `malloc/_int_malloc/cfree/_int_free_chunk/operator new` 来自 libc/libstdc++：4.78%+3.46%+3.29%+1.35%+1.16%=13.29%，这个比例无敌了，不过确实，Gem5 有大量的动态内存分配，比如各种内存请求，都要 new 一个 Packet 出来；
+- `gem5::TimeBuffer<*>::advance()` 来自 `src/gem5/cpu/timebuf.hh`：3.05%+2.43%+2.39%+2.28+1.98%=12.13%，用于在各流水线级之间传递数据，维护一个滚动的时间窗口，主要的时间花在了 `rep stos` 或用 SSE 指令 `movups` 对内存进行初始化，还有调用构造/析构函数，涉及到一些引用计数的更新；
+- `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：3.32%，IEW 代表 Issue Execute Writeback，后端各执行单元的时序在这里模拟，瓶颈主要是 `rep stos` 指令，用于初始化数据。
 
 其他就是很多零散的函数了，每个函数的耗时都不高。开启 `-O3 -flto` 后，热点函数变为：
 
-- `std::_Function_handler<void (), gem5::o3::CPU::CPU(gem5::BaseO3CPUParams const&)::{lambda()#1}>::_M_invoke(std::_Any_data const&)`：20.80% 实际上是 `tickEvent([this]{ tick(); }, "O3CPU tick", false, Event::CPU_Tick_Pri)` 当中调用 `tick()` 的 lambda，就是整个 O3 CPU 各种组件的单步模拟被融合到了一个巨大的函数里，仔细看里面的热点指令，其实还是 `gem5::TimeBuffer<*>::advance()` 相关的比较多
-- `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：8.58%，描述见上
-- `malloc/_int_malloc/cfree/_int_free_chunk/operator new` 来自 libc/libstdc++：5.55%+3.88%+3.72%+1.45%+1.22%=15.83%，随着其余部分被优化，内存分配的瓶颈更加明显了
+- `std::_Function_handler<void (), gem5::o3::CPU::CPU(gem5::BaseO3CPUParams const&)::{lambda()#1}>::_M_invoke(std::_Any_data const&)`：20.80% 实际上是 `tickEvent([this]{ tick(); }, "O3CPU tick", false, Event::CPU_Tick_Pri)` 当中调用 `tick()` 的 lambda，就是整个 O3 CPU 各种组件的单步模拟被融合到了一个巨大的函数里，仔细看里面的热点指令，其实还是 `gem5::TimeBuffer<*>::advance()` 相关的比较多；
+- `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：8.58%，描述见上；
+- `malloc/_int_malloc/cfree/_int_free_chunk/operator new` 来自 libc/libstdc++：5.55%+3.88%+3.72%+1.45%+1.22%=15.83%，随着其余部分被优化，内存分配的瓶颈更加明显了。
 
 进一步开启 `-O3 -flto -ljemalloc` 后，内存分配时间减少，热点函数：
 
-- `std::_Function_handler<void (), gem5::o3::CPU::CPU(gem5::BaseO3CPUParams const&)::{lambda()#1}>::_M_invoke(std::_Any_data const&)`：23.20%，描述见上
-- `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：9.19%，描述见上
-- `gem5::o3::Commit::commit()` 来自 `src/gem5/cpu/o3/commit.cc`：4.56%，模拟 CPU 的 Commit 阶段
-- `malloc/_int_malloc/cfree/_int_free_chunk/operator new/operator delete` 来自 libjemalloc：3.12%+1.02%+0.53%=4.67%，明显变少
+- `std::_Function_handler<void (), gem5::o3::CPU::CPU(gem5::BaseO3CPUParams const&)::{lambda()#1}>::_M_invoke(std::_Any_data const&)`：23.20%，描述见上；
+- `gem5::o3::IEW::tick()` 来自 `src/gem5/cpu/o3/iew.cc`：9.19%，描述见上；
+- `gem5::o3::Commit::commit()` 来自 `src/gem5/cpu/o3/commit.cc`：4.56%，模拟 CPU 的 Commit 阶段；
+- `malloc/_int_malloc/cfree/_int_free_chunk/operator new/operator delete` 来自 libjemalloc：3.12%+1.02%+0.53%=4.67%，明显变少。
 
 开启 `-O3 -march=native` 带来的效果是，用 memset 调用取代了之前的 rep stos，进而可以用更加高效的 AVX2 版本的 memset 来进行初始化，优化了 `gem5::TimeBuffer<*>::advance()` 的性能。
 
-`-O3` 下，执行 212B 条指令，其中有 43B 条分支指令，错误预测 176M 次，MPKI 等于 `176M/212B*1000=0.83`，比较低。
+`-O3` 下，执行 211.1B 条指令，其中有 69.9B 条 Load 指令，31.7B 条 Store 指令，43.2B 条分支指令，错误预测 175.5M 次，MPKI 等于 `175.5M/211.1B*1000=0.83`，比较低。
 
 #### timing
 
 第二个测例则是把 O3 换成了 TimingSimpleCPU，相比 O3 模拟的复杂度低很多，此时主要的瓶颈挪到了 RISC-V 架构相关的代码、缓存模拟，以及内存分配上：
 
-- `cfree/malloc/operator new` 来自 libc：5.92%+4.56%+1.55%=12.03%，依然有很多内存分配的瓶颈
-- `gem5::RiscvISA::Decoder::decode(ExtMachInst mach_inst, Addr addr)` 来自 `src/gem5/arch/riscv/decoder.cc`：8.97%，实现 RISC-V 指令集的 Decode，有很大一部分实现是自动生成的，在 `src/gem5/arch/riscv/generated/decode-method.cc.inc` 文件里
-- `gem5::BaseTags::findBlock(Addr addr, bool is_secure)` 来自 `src/gem5/mem/cache/tags/base.cc`：5.19%，用来实现组相连的 tag 比较，就是一个循环比较 tag 找匹配的算法
-- `gem5::PMAChecker::check(const RequestPtr &req)` 来自 `src/gem5/arch/riscv/pma_checker.cc`：4.86%，实现 RISC-V 的 PMA 检查，属于 MMU 的一部分，逻辑很简单，就是判断一下是否 Uncacheable，如果是，就标记 STRICT_ORDER，避免重排
-- `gem5::RiscvISA::ISA::readMiscReg(RegIndex idx)` 来自 `src/gem5/arch/riscv/isa.cc`：3.34%，用于读取 RISC-V 的 CSR
-- `gem5::BaseCache::access(PacketPtr pkt, CacheBlk *&blk, Cycles &lat, PacketList &writebacks)` 来自 `src/gem5/mem/cache/base.cc`：2.84%，用于模拟缓存的访问
-- `gem5::PMP::pmpCheck(const RequestPtr &req, BaseMMU::Mode mode, RiscvISA::PrivilegeMode pmode, ThreadContext *tc, Addr vaddr)` 来自 `src/gem5/arch/riscv/pmp.cc`：2.66%，实现 RISC-V 的 PMP 检查，属于 MMU 的一部分，扫描 PMP 配置，逐个判断是否匹配
+- `cfree/malloc/operator new` 来自 libc：5.92%+4.56%+1.55%=12.03%，依然有很多内存分配的瓶颈；
+- `gem5::RiscvISA::Decoder::decode(ExtMachInst mach_inst, Addr addr)` 来自 `src/gem5/arch/riscv/decoder.cc`：8.97%，实现 RISC-V 指令集的 Decode，有很大一部分实现是自动生成的，在 `src/gem5/arch/riscv/generated/decode-method.cc.inc` 文件里，这里为了加速 Decode，用了一个 `decode_cache::InstMap<ExtMachInst>`（实际上就是 `std::Map<ExtMachInst, StaticInstPtr>`）来加速，因此大部分的时间其实是在用红黑树实现的缓存中寻找已经 Decode 过的指令编码；
+- `gem5::BaseTags::findBlock(Addr addr, bool is_secure)` 来自 `src/gem5/mem/cache/tags/base.cc`：5.19%，用来实现组相连的 tag 比较，就是一个循环比较 tag 找匹配的算法，主要瓶颈就是 tag 比对；
+- `gem5::PMAChecker::check(const RequestPtr &req)` 来自 `src/gem5/arch/riscv/pma_checker.cc`：4.86%，实现 RISC-V 的 PMA 检查，属于 MMU 的一部分，逻辑很简单，就是循环判断一下请求地址是否属于某个 Uncacheable 地址区间，如果是，就标记 STRICT_ORDER，避免重排；
+- `gem5::RiscvISA::ISA::readMiscReg(RegIndex idx)` 来自 `src/gem5/arch/riscv/isa.cc`：3.34%，用于读取 RISC-V 的 CSR，GCC 这次是用若干 branch 来分别进入不同的 case 处理代码；
+- `gem5::BaseCache::access(PacketPtr pkt, CacheBlk *&blk, Cycles &lat, PacketList &writebacks)` 来自 `src/gem5/mem/cache/base.cc`：2.84%，用于模拟缓存的访问；
+- `gem5::PMP::pmpCheck(const RequestPtr &req, BaseMMU::Mode mode, RiscvISA::PrivilegeMode pmode, ThreadContext *tc, Addr vaddr)` 来自 `src/gem5/arch/riscv/pmp.cc`：2.66%，实现 RISC-V 的 PMP 检查，属于 MMU 的一部分，扫描 PMP 配置，逐个判断是否匹配。
 
 开 `-O3 -flto` 后，`readMiscReg` 被内联。开 `-O3 -flto -ljemalloc` 后，内存分配的开销降低到 4.48%+1.34%=5.82%。`-march=native` 影响比较小。
 
-`-O3` 下，执行 334B 条指令，其中有 69.8B 条分支指令，错误预测 207.8M 次，MPKI 等于 `207.8M/334B*1000=0.62`，比较低。
+`-O3` 下，执行 333.9B 条指令，其中有 113.9B 条 Load 指令，57.8B 条 Store 指令，69.8B 条分支指令，错误预测 202.9M 次，MPKI 等于 `202.9M/333.9B*1000=0.61`，比较低。
 
 #### traffic_21
 
 热点函数：
 
-- `cfree/malloc/operator new` 来自 libc：6.01%+4.62%+1.44%+1.40%=13.47%，依然有很多内存分配的瓶颈
-- `gem5::SnoopFilter::lookupRequest(const Packet* cpkt, const ResponsePort& cpu_side_port)` 来自 `src/gem5/mem/snoop_filter.c`：5.93%，在总线上对 Snoop 请求进行 Filter，减少缓存一致性开销；此外它还有一个 `std::map`，查询和更新也耗费了不少时间
-- `gem5::AddrRange::removeIntlvBits(Addr a)` 来自 `src/gem5/base/addr_range.hh`：3.39%，针对地址的 interleaving，进行一系列位运算，把 interleaving 的那部分比特去掉，保留其他的，具体实现方法是，找到要去掉的比特的位置，从小到大进行排序，然后把要保留的比特分段插入到结果当中
-- `gem5::BaseTags::findBlock(Addr addr, bool is_secure)` 来自 `src/gem5/mem/cache/tags/base.cc`：3.18%，描述见上
+- `cfree/malloc/operator new` 来自 libc：6.01%+4.62%+1.44%+1.40%=13.47%，依然有很多内存分配的瓶颈；
+- `gem5::SnoopFilter::lookupRequest(const Packet* cpkt, const ResponsePort& cpu_side_port)` 来自 `src/gem5/mem/snoop_filter.c`：5.93%，在总线上对 Snoop 请求进行 Filter，减少缓存一致性开销；它用一个 `std::map` 来维护状态，查询和更新耗费了不少时间，是主要的瓶颈；
+- `gem5::AddrRange::removeIntlvBits(Addr a)` 来自 `src/gem5/base/addr_range.hh`：3.39%，针对地址的 interleaving，进行一系列位运算，把 interleaving 的那部分比特去掉，保留其他的，具体实现方法是，找到要去掉的比特的位置，从小到大进行排序，然后把要保留的比特分段插入到结果当中，主要的瓶颈是 `src/gem5/base/bitfield.hh` 的 `ctz64()` 函数，GCC 14 会忠实地生成循环，GCC 15 会生成 `rep bsfq` 指令，如果进一步给 GCC 15 开 `-mbmi`，会生成 `tzcnt` 指令，应该会变快一些（[Godbolt](https://godbolt.org/z/PjxbhnqPK)）；
+- `gem5::BaseTags::findBlock(Addr addr, bool is_secure)` 来自 `src/gem5/mem/cache/tags/base.cc`：3.18%，描述见上。
 
 开启 `-O3 -flto` 后，热点函数中 `removeIntlvBits` 消失，时间转移到了 `gem5::memory::DRAMInterface::decodePacket` 和 `gem5::memory::DRAMInterface::chooseNextFRFCFS`。开 `-O3 -flto -ljemalloc` 后，内存分配的开销降低到 4.08%+1.39%=5.47%。`-march=native` 影响比较小。
 
-`-O3` 下，执行 226.5B 条指令，其中有 50.8B 条分支指令，错误预测 760.5M 次，MPKI 等于 `760.5M/226.5B*1000=3.35`，明显变高。
+`-O3` 下，执行 226.4B 条指令，其中有 65.5B 条 Load 指令，31.3B 条 Store 指令，50.8B 条分支指令，错误预测 749.3M 次，MPKI 等于 `749.3M/226.4B*1000=3.31`，明显变高。
 
 #### traffic_74_ruby
 
 相比 traffic_21，traffic_74_ruby 开启了 ruby（不是那个 ruby 编程语言），因此瓶颈来到了 `gem5::ruby` 相关：
 
-- `cfree/malloc/operator new` 来自 libc：4.43%+3.52%+1.29%+0.98%=10.22%，依然有很多内存分配的瓶颈
-- `gem5::ruby::Cache_Controller::processNextState(Cache_TBE*& m_tbe_ptr, Cache_CacheEntry*& m_cache_entry_ptr, Addr addr)` 来自 `src/gem5/mem/ruby/protocol/Cache_Controller.cc`：4.44%，维护缓存的状态机，还挺复杂的
-- `gem5::ruby::NetDest::intersectionIsNotEmpty(const NetDest& other_netDest)` 来自 `src/gem5/mem/ruby/common/NetDest.cc`：4.03%，做的是一些 std::bitset 的与操作
-- `gem5::ruby::MessageBuffer::isReady(Tick current_time)` 来自 `src/gem5/mem/ruby/network/MessageBuffer.cc`：3.94%，维护了消息队列，判断当前时间是否有 ready 的消息
-- `gem5::ruby::Cache_Controller::getDirEntry(const Addr& param_addr)` 来自 `src/gem5/mem/ruby/protocol/Cache_Controller.cc`：3.80%，根据地址找到 cache 对应的 entry，实现类似 `gem5::BaseTags::findBlock`
+- `cfree/malloc/operator new` 来自 libc：4.43%+3.52%+1.29%+0.98%=10.22%，依然有很多内存分配的瓶颈；
+- `gem5::ruby::Cache_Controller::processNextState(Cache_TBE*& m_tbe_ptr, Cache_CacheEntry*& m_cache_entry_ptr, Addr addr)` 来自 `src/gem5/mem/ruby/protocol/Cache_Controller.cc`：4.44%，维护缓存的状态机，还挺复杂的；
+- `gem5::ruby::NetDest::intersectionIsNotEmpty(const NetDest& other_netDest)` 来自 `src/gem5/mem/ruby/common/NetDest.cc`：4.03%，做的是一些 std::bitset 的与操作，这也是主要的瓶颈；
+- `gem5::ruby::MessageBuffer::isReady(Tick current_time)` 来自 `src/gem5/mem/ruby/network/MessageBuffer.cc`：3.94%，维护了消息队列，判断当前时间是否有 ready 的消息；
+- `gem5::ruby::Cache_Controller::getDirEntry(const Addr& param_addr)` 来自 `src/gem5/mem/ruby/protocol/Cache_Controller.cc`：3.80%，根据地址找到 cache 对应的 entry，对 `std::map` 调用 `operator []`。
 
 开启 `-O3 -flto` 后，`gem5::ruby::NetDest::intersectionIsNotEmpty` 被内联到 `gem5::ruby::WeightBased::route` 函数里，成为占时间最多的函数，占 6.45%。开启 `-O3 -flto -ljemalloc` 后，内存分配开销降低到 3.01%+0.83%=3.84%。`-march=native` 影响比较小。
 
-`-O3` 下，执行 391.8B 条指令，其中有 82.1B 条分支指令，错误预测 1.25B 次，MPKI 等于 `1.25B/391.8B*1000=3.19`，依然较高。
+`-O3` 下，执行 391.5B 条指令，其中有 103.2B 条 Load 指令，54.4B 条 Store 指令，82.1B 条分支指令，错误预测 1246.0M 次，MPKI 等于 `1246.9M/391.5B*1000=3.18`，依然较高。
 
 #### 小结
+
+| 子测试          | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
+|-----------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
+| o3              | GCC 14 `-O3` | 16       | 211.1    | 69.9     | 31.7      | 43.2     | 175.5        | 0.83 |
+| timing          | GCC 14 `-O3` | 21       | 333.9    | 113.9    | 57.8      | 69.8     | 202.9        | 0.61 |
+| traffic_21      | GCC 14 `-O3` | 21       | 226.4    | 65.5     | 31.3      | 50.8     | 749.3        | 3.31 |
+| traffic_74_ruby | GCC 14 `-O3` | 31       | 391.8    | 103.2    | 54.4      | 82.1     | 1246.0       | 3.18 |
 
 735.gem5_r 四个测试跑的是挺不一样的代码路径，第一个 o3 的主要瓶颈就是 O3CPU，第二个 timing 的主要瓶颈是 RISC-V 指令集相关的代码，第三个 traffic_21 主要是缓存和内存控制器，而 traffic_74_ruby 主要是用 ruby 模拟的内存子系统。由于 gem5 高度模块化，有些时候一些可以 inline 函数没有被 inline，所以 `-flto` 可以带来不错的性能提升。此外，gem5 很喜欢动态分配内存，运行过程中有很多动态产生的对象，比如 Packet 等等，所以用 `-ljemalloc` 能带来不错的提升。`-march=native` 确实不太有用武之地。
 
