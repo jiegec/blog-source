@@ -468,9 +468,9 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 
 使用 `perf` 观察热点函数：
 
-- `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 4.06%，对 IR 中的 PHI 结点进行处理，这个函数还挺复杂的
-- `_int_malloc/cfree/malloc`：2.38%+0.89%+0.82%=4.09%，大量的内存分配和释放，因此 `-ljemalloc` 能带来不错的性能提升
-- `llvm::DenseMapBase::FindAndConstruct()`: 1.69%，LLVM 自己用数组实现的哈希表
+- `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 4.06%，对 IR 中的 PHI 结点进行处理，这个函数还挺复杂的，主要瓶颈在内层循环，遍历 use 链表，有比较多的随机访存和通过分支来判断 LLVM 自制 RTTI 的类型；
+- `_int_malloc/cfree/malloc`：2.38%+0.89%+0.82%=4.09%，大量的内存分配和释放，因此 `-ljemalloc` 能带来不错的性能提升；
+- `llvm::DenseMapBase::FindAndConstruct()`: 1.69%，LLVM 自己用数组实现的哈希表，主要瓶颈在读取哈希桶内的 entry 并比较 key，随机访存比较慢。
 
 其他用很多小的函数，占时间比例不高，和 721.gcc_r 类似，也是时间分散得比较开。执行指令数为 572.8B，其中分支指令有 118.7B，错误预测有 3.5B 次，MPKI 等于 `3.5B/572.8B*1000=6.11`，挺高的。
 
@@ -478,9 +478,9 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 
 使用 `perf` 观察热点函数：
 
-- `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 20.85%，描述见上
-- `_int_malloc/cfree/malloc`：1.91%+0.72%+0.65%=3.28%，描述见上
-- `llvm::DenseMapBase::FindAndConstruct()`: 1.29%，描述见上
+- `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 20.85%，描述见上；
+- `_int_malloc/cfree/malloc`：1.91%+0.72%+0.65%=3.28%，描述见上；
+- `llvm::DenseMapBase::FindAndConstruct()`: 1.29%，描述见上。
 
 整体的情况和 transformsplus 类似，只不过 `foldIntegerTypedPHI` 时间占比更高，其他还是有很多函数耗费很短的时间，分散得比较开。执行指令数为 415.9B，其中分支指令有 86.1B，错误预测有 2.4B 次，MPKI 等于 `2.4B/415.9B*1000=5.77`，依然很高。
 
