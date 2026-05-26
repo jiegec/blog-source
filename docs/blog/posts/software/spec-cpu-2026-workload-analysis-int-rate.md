@@ -746,7 +746,7 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 
 看到这个性能提升的幅度，结合前面的经验，已经可以预估一下后面会见到的瓶颈大概是什么类型了。
 
-#### o3
+#### 1. o3
 
 第一个测例是用 O3 CPU 模拟 RISC-V Linux 内核启动，热点函数如下：
 
@@ -771,7 +771,7 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 
 `-O3` 下，执行 211.1B 条指令，其中有 69.9B 条 Load 指令，31.7B 条 Store 指令，43.2B 条分支指令，错误预测 175.5M 次，MPKI 等于 `175.5M/211.1B*1000=0.83`，比较低。
 
-#### timing
+#### 2. timing
 
 第二个测例则是把 O3 换成了 TimingSimpleCPU，相比 O3 模拟的复杂度低很多，此时主要的瓶颈挪到了 RISC-V 架构相关的代码、缓存模拟，以及内存分配上：
 
@@ -787,7 +787,7 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 
 `-O3` 下，执行 333.9B 条指令，其中有 113.9B 条 Load 指令，57.8B 条 Store 指令，69.8B 条分支指令，错误预测 202.9M 次，MPKI 等于 `202.9M/333.9B*1000=0.61`，比较低。
 
-#### traffic_21
+#### 3. traffic_21
 
 热点函数：
 
@@ -800,7 +800,7 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 
 `-O3` 下，执行 226.4B 条指令，其中有 65.5B 条 Load 指令，31.3B 条 Store 指令，50.8B 条分支指令，错误预测 749.3M 次，MPKI 等于 `749.3M/226.4B*1000=3.31`，明显变高。
 
-#### traffic_74_ruby
+#### 4. traffic_74_ruby
 
 相比 traffic_21，traffic_74_ruby 开启了 ruby（不是那个 ruby 编程语言），因此瓶颈来到了 `gem5::ruby` 相关：
 
