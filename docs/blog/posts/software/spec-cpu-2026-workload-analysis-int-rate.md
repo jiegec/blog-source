@@ -238,12 +238,36 @@ sqlite_r --memdb --size 1000 --testset fp --verify
 
 通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
-- `sqlite3BtreeMovetoUnpacked(BtCursor *pCur, UnpackedRecord *pIdxKey, i64 intKey, int biasRight, int *pRes)` 来自 `src/sqlite3.c`：24.66%，在 Btree 上进行搜索，根据 key，查找对应的 entry
-- `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：22.36%，用 Loop+Switch 实现的执行字节码的虚拟机，执行编译好的 SQL 语句，VDBE 是 SQLite 的执行引擎，全称是 Virtual Database Engine
-- `pcache1Fetch(sqlite3_pcache *p, unsigned int iKey, int createFlag)` 来自 `src/sqlite3.c`：8.26%，对应一个用哈希表维护的 Page Cache，用于在内存里缓存硬盘上的数据
+- `sqlite3BtreeMovetoUnpacked(BtCursor *pCur, UnpackedRecord *pIdxKey, i64 intKey, int biasRight, int *pRes)` 来自 `src/sqlite3.c`：24.66%，在 Btree 上进行搜索，根据 key，查找对应的 entry，中间一个比较耗时的部分是逐字节扫描 pCell 指向的内存，此外还会经常调用 `sqlite3GetVarint` 获取 pCell 保存的变长 int 来实现二分搜索
+- `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：22.36%，用 Loop+Switch 实现的执行字节码的虚拟机，执行编译好的 SQL 语句，VDBE 是 SQLite 的执行引擎，全称是 Virtual Database Engine，模拟过程会维护一个 `pc`，从 `aOp` 数组里扫描字节码，每个字节码是一个 `struct VdbeOp` 结构体，根据它的 `opcode` 字段进行一个大的 switch-case，一共有 176 种不同的 Op；gcc 把这个巨大的 switch-case 编译成了跳转表，也就是把各个 case 的地址保存到一个数组当中，根据 `opcode` 计算出对应 case 的地址，再 `jmp *%rax` 过去，执行完 case 的代码后，再跳回 switch 开头，读取下一个 opcode，再跳转；目前有一些解释器会直接用 C 的扩展，用 computed goto label 的写法来帮助编译器做这个优化，或者更进一步直接在每个 case 的最后跳转到下一个 `opcode` 对应的 case，拓展阅读： [Android Runtime 解释器的实现探究](./android-runtime-interpreter.md)
+- `pcache1Fetch(sqlite3_pcache *p, unsigned int iKey, int createFlag)` 来自 `src/sqlite3.c`：8.26%，对应一个用哈希表维护的 Page Cache，用于在内存里缓存硬盘上的数据，主要瓶颈在 `pcache1FetchNoMutex` 里的 `pPage = pCache->apHash[iKey % pCache->nHash]; while( pPage && pPage->iKey!=iKey ){ pPage = pPage->pNext; }`，在哈希表的链表里做一个扫描
 - `sqlite3GetVarint(const unsigned char *p, u64 *v)` 来自 `src/sqlite3.c`：3.70%，恢复内存中可变长度的整数
 
-都是一些比较经典的数据结构和算法的应用，Btree，Loop+Switch 的解释执行，加哈希表查询。主要瓶颈在内存上。执行了 896.3B 条指令，其中 252.4B 是 Load 指令，105.1B 是 Store 指令，178.0B 是分支指令，错误预测了 1.5B 次，MPKI 是 `1.5B/897.6B*1000=1.67`。
+都是一些比较经典的数据结构和算法的应用，Btree，Loop+Switch 的解释执行，加哈希表查询。一段 Vdbe 指令序列的例子如下：
+
+```sql
+sqlite> CREATE TABLE test(key INT, value INT);
+sqlite> EXPLAIN SELECT * FROM test WHERE key = 1;
+addr  opcode         p1    p2    p3    p4             p5  comment
+----  -------------  ----  ----  ----  -------------  --  -------------
+0     Init           0     10    0                    0   Start at 10
+1     OpenRead       0     2     0     2              0   root=2 iDb=0; test
+2     Rewind         0     9     0                    0
+3       Column         0     0     1                    0   r[1]= cursor 0 column 0
+4       Ne             2     8     1     BINARY-8       84  if r[1]!=r[2] goto 8
+5       Column         0     0     3                    0   r[3]= cursor 0 column 0
+6       Column         0     1     4                    0   r[4]= cursor 0 column 1
+7       ResultRow      3     2     0                    0   output=r[3..4]
+8     Next           0     3     0                    1
+9     Halt           0     0     0                    0
+10    Transaction    0     0     1     0              1   usesStmtJournal=0
+11    Integer        1     2     0                    0   r[2]=1
+12    Goto           0     1     0                    0
+```
+
+能看到它的实现方式是，扫描 test 表的每一行，读取 key 列，如果不等于 1，则直接进入下一行；如果等于 1，则把所有列读出来，加入到结果当中。
+
+这个测例的主要瓶颈在内存上。执行了 896.3B 条指令，其中 252.4B 是 Load 指令，105.1B 是 Store 指令，178.0B 是分支指令，错误预测了 1.5B 次，MPKI 是 `1.5B/897.6B*1000=1.67`。
 
 #### cte
 
