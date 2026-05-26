@@ -685,34 +685,41 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_a
 
 因为这两条命令都是做的布局（place），所以就放在一起分析了。它们的热点函数是类似的：
 
-- `get_non_updateable_bb(ClusterNetId net_id, t_bb* bb_coord_new)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 13.98%，smithwaterman_place 占比 18.26%，遍历 pin，根据它的 x 和 y 坐标，找到 bounding box，即 xmin/xmax/ymin/ymax
-- `try_swap(...)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 12.39%，smithwaterman_place 占比 11.46%，里面做的事情还挺复杂的，看不太懂
-- `physical_tile_type(ClusterBlockId blk)` 来自 `src/vtr-vpr/vpr/src/util/vpr_utils.cpp`：jpeg_place 占比 7.59%，smithwaterman_place 占比 7.75%，看起来就是比较简单的访存，这个函数会在 `get_non_updateable_bb` 和 `get_bb_from_scratch` 等地方被频繁调用
-- `get_bb_from_scratch(ClusterNetId net_id, t_bb* coords, t_bb* num_on_edges)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 6.73%，smithwaterman_place 占比 2.78%，和 `get_non_updateable_bb` 类似，也是求 bounding box
-- `malloc/_int_mallloc/cfree` 来自 libc：jpeg_place 占比 1.62%+1.26%+1.06%=3.94%，smithwaterman_place 占比 1.76%+1.42%+1.11%=4.29%
+- `get_non_updateable_bb(ClusterNetId net_id, t_bb* bb_coord_new)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 13.98%，smithwaterman_place 占比 18.26%，遍历 pin，根据它的 x 和 y 坐标，找到 bounding box，即 xmin/xmax/ymin/ymax，主要时间花在读取 x 和 y 上；
+- `try_swap(...)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 12.39%，smithwaterman_place 占比 11.46%，里面做的事情还挺复杂的，看不太懂，大概功能是尝试把一个块从一个地方挪到另一个地方；
+- `physical_tile_type(ClusterBlockId blk)` 来自 `src/vtr-vpr/vpr/src/util/vpr_utils.cpp`：jpeg_place 占比 7.59%，smithwaterman_place 占比 7.75%，看起来是一些间接索引访存，先读取 `block_loc` 里的坐标，再从 `grid` 读取对应坐标的 type，这个函数会在 `get_non_updateable_bb` 和 `get_bb_from_scratch` 等地方被频繁调用；
+- `get_bb_from_scratch(ClusterNetId net_id, t_bb* coords, t_bb* num_on_edges)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 6.73%，smithwaterman_place 占比 2.78%，和 `get_non_updateable_bb` 类似，也是求 bounding box；
+- `malloc/_int_mallloc/cfree` 来自 libc：jpeg_place 占比 1.62%+1.26%+1.06%=3.94%，smithwaterman_place 占比 1.76%+1.42%+1.11%=4.29%。
 
 开 `-O3 -flto` 后，能看到的是 `physical_tile_type` 被内联了进去，节省了频繁调用函数的开销。考虑到这个内存分配和释放的时间占比，`-O3 -ljemalloc` 提升性能并不意外。
 
-`-O3` 下，jpeg_place 执行了 275B 条指令，其中分支有 52B 条，错误预测 785M 次，MPKI 等于 `785M/275B*1000=2.85`，不低。smithwaterman_place 执行了 247B 条指令，其中分支有 45.6B 条，错误预测 663M 次，MPKI 等于 `663M/247B*1000=2.68`。在 bounding box 计算 min/max 过程中，能看到一些 cmov 指令的使用，因此实际上已经少了一些容易预测错误的分支了。在一些没有 cmov 指令的 ISA 下，可能 MPKI 还会更高。
+`-O3` 下，jpeg_place 执行了 273.7B 条指令，其中 Load 有 84.5B 条，Store 有 26.9B 条，分支有 51.9B 条，错误预测 781.0M 次，MPKI 等于 `781.0M/273.7B*1000=2.85`，不低。smithwaterman_place 执行了 245.0B 条指令，其中 Load 有 76.4B 条，Store 有 24.7B 条，分支有 45.4B 条，错误预测 661.9M 次，MPKI 等于 `661.9M/245.0B*1000=2.70`。在 bounding box 计算 min/max 过程中，能看到一些 cmov 指令的使用，因此实际上已经少了一些容易预测错误的分支了。在一些没有 cmov 指令的 ISA 下，可能 MPKI 还会更高。
 
 #### jpeg_route 和 smithwaterman_route
 
 到了布线，热点函数出现了一些不同：
 
-- `ConnectionRouter<BinaryHeap>::evaluate_timing_driven_node_costs(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.35%，smithwaterman_route 占比 6.91%，有一些浮点运算，不知道具体在算什么
-- `ConnectionRouter<BinaryHeap>::timing_driven_add_to_heap(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.34%，smithwaterman_route 占比 6.82%，会调用 `evaluate_timing_driven_node_costs` 计算 cost，然后插入到 Binary Heap 当中
-- `ConnectionRouter<BinaryHeap>::timing_driven_expand_neighbours(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 8.14%，smithwaterman_route 占比 4.00%，不确定在干啥，看起来在遍历邻居结点，符合一定条件后，调用 `timing_driven_add_to_heap`
-- `ClassicLookahead::get_expected_delay_and_cong(...)` 来自 `src/vtr-vpr/vpr/src/route/router_lookahead.cpp`：jpeg_route 占比 7.86%，smithwaterman_route 占比 5.14%，看起来也是在进行一些延迟的计算，涉及到很多浮点数
-- `BinaryHeap::get_heap_head()` 来自 `src/vtr-vpr/vpr/src/route/binary_heap.cpp`：jpeg_route 占比 3.14%，smithwaterman_route 占比 1.64%，就是经典的最小二叉堆的实现，获取最小值
-- `malloc/_int_mallloc/cfree` 来自 libc：jpeg_route 占比 1.10%+1.02%+0.78%=2.90%，smithwaterman_route 占比 1.62%+1.49%+1.08%=4.19%
+- `ConnectionRouter<BinaryHeap>::evaluate_timing_driven_node_costs(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.35%，smithwaterman_route 占比 6.91%，有一些浮点运算，不知道具体在算什么；
+- `ConnectionRouter<BinaryHeap>::timing_driven_add_to_heap(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.34%，smithwaterman_route 占比 6.82%，会调用 `evaluate_timing_driven_node_costs` 计算 cost，然后插入到 Binary Heap 当中；
+- `ConnectionRouter<BinaryHeap>::timing_driven_expand_neighbours(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 8.14%，smithwaterman_route 占比 4.00%，不确定在干啥，看起来在遍历邻居结点，符合一定条件后，调用 `timing_driven_add_to_heap`；
+- `ClassicLookahead::get_expected_delay_and_cong(...)` 来自 `src/vtr-vpr/vpr/src/route/router_lookahead.cpp`：jpeg_route 占比 7.86%，smithwaterman_route 占比 5.14%，看起来也是在进行一些延迟的计算，涉及到很多浮点数；
+- `BinaryHeap::get_heap_head()` 来自 `src/vtr-vpr/vpr/src/route/binary_heap.cpp`：jpeg_route 占比 3.14%，smithwaterman_route 占比 1.64%，就是经典的最小二叉堆的实现，获取最小值，用的是浮点数做比较；
+- `malloc/_int_mallloc/cfree` 来自 libc：jpeg_route 占比 1.10%+1.02%+0.78%=2.90%，smithwaterman_route 占比 1.62%+1.49%+1.08%=4.19%。
 
 虽然不清楚具体算法，但看起来，就像是在做一些 cost 计算，然后通过 BinaryHeap 选择最小的 cost 去做一些扩展，有点类似搜索算法。
 
 开 `-O3 -flto` 后，能看到的是 `evaluate_timing_driven_node_costs` 和 `timing_driven_add_to_heap` 被内联进 `timing_driven_expand_neighbours`，节省了频繁调用函数的开销，这个函数的时间占比提升到 jpeg_route 的 21.40% 和 smithwaterman_route 的 12.48%，类似的事情应该也发生在 `get_expected_delay_and_cong` 身上。考虑到这个内存分配和释放的时间占比，`-O3 -ljemalloc` 提升性能并不意外。
 
-`-O3` 下，jpeg_route 执行了 425B 条指令，其中分支有 79B 条，错误预测 1.1B 次，MPKI 等于 `1.1B/425B*1000=2.59`，不低。smithwaterman_route 执行了 307B 条指令，其中分支有 59.6B 条，错误预测 613M 次，MPKI 等于 `613M/307B*1000=2.00`。
+`-O3` 下，jpeg_route 执行了 424.1B 条指令，其中 Load 有 130.6B，Store 有 50.6B，分支有 79.0B 条，错误预测 1094.2M 次，MPKI 等于 `1094.2M/424.1B*1000=2.58`，不低。smithwaterman_route 执行了 305.8B 条指令，其中 Load 有 91.0B 条，Store 有 36.0B 条，分支有 59.4B 条，错误预测 609.3M 次，MPKI 等于 `609.3M/305.8B*1000=1.99`。
 
 #### 小结
+
+| 子测试              | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI  |
+|---------------------|--------------|----------|----------|----------|-----------|----------|--------------|-------|
+| jpeg_place          | GCC 14 `-O3` | 21       | 273.7    | 84.5     | 26.9      | 521.9    | 781.0        | 2.85  |
+| jpeg_route          | GCC 14 `-O3` | 29       | 424.1    | 130.6    | 50.6      | 79.0     | 1094.2       | 2.58  |
+| smithwaterman_place | GCC 14 `-O3` | 18       | 245.0    | 76.4     | 24.7      | 45.4     | 661.9        | 2.70  |
+| smithwaterman_route | GCC 14 `-O3` | 19       | 305.8    | 91.0     | 36.0      | 59.4     | 609.3        | 21.99 |
 
 734.vpr_r 的负载分为两部分，place 和 route，其中 place 主要在做 bounding box 的计算，route 主要在做搜索和优化。开 `-flto` 和 `-ljemalloc` 后有明显的性能提升，主要是靠内联了热点函数以及更快的性能分配。整体指令数为 1254B，分支指令数 237B，MPKI 是 2.51，处于中游偏高的水平。
 
