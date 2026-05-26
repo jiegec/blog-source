@@ -185,7 +185,7 @@ GCC 14 用 `-march=native` 编译选项下，7to11_nnue 执行的指令数锐减
 | 7to11_nnue     | GCC 15 `-O3`           | 46       | 955.3    | 169.4    | 57.8      | 75.2     |
 | 7to11_nnue     | GCC 14 `-march=native` | 31       | 425.9    | 115.1    | 43.7      | 47.1     |
 
-1to6_classical 类似传统的棋类引擎，有比较复杂的分支和访存，所以它的 MPKI=4.88 比较类似 SPEC CPU 2017 的 531.deepsjeng_r（MPKI=3.16），属于比较高的一类。而 1to6_nnue 和 7to11_nnue 的主要瓶颈在于 i8 的矩阵运算，能否用上硬件的加速指令（这里是 AVX-VNNI）对性能影响很大，分支预测瓶颈就明显小了。整体平均下来的 MPKI 是 1.85，并不算高。
+1to6_classical 类似传统的棋类引擎，有比较复杂的分支和访存，所以它的 MPKI=4.89 比较类似 SPEC CPU 2017 的 531.deepsjeng_r（MPKI=3.16），属于比较高的一类。而 1to6_nnue 和 7to11_nnue 的主要瓶颈在于 i8 的矩阵运算，能否用上硬件的加速指令（这里是 AVX-VNNI）对性能影响很大，分支预测瓶颈就明显小了。整体平均下来的 MPKI 是 1.85，并不算高。
 
 ### 707.ntest_r
 
@@ -615,7 +615,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 很少能见到这种瓶颈如此高度集中的情况了，不过确实，SAT Solver 大部分时间都在做 Unit Propagation，出现冲突了就做 CDCL。唤起了很久以前在《软件分析与验证》课上写 DPLL SAT Solver 的[回忆](https://github.com/jiegec/dpll)，当然了，abc 的实现肯定比我那课程作业要更加复杂和高级。主要的瓶颈就是一堆访存以及依赖内存结果的分支，在 SAT 问题的解空间内进行搜索。
 
-指令数 53.2B，其中 Load 指令 13.8B，Store 指令 3.2B，分支指令 8.4B，错误预测 606.2M，MPKI 等于 `606.2M/53.2B*1000=11.43`，非常的高，接近 SPEC INT 2017 的 541.leela_r 大帝。
+指令数 53.2B，其中 Load 指令 13.8B，Store 指令 3.2B，分支指令 8.4B，错误预测 606.2M，MPKI 等于 `606.2M/53.2B*1000=11.39`，非常的高，接近 SPEC INT 2017 的 541.leela_r 大帝。
 
 通过 `perf record -e branch-misses:pp`，可以看到主要的分支预测错误来自 `sat_solver_propagate` 的几处变量取值的判断逻辑，都是依赖数据的分支，难以预测。
 
@@ -669,7 +669,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 | 子测试   | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI  |
 |----------|--------------|----------|----------|----------|-----------|----------|--------------|-------|
-| twoexact | GCC 14 `-O3` | 6.3      | 53.2     | 13.8     | 3.2       | 8.4      | 606.2        | 11.43 |
+| twoexact | GCC 14 `-O3` | 6.3      | 53.2     | 13.8     | 3.2       | 8.4      | 606.2        | 11.39 |
 | beem6    | GCC 14 `-O3` | 10.1     | 255.5    | 57.2     | 7.3       | 40.3     | 192.0        | 0.75  |
 | mem      | GCC 14 `-O3` | 13.5     | 151.0    | 43.4     | 15.4      | 24.2     | 1213.7       | 8.03  |
 | vga      | GCC 14 `-O3` | 32.3     | 490.0    | 143.9    | 54.4      | 76.9     | 2092.8       | 4.27  |
