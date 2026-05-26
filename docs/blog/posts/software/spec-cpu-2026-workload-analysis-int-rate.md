@@ -681,7 +681,7 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_a
 
 下面进行具体分析。
 
-#### jpeg_place 和 smithwaterman_place
+#### 1. jpeg_place 和 3. smithwaterman_place
 
 因为这两条命令都是做的布局（place），所以就放在一起分析了。它们的热点函数是类似的：
 
@@ -695,7 +695,7 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_a
 
 `-O3` 下，jpeg_place 执行了 273.7B 条指令，其中 Load 有 84.5B 条，Store 有 26.9B 条，分支有 51.9B 条，错误预测 781.0M 次，MPKI 等于 `781.0M/273.7B*1000=2.85`，不低。smithwaterman_place 执行了 245.0B 条指令，其中 Load 有 76.4B 条，Store 有 24.7B 条，分支有 45.4B 条，错误预测 661.9M 次，MPKI 等于 `661.9M/245.0B*1000=2.70`。在 bounding box 计算 min/max 过程中，能看到一些 cmov 指令的使用，因此实际上已经少了一些容易预测错误的分支了。在一些没有 cmov 指令的 ISA 下，可能 MPKI 还会更高。
 
-#### jpeg_route 和 smithwaterman_route
+#### 2. jpeg_route 和 4. smithwaterman_route
 
 到了布线，热点函数出现了一些不同：
 
@@ -849,11 +849,62 @@ sealcrypto_r refrate ecuador_province_capitals_refrate.csv Galapagos
 - `seal::util::BaseConverter::fast_convert_array(ConstRNSIter in, RNSIter out, MemoryPoolHandle pool)` 来自 `src/seal/util/rns.cpp`：5.88%，这里的 RNS 应该是 Residue Number System 的缩写，指令上还是大量的 imul/add 等运算
 - `seal::util::RNSTool::sm_mrq(ConstRNSIter input, RNSIter destination, MemoryPoolHandle pool)` 来自 `src/seal/util/rns.cpp`：5.40%，不确定在做什么，也是大量的运算
 
-总而言之，既然是密码学，就会有大量的整数运算，其中有不少的乘法和位运算，在素数域下做各种操作。执行指令数足足有 3113.4B，其中有 79B 条分支指令，386B 条 Load，161B 条 Store，错误预测 449M 次，MPKI 只有 0.14，全场最低，甚至低于 714.cpython_r，同时 IPC 全场最高，达到了 5.09。从 Top down 分析来看，80.7% 属于 Retiring，13.5% 属于 Backend Bound，说明处理器基本在全速跑指令。
+总而言之，既然是密码学，就会有大量的整数运算，其中有不少的乘法和位运算，在素数域下做各种操作。执行指令数足足有 3113.4B，其中有 385.7B 条 Load 指令，161.3B 条 Store 指令，78.5B 条分支指令，错误预测 450.0M 次，MPKI 只有 `450.0M/3113.4B*1000=0.14`，全场最低，甚至低于 714.cpython_r，同时 IPC 全场最高，达到了 5.09。从 Top down 分析来看，80.7% 属于 Retiring，13.5% 属于 Backend Bound，说明处理器基本在全速跑指令。
 
-开了 `-O3 -march=native` 后，确实生成了不少 AVX2 指令，但看下来，生成的指令序列还是挺复杂的，有大量的 vpunpcklqdq/vpunpckhqdq/vpermq/vpblendvb/vperm2i128 等指令，并没有在进行的计算，而是在不断地倒腾向量寄存器里数据的位置。虽然指令数减少了，但 IPC 降低更多，最后性能反而倒退，实际从 108s 增加到 116s。原来的 `-O3` 版本虽然每次只处理一个元素，但指令的并行度更高，IPC 弥补了指令数多的劣势。
+开了 `-O3 -march=native` 后，确实生成了不少 AVX2 指令，但看下来，生成的指令序列还是挺复杂的，有大量的 vpunpcklqdq/vpunpckhqdq/vpermq/vpblendvb/vperm2i128 等指令，并没有在进行计算，而是在不断地倒腾向量寄存器里数据的位置。此时指令数降低到 2757.7B，其中有 370.0B 条 Load 指令，126.7B 条 Store 指令，268.6B 条 256 位整数向量指令（`int_vec_retired.256bit` 性能计数器），76.1B 条分支指令，错误预测 431.0M 次，MPKI 等于 `431.0M/2757.5B*1000=0.16`。虽然指令数减少了，但 IPC 降低更多，最后性能反而倒退，实际从 108s 增加到 116s。原来的 `-O3` 版本虽然每次只处理一个元素，但指令的并行度更高，IPC 弥补了指令数多的劣势。
 
-那么，LLVM 22 做了什么优化呢？执行的指令数直接降低到 1214B，分支只有 57.2B。以 `seal::util::DWTHandler::transform_to_rev` 为例，可以看到：seal 为了实现 64 位乘 64 位到 128 位的乘法，它自己实现了这个过程，不仅在 `seal::util::multiply_uint64_generic` 中有实现，实际上也内联到了 `seal::util::DWTHandler::transform_to_rev` 当中；GCC 14 忠实地实现了这个算法，因此指令数很多（见 [Godbolt](https://godbolt.org/z/KKTa1aMP8)）；但其实，AMD64 的 mul 指令本来就是一个 64 位乘 64 位得到 128 位的乘法，所以 LLVM 22 直接识别出这段代码做的事情，然后编译成了 mul 指令（见 [Godbolt](https://godbolt.org/z/bc6xPjEMc)，甚至如果开了 BMI2 扩展，还有 [mulx](https://www.felixcloutier.com/x86/mulx) 指令可以用），而且这种 64 位乘法保留高位的指令在各种 ISA 都挺常见的，比如 ARM64 的 umulh，RISC-V 的 mulhu，LoongArch 的 mulh.du。当然，seal 的源码其实已经考虑了这个问题，在编译器支持的情况下，直接用 __int128 来完成[这件事情](https://github.com/microsoft/SEAL/blob/e3476fad1d5bb5e5222c51a551b5a4d7e2cb4f91/native/src/seal/util/gcc.h#L44)。然而，这类依赖编译器行为或具体指令集扩展的代码，由于 SPEC CPU 2026 的编译器中立性，都被去掉了，都会回落到最通用的写法上。此时，就只能依赖编译器去自己识别和优化了。
+那么，LLVM 22 做了什么优化呢？执行的指令数直接降低到 1213.6B，其中 Load 指令有 302.8B，Store 指令有 109.2B，分支只有 57.2B，错误预测 1093.9M，MPKI 等于 `1093.9M/1213.6B*1000=0.90`。以 `seal::util::DWTHandler::transform_to_rev` 为例，可以看到：seal 为了实现 64 位乘 64 位到 128 位的乘法，它自己实现了这个过程，不仅在 `seal::util::multiply_uint64_generic` 中有实现，实际上也内联到了 `seal::util::DWTHandler::transform_to_rev` 当中；GCC 14 忠实地实现了这个算法，因此指令数很多（见 [Godbolt](https://godbolt.org/z/KKTa1aMP8)）；但其实，AMD64 的 mul 指令本来就是一个 64 位乘 64 位得到 128 位的乘法，所以 LLVM 22 直接识别出这段代码做的事情，然后编译成了 mul 指令（见 [Godbolt](https://godbolt.org/z/bc6xPjEMc)，甚至如果开了 BMI2 扩展，还有 [mulx](https://www.felixcloutier.com/x86/mulx) 指令可以用），而且这种 64 位乘法保留高位的指令在各种 ISA 都挺常见的，比如 ARM64 的 umulh，RISC-V 的 mulhu，LoongArch 的 mulh.du。当然，seal 的源码其实已经考虑了这个问题，在编译器支持的情况下，直接用 __int128 来完成[这件事情](https://github.com/microsoft/SEAL/blob/e3476fad1d5bb5e5222c51a551b5a4d7e2cb4f91/native/src/seal/util/gcc.h#L44)。类似的事情在 706.stockfish_r 的 1to6_classical 中也出现了。然而，这类依赖编译器行为或具体指令集扩展的代码，由于 SPEC CPU 2026 的编译器中立性，都被去掉了，都会回落到最通用的写法上。此时，就只能依赖编译器去自己识别和优化了。
+
+与此同时，LLVM 22 明显生成了更多的错误预测，用 `perf record -e branch-misses:pp` 找了一下问题，有 46.81% 的错误预测都出在 `sm_mrq` 函数当中，主要问题出在它内联的来自 `src/seal/util/uintarithsmallmod.h` 的 `multiply_uint_mod` 函数，它最后有一步，如果结果大于模 p，就要减去 p：`SEAL_COND_SELECT(tmp2 >= p, tmp2 - p, tmp2)`，学过 Montgomery Multiplication 的话应该很熟悉，因为它只能保证优化后的计算结果与真实结果在模 p 结果下相等，但是范围会更大，最大不会超过两倍的 p，所以需要最后做一个处理，这里是 Barrett Reduction，原理是类似的。这个 `SEAL_COND_SELECT` 宏是这么定义的，此处 `SEAL_AVOID_BRANCHING` 没有被定义，实际用的是上面的 ternary operator：
+
+```c
+// Conditionally select the former if true and the latter if false
+// This is a temporary solution that generates constant-time code with all compilers on all platforms.
+#ifndef SEAL_AVOID_BRANCHING
+#define SEAL_COND_SELECT(cond, if_true, if_false) (cond ? if_true : if_false)
+#else
+#define SEAL_COND_SELECT(cond, if_true, if_false) \
+    ((if_false) ^ ((~static_cast<uint64_t>(cond) + 1) & ((if_true) ^ (if_false))))
+#endif
+```
+
+LLVM 22 使用分支实现上面的逻辑，只有在 `tmp2 >= p` 的情况下才会进行 `tmp2 - p` 的计算，否则就是计算 `tmp2 - 0`，指令序列大概是这样：
+
+```asm
+# 初始化 rax = 0
+mov $0x0,%eax
+# 比较 tmp2(rcx) 和 p(r10)
+cmp %r10,%rcx
+# 如果 p > tmp2，跳转到下面的 label:
+jb label
+# rax = r10，即 rax = p
+mov %r10,%rax
+label:
+# 计算 tmp2 - rax
+sub %rax,%rcx
+```
+
+如此计算确实少了，但是分支预测错误率又很高。GCC 14 是这么实现的：
+
+```asm
+# tmp2 保存在 rax 寄存器，p 保存在 rdx 寄存器
+# rcx = rax，即 rcx = tmp2
+mov %rax,%rcx
+# rcx -= rdx，即 rcx = tmp2 - p
+sub %rdx,%rcx
+# 比较 tmp2 和 p
+cmp %rdx,%rax
+# 如果 tmp2 >= p，则 rax = rcx = tmp2 - p，否则 rax 保持原来的 tmp2 不变
+cmovae %rcx,%rax
+```
+
+通过 cmov 指令避免了大量的错误预测，就是这点差别，造成了巨大的 MPKI 差距。
+
+| 子测试     | 编译器+选项                | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
+|------------|----------------------------|----------|----------|----------|-----------|----------|--------------|------|
+| sealcrypto | GCC 14 `-O3`               | 108      | 3113.4   | 385.7    | 161.3     | 78.5     | 450.0        | 0.14 |
+| sealcrypto | GCC 14 `-O3 -march=native` | 116      | 2757.7   | 370.0    | 126.7     | 76.1     | 431.0        | 0.16 |
+| sealcrypto | LLVM 22 `-O3`              | 50.5     | 1213.6   | 302.8    | 109.2     | 57.2     | 1093.9       | 0.90 |
 
 但是，这样某种意义上也无法反映真实场景中的应用优化情况了，因为很多应用已经实际上和处理器的指令集扩展/编译器扩展共进化，实现的时候，脑子里是默认有这些东西，再去做的调优，甚至会写一些指令集相关的优化，用一些 intrinsics，比如原版 stockfish 就有针对 AVX512/AVX2/SSSE3/NEON_DOTPROD/LASX/LSX 的[优化](https://github.com/official-stockfish/Stockfish/blob/77a8f6ccf31846d63452f79e143fbc6dc62ae3a8/src/nnue/layers/affine_transform.h#L201)。到最后，就是编译器又实现各种 pass，识别程序里的 fallback generic 代码，再映射回高效的实现。其实类似的事情之前就出现过，网上用来证明编译器很聪明的一个例子，就是说识别 popcount 的循环，直接翻译成 popcnt 指令，然而很多程序直接用 `__builtin_popcount` 而不会真的去手写，这次只不过是换了个 pattern 罢了。当然，好消息是，C++20 引入了 std::popcount，可以一定程度避免类似的情况发生，只是来得太晚了。
 
