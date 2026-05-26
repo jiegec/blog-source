@@ -238,10 +238,10 @@ sqlite_r --memdb --size 1000 --testset fp --verify
 
 通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
-- `sqlite3BtreeMovetoUnpacked(BtCursor *pCur, UnpackedRecord *pIdxKey, i64 intKey, int biasRight, int *pRes)` 来自 `src/sqlite3.c`：24.66%，在 Btree 上进行搜索，根据 key，查找对应的 entry，中间一个比较耗时的部分是逐字节扫描 pCell 指向的内存，此外还会经常调用 `sqlite3GetVarint` 获取 pCell 保存的变长 int 来实现二分搜索
-- `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：22.36%，用 Loop+Switch 实现的执行字节码的虚拟机，执行编译好的 SQL 语句，VDBE 是 SQLite 的执行引擎，全称是 Virtual Database Engine，模拟过程会维护一个 `pc`，从 `aOp` 数组里扫描字节码，每个字节码是一个 `struct VdbeOp` 结构体，根据它的 `opcode` 字段进行一个大的 switch-case，一共有 176 种不同的 Op；gcc 把这个巨大的 switch-case 编译成了跳转表，也就是把各个 case 的地址保存到一个数组当中，根据 `opcode` 计算出对应 case 的地址，再 `jmp *%rax` 过去，执行完 case 的代码后，再跳回 switch 开头，读取下一个 opcode，再跳转；目前有一些解释器会直接用 C 的扩展，用 computed goto label 的写法来帮助编译器做这个优化，或者更进一步直接在每个 case 的最后跳转到下一个 `opcode` 对应的 case，拓展阅读： [Android Runtime 解释器的实现探究](./android-runtime-interpreter.md)
-- `pcache1Fetch(sqlite3_pcache *p, unsigned int iKey, int createFlag)` 来自 `src/sqlite3.c`：8.26%，对应一个用哈希表维护的 Page Cache，用于在内存里缓存硬盘上的数据，主要瓶颈在 `pcache1FetchNoMutex` 里的 `pPage = pCache->apHash[iKey % pCache->nHash]; while( pPage && pPage->iKey!=iKey ){ pPage = pPage->pNext; }`，在哈希表的链表里做一个扫描
-- `sqlite3GetVarint(const unsigned char *p, u64 *v)` 来自 `src/sqlite3.c`：3.70%，恢复内存中可变长度的整数
+- `sqlite3BtreeMovetoUnpacked(BtCursor *pCur, UnpackedRecord *pIdxKey, i64 intKey, int biasRight, int *pRes)` 来自 `src/sqlite3.c`：24.66%，在 Btree 上进行搜索，根据 key，查找对应的 entry，中间一个比较耗时的部分是逐字节扫描 pCell 指向的内存，此外还会经常调用 `sqlite3GetVarint` 获取 pCell 保存的变长 int 来实现二分搜索；
+- `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：22.36%，用 Loop+Switch 实现的执行字节码的虚拟机，执行编译好的 SQL 语句，VDBE 是 SQLite 的执行引擎，全称是 Virtual Database Engine，模拟过程会维护一个 `pc`，从 `aOp` 数组里扫描字节码，每个字节码是一个 `struct VdbeOp` 结构体，根据它的 `opcode` 字段进行一个大的 switch-case，一共有 176 种不同的 Op；gcc 把这个巨大的 switch-case 编译成了跳转表，也就是把各个 case 的地址保存到一个数组当中，根据 `opcode` 计算出对应 case 的地址，再 `jmp *%rax` 过去，执行完 case 的代码后，再跳回 switch 开头，读取下一个 opcode，再跳转；目前有一些解释器会直接用 C 的扩展，用 computed goto label 的写法来帮助编译器做这个优化，或者更进一步直接在每个 case 的最后跳转到下一个 `opcode` 对应的 case，拓展阅读： [Android Runtime 解释器的实现探究](./android-runtime-interpreter.md)；
+- `pcache1Fetch(sqlite3_pcache *p, unsigned int iKey, int createFlag)` 来自 `src/sqlite3.c`：8.26%，对应一个用哈希表维护的 Page Cache，用于在内存里缓存硬盘上的数据，主要瓶颈在 `pcache1FetchNoMutex` 里的 `pPage = pCache->apHash[iKey % pCache->nHash]; while( pPage && pPage->iKey!=iKey ){ pPage = pPage->pNext; }`，对哈希表的桶里的链表做一个扫描，随机访存比较多；
+- `sqlite3GetVarint(const unsigned char *p, u64 *v)` 来自 `src/sqlite3.c`：3.70%，恢复内存中可变长度的整数，比如 `[0,127]` 范围的数字用一个字节保存，`[128,16383]` 范围的数字用两个字节保存，更大的数字则要更长，最多到九个字节，这种压缩表示还挺常见的，多数时候可以节省空间。
 
 都是一些比较经典的数据结构和算法的应用，Btree，Loop+Switch 的解释执行，加哈希表查询。一段 Vdbe 指令序列的例子如下：
 
@@ -273,10 +273,10 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 
 通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
-- `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：41.15%，主要时间花费在查询的执行，因为这个 cte 测例，其计算过程比较复杂，用 SQL 实现了数独（递归和非递归版本）、Mandelbrot，还测试了 EXCEPT SELECT 语法
-- `sqlite3VdbeRecordCompareWithSkip(int nKey1, const void *pKey1, UnpackedRecord *pPKey2, int bSkip)` 来自 `src/sqlite3.c`：7.37%，比较表里的两个行
-- `sqlite3VdbeSerialGet(const unsigned char *buf, u32 serial_type, Mem *pMem)` 来自 `src/sqlite3.c`：5.95%，反序列化，根据内存中保存的数据类型，解析对应的数据
-- `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：5.95%，实现排序
+- `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：41.15%，主要时间花费在查询的执行，因为这个 cte 测例，其计算过程比较复杂，用 SQL 实现了数独（递归和非递归版本）、Mandelbrot，还测试了 EXCEPT SELECT 语法；
+- `sqlite3VdbeRecordCompareWithSkip(int nKey1, const void *pKey1, UnpackedRecord *pPKey2, int bSkip)` 来自 `src/sqlite3.c`：7.37%，比较表里的两个行，会调用 `sqlite3VdbeSerialGet` 获取行内的数据，再根据数据类型进行对应的比较；
+- `sqlite3VdbeSerialGet(const unsigned char *buf, u32 serial_type, Mem *pMem)` 来自 `src/sqlite3.c`：5.95%，反序列化，根据内存中保存的数据类型，解析对应的数据，比如整数或者浮点，它的 switch-case 也被 GCC 编译成了跳转表；
+- `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：5.95%，实现归并排序，主要时间是在通过函数指针调用比较器函数，以及根据比较结果进行归并。
 
 瓶颈主要在解释器上，和 CPython 这类解释型语言的解释器的行为模式类似。执行了 306.0B 条指令，其中 82.8B 是 Load 指令，39.6B 是 Store 指令，62.6B 是分支指令，错误预测了 40.9M 次，MPKI 是 `40.9M/30602B*1000=0.13`，处于很低的水平。
 
@@ -284,10 +284,10 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 
 通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
-- `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：30.66%，主要时间花费在查询的执行，因为这个 fp 测例，其计算过程引入了不少浮点运算
-- `sqlite3AtoF(const char *z, double *pResult, int length, u8 enc)` 来自 `src/sqlite3.c`：19.18%，实现从字符串到浮点数的转换，因为 SQL 内有很多浮点字面量
-- `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：10.44%，描述见上
-- `sqlite3VdbeRecordCompareWithSkip(int nKey1, const void *pKey1, UnpackedRecord *pPKey2, int bSkip)` 来自 `src/sqlite3.c`：6.76%，描述见上
+- `sqlite3VdbeExec(Vdbe *p)` 来自 `src/sqlite3.c`：30.66%，主要时间花费在查询的执行，因为这个 fp 测例，其计算过程引入了不少浮点运算；
+- `sqlite3AtoF(const char *z, double *pResult, int length, u8 enc)` 来自 `src/sqlite3.c`：19.18%，实现从字符串到浮点数的转换，因为 SQL 内有很多浮点字面量；
+- `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：10.44%，描述见上；
+- `sqlite3VdbeRecordCompareWithSkip(int nKey1, const void *pKey1, UnpackedRecord *pPKey2, int bSkip)` 来自 `src/sqlite3.c`：6.76%，描述见上。
 
 瓶颈主要在解释器上，不过因为 SQL 语句的设计，有很多时间花在字符串转浮点数上。执行了 554.7B 条指令，其中 132.3B 是 Load 指令，61.3B 是 Store 指令，111.5B 是分支指令，错误预测了 392.6M 次，MPKI 是 `392.6M/554.7B*1000=0.71`。
 
