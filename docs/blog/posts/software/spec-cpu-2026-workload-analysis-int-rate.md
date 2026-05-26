@@ -172,6 +172,8 @@ GCC 14 用 `-march=native` 编译选项下，7to11_nnue 执行的指令数锐减
 
 #### 小结
 
+各命令在不同编译选项下的情况如下：
+
 | 子测试         | 编译器+选项            | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) |
 |----------------|------------------------|----------|----------|----------|-----------|----------|
 | 1to6_classical | GCC 14 `-O3`           | 47       | 531.8    | 135.7    | 59.7      | 56.0     |
@@ -212,7 +214,7 @@ ntest_r Othello.154.ggf 20 16
 1. 首先是对 callee-saved 寄存器的使用，GCC 14 会在 epilogue/prologue 直接进行一系列的 push/pop，而 GCC 15 更加聪明，仅在 `if (neighbors[sq]&enemy)` 条件成立的情况下，需要执行复杂函数体，需要 callee-saved 寄存器时才会进行 push/pop，否则就直接 ret，因为检查条件的时候并没有用到 callee-saved 寄存器，避免了保存和恢复。
 2. 自己编译的 GCC 15 默认是 -no-pie 模式，而发行版的 GCC 14 默认是 -pie，而 -no-pie 模式因为采用绝对地址，可以在 imul 等指令的操作数直接访问内存，节省寄存器，于是 callee-saved register 就都可以不用了，开启 -static 也能带来类似的效果。上面的第一条分析是手动给 GCC 15 开 -pie 后观察到的。不过主要的性能提升还是来自于减少 push/pop 的执行次数。
 
-GCC 15 编译的 707.ntest_r，实际执行 2429.3B 条指令，其中有 610.9B 的 Load 指令，206.2B 的 Store 指令，224.7B 的分支指令。
+GCC 15 编译的 707.ntest_r，实际执行 2429.3B 条指令，其中有 610.9B 的 Load 指令，206.2B 的 Store 指令，224.7B 的分支指令。各命令在不同编译器和编译选项下的情况如下：
 
 | 子测试 | 编译器+选项           | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) |
 |--------|-----------------------|----------|----------|----------|-----------|----------|
@@ -297,6 +299,8 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 
 #### 小结
 
+各命令在不同编译选项下的情况如下：
+
 | 子测试 | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | MPKI |
 |--------|--------------|----------|----------|----------|-----------|----------|------|
 | main   | GCC 14 `-O3` | 69       | 896.3    | 252.4    | 105.1     | 178.0    | 1.67 |
@@ -334,6 +338,8 @@ omnetpp_r -f queuenet.ini -c AllocDealloc
 - `cEvent::shouldPrecede(const cEvent *other)` 来自 `src/simulator/sim/cevent.cc`：4.64%，一个 cEvent 结构体的多关键字比较函数。
 
 整体来看，它的瓶颈分散在比较多的地方。执行了 306.4B 条指令，其中有 98.7B 条 Load 指令，50.2B 条 Store 指令，62.1B 条分支指令，错误预测 661.2M 次，MPKI 为 `661.2M/306.4B*1000=2.16`。开 `-O3 -flto` 后，指令数减少到 284.6B，其中有 91.3B 条 Load 指令，45.4B 条 Store 指令，55.7B 条分支指令。进一步开 `-O3 -flto -ljemalloc`，指令数进一步减少到 279.8B，其中有 90.3B 条 Load 指令，44.4B 条 Store 指令，54.3B 条分支指令。
+
+randomMesh 在不同编译选项下的情况如下：
 
 | 编译器+选项                   | 指令 (B) | Load (B) | Store (B) | 分支 (B) |
 |-------------------------------|----------|----------|-----------|----------|
@@ -407,6 +413,8 @@ cpython_r -I -B dna_bench.py 600000
 
 #### 小结
 
+各命令在不同编译选项下的情况如下：
+
 | 子测试    | 编译器+选项        | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) |
 |-----------|--------------------|----------|----------|----------|-----------|----------|--------------|
 | resnet    | GCC 14 `-O3`       | 31       | 651.6    | 180.4    | 104.1     | 136.6    | 7.9          |
@@ -444,6 +452,8 @@ cc1_r ref32.c -O3 -finline-limit=12000 -fno-tree-vrp -o ref32.c.opts-O3_-finline
 1. gcc-pp: 执行 470.2B 条指令，其中有 125.6B 条 Load 指令，58.8B 条 Store 指令，99.9B 条分支指令，错误预测 2.2B 次，MPKI 等于 `2.2B/470.2B*1000=4.68`
 2. gcc-smaller: 执行 243.4B 条指令，其中有 65.0B 条 Load 指令，30.3B 条 Store 指令，51.8B 条分支指令，错误预测 0.91B 次，MPKI 等于 `0.91B/243.4B*1000=3.74`
 3. ref32: 执行 403.7B 条指令，其中有 118.9 条 Load 指令，45.8B 条 Store 指令，86.1B 条分支指令，错误预测 0.61B 次，MPKI 等于 `0.61B/403.7B*1000=1.51`
+
+各命令的情况如下：
 
 | 子测试      | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (B) | MPKI |
 |-------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
@@ -493,6 +503,8 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 整体的情况和 transformsplus 类似，只不过 `foldIntegerTypedPHI` 时间占比更高，其他还是有很多函数耗费很短的时间，分散得比较开。执行指令数为 415.9B，其中 Load 指令有 100.4B，Store 指令有 57.5B，分支指令有 86.0B，错误预测有 2.4B 次，MPKI 等于 `2.4B/415.9B*1000=5.77`，依然很高。
 
 #### 小结
+
+各命令的情况如下：
 
 | 子测试         | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (B) | MPKI |
 |----------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
@@ -559,6 +571,8 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 #### 小结
 
 整体看下来，727.cppcheck_r 就是在不断地做字符串匹配。我就纳闷了，为啥不能直接过一遍 tokenizer，把 token 都转为数字呢，这样比较起来多快。在 token 级别上做各种变换，就在不停地对 token 进行字符串比较，导致最后的性能瓶颈，不是在 cppcheck 自己写的字符串比较，就是在 libc 的字符串比较里了。
+
+各命令的情况如下：
 
 | 子测试      | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
 |-------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
@@ -651,6 +665,8 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 #### 小结
 
+各命令的情况如下：
+
 | 子测试   | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI  |
 |----------|--------------|----------|----------|----------|-----------|----------|--------------|-------|
 | twoexact | GCC 14 `-O3` | 6.3      | 53.2     | 13.8     | 3.2       | 8.4      | 606.2        | 11.43 |
@@ -713,6 +729,8 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_a
 `-O3` 下，jpeg_route 执行了 424.1B 条指令，其中 Load 有 130.6B，Store 有 50.6B，分支有 79.0B 条，错误预测 1094.2M 次，MPKI 等于 `1094.2M/424.1B*1000=2.58`，不低。smithwaterman_route 执行了 305.8B 条指令，其中 Load 有 91.0B 条，Store 有 36.0B 条，分支有 59.4B 条，错误预测 609.3M 次，MPKI 等于 `609.3M/305.8B*1000=1.99`。
 
 #### 小结
+
+各命令的情况如下：
 
 | 子测试              | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI  |
 |---------------------|--------------|----------|----------|----------|-----------|----------|--------------|-------|
@@ -816,6 +834,8 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 
 #### 小结
 
+各命令的情况如下：
+
 | 子测试          | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
 |-----------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
 | o3              | GCC 14 `-O3` | 16       | 211.1    | 69.9     | 31.7      | 43.2     | 175.5        | 0.83 |
@@ -903,6 +923,8 @@ cmovae %rcx,%rax
 ```
 
 GCC 14 通过 cmov 指令避免了大量的错误预测，就是这点差别，造成了 LLVM 22 相比 GCC 14 巨大的 MPKI 差距。如果 LLVM 22 在这里选择用 cmov，那性能还能继续往上提一提。事实上，LLVM 22 确实也能在很多地方用 cmov 代替分支，但为什么在这个具体场景下，最后放弃了这个优化，还需要进一步的研究。
+
+750.sealcrypto_r 在不同编译器和编译选项下的情况如下：
 
 | 子测试     | 编译器+选项                | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
 |------------|----------------------------|----------|----------|----------|-----------|----------|--------------|------|
@@ -992,6 +1014,8 @@ ns3_r wifi-eht-network --simulationTime=0.2 --frequency=5 --useRts=1 --minExpect
 
 #### 小结
 
+各命令的情况如下：
+
 | 子测试     | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
 |------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
 | mobile     | GCC 14 `-O3` | 18       | 257.2    | 66.6     | 35.4      | 54.4     | 631.1        | 2.45 |
@@ -1032,38 +1056,57 @@ zstd -b19 -e19 --verbose -i1 cld.tar
 
 以第一条命令 b3 为例，热点函数：
 
-- `ZSTD_compressBlock_doubleFast_noDict_generic` 来自 `src/zstd-1.5.6/lib/compress/zstd_double_fast.c`：56.82%，主要在对数据计算哈希，寻找匹配，进而用于压缩，具体算法没有仔细看
-- `ZSTD_decompressBlock_internal.part.0` 来自 `src/zstd-1.5.6/lib/decompress/zstd_decompress_block.c`：16.63%，解压缩的主要逻辑，会调用 `ZSTD_decompressSequences`，挺复杂的
-- `ZSTD_encodeSequences` 来自 `src/zstd-1.5.6/lib/compress/zstd_compress_sequences.c`：10.91%，分为 bmi2 和 generic 版本，不出意外 bmi2 版本也被 SPEC 禁用了，只能用 generic 版本，逻辑也挺复杂的，没有仔细看
+- `ZSTD_compressBlock_doubleFast_noDict_generic` 来自 `src/zstd-1.5.6/lib/compress/zstd_double_fast.c`：56.82%，主要在对数据计算哈希，寻找匹配，进而用于压缩，具体算法没有仔细看，的复杂的；
+- `ZSTD_decompressBlock_internal.part.0` 来自 `src/zstd-1.5.6/lib/decompress/zstd_decompress_block.c`：16.63%，解压缩的主要逻辑，会调用 `ZSTD_decompressSequences`，挺复杂的；
+- `ZSTD_encodeSequences` 来自 `src/zstd-1.5.6/lib/compress/zstd_compress_sequences.c`：10.91%，分为 bmi2 和 generic 版本，不出意外 bmi2 版本也被 SPEC 禁用了，只能用 generic 版本，逻辑也挺复杂的，没有仔细看。
 
-`-O3` 下，b3 执行 183B 条指令，其中有 19B 分支指令，错误预测 546M 次，MPKI 等于 `546M/183B*1000=2.98`，属于比较高的。
+`-O3` 下，b3 执行 181.4B 条指令，其中有 49.9B 条 Load 指令，17.7B 条 Store 指令，19.1B 分支指令，错误预测 543.9M 次，MPKI 等于 `543.9M/181.4B*1000=3.00`，属于比较高的。从 `perf record -e branch-misses:pp` 来看，有 78.98% 的错误预测来自 `ZSTD_compressBlock_doubleFast_noDict_generic`，主要是在一些数据依赖的分支上，比如 `if (MEM_read64(matchl0) == MEM_read64(ip))`；其余有 14.91% 来自 `ZSTD_decompressBlock_internal.part.0`，主要是 `if (ofBits > 1)` 等分支。
 
 第二条命令 b5 的热点函数：
 
-- `ZSTD_RowFindBestMatch.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：67.91%，对数组进行循环，找到匹配最长的一项
-- `ZSTD_compressBlock_lazy_generic.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：9.12%，也是比较复杂的匹配算法
-- `ZSTD_decompressBlock_internal.part.0` 来自 `src/zstd-1.5.6/lib/decompress/zstd_decompress_block.c`：7.80%，描述见上
+- `ZSTD_RowFindBestMatch.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：67.91%，对数组进行循环，找到匹配最长的一项；
+- `ZSTD_compressBlock_lazy_generic.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：9.12%，也是比较复杂的匹配算法；
+- `ZSTD_decompressBlock_internal.part.0` 来自 `src/zstd-1.5.6/lib/decompress/zstd_decompress_block.c`：7.80%，描述见上。
 
-`-O3` 下，b5 执行 274B 条指令，其中有 28B 分支指令，错误预测 563M 次，MPKI 等于 `563M/274B*1000=2.05`，属于比较高的。
+`-O3` 下，b5 执行 273.6B 条指令，其中有 61.3B 条 Load 指令，35.1B 条 Store 指令，28.4B 分支指令，错误预测 562.4M 次，MPKI 等于 `562.4M/273.6B*1000=2.06`，属于比较高的。错误的分支预测有 78.92% 来自 `ZSTD_RowFindBestMatch.constprop.0`。
 
 第五条命令 b14 的热点函数：
 
-- `ZSTD_DUBT_findBestMatch` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：85.74%，也是在循环中做最长匹配
-- `ZSTD_searchMax.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：9.04%，根据 dict mode 派发到不同的实现，实现也挺复杂
+- `ZSTD_DUBT_findBestMatch` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：85.74%，也是在循环中做最长匹配；
+- `ZSTD_searchMax.constprop.0` 来自 `src/zstd-1.5.6/lib/compress/zstd_lazy.c`：9.04%，根据 dict mode 派发到不同的实现，实现也挺复杂。
 
-`-O3` 下，b14 执行 198B 条指令，其中有 29B 分支指令，错误预测 1608M 次，MPKI 等于 `1608M/198B*1000=8.12`，属于特别高的。
+`-O3` 下，b14 执行 197.6B 条指令，其中有 48.8B 条 Load 指令，16.5B 条 Store 指令，29.1B 分支指令，错误预测 1609.6M 次，MPKI 等于 `1609.6M/197.6B*1000=8.15`，属于特别高的。错误的分支预测有 94.94% 来自 `ZSTD_DUBT_findBestMatch`，比如 `if (match[matchLength] < ip[matchLength])` 的分支。
 
 第六条命令 b16 的热点函数：
 
-- `ZSTD_insertBtAndGetAllMatches` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：38.62%，这里 Bt 代表的是 binary tree 二叉树
-- `ZSTD_insertBt1` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：35.15%
-- `ZSTD_compressBlock_opt_generic.constprop.1` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：16.50%
+- `ZSTD_insertBtAndGetAllMatches` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：38.62%，这里 Bt 代表的是 binary tree 二叉树；
+- `ZSTD_insertBt1` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：35.15%；
+- `ZSTD_compressBlock_opt_generic.constprop.1` 来自 `src/zstd-1.5.6/lib/compress/zstd_opt.c`：16.50%。
 
-`-O3` 下，b16 执行 129B 条指令，其中有 18B 分支指令，错误预测 652M 次，MPKI 等于 `652M/129B*1000=5.05`，属于特别高的。
+`-O3` 下，b16 执行 129.1B 条指令，其中有 29.9B 条 Load 指令，11.2B 条 Store 指令，18.0B 条分支指令，错误预测 652.1M 次，MPKI 等于 `652.1M/129.1B*1000=5.05`，也是属于特别高的。错误的分支预测有 40.69% 来自 `ZSTD_insertBtAndGetAllMatches`，37.45% 来自 `ZSTD_insertBt1`，比如 `if (match[matchLength] < ip[matchLength])` 的分支。
 
 第三/四条命令 b7/b10 的热点与第二条命令 b5 类似；第七/八条命令 b18/b19 的热点函数和第六条命令 b16 类似，就不重复了。可见 zstd 会根据 compression level 选择不同路径，从而在压缩率和性能之间做出权衡。
 
-那么开 `-march=native` 以后，发生了什么？能看到的是，由于 BMI 指令的引入，一些位运算的指令数变少了，比如 [bzhi](https://www.felixcloutier.com/x86/bzhi) 和 [tzcnt](https://www.felixcloutier.com/x86/tzcnt)，还有一些是三操作数且不影响 flags 的运算，如 [shrx](https://www.felixcloutier.com/x86/bzhi)，有点类似一些 RISC 指令集（如 RISC-V）的对应指令。
+那么开 `-march=native` 以后，发生了什么？能看到的是，由于 BMI 指令的引入，一些位运算的指令数变少了，比如 [bzhi](https://www.felixcloutier.com/x86/bzhi) 和 [tzcnt](https://www.felixcloutier.com/x86/tzcnt)，还有一些是三操作数且不影响 flags 的运算，如 [shrx](https://www.felixcloutier.com/x86/bzhi)，有点类似一些 RISC 指令集（如 RISC-V）的对应指令。开 `-march=native` 前后各命令的情况如下表：
+
+| 子测试 | 编译器+选项                | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
+|--------|----------------------------|----------|----------|----------|-----------|----------|--------------|------|
+| b3     | GCC 14 `-O3`               | 11.0     | 181.4    | 49.9     | 17.7      | 19.1     | 543.9        | 3.00 |
+| b3     | GCC 14 `-O3 -march=native` | 10.5     | 170.4    | 49.9     | 18.3      | 18.9     | 543.8        | 3.19 |
+| b5     | GCC 14 `-O3`               | 14.5     | 273.6    | 61.3     | 35.1      | 28.4     | 562.4        | 2.06 |
+| b5     | GCC 14 `-O3 -march=native` | 14.0     | 250.5    | 59.7     | 35.4      | 28.3     | 559.1        | 2.23 |
+| b7     | GCC 14 `-O3`               | 13.0     | 228.5    | 48.9     | 25.8      | 29.8     | 599.3        | 2.62 |
+| b7     | GCC 14 `-O3 -march=native` | 12.7     | 207.4    | 46.6     | 26.0      | 29.8     | 596.7        | 2.88 |
+| b10    | GCC 14 `-O3`               | 11.6     | 207.2    | 41.5     | 17.6      | 32.6     | 516.3        | 2.49 |
+| b10    | GCC 14 `-O3 -march=native` | 11.5     | 184.0    | 37.8     | 17.8      | 32.6     | 569.6        | 3.10 |
+| b14    | GCC 14 `-O3`               | 24.5     | 197.6    | 48.8     | 16.5      | 29.1     | 1609.6       | 8.15 |
+| b14    | GCC 14 `-O3 -march=native` | 23.7     | 190.1    | 46.7     | 15.9      | 27.8     | 1612.5       | 8.48 |
+| b16    | GCC 14 `-O3`               | 10.9     | 129.1    | 29.9     | 11.2      | 18.0     | 652.1        | 5.05 |
+| b16    | GCC 14 `-O3 -march=native` | 10.2     | 124.7    | 30.7     | 12.0      | 17.3     | 646.5        | 5.18 |
+| b18    | GCC 14 `-O3`               | 20.1     | 265.8    | 57.0     | 17.0      | 32.6     | 987.7        | 3.72 |
+| b18    | GCC 14 `-O3 -march=native` | 18.4     | 259.2    | 57.0     | 17.2      | 31.4     | 980.7        | 3.78 |
+| b19    | GCC 14 `-O3`               | 25.5     | 342.0    | 72.9     | 19.1      | 41.8     | 1060.6       | 3.10 |
+| b19    | GCC 14 `-O3 -march=native` | 23.4     | 332.8    | 72.7     | 19.1      | 40.1     | 1050.2       | 3.16 |
 
 整体来看，`-O3` 下 777.zstd_r 执行 1827B 指令，其中 232B 是分支指令，但 MPKI 有 3.58，仅次于 729.abc_r 和 723.llvm_r。
 
