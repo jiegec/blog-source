@@ -35,15 +35,15 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 
 实测数据显示，三条命令耗费的时间分别是 47s、77s 和 72s，共计 196s。reftime 是 1260s，对应 6.4 分。开启 `-march=native` 后，1to6_classical 时间缩短 10% 到 43s，而 1to6_nnue 和 7to11_nnue 时间明显缩短到 32s 和 31s，总时间 105s，对应 12 分，分数提升显著。下面逐一分析这三条命令的性能特性。
 
-#### 1to6_classical
+#### 1. 1to6_classical
 
 通过 `perf` 观察性能瓶颈，运行第一个命令 1to6_classical 时，这几个函数耗费的时间占比较多，百分比代表这个函数执行时间的占比，后续都用这个方法表示：
 
-- `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 19.26%，主要的瓶颈来自于随机访存，在 `first_entry(key)` 当中有 `&table[mul_hi64(key, clusterCount)].entry[0]`，其中 mul_hi64 计算两个 64 位整数乘法结果的高 64 位，因此访存地址是根据参数计算得出
-- `Stockfish::Eval::evaluate(const Position& pos)` 来自 `src/evaluate.cpp`: 17.23%，inline 了 `Evaluation<NO_TRACE>(pos).value()` 的调用，里面主要是对局面的评估，涉及比较多零散的访存和计算
-- `Stockfish::MovePicker::next_move(bool skipQuiets)` 来自 `src/movepick.cpp`: 10.43%，里面比较慢的是 `partial_insertion_sort`
-- `Stockfish::search(Position& pos, Stack* ss, Value alpha, Value beta, Depth depth, bool cutNode)` 来自 `src/search.cpp`: 9.52%，搜索逻辑主要在这里实现
-- `__popcountdi2`: 7.60%，被 `Stockfish::Eval::evaluate(const Position& pos)` 调用，用来判断局面上满足某种条件
+- `Stockfish::Eval::evaluate(const Position& pos)` 来自 `src/evaluate.cpp`: 19.16%，inline 了 `Evaluation<NO_TRACE>(pos).value()` 的调用，里面主要是对局面的评估，涉及比较多零散的访存和计算，没有特别集中的热点指令；
+- `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 17.91%，主要的瓶颈来自于随机访存，在 `first_entry(key)` 当中有 `&table[mul_hi64(key, clusterCount)].entry[0]` 的代码，其中 `mul_hi64` 计算两个 64 位整数乘法结果的高 64 位，因此访存地址是根据参数计算得出；对于 `mul_hi64`，GCC 14 会忠实地按照源码把 64 位拆分成高低 32 位分别计算，而 LLVM 22 能够正确识别出这段代码的意图，并直接用 AMD64 的 mul 指令实现；事实上，Stockfish 原本的代码里会用 __int128，此时 GCC 14 也能生成高效的代码，只可惜因为用到了 C 语法扩展，被 SPEC 禁用了（汇编对比见 [Godbolt](https://godbolt.org/z/x3j89xqWP)）；
+- `Stockfish::MovePicker::next_move(bool skipQuiets)` 来自 `src/movepick.cpp`: 10.36%，里面比较慢的是 `partial_insertion_sort`，找到插入位置后，还要把原来数组里靠后的元素往后挪，留出空间用于插入元素；
+- `Stockfish::search(Position& pos, Stack* ss, Value alpha, Value beta, Depth depth, bool cutNode)` 来自 `src/search.cpp`: 9.49%，搜索逻辑主要在这里实现；
+- `__popcountdi2`: 7.52%，被 `Stockfish::Eval::evaluate(const Position& pos)` 调用，用来判断局面上满足某种条件，内部实现就是位运算，有兴趣的读者可以阅读 Hacker's Delight 这本书。
 
 开了 `-march=native` 后，能观察到 `__popcountdi2` 被内联为 `popcnt` 指令。经过测试，开了 `-mpopcnt` 后，时间即从 47s 降低到 44s，接近 `-march=native` 的性能，可见在开启 popcnt 指令集的前提下，内联 `__popcountdi2` 调用就可以明显减少时间。
 
@@ -51,12 +51,12 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 
 开 `-O3 -mpopcnt` 后，指令数减少到 453.9B，其中 Load 有 124.2B 条，Store 有 53.1B 条，分支指令有 46.1B 条，错误预测还是 2.6B 次，所以光是内联了 `__popcountdi2` 的调用，就可以少掉 77.9B，原来的约 15% 的指令。`__popcountdi2` 本身的实现包括 21 条指令，此外还有 `__popcountdi2@plt` 里的一次 jmp，和 `call __popcountdi2@plt` 本身和前后保存和恢复寄存器的开销。
 
-#### 1to6_nnue
+#### 2. 1to6_nnue
 
 后两个命令的引擎从 classical 变为了 nnue，涉及神经网络，因此它的计算模式会不太一样。通过 `perf` 观察到 1to6_nnue 的主要耗时函数：
 
-- `Stockfish::Eval::NNUE:evaluate(const Position& pos, bool adjusted)` 来自 `src/nnue/evaluate_nnue.cpp`：80.59%，主要耗时在 `affine_transform_non_ssse3` 的 `sum += weights[offset + j] * input[j]`，即神经网络的推理过程，它的计算过程是，进行 int8_t 乘 uint8_t，再累加到 int32_t 类型的结果，默认编译选项下，只能用基础的 SSE 指令如 pmaddwd/paddd，而不能用 AVX
-- `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 仅 4.81%，瓶颈和前面分析的一样是随机访存
+- `Stockfish::Eval::NNUE:evaluate(const Position& pos, bool adjusted)` 来自 `src/nnue/evaluate_nnue.cpp`：80.59%，主要耗时在 `affine_transform_non_ssse3` 的 `sum += weights[offset + j] * input[j]`，即神经网络的推理过程，它的计算过程是，进行 int8_t 乘 uint8_t，再累加到 int32_t 类型的结果，默认编译选项下，只能用基础的 SSE 指令如 pmaddwd/paddd，而不能用 AVX；
+- `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 仅 4.81%，瓶颈和前面分析的一样是随机访存。
 
 分析 `Stockfish::Eval::NNUE:evaluate` 的指令，可以看到，它为了实现上述逻辑，核心思路是采用 pmaddwd 指令，进行 4 次 16 位有符号的乘法计算，累加到 32 位的结果。但是，在这之前，需要先把输入的 8 位有符号 weights 和无符号 input 转换到 16 位有符号数。其中 8 位有符号 weights 转换比较简单，而 8 位无符号 input 的处理逻辑比较复杂。首先，它对 input 的每个元素加上 128，然后当成有符号数来看待，这相当于对每个元素减去了 128，把 uint8_t 映射到了 int8_t。这样，input 就可以用和 weights 相同的方法进行符号扩展。但是，这样会导致结果计算错误，为了纠正这个偏差，又减去了 128 倍的 weights 之和。汇编代码如下（[Godbolt](https://godbolt.org/z/ox7q63Er8)）：
 
@@ -158,7 +158,7 @@ GCC 15 用 `-O3` 编译选项下，1to6_nnue 执行的指令数减少到 1015.3B
 
 GCC 14 用 `-march=native` 编译选项下，1to6_nnue 执行的指令数锐减到 446.8B，只剩下三分之一的指令数了，其中 Load 指令有 119.6B 条，Store 指令有 44.4B 条，分支指令有 48.7B 条，256 位的 AVX VNNI 指令有 13.2B 条（`int_vec_retired.vnni_256` 性能计数器），优化效果明显。
 
-#### 7to11_nnue
+#### 3. 7to11_nnue
 
 7to11_nnue 的行为与 1to6_nnue 类似，瓶颈也是在 `Stockfish::Eval::NNUE:evaluate` 函数上。开启 `-march=native` 后，时间从 72s 降到了 31s。GCC 15 的性能提升也和 1to6_nnue 类似，从 72s 降低到 46s。
 
@@ -193,11 +193,11 @@ ntest_r Othello.154.ggf 20 16
 
 实测数据显示，运行这条命令耗费的时间是 140s。reftime 是 592s，对应 4.2 分。开启各项优化编译选项，`-O3 -flto` 相比 `-O3` 能带来 4% 的性能提升，进一步 `-O3 -flto -march=native` 相比 `-O3 -flto` 还能带来 10% 的性能提升。下面分析它的具体负载特性。通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
-- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，判断下子以后是否出现翻转，主要是一些数据依赖的访存
-- `solveNParity(int alpha, int beta, u64 mover, u64 enemy, u64 parity, EndgameSearch* search, bool hasPassed)` 来自 `src/solve.cpp`：14.21%，进行 alpha-beta 减枝的 minimax 算法，遍历棋盘上的位置，如果可以下子，就尝试下子进行递归，主要的瓶颈在访存以及依赖访存结果的分支（如判断位置是否为空）
-- `__popcountdi2`：9.65%，因为没开 `-march=native`，故需要它来代替 popcnt 指令，用来计算场面上各颜色棋子的数量等等
-- `solveNFlipParity`：8.95%，与 solveNParity 配合完成 minimax 算法
-- `solve2`：5.38%，minimax 算法的一部分，处理棋盘只有两个空位的最终局面
+- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，判断下子以后是否出现翻转（黑白棋的规则是，只有翻转了对方的棋子才能下子，不然就要轮空），主要是一些数据依赖的访存，混合了一堆位运算；
+- `solveNParity(int alpha, int beta, u64 mover, u64 enemy, u64 parity, EndgameSearch* search, bool hasPassed)` 来自 `src/solve.cpp`：14.21%，进行 alpha-beta 减枝的 minimax 算法，遍历棋盘上的空位置，首先找到那些满足 good parity 的位置（用 `bitSet()` 函数，汇编上是用 AMD64 的 `bt` 指令判断），调用上述 `flips()` 看看是否会出现翻转，如果会出现翻转就尝试下子并进行递归，之后再遍历一次，这次遍历 bad parity 的位置，流程相同，主要的瓶颈在访存以及依赖访存结果的分支；
+- `__popcountdi2`：9.65%，因为没开 `-mpopcnt/-march=native`，故需要它来代替 popcnt 指令，用来计算场面上各颜色棋子的数量等等；
+- `solveNFlipParity`：8.95%，与 solveNParity 配合完成 minimax 算法；
+- `solve2`：5.38%，minimax 算法的一部分，处理棋盘只有两个空位的最终局面，此时判断最终胜败是比较容易的。
 
 这也是个比较典型的棋类引擎的模式了，整个 minimax 算法占了 70%+ 的时间，为了搜索局面，有大量的位运算和访存，还有根据访存结果决定方向的分支。果不其然，执行 2688.3B 条指令，其中有 647.8B 条 Load 指令，255.2B 条 Store 指令，228.2B 条是分支指令，有 6.1B 次错误预测，MPKI 达到了 `6.1B/2688B*1000=2.27`。和 706.stockfish_r 类似，它也有不少的 popcnt 调用，那么打开 `-mpopcnt` 就会得到不错的性能提升：时间从 140s 降低到 126s，减少 11% 时间，指令数减少到 2286.9B，其中有 586.9B 条 Load 指令，206.7B 条 Store 指令，187.6B 条分支指令。而即使开 `-march=native`，性能也只是进一步降到 122s，只有少量的地方用到了 AVX2。
 
@@ -234,7 +234,7 @@ sqlite_r --memdb --size 1000 --testset fp --verify
 
 实测数据显示，三条命令耗费的时间分别是 69s、12s 和 25s，共计 106s。reftime 是 528s，对应 5.0 分。开启 -flto/-ljemalloc 对性能影响很小，-march=native 甚至带来了负优化。下面逐一分析这三条命令的性能特性。
 
-#### main
+#### 1. main
 
 通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
@@ -269,7 +269,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 
 这个测例的主要瓶颈在内存上。执行了 896.3B 条指令，其中 252.4B 是 Load 指令，105.1B 是 Store 指令，178.0B 是分支指令，错误预测了 1.5B 次，MPKI 是 `1.5B/897.6B*1000=1.67`。
 
-#### cte
+#### 2. cte
 
 通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
@@ -280,7 +280,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 
 瓶颈主要在解释器上，和 CPython 这类解释型语言的解释器的行为模式类似。执行了 306.0B 条指令，其中 82.8B 是 Load 指令，39.6B 是 Store 指令，62.6B 是分支指令，错误预测了 40.9M 次，MPKI 是 `40.9M/30602B*1000=0.13`，处于很低的水平。
 
-#### fp
+#### 3. fp
 
 通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
