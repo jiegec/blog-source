@@ -238,7 +238,7 @@ sqlite_r --memdb --size 2000 --testset cte --verify
 sqlite_r --memdb --size 1000 --testset fp --verify
 ```
 
-实测数据显示，三条命令耗费的时间分别是 69s、12s 和 25s，共计 106s。reftime 是 528s，对应 5.0 分。开启 -flto/-ljemalloc 对性能影响很小，-march=native 甚至带来了负优化。下面逐一分析这三条命令的性能特性。
+实测数据显示，三条命令耗费的时间分别是 69s、12s 和 25s，共计 106s。reftime 是 528s，对应 5.0 分。开启 `-flto`/`-ljemalloc` 对性能影响很小，`-march=native` 甚至带来了负优化。下面逐一分析这三条命令的性能特性。
 
 #### 1. main
 
@@ -284,7 +284,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 - `sqlite3VdbeSerialGet(const unsigned char *buf, u32 serial_type, Mem *pMem)` 来自 `src/sqlite3.c`：5.95%，反序列化，根据内存中保存的数据类型，解析对应的数据，比如整数或者浮点，它的 switch-case 也被 GCC 编译成了跳转表；
 - `vdbeSorterSort(SortSubtask *pTask, SorterList *pList)` 来自 `src/sqlite3.c`：5.95%，实现归并排序，主要时间是在通过函数指针调用比较器函数，以及根据比较结果进行归并。
 
-瓶颈主要在解释器上，和 CPython 这类解释型语言的解释器的行为模式类似。执行了 306.0B 条指令，其中 82.8B 是 Load 指令，39.6B 是 Store 指令，62.6B 是分支指令，错误预测了 40.9M 次，MPKI 是 `40.9M/30602B*1000=0.13`，处于很低的水平。
+瓶颈主要在解释器上，与 CPython 解释器的行为模式类似。执行了 306.0B 条指令，其中 82.8B 是 Load 指令，39.6B 是 Store 指令，62.6B 是分支指令，错误预测了 40.9M 次，MPKI 是 `40.9M/30602B*1000=0.13`，处于很低的水平。
 
 #### 3. fp
 
@@ -394,11 +394,11 @@ cpython_r -I -B dna_bench.py 600000
 - `_PyObject_Free(void *ctx, void *p)` 来自 `src/cpython/Objects/obmalloc.c`：3.48%，释放 PyObject，Python 有一个自己的针对 PyObject 的内存分配器，而不是直接使用 malloc/free；
 - `_PyObject_Malloc(void *ctx, size_t nbytes)` 来自 `src/cpython/Objects/obmalloc.c`：3.15%，分配 PyObject。
 
-剩下就比较零散了，主要还是围绕着解释器的循环。执行了 651.6B 条指令，其中有 180.4B 是 Load 指令，104.1B 是 Store 指令，136.6B 是分支指令，错误预测仅 7.9M 次，MPKI 等于 `7.9M/651.6B*1000=0.01` 可以忽略不计。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 618.0B，其中 Load 有 176.6B，Store 有 93.9B，分支有 128.6B，错误预测 48.6M 次。
+剩下就比较零散了，主要还是围绕着解释器的循环。执行了 651.6B 条指令，其中有 180.4B 是 Load 指令，104.1B 是 Store 指令，136.6B 是分支指令，错误预测仅 7.9M 次，MPKI 等于 `7.9M/651.6B*1000=0.01`，可以忽略不计。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 618.0B，其中 Load 有 176.6B，Store 有 93.9B，分支有 128.6B，错误预测 48.6M 次。
 
 #### 2. mobilenet
 
-统计出热点函数，发现前四依然是上面四个，且时间占比差不多。可能是因为，resnet 和 mobilenet 测例用的是同一个 .py 源码，只是用的模型不同。执行了 438.9B 条指令，其中有 121.4B 是 Load 指令，70.5B 是 Store 指令，91.6B 是分支指令，错误预测 9.1M 次，MPKI 等于 `9.1M/438.9B*1000=0.02` 可以忽略不计。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 416.4B，其中 Load 指令有 119.0B，Store 指令有 63.8B，分支有 86.2B，错误预测 35.0M 次。
+统计出热点函数，发现前四依然是上面四个，且时间占比差不多。可能是因为，resnet 和 mobilenet 测例用的是同一个 .py 源码，只是用的模型不同。执行了 438.9B 条指令，其中有 121.4B 是 Load 指令，70.5B 是 Store 指令，91.6B 是分支指令，错误预测 9.1M 次，MPKI 等于 `9.1M/438.9B*1000=0.02`，可以忽略不计。开启 `-O3 -flto` 后，热点函数不变，指令数降低为 416.4B，其中 Load 指令有 119.0B，Store 指令有 63.8B，分支有 86.2B，错误预测 35.0M 次。
 
 #### 3. dna
 
@@ -451,7 +451,7 @@ cc1_r ref32.c -O3 -finline-limit=12000 -fno-tree-vrp -o ref32.c.opts-O3_-finline
 
 1. gcc-pp: 执行 470.2B 条指令，其中有 125.6B 条 Load 指令，58.8B 条 Store 指令，99.9B 条分支指令，错误预测 2.2B 次，MPKI 等于 `2.2B/470.2B*1000=4.68`
 2. gcc-smaller: 执行 243.4B 条指令，其中有 65.0B 条 Load 指令，30.3B 条 Store 指令，51.8B 条分支指令，错误预测 0.91B 次，MPKI 等于 `0.91B/243.4B*1000=3.74`
-3. ref32: 执行 403.7B 条指令，其中有 118.9 条 Load 指令，45.8B 条 Store 指令，86.1B 条分支指令，错误预测 0.61B 次，MPKI 等于 `0.61B/403.7B*1000=1.51`
+3. ref32: 执行 403.7B 条指令，其中有 118.9B 条 Load 指令，45.8B 条 Store 指令，86.1B 条分支指令，错误预测 0.61B 次，MPKI 等于 `0.61B/403.7B*1000=1.51`
 
 各命令的情况如下：
 
@@ -693,7 +693,7 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --RL_agen
 vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_algorithm bounding_box --place_static_notiming_move_prob 50 25 25 --max_criticality 0.0 --router_initial_timing all_critical --routing_failure_predictor off --route_chan_width 300 --max_router_iterations 20 --router_lookahead classic --initial_pres_fac 1.0 --pres_fac_mult 2.0 --astar_fac 1.5 --router_profiler_astar_fac 1.5 --seed 3 --sdc_file smithwaterman_stratixiv_arch_timing.sdc --pack_verbosity 0 --netlist_verbosity 0 --base_cost_type demand_only --place_file ref_smithwaterman_stratixiv_arch_timing.place --analysis --route
 ```
 
-这里的涉及到的 Stratix IV 是经典的 Altera FPGA，如今已经是时代的眼泪了。四条命令的运行时间分别是 21s、29s、18s 和 19s，总时间 87s，reftime 是 461s，对应 5.3 分。开 `-O3 -flto` 后，时间降低到 19s、25s、17s 和 17s，总时间 78s，对应 5.9 分，提升显著。如果进一步开到 `-O3 -flto -ljemalloc`，时间进一步降低到 17s、24s、15s 和 16s，总时间 72s，对应 6.4 分，相比 `-O3` 提升了 20%。开 `-march=native` 只能带来不到 1% 的提升。
+这里涉及的 Stratix IV 是经典的 Altera FPGA，如今已经是时代的眼泪了。四条命令的运行时间分别是 21s、29s、18s 和 19s，总时间 87s，reftime 是 461s，对应 5.3 分。开 `-O3 -flto` 后，时间降低到 19s、25s、17s 和 17s，总时间 78s，对应 5.9 分，提升显著。如果进一步开到 `-O3 -flto -ljemalloc`，时间进一步降低到 17s、24s、15s 和 16s，总时间 72s，对应 6.4 分，相比 `-O3` 提升了 20%。开 `-march=native` 只能带来不到 1% 的提升。
 
 下面进行具体分析。
 
@@ -734,10 +734,10 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_a
 
 | 子测试              | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI  |
 |---------------------|--------------|----------|----------|----------|-----------|----------|--------------|-------|
-| jpeg_place          | GCC 14 `-O3` | 21       | 273.7    | 84.5     | 26.9      | 521.9    | 781.0        | 2.85  |
+| jpeg_place          | GCC 14 `-O3` | 21       | 273.7    | 84.5     | 26.9      | 51.9     | 781.0        | 2.85  |
 | jpeg_route          | GCC 14 `-O3` | 29       | 424.1    | 130.6    | 50.6      | 79.0     | 1094.2       | 2.58  |
 | smithwaterman_place | GCC 14 `-O3` | 18       | 245.0    | 76.4     | 24.7      | 45.4     | 661.9        | 2.70  |
-| smithwaterman_route | GCC 14 `-O3` | 19       | 305.8    | 91.0     | 36.0      | 59.4     | 609.3        | 21.99 |
+| smithwaterman_route | GCC 14 `-O3` | 19       | 305.8    | 91.0     | 36.0      | 59.4     | 609.3        | 1.99  |
 
 734.vpr_r 的负载分为两部分，place 和 route，其中 place 主要在做 bounding box 的计算，route 主要在做搜索和优化。开 `-flto` 和 `-ljemalloc` 后有明显的性能提升，主要是靠内联了热点函数以及更快的性能分配。整体指令数为 1254B，分支指令数 237B，MPKI 是 2.51，处于中游偏高的水平。
 
@@ -830,7 +830,7 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 
 开启 `-O3 -flto` 后，`gem5::ruby::NetDest::intersectionIsNotEmpty` 被内联到 `gem5::ruby::WeightBased::route` 函数里，成为占时间最多的函数，占 6.45%。开启 `-O3 -flto -ljemalloc` 后，内存分配开销降低到 3.01%+0.83%=3.84%。`-march=native` 影响比较小。
 
-`-O3` 下，执行 391.5B 条指令，其中有 103.2B 条 Load 指令，54.4B 条 Store 指令，82.1B 条分支指令，错误预测 1246.0M 次，MPKI 等于 `1246.9M/391.5B*1000=3.18`，依然较高。
+`-O3` 下，执行 391.5B 条指令，其中有 103.2B 条 Load 指令，54.4B 条 Store 指令，82.1B 条分支指令，错误预测 1246.0M 次，MPKI 等于 `1246.0M/391.5B*1000=3.18`，依然较高。
 
 #### 小结
 
