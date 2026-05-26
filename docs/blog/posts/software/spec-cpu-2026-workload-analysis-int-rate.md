@@ -435,15 +435,15 @@ cc1_r ref32.c -O3 -finline-limit=12000 -fno-tree-vrp -o ref32.c.opts-O3_-finline
 
 三次运行的性能计数器如下：
 
-1. gcc-pp: 执行 470.4B 条指令，其中有 99.9B 条分支指令，错误预测 2.2B 次，MPKI 等于 `2.2B/470.4B*1000=4.68`
-2. gcc-smaller: 执行 243.2B 条指令，其中有 51.7B 条分支指令，错误预测 0.91B 次，MPKI 等于 `0.91B/243.2B*1000=3.74`
-3. ref32: 执行 403.8B 条指令，其中有 86.2B 条分支指令，错误预测 0.61B 次，MPKI 等于 `0.61B/403.8B*1000=1.51`
+1. gcc-pp: 执行 470.2B 条指令，其中有 125.6B 条 Load 指令，58.8B 条 Store 指令，99.9B 条分支指令，错误预测 2.2B 次，MPKI 等于 `2.2B/470.2B*1000=4.68`
+2. gcc-smaller: 执行 243.4B 条指令，其中有 65.0B 条 Load 指令，30.3B 条 Store 指令，51.8B 条分支指令，错误预测 0.91B 次，MPKI 等于 `0.91B/243.4B*1000=3.74`
+3. ref32: 执行 403.7B 条指令，其中有 118.9 条 Load 指令，45.8B 条 Store 指令，86.1B 条分支指令，错误预测 0.61B 次，MPKI 等于 `0.61B/403.7B*1000=1.51`
 
-| 子测试      | 编译器+选项  | 时间 (s) | 指令 (B) | 分支 (B) | 错误预测 (B) | MPKI |
-|-------------|--------------|----------|----------|----------|--------------|------|
-| gcc-pp      | GCC 14 `-O3` | 44       | 470.4    | 99.9     | 2.2          | 4.68 |
-| gcc-smaller | GCC 14 `-O3` | 21       | 243.2    | 51.7     | 0.91         | 3.74 |
-| ref32       | GCC 14 `-O3` | 51       | 403.8    | 86.2     | 0.61         | 1.51 |
+| 子测试      | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (B) | MPKI |
+|-------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
+| gcc-pp      | GCC 14 `-O3` | 44       | 470.2    | 125.6    | 58.8      | 99.9     | 2.2          | 4.68 |
+| gcc-smaller | GCC 14 `-O3` | 21       | 243.2    | 65.0     | 30.3      | 51.8     | 0.91         | 3.74 |
+| ref32       | GCC 14 `-O3` | 51       | 403.8    | 118.9    | 45.8      | 86.1     | 0.61         | 1.51 |
 
 整体指令数是 1120B，其中有 238B 条分支指令，MPKI 等于 3.37，在 SPEC INT 2026 中属于比较高的了。在 SPEC INT 2017 Rate 当中，502.gcc_r 的 MPKI 是 3.13，变化不大。
 
@@ -472,7 +472,7 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 - `_int_malloc/cfree/malloc`：2.38%+0.89%+0.82%=4.09%，大量的内存分配和释放，因此 `-ljemalloc` 能带来不错的性能提升；
 - `llvm::DenseMapBase::FindAndConstruct()`: 1.69%，LLVM 自己用数组实现的哈希表，主要瓶颈在读取哈希桶内的 entry 并比较 key，随机访存比较慢。
 
-其他用很多小的函数，占时间比例不高，和 721.gcc_r 类似，也是时间分散得比较开。执行指令数为 572.8B，其中分支指令有 118.7B，错误预测有 3.5B 次，MPKI 等于 `3.5B/572.8B*1000=6.11`，挺高的。
+其他有很多小的函数，占时间比例不高，和 721.gcc_r 类似，也是时间分散得比较开。执行指令数为 572.8B，其中 Load 指令有 137.7B，Store 指令有 78.6B，分支指令有 118.7B，错误预测有 3.5B 次，MPKI 等于 `3.5B/572.8B*1000=6.11`，挺高的。
 
 #### 2. codegen
 
@@ -482,14 +482,14 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 - `_int_malloc/cfree/malloc`：1.91%+0.72%+0.65%=3.28%，描述见上；
 - `llvm::DenseMapBase::FindAndConstruct()`: 1.29%，描述见上。
 
-整体的情况和 transformsplus 类似，只不过 `foldIntegerTypedPHI` 时间占比更高，其他还是有很多函数耗费很短的时间，分散得比较开。执行指令数为 415.9B，其中分支指令有 86.1B，错误预测有 2.4B 次，MPKI 等于 `2.4B/415.9B*1000=5.77`，依然很高。
+整体的情况和 transformsplus 类似，只不过 `foldIntegerTypedPHI` 时间占比更高，其他还是有很多函数耗费很短的时间，分散得比较开。执行指令数为 415.9B，其中 Load 指令有 100.4B，Store 指令有 57.5B，分支指令有 86.0B，错误预测有 2.4B 次，MPKI 等于 `2.4B/415.9B*1000=5.77`，依然很高。
 
 #### 小结
 
-| 子测试         | 编译器+选项  | 时间 (s) | 指令 (B) | 分支 (B) | 错误预测 (B) | MPKI |
-|----------------|--------------|----------|----------|----------|--------------|------|
-| transformsplus | GCC 14 `-O3` | 62       | 572.8    | 118.7    | 3.5          | 6.11 |
-| codegen        | GCC 14 `-O3` | 53       | 415.9    | 86.1     | 2.4          | 5.77 |
+| 子测试         | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (B) | MPKI |
+|----------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
+| transformsplus | GCC 14 `-O3` | 62       | 572.8    | 137.7    | 78.6      | 118.7    | 3.5          | 6.11 |
+| codegen        | GCC 14 `-O3` | 53       | 415.9    | 100.4    | 57.5      | 86.0     | 2.4          | 5.77 |
 
 llvm 和 gcc 同为编译器的双子星，在负载特性上也有类似之处：有很多的内存分配和释放，受益于 `-ljemalloc`；时间分布在大量小函数当中，热点不明显；MPKI 较高，尤其是 723.llvm_r 直接一跃成为 SPEC INT 2026 Rate 中 MPKI 最高的一项测试，可能是因为它有大量数据依赖的分支。723.llvm_r 整体的指令数有 991B，其中有 205B 是分支指令，MPKI 达到 5.98，即使放在 SPEC INT 2017 Rate 里，也能紧跟在 505.mcf_r 和 541.leela_r 两位大哥身后，成为 MPKI 第三高的项目。
 
@@ -510,47 +510,53 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 下面对这三条命令进行深入的分析。
 
-#### 738_diamond
+#### 1. 738_diamond
 
 热点函数如下：
 
-- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：40.82%，字符串匹配函数，比如用 abc|def 去匹配一个 token
-- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：12.08%，也是类似的字符串匹配函数，语法有些不同，类似自研正则表达式子集
-- `ScopeInfo3::findScope(const std::string & scope)` 来自 `src/lib/tokenize.cpp`：5.49%，循环，从当前作用域开始寻找对应的符号，如果没有，则检查更高一级的作用域，一般用于从变量名找到作用域里定义的符号
-- `Tokenizer::simplifyUsing()`：3.57%，把 `using N::x;` 变为 `using x = N::x`，里面就会用到上面说的 `Token::Match`，参数是 `"using ::| %name% ::"`
-- `cfree/malloc/_int_malloc`：0.47%+0.33%+0.45%=1.25%，内存分配相关
+- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：40.82%，字符串匹配函数，比如用 abc|def 去匹配一个 token，主要时间用在找 NUL、空格或 `|` 等字符；
+- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：12.08%，也是类似的字符串匹配函数，语法有些不同，类似自研正则表达式子集，它会调用上面的 `multiCompareImpl` 函数来做部分匹配；
+- `ScopeInfo3::findScope(const std::string & scope)` 来自 `src/lib/tokenize.cpp`：5.49%，循环，从当前作用域开始寻找对应的符号，如果没有，则检查更高一级的作用域，一般用于从变量名找到作用域里定义的符号，主要时间花在对 `std::list` 的遍历以及 `std::string` 的比较；
+- `Tokenizer::simplifyUsing()`：3.57%，把 `using N::x;` 变为 `using x = N::x`，里面就会用到上面说的 `Token::Match`，参数如 `"using ::| %name% ::"`，来做一些模式的匹配并进行相应的简化；
+- `cfree/malloc/_int_malloc`：0.47%+0.33%+0.45%=1.25%，内存分配相关。
 
-可以看到，主要的瓶颈是字符串匹配上，它的实现就是一个循环，用指针去扫描字符串，没有做数据结构上的优化。执行了 401B 条指令，其中有 109B 条分支指令，错误预测 174M 次，MPKI 等于 `174M/401B*1000=0.43` 不算高。
+可以看到，主要的瓶颈是字符串匹配上，它的实现就是一个循环，用指针去扫描字符串，没有做数据结构上的优化。执行了 399.9B 条指令，其中有 81.2B 条 Load 指令，25.5B 条 Store 指令，108.9B 条分支指令，错误预测 173.2M 次，MPKI 等于 `173M/399.9B*1000=0.43` 不算高。
 
-#### 747_dealii
+#### 2. 747_dealii
 
 热点函数类似：
 
-- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：27.42%，描述见上
-- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：14.55%，描述见上
-- `cfree/malloc/_int_malloc`：2.14%+1.57%+0.53%=4.24%，内存分配的比例更高
-- `Token::simpleMatch(const Token *tok, const char pattern[], size_t pattern_len)` 来自 `src/lib/token.cpp`：3.88%，又一个字符串匹配函数，换了种格式，比如 `"abc def"` 代表匹配 `abc` 或 `def`
-- `TemplateSimplifier::addInstantiation(Token *token, const std::string &scope)` 来自 `src/lib/templatesimplifier.cpp`：2.98%，在 token 级别上做一些代码简化的变换
-- `isAliasOf(const Token* tok, const Token* expr, int* indirect, bool* inconclusive)` 来自 `src/lib/astutils.cpp`：2.55%，判断两个变量是否 alias
+- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：27.42%，描述见上；
+- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：14.55%，描述见上；
+- `cfree/malloc/_int_malloc`：2.14%+1.57%+0.53%=4.24%，内存分配的比例更高；
+- `Token::simpleMatch(const Token *tok, const char pattern[], size_t pattern_len)` 来自 `src/lib/token.cpp`：3.88%，又一个字符串匹配函数，换了种格式，比如 `"abc def"` 代表匹配 `abc` 或 `def`，这次的瓶颈是 `strncmp` 和 `memchr`；
+- `TemplateSimplifier::addInstantiation(Token *token, const std::string &scope)` 来自 `src/lib/templatesimplifier.cpp`：2.98%，在 token 级别上做一些代码简化的变换，主要的耗时在对 `std::list` 的遍历；
+- `isAliasOf(const Token* tok, const Token* expr, int* indirect, bool* inconclusive)` 来自 `src/lib/astutils.cpp`：2.55%，判断两个变量是否 alias。
 
-依然有大量的字符串匹配，不知道为啥还要搞好几种语法，实现好几个字符串匹配函数。执行了 304B 条指令，其中有 83B 条分支指令，错误预测 298M 次，MPKI 等于 `298M/304B*1000=0.98` 也不算高。
+依然有大量的字符串匹配，不知道为啥还要搞好几种语法，实现好几个字符串匹配函数。执行了 303.9B 条指令，其中有 67.3B 条 Load 指令，31.5B 条 Store 指令，82.5B 条分支指令，错误预测 298.9M 次，MPKI 等于 `298.9M/303.9B*1000=0.98` 也不算高。
 
-#### 770_7z
+#### 3. 770_7z
 
 热点如下：
 
-- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：32.25%，描述见上
-- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：18.82%，描述见上
-- `__memcmp_avx2_movbe`：8.99%，被用于字符串匹配
-- `std::map<std::string>::equal_range`：7.34%，红黑树上的字符串匹配
-- `__strchr_avx2`：7.34%，被用于字符串匹配
-- `cfree/malloc/_int_malloc`：0.37%+0.27%+0.17%=0.81%，内存分配的比例较低
+- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：32.25%，描述见上；
+- `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：18.82%，描述见上；
+- `__memcmp_avx2_movbe`：8.99%，被用于字符串匹配；
+- `std::map<std::string>::equal_range`：7.34%，红黑树上的查询，外加字符串匹配；
+- `__strchr_avx2`：7.34%，被用于字符串匹配；
+- `cfree/malloc/_int_malloc`：0.37%+0.27%+0.17%=0.81%，这次内存分配的比例较低。
 
-依然是字符串匹配为主。执行了 506B 条指令，其中有 138B 条分支指令，错误预测 393M 次，MPKI 等于 `393M/506B*1000=0.78` 也不算高。
+依然是字符串匹配为主。执行了 505.2B 条指令，其中有 111.0B 条 Load 指令，43.8B 条 Store 指令，137.5B 条分支指令，错误预测 421.0M 次，MPKI 等于 `421M/505.2B*1000=0.83` 也不算高。
 
 #### 小结
 
 整体看下来，727.cppcheck_r 就是在不断地做字符串匹配。我就纳闷了，为啥不能直接过一遍 tokenizer，把 token 都转为数字呢，这样比较起来多快。在 token 级别上做各种变换，就在不停地对 token 进行字符串比较，导致最后的性能瓶颈，不是在 cppcheck 自己写的字符串比较，就是在 libc 的字符串比较里了。
+
+| 子测试      | 编译器+选项  | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
+|-------------|--------------|----------|----------|----------|-----------|----------|--------------|------|
+| 738_diamond | GCC 14 `-O3` | 27       | 399.9    | 81.2     | 25.5      | 108.9    | 173.2        | 0.43 |
+| 747_dealii  | GCC 14 `-O3` | 22       | 303.9    | 67.3     | 31.5      | 82.5     | 298.9        | 0.98 |
+| 770_7z      | GCC 14 `-O3` | 33       | 505.2    | 111.0    | 43.8      | 137.5    | 421.0        | 0.83 |
 
 整体执行了 1211B 指令，其中有 329B 分支指令，分支指令的比例足足有 27%，傲视 SPEC INT 2026 Rate 全场，这都是拜字符串匹配所赐，读一点就比较一点。但同时，MPKI 仅为 0.71，在 SPEC INT 2026 Rate 中倒数第三，仅高于 714.cpython_r 的 0.17 和 750.sealcrypto_r 的 0.14，说明大部分字符串匹配的结果都是很好预测的，比如比较到第一个字节就对不上了。
 
