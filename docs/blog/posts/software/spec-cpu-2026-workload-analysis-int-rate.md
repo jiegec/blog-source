@@ -40,7 +40,7 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 通过 `perf` 观察性能瓶颈，以下列出 1to6_classical 的主要热点函数及其时间占比（后续各测例均采用相同表示方法）：
 
 - `Stockfish::Eval::evaluate(const Position& pos)` 来自 `src/evaluate.cpp`: 19.16%，inline 了 `Evaluation<NO_TRACE>(pos).value()` 的调用，里面主要是对局面的评估，涉及比较多零散的访存和计算，没有特别集中的热点指令；
-- `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 17.91%，主要的瓶颈来自于随机访存，在 `first_entry(key)` 当中有 `&table[mul_hi64(key, clusterCount)].entry[0]` 的代码，其中 `mul_hi64` 计算两个 64 位整数乘法结果的高 64 位，因此访存地址是根据参数计算得出；对于 `mul_hi64`，GCC 14 会忠实地按照源码把 64 位拆分成高低 32 位分别计算，而 LLVM 22 能够正确识别出这段代码的意图，并直接用 AMD64 的 mul 指令实现；事实上，Stockfish 原本的代码里会用 __int128，此时 GCC 14 也能生成高效的代码，只可惜因为用到了 C 语法扩展，被 SPEC 禁用了（汇编对比见 [Godbolt](https://godbolt.org/z/x3j89xqWP)）；
+- `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 17.91%，主要的瓶颈来自于随机访存，在 `first_entry(key)` 当中有 `&table[mul_hi64(key, clusterCount)].entry[0]` 的代码，其中 `mul_hi64` 计算两个 64 位整数乘法结果的高 64 位，因此访存地址是根据参数计算得出；对于 `mul_hi64`，GCC 14 会忠实地按照源码把 64 位拆分成高低 32 位分别计算，而 LLVM 22 能够正确识别出这段代码的意图，并直接用 AMD64 的 mul 指令实现，这个功能在 [PR #168396](https://github.com/llvm/llvm-project/pull/168396) 中实现，`mul_hi64` 对应 PR 描述中的 Ladder；事实上，Stockfish 原本的代码里会用 __int128，此时 GCC 14 也能生成高效的代码，只可惜因为用到了 C 语法扩展，被 SPEC 禁用了（汇编对比见 [Godbolt](https://godbolt.org/z/x3j89xqWP)）；
 - `Stockfish::MovePicker::next_move(bool skipQuiets)` 来自 `src/movepick.cpp`: 10.36%，里面比较慢的是 `partial_insertion_sort`，找到插入位置后，还要把原来数组里靠后的元素往后挪，留出空间用于插入元素；
 - `Stockfish::search(Position& pos, Stack* ss, Value alpha, Value beta, Depth depth, bool cutNode)` 来自 `src/search.cpp`: 9.49%，搜索逻辑主要在这里实现；
 - `__popcountdi2`: 7.52%，被 `Stockfish::Eval::evaluate(const Position& pos)` 调用，用来判断局面上满足某种条件，内部实现就是位运算，有兴趣的读者可以阅读 Hacker's Delight 这本书。
