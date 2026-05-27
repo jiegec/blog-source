@@ -908,7 +908,7 @@ label:
 sub %rax,%rcx
 ```
 
-如此计算确实少了，但是分支预测错误率又很高。GCC 14 是这么实现的：
+如此计算确实少了，但是分支预测错误率又很高，除非硬件上做 Short Forward Branch 转 Predication 的逻辑（详见 [浅谈乱序执行 CPU（三：前端）](../hardware/brief-into-ooo-3.md)）。GCC 14 是这么实现的：
 
 ```asm
 # tmp2 保存在 rax 寄存器，p 保存在 rdx 寄存器
@@ -1147,7 +1147,7 @@ SPEC INT 2026 Rate 中 MPKI 较高的有：
 - 520.omnetpp_r MPKI=4.33
 - 502.gcc_r MPKI=3.13
 
-SPEC INT 2026 Rate 整体低了不少。当然，这是每个 benchmark 的平均值，个别子命令可能更高。但无论如何，终于不用和 505.mcf_r 的 `spec_qsort` 以及 541.leela_r 的 `if(randint(2) == 0)` 搏斗了。
+SPEC INT 2026 Rate 整体低了不少。当然，这是每个 benchmark 的平均值，个别子命令可能更高。但无论如何，终于不用和 505.mcf_r 的 `spec_qsort` 以及 541.leela_r 的 `if(randint(2) == 0)` 搏斗了。当然，SPEC INT 2026 Rate 也有很多的 MPKI 是来自于 `std::map` 的红黑树或者其他数据结构，有很多数据依赖的分支，也未必很好从硬件上优化性能。能看到的是，应用程序开始意识到分支预测，并通过 ternary operator 来提示编译器生成 cmov 指令来避免分支的错误预测。
 
 ### 局限性
 
