@@ -547,7 +547,7 @@ function populateFilters() {
   const all = allEntries();
   const osSel = document.getElementById('filter-os');
   // trixie first = default
-  const osOrder = ['trixie', 'bookworm', 'harmonyos'];
+  const osOrder = ['trixie', 'bookworm', 'forky', 'harmonyos'];
   const osSet = new Set(all.map(e => e.os));
   osOrder.filter(v => osSet.has(v)).forEach(v => addOption(osSel, v, v));
   osSet.forEach(v => { if (!osOrder.includes(v)) addOption(osSel, v, v); });
