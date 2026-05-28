@@ -830,7 +830,7 @@ def detect_isa(cpu_name):
 # ──────────────────────────────────────────────
 
 
-def check_frequency_deviation(cpu_display, all_data, filepath, threshold_mhz=200):
+def check_frequency_deviation(cpu_display, all_data, filepath, threshold_mhz=150):
     """Report if aggregate clock frequency deviates from named frequency by more than threshold."""
     import re
 
