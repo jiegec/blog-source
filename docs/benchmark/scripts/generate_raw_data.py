@@ -423,7 +423,7 @@ def merge_duplicate_cpus(items):
 
 
 def generate_section_markdown(data_dir, section_name, test_type="fp2017"):
-    """Generate markdown content for a data directory (e.g., data-bookworm, data-trixie, data-harmonyos)
+    """Generate markdown content for a data directory (e.g., data-bookworm, data-trixie, data-forky, data-harmonyos)
 
     Args:
         data_dir: Path to data directory
@@ -539,7 +539,7 @@ def generate_section_markdown(data_dir, section_name, test_type="fp2017"):
                         f"- {item['cpu_name']}（`{opt_flags_display}`）: [{score_str}]({item['rel_path']})\n"
                     )
     else:
-        # For Debian Bookworm/Trixie, group by platform type first (desktop/server), then by opt flags
+        # For Debian Bookworm/Trixie/Forky, group by platform type first (desktop/server), then by opt flags
         for platform_type, platform_title in [("desktop", "桌面"), ("server", "服务器")]:
             platform_items = [x for x in data if x["platform_type"] == platform_type]
             if not platform_items:
@@ -603,6 +603,7 @@ def update_index_md(test_type="fp2017", output_md="spec-cpu-2017-rate.md"):
 
     # Generate new raw data content
     data_dirs = [
+        (BASE_DIR / "data-forky", "Debian Forky"),
         (BASE_DIR / "data-trixie", "Debian Trixie"),
         (BASE_DIR / "data-bookworm", "Debian Bookworm"),
         (BASE_DIR / "data-harmonyos", "HarmonyOS"),
@@ -986,6 +987,7 @@ def generate_json_data():
     import json
 
     data_dirs = [
+        (BASE_DIR / "data-forky", "forky"),
         (BASE_DIR / "data-trixie", "trixie"),
         (BASE_DIR / "data-bookworm", "bookworm"),
         (BASE_DIR / "data-harmonyos", "harmonyos"),
@@ -1156,6 +1158,7 @@ Examples:
     else:
         # Only print generated markdown content
         data_dirs = [
+            (BASE_DIR / "data-forky", "Debian forky"),
             (BASE_DIR / "data-trixie", "Debian Trixie"),
             (BASE_DIR / "data-bookworm", "Debian Bookworm"),
             (BASE_DIR / "data-harmonyos", "HarmonyOS"),
