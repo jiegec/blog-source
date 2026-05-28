@@ -12,6 +12,7 @@
 
 桌面平台（`-march=native` + LTO + Jemalloc）：
 
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native -flto -ljemalloc`）: [3.97](./data-trixie/int2026_rate1/AMD_Ryzen_7_5700X_O3-march=native-flto-ljemalloc_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -march=native -flto -ljemalloc`）: [4.31](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3 -march=native -flto -ljemalloc`）: [5.20](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Intel Core i7-13700K P-Core @ 5.4 GHz Raptor Cove（`-O3 -march=native -flto -ljemalloc`）: [5.56](./data-trixie/int2026_rate1/Intel_Core_i7-13700K_P-Core_O3-march=native-flto-ljemalloc_001.txt)
@@ -20,6 +21,7 @@
 
 桌面平台（LTO + Jemalloc）：
 
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto -ljemalloc`）: [3.87](./data-trixie/int2026_rate1/AMD_Ryzen_7_5700X_O3-flto-ljemalloc_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto -ljemalloc`）: [4.31](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3-flto-ljemalloc_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3 -flto -ljemalloc`）: [5.10](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3-flto-ljemalloc_001.txt)
 - Intel Core i7-13700K P-Core @ 5.4 GHz Raptor Cove（`-O3 -flto -ljemalloc`）: [5.36](./data-trixie/int2026_rate1/Intel_Core_i7-13700K_P-Core_O3-flto-ljemalloc_001.txt)
@@ -32,6 +34,7 @@
 
 桌面平台（LTO）：
 
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -flto`）: [3.66](./data-trixie/int2026_rate1/AMD_Ryzen_7_5700X_O3-flto_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -flto`）: [4.10](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3-flto_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3 -flto`）: [4.91](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3-flto_001.txt)
 - Intel Core i7-13700K P-Core @ 5.4 GHz Raptor Cove（`-O3 -flto`）: [5.07](./data-trixie/int2026_rate1/Intel_Core_i7-13700K_P-Core_O3-flto_001.txt)
@@ -44,6 +47,7 @@
 
 桌面平台：
 
+- AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3`）: [3.53](./data-trixie/int2026_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [4.02](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3`）: [4.76](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3_001.txt)
 - Intel Core i7-13700K P-Core @ 5.4 GHz Raptor Cove（`-O3`）: [4.96](./data-trixie/int2026_rate1/Intel_Core_i7-13700K_P-Core_O3_001.txt)
