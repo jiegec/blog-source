@@ -1118,7 +1118,7 @@ zstd -b19 -e19 --verbose -i1 cld.tar
 
 - `-flto` 对 707.ntest_r、710.omnetpp_r、714.cpython_r、734.vpr_r、735.gem5_r、753.ns3_r 都有一定的性能提升，当热点分散在多个函数，且很多函数都很小时，开 LTO 能带来一定程度的优化，本质上挽回了因可读性而拆分文件带来的性能开销
 - `-ljemalloc` 对 710.omnetpp_r、721.gcc_r、723.llvm_r、727.cppcheck_r、734.vpr_r、735.gem5_r、753.ns3_r 有性能提升，只能说这些软件做了太多的动态内存分配，有一些 benchmark 直接就是内存分配器 benchmark 了，此时替换 glibc 为 jemalloc/mimalloc 都有不错的性能提升，不过最新 glibc 也在改进 malloc 性能，不知道改进得怎样了？
-- `-march=native` 对 706.stockfish_r、707.ntest_r、735.gem5_r、777.zstd_r 有不错的提升，一方面是诸如 AVX 等 SIMD 指令，另一方面就是一些位运算指令，比如 popcnt 和 BMI 扩展；事实上，现在很多软件在实现的时候，就已经考虑了硬件的加速指令，实际编译的时候，往往会直接用对应的 intrinsics，但 SPEC 禁用了这些 intrinsics，退而使用它的 generic 版本，此时就非常依赖 -march=native，以及需要编译器正确识别并翻译为对应的优化指令
+- `-march=native` 对 706.stockfish_r、707.ntest_r、735.gem5_r、777.zstd_r 有不错的提升，一方面是诸如 AVX 等 SIMD 指令（对 ARM64 来说，比如 Apple M2，就是针对 706.stockfish_r nnue 的 USDOT 指令，开 `-march=native` 直接给 706.stockfish_r 加了 33% 的分数，而如果没有这个指令集扩展，那么 `-march=native` 对 ARM64 没啥性能影响），另一方面就是一些位运算指令，比如 popcnt 和 BMI 扩展；事实上，现在很多软件在实现的时候，就已经考虑了硬件的加速指令，实际编译的时候，往往会直接用对应的 intrinsics，但 SPEC 禁用了这些 intrinsics，退而使用它的 generic 版本，此时就非常依赖 -march=native，以及需要编译器正确识别并翻译为对应的优化指令
 
 还有一些常用的编译参数，比如 `-static`、`-fomit-frame-pointer`、`-Ofast`、`-ffast-math` 等等，目前没有做太多测试，以后说不定会加上。
 
