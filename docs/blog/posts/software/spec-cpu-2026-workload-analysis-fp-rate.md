@@ -35,7 +35,9 @@ cactus ShiftedGaugeWave.par
 - GCC 14 `-O3 -ffast-math`，运行时间 101.2s，对应 8.48 分，相比 GCC 14 `-O3` 提升 2%；
 - GCC 14 `-O3 -ljemalloc`，运行时间 100.7s，对应 8.52 分，相比 GCC 14 `-O3` 提升 3%；
 - LLVM 22 `-O3`，运行时间 94.6s，对应 9.07 分，相比 GCC 14 `-O3` 提升 9%；
-- LLVM 22 `-O3 -march=native`，运行时间 90.5s，对应 9.48 分，相比 GCC 14 `-O3` 提升 14%；
+- LLVM 22 `-O3 -march=native`，运行时间 90.5s，对应 9.48 分，相比 GCC 14 `-O3` 提升 14%。
+
+可见 `-march=native` 能提供巨大的性能提升。
 
 通过 `perf` 观察性能瓶颈：
 
@@ -61,4 +63,43 @@ cactus ShiftedGaugeWave.par
 
 其中总指令数来自 `instructions`，Load 指令数来自 `mem_inst_retired.all_loads`，Store 指令数来自 `mem_inst_retired.all_stores`，分支指令数来自 `branch-instructions`，浮点标量指令数用 `fp_arith_inst_retired.scalar` 浮点向量指令数用 `fp_arith_inst_retired.vector` 性能计数器，下同。需要注意的是，`vfmadd132sd` 等乘加融合指令在 `fp_arith_inst_retired.scalar/vector` 计数器中会被计算两次。
 
-从表里可以看出，`-O3` 下基本是一半指令在 Load，另一半指令在做浮点标量运算，这个计算访存比还是挺低的，这是 Stencil 计算的典型特征。开 `-O3 -march=native` 后，指令数减少了很多，但因为乘加融合会算两倍的贡献，并且那些同时进行访存和计算的 AVX2 指令也会被同时计入到 Load 和浮点指令数，估计微架构是统计的拆分后的微码数量，那么总指令数不再等于各类指令数求和。这里 `-O3 -ljemalloc` 带来了些许的性能优势，不过指令数上并没有体现，不确定它的性能提升主要是来自哪里。GCC 14 和 LLVM 22 在不同编译选项下各有千秋，大概看了一下生成的指令，其实实现方法都差不多，主要是地址计算、栈的使用和寄存器分配有一些区别。
+从表里可以看出，`-O3` 下基本是一半指令在 Load，另一半指令在做浮点标量运算，这个计算访存比还是挺低的，这是 Stencil 计算的典型特征，在网格邻域里，Load 一个值进来，做一次乘加。开 `-O3 -march=native` 后，因为乘加融合指令的加持，指令数减少了很多，但因为乘加融合会算两倍的贡献，并且那些同时进行访存和计算的 AVX2 指令也会被同时计入到 Load 和浮点指令数，估计微架构是统计的拆分后的微码数量，那么总指令数不再等于各类指令数求和。这里 `-O3 -ljemalloc` 带来了些许的性能优势，不过指令数上并没有体现，不确定它的性能提升主要是来自哪里。GCC 14 和 LLVM 22 在不同编译选项下各有千秋，大概看了一下生成的指令，其实实现方法都差不多，主要是地址计算、栈的使用和寄存器分配有一些区别。
+
+### 722.palm_r
+
+palm 是一个天气预报相关的程序，做的是 Navier Stokes 方程的求解，命令如下：
+
+```shell
+palm_r < runfile_atmos
+```
+
+实测数据显示，运行时间 174.0s，reftime 是 1320s，对应 7.59 分。不同编译器和编译选项对 722.palm_r 的优化情况：
+
+- GCC 14 `-O3 -march=native`，运行时间 157.8s，对应 8.34 分，相比 GCC 14 `-O3` 提升 10%；
+- GCC 14 `-O3 -ffast-math`，运行时间 168.4s，对应 7.84 分，相比 GCC 14 `-O3` 提升 3%；
+- GCC 14 `-O3 -ljemalloc`，运行时间 172.4s，对应 7.66 分，相比 GCC 14 `-O3` 提升 1%；
+- LLVM 22 `-O3`，运行时间 144.0s，对应 9.17 分，相比 GCC 14 `-O3` 提升 21%；
+- LLVM 22 `-O3 -march=native`，运行时间 118.6s，对应 10.37 分，相比 GCC 14 `-O3` 提升 47%。
+
+可见 `-march=native` 能提供巨大的性能提升，而 LLVM 22 也明显比 GCC 14 要快。
+
+热点函数：
+
+- `advec_s_ws_ij` 来自 `src/advec_ws.F90`：9.80%，经典的 3 维上的 Stencil 计算，访存和计算的比例接近，基本是 load 一个点的数值然后就做对应的乘加，用 SSE 指令来做计算，有部分向量化计算，例如 addpd/subpd/mulpd 等，每条指令处理 2 个双精度浮点元素，不过也有一些循环没能成功向量化，退化到 addsd/subsd/mulsd 等浮点标量指令；
+- `advec_u_ws_ij` 来自 `src/advec_ws.F90`：8.80%，同上；
+- `advec_v_ws_ij` 来自 `src/advec_ws.F90`：8.54%，同上；
+- `advec_w_ws_ij` 来自 `src/advec_ws.F90`：8.24%，同上；
+- `diffusion_e_ij` 来自 `src/turbulence_closure_mod.F90`：5.14%，有一些比较复杂的浮点运算，比如 min/sqrt/div 等等，还有位运算，用 `MERGE` 来进行 ternary operator，无向量化，用 SSE 指令来做标量浮点计算。
+
+不同编译选项的情况对比：
+
+| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) |
+|-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|
+| GCC 14 `-O3`                | 174.0    | 3416.6B  | 1267.4B  | 271.1B    | 155.6B   | 779.0B       | 318.5B       |
+| GCC 14 `-O3 -march=native`  | 157.8    | 2710.0B  | 1212.8B  | 242.5B    | 147.1B   | 785.9B       | 172.6B       |
+| GCC 14 `-O3 -ffast-math`    | 168.4    | 3373.5B  | 1204.7B  | 278.0B    | 134.0B   | 612.8B       | 363.1B       |
+| GCC 14 `-O3 -ljemalloc`     | 172.4    | 3368.4B  | 1259.7B  | 260.7B    | 141.6B   | 779.0B       | 318.5B       |
+| LLVM 22 `-O3`               | 144.0    | 2640.4B  | 835.5B   | 216.3B    | 90.4B    | 179.5B       | 609.7B       |
+| LLVM 22 `-O3 -march=native` | 118.6    | 1643.8B  | 586.5B   | 165.6B    | 67.6B    | 180.8B       | 306.7B       |
+
+开 `-O3 -march=native` 后，能看到的是大量的 AVX2 向量化指令：vmulpd/vdivsd/vaddpd/vsubpd/vfmadd213sd/vfmsub132pd/vfmsub231pd/vmovupd 等等，每次处理 4 个双精度浮点元素，向量化程度很高，如果在有 AVX512 的处理器上，可能性能还会更高。相比 709.cactus_r 那样被 pow 等问题限制没能向量化，722.palm_r 的向量化收益是特别明显的。LLVM 22 在 `-O3` 下比 GCC 14 要好，是因为它在热点函数的更多部分成功进行向量化，体现在数据上就是浮点向量指令数明显增多，浮点标量指令数明显减少。在 LLVM 22 下，由于上述热点函数被优化地比较好，也出现了新的热点函数，时间占比 5.79%：`flow_statistics` 来自 `src/flow_statistics.F90`，它能正确向量化的部分比较少，因而时间占比提升，即使开了 `-O3 -march=native`，也还是用 AVX2+FMA 指令来做标量计算，时间区别不大，因为其他部分时间降低，自己的时间占比提高到 6.95%。
