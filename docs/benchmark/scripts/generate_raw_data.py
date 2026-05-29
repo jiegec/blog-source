@@ -194,6 +194,7 @@ CPU_INFO = [
     # Server - Loongson
     ("Loongson 3A6000", {None: "@ 2.5 GHz LA664"}),
     ("Loongson 3C5000", {None: "@ 2.2 GHz LA464"}),
+    ("Loongson 3C6000D", {None: "@ 2.1 GHz LA664"}),
     ("Loongson 3C6000", {None: "@ 2.2 GHz LA664"}),
     # Mobile - Huawei Kirin
     ("Huawei Kirin X90 E-Core", {None: "@ 2.0 GHz"}),

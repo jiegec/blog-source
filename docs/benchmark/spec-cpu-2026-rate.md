@@ -12,15 +12,15 @@
 
 服务器平台（LTO + Jemalloc）：
 
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto -ljemalloc`）: [1.74](./data-forky/int2026_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
+- Loongson 3C6000D @ 2.1 GHz LA664（`-O3 -flto -ljemalloc`）: [1.74](./data-forky/int2026_rate1/Loongson_3C6000D_O3-flto-ljemalloc_001.txt)
 
 服务器平台（LTO）：
 
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3 -flto`）: [1.66](./data-forky/int2026_rate1/Loongson_3C6000_O3-flto_001.txt)
+- Loongson 3C6000D @ 2.1 GHz LA664（`-O3 -flto`）: [1.66](./data-forky/int2026_rate1/Loongson_3C6000D_O3-flto_001.txt)
 
 服务器平台：
 
-- Loongson 3C6000 @ 2.2 GHz LA664（`-O3`）: [1.61](./data-forky/int2026_rate1/Loongson_3C6000_O3_001.txt)
+- Loongson 3C6000D @ 2.1 GHz LA664（`-O3`）: [1.61](./data-forky/int2026_rate1/Loongson_3C6000D_O3_001.txt)
 
 #### Debian Trixie
 
