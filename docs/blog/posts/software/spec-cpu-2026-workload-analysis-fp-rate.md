@@ -620,8 +620,51 @@ JSBSim --nohighlight scripts/ball_orbit.xml
 
 ### 749.fotonik3d_r
 
-终于出现了一个 SPEC FP 2017 Rate 的老面孔，此前是 549.fotonik3d_r。fotonik3d 做的是 3D 空间里的麦克斯韦方程求解，又一个物理背景的基准测试。该基准测试只有一个负载：
+终于出现了一个 SPEC FP 2017 Rate 的老面孔，此前是 549.fotonik3d_r。fotonik3d 做的是 3D 空间里的麦克斯韦方程求解，又一个物理背景的基准测试，一般这种三维空间里的偏微分方程求解，必定会有 Stencil，下面看看这个猜测对不对。该基准测试只有一个负载：
 
 ```shell
 fotonik3d_r
 ```
+
+reftime 是 1156s，在不同编译选项下，749.fotonik3d_r 的运行情况：
+
+| 编译器+选项                            | 时间 (s) | 分数  | 相比 GCC 14 `-O3` 性能提升 (%) | 指令数 (B) | Load 指令数 (B) | Store 指令数 (B) | 分支指令数 (B) | 浮点标量指令数 (B) | 浮点向量指令数 (B) |
+|----------------------------------------|----------|-------|--------------------------------|------------|-----------------|------------------|----------------|--------------------|--------------------|
+| GCC 14 `-O3`                           | 131.1    | 8.82  | 0                              | 1408.5     | 375.1           | 120.7            | 30.9           | 5.4                | 527.2              |
+| GCC 14 `-O3 -march=native`             | 114.9    | 10.1  | 14                             | 670.1      | 274.1           | 82.4             | 27.1           | 5.5                | 249.4              |
+| GCC 14 `-O3 -ffast-math`               | 116.7    | 9.91  | 12                             | 1117.6     | 378.4           | 120.8            | 30.7           | 4.8                | 396.2              |
+| GCC 14 `-O3 -ffast-math -march=native` | 108.5    | 10.65 | 21                             | 599.5      | 276.3           | 82.3             | 26.9           | 4.8                | 204.8              |
+
+LLVM 22 性能和 GCC 14 差不多，这里就不单列了。可见 `-O3 -march=native` 和 `-O3 -ffast-math` 都有不错的性能提升，下面进行热点分析：
+
+- `power_dft` 来自 `src/power.F90`：30.92%，进行的是离散傅里叶变化 DFT，主要瓶颈是在循环中进行双精度浮点乘加运算，GCC 14 把它编译成 SSE 的向量指令；
+- `UPML_updateE_simple` 来自 `src/UPML.F90`：24.73%，主要时间在进行三维的 Stencil 计算，果然物理模拟都离不开 Stencil 计算，GCC 14 编译出 SSE 向量指令进行计算；
+- `UPML_updateH` 来自 `src/UPML.F90`：23.26%，依然是 3D 的 Stencil 计算，采用 SSE 向量指令；
+- `mat_updateE` 来自 `src/material.F90`：11.04%，同样是 Stencil 计算，采用 SSE 向量指令；
+- `updateH` 来自 `src/update.F90`：9.78%，也是 Stencil 计算，采用 SSE 向量指令。
+
+由此可见，除了 `power_dft` 以外，大部分时间都在进行 Stencil 计算，这次 Stencil 计算的模式更加纯粹，因为 GCC 能够比较好地用 SSE 进行向量化。根据前面的经验，这类程序在 `-O3 -march=native`、`-O3 -ffast-math` 以及 `-O3 -ffast-math -march=native` 下都是有很大的提升的：
+
+开启 `-march=native` 后，可以用更宽的 AVX2 向量，并行度更高，同时还能使用浮点乘加融合指令，例如 [`vfmaddsub231pd`](https://www.felixcloutier.com/x86/vfmaddsub132pd:vfmaddsub213pd:vfmaddsub231pd)。
+
+开启 `-O3 -ffast-math` 以后，`power_dft` 中的核心计算，实际上计算的是，复数乘以实数再加复数，如下面的 Fortran 代码所示：
+
+```c
+subroutine update(Efreq1, Efreq2, expfuncE, Efield1, Efield2, n)
+  implicit none
+  integer, intent(in) :: n
+  complex(8), intent(inout) :: Efreq1(n), Efreq2(n)
+  complex(8), intent(in) :: expfuncE(n)
+  real(8), intent(in) :: Efield1, Efield2
+  integer :: i
+
+  do i = 1, n
+    Efreq1(i) = Efreq1(i) + expfuncE(i) * Efield1
+    Efreq2(i) = Efreq2(i) + expfuncE(i) * Efield2
+  end do
+end subroutine update
+```
+
+在 `-O3` 时，GCC 14 会忠实地实现复数乘法，然而，实际上这里的 Efield1 和 Efield2 都是实数，转换过去的复数的虚部只能是零，因此通过 `-O3 -ffast-math` 的化简，直接把实部乘到 expfuncE 的实部和虚部即可，这样就可以简化指令。如果开 `-O3 -ffast-math -march=native`，将可以结合两个优化，直接用 AVX2 乘加融合指令 `vfmadd213pd` 完成这次运算，不需要像 `-O3 -march=native` 时用 `vfmaddsub231pd` 同时做加法和减法（原来的减，来自于复数乘法的定义，在这里减去的总是零，因为 Efield1/Efield2 的虚部是零），详见 [Godbolt](https://godbolt.org/z/v3W4e5xjP)。
+
+小结一下，749.fotonik3d_r 算是比较经典的浮点应用，里面有大量的 Stencil 和浮点向量运算，并行度高，适合向量化，还可以享受 `-ffast-math` 带来的代数优化的性能提升。
