@@ -270,7 +270,7 @@ vmax(vfloat4, vfloat4):
         retq
 ```
 
-剩余的指令只是为了解决调用约定的数据存放位置问题，实际在函数内部计算的时候，通常就一条 `maxps` 指令完成所有 4 个元素的 max 计算。从这个例子也可以看出，为啥 LLVM 22 比 GCC 14 要快得多：GCC 14 多了很多无用的分支来解决 `select` 里的比较，而且还不能向量化 max 操作。即使给 GCC 14 开 `-march=native`，它依然还在用 AVX 指令进行标量 max 运算，真是难绷。上述编译结果可见 [Godbolt](https://godbolt.org/z/Y8Ps15n39)。GCC 14 的 MPKI 那么高，其实都是这么来的，也挺搞笑。我还测试了一下，发现相同的代码在 LoongArch 下也没有得到很好的向量化支持（见 [Godbolt](https://godbolt.org/z/qTsaMnzhe)），因此提了一个 [issue](https://github.com/loongson-community/discussions/issues/120)，仅考虑向量化 fmax 内核，用 `vfcmp.slt.s` + `vbitsel.v` 的优化实现大概是目前 LLVM 22 编译结果的 2.9 倍性能。
+剩余的指令只是为了解决调用约定的数据存放位置问题，实际在函数内部计算的时候，通常就一条 `maxps` 指令完成所有 4 个元素的 max 计算。从这个例子也可以看出，为啥 LLVM 22 比 GCC 14 要快得多：GCC 14 多了很多无用的分支来解决 `select` 里的比较，而且还不能向量化 max 操作。即使给 GCC 14 开 `-march=native`，它依然还在用 AVX 指令进行标量 max 运算，真是难绷。上述编译结果可见 [Godbolt](https://godbolt.org/z/Y8Ps15n39)。GCC 14 的 MPKI 那么高，其实都是这么来的，也挺搞笑。我还测试了一下，发现相同的代码在 LoongArch 下也没有得到很好的向量化支持（见 [Godbolt](https://godbolt.org/z/qTsaMnzhe)），因此提了一个 [issue](https://github.com/loongson-community/discussions/issues/120)，仅考虑向量化 fmax 内核，用 `vfcmp.slt.s` + `vbitsel.v` 的优化实现大概是目前 LLVM 22 编译结果的 2.9 倍性能。这里有一个小冷知识，就是 x86 的 SSE/AVX max 指令都实现的都是 `a > b ? a : b` 的逻辑，而 LoongArch 的 fmax 指令实现的是 IEEE754 的 `maxNum`，二者在出现 NaN 时的行为不同：前者只要 a 或 b 出现一个 NaN，就都返回 b；后者只有一个 NaN 时，会返回另一个非 NaN 的数。
 
 #### 2. hdr
 
@@ -423,3 +423,36 @@ LLVM 22 相比 GCC 14 的主要性能区别和 3. aces 一样，就是 ceil/floo
 #### 小结
 
 736.ocio_r 依然是一个比较适合向量化的应用，虽然它不像 731.astcenc_r 那样直接用 `vfloat4` 格式，但因为它是图像处理，每次循环处理一个像素，然后每个像素有四个通道，在很多情况下，这四个通道的计算过程是一样的，因此也非常适合向量化。而 LLVM 22 在 `-O3` 下做出了比 GCC 14 更好的指令生成，从 floor/ceil 到 libm 函数的映射，以及更好的向量化实现。当然，开 `-O3 -march=native` 后，GCC 14 和 LLVM 22 的性能差距非常小，说明在两方都开启足够的指令集扩展以后，基本会收敛到差不多的代码实现上，这也反过来说明，GCC 14 的 SSE 代码生成上有一些欠缺，可能的情况是，并非 GCC 14 不能向量化（因为开 `-O3 -march=native` 后就学会了），而是尝试向量化后，不知道怎么用 SSE 表达向量化后的代码，于是退回到了标量。
+
+### 737.gmsh_r
+
+737.gmsh_r 是 3D 的 CAD 软件，包括七条命令：
+
+```shell
+# 1. choi
+gmsh_r -option gmsh.opts -nt 0 choi.geo
+# 2. mediterranean
+gmsh_r -option gmsh.opts -nt 0 mediterranean.geo
+# 3. projection
+gmsh_r -option gmsh.opts -nt 0 projection.geo
+# 4. gasdis
+gmsh_r -option gmsh.opts -nt 0 gasdis.geo
+# 5. Torus
+gmsh_r -option gmsh.opts -nt 0 Torus.geo
+# 6. spec
+gmsh_r -option gmsh.opts -nt 0 spec.geo -clscale 0.175 -algo del2d -algo hxt
+# 7. p19
+gmsh_r -option gmsh.opts -nt 0 p19.geo
+```
+
+各测例运行时间为 17.1s、11.8s、11.2s、16.9s、9.2s、13.4s、12.8s，总时间 92.2s，reftime 是 459s，对应 4.98 分。`-O3 -ffast-math` 和 `-O3 -march=native` 的收益都很小，LLVM 22 比 GCC 14 更慢，因此这里就不做具体比较了。
+
+用 `-O3 -march=native` 编译的时候，发现如果 CC 只传了 gcc，而没有传 `-std=c18`，就会在 4. gasdis 这一条命令里死循环，一直报错：`Info    : Symbolic perturbation failed (2 superposed vertices ?)`。经过对比，两者的区别在于是否进行乘加融合：`-O3 -std=c18 -march=native` 时，不会进行融合，而 `-O3 -march=native` 或 `-O3 -std=gnu18 -march=native` 时会进行融合，见 [Godbolt](https://godbolt.org/z/58fTP5fnG)。在其他程序里，融合对性能更优，但这里很不幸，融合了就会导致死循环。这和 [`-fp-contract`](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html) 有关：
+
+```
+-ffp-contract=style
+
+    -ffp-contract=off disables floating-point expression contraction. -ffp-contract=fast enables floating-point expression contraction such as forming of fused multiply-add operations if the target has native support for them. -ffp-contract=on enables floating-point expression contraction if allowed by the language standard. This is implemented for C and C++, where it enables contraction within one expression, but not across different statements.
+
+    The default is -ffp-contract=off for C in a standards compliant mode (-std=c11 or similar), -ffp-contract=fast otherwise.
+```
