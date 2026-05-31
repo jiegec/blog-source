@@ -456,3 +456,70 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 
     The default is -ffp-contract=off for C in a standards compliant mode (-std=c11 or similar), -ffp-contract=fast otherwise.
 ```
+
+可见它只对 C 语言有效，对 C++ 无效，实际上就是只对 737.gmsh_r 有影响；虽然 709.cactus_r 也有 C 代码，但它的主要计算都在 C++ 语言的部分。
+
+接下来针对命令进行热点分析。
+
+#### 1. choi
+
+热点函数：
+
+- `netgen::ADTree6::GetIntersecting` 来自 `src/gmsh/contrib/Netgen/libsrc/gprim/adtree.cpp`：18.40%，实现了一个 6 维的 KD-Tree 的搜索算法，主要瓶颈在于中间的数据依赖的分支 `if (node->pi != -1)`，预测错误率较高；
+- `__ieee754_atan2_fma` 来自 libm：6.64%；
+- `reparamMeshVertexOnFace` 来自 `src/gmsh/src/geo/MVertex.cpp`：6.03%，不确定实现的是什么算法，不过能看到有很多分支，错误预测也比较多。
+
+虽然用到了浮点，但计算模式并不适合向量化。执行了 204.7B 条指令，错误预测 744.3M 次，MPKI 等于 `744.3M/204.7B*1000=3.64`，属于 SPEC FP 2026 Rate 中第二高的，其中第一高 731.astcenc_r 如上面所述，其实是 GCC 的实现不够好，完全可以把 MPKI 优化到 LLVM 22 的 1.3 左右，那样的话，737.gmsh_r 就是 MPKI 最高的负载了。
+
+#### 2. mediterranean
+
+热点函数：
+
+- `meshGEdgeProcessing` 来自 `src/gmsh/src/mesh/meshGEdge.cpp`：36.55%，主要瓶颈在循环中的 gauss seidel 迭代，标量除法和比较耗费了比较多的时间；
+- `KDTreeSingleIndexAdaptor::searchLevel` 来自 `src/gmsh/src/numeric/nanoflann.hpp`：33.50%，又一个经典的 KD-Tree 的搜索算法，根据输入的值递归到左子树或右子树；
+- `InterpolateCurve` 来自 `src/gmsh/src/geo/GeoInterpolation.cpp`：6.53%，递归进行一些插值的计算。
+
+虽然用到了浮点，但计算模式依然不适合向量化。
+
+#### 3. projection
+
+热点函数：
+
+- `laplaceSmoothing` 来自 `src/gmsh/src/mesh/meshGFaceOptimize.cpp`：11.73%，主要瓶颈是 `std::set` 的操作，，而 `std::set` 是用 `std::map` 实现的，因此会调用下面的 `std::map` 的代码；
+- `std::map::_M_get_insert_unique_pos` 来自 libstdc++：7.49%，`std::map` 的插入算法实现；
+- `__ieee754_atan2_fma` 来自 libm：7.21%；
+- `reparamMeshVertexOnFace`：6.66%，描述见上；
+- `std::map::_M_get_insert_unique` 来自 libstdc++：6.09%，std::map 的插入实现；
+- `SetRotationMatrix` 来自 `src/gmsh/src/geo/Geo.cpp`：5.01%，代码是多层循环，适合向量化，不过时间占比并不高。
+
+可见，这个测例主要还是 `std::map` 相关的操作为主要瓶颈。
+
+#### 4. gasdis
+
+热点函数：
+
+- `MakeHybridHexTetMeshConformalThroughTriHedron` 来自 `src/gmsh/src/mesh/meshCombine3D.cpp`：30.18%，主要瓶颈是在循环里对 `std::map` 进行搜索；
+- `parallelDelaunay3D` 来自 `src/gmsh/contrib/hxt/tetMesh/src/hxt_tetDelaunay.c`：9.05%，实现了 Delaunay 三角剖分算法；
+- `hxtRefineTetrahedra` 来自 `src/gmsh/contrib/hxt/tetMesh/src/hxt_tetRefine.c`：5.18%，主要是指循环中做一些浮点计算，包括加减法，乘除法和 sqrt。
+
+瓶颈主要还是在 `std::map`。
+
+#### 5. Torus、6.spec 和 7.p19
+
+最后三个测例，其热点函数都与 4.gadis 相同，不再赘述。
+
+#### 小结
+
+各测例的情况：
+
+| 测例             | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
+|------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|------|
+| 1. choi          | 17.0     | 204.7    | 59.3     | 25.6      | 39.4     | 22.1         | 0.3          | 744.3        | 3.64 |
+| 2. mediterranean | 11.7     | 190.7    | 57.4     | 23.2      | 24.0     | 28.5         | 2.4          | 71.0         | 0.37 |
+| 3. projection    | 11.1     | 109.0    | 29.1     | 14.4      | 20.3     | 13.3         | 2.2          | 183.0        | 1.68 |
+| 4. gasdis        | 16.9     | 157.8    | 46.3     | 17.8      | 27.6     | 19.6         | 0.2          | 689.9        | 4.37 |
+| 5. Torus         | 9.2      | 77.3     | 21.9     | 8.2       | 13.4     | 9.4          | 0.5          | 380.4        | 4.92 |
+| 6. spec          | 13.3     | 101.4    | 30.2     | 10.8      | 18.1     | 10.9         | 0.2          | 546.1        | 5.39 |
+| 7. p10           | 12.7     | 96.3     | 28.8     | 10.2      | 17.2     | 10.4         | 0.1          | 529.3        | 5.50 |
+
+可见整体的 MPKI 还是偏高的，并且很大程序归功于 KD-Tree 的查询以及 `std::map` 的查询或插入，只不过这些树的 key 都是单精度浮点数。并且根据上面的分析，确实相关的代码不适合向量化，浮点乘加融合还被禁用了，否则就可能不收敛。
