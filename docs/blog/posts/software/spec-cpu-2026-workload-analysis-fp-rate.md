@@ -150,7 +150,7 @@ astcenc_r ref-inputs-precision.txt
 
 针对这种用原生 SIMD 写法的程序，编译出来却又都是 SSE 标量指令，那意味如果能用 SSE 进行向量化，将会有明显的性能提升；进一步，如果开了 `-O3 -march=native`，向量更宽来到 256 位，并且还能用 [`vblendvps`](https://www.felixcloutier.com/x86/blendvps) 指令来实现上述 `select` 函数。前面提到过，LLVM 22 明显更快，于是做了不同编译器和编译选项下的对比：
 
-| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (B) | MPKI |
+| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
 |-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|------|
 | GCC 14 `-O3`                | 49.9     | 835.7    | 259.3    | 55.6      | 63.2     | 188.6        | 28.6         | 3136.0       | 3.75 |
 | GCC 14 `-O3 -march=native`  | 44.0     | 652.4    | 234.0    | 46.3      | 52.9     | 184.6        | 28.5         | 3148.2       | 4.83 |
@@ -284,7 +284,7 @@ vmax(vfloat4, vfloat4):
 
 热点函数基本和 1. linear 一致，那么各方面基本也和它一样，GCC 14 生成大量分支和标量 SSE 指令，而 LLVM 22 能更好地向量化，避免一些无谓的分支。对比如下：
 
-| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (B) | MPKI |
+| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
 |-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|------|
 | GCC 14 `-O3`                | 72.1     | 1091.8   | 306.9    | 78.6      | 91.7     | 245.8        | 30.4         | 4928.9       | 4.51 |
 | GCC 14 `-O3 -march=native`  | 63.1     | 851.4    | 271.2    | 65.2      | 77.4     | 240.1        | 30.4         | 4890.6       | 5.74 |
@@ -296,7 +296,7 @@ vmax(vfloat4, vfloat4):
 
 热点函数大多还是和 1. linear 以及 2.hdr 一样，就是多了一个 `find_best_partition_candidates` 函数，来自 `src/astcenc_find_best_partitioning.cpp`，主要瓶颈在 `a / sqrt(length)` 的计算上。这次 GCC 14 在 `-O3` 时倒是能够正确向量化这一步，通过一次标量的 `sqrtss` 加 `shufps` 把结果复制到所有 lane，再用 `divps` 进行批量的除法，不过其余的热点函数还是一如既往的编译出很慢的代码。下面给出性能计数器上的对比：
 
-| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (B) | MPKI |
+| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
 |-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|------|
 | GCC 14 `-O3`                | 53.8     | 711.5    | 176.8    | 62.0      | 61.3     | 177.0        | 9.3          | 5119.2       | 7.19 |
 | GCC 14 `-O3 -march=native`  | 49.2     | 570.5    | 161.3    | 57.1      | 54.7     | 176.1        | 9.2          | 5113.1       | 8.96 |
@@ -307,3 +307,119 @@ vmax(vfloat4, vfloat4):
 #### 小结
 
 731.astcenc_r 很难得地使用了 SIMD 原生的方法来编程：`vfloat4`、`vint4` 和 `vmask4` 等等，编写的时候就是针对 SIMD 指令来写的，只是可惜 GCC 14 辜负了开发者的期望，并不能正确地识别代码在做什么并利用上硬件的相关指令，还莫名其妙地生成了一堆额外的分支来实现 `select` 函数。相比之下，LLVM 22 在这方面做得更好，该向量化的地方就向量化。与此同时，也观察到，一些稍微小众一些的指令集，比如 LoongArch，在这些代码模式下的优化还比较欠缺，无论 GCC 还是 LLVM。
+
+### 736.ocio_r
+
+ocio 是 OpenColorIO 的缩写，和 731.astcenc_r 类似，也是在图片上的处理，不过更侧重于图像处理，而非图像压缩。这个测例分为如下四条命令：
+
+```shell
+# 1. lut1d
+ocioperf --spec-validation-offset 101 --spec-validation-stride 17 --spec-validation-pixels 131 --bitdepths ui16 ui16 --iter 100 --test -1 --transform ctf/lut1d_halfdom.ctf
+# 2. mntr
+ocioperf --spec-validation-offset 202 --spec-validation-stride 19 --spec-validation-pixels 132 --bitdepths ui16 f32 --iter 200 --8kres --test 0 --transform ctf/mntr_srgb_identity.ctf
+# 3. aces
+ocioperf --spec-validation-offset 303 --spec-validation-stride 23 --spec-validation-pixels 133 --bitdepths f32 f32 --iter 20 --8kres --test -1 --transform clf/aces_to_video_with_look.clf
+# 4. heavy
+ocioperf --spec-validation-offset 404 --spec-validation-stride 29 --spec-validation-pixels 134 --bitdepths f32 f32 --iter 25 --test -1 --transform clf/heavy_transform.clf
+```
+
+reftime 是 875s，不同编译器和编译选项的运行情况如下：
+
+| 编译器+选项                 | 总时间 (s) | 1. lut1d 时间 (s) | 2. mntr 时间 (s) | 3. aces 时间 (s) | 4. heavy 时间 (s) | 分数 | 相比 GCC 14 `-O3` 性能提升 (%) |
+|-----------------------------|------------|-------------------|------------------|------------------|-------------------|------|--------------------------------|
+| GCC 14 `-O3`                | 139.8      | 6.1               | 11.2             | 67.8             | 54.6              | 6.26 | 0                              |
+| GCC 14 `-O3 -march=native`  | 105.0      | 4.2               | 10.2             | 49.6             | 40.1              | 8.33 | 33                             |
+| GCC 14 `-O3 -ffast-math`    | 139.4      | 6.4               | 11.4             | 67.8             | 53.9              | 6.28 | 0.3                            |
+| LLVM 22 `-O3`               | 128.9      | 6.8               | 11.3             | 61.7             | 49.0              | 6.79 | 8                              |
+| LLVM 22 `-O3 -march=native` | 105.3      | 5.4               | 9.6              | 49.3             | 40.9              | 8.31 | 33                             |
+
+可见又是一个 `-O3 -march=native` 带来明显提升的测例，且 LLVM 22 依然比 GCC 14 在 `-O3` 下有性能优势，在 `-O3 -march=native` 时基本打平。下面进行具体分析。
+
+#### 1. lut1d
+
+热点函数：
+
+- `OpenColorIO_v2_2dev::BitDepthCast<BIT_DEPTH_F32, BIT_DEPTH_UINT16>::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/CPUProcessor.cpp`：45.16%，主要做的计算是，在循环中对取值在零到一之间的单精度浮点元素，乘以 65535 从而放缩到 uint16_t 的范围，加 0.5 后 clamp 到 uint16_t 的范围，最后再 float 转换为 uint16_t，这个过程被编译为 SSE 的向量指令；
+- `OpenColorIO_v2_2dev::Lut1DRendererHalfCode<BIT_DEPTH_UINT16, BIT_DEPTH_F32>::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/lut1d/Lut1DOpCPU.cpp`：33.70%，在循环中对输入的 uint16_t 进行查表，其实就是从预先计算好的数组里读取 uint16_t 对应的 float 值，瓶颈是 SSE 标量间接访存；
+- `__memmove_avx_unaligned_erms` 来自 libc：13.28%，memmove 的 AVX 加速实现；
+- `__memset_avx2_unaligned_erms` 来自 libc：3.55%，memset 的 AVX 加速实现。
+
+对于这类可以高度向量化的代码，`-O3 -march=native` 的提升是很明显的，在 `OpenColorIO_v2_2dev::BitDepthCast<BIT_DEPTH_F32, BIT_DEPTH_UINT16>::apply` 函数里，体现就是用上了 AVX2 的 256 位向量计算以及 FMA 指令，正好把放缩和加 0.5 这两步融合在了一起，后续则是继续用位运算来实现 clamp 操作，使得这个函数在 `-O3 -march=native` 下的时间占比降低到了 27.82%，那么依然在用 SSE 标量进行间接访存的 `OpenColorIO_v2_2dev::Lut1DRendererHalfCode<BIT_DEPTH_UINT16, BIT_DEPTH_F32>::apply` 就成为了主要的性能瓶颈，时间占比提升到 42.85%。
+
+在这个测例里，GCC 14 比 LLVM 22 更快一些。以下是二者在不同编译选项下的对比：
+
+| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) |
+|-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|
+| GCC 14 `-O3`                | 6.0      | 106.2    | 23.3     | 11.7      | 4.2      | 2.6          | 5.0          | 2.6          |
+| GCC 14 `-O3 -march=native`  | 4.2      | 63.8     | 22.0     | 11.0      | 3.6      | 2.6          | 2.5          | 2.5          |
+| GCC 14 `-O3 -ffast-math`    | 6.3      | 104.8    | 23.2     | 11.7      | 4.2      | 2.5          | 5.0          | 2.6          |
+| LLVM 22 `-O3`               | 6.8      | 106.1    | 23.3     | 11.7      | 3.6      | 2.5          | 5.0          | 2.6          |
+| LLVM 22 `-O3 -march=native` | 5.4      | 72.5     | 24.8     | 11.0      | 1.4      | 2.5          | 2.5          | 2.5          |
+
+具体到汇编层面上，可以观察到，GCC 14 和 LLVM 22 在实现上有一些不同，开头都是乘法和加法，主要是 clamp 的部分用的指令不同，为了解决 16 位和 32 位的位宽转换的问题，GCC 14 主要用 punpcklwd 类指令，而 LLVM 22 更多使用 pshufd 类指令，详见 [Godbolt](https://godbolt.org/z/KP3vznq1j)。虽然总指令数很接近，但毕竟硬件执行这些指令需要的时间不同，所以体现在 IPC 上也有一定的差距。开 `-O3 -march=native` 之后也是类似的情况。
+
+#### 2. mntr
+
+热点函数：
+
+- `OpenColorIO_v2_2dev::BitDepthCast<BIT_DEPTH_UINT16, BIT_DEPTH_F32>::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/CPUProcessor.cpp`：55.41%，这次转换的方向反过来了，是从 uint16_t 到 float，于是计算过程变成先从 uint16_t 转成 float，再乘以 `1.0/65535.0`，当然这次就没有 clamp 了，编译器依然能正确向量化，不过因为位宽从 16 变成 32 的问题，花了不少功夫；
+- `OpenColorIO_v2_2dev::ScaleRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/matrix/MatrixOpCPU.cpp`：41.52%，代码逻辑就是很简单的对每个像素的四个分量分别乘以一个 scale（从 `out[0] = in[0] * m_scale[0]` 到 `out[3] = in[3] * m_scale[3]`），不同像素的 scale 相同，是比较好向量化的。
+
+由于 AMD64 缺少对混合宽度计算的向量指令，其实很大开销是在向量之间搬运数据，而非进行实际的计算和访存，这方面，RISC-V Vector 的特殊设计还确实带来了更简洁的指令生成，见 [Godbolt](https://godbolt.org/z/qvzMK47rf)。不同编译器在不同编译选项下的对比：
+
+| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) |
+|-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|
+| GCC 14 `-O3`                | 11.2     | 209.9    | 56.5     | 33.3      | 7.5      | 26.8         | 6.6          | 1.9          |
+| GCC 14 `-O3 -march=native`  | 10.2     | 159.6    | 54.8     | 29.9      | 7.1      | 26.8         | 3.3          | 1.8          |
+| GCC 14 `-O3 -ffast-math`    | 11.4     | 209.7    | 56.5     | 33.3      | 7.5      | 26.7         | 6.6          | 1.8          |
+| LLVM 22 `-O3`               | 11.3     | 194.5    | 56.5     | 33.3      | 8.6      | 26.5         | 6.7          | 1.9          |
+| LLVM 22 `-O3 -march=native` | 9.6      | 149.4    | 58.2     | 29.9      | 2.8      | 26.5         | 3.4          | 2.0          |
+
+#### 3. aces
+
+热点函数：
+
+- `OpenColorIO_v2_2dev::Lut3DTetrahedralRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/lut3d/Lut3DOpCPU.cpp`：50.74%，做的操作还挺复杂，每个元素首先进行一次乘法，然后进行一次 clamp，floor 和 ceil 后分别转化为 int，再根据 int 去进行对一个表进行间接访存，查表的结果再经过一系列的加权平均完成计算，向量化程度不高；
+- `OpenColorIO_v2_2dev::MatrixRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/matrix/MatrixOpCPU.cpp`：11.55%，进行矩阵的运算，把输入的四维向量和一个 4x4 矩阵进行乘法，得到输出的四维向量，向量化程度较高；
+- `__log2f_fma` 来自 libm：10.02%，计算浮点 log2；
+- `OpenColorIO_v2_2dev::CameraLin2LogRenderer::apply` 来自 `src/ASWF-OpenCOlorIO/src/OpenColorIO/ops/log/LogOpCPU.cpp`：9.76%，判断输入的范围，如果小于一个阈值 `m_linb`，就用线性的乘加计算结果，否则就会调用上述 log2 函数，结合一些乘加以及 max 操作来进行计算，向量化程度低。
+
+不同编译器和编译选项的对比：
+
+| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) |
+|-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|
+| GCC 14 `-O3`                | 67.8     | 1258.9   | 299.3    | 86.3      | 100.5    | 260.6        | 28.0         | 146.6        |
+| GCC 14 `-O3 -march=native`  | 49.6     | 873.7    | 289.0    | 84.9      | 84.0     | 257.4        | 14.0         | 135.4        |
+| GCC 14 `-O3 -ffast-math`    | 67.8     | 1251.5   | 296.4    | 94.4      | 109.9    | 213.7        | 43.8         | 150.6        |
+| LLVM 22 `-O3`               | 61.7     | 1152.4   | 416.6    | 136.7     | 133.7    | 329.0        | 15.4         | 168.5        |
+| LLVM 22 `-O3 -march=native` | 49.3     | 857.8    | 342.8    | 92.6      | 84.4     | 329.0        | 13.0         | 151.6        |
+
+GCC 14 和 LLVM 22 在 `-O3` 下的性能差距主要来自于 floor 和 ceil 的处理：GCC 14 生成了一系列 SSE 指令来计算，由于没有 SSE4.1 的 roundps 指令，所以实现比较复杂，而 LLVM 22 转为采用 libm 的加速实现 `__floorf_sse41`，它的函数体就是一条 SSE4.1 的 roundps 指令加 return，虽然有函数调用的开销，不仅要 call/ret，还多了一些寄存器到栈的 Load 和 Store，但总体还是赚的。不过，如果处理器确实没有 SSE4.1 指令，那么 GCC 14 又该比 LLVM 22 更快了。这种取舍，在不开 `-march=native` 的时候确实无法实现，此时只能猜测，哪种情况发生的概率更高了，例如现在来看，有 SSE4.1 的 AMD64 处理器肯定是比没有 SSE4.1 的 AMD64 处理器要多。
+
+开 `-O3 -march=native` 后，因为有了 `vroundps` 指令，原来的 ceil 和 floor 操作可以用向量指令代替，相比之前的向量化实现（GCC 14）或调用 libm 里的加速实现（LLVM 22），GCC 14 和 LLVM 22 都有不错的提升，来到了同一水平线上。同时 fma 也成功融合了不少浮点乘加计算。
+
+#### 4. heavy
+
+热点函数：
+
+- `__powf_fma` 来自 libm：26.17%；
+- `OpenColorIO_v2_2dev::Lut3DRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/lut3d/Lut3DOpCPU.cpp`：25.69%，模式和上面的 `OpenColorIO_v2_2dev::Lut3DTetrahedralRenderer::apply` 比较类似，也有 clamp/floor/ceil 和查表等动作，就是最后的计算部分不太一样，也都是标量的 SSE 指令；
+- `OpenColorIO_v2_2dev::Lut1DRenderer<BIT_DEPTH_F32, BIT_DEPTH_F32>::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/lut1d/Lut1DOpCPU.cpp`：15.63%，模式和上述 `OpenColorIO_v2_2dev::Lut3DRenderer::apply` 类似，不过查表的部分更简单，因为只有一维，但也是全程标量；
+- `OpenColorIO_v2_2dev::CDLRendererFwd<true>::apply`：10.88%，里面调用了 pow，导致 `__powf_fma` 占用了很多时间，其余部分做了浮点乘法、加减法以及 Clamp 操作，还是全程标量；
+- `OpenColorIO_v2_2dev::GammaMoncurveOpCPUFwd::apply`：5.41%，同样调用了 pow，除了 pow 以外还有一些浮点运算以及比较。
+
+不同编译器和编译选项的对比：
+
+| 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) |
+|-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|
+| GCC 14 `-O3`                | 54.6     | 1013.5   | 209.4    | 57.0      | 80.8     | 253.7        | 5.8          | 32.0         |
+| GCC 14 `-O3 -march=native`  | 40.9     | 764.7    | 204.0    | 54.8      | 70.8     | 260.2        | 3.3          | 31.8         |
+| GCC 14 `-O3 -ffast-math`    | 53.9     | 971.0    | 202.1    | 50.5      | 80.6     | 252.3        | 6.6          | 29.1         |
+| LLVM 22 `-O3`               | 49.0     | 861.5    | 250.4    | 77.3      | 102.7    | 215.6        | 29.9         | 28.8         |
+| LLVM 22 `-O3 -march=native` | 40.9     | 726.8    | 206.9    | 55.4      | 67.3     | 255.6        | 25.7         | 28.5         |
+
+LLVM 22 相比 GCC 14 的主要性能区别和 3. aces 一样，就是 ceil/floor 的处理。此外，就是和 731.astcenc_r 类似的情况，在遇到向量化的 min/max 操作的时候，LLVM 22 会正确向量化为对应的 maxps/minps 指令，而 GCC 14 生成的代码就会比较冗长。
+
+#### 小结
+
+736.ocio_r 依然是一个比较适合向量化的应用，虽然它不像 731.astcenc_r 那样直接用 `vfloat4` 格式，但因为它是图像处理，每次循环处理一个像素，然后每个像素有四个通道，在很多情况下，这四个通道的计算过程是一样的，因此也非常适合向量化。而 LLVM 22 在 `-O3` 下做出了比 GCC 14 更好的指令生成，从 floor/ceil 到 libm 函数的映射，以及更好的向量化实现。当然，开 `-O3 -march=native` 后，GCC 14 和 LLVM 22 的性能差距非常小，说明在两方都开启足够的指令集扩展以后，基本会收敛到差不多的代码实现上，这也反过来说明，GCC 14 的 SSE 代码生成上有一些欠缺，可能的情况是，并非 GCC 14 不能向量化（因为开 `-O3 -march=native` 后就学会了），而是尝试向量化后，不知道怎么用 SSE 表达向量化后的代码，于是退回到了标量。
