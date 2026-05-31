@@ -135,7 +135,7 @@ astcenc_r ref-inputs-precision.txt
 | LLVM 22 `-O3`               | 134.0      | 38.5               | 56.1            | 39.3                  | 6.27 | 31                             |
 | LLVM 22 `-O3 -march=native` | 117.2      | 34.4               | 48.6            | 34.1                  | 7.17 | 50                             |
 
-又是 LLVM 22 相比 GCC 14 有明显优势的一个测例。其他对性能几乎没有影响的优化选项包括 `-flto` 和 `-ljemalloc`，这里就不具体列举了。731.astcenc_r 是 SPEC FP 2026 Rate 中 MPKI 最高的那一个，高达 5.0，相比其他大多数不到 1.0 的 MPKI 来说很高（第二高的是 737.gmsh_r，MPKI 达到了 3.33，第三高 767.nest_r 的 MPKI 只有 0.83），也比 SPEC INT 2026 Rate 的不少测例更高。下面分命令来进行分析。
+又是 LLVM 22 相比 GCC 14 有明显优势的一个基准测试。其他对性能几乎没有影响的优化选项包括 `-flto` 和 `-ljemalloc`，这里就不具体列举了。731.astcenc_r 是 SPEC FP 2026 Rate 中 MPKI 最高的那一个，高达 5.0，相比其他大多数不到 1.0 的 MPKI 来说很高（第二高的是 737.gmsh_r，MPKI 达到了 3.33，第三高 767.nest_r 的 MPKI 只有 0.83），也比 SPEC INT 2026 Rate 的不少基准测试更高。下面分负载来进行分析。
 
 #### 1. linear
 
@@ -310,7 +310,7 @@ vmax(vfloat4, vfloat4):
 
 ### 736.ocio_r
 
-ocio 是 OpenColorIO 的缩写，和 731.astcenc_r 类似，也是在图片上的处理，不过更侧重于图像处理，而非图像压缩。这个测例分为如下四条命令：
+ocio 是 OpenColorIO 的缩写，和 731.astcenc_r 类似，也是在图片上的处理，不过更侧重于图像处理，而非图像压缩。这个基准测试分为如下四个负载：
 
 ```shell
 # 1. lut1d
@@ -333,7 +333,7 @@ reftime 是 875s，不同编译器和编译选项的运行情况如下：
 | LLVM 22 `-O3`               | 128.9      | 6.8               | 11.3             | 61.7             | 49.0              | 6.79 | 8                              |
 | LLVM 22 `-O3 -march=native` | 105.3      | 5.4               | 9.6              | 49.3             | 40.9              | 8.31 | 33                             |
 
-可见又是一个 `-O3 -march=native` 带来明显提升的测例，且 LLVM 22 依然比 GCC 14 在 `-O3` 下有性能优势，在 `-O3 -march=native` 时基本打平。下面进行具体分析。
+可见又是一个 `-O3 -march=native` 带来明显提升的基准测试，且 LLVM 22 依然比 GCC 14 在 `-O3` 下有性能优势，在 `-O3 -march=native` 时基本打平。下面进行具体分析。
 
 #### 1. lut1d
 
@@ -346,7 +346,7 @@ reftime 是 875s，不同编译器和编译选项的运行情况如下：
 
 对于这类可以高度向量化的代码，`-O3 -march=native` 的提升是很明显的，在 `OpenColorIO_v2_2dev::BitDepthCast<BIT_DEPTH_F32, BIT_DEPTH_UINT16>::apply` 函数里，体现就是用上了 AVX2 的 256 位向量计算以及 FMA 指令，正好把放缩和加 0.5 这两步融合在了一起，后续则是继续用位运算来实现 clamp 操作，使得这个函数在 `-O3 -march=native` 下的时间占比降低到了 27.82%，那么依然在用 SSE 标量进行间接访存的 `OpenColorIO_v2_2dev::Lut1DRendererHalfCode<BIT_DEPTH_UINT16, BIT_DEPTH_F32>::apply` 就成为了主要的性能瓶颈，时间占比提升到 42.85%。
 
-在这个测例里，GCC 14 比 LLVM 22 更快一些。以下是二者在不同编译选项下的对比：
+在这个基准测试里，GCC 14 比 LLVM 22 更快一些。以下是二者在不同编译选项下的对比：
 
 | 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) |
 |-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|
@@ -426,7 +426,7 @@ LLVM 22 相比 GCC 14 的主要性能区别和 3. aces 一样，就是 ceil/floo
 
 ### 737.gmsh_r
 
-737.gmsh_r 是 3D 的 CAD 软件，包括七条命令：
+737.gmsh_r 是 3D 的 CAD 软件，包括七个负载：
 
 ```shell
 # 1. choi
@@ -445,9 +445,9 @@ gmsh_r -option gmsh.opts -nt 0 spec.geo -clscale 0.175 -algo del2d -algo hxt
 gmsh_r -option gmsh.opts -nt 0 p19.geo
 ```
 
-各测例运行时间为 17.1s、11.8s、11.2s、16.9s、9.2s、13.4s、12.8s，总时间 92.2s，reftime 是 459s，对应 4.98 分。`-O3 -ffast-math` 和 `-O3 -march=native` 的收益都很小，LLVM 22 比 GCC 14 更慢，因此这里就不做具体比较了。
+各负载运行时间为 17.1s、11.8s、11.2s、16.9s、9.2s、13.4s、12.8s，总时间 92.2s，reftime 是 459s，对应 4.98 分。`-O3 -ffast-math` 和 `-O3 -march=native` 的收益都很小，LLVM 22 比 GCC 14 更慢，因此这里就不做具体比较了。
 
-用 `-O3 -march=native` 编译的时候，发现如果 CC 只传了 gcc，而没有传 `-std=c18`，就会在 4. gasdis 这一条命令里死循环，一直报错：`Info    : Symbolic perturbation failed (2 superposed vertices ?)`。经过对比，两者的区别在于是否进行乘加融合：`-O3 -std=c18 -march=native` 时，不会进行融合，而 `-O3 -march=native` 或 `-O3 -std=gnu18 -march=native` 时会进行融合，见 [Godbolt](https://godbolt.org/z/58fTP5fnG)。在其他程序里，融合对性能更优，但这里很不幸，融合了就会导致死循环。这和 [`-fp-contract`](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html) 有关：
+用 `-O3 -march=native` 编译的时候，发现如果 CC 只传了 gcc，而没有传 `-std=c18`，就会在 4. gasdis 这一个负载里死循环，一直报错：`Info    : Symbolic perturbation failed (2 superposed vertices ?)`。经过对比，两者的区别在于是否进行乘加融合：`-O3 -std=c18 -march=native` 时，不会进行融合，而 `-O3 -march=native` 或 `-O3 -std=gnu18 -march=native` 时会进行融合，见 [Godbolt](https://godbolt.org/z/58fTP5fnG)。在其他程序里，融合对性能更优，但这里很不幸，融合了就会导致死循环。这和 [`-fp-contract`](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html) 有关：
 
 ```
 -ffp-contract=style
@@ -459,7 +459,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 
 可见它只对 C 语言有效，对 C++ 无效，实际上就是只对 737.gmsh_r 有影响；虽然 709.cactus_r 也有 C 代码，但它的主要计算都在 C++ 语言的部分。
 
-接下来针对命令进行热点分析。
+接下来针对各负载进行热点分析。
 
 #### 1. choi
 
@@ -492,7 +492,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 - `std::map::_M_get_insert_unique` 来自 libstdc++：6.09%，std::map 的插入实现；
 - `SetRotationMatrix` 来自 `src/gmsh/src/geo/Geo.cpp`：5.01%，代码是多层循环，适合向量化，不过时间占比并不高。
 
-可见，这个测例主要还是 `std::map` 相关的操作为主要瓶颈。
+可见，这个负载主要还是 `std::map` 相关的操作为主要瓶颈。
 
 #### 4. gasdis
 
@@ -506,13 +506,13 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 
 #### 5. Torus、6.spec 和 7.p19
 
-最后三个测例，其热点函数都与 4.gadis 相同，不再赘述。
+最后三个负载，其热点函数都与 4.gadis 相同，不再赘述。
 
 #### 小结
 
-各测例的情况：
+各负载的情况：
 
-| 测例             | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
+| 负载             | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
 |------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|------|
 | 1. choi          | 17.0     | 204.7    | 59.3     | 25.6      | 39.4     | 22.1         | 0.3          | 744.3        | 3.64 |
 | 2. mediterranean | 11.7     | 190.7    | 57.4     | 23.2      | 24.0     | 28.5         | 2.4          | 71.0         | 0.37 |
