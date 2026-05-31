@@ -523,3 +523,97 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 | 7. p10           | 12.7     | 96.3     | 28.8     | 10.2      | 17.2     | 10.4         | 0.1          | 529.3        | 5.50 |
 
 可见整体的 MPKI 还是偏高的，并且很大程序归功于 KD-Tree 的查询以及 `std::map` 的查询或插入，只不过这些树的 key 都是单精度浮点数。并且根据上面的分析，确实相关的代码不适合向量化，浮点乘加融合还被禁用了，否则就可能不收敛。
+
+### 748.flightdm_r
+
+flightdm 是一个飞行动力学模拟器，该基准测试包括如下八项负载：
+
+```shell
+# 1. weather
+JSBSim --nohighlight scripts/weather-balloon2.xml
+# 2. B747
+JSBSim --nohighlight scripts/B747_script1.xml
+# 3. x153
+JSBSim --nohighlight scripts/x153.xml
+# 4. c3104
+JSBSim --nohighlight scripts/c3104.xml
+# 5. ah1s
+JSBSim --nohighlight scripts/ah1s_flight_test.xml
+# 6. orbit_torque
+JSBSim --nohighlight scripts/ball_orbit_g_torque.xml
+# 7. orbit_torque2
+JSBSim --nohighlight scripts/ball_orbit_g_torque2.xml
+# 8. orbit
+JSBSim --nohighlight scripts/ball_orbit.xml
+```
+
+各负载的运行时间分别为 5.9s、14.7s、10.9s、11.3s、24.8s、8.0s、9.8s 和 8.4s，一共 93.9s，reftime 是 716s，对应 7.63 分。开 `-O3 -march=native` 仅对性能有 2% 的提升，LLVM 22 性能不如 GCC 14，这里就不赘述了。下面对进行各负载的分析。
+
+#### 1. weather
+
+热点函数：
+
+- `__sincos_fma` 来自 libm：6.75%；
+- `__ieee754_atan2_fma` 来自 libm：6.41%；
+- `__strncmp_avx2` 来自 libc：5.04%；
+- `parse_path` 来自 `src/JSB-FlightSim/src/simgear/props/props.cxx`：4.43%，路径字符串的解析，拆分成多个 component；
+- `__ieee754_pow_fma` 来自 libm：4.05%。
+
+热点也挺神奇的，都是一些 libm/libc 的函数，flightdm 自己的代码耗时最多的居然是个路径解析。各种优化选项没啥效果，也不足为奇了。
+
+#### 2. B747
+
+热点函数：
+
+- `SGPropertyNode::getDoubleValue` 来自 `src/JSB-FlightSim/src/simgear/props/props.cxx`：5.65%，看起来是对配置文件的解析，然后从解析结果里提取浮点数；
+- `__ieee754_atan2_fma` 来自 libm：5.42%；
+- `__sincos_fma` 来自 libm：5.25%；
+
+依然没啥好分析的。
+
+#### 3. x153 和 4. c3104
+
+热点函数和 2. B747 相同，不再赘述。
+
+#### 5. ah1s
+
+热点函数：
+
+- `SGPropertyNode::getDoubleValue` 来自 `src/JSB-FlightSim/src/simgear/props/props.cxx`：8.45%，描述见上；
+- `JSBSim::aFunc::getValue` 来自 `src/JSB-FlightSim/src/math/FGFunction.cpp`：7.20%，是一个带有 memo 能力的类似 `std::function` 的容器；
+- `__sincos_fma` 来自 libm：6.04%；
+- `__ieee754_atan2_fma` 来自 libm：5.35%；
+- `JSBSim::FGPropertyValue::getValue` 来自 `src/JSB-FlightSim/src/math/FGPropertyValue.cpp`：5.11%，调用上面的 `getDoubleValue` 函数；
+
+给人的感觉就是，不是在调用 libm 计算一些超越函数，就是在做配置文件内容的提取。
+
+#### 6. orbit_torque
+
+热点函数：
+
+- `__ieee754_atan2_fma` 来自 libm：7.52%；
+- `__sincos_fma` 来自 libm：6.82%；
+- `__strncmp_avx2` 来自 libc：6.57%；
+- `parse_path` 来自 `src/JSB-FlightSim/src/simgear/props/props.cxx`：6.12%，路径字符串的解析，拆分成多个 component；
+- `SGPropertyNode::getChild` 来自 `src/JSB-FlightSim/src/simgear/props/props.cxx`：4.05%，遍历结点的子结点，通过字符串比较，找到匹配的子结点。
+
+#### 7. orbit_torque2 和 8. orbit
+
+热点函数与 6. orbit_torque 相同，不再赘述。
+
+#### 小结
+
+748.flightdm_r 是个没意思的基准测试，时间很多花在了 libm 和 libc 的函数上，自己的代码就是在配置文件里来回遍历，我愿称它为 libm 基准测试。最后看一下各负载的情况：
+
+| 负载             | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
+|------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|------|
+| 1. weather       | 5.9      | 106.1    | 30.8     | 15.4      | 19.5     | 12.9         | 0.6          | 11.6         | 0.11 |
+| 2. B747          | 14.8     | 260.1    | 80.0     | 38.7      | 49.4     | 28.4         | 1.7          | 25.6         | 0.10 |
+| 3. x153          | 10.8     | 193.3    | 59.1     | 28.7      | 37.3     | 20.0         | 1.0          | 20.9         | 0.11 |
+| 4. c3104         | 11.4     | 194.6    | 58.9     | 29.1      | 35.7     | 23.9         | 1.3          | 18.2         | 0.09 |
+| 5. ah1s          | 24.7     | 407.3    | 130.0    | 61.3      | 77.9     | 46.4         | 1.6          | 49.3         | 0.12 |
+| 6. orbit_torque  | 7.9      | 152.8    | 41.9     | 22.7      | 28.3     | 16.3         | 1.1          | 24.2         | 0.16 |
+| 7. orbit_torque2 | 9.9      | 191.4    | 52.5     | 28.4      | 35.3     | 21.0         | 1.2          | 17.1         | 0.09 |
+| 8. orbit         | 8.4      | 161.6    | 44.3     | 23.9      | 30.0     | 17.2         | 1.0          | 16.3         | 0.10 |
+
+乏善可陈。
