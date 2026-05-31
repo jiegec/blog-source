@@ -43,7 +43,7 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 - `Stockfish::TranspositionTable::probe(const Key key, bool& found)` 来自 `src/tt.cpp`: 17.91%，主要的瓶颈来自于随机访存，在 `first_entry(key)` 当中有 `&table[mul_hi64(key, clusterCount)].entry[0]` 的代码，其中 `mul_hi64` 计算两个 64 位整数乘法结果的高 64 位，因此访存地址是根据参数计算得出；对于 `mul_hi64`，GCC 14 会忠实地按照源码把 64 位拆分成高低 32 位分别计算，而 LLVM 22 能够正确识别出这段代码的意图，并直接用 AMD64 的 mul 指令实现，这个功能在 [PR #168396](https://github.com/llvm/llvm-project/pull/168396) 中实现，`mul_hi64` 对应 PR 描述中的 Ladder；事实上，Stockfish 原本的代码里会用 __int128，此时 GCC 14 也能生成高效的代码，只可惜因为用到了 C 语法扩展，被 SPEC 禁用了（汇编对比见 [Godbolt](https://godbolt.org/z/x3j89xqWP)）；
 - `Stockfish::MovePicker::next_move(bool skipQuiets)` 来自 `src/movepick.cpp`: 10.36%，里面比较慢的是 `partial_insertion_sort`，找到插入位置后，还要把原来数组里靠后的元素往后挪，留出空间用于插入元素；
 - `Stockfish::search(Position& pos, Stack* ss, Value alpha, Value beta, Depth depth, bool cutNode)` 来自 `src/search.cpp`: 9.49%，搜索逻辑主要在这里实现；
-- `__popcountdi2`: 7.52%，被 `Stockfish::Eval::evaluate(const Position& pos)` 调用，用来判断局面上满足某种条件，内部实现就是位运算，有兴趣的读者可以阅读 Hacker's Delight 这本书。
+- `__popcountdi2` 来自 libgcc: 7.52%，被 `Stockfish::Eval::evaluate(const Position& pos)` 调用，用来判断局面上满足某种条件，内部实现就是位运算，有兴趣的读者可以阅读 Hacker's Delight 这本书。
 
 开了 `-march=native` 后，能观察到 `__popcountdi2` 被内联为 `popcnt` 指令。经过测试，开 `-mpopcnt` 后时间即从 47s 降低到 44s，接近 `-march=native` 的性能。可见仅开启 popcnt 指令集并消除 `__popcountdi2` 的函数调用开销，就能带来明显的性能提升。
 
@@ -445,7 +445,7 @@ cc1_r ref32.c -O3 -finline-limit=12000 -fno-tree-vrp -o ref32.c.opts-O3_-finline
 
 其中 `bitmap_set_bit(bitmap head, int bit)` 函数来自 `src/gcc/bitmap.cc`，通过位运算，在 bitmap 里把一个 bit 设为一，比较特别的是，这个 bitmap 可以有二叉树（splay tree）和链表两种保存格式。从 `perf record -e branch-misses:pp` 来看，这个函数主要是在设置 bit 的时候出现了一些分支预测的错误：它首先读取 bitmap 原来的数值，判断该 bit 是否已经设置，只有之前没设置的情况下，才会更新 bitmap。这样的好处是，可以节省一些 Store 指令，但也带来了一些分支的错误预测。此外就是链表的插入逻辑，需要判断指针是否为空。
 
-另外，`dominated_by_p(enum cdi_direction dir, const_basic_block bb1, const_basic_block bb2)` 函数来自 `src/gcc/dominance.cc`，做的是基本块的 dominance 查询，A dom B 代表从函数入口到 B 一定会经过 A，这是编译器中很常见的一个查询，由于查询次数很多，会预先通过两遍 dfs（一遍从上往下，一遍从下往上，上对应入口，下对应出口）找到基本块的拓扑顺序，然后根据拓扑排序的结果来判断是否有 A dom B 的关系：`DFS_Number_In(A) <= DFS_Number_In(B) && DFS_Number_Out (A) >= DFS_Number_Out(B)`，也就是从上往下遍历（In）的时候，先到达 A，然后从下往上遍历（Out）的时候，先到达 B。其实这个函数并不复杂，但是因为它把两次比较做成了一次 `cmp+jl` 和一次 `cmp+setle`，导致容易出现分支预测错误。从逻辑上来说，这里可以改成完成两次比较，再对结果取 AND，但由于代码里是 `&&` 有短路的性质，理论上第一个条件成立了，就不该进行第二个条件，更何况第二个条件里还涉及两次访存。这种实现确实可能省下一些访存，但分支预测也变难了。如果改写代码，先进行两次比较，再进行 `&&` 操作，就没有分支指令了，不过访存次数也确实变多了：[Godbolt](https://godbolt.org/z/qKaKzT6a1)。
+另外，`dominated_by_p(enum cdi_direction dir, const_basic_block bb1, const_basic_block bb2)` 函数来自 `src/gcc/dominance.cc`，做的是基本块的 dominance 查询，A dom B 代表从函数入口到 B 一定会经过 A，这是编译器中很常见的一个查询，由于查询次数很多，会预先通过两遍 dfs（一遍从上往下，一遍从下往上，上对应入口，下对应出口）找到基本块的拓扑顺序，然后根据拓扑排序的结果来判断是否有 A dom B 的关系：`DFS_Number_In(A) <= DFS_Number_In(B) && DFS_Number_Out(A) >= DFS_Number_Out(B)`，也就是从上往下遍历（In）的时候，先到达 A，然后从下往上遍历（Out）的时候，先到达 B。其实这个函数并不复杂，而且 DFS 已经提前算好了，这里只需要读取计算好的结果，但是因为它把两次比较做成了一次 `cmp+jl` 和一次 `cmp+setle`，导致容易出现分支预测错误。从逻辑上来说，这里可以改成完成两次比较，再对结果取 AND，但由于代码里是 `&&` 有短路的性质，理论上第一个条件成立了，就不该进行第二个条件，更何况第二个条件里还涉及两次访存。这种实现确实可能省下一些访存，但分支预测也变难了。如果改写代码，先进行两次比较，再进行 `&&` 操作，就没有分支指令了，不过访存次数也确实变多了：[Godbolt](https://godbolt.org/z/qKaKzT6a1)。
 
 三次运行的性能计数器如下：
 
@@ -794,7 +794,7 @@ gem5sim --stats-file=synthetic_traffic.py_LinearGenerator_74_--ruby.stats.txt sy
 第二个负载则是把 O3 换成了 TimingSimpleCPU，相比 O3 模拟的复杂度低很多，此时主要的瓶颈挪到了 RISC-V 架构相关的代码、缓存模拟，以及内存分配上：
 
 - `cfree/malloc/operator new` 来自 libc：5.92%+4.56%+1.55%=12.03%，依然有很多内存分配的瓶颈；
-- `gem5::RiscvISA::Decoder::decode(ExtMachInst mach_inst, Addr addr)` 来自 `src/gem5/arch/riscv/decoder.cc`：8.97%，实现 RISC-V 指令集的 Decode，有很大一部分实现是自动生成的，在 `src/gem5/arch/riscv/generated/decode-method.cc.inc` 文件里，这里为了加速 Decode，用了一个 `decode_cache::InstMap<ExtMachInst>`（实际上就是 `std::Map<ExtMachInst, StaticInstPtr>`）来加速，因此大部分的时间其实是在用红黑树实现的缓存中寻找已经 Decode 过的指令编码；
+- `gem5::RiscvISA::Decoder::decode(ExtMachInst mach_inst, Addr addr)` 来自 `src/gem5/arch/riscv/decoder.cc`：8.97%，实现 RISC-V 指令集的 Decode，有很大一部分实现是自动生成的，在 `src/gem5/arch/riscv/generated/decode-method.cc.inc` 文件里，这里为了加速 Decode，用了一个 `decode_cache::InstMap<ExtMachInst>`（实际上就是 `std::map<ExtMachInst, StaticInstPtr>`）来加速，因此大部分的时间其实是在用红黑树实现的缓存中寻找已经 Decode 过的指令编码；
 - `gem5::BaseTags::findBlock(Addr addr, bool is_secure)` 来自 `src/gem5/mem/cache/tags/base.cc`：5.19%，用来实现组相连的 tag 比较，就是一个循环比较 tag 找匹配的算法，主要瓶颈就是 tag 比对；
 - `gem5::PMAChecker::check(const RequestPtr &req)` 来自 `src/gem5/arch/riscv/pma_checker.cc`：4.86%，实现 RISC-V 的 PMA 检查，属于 MMU 的一部分，逻辑很简单，就是循环判断一下请求地址是否属于某个 Uncacheable 地址区间，如果是，就标记 STRICT_ORDER，避免重排；
 - `gem5::RiscvISA::ISA::readMiscReg(RegIndex idx)` 来自 `src/gem5/arch/riscv/isa.cc`：3.34%，用于读取 RISC-V 的 CSR，GCC 这次是用若干 branch 来分别进入不同的 case 处理代码；

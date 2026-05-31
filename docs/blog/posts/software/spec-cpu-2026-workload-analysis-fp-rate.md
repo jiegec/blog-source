@@ -617,3 +617,11 @@ JSBSim --nohighlight scripts/ball_orbit.xml
 | 8. orbit         | 8.4      | 161.6    | 44.3     | 23.9      | 30.0     | 17.2         | 1.0          | 16.3         | 0.10 |
 
 乏善可陈。
+
+### 749.fotonik3d_r
+
+终于出现了一个 SPEC FP 2017 Rate 的老面孔，此前是 549.fotonik3d_r。fotonik3d 做的是 3D 空间里的麦克斯韦方程求解，又一个物理背景的基准测试。该基准测试只有一个负载：
+
+```shell
+fotonik3d_r
+```
