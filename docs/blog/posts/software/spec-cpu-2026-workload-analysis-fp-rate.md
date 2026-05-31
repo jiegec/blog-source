@@ -270,7 +270,7 @@ vmax(vfloat4, vfloat4):
         retq
 ```
 
-剩余的指令只是为了解决调用约定的数据存放位置问题，实际在函数内部计算的时候，通常就一条 `maxps` 指令完成所有 4 个元素的 max 计算。从这个例子也可以看出，为啥 LLVM 22 比 GCC 14 要快得多：GCC 14 多了很多无用的分支来解决 `select` 里的比较，而且还不能向量化 max 操作。即使给 GCC 14 开 `-march=native`，它依然还在用 AVX 指令进行标量 max 运算，真是难绷。上述编译结果可见 [Godbolt](https://godbolt.org/z/Y8Ps15n39)。GCC 14 的 MPKI 那么高，其实都是这么来的，也挺搞笑。我还测试了一下，发现相同的代码在 LoongArch 下也没有得到很好的向量化支持（见 [Godbolt](https://godbolt.org/z/qTsaMnzhe)），因此提了一个 [issue](https://github.com/loongson-community/discussions/issues/120)，用 `vfcmp.slt.s` + `vbitsel.v` 的优化实现大概是目前 LLVM 22 的实现的 2.9 倍性能。
+剩余的指令只是为了解决调用约定的数据存放位置问题，实际在函数内部计算的时候，通常就一条 `maxps` 指令完成所有 4 个元素的 max 计算。从这个例子也可以看出，为啥 LLVM 22 比 GCC 14 要快得多：GCC 14 多了很多无用的分支来解决 `select` 里的比较，而且还不能向量化 max 操作。即使给 GCC 14 开 `-march=native`，它依然还在用 AVX 指令进行标量 max 运算，真是难绷。上述编译结果可见 [Godbolt](https://godbolt.org/z/Y8Ps15n39)。GCC 14 的 MPKI 那么高，其实都是这么来的，也挺搞笑。我还测试了一下，发现相同的代码在 LoongArch 下也没有得到很好的向量化支持（见 [Godbolt](https://godbolt.org/z/qTsaMnzhe)），因此提了一个 [issue](https://github.com/loongson-community/discussions/issues/120)，仅考虑向量化 fmax 内核，用 `vfcmp.slt.s` + `vbitsel.v` 的优化实现大概是目前 LLVM 22 编译结果的 2.9 倍性能。
 
 #### 2. hdr
 
