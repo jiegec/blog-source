@@ -853,6 +853,6 @@ reftime 是 1579s，下面是不同编译器版本和编译选项的对比：
 
 #### 小结
 
-772.marian_r 鉴定为 706.stockfish_r 的 NNUE 的翻版，热点完全就是 int8_t 乘以 uint8_t 累加到 int32_t 的矩阵乘运算，建议开除 SPEC FP 2026 Rate 籍。
+772.marian_r 鉴定为 706.stockfish_r 的 NNUE 的翻版，热点完全就是 int8_t 乘以 uint8_t 累加到 int32_t 的矩阵乘运算，整数向量指令比浮点指令还多，建议开除 SPEC FP 2026 Rate 籍。
 
 ### 782.lbm_r
