@@ -704,7 +704,7 @@ reftime 是 1575s，不同编译器和编译选项下的运行情况：
 
 ### 766.femflow_r
 
-femflow 是流体动力学求解器，求解 Navier-Stokes 方程，盲猜又是一个 Stencil 计算。这个基准测试只包括一个负载：
+femflow 是流体动力学求解器，求解 Navier-Stokes 方程。这个基准测试只包括一个负载：
 
 ```shell
 femflow_r refrate.prm
@@ -720,6 +720,15 @@ reftime 是 1467s，不同编译器和编译选项下的运行情况：
 | LLVM 22 `-O3 -march=native` | 88.7     | 16.5 | 113                            | 1392.9     | 495.7           | 269.4            | 42.9           | 41.8               | 471.1              |
 
 可见，LLVM 22 相比 GCC 14 有显著的性能提升，同时 `-O3 -march=native` 带来了更加显著的性能提升，是整个 SPEC FP 2026 Rate 当中，`-O3 -march=native` 带来提升第二高的基准测试，第一高是后面会看到的 772.marian_r。
+
+热点函数还不少，很多函数都是个位数百分比的占用，大多是一些算子：
+
+- `Laplace::LaplaceOperator::local_apply_quadratic_geo` 来自 `src/laplace_operator.h`：5.49%，内部是大量的浮点向量计算，并行度高；
+- `operator *(const dealii::VectorizedArray &, const dealii::VectorizedArray &)` 来自 `src/dealii/include/deal.ll/base/vectorization.h`：5.36%，两个向量的逐元素乘法。
+
+其他还有一些 dealii:Tensor 的计算，包括来自 `src/dealii/include/deal.ll/matrix_free/tensor_product_kernels.h` 的 `dealii::internal::even_odd_apply`，里面都是大量的可向量化的浮点双精度运算。对于这类负载，`-O3 -march=native` 开启后，更快的向量长度带来了更好的浮点运算性能，同时还有 FMA 指令的加持。
+
+LLVM 22 相比 GCC 14 的优势，主要来自于把更多代码进行了向量化，对比 GCC 14 和 LLVM 22 执行的指令数，可以看到 LLVM 22 执行的浮点标量指令数比 GCC 14 要少，而浮点向量指令又要多。
 
 ### 767.nest_r
 
