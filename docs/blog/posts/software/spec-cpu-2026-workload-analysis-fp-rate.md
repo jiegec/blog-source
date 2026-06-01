@@ -752,3 +752,43 @@ nest_r ArtificialSynchrony
 | 3. Artificial | 48.6     | 1125.4   | 392.6    | 150.5     | 160.5    | 163.6        | 0.0          |
 
 总时间 87.4s，reftime 是 793s，对应 8.96 分。下面进行负载的具体分析。
+
+#### 1. cuba
+
+热点函数：
+
+- `nest::iaf_psc_exp::handle` 来自 `src/nest-simulator/models/iaf_psc_exp.cpp`：25.75%，处理该神经元接收到的脉冲，更新内部状态，主要瓶颈是间接访存，把脉冲的强度写入到对应的输入缓存区；
+- `__ieee754_pow_fma` 来自 libm：11.96%，被后面的 `nest::Connector::send` 函数调用；
+- `spec::poisson_distribution::operator()` 来自 `src/specrand-distributions/spec_random_distributions.cpp`：9.87%，生成随机数，以生成输入的脉冲；
+- `nest::Connector::send` 来自 `src/nest-simulator/nestkernel/connector_base.h`：8.29%，负责脉冲在突触上的传播和 STDP，主要瓶颈是间接访存，以及内联了一些脉冲上的权重计算，还会调用 pow 和 exp；
+- `nest::iaf_psc_exp::update` 来自 `src/nest-simulator/models/iaf_psc_exp.cpp`：6.91%，在每个时间步对神经元的状态进行更新，主要是标量的浮点运算。
+
+算是一个比较经典的带 STDP 的 SNN 模拟，主要瓶颈就是脉冲传播和 STDP 的突触权重更新，向量化程度很低，还有间接访存。
+
+#### 2. structural
+
+热点函数：
+
+- `spec::poisson_distribution::operator()` 来自 `src/specrand-distributions/spec_random_distributions.cpp`：24.26%，描述见上；
+- `nest::iaf_psc_alpha::update` 来自 `src/nest-simulator/models/iaf_psc_alpha.cpp`：13.71%，做的事情和上面 `nest::iaf_psc_exp::update` 类似，就是换了个神经元模型；
+- `__ieee754_pow_fma` 来自 libm：13.37%，描述见上；
+- `nest::GrowthCurveGaussian::update` 来自 `src/nest-simulator/nestkernel/growth_curve.cpp`：6.60%，主要在用数值计算求解微分方程，频繁调用 exp 和 pow；
+- `nest::iaf_psc_alpha::handle` 来自 `src/nest-simulator/models/iaf_psc_alpha.cpp`：25.75%，功能和上面 `nest::iaf_psc_exp::handle` 类似；
+- `nest::Connector::send` 来自 `src/nest-simulator/nestkernel/connector_base.h`：6.60%，描述见上，这次没有 STDP，权重是静态的；
+- `exp` 来自 `libm`：5.39%。
+
+和 1. cuba 相比，换了一个神经元模型，去掉了 STDP，结果主要的瓶颈跑到了泊松分布的随机生成，其余部分还是比较典型的 SNN 模拟。
+
+#### 3. Artificial
+
+热点函数：
+
+- `nest::iaf_psc_alpha_ps::update` 来自 `src/nest-simulator/models/iaf_psc_alpha_ps.cpp`：13.26%，神经元的状态更新函数；
+- `nest::iaf_psc_alpha::update` 来自 `src/iaf_psc_alpha.cpp`：12.37%，描述见上；
+- `nest::Connector::send` 来自 `src/nest-simulator/nestkernel/connector_base.h`：7.19%，描述见上，这次依然没有 STDP，权重是静态的；
+- `nest::SimulationManager::update_` 来自 `src/nest-simulator/nestkernel/simulation_manager.cpp`：5.66%，核心的 SNN 模拟循环，调用上面的各种函数。
+- `__ieee754_pow_fma` 来自 libm：5.17%，描述见上。
+
+#### 小结
+
+研究 SNN 的应该很熟悉，nest 是个很灵活的 SNN 模拟器，但它的单线程性能也确实不咋地，只是在多核/多线程上花了一些功夫。不出所料，由于 nest 的神经元更新部分没有向量化，所以也挺慢的，而脉冲传播和 STDP 部分本来也很难优化。总而言之，它是一个难以向量化的浮点应用，甚至从上面的性能计数器来看，一条向量浮点指令都没有执行。
