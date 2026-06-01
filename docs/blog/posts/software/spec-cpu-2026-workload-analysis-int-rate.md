@@ -14,7 +14,7 @@ categories:
 
 <!-- more -->
 
-本文测试环境：CPU 为 Intel i9-14900K P-Core @ 5.7 GHz，Linux 发行版为 Debian Trixie，编译器是 GCC 14.2.0，默认编译选项是 `-O3`。其实这颗 CPU 最快能 Boost 到 6.0 GHz，但时不时因为未知原因（防缩缸？）在单核负载下也 Boost 不上去，具体表现为每跑一段时间后 CPU 核心就会强制降频到 4.7 GHz。故退而求其次，选择在更容易稳定达到的 5.7 GHz 频率来跑。能稳定跑到 6.0 GHz 的只有那一个物理 P 核，其他 P 核也都能上 5.7 GHz，降频了换一个核心即可。6.0 GHz 下的性能可以参考之前的测试结果：[INT](../../../benchmark/data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt) 和 [FP](../../../benchmark/data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)，基本上，从 5.7 GHz 到 6.0 GHz，性能可以按频率线性放缩。本文所用的脚本已开源到 [jiegec/spec2026](https://github.com/jiegec/spec2026)。
+本文测试环境：CPU 为 Intel i9-14900K P-Core @ 5.7 GHz，Linux 发行版为 Debian Trixie，编译器是 GCC 14.2.0，默认编译选项是 `-O3`。其实这颗 CPU 最快能 Boost 到 6.0 GHz，但时不时因为未知原因（防缩缸？）在单核负载下也 Boost 不上去，具体表现为每跑一段时间后 CPU 核心就会强制降频到 4.7 GHz。故退而求其次，选择在更容易稳定达到的 5.7 GHz 频率来跑。能稳定跑到 6.0 GHz 的只有那一个物理 P 核，其他 P 核也都能上 5.7 GHz，降频了换一个核心即可。6.0 GHz 下的性能可以参考之前的测试结果：[INT](../../../benchmark/data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt) 和 [FP](../../../benchmark/data-trixie/fp2026_rate1/Intel_Core_i9-14900K_P-Core_O3_001.txt)，基本上，从 5.7 GHz 到 6.0 GHz，性能可以按频率线性放缩。本文可能针对同一个负载给出多个不同的运行时间，这可能是因为多次运行导致的性能波动，也可能是因为部分数字包含了 `perf record` 的开销，不过误差都很小，可以放心对比。本文所用的脚本已开源到 [jiegec/spec2026](https://github.com/jiegec/spec2026)。
 
 推荐阅读：[Evaluating SPEC CPU2026](https://chipsandcheese.com/p/evaluating-spec-cpu2026) 和 [SPEC CPU2026: Characterization, Representativeness, and Cross-Suite Comparison](https://arxiv.org/abs/2605.03713v2)
 

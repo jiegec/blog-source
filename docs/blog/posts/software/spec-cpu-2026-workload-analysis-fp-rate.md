@@ -792,3 +792,67 @@ nest_r ArtificialSynchrony
 #### 小结
 
 研究 SNN 的应该很熟悉，nest 是个很灵活的 SNN 模拟器，但它的单线程性能也确实不咋地，只是在多核/多线程上花了一些功夫。不出所料，由于 nest 的神经元更新部分没有向量化，所以也挺慢的，而脉冲传播和 STDP 部分本来也很难优化。总而言之，它是一个难以向量化的浮点应用，甚至从上面的性能计数器来看，一条向量浮点指令都没有执行。
+
+### 772.marian_r
+
+marian_r 是一个基于神经网络的翻译器，又是一个神经网络推理，意味着又是一个 `-O3 -march=native` 非常有优势的测例，如果像 706.stockfish_r 那样有直接可以用的硬件加速指令，性能将会比 `-O3` 快得多。该基准测试包括两个负载：
+
+```shell
+# 1. TildeMODEL
+marian-decoder --cpu-threads 1 -m model.alphas.npz -v vocab.spm vocab.spm --beam-size 1 --mini-batch 32 --maxi-batch 100 --maxi-batch-sort src -w 512 --skip-cost --gemm-type intgemm8 --intgemm-options precomputed-alpha standard-only --quiet --quiet-translation -i TildeMODEL-spec.en --log TildeMODEL-spec.log --log-level off -o TildeMODEL-spec.out
+# 2. EuroPat
+marian-decoder --cpu-threads 1 -m model.alphas.npz -v vocab.spm vocab.spm --beam-size 1 --mini-batch 32 --maxi-batch 100 --maxi-batch-sort src -w 512 --skip-cost --gemm-type intgemm8 --intgemm-options precomputed-alpha standard-only --quiet --quiet-translation -i EuroPat-spec.en --log EuroPat-spec.log --log-level off -o EuroPat-spec.out
+```
+
+reftime 是 1579s，下面是不同编译器版本和编译选项的对比：
+
+| 编译器+选项                | 时间 (s) | 分数  | 相比 GCC 14 `-O3` 性能提升 (%) | 1. TildeMODEL 时间 (s) | 2. EuroPat 时间 (s) |
+|----------------------------|----------|-------|--------------------------------|------------------------|---------------------|
+| GCC 14 `-O3`               | 235.2    | 6.71  | 0                              | 88.8                   | 146.4               |
+| GCC 14 `-O3 -march=native` | 78.4     | 20.14 | 200                            | 28.2                   | 50.3                |
+| GCC 15 `-O3`               | 150.1    | 10.52 | 57                             | 56.0                   | 94.8                |
+| GCC 15 `-O3 -march=native` | 77.5     | 20.37 | 203                            | 27.8                   | 49.7                |
+
+可见 `-O3 -march=native` 带来的提升巨大，高达 200%，在 Apple M1 上有 47% 的提升，在 Apple M2 上更是提升了 92%，这种提升，之前只在 706.stockfish_r 上见到过。并且 GCC 15 也比 GCC 14 在 `-O3` 时有明显性能提升。下面分负载来讨论。
+
+#### 1. TildeMODEL
+
+热点函数：
+
+- `marian::cpu::integer::affineOrDotTyped` 来自 `src/marian/tensors/cpu/intgemm_interface.h`：82.28%，主要时间在 `tiled_gemm` 函数里，做的是整数矩阵乘法，uint8_t 类型的 A 矩阵乘以 int8_t 类型的 B 矩阵，累加到 int32_t 类型，最后转换到 float 再加 float 的 C 矩阵；
+- `marian::cpu::ProdBatched` 来自 `src/marian/tensors/cpu/prod.cpp`：10.30%，核心部分是 sgemm，这次确实是浮点的矩阵运算了，虽然被编译成了 SSE 的标量的浮点计算而不是向量，但考虑到时间占比，也无伤大雅了。
+
+可以看到，主要的热点部分，和 706.stockfish_r 的 nnue 的计算模式完全一样，因此开 `-O3 -march=native` 后，一样可以用 vpdpbusd 指令优化，见 [Godbolt](https://godbolt.org/z/PTxK1evK3)。具体的讨论，可以见之前 [INT Rate 篇](./spec-cpu-2026-workload-analysis-int-rate.md) 中 706.stockfish_r 的部分。
+
+不同编译器和编译选项下的对比：
+
+| 编译器+选项                | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 128 位整数向量 (B) | 256 位整数向量 (B) |
+|----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------------|--------------------|
+| GCC 14 `-O3`               | 88.2     | 2038.9   | 217.8    | 57.8      | 53.2     | 58.7         | 2.1          | 514.6              | 0.0                |
+| GCC 14 `-O3 -march=native` | 27.6     | 423.0    | 131.5    | 25.1      | 47.4     | 59.8         | 1.1          | 12.8               | 47.4               |
+| GCC 15 `-O3`               | 55.6     | 1353.5   | 173.9    | 22.1      | 53.2     | 58.7         | 2.1          | 184.7              | 0.0                |
+| GCC 15 `-O3 -march=native` | 27.3     | 415.1    | 128.9    | 23.5      | 47.5     | 59.8         | 1.1          | 12.8               | 47.4               |
+
+#### 2. EuroPat
+
+热点函数：
+
+- `marian::cpu::integer::affineOrDotTyped`：78.96%，描述见上；
+- `marian::cpu::ProdBatched`：14.25%，描述见上。
+
+热点函数和 1. TileMODEL 完全相同，其余的分析对 2. EuroPat 也是成立的，这里直接给出性能计数器的对比：
+
+不同编译器和编译选项下的对比：
+
+| 编译器+选项                | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 128 位整数向量 (B) | 256 位整数向量 (B) |
+|----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------------|--------------------|
+| GCC 14 `-O3`               | 145.6    | 3352.7   | 370.4    | 89.7      | 98.8     | 123.8        | 3.6          | 815.0              | 0.0                |
+| GCC 14 `-O3 -march=native` | 49.7     | 777.2    | 228.7    | 36.6      | 88.3     | 123.9        | 1.7          | 19.9               | 72.6               |
+| GCC 15 `-O3`               | 94.2     | 2268.5   | 301.7    | 33.1      | 98.8     | 123.8        | 3.6          | 293.6              | 0.0                |
+| GCC 15 `-O3 -march=native` | 49.0     | 765.3    | 225.2    | 34.3      | 88.3     | 123.9        | 1.7          | 19.9               | 72.6               |
+
+#### 小结
+
+772.marian_r 鉴定为 706.stockfish_r 的 NNUE 的翻版，热点完全就是 int8_t 乘以 uint8_t 累加到 int32_t 的矩阵乘运算，建议开除 SPEC FP 2026 Rate 籍。
+
+### 782.lbm_r
