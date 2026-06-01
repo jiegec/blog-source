@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-既 [INT Rate 篇](./spec-cpu-2026-workload-analysis-int-rate.md) 后，转到分析 SPEC FP 2026 Rate 的负载特性。
+继 [INT Rate 篇](./spec-cpu-2026-workload-analysis-int-rate.md) 后，本文继续分析 SPEC FP 2026 Rate 的负载特性。
 
 <!-- more -->
 
@@ -39,7 +39,7 @@ cactus ShiftedGaugeWave.par
 | LLVM 22 `-O3`               | 94.6     | 9.07  | 9                              |
 | LLVM 22 `-O3 -march=native` | 90.5     | 9.48  | 14                             |
 
-可见 `-march=native` 能提供巨大的性能提升，LLVM 22 在 `-O3` 下比 GCC 14 `-O3` 快，不过 GCC 14 的 `-O3 -march=native` 性能反超了 LLVM 22 的 `-O3 -march=native`，后面会进行具体分析。
+可见 `-march=native` 能提供巨大的性能提升，LLVM 22 在 `-O3` 下比 GCC 14 快，不过 GCC 14 的 `-O3 -march=native` 又反超了 LLVM 22 的 `-O3 -march=native`，后面会具体分析。
 
 通过 `perf` 观察性能瓶颈：
 
@@ -79,14 +79,14 @@ palm_r < runfile_atmos
 
 | 编译器+选项                 | 时间 (s) | 分数  | 相比 GCC 14 `-O3` 性能提升 (%) |
 |-----------------------------|----------|-------|--------------------------------|
-| GCC 14 `-O3`                | 174.0    | 7.50  | 0                              |
+| GCC 14 `-O3`                | 174.0    | 7.59  | 0                              |
 | GCC 14 `-O3 -march=native`  | 157.8    | 8.34  | 10                             |
 | GCC 14 `-O3 -ffast-math`    | 168.4    | 7.84  | 3                              |
 | GCC 14 `-O3 -ljemalloc`     | 172.4    | 7.66  | 1                              |
 | LLVM 22 `-O3`               | 144.0    | 9.17  | 21                             |
-| LLVM 22 `-O3 -march=native` | 118.6    | 10.37 | 47                             |
+| LLVM 22 `-O3 -march=native` | 118.6    | 11.13 | 47                             |
 
-与 709.cactus_r 的趋势相同，`-O3 -march=native` 能提供巨大的性能提升，而 LLVM 22 也明显比 GCC 14 要快。
+趋势和 709.cactus_r 类似，`-O3 -march=native` 对性能提升巨大，LLVM 22 也明显比 GCC 14 快。
 
 热点函数：
 
@@ -109,7 +109,7 @@ palm_r < runfile_atmos
 
 开 `-O3 -march=native` 后，能看到的是大量的 AVX2 向量化指令：vmulpd/vdivsd/vaddpd/vsubpd/vfmadd213sd/vfmsub132pd/vfmsub231pd/vmovupd 等等，每次处理 4 个双精度浮点元素，向量化程度很高，如果在有 AVX512 的处理器上，可能性能还会更高。相比 709.cactus_r 那样被 pow 等问题限制没能向量化，722.palm_r 的向量化收益是特别明显的。LLVM 22 在 `-O3` 下比 GCC 14 要好，是因为它在热点函数的更多部分成功进行向量化，体现在数据上就是浮点向量指令数明显增多，浮点标量指令数明显减少。在 LLVM 22 下，由于上述热点函数被优化地比较好，也出现了新的热点函数，时间占比 5.79%：`flow_statistics` 来自 `src/flow_statistics.F90`，它能正确向量化的部分比较少，因而时间占比提升，即使开了 `-O3 -march=native`，也还是用 AVX2+FMA 指令来做标量计算，时间区别不大，因为其他部分时间降低，自己的时间占比提高到 6.95%。
 
-709.cactus_r 和 722.palm_r 其实计算模式都是 Stencil，这在物理相关的模拟中很常见，因为要在三维空间里求解微分方程，为了数值求解，最后都落到了在每个点的邻域里进行计算，基本就是 Stencil。
+709.cactus_r 和 722.palm_r 的计算模式其实都是 Stencil。物理相关的模拟经常做这类事情：在三维空间里求解微分方程，数值求解时需要对每个点的邻域进行反复计算，落到最后就是 Stencil。
 
 ### 731.astcenc_r
 
@@ -147,7 +147,7 @@ astcenc_r ref-inputs-precision.txt
 - `bilinear_infill_vla` 来自 `src/astcenc_ideal_endpoints_and_weights.cpp`：7.80%，瓶颈一样是 gather，即 `gatherf_byte_inds` 函数；
 - `compute_error_squared_rgb` 来自 `src/astcenc_averages_and_directions.cpp`：6.39%，瓶颈一样是 gather，以及 gather 之后的一系列向量计算，但 GCC 14 都编译成了 SSE 标量计算。
 
-针对这种用原生 SIMD 写法的程序，编译出来却又都是 SSE 标量指令，那意味如果能用 SSE 进行向量化，将会有明显的性能提升；进一步，如果开了 `-O3 -march=native`，向量更宽来到 256 位，并且还能用 [`vblendvps`](https://www.felixcloutier.com/x86/blendvps) 指令来实现上述 `select` 函数。前面提到过，LLVM 22 明显更快，于是做了不同编译器和编译选项下的对比：
+原生 SIMD 写法编译出来却是标量指令，反过来也说明，如果能正确向量化，性能还会有明显的提升空间。进一步，如果开了 `-O3 -march=native`，向量更宽来到 256 位，还多了 [`vblendvps`](https://www.felixcloutier.com/x86/blendvps) 指令来实现上述 `select` 函数。前面提到过，LLVM 22 明显更快，下面看看不同编译器和编译选项的对比：
 
 | 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
 |-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|------|
@@ -305,7 +305,7 @@ vmax(vfloat4, vfloat4):
 
 #### 小结
 
-731.astcenc_r 很难得地使用了 SIMD 原生的方法来编程：`vfloat4`、`vint4` 和 `vmask4` 等等，编写的时候就是针对 SIMD 指令来写的，只是可惜 GCC 14 辜负了开发者的期望，并不能正确地识别代码在做什么并利用上硬件的相关指令，还莫名其妙地生成了一堆额外的分支来实现 `select` 函数。相比之下，LLVM 22 在这方面做得更好，该向量化的地方就向量化。与此同时，也观察到，一些稍微小众一些的指令集，比如 LoongArch，在这些代码模式下的优化还比较欠缺，无论 GCC 还是 LLVM。
+731.astcenc_r 用了 SIMD 原生的写法来编程：`vfloat4`、`vint4` 和 `vmask4` 等等，编写时就是奔着 SIMD 指令去的。只可惜 GCC 14 辜负了开发者的期望，不能正确识别代码意图并利用硬件指令，还莫名生成了一堆分支来实现 `select` 函数。相比之下，LLVM 22 就做得好很多，该向量化的地方就向量化。同时也能看到，像 LoongArch 这样稍微小众一些的指令集，在这些代码模式下的优化还比较欠缺，无论 GCC 还是 LLVM 都是如此。
 
 ### 736.ocio_r
 
@@ -349,9 +349,9 @@ reftime 是 875s，不同编译器和编译选项的运行情况如下：
 
 | 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) |
 |-----------------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|
-| GCC 14 `-O3`                | 6.0      | 106.2    | 23.3     | 11.7      | 4.2      | 2.6          | 5.0          | 2.6          |
+| GCC 14 `-O3`                | 6.1      | 106.2    | 23.3     | 11.7      | 4.2      | 2.6          | 5.0          | 2.6          |
 | GCC 14 `-O3 -march=native`  | 4.2      | 63.8     | 22.0     | 11.0      | 3.6      | 2.6          | 2.5          | 2.5          |
-| GCC 14 `-O3 -ffast-math`    | 6.3      | 104.8    | 23.2     | 11.7      | 4.2      | 2.5          | 5.0          | 2.6          |
+| GCC 14 `-O3 -ffast-math`    | 6.4      | 104.8    | 23.2     | 11.7      | 4.2      | 2.5          | 5.0          | 2.6          |
 | LLVM 22 `-O3`               | 6.8      | 106.1    | 23.3     | 11.7      | 3.6      | 2.5          | 5.0          | 2.6          |
 | LLVM 22 `-O3 -march=native` | 5.4      | 72.5     | 24.8     | 11.0      | 1.4      | 2.5          | 2.5          | 2.5          |
 
@@ -444,7 +444,7 @@ gmsh_r -option gmsh.opts -nt 0 spec.geo -clscale 0.175 -algo del2d -algo hxt
 gmsh_r -option gmsh.opts -nt 0 p19.geo
 ```
 
-各负载运行时间为 17.1s、11.8s、11.2s、16.9s、9.2s、13.4s、12.8s，总时间 92.2s，reftime 是 459s，对应 4.98 分。`-O3 -ffast-math` 和 `-O3 -march=native` 的收益都很小，LLVM 22 比 GCC 14 更慢，因此这里就不做具体比较了。
+各负载运行时间为 17.1s、11.8s、11.2s、16.9s、9.2s、13.4s、12.8s，总时间 92.2s，reftime 是 459s，对应 4.98 分。`-O3 -ffast-math` 和 `-O3 -march=native` 收益都很小，LLVM 22 反而比 GCC 14 更慢，因此这里就不做具体比较了。
 
 用 `-O3 -march=native` 编译的时候，发现如果 CC 只传了 gcc，而没有传 `-std=c18`，就会在 4. gasdis 这一个负载里死循环，一直报错：`Info    : Symbolic perturbation failed (2 superposed vertices ?)`。经过对比，两者的区别在于是否进行乘加融合：`-O3 -std=c18 -march=native` 时，不会进行融合，而 `-O3 -march=native` 或 `-O3 -std=gnu18 -march=native` 时会进行融合，见 [Godbolt](https://godbolt.org/z/58fTP5fnG)。在其他程序里，融合对性能更优，但这里很不幸，融合了就会导致死循环。这和 [`-fp-contract`](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html) 有关：
 
@@ -521,7 +521,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 | 6. spec          | 13.3     | 101.4    | 30.2     | 10.8      | 18.1     | 10.9         | 0.2          | 546.1        | 5.39 |
 | 7. p10           | 12.7     | 96.3     | 28.8     | 10.2      | 17.2     | 10.4         | 0.1          | 529.3        | 5.50 |
 
-可见整体的 MPKI 还是偏高的，并且很大程序归功于 KD-Tree 的查询以及 `std::map` 的查询或插入，只不过这些树的 key 都是单精度浮点数。并且根据上面的分析，确实相关的代码不适合向量化，浮点乘加融合还被禁用了，否则就可能不收敛。
+可见整体的 MPKI 还是偏高的，并且很大程度上归功于 KD-Tree 的查询以及 `std::map` 的查询或插入，只不过这些树的 key 都是单精度浮点数。并且根据上面的分析，确实相关的代码不适合向量化，浮点乘加融合还被禁用了，否则就可能不收敛。
 
 ### 748.flightdm_r
 
@@ -602,7 +602,7 @@ JSBSim --nohighlight scripts/ball_orbit.xml
 
 #### 小结
 
-748.flightdm_r 是个没意思的基准测试，时间很多花在了 libm 和 libc 的函数上，自己的代码就是在配置文件里来回遍历，我愿称它为 libm 基准测试，除此之外，表现得都像一个 SPEC INT 2026 Rate 的负载：字符串操作，内存分配，很多小函数和 lambda，适合 `-O3 -flto` 优化。最后看一下 `-O3` 下各负载的情况：
+748.flightdm_r 是个没意思的基准测试，时间很多花在了 libm 和 libc 的函数上，自己的代码就是在配置文件里来回遍历，我愿称它为 libm 基准测试。除此之外，表现得更像一个 SPEC INT 2026 Rate 的负载：字符串操作，内存分配，很多小函数和 lambda，适合 `-O3 -flto` 优化。最后看一下 `-O3` 下各负载的情况：
 
 | 负载             | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) | 错误预测 (M) | MPKI |
 |------------------|----------|----------|----------|-----------|----------|--------------|--------------|--------------|------|
@@ -666,7 +666,7 @@ end subroutine update
 
 在 `-O3` 时，GCC 14 会忠实地实现复数乘法，然而，实际上这里的 Efield1 和 Efield2 都是实数，转换过去的复数的虚部只能是零，因此通过 `-O3 -ffast-math` 的化简，直接把实部乘到 expfuncE 的实部和虚部即可，这样就可以简化指令。如果开 `-O3 -ffast-math -march=native`，将可以结合两个优化，直接用 AVX2 乘加融合指令 `vfmadd213pd` 完成这次运算，不需要像 `-O3 -march=native` 时用 `vfmaddsub231pd` 同时做加法和减法（原来的减，来自于复数乘法的定义，在这里减去的总是零，因为 Efield1/Efield2 的虚部是零），详见 [Godbolt](https://godbolt.org/z/v3W4e5xjP)。
 
-小结一下，749.fotonik3d_r 算是比较经典的浮点应用，里面有大量的 Stencil 和浮点向量运算，并行度高，适合向量化，还可以享受 `-ffast-math` 带来的浮点计算顺序优化的性能提升。
+小结一下，749.fotonik3d_r 是经典的浮点应用，大量 Stencil 加浮点向量运算，并行度高，适合向量化，还能享受 `-ffast-math` 带来的浮点计算顺序优化。
 
 ### 765.roms_r
 
@@ -699,7 +699,7 @@ reftime 是 1575s，不同编译器和编译选项下的运行情况：
 - `step3d_uv_tile` 来自 `src/step3d_uv.F90`：5.85%，主要瓶颈是 3D Stencil 计算，向量化程度高；
 - `_ZGVbN2v_exp_sse4` 来自 libmvec：4.66%，向量化版本的 exp。
 
-依然是典型的 Stencil 计算，向量化程度高，因此，开 `-O3 -march=native`，向量宽度增加，以及 FMA 的引入，带来了不错的性能提升。
+还是典型的 Stencil 计算，向量化程度高。开 `-O3 -march=native` 后，向量宽度增加，加上 FMA 的引入，自然带来了不错的性能提升。
 
 ### 766.femflow_r
 
@@ -750,7 +750,7 @@ nest_r ArtificialSynchrony
 | 2. structural | 24.6     | 413.3    | 136.3    | 42.8      | 52.5     | 93.2         | 0.0          |
 | 3. Artificial | 48.6     | 1125.4   | 392.6    | 150.5     | 160.5    | 163.6        | 0.0          |
 
-总时间 87.4s，reftime 是 793s，对应 8.96 分。下面进行负载的具体分析。
+总时间 87.4s，reftime 是 793s，对应 9.07 分。下面进行负载的具体分析。
 
 #### 1. cuba
 
@@ -790,7 +790,7 @@ nest_r ArtificialSynchrony
 
 #### 小结
 
-研究 SNN 的应该很熟悉，nest 是个很灵活的 SNN 模拟器，但它的单线程性能也确实不咋地，只是在多核/多线程上花了一些功夫。不出所料，由于 nest 的神经元更新部分没有向量化，所以也挺慢的，而脉冲传播和 STDP 部分本来也很难优化。总而言之，它是一个难以向量化的浮点应用，甚至从上面的性能计数器来看，一条向量浮点指令都没有执行。
+研究 SNN 的应该很熟悉，nest 是个很灵活的 SNN 模拟器，但单线程性能也确实不咋地，主要精力花在了多核/多线程上。不出所料，nest 的神经元更新部分没有向量化，所以挺慢的，而脉冲传播和 STDP 部分本来就很难优化。总之，这是个难以向量化的浮点应用，从上面的性能计数器来看，一条向量浮点指令都没有。
 
 ### 772.marian_r
 
@@ -852,7 +852,7 @@ reftime 是 1579s，下面是不同编译器版本和编译选项的对比：
 
 #### 小结
 
-772.marian_r 鉴定为 706.stockfish_r 的 NNUE 的翻版，热点完全就是 int8_t 乘以 uint8_t 累加到 int32_t 的矩阵乘运算，整数向量指令比浮点指令还多，建议开除 SPEC FP 2026 Rate 籍。
+772.marian_r 鉴定为 706.stockfish_r 的 NNUE 翻版，热点就是 int8_t 乘 uint8_t 累加到 int32_t 的矩阵乘运算，整数向量指令比浮点指令还多，建议开除 SPEC FP 2026 Rate 籍。
 
 ### 782.lbm_r
 
@@ -875,16 +875,17 @@ reftime 是 573s，不同编译选项下的性能对比：
 
 ### 编译器选项对比
 
-综合下来，编译选项对 SPEC FP 2026 Rate 的性能影响同样是不小的，比如：
+综合来看，编译选项对 SPEC FP 2026 Rate 的性能影响同样不小：
 
-- `-march=native` 对很多基准测试有不错的性能提升，毕竟 AVX2 相比 SSE 不仅在宽度上拓宽，还增加了很多好用的指令，可以减少指令数，同时还有 AVX-VNNI 这种对 722.marian_r 特攻；
-- `-ffast-math` 也有不错的提升，尤其 SPEC FP 2026 Rate 有不少浮点运算，如果完全按照代码的编写方式去计算，往往不如调整运算顺序后来得快。
+- `-march=native` 对很多基准测试有不错的性能提升。毕竟 AVX2 相比 SSE 不仅在宽度上拓宽，还增加了很多好用的指令，可以减少指令数，还有 AVX-VNNI 这种对 772.marian_r 特攻的；
+- `-ffast-math` 也有不错的提升，尤其 SPEC FP 2026 Rate 有不少浮点运算，完全按照源码的编写方式去计算，往往不如调整运算顺序后来得快。但也要注意，`-ffast-math` 可能会导致计算结果不符合 IEEE 754 标准。
+- `-flto` 和 `-ljemalloc` 对 SPEC FP 2026 Rate 的多数基准测试效果不大，但对 748.flightdm_r 有些许提升。
 
-还有一些常用的编译参数，比如 `-static`、`-fomit-frame-pointer`、`-ffast-math` 等等，目前没有做太多测试，以后说不定会加上。
+还有一些常用的编译参数，比如 `-static`、`-fomit-frame-pointer` 等等，目前没有做太多测试，以后说不定会加上。
 
 ### 分支预测
 
-SPEC FP 2026 Rate 中 MPKI 不正常地高的就是 731.astcenc_r 和 737.gmsh_r，其他只有 767.nest_r 略高，但也就是到 0.87。但 731.astcenc_r 如此的高，完全是 GCC 14 编译的问题，换 LLVM 22 立马就正常了，希望后续 GCC 能进行修复。
+SPEC FP 2026 Rate 中 MPKI 特别高的只有 731.astcenc_r 和 737.gmsh_r，其他最高也就是 767.nest_r 的 0.87。731.astcenc_r 如此的高，完全是 GCC 14 编译的锅，换成 LLVM 22 立马就正常了，希望后续 GCC 能修一修。
 
 ## 总结
 
