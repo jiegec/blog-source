@@ -822,7 +822,7 @@ reftime 是 1579s，下面是不同编译器版本和编译选项的对比：
 - `marian::cpu::integer::affineOrDotTyped` 来自 `src/marian/tensors/cpu/intgemm_interface.h`：82.28%，主要时间在 `tiled_gemm` 函数里，做的是整数矩阵乘法，uint8_t 类型的 A 矩阵乘以 int8_t 类型的 B 矩阵，累加到 int32_t 类型，最后转换到 float 再加 float 的 C 矩阵；
 - `marian::cpu::ProdBatched` 来自 `src/marian/tensors/cpu/prod.cpp`：10.30%，核心部分是 sgemm，这次确实是浮点的矩阵运算了，虽然被编译成了 SSE 的标量的浮点计算而不是向量，但考虑到时间占比，也无伤大雅了。
 
-可以看到，主要的热点部分，和 706.stockfish_r 的 nnue 的计算模式完全一样，因此开 `-O3 -march=native` 后，一样可以用 vpdpbusd 指令优化，见 [Godbolt](https://godbolt.org/z/PTxK1evK3)。具体的讨论，可以见之前 [INT Rate 篇](./spec-cpu-2026-workload-analysis-int-rate.md) 中 706.stockfish_r 的部分。
+可以看到，主要的热点部分，和 706.stockfish_r 的 nnue 的计算模式完全一样，因此开 `-O3 -march=native` 后，一样可以用 vpdpbusd 指令优化，见 [Godbolt](https://godbolt.org/z/PTxK1evK3)。同理 GCC 15 因为更优的无符号扩展实现方式，性能比 GCC 14 要更好。具体的讨论，可以见之前 [INT Rate 篇](./spec-cpu-2026-workload-analysis-int-rate.md) 中 706.stockfish_r 的部分。
 
 不同编译器和编译选项下的对比：
 
@@ -856,3 +856,37 @@ reftime 是 1579s，下面是不同编译器版本和编译选项的对比：
 772.marian_r 鉴定为 706.stockfish_r 的 NNUE 的翻版，热点完全就是 int8_t 乘以 uint8_t 累加到 int32_t 的矩阵乘运算，整数向量指令比浮点指令还多，建议开除 SPEC FP 2026 Rate 籍。
 
 ### 782.lbm_r
+
+lbm 是 lattice boltzmann method 的缩写，又是一个流体动力学的应用。该基准测试只有一个负载：
+
+```shell
+lbm_r 900 reference.dat 0 0 200_200_130_ldc.of
+```
+
+reftime 是 573s，不同编译选项下的性能对比：
+
+| 编译器+选项              | 时间 (s) | 分数 | 相比 GCC 14 `-O3` 性能提升 (%) | 指令数 (B) | Load 指令数 (B) | Store 指令数 (B) | 分支指令数 (B) | 浮点标量指令数 (B) | 浮点向量指令数 (B) |
+|--------------------------|----------|------|--------------------------------|------------|-----------------|------------------|----------------|--------------------|--------------------|
+| GCC 14 `-O3`             | 105.8    | 5.42 | 0                              | 2232.2     | 473.3           | 242.4            | 14.5           | 1108.2             | 0.0                |
+| GCC 14 `-O3 -ffast-math` | 95.8     | 5.98 | 10                             | 1892.4     | 419.2           | 192.8            | 14.5           | 1009.5             | 0.0                |
+
+热点函数只有一个，就是 `LBM_performStreamCollideTRT` 函数来自 `src/lbm.c`，占了 99.35% 的时间，中间有大量的浮点计算，而且都是标量，难以向量化，访存也不算多。对于这种标量计算很多的情况，`-O3 -ffast-math` 通常能带来一定的提升，通过调整计算顺序，可以复用一些中间计算结果，从而节省一些计算。
+
+## 讨论
+
+### 编译器选项对比
+
+综合下来，编译选项对 SPEC FP 2026 Rate 的性能影响同样是不小的，比如：
+
+- `-march=native` 对很多基准测试有不错的性能提升，毕竟 AVX2 相比 SSE 不仅在宽度上拓宽，还增加了很多好用的指令，可以减少指令数，同时还有 AVX-VNNI 这种对 722.marian_r 特攻；
+- `-ffast-math` 也有不错的提升，尤其 SPEC FP 2026 Rate 有不少浮点运算，如果完全按照代码的编写方式去计算，往往不如调整运算顺序后来得快。
+
+还有一些常用的编译参数，比如 `-static`、`-fomit-frame-pointer`、`-ffast-math` 等等，目前没有做太多测试，以后说不定会加上。
+
+### 分支预测
+
+SPEC FP 2026 Rate 中 MPKI 不正常地高的就是 731.astcenc_r 和 737.gmsh_r，其他只有 767.nest_r 略高，但也就是到 0.87。但 731.astcenc_r 如此的高，完全是 GCC 14 编译的问题，换 LLVM 22 立马就正常了，希望后续 GCC 能进行修复。
+
+## 总结
+
+本文深入分析了 SPEC CPU 2026 中 FP Rate 的负载，供编译器和处理器的设计者参考。从编译器的角度来说，可以集 GCC 和 LLVM 之长，进一步提升性能；从处理器的角度来说，针对程序的瓶颈进行优化，也能进一步提高分数。
