@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2026-05-22
-tags: [benchmark,spec]
+tags: [benchmark,spec,speccpu2026]
 categories:
     - software
 ---
@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-最近用 SPEC CPU 2026 跑了一些基准测试，打算结合[测试结果](../../../benchmark/spec-cpu-2026-rate.md)做一些深入的负载特性分析。本篇主要是分析 SPEC INT 2026 Rate 的负载特性，后续再更新 SPEC FP 2026 Rate。
+最近用 SPEC CPU 2026 跑了一些基准测试，打算结合[测试结果](../../../benchmark/spec-cpu-2026-rate.md)做一些深入的负载特性分析。本篇主要是分析 SPEC INT 2026 Rate 的负载特性，SPEC FP 2026 Rate 的分析请看 [FP Rate 篇](./spec-cpu-2026-workload-analysis-fp-rate.md)。
 
 <!-- more -->
 

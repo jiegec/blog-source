@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2024-11-24
-tags: [benchmark,spec]
+tags: [benchmark,spec,speccpu2017]
 categories:
     - software
 ---

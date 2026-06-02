@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2023-08-02
-tags: [benchmark,spec]
+tags: [benchmark,spec,speccpu2006]
 categories:
     - software
 ---
