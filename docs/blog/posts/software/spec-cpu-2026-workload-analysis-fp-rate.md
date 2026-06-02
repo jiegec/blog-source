@@ -63,11 +63,11 @@ cactus ShiftedGaugeWave.par
 | LLVM 22 `-O3`               | 94.6     | 1323.1   | 659.1    | 96.6      | 6.1      | 659.0        | 15.2         |
 | LLVM 22 `-O3 -march=native` | 90.5     | 1054.5   | 690.7    | 119.4     | 5.4      | 681.4        | 5.4          |
 
-其中总指令数来自 `instructions`，Load 指令数来自 `mem_inst_retired.all_loads`，Store 指令数来自 `mem_inst_retired.all_stores`，分支指令数来自 `branch-instructions`，浮点标量指令数用 `fp_arith_inst_retired.scalar` 浮点向量指令数用 `fp_arith_inst_retired.vector` 性能计数器，下同。需要注意的是，`vfmadd132sd` 等乘加融合指令在 `fp_arith_inst_retired.scalar/vector` 计数器中会被计算两次。
+其中总指令数来自 `instructions`，Load 指令数来自 `mem_inst_retired.all_loads`，Store 指令数来自 `mem_inst_retired.all_stores`，分支指令数来自 `branch-instructions`，浮点标量指令数用 `fp_arith_inst_retired.scalar`，浮点向量指令数用 `fp_arith_inst_retired.vector` 性能计数器，下同。需要注意的是，`vfmadd132sd` 等乘加融合指令在 `fp_arith_inst_retired.scalar/vector` 计数器中会被计算两次。
 
 从表里可以看出，`-O3` 下基本是一半指令在 Load，另一半指令在做浮点标量运算，这个计算访存比还是挺低的，这是 Stencil 计算的典型特征，在网格邻域里，Load 一个值进来，做一次乘加。开 `-O3 -march=native` 后，因为乘加融合指令的加持，指令数减少了很多，但因为乘加融合会算两倍的贡献，并且那些同时进行访存和计算的 AVX2 指令也会被同时计入到 Load 和浮点指令数，估计微架构是统计的拆分后的微码数量，那么总指令数不再等于各类指令数求和。这里 `-O3 -ljemalloc` 带来了些许的性能优势，不过指令数上并没有体现，它的性能提升主要是来自缓存局部性的改进。GCC 14 和 LLVM 22 在不同编译选项下各有千秋，大概看了一下生成的指令，其实实现方法都差不多，主要是地址计算、栈的使用和寄存器分配有一些区别。
 
-一个值得注意的地方是，709.cactus_r 的缓存缺失率较高：GCC 14 `-O3` 下，L1 ICache 的 MPKI 达到 `118.6B/1423.6B*1000=83.30`，L1 DCache 也有 `125.6B/1423.6B*1000=88.23` 的 MPKI，在 SPEC FP 2026 Rate 和 SPEC INT 2026 Rate 当中都是独一份的高。因此 L1 ICache 较大的核心更占优势，32KB 时遇到的 L1 ICache 瓶颈，换成 64KB 可能就消失了。开 `-O3 -ljemalloc` 后，L1 DCache 的 MPKI 降低到 `111.7B/1423.6B*1000=78.46`，在指令数与 `-O3` 持平的情况下获得了约 3% 的性能提升。
+值得注意的是，709.cactus_r 的缓存缺失率较高：GCC 14 `-O3` 下，L1 ICache 的 MPKI 达到 `118.6B/1423.6B*1000=83.30`，L1 DCache 也有 `125.6B/1423.6B*1000=88.23` 的 MPKI，在 SPEC FP 2026 Rate 和 SPEC INT 2026 Rate 中都是最高的。因此 L1 ICache 更大的核心更占优势，32KB 时遇到的 L1 ICache 瓶颈，换成 64KB 可能就消失了。开 `-O3 -ljemalloc` 后，L1 DCache 的 MPKI 降低到 `111.7B/1423.6B*1000=78.46`，在指令数与 `-O3` 持平的情况下获得了约 3% 的性能提升。
 
 ### 722.palm_r
 
@@ -98,7 +98,7 @@ palm_r < runfile_atmos
 - `advec_w_ws_ij` 来自 `src/advec_ws.F90`：8.24%，同上；
 - `diffusion_e_ij` 来自 `src/turbulence_closure_mod.F90`：5.14%，有一些比较复杂的浮点运算，比如 min/sqrt/div 等等，还有位运算，用 `MERGE` 来进行 ternary operator，无向量化，用 SSE 指令来做标量浮点计算。
 
-来自 `advec_s_ws_ij` 代码中的 Stencil 计算样例，以 i,j,k 的顺序进行三层循环：
+以下是 `advec_s_ws_ij` 中的 Stencil 计算代码，按 i,j,k 的顺序进行三层循环：
 
 ```fortran
 flux_r(k) = u_comp * (                                                                &
@@ -118,7 +118,7 @@ flux_r(k) = u_comp * (                                                          
 | LLVM 22 `-O3`               | 144.0    | 2640.4   | 835.5    | 216.3     | 90.4     | 179.5        | 609.7        |
 | LLVM 22 `-O3 -march=native` | 118.6    | 1643.8   | 586.5    | 165.6     | 67.6     | 180.8        | 306.7        |
 
-开 `-O3 -march=native` 后，能看到大量的 AVX2 向量化指令：vmulpd/vdivsd/vaddpd/vsubpd/vfmadd213sd/vfmsub132pd/vfmsub231pd/vmovupd 等等，每次处理 4 个双精度浮点元素，向量化程度很高，如果在有 AVX512 的处理器上，可能性能还会更高。相比 709.cactus_r 被 pow 等问题限制没能向量化，722.palm_r 的向量化收益要明显得多。LLVM 22 在 `-O3` 下比 GCC 14 更好，是因为它在热点函数如 `advec_u/v/w_ws_ij` 中成功进行了向量化，而 GCC 14 仍用标量，体现在数据上就是浮点向量指令数明显增多，浮点标量指令数明显减少。LLVM 22 下，由于上述热点函数被优化得比较好，也出现了新的热点函数 `flow_statistics`（来自 `src/flow_statistics.F90`，时间占比 5.79%）。它能向量化的部分比较少，因而时间占比提升，即使开了 `-O3 -march=native`，也还是用 AVX2+FMA 指令来做标量计算，时间区别不大。其他部分时间降低后，它的时间占比进一步提高到 6.95%，类似 Amdahl 定律。
+开 `-O3 -march=native` 后，能看到大量的 AVX2 向量化指令：vmulpd/vdivsd/vaddpd/vsubpd/vfmadd213sd/vfmsub132pd/vfmsub231pd/vmovupd 等等，每次处理 4 个双精度浮点元素，向量化程度很高，如果放在支持 AVX512 的处理器上，性能可能还会更高。相比 709.cactus_r 被 pow 等问题限制没能向量化，722.palm_r 的向量化收益要明显得多。LLVM 22 在 `-O3` 下比 GCC 14 更好，是因为它在热点函数如 `advec_u/v/w_ws_ij` 中成功进行了向量化，而 GCC 14 仍用标量，体现在数据上就是浮点向量指令数明显增多，浮点标量指令数明显减少。LLVM 22 下，上述热点函数被优化得较好后，`flow_statistics`（来自 `src/flow_statistics.F90`，时间占比 5.79%）成为了新的热点函数。它能向量化的部分比较少，因而时间占比提升。即使开了 `-O3 -march=native`，也还是用 AVX2+FMA 指令来做标量计算，时间区别不大。其他部分时间降低后，它的时间占比进一步提高到 6.95%，类似 Amdahl 定律。
 
 709.cactus_r 和 722.palm_r 的计算模式其实都是 Stencil。物理相关的模拟经常做这类事情：在三维空间里求解微分方程，数值求解时需要对每个点的邻域进行反复计算，落到最后就是 Stencil。
 
@@ -373,7 +373,7 @@ reftime 是 875s，不同编译器和编译选项的运行情况如下：
 热点函数：
 
 - `OpenColorIO_v2_2dev::BitDepthCast<BIT_DEPTH_UINT16, BIT_DEPTH_F32>::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/CPUProcessor.cpp`：55.41%，这次转换的方向反过来了，是从 uint16_t 到 float，于是计算过程变成先从 uint16_t 转成 float，再乘以 `1.0/65535.0`，当然这次就没有 clamp 了，编译器依然能正确向量化，不过因为位宽从 16 变成 32 的问题，花了不少功夫；
-- `OpenColorIO_v2_2dev::ScaleRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/matrix/MatrixOpCPU.cpp`：41.52%，代码逻辑就是很简单的对每个像素的四个分量分别乘以一个 scale（从 `out[0] = in[0] * m_scale[0]` 到 `out[3] = in[3] * m_scale[3]`），不同像素的 scale 相同，是比较好向量化的。
+- `OpenColorIO_v2_2dev::ScaleRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/matrix/MatrixOpCPU.cpp`：41.52%，代码逻辑就是很简单的对每个像素的四个分量分别乘以一个 scale（从 `out[0] = in[0] * m_scale[0]` 到 `out[3] = in[3] * m_scale[3]`），不同像素的 scale 来自同一个数组 `m_scale`，理应是比较好向量化的，但实际上并没有向量化成功，这是因为指针没有标记 restrict，编译器无法判断 `out` 和 `m_scale` 是否可能重合，只有在不重合的前提下，才能直接直接向量化用 mulps 进行计算，见 [Godbolt](https://godbolt.org/z/E6nqrK48a)。
 
 由于 AMD64 缺少对混合宽度计算的向量指令，其实很大开销是在向量之间搬运数据，而非进行实际的计算和访存，这方面，RISC-V Vector 的特殊设计还确实带来了更简洁的指令生成，见 [Godbolt](https://godbolt.org/z/qvzMK47rf)。不同编译器在不同编译选项下的对比：
 
@@ -479,7 +479,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 - `__ieee754_atan2_fma` 来自 libm：6.64%；
 - `reparamMeshVertexOnFace` 来自 `src/gmsh/src/geo/MVertex.cpp`：6.03%，不确定实现的是什么算法，不过能看到有很多分支，错误预测也比较多。
 
-虽然用到了浮点，但计算模式并不适合向量化。执行了 204.7B 条指令，错误预测 744.3M 次，MPKI 等于 `744.3M/204.7B*1000=3.64`，属于 SPEC FP 2026 Rate 中第二高的，其中第一高 731.astcenc_r 如上面所述，其实是 GCC 的实现不够好，完全可以把 MPKI 优化到 LLVM 22 的 1.3 左右，那样的话，737.gmsh_r 就是 MPKI 最高的负载了。
+虽然用到了浮点，但计算模式并不适合向量化，毕竟是 KD-Tree 的搜索。执行了 204.7B 条指令，错误预测 744.3M 次，MPKI 等于 `744.3M/204.7B*1000=3.64`，属于 SPEC FP 2026 Rate 中第二高的，其中第一高 731.astcenc_r 如上面所述，其实是 GCC 的实现不够好，完全可以把 MPKI 优化到 LLVM 22 的 1.3 左右，那样的话，737.gmsh_r 就是 MPKI 最高的负载了。树的搜索，MPKI 高是正常现象。
 
 #### 2. mediterranean
 
@@ -489,7 +489,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 - `KDTreeSingleIndexAdaptor::searchLevel` 来自 `src/gmsh/src/numeric/nanoflann.hpp`：33.50%，又一个经典的 KD-Tree 的搜索算法，根据输入的值递归到左子树或右子树；
 - `InterpolateCurve` 来自 `src/gmsh/src/geo/GeoInterpolation.cpp`：6.53%，递归进行一些插值的计算。
 
-虽然用到了浮点，但计算模式依然不适合向量化。
+虽然用到了浮点，但计算模式依然不适合向量化，因为中间的计算结果还被用于 if 分支，分支内也有若干浮点计算。
 
 #### 3. projection
 
@@ -499,8 +499,8 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 - `std::map::_M_get_insert_unique_pos` 来自 libstdc++：7.49%，`std::map` 的插入算法实现；
 - `__ieee754_atan2_fma` 来自 libm：7.21%；
 - `reparamMeshVertexOnFace`：6.66%，描述见上；
-- `std::map::_M_get_insert_unique` 来自 libstdc++：6.09%，std::map 的插入实现；
-- `SetRotationMatrix` 来自 `src/gmsh/src/geo/Geo.cpp`：5.01%，代码是多层循环，适合向量化，不过时间占比并不高。
+- `std::map::_M_get_insert_unique` 来自 libstdc++：6.09%，`std::map` 的插入实现；
+- `SetRotationMatrix` 来自 `src/gmsh/src/geo/Geo.cpp`：5.01%，代码是多层循环，适合向量化，编译器也确实向量化了，不过时间占比并不高。
 
 可见，该负载主要还是 `std::map` 相关的操作为主要瓶颈。
 

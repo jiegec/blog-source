@@ -871,7 +871,7 @@ sealcrypto_r refrate ecuador_province_capitals_refrate.csv Galapagos
 
 总而言之，既然是密码学，就会有大量的整数运算，其中有不少的乘法和位运算，在素数域下做各种操作。执行指令数足足有 3113.4B，其中有 385.7B 条 Load 指令，161.3B 条 Store 指令，78.5B 条分支指令，错误预测 450.0M 次，MPKI 只有 `450.0M/3113.4B*1000=0.14`，全场最低，甚至低于 714.cpython_r，同时 IPC 全场最高，达到了 5.09。从 Top down 分析来看，80.7% 属于 Retiring，13.5% 属于 Backend Bound，说明处理器基本在全速跑指令。
 
-开了 `-O3 -march=native` 后，确实生成了不少 AVX2 指令，但看下来，生成的指令序列还是挺复杂的，有大量的 vpunpcklqdq/vpunpckhqdq/vpermq/vpblendvb/vperm2i128 等指令，并没有在进行计算，而是在不断地倒腾向量寄存器里数据的位置。此时指令数降低到 2757.7B，其中有 370.0B 条 Load 指令，126.7B 条 Store 指令，268.6B 条 256 位整数向量指令（`int_vec_retired.256bit` 性能计数器），76.1B 条分支指令，错误预测 431.0M 次，MPKI 等于 `431.0M/2757.7B*1000=0.16`。虽然指令数减少了，但 IPC 降低更多，最后性能反而倒退，实际从 108s 增加到 116s。原来的 `-O3` 版本虽然每次只处理一个元素，但指令的并行度更高，IPC 弥补了指令数多的劣势。
+开了 `-O3 -march=native` 后，确实生成了不少 AVX2 指令，但看下来，生成的指令序列还是挺复杂的，有大量的 vpunpcklqdq/vpunpckhqdq/vpermq/vpblendvb/vperm2i128 等指令，并没有在进行计算，而是在不断地倒腾向量寄存器里数据的位置，见 [Godbolt](https://godbolt.org/z/z3oEs4hnd)。此时指令数降低到 2757.7B，其中有 370.0B 条 Load 指令，126.7B 条 Store 指令，268.6B 条 256 位整数向量指令（`int_vec_retired.256bit` 性能计数器），76.1B 条分支指令，错误预测 431.0M 次，MPKI 等于 `431.0M/2757.7B*1000=0.16`。虽然指令数减少了，但 IPC 降低更多，最后性能反而倒退，实际从 108s 增加到 116s。原来的 `-O3` 版本虽然每次只处理一个元素，但指令的并行度更高，IPC 弥补了指令数多的劣势。GCC 16 的 `-march=native` 性能有明显的提升，生成的指令少了很多上述数据重排的指令，基本是以计算指令 vpaddq/vpsubq/vpmuludq/vpsllq/vpsrlq 为主，生成了非常干净的向量指令，可能是向量化的方法不同，见 [Godbolt](https://godbolt.org/z/Pqrhj9ebE)。
 
 那么，LLVM 22 做了什么优化呢？执行的指令数直接降低到 1213.6B，其中 Load 指令有 302.8B，Store 指令有 109.2B，分支只有 57.2B，错误预测 1093.9M，MPKI 等于 `1093.9M/1213.6B*1000=0.90`。以 `seal::util::DWTHandler::transform_to_rev` 为例，可以看到：seal 为了实现 64 位乘 64 位到 128 位的乘法，它自己实现了这个过程，不仅在 `seal::util::multiply_uint64_generic` 中有实现，实际上也内联到了 `seal::util::DWTHandler::transform_to_rev` 当中；GCC 14 忠实地实现了这个算法，因此指令数很多（见 [Godbolt](https://godbolt.org/z/KKTa1aMP8)）；但其实，AMD64 的 mul 指令本来就是一个 64 位乘 64 位得到 128 位的乘法，所以 LLVM 22 直接识别出这段代码做的事情，然后编译成了 mul 指令（见 [Godbolt](https://godbolt.org/z/bc6xPjEMc)，甚至如果开了 BMI2 扩展，还有 [mulx](https://www.felixcloutier.com/x86/mulx) 指令可以用），而且这种 64 位乘法保留高位的指令在各种 ISA 都挺常见的，比如 ARM64 的 umulh，RISC-V 的 mulhu，LoongArch 的 mulh.du。当然，seal 的源码其实已经考虑了这个问题，在编译器支持的情况下，直接用 __int128 来完成[这件事情](https://github.com/microsoft/SEAL/blob/e3476fad1d5bb5e5222c51a551b5a4d7e2cb4f91/native/src/seal/util/gcc.h#L44)。类似的事情在 706.stockfish_r 的 1to6_classical 中也出现了。然而，这类依赖编译器行为或具体指令集扩展的代码，由于 SPEC CPU 2026 的编译器中立性，都被去掉了，都会回落到最通用的写法上。此时，就只能依赖编译器去自己识别和优化了。
 
@@ -924,13 +924,20 @@ cmovae %rcx,%rax
 
 GCC 14 通过 cmov 指令避免了大量的错误预测，就是这点差别，造成了 LLVM 22 相比 GCC 14 巨大的 MPKI 差距。如果 LLVM 22 在这里选择用 cmov，那性能还能继续往上提一提。事实上，LLVM 22 确实也能在很多地方用 cmov 代替分支，但为什么在这个具体场景下，最后放弃了这个优化，还需要进一步的研究。
 
+LLVM 22 开 `-O3 -march=native` 后，相比 `-O3`，分支预测的问题有所改善，错误预测次数从 1093.9M 降低到了 612.7M 次，MPKI 等于 0.54，不过主要改进的地方，并不是上面提到的 `seal::util::RNSTool::sm_mrq` 函数（依然把 ternary operator 编译成分支，而不是 GCC 14 那种 cmov），而是 `seal::util::DWTHandler::transform_from_rev` 和 `seal::util::RNSTool::fastbconv_sk`。这两个函数和 `seal::util::RNSTool::sm_mrq` 类似，也有 `SEAL_COND_SELECT` 宏，但这次因为开了 `-O3 -march=native`，成功向量化，因此这个 ternary operator 被编译成向量指令 `vpcmpgtq` 和 `vblendvpd`，其实就是把 cmov 进行了向量化。标量的时候，LLVM 22 不愿意用 cmov 实现，结果为了向量化，又把 cmov 用向量指令实现了出来。
+
 750.sealcrypto_r 在不同编译器和编译选项下的情况如下：
 
-| 负载       | 编译器 + 选项              | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
-|------------|----------------------------|----------|----------|----------|-----------|----------|--------------|------|
-| sealcrypto | GCC 14 `-O3`               | 108      | 3113.4   | 385.7    | 161.3     | 78.5     | 450.0        | 0.14 |
-| sealcrypto | GCC 14 `-O3 -march=native` | 116      | 2757.7   | 370.0    | 126.7     | 76.1     | 431.0        | 0.16 |
-| sealcrypto | LLVM 22 `-O3`              | 50.5     | 1213.6   | 302.8    | 109.2     | 57.2     | 1093.9       | 0.90 |
+| 编译器 + 选项               | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 错误预测 (M) | MPKI |
+|-----------------------------|----------|----------|----------|-----------|----------|--------------|------|
+| GCC 14 `-O3`                | 108      | 3113.4   | 385.7    | 161.3     | 78.5     | 450.0        | 0.14 |
+| GCC 14 `-O3 -march=native`  | 116      | 2757.7   | 370.0    | 126.7     | 76.1     | 431.0        | 0.16 |
+| GCC 15 `-O3`                | 106.4    | 3071.3   | 379.1    | 161.4     | 80.0     | 416.1        | 0.14 |
+| GCC 15 `-O3 -march=native`  | 117.7    | 2701.9   | 379.4    | 130.6     | 77.6     | 406.9        | 0.15 |
+| GCC 16 `-O3`                | 105.9    | 3020.1   | 381.1    | 158.5     | 80.7     | 430.3        | 0.14 |
+| GCC 16 `-O3 -march=native`  | 99.3     | 2492.3   | 328.0    | 123.2     | 81.8     | 433.3        | 0.17 |
+| LLVM 22 `-O3`               | 50.5     | 1213.6   | 302.8    | 109.2     | 57.2     | 1093.9       | 0.90 |
+| LLVM 22 `-O3 -march=native` | 48.2     | 1126.0   | 299.2    | 108.7     | 53.4     | 612.7        | 0.54 |
 
 ### 753.ns3_r
 
