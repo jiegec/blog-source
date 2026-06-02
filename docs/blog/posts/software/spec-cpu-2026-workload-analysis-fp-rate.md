@@ -98,6 +98,15 @@ palm_r < runfile_atmos
 - `advec_w_ws_ij` 来自 `src/advec_ws.F90`：8.24%，同上；
 - `diffusion_e_ij` 来自 `src/turbulence_closure_mod.F90`：5.14%，有一些比较复杂的浮点运算，比如 min/sqrt/div 等等，还有位运算，用 `MERGE` 来进行 ternary operator，无向量化，用 SSE 指令来做标量浮点计算。
 
+来自 `advec_s_ws_ij` 代码中的 Stencil 计算样例，以 i,j,k 的顺序进行三层循环：
+
+```fortran
+flux_r(k) = u_comp * (                                                                &
+              37.0_wp * ( sk(k,j,i+1) + sk(k,j,i)   )                                 &
+            -  8.0_wp * ( sk(k,j,i+2) + sk(k,j,i-1) )                                 &
+            +           ( sk(k,j,i+3) + sk(k,j,i-2) ) ) * adv_sca_5
+```
+
 不同编译选项的情况对比：
 
 | 编译器+选项                 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | 浮点标量 (B) | 浮点向量 (B) |
@@ -109,7 +118,7 @@ palm_r < runfile_atmos
 | LLVM 22 `-O3`               | 144.0    | 2640.4   | 835.5    | 216.3     | 90.4     | 179.5        | 609.7        |
 | LLVM 22 `-O3 -march=native` | 118.6    | 1643.8   | 586.5    | 165.6     | 67.6     | 180.8        | 306.7        |
 
-开 `-O3 -march=native` 后，能看到的是大量的 AVX2 向量化指令：vmulpd/vdivsd/vaddpd/vsubpd/vfmadd213sd/vfmsub132pd/vfmsub231pd/vmovupd 等等，每次处理 4 个双精度浮点元素，向量化程度很高，如果在有 AVX512 的处理器上，可能性能还会更高。相比 709.cactus_r 那样被 pow 等问题限制没能向量化，722.palm_r 的向量化收益是特别明显的。LLVM 22 在 `-O3` 下比 GCC 14 要好，是因为它在热点函数的更多部分成功进行向量化，体现在数据上就是浮点向量指令数明显增多，浮点标量指令数明显减少。在 LLVM 22 下，由于上述热点函数被优化地比较好，也出现了新的热点函数，时间占比 5.79%：`flow_statistics` 来自 `src/flow_statistics.F90`，它能正确向量化的部分比较少，因而时间占比提升，即使开了 `-O3 -march=native`，也还是用 AVX2+FMA 指令来做标量计算，时间区别不大，因为其他部分时间降低，自己的时间占比提高到 6.95%。
+开 `-O3 -march=native` 后，能看到的是大量的 AVX2 向量化指令：vmulpd/vdivsd/vaddpd/vsubpd/vfmadd213sd/vfmsub132pd/vfmsub231pd/vmovupd 等等，每次处理 4 个双精度浮点元素，向量化程度很高，如果在有 AVX512 的处理器上，可能性能还会更高。相比 709.cactus_r 那样被 pow 等问题限制没能向量化，722.palm_r 的向量化收益是特别明显的。LLVM 22 在 `-O3` 下比 GCC 14 要好，是因为它在热点函数如 `advec_u/v/w_ws_ij` 成功进行向量化而 GCC 14 还是用标量，体现在数据上就是浮点向量指令数明显增多，浮点标量指令数明显减少。在 LLVM 22 下，由于上述热点函数被优化地比较好，也出现了新的热点函数，时间占比 5.79%：`flow_statistics` 来自 `src/flow_statistics.F90`，它能向量化的部分比较少，因而时间占比提升，即使开了 `-O3 -march=native`，也还是用 AVX2+FMA 指令来做标量计算，时间区别不大，因为其他部分时间降低，自己的时间占比提高到 6.95%，类似 Amdahl 定律。
 
 709.cactus_r 和 722.palm_r 的计算模式其实都是 Stencil。物理相关的模拟经常做这类事情：在三维空间里求解微分方程，数值求解时需要对每个点的邻域进行反复计算，落到最后就是 Stencil。
 
