@@ -373,7 +373,7 @@ reftime 是 875s，不同编译器和编译选项的运行情况如下：
 热点函数：
 
 - `OpenColorIO_v2_2dev::BitDepthCast<BIT_DEPTH_UINT16, BIT_DEPTH_F32>::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/CPUProcessor.cpp`：55.41%，这次转换的方向反过来了，是从 uint16_t 到 float，于是计算过程变成先从 uint16_t 转成 float，再乘以 `1.0/65535.0`，当然这次就没有 clamp 了，编译器依然能正确向量化，不过因为位宽从 16 变成 32 的问题，花了不少功夫；
-- `OpenColorIO_v2_2dev::ScaleRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/matrix/MatrixOpCPU.cpp`：41.52%，代码逻辑就是很简单的对每个像素的四个分量分别乘以一个 scale（从 `out[0] = in[0] * m_scale[0]` 到 `out[3] = in[3] * m_scale[3]`），不同像素的 scale 来自同一个数组 `m_scale`，理应是比较好向量化的，但实际上并没有向量化成功，这是因为指针没有标记 restrict，编译器无法判断 `out` 和 `m_scale` 是否可能重合，只有在不重合的前提下，才能直接直接向量化用 mulps 进行计算，见 [Godbolt](https://godbolt.org/z/E6nqrK48a)。
+- `OpenColorIO_v2_2dev::ScaleRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/matrix/MatrixOpCPU.cpp`：41.52%，代码逻辑就是很简单的对每个像素的四个分量分别乘以一个 scale（从 `out[0] = in[0] * m_scale[0]` 到 `out[3] = in[3] * m_scale[3]`），不同像素的 scale 来自同一个数组 `m_scale`，理应是比较好向量化的，但实际上并没有向量化成功，这是因为指针没有标记 restrict，编译器无法判断 `out` 和 `m_scale` 是否可能重合，只有在不重合的前提下，才能直接用 mulps 向量化，见 [Godbolt](https://godbolt.org/z/E6nqrK48a)。
 
 由于 AMD64 缺少对混合宽度计算的向量指令，其实很大开销是在向量之间搬运数据，而非进行实际的计算和访存，这方面，RISC-V Vector 的特殊设计还确实带来了更简洁的指令生成，见 [Godbolt](https://godbolt.org/z/qvzMK47rf)。不同编译器在不同编译选项下的对比：
 
@@ -479,7 +479,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 - `__ieee754_atan2_fma` 来自 libm：6.64%；
 - `reparamMeshVertexOnFace` 来自 `src/gmsh/src/geo/MVertex.cpp`：6.03%，不确定实现的是什么算法，不过能看到有很多分支，错误预测也比较多。
 
-虽然用到了浮点，但计算模式并不适合向量化，毕竟是 KD-Tree 的搜索。执行了 204.7B 条指令，错误预测 744.3M 次，MPKI 等于 `744.3M/204.7B*1000=3.64`，属于 SPEC FP 2026 Rate 中第二高的，其中第一高 731.astcenc_r 如上面所述，其实是 GCC 的实现不够好，完全可以把 MPKI 优化到 LLVM 22 的 1.3 左右，那样的话，737.gmsh_r 就是 MPKI 最高的负载了。树的搜索，MPKI 高是正常现象。
+虽然用到了浮点，但计算模式并不适合向量化。毕竟是 KD-Tree 的搜索，MPKI 高是正常现象。执行了 204.7B 条指令，错误预测 744.3M 次，MPKI 等于 `744.3M/204.7B*1000=3.64`，是 SPEC FP 2026 Rate 中第二高的。第一高 731.astcenc_r 如上所述，其实是 GCC 的实现不够好，完全可以把 MPKI 优化到 LLVM 22 的 1.3 左右，那样的话 737.gmsh_r 就是第一了。
 
 #### 2. mediterranean
 
@@ -889,9 +889,9 @@ reftime 是 573s，不同编译选项下的性能对比：
 | GCC 16 `-O3`               | 105.4    | 5.44 | 0.4                            | 2218.9     | 468.9           | 242.4            | 14.5           | 1108.2             | 0.0                |
 | GCC 16 `-O3 -march=native` | 110.6    | 5.18 | -4                             | 1777.3     | 509.8           | 282.9            | 14.5           | 1108.2             | 0.0                |
 
-热点函数只有一个，就是 `LBM_performStreamCollideTRT` 函数来自 `src/lbm.c`，占了 99.35% 的时间，中间有大量的浮点计算和访存，而且都是标量，难以向量化。对于这种标量计算很多的情况，`-O3 -ffast-math` 通常能带来一定的提升，通过调整计算顺序，可以复用一些中间计算结果，从而节省一些计算。
+热点函数只有一个，就是 `LBM_performStreamCollideTRT` 函数来自 `src/lbm.c`，占了 99.35% 的时间，中间有大量的浮点计算和访存，而且都是标量，难以向量化。对于这种标量计算密集的情况，`-O3 -ffast-math` 通常能通过调整计算顺序、复用中间结果来节省一些计算。
 
-开启 `-O3 -march=native` 后，性能相比 `-O3` 有所落后，GCC 14 落后的幅度最大，GCC 15/16 落后幅度较小，但还是比不上 `-O3`。分析汇编代码，怀疑是因为开 `-O3 -march=native` 后，对栈的访存指令变多导致的，抵消了 FMA 乘加融合减少指令数带来的优势，详见 [Godbolt](https://godbolt.org/z/5Ynsjn5o8)。
+开启 `-O3 -march=native` 后性能反而下降，GCC 14 倒退最多（-19%），GCC 15/16 稍好但也不如 `-O3`。分析汇编，推测是因为对栈的访存指令变多，抵消了 FMA 乘加融合减少指令数的优势，详见 [Godbolt](https://godbolt.org/z/5Ynsjn5o8)。注意 FMA 指令在上述表格的浮点标量指令数一栏会计数两次，在总指令数一栏只会计数一次。
 
 ## 讨论
 
