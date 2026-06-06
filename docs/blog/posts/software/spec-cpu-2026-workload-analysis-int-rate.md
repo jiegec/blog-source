@@ -760,7 +760,7 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_a
 | 4. smithwaterman_route | GCC 14 `-O3 -flto`      | 17       | 264.3    | 72.9     | 25.5      | 51.5     | 590.9        | 2.24 |
 | 4. smithwaterman_route | GCC 14 `-O3 -ljemalloc` | 18       | 293.6    | 88.4     | 34.2      | 55.3     | 594.7        | 2.03 |
 
-734.vpr_r 的负载分为两部分，place 和 route，其中 place 主要在做 bounding box 的计算，route 主要在做搜索和优化。开 `-flto` 和 `-ljemalloc` 后有明显的性能提升，主要是靠内联了热点函数以及更快的性能分配。整体指令数为 1254B，分支指令数 237B，MPKI 是 2.51，处于中游偏高的水平。
+734.vpr_r 的负载分为两部分，place 和 route，其中 place 主要在做 bounding box 的计算，route 主要在做搜索和优化。开 `-flto` 和 `-ljemalloc` 后有明显的性能提升，主要是靠内联了热点函数以及更快的内存分配。整体指令数为 1254B，分支指令数 237B，MPKI 是 2.51，处于中游偏高的水平。
 
 ### 735.gem5_r
 
