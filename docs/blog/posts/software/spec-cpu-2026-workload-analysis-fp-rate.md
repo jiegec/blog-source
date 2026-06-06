@@ -834,7 +834,7 @@ reftime 是 1579s，下面是不同编译器版本和编译选项的对比：
 - `marian::cpu::integer::affineOrDotTyped` 来自 `src/marian/tensors/cpu/intgemm_interface.h`：82.28%，主要时间在 `tiled_gemm` 函数里，做的是整数矩阵乘法，uint8_t 类型的 A 矩阵乘以 int8_t 类型的 B 矩阵，累加到 int32_t 类型，最后转换到 float 再加 float 的 C 矩阵；
 - `marian::cpu::ProdBatched` 来自 `src/marian/tensors/cpu/prod.cpp`：10.30%，核心部分是 sgemm，这次确实是浮点的矩阵运算了，虽然被编译成了 SSE 的标量的浮点计算而不是向量，但考虑到时间占比，也无伤大雅了。
 
-可以看到，主要的热点部分，和 706.stockfish_r 的 nnue 的计算模式完全一样，因此开 `-O3 -march=native` 后，一样可以用 vpdpbusd 指令优化，见 [Godbolt](https://godbolt.org/z/PTxK1evK3)。同理 GCC 15 因为更优的无符号扩展实现方式，性能比 GCC 14 要更好。具体的讨论，可以见之前 [INT Rate 篇](./spec-cpu-2026-workload-analysis-int-rate.md) 中 706.stockfish_r 的部分。
+可以看到，主要的热点部分，和 706.stockfish_r 的 nnue 的计算模式完全一样，因此开 `-O3 -march=native` 后，一样可以用 AVX-VNNI 的 vpdpbusd 指令优化，见 [Godbolt](https://godbolt.org/z/PTxK1evK3)。同理 GCC 15 因为更优的无符号扩展实现方式，性能比 GCC 14 要更好。具体的讨论，可以见之前 [INT Rate 篇](./spec-cpu-2026-workload-analysis-int-rate.md) 中 706.stockfish_r 的部分。
 
 不同编译器和编译选项下的对比：
 

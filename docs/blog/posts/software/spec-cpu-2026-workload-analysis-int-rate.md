@@ -103,7 +103,7 @@ cmp $0x400,%rcx
 jne 1b
 ```
 
-对于这种适合 SIMD 的代码，开启 `-march=native` 后通常会有明显的性能提升，实际测试也证明了这一点，开了 `-march=native` 后，时间从 77s 降低到 32s，`Stockfish::Eval::NNUE::evaluate` 时间占比降到 54.20%，此时主要的计算指令变为 [vpdpbusd (Multiply and Add Unsigned and Signed Bytes)](https://www.felixcloutier.com/x86/vpdpbusd)，即针对字节（weights 数组元素是 int8_t 类型，input 数组元素是 uint8_t 类型）元素的整数乘加融合指令，和的类型是 int32_t。核心循环如下（[Godbolt](https://godbolt.org/z/zoeqc4zch)）：
+对于这种适合 SIMD 的代码，开启 `-march=native` 后通常会有明显的性能提升，实际测试也证明了这一点，开了 `-march=native` 后，时间从 77s 降低到 32s，`Stockfish::Eval::NNUE::evaluate` 时间占比降到 54.20%，此时主要的计算指令变为 AVX-VNNI 扩展的 [vpdpbusd (Multiply and Add Unsigned and Signed Bytes)](https://www.felixcloutier.com/x86/vpdpbusd) 指令，即针对字节（weights 数组元素是 int8_t 类型，input 数组元素是 uint8_t 类型）元素的整数乘加融合指令，和的类型是 int32_t。核心循环如下（[Godbolt](https://godbolt.org/z/zoeqc4zch)）：
 
 ```asm
 1:
@@ -116,7 +116,7 @@ cmp $0x400,%rcx
 jne 1b
 ```
 
-需要注意的是，单纯开 `-mavx2` 仅能把时间从 77s 减少到 50s，距离 `-march=native` 的 32s 还有明显的差距，即使开启了 AVX（[Godbolt](https://godbolt.org/z/e9dPsqddh)），由于没有开 AVX-VNNI，不能用 vpdpbusd，还是需要先格式转换到 16 位，再用 32 位累加器的 16 位整数乘加指令。Stockfish 的 NNUE 这样的计算方式，就是奔着 vpdpbusd 这条指令去的。因此缺乏这类指令的 CPU，或者虽有指令但编译器未加利用，性能就会明显落后。
+如果 CPU 支持 AVX512-VNNI，还能进一步扩展到 512 的位宽：`vpdpbusd (%rdx,%rax), %zmm1, %zmm0`。需要注意的是，单纯开 `-mavx2` 仅能把时间从 77s 减少到 50s，距离 `-march=native` 的 32s 还有明显的差距：即使开启了 AVX（[Godbolt](https://godbolt.org/z/e9dPsqddh)），由于没有开 AVX-VNNI，不能用 vpdpbusd 指令，还是需要先格式转换到 16 位，再用 32 位累加器的 16 位整数乘加指令。Stockfish 的 NNUE 这样的计算方式，就是奔着 vpdpbusd 这条指令去的。因此缺乏这类指令的 CPU，或者虽有指令但编译器未加利用，性能就会明显落后。
 
 例如在 ARM64 下，对应的 [USDOT (Dot product with unsigned and signed integers (vector))](https://developer.arm.com/documentation/ddi0487/maa/-Part-C-The-AArch64-Instruction-Set/-Chapter-C7-A64-Advanced-SIMD-and-Floating-point-Instruction-Descriptions/-C7-2-Alphabetical-list-of-A64-Advanced-SIMD-and-floating-point-instructions/-C7-2-448-USDOT--vector-) 指令被包括在 i8mm 扩展当中，有这个扩展的话，`-march=native` 性能提升显著（[Godbolt](https://godbolt.org/z/MxY3YYTYo)），例如 Apple M2；而如果没有这个扩展，开不开 `-march=native` 就没什么区别，例如 Apple M1，此时就要回退到类似 AMD64 那样，先扩展到 16 位，再求和（[Godbolt](https://godbolt.org/z/TfdvW4f75)）。RISC-V Vector 指令集扩展则有 vwmulsu.vv 指令可以使用，得到 16 位乘法结果之后，再用 vwadd.wv 指令累加到 32 位（[Godbolt](https://godbolt.org/z/ha5oEb4hE)）。LoongArch 也有对应的 xvmulwev.h.b/xvmulwod.h.b 指令，得到 16 位乘法结果之后，用 xvhaddw.w.h 指令累加到 32 位（[Godbolt](https://godbolt.org/z/xxr5rovxW)），还可以进一步优化为[用 xvmulwev.h.bu.b 指令](https://github.com/loongson-community/discussions/issues/119)，优化后的 transform 函数性能相比 GCC 16 快 37%。
 
@@ -197,11 +197,11 @@ ntest_r Othello.154.ggf 20 16
 
 实测数据显示，运行这个负载耗费的时间是 140s。reftime 是 592s，对应 4.2 分。开启各项优化编译选项，`-O3 -flto` 相比 `-O3` 能带来 4% 的性能提升，进一步 `-O3 -flto -march=native` 相比 `-O3 -flto` 还能带来 10% 的性能提升。下面分析它的具体负载特性。通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
-- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，判断下子以后是否出现翻转（黑白棋的规则是，只有翻转了对方的棋子才能下子，不然就要轮空），主要是一些数据依赖的访存，混合了一堆位运算；
-- `solveNParity(int alpha, int beta, u64 mover, u64 enemy, u64 parity, EndgameSearch* search, bool hasPassed)` 来自 `src/solve.cpp`：14.21%，进行 alpha-beta 减枝的 minimax 算法，遍历棋盘上的空位置，首先找到那些满足 good parity 的位置（用 `bitSet()` 函数，汇编上是用 AMD64 的 `bt` 指令判断），调用上述 `flips()` 看看是否会出现翻转，如果会出现翻转就尝试下子并进行递归，之后再遍历一次，这次遍历 bad parity 的位置，流程相同，主要的瓶颈在访存以及依赖访存结果的分支；
+- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，判断下子以后是否出现翻转（黑白棋的规则是，只有翻转了对方的棋子才能下子，不然就要轮空），以及下子后会把哪些子翻转过来，主要是一些数据依赖的访存，混合了一堆位运算；
+- `solveNParity(int alpha, int beta, u64 mover, u64 enemy, u64 parity, EndgameSearch* search, bool hasPassed)` 来自 `src/solve.cpp`：14.21%，进行 alpha-beta 减枝的 minimax 算法（negamax 变种），遍历棋盘上的空位置，首先找到那些满足 good parity 的位置（用 `bitSet()` 函数，汇编上是用 AMD64 的 `bt` 指令判断，因为黑白棋里，双方轮流下子，走最后一步的玩家获得一定的优势，所以先找那些能让自己走最后一步的位置），调用上述 `flips()` 看看是否会出现翻转，如果会出现翻转就尝试下子并进行递归，之后再遍历一次，这次遍历 bad parity 的位置，流程相同，主要的瓶颈在访存以及依赖访存结果的分支；
 - `__popcountdi2`：9.65%，因为没开 `-mpopcnt/-march=native`，故需要它来代替 popcnt 指令，用来计算场面上各颜色棋子的数量等等；
 - `solveNFlipParity`：8.95%，与 solveNParity 配合完成 minimax 算法；
-- `solve2`：5.38%，minimax 算法的一部分，处理棋盘只有两个空位的最终局面，此时判断最终胜败是比较容易的。
+- `solve2`：5.38%，minimax 算法的一部分，处理棋盘只有两个空位的最终局面，此时判断最终胜败是比较容易的，不需要再递归。
 
 这也是典型的棋类引擎模式，整个 minimax 算法占了 70%+ 的时间，为了搜索局面，有大量的位运算和访存，还有根据访存结果决定方向的分支。果不其然，执行 2688.3B 条指令，其中有 647.8B 条 Load 指令，255.2B 条 Store 指令，228.2B 条是分支指令，有 6.1B 次错误预测，MPKI 达到了 `6.1B/2688B*1000=2.27`。通过 `perf record -e branch-misses:pp`，看到 `solveNParity` 和 `solveNFlipParity` 一起贡献了 60.37% 的错误预测，主要就是上面说的，循环内对 good 还是 bad parity 的判断，以及链表插入时是否为 NULL 的判断，都是方向依赖数据的分支。
 
