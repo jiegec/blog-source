@@ -197,7 +197,7 @@ ntest_r Othello.154.ggf 20 16
 
 实测数据显示，运行这个负载耗费的时间是 140s。reftime 是 592s，对应 4.2 分。开启各项优化编译选项，`-O3 -flto` 相比 `-O3` 能带来 4% 的性能提升，进一步 `-O3 -flto -march=native` 相比 `-O3 -flto` 还能带来 10% 的性能提升。下面分析它的具体负载特性。通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
-- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，判断下子以后是否出现翻转（黑白棋的规则是，只有翻转了对方的棋子才能下子，不然就要轮空），以及下子后会把哪些子翻转过来，主要是一些数据依赖的访存，混合了一堆位运算；
+- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，首先判断能否下子（黑白棋的规则是，只有翻转了对方的棋子才能下子，不然就要轮空，而为了翻转棋子，至少要有一个邻居是敌方的棋子，即判断 `neighbors[sq]&enemy` 是否为零），接着判断下子以后实际上是否出现翻转，以及下子后会把哪些子翻转过来，主要是一些数据依赖的访存，混合了一堆位运算；
 - `solveNParity(int alpha, int beta, u64 mover, u64 enemy, u64 parity, EndgameSearch* search, bool hasPassed)` 来自 `src/solve.cpp`：14.21%，进行 alpha-beta 减枝的 minimax 算法（negamax 变种），遍历棋盘上的空位置，首先找到那些满足 good parity 的位置（用 `bitSet()` 函数，汇编上是用 AMD64 的 `bt` 指令判断，因为黑白棋里，双方轮流下子，走最后一步的玩家获得一定的优势，所以先找那些能让自己走最后一步的位置），调用上述 `flips()` 看看是否会出现翻转，如果会出现翻转就尝试下子并进行递归，之后再遍历一次，这次遍历 bad parity 的位置，流程相同，主要的瓶颈在访存以及依赖访存结果的分支；
 - `__popcountdi2`：9.65%，因为没开 `-mpopcnt/-march=native`，故需要它来代替 popcnt 指令，用来计算场面上各颜色棋子的数量等等；
 - `solveNFlipParity`：8.95%，与 solveNParity 配合完成 minimax 算法；
@@ -544,7 +544,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 热点函数如下：
 
-- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：40.82%，字符串匹配函数，比如用 abc|def 去匹配一个 token，主要时间用在找 NUL、空格或 `|` 等字符；
+- `multiCompareImpl(const Token *tok, const char *haystack, nonneg int varid)` 来自 `src/lib/token.cpp`：40.82%，字符串匹配函数，比如用 `abc|def` 去匹配一个 token，逐字符比较 token 和 haystack，匹配不上时跳到下一个 `|` 尝试 haystack 的下一个候选模式；
 - `Token::Match(const Token *tok, const char pattern[], nonneg int varid)` 来自 `src/lib/token.cpp`：12.08%，也是类似的字符串匹配函数，语法有些不同，类似自研正则表达式子集，它会调用上面的 `multiCompareImpl` 函数来做部分匹配；
 - `ScopeInfo3::findScope(const std::string & scope)` 来自 `src/lib/tokenize.cpp`：5.49%，循环，从当前作用域开始寻找对应的符号，如果没有，则检查更高一级的作用域，一般用于从变量名找到作用域里定义的符号，主要时间花在对 `std::list` 的遍历以及 `std::string` 的比较；
 - `Tokenizer::simplifyUsing()`：3.57%，把 `using N::x;` 变为 `using x = N::x`，里面就会用到上面说的 `Token::Match`，参数如 `"using ::| %name% ::"`，来做一些模式的匹配并进行相应的简化；
@@ -636,8 +636,8 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 主要的热点函数：
 
-- `Cec4_ManPackAddPatterns(Gia_Man_t * p, int iBit, Vec_Int_t * vLits)` 来自 `src/proof/cec/cecSatG2.c`：54.65%，CEC 指的是 Combinational Equivalence Checking，函数的用途没仔细研究，不过它就是一个两层循环，对数组元素进行访存和位运算；
-- `Cec4_ManGeneratePatterns_rec(Gia_Man_t * p, Gia_Obj_t * pObj, int Value, Vec_Int_t * vPat, Vec_Int_t * vVisit)` 来自 `src/proof/cec/cecSatG2.c`：29.01%，看起来也是一堆复杂的访存和逻辑运算混合。
+- `Cec4_ManPackAddPatterns(Gia_Man_t * p, int iBit, Vec_Int_t * vLits)` 来自 `src/berkeley-abc/src/proof/cec/cecSatG2.c`：54.65%，CEC 指的是 Combinational Equivalence Checking，该函数内层循环遍历 vLits 中的每个 Entry，通过位运算按一定条件更新 `p->vSims`，主要是对数组里的元素进行访存和位运算；
+- `Cec4_ManGeneratePatterns_rec(Gia_Man_t * p, Gia_Obj_t * pObj, int Value, Vec_Int_t * vPat, Vec_Int_t * vVisit)` 来自 `src/berkeley-abc/src/proof/cec/cecSatG2.c`：29.01%，根据 pObj 的类型进行分类讨论和递归。
 
 热点依然很集中，不过因为缺少领域知识，不太明白它在跑什么。运行 255.5B 条指令，其中 Load 有 57.2B，Store 有 7.3B，分支有 40.3B，错误预测 192.0M 次，MPKI 等于 `192.0M/255.5B*1000=0.75`，相比 SAT 来说低了很多。
 
@@ -653,11 +653,11 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 热点函数终于有了新面孔：
 
-- `Abc_ObjDeleteFanin(Abc_Obj_t * pObj, Abc_Obj_t * pFanin)` 来自 `src/base/abc/abcFanio.c`：12.57%，逻辑很简单，就是调用 `Vec_IntRemove` 从数组里删除一个元素，遍历数组，找到匹配的元素，把后面的元素都往前挪，这个遍历匹配逻辑是主要的瓶颈，其次就是移动数据；
-- `Gia_ManSwiSimulate(Gia_Man_t * pAig, Gia_ParSwi_t * pPars)` 来自 `src/aig/gia/giaSwitch.c`：8.87%，依然看不懂在干啥，不过似乎是一些比较适合 SIMD 的循环，在 `-O3` 下能看到一些 SSE 指令，还有一个自己实现的 popcount 函数 `Gia_WordCountOnes`，它没有被识别并转化为 popcnt 指令，而是用 SSE 去向量化软件 popcount 实现；
-- `Abc_AigAndLookup(Abc_Aig_t * pMan, Abc_Obj_t * p0, Abc_Obj_t * p1)` 来自 `src/base/abc/abcAig.c`：7.03%，主要时间是在内部一个循环当中，访存加位运算，不知道在实现什么功能，瓶颈在一些间接访存上，一路指针访问 `pObj->pNtk->vObjs->pArray`；
-- `If_ObjPerformMappingAnd(If_Man_t * p, If_Obj_t * pObj, int Mode, int fPreprocess, int fFirst)` 来自 `src/map/if/ifMap.c`：6.72%，又是一堆不知道在干啥的复杂位运算；
-- `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeley-abc/src/opt/lpk/lpkCut.c`：5.47%，主要时间在循环里，不知道在实现什么，瓶颈在一些数据依赖的分支上。
+- `Abc_ObjDeleteFanin(Abc_Obj_t * pObj, Abc_Obj_t * pFanin)` 来自 `src/berkeley-abc/src/base/abc/abcFanio.c`：12.57%，逻辑很简单，就是调用 `Vec_IntRemove` 从数组里删除一个元素，遍历数组，找到匹配的元素，把后面的元素都往前挪，这个遍历匹配逻辑是主要的瓶颈，其次就是移动数据；
+- `Gia_ManSwiSimulate(Gia_Man_t * pAig, Gia_ParSwi_t * pPars)` 来自 `src/berkeley-abc/src/aig/gia/giaSwitch.c`：8.87%，实现模拟过程，很大一部分时间花在一个自己实现的 popcount 函数 `Gia_WordCountOnes`，它没有被识别并转化为 popcnt 指令，而是用 SSE 去向量化软件的 popcount 实现；
+- `Abc_AigAndLookup(Abc_Aig_t * pMan, Abc_Obj_t * p0, Abc_Obj_t * p1)` 来自 `src/berkeley-abc/src/base/abc/abcAig.c`：7.03%，判断 p0 AND p1 的结果是什么，首先做了一些特判，比如 `p0 == p1` 的情况下 `p0 AND p1` 就是 `p0` 自己，如果特判都不成功的话，最后是哈希表的链表遍历，中间有大量的多级指针访问：`pObj->pNtk->vObjs->pArray`；
+- `If_ObjPerformMappingAnd(If_Man_t * p, If_Obj_t * pObj, int Mode, int fPreprocess, int fFirst)` 来自 `src/map/if/ifMap.c`：6.72%，依然有不少时间花在 popcount 的软件实现 `If_WordCountOnes` 上；
+- `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeley-abc/src/opt/lpk/lpkCut.c`：5.47%，瓶颈在数据依赖的比较分支上。
 
 运行 208.0B 条指令，其中 50.1B 条 Load 指令，15.4B 条 Store 指令，39.8B 条分支指令，错误预测 534.8M 次，MPKI 等于 `534.8M/208.0B*1000=2.57`，不低。
 
@@ -715,7 +715,7 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_a
 因为这两个负载都是做的布局（place），所以就放在一起分析了。它们的热点函数是类似的：
 
 - `get_non_updateable_bb(ClusterNetId net_id, t_bb* bb_coord_new)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 13.98%，smithwaterman_place 占比 18.26%，遍历 pin，根据它的 x 和 y 坐标，找到 bounding box，即 xmin/xmax/ymin/ymax，主要时间花在读取 x 和 y 上；
-- `try_swap(...)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 12.39%，smithwaterman_place 占比 11.46%，里面做的事情还挺复杂的，看不太懂，大概功能是尝试把一个块从一个地方挪到另一个地方；
+- `try_swap(...)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 12.39%，smithwaterman_place 占比 11.46%，选一个 block 挪到空位置或与另一 block 交换，评估移动后的 cost，如果新的 cost 更优，就接受；
 - `physical_tile_type(ClusterBlockId blk)` 来自 `src/vtr-vpr/vpr/src/util/vpr_utils.cpp`：jpeg_place 占比 7.59%，smithwaterman_place 占比 7.75%，看起来是一些间接索引访存，先读取 `block_loc` 里的坐标，再从 `grid` 读取对应坐标的 type，这个函数会在 `get_non_updateable_bb` 和 `get_bb_from_scratch` 等地方被频繁调用；
 - `get_bb_from_scratch(ClusterNetId net_id, t_bb* coords, t_bb* num_on_edges)` 来自 `src/vtr-vpr/vpr/src/place/place.cpp`：jpeg_place 占比 6.73%，smithwaterman_place 占比 2.78%，和 `get_non_updateable_bb` 类似，也是求 bounding box；
 - `malloc/_int_malloc/cfree` 来自 libc：jpeg_place 占比 1.62%+1.26%+1.06%=3.94%，smithwaterman_place 占比 1.76%+1.42%+1.11%=4.29%。
@@ -728,10 +728,10 @@ vpr stratixiv_arch.timing.xml smithwaterman_stratixiv_arch_timing.blif --place_a
 
 到了布线，热点函数出现了一些不同：
 
-- `ConnectionRouter<BinaryHeap>::evaluate_timing_driven_node_costs(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.35%，smithwaterman_route 占比 6.91%，有一些浮点运算，不知道具体在算什么；
+- `ConnectionRouter<BinaryHeap>::evaluate_timing_driven_node_costs(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.35%，smithwaterman_route 占比 6.91%，计算 cost，有一些浮点计算；
 - `ConnectionRouter<BinaryHeap>::timing_driven_add_to_heap(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 9.34%，smithwaterman_route 占比 6.82%，会调用 `evaluate_timing_driven_node_costs` 计算 cost，然后插入到 Binary Heap 当中；
-- `ConnectionRouter<BinaryHeap>::timing_driven_expand_neighbours(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 8.14%，smithwaterman_route 占比 4.00%，不确定在干啥，看起来在遍历邻居结点，符合一定条件后，调用 `timing_driven_add_to_heap`；
-- `ClassicLookahead::get_expected_delay_and_cong(...)` 来自 `src/vtr-vpr/vpr/src/route/router_lookahead.cpp`：jpeg_route 占比 7.86%，smithwaterman_route 占比 5.14%，看起来也是在进行一些延迟的计算，涉及到很多浮点数；
+- `ConnectionRouter<BinaryHeap>::timing_driven_expand_neighbours(...)` 来自 `src/vtr-vpr/vpr/src/route/connection_router.cpp`：jpeg_route 占比 8.14%，smithwaterman_route 占比 4.00%，搜索算法中的一步，遍历当前结点的邻居结点，若满足条件则调用 `timing_driven_add_to_heap` 入堆；
+- `ClassicLookahead::get_expected_delay_and_cong(...)` 来自 `src/vtr-vpr/vpr/src/route/router_lookahead.cpp`：jpeg_route 占比 7.86%，smithwaterman_route 占比 5.14%，计算延迟和拥塞，也有不少浮点计算；
 - `BinaryHeap::get_heap_head()` 来自 `src/vtr-vpr/vpr/src/route/binary_heap.cpp`：jpeg_route 占比 3.14%，smithwaterman_route 占比 1.64%，就是经典的最小二叉堆的实现，获取最小值，用的是浮点数做比较；
 - `malloc/_int_malloc/cfree` 来自 libc：jpeg_route 占比 1.10%+1.02%+0.78%=2.90%，smithwaterman_route 占比 1.62%+1.49%+1.08%=4.19%。
 
