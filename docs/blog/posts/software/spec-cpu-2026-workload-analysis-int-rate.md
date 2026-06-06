@@ -45,7 +45,7 @@ stockfish bench 1600 1 26 spec_ref_pos_7to11.fen depth nnue
 - `Stockfish::search(Position& pos, Stack* ss, Value alpha, Value beta, Depth depth, bool cutNode)` 来自 `src/search.cpp`: 9.49%，搜索逻辑主要在这里实现；
 - `__popcountdi2` 来自 libgcc: 7.52%，被 `Stockfish::Eval::evaluate(const Position& pos)` 调用，用来判断局面上满足某种条件，内部实现就是位运算，有兴趣的读者可以阅读 Hacker's Delight 这本书。
 
-开了 `-march=native` 后，能观察到 `__popcountdi2` 被内联为 `popcnt` 指令。经过测试，开 `-mpopcnt` 后时间即从 47s 降低到 44s，接近 `-march=native` 的性能。可见仅开启 popcnt 指令集并消除 `__popcountdi2` 的函数调用开销，就能带来明显的性能提升。
+开了 `-march=native` 后，能观察到 [`__popcountdi2`](https://github.com/gcc-mirror/gcc/blob/32bbd8849a550ad6f936636476c3ab9be8a58807/libgcc/libgcc2.c#L846) 被内联为 `popcnt` 指令。经过测试，开 `-mpopcnt` 后时间即从 47s 降低到 44s，接近 `-march=native` 的性能。可见仅开启 popcnt 指令集并消除 `__popcountdi2` 的函数调用开销，就能带来明显的性能提升。
 
 `-O3` 编译选项下，1to6_classical 执行的指令数为 531.8B（`instructions` 性能计数器），其中 Load 指令有 135.7B 条（`mem_inst_retired.all_loads` 性能计数器），Store 有 59.7B 条（`mem_inst_retired.all_stores` 性能计数器），分支指令有 56.0B 条（`branch-instructions` 性能计数器），其中有 2622.8M 次错误预测（`branch-misses` 性能计数器）。可见，1to6_classical 的 MPKI 还是比较高的：`2622.8M/531.8B*1000=4.93`。即使是在 SPEC INT 2017 当中，这一数值也高于 531.deepsjeng_r 的 3.16 和 557.xz_r 的 3.49，低于 505.mcf_r 的 6.24 和 541.leela_r 的 7.71。
 
@@ -225,7 +225,7 @@ GCC 15 编译的 707.ntest_r，实际执行 2429.3B 条指令，其中有 610.9B
 | ntest | LLVM 22 `-O3`              | 126      | 2416.9   | 542.7    | 202.9     | 168.2    |
 | ntest | GCC 15 `-O3`               | 130      | 2429.3   | 610.9    | 206.2     | 224.7    |
 
-结合 706.stockfish_r 和 707.ntest_r 可以看到，popcnt 还是比较常用的。但可惜 AMD64 的基线并不提供这条指令，因此开了 x86-64-v2 或以上的编译优化选项后，这类应用便可以通过一条 popcnt 指令免去 libgcc 的 __popcountdi2 调用开销，节省因额外 call 及 PLT 带来的性能损失。相比 AVX-VNNI，popcnt 的普及程度就要大得多了。
+结合 706.stockfish_r 和 707.ntest_r 可以看到，popcnt 还是比较常用的。但可惜 AMD64 的基线并不提供这条指令，因此开了 x86-64-v2 或以上的编译优化选项后，这类应用便可以通过一条 popcnt 指令免去 libgcc 的 `__popcountdi2` 调用开销，节省因额外 call 及 PLT 带来的性能损失。相比 AVX-VNNI，popcnt 的普及程度就要大得多了。
 
 ### 708.sqlite_r
 
@@ -303,13 +303,16 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 
 各负载在不同编译选项下的情况如下：
 
-| 负载 | 编译器 + 选项 | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | MPKI |
-|------|---------------|----------|----------|----------|-----------|----------|------|
-| main | GCC 14 `-O3`  | 69       | 896.3    | 252.4    | 105.1     | 178.0    | 1.67 |
-| cte  | GCC 14 `-O3`  | 12       | 306.0    | 82.8     | 39.6      | 62.6     | 0.13 |
-| fp   | GCC 14 `-O3`  | 25       | 554.7    | 132.3    | 61.3      | 111.5    | 0.71 |
+| 负载 | 编译器 + 选项              | 时间 (s) | 指令 (B) | Load (B) | Store (B) | 分支 (B) | MPKI |
+|------|----------------------------|----------|----------|----------|-----------|----------|------|
+| main | GCC 14 `-O3`               | 69       | 896.3    | 252.4    | 105.1     | 178.0    | 1.67 |
+| main | GCC 14 `-O3 -march=native` | 73       | 905.3    | 273.7    | 109.9     | 177.2    | 1.62 |
+| cte  | GCC 14 `-O3`               | 12       | 306.0    | 82.8     | 39.6      | 62.6     | 0.13 |
+| cte  | GCC 14 `-O3 -march=native` | 13       | 303.6    | 88.9     | 40.0      | 62.6     | 0.13 |
+| fp   | GCC 14 `-O3`               | 25       | 554.7    | 132.3    | 61.3      | 111.5    | 0.71 |
+| fp   | GCC 14 `-O3 -march=native` | 27       | 555.8    | 142.7    | 62.6      | 111.6    | 0.69 |
 
-通过上面的分析，可见 sqlite_r 确实是比较难优化的那一类，大量访存、计算和分支混合在一起，对内存子系统的负担比较重，难以向量化，开 `-O3 -march=native` 后运行时间从 106s 增加到 112s，产生了负优化。整体来看，执行了 1760B 条指令，其中有 353B 条是分支指令，MPKI 仅有 1.08，主要由 main 贡献。
+通过上面的分析，可见 sqlite_r 确实是比较难优化的那一类，大量访存、计算和分支混合在一起，对内存子系统的负担比较重，难以向量化，开 `-O3 -march=native` 后运行时间从 106s 增加到 113s，产生了负优化。整体来看，执行了 1760B 条指令，其中有 353B 条是分支指令，MPKI 仅有 1.08，主要由 main 贡献。
 
 ### 710.omnetpp_r
 
