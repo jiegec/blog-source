@@ -477,7 +477,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 
 - `netgen::ADTree6::GetIntersecting` 来自 `src/gmsh/contrib/Netgen/libsrc/gprim/adtree.cpp`：18.40%，实现了一个 6 维的 KD-Tree 的搜索算法，主要瓶颈在于中间的数据依赖的分支 `if (node->pi != -1)`，预测错误率较高；
 - `__ieee754_atan2_fma` 来自 libm：6.64%；
-- `reparamMeshVertexOnFace` 来自 `src/gmsh/src/geo/MVertex.cpp`：6.03%，不确定实现的是什么算法，不过能看到有很多分支，错误预测也比较多。
+- `reparamMeshVertexOnFace` 来自 `src/gmsh/src/geo/MVertex.cpp`：6.03%，根据顶点的维度进入不同的 `if-else` 分支进行处理，错误预测也比较多。
 
 虽然用到了浮点，但计算模式并不适合向量化。毕竟是 KD-Tree 的搜索，MPKI 高是正常现象。执行了 204.7B 条指令，错误预测 744.3M 次，MPKI 等于 `744.3M/204.7B*1000=3.64`，是 SPEC FP 2026 Rate 中第二高的。第一高 731.astcenc_r 如上所述，其实是 GCC 的实现不够好，完全可以把 MPKI 优化到 LLVM 22 的 1.3 左右，那样的话 737.gmsh_r 就是第一了。
 
@@ -738,7 +738,7 @@ reftime 是 1467s，不同编译器和编译选项下的运行情况：
 - `Laplace::LaplaceOperator::local_apply_quadratic_geo` 来自 `src/laplace_operator.h`：5.49%，内部是大量的浮点向量计算，并行度高；
 - `operator *(const dealii::VectorizedArray &, const dealii::VectorizedArray &)` 来自 `src/dealii/include/deal.ll/base/vectorization.h`：5.36%，两个向量的逐元素乘法。
 
-其他还有一些 dealii:Tensor 的计算，包括来自 `src/dealii/include/deal.ll/matrix_free/tensor_product_kernels.h` 的 `dealii::internal::even_odd_apply`，里面都是大量的可向量化的浮点双精度运算。对于这类负载，`-O3 -march=native` 开启后，更快的向量长度带来了更好的浮点运算性能，同时还有 FMA 指令的加持。
+其他还有一些 dealii:Tensor 的计算，包括来自 `src/dealii/include/deal.ll/matrix_free/tensor_product_kernels.h` 的 `dealii::internal::even_odd_apply`，是 Tensor 双精度浮点乘法的实现，这里 even-odd 的意思是利用数据的对称性，把数据拆成 even 和 odd 两部分进行计算，可以节省计算次数，同时适合向量化。对于这类负载，`-O3 -march=native` 开启后，更快的向量长度带来了更好的浮点运算性能，同时还有 FMA 指令的加持。
 
 LLVM 22 相比 GCC 14 的优势，主要来自于把更多代码进行了向量化，对比 GCC 14 和 LLVM 22 执行的指令数，可以看到 LLVM 22 执行的浮点标量指令数比 GCC 14 要少，而浮点向量指令又要多。GCC 16 也是类似的情况，向量化程度逼近 LLVM 22。
 
