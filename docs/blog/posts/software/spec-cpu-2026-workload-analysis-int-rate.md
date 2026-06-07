@@ -195,9 +195,9 @@ ntest 是黑白棋的引擎，该基准测试包括如下负载：
 ntest_r Othello.154.ggf 20 16
 ```
 
-实测数据显示，运行这个负载耗费的时间是 140s。reftime 是 592s，对应 4.2 分。开启各项优化编译选项，`-O3 -flto` 相比 `-O3` 能带来 4% 的性能提升，进一步 `-O3 -flto -march=native` 相比 `-O3 -flto` 还能带来 10% 的性能提升。下面分析它的具体负载特性。通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
+实测数据显示，运行这个负载耗费的时间是 140s。reftime 是 592s，对应 4.2 分。开启各项优化编译选项，`-O3 -flto` 相比 `-O3` 能带来 4% 的性能提升，进一步 `-O3 -flto -march=native` 相比 `-O3 -flto` 还能带来 10% 的性能提升。下面分析它的具体负载特性。黑白棋的规则很简单：只有在某个空位落子能翻转至少一个对方棋子时，才能下子，否则就要轮空。翻转的规则是，沿横、竖、斜八个方向检查，如果该方向上从新落子到另一颗己方棋子之间全是对方棋子，则这些对方棋子全部翻转。通过 `perf` 观察性能瓶颈，这几个函数耗费的时间占比较多：
 
-- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，首先判断能否下子（黑白棋的规则是，只有翻转了对方的棋子才能下子，不然就要轮空，而为了翻转棋子，至少要有一个邻居是敌方的棋子，即判断 `neighbors[sq]&enemy` 是否为零），接着判断下子以后实际上是否出现翻转，以及下子后会把哪些子翻转过来，主要是一些数据依赖的访存，混合了一堆位运算；
+- `flips(int sq, u64 mover, u64 enemy)` 来自 `src/flips.cpp`：34.80%，最主要的开销，根据棋盘状态，经过一系列的访存和位运算，先通过 `neighbors[sq]&enemy` 判断是否有敌方邻居棋子（无则无法下子），再计算下子后会翻转哪些棋子，主要是一些数据依赖的访存，混合了一堆位运算；
 - `solveNParity(int alpha, int beta, u64 mover, u64 enemy, u64 parity, EndgameSearch* search, bool hasPassed)` 来自 `src/solve.cpp`：14.21%，进行 alpha-beta 减枝的 minimax 算法（negamax 变种），遍历棋盘上的空位置，首先找到那些满足 good parity 的位置（用 `bitSet()` 函数，汇编上是用 AMD64 的 `bt` 指令判断，因为黑白棋里，双方轮流下子，走最后一步的玩家获得一定的优势，所以先找那些能让自己走最后一步的位置），调用上述 `flips()` 看看是否会出现翻转，如果会出现翻转就尝试下子并进行递归，之后再遍历一次，这次遍历 bad parity 的位置，流程相同，主要的瓶颈在访存以及依赖访存结果的分支；
 - `__popcountdi2`：9.65%，因为没开 `-mpopcnt/-march=native`，故需要它来代替 popcnt 指令，用来计算场面上各颜色棋子的数量等等；
 - `solveNFlipParity`：8.95%，与 solveNParity 配合完成 minimax 算法；
@@ -636,7 +636,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 
 主要的热点函数：
 
-- `Cec4_ManPackAddPatterns(Gia_Man_t * p, int iBit, Vec_Int_t * vLits)` 来自 `src/berkeley-abc/src/proof/cec/cecSatG2.c`：54.65%，CEC 指的是 Combinational Equivalence Checking，该函数内层循环遍历 vLits 中的每个 Entry，通过位运算按一定条件更新 `p->vSims`，主要是对数组里的元素进行访存和位运算；
+- `Cec4_ManPackAddPatterns(Gia_Man_t * p, int iBit, Vec_Int_t * vLits)` 来自 `src/berkeley-abc/src/proof/cec/cecSatG2.c`：54.65%，CEC 指的是 Combinational Equivalence Checking，该函数内层循环遍历 vLits 中的每个 Entry，通过位运算按一定条件更新 `p->vSims`；
 - `Cec4_ManGeneratePatterns_rec(Gia_Man_t * p, Gia_Obj_t * pObj, int Value, Vec_Int_t * vPat, Vec_Int_t * vVisit)` 来自 `src/berkeley-abc/src/proof/cec/cecSatG2.c`：29.01%，根据 pObj 的类型进行分类讨论和递归。
 
 热点依然很集中，不过因为缺少领域知识，不太明白它在跑什么。运行 255.5B 条指令，其中 Load 有 57.2B，Store 有 7.3B，分支有 40.3B，错误预测 192.0M 次，MPKI 等于 `192.0M/255.5B*1000=0.75`，相比 SAT 来说低了很多。
@@ -654,8 +654,8 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 热点函数终于有了新面孔：
 
 - `Abc_ObjDeleteFanin(Abc_Obj_t * pObj, Abc_Obj_t * pFanin)` 来自 `src/berkeley-abc/src/base/abc/abcFanio.c`：12.57%，逻辑很简单，就是调用 `Vec_IntRemove` 从数组里删除一个元素，遍历数组，找到匹配的元素，把后面的元素都往前挪，这个遍历匹配逻辑是主要的瓶颈，其次就是移动数据；
-- `Gia_ManSwiSimulate(Gia_Man_t * pAig, Gia_ParSwi_t * pPars)` 来自 `src/berkeley-abc/src/aig/gia/giaSwitch.c`：8.87%，实现模拟过程，很大一部分时间花在一个自己实现的 popcount 函数 `Gia_WordCountOnes`，它没有被识别并转化为 popcnt 指令，而是用 SSE 去向量化软件的 popcount 实现；
-- `Abc_AigAndLookup(Abc_Aig_t * pMan, Abc_Obj_t * p0, Abc_Obj_t * p1)` 来自 `src/berkeley-abc/src/base/abc/abcAig.c`：7.03%，判断 p0 AND p1 的结果是什么，首先做了一些特判，比如 `p0 == p1` 的情况下 `p0 AND p1` 就是 `p0` 自己，如果特判都不成功的话，最后是哈希表的链表遍历，中间有大量的多级指针访问：`pObj->pNtk->vObjs->pArray`；
+- `Gia_ManSwiSimulate(Gia_Man_t * pAig, Gia_ParSwi_t * pPars)` 来自 `src/berkeley-abc/src/aig/gia/giaSwitch.c`：8.87%，实现模拟过程，很大一部分时间花在一个自己实现的 popcount 函数 `Gia_WordCountOnes`，它没有被识别并转化为 popcnt 指令，而是用 SSE 向量指令做软件 popcount；
+- `Abc_AigAndLookup(Abc_Aig_t * pMan, Abc_Obj_t * p0, Abc_Obj_t * p1)` 来自 `src/berkeley-abc/src/base/abc/abcAig.c`：7.03%，计算 p0 AND p1，先做特判（如 `p0 == p1` 时直接返回 `p0`），若都不命中则走哈希表链表遍历，中间有大量的多级指针访问：`pObj->pNtk->vObjs->pArray`；
 - `If_ObjPerformMappingAnd(If_Man_t * p, If_Obj_t * pObj, int Mode, int fPreprocess, int fFirst)` 来自 `src/map/if/ifMap.c`：6.72%，依然有不少时间花在 popcount 的软件实现 `If_WordCountOnes` 上；
 - `Lpk_NodeCutsOneFilter(Lpk_Cut_t * pCuts, int nCuts, Lpk_Cut_t * pCutNew)` 来自 `src/berkeley-abc/src/opt/lpk/lpkCut.c`：5.47%，瓶颈在数据依赖的比较分支上。
 
