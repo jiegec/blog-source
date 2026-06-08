@@ -494,7 +494,7 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 
 - `llvm::InstCombinerImpl::foldIntegerTypedPHI(llvm::PHINode& PN)` 来自 `src/lib/Transforms/InstCombine/InstCombinePHI.cpp`: 4.06%，对 IR 中的 PHI 结点进行处理，这个函数还挺复杂的，主要瓶颈在内层循环，遍历 use 链表，有比较多的随机访存和通过分支来判断 LLVM 自制 RTTI 的类型；
 - `_int_malloc/cfree/malloc`：2.38%+0.89%+0.82%=4.09%，大量的内存分配和释放，因此 `-ljemalloc` 能带来不错的性能提升；
-- `llvm::DenseMapBase::FindAndConstruct()`: 1.69%，LLVM 自己用数组实现的哈希表，主要瓶颈在读取哈希桶内的 entry 并比较 key，随机访存比较慢。
+- `llvm::DenseMapBase::FindAndConstruct()`: 1.69%，LLVM 自己用数组实现的哈希表，主要瓶颈在读取哈希桶内的 entry 并比较 key，随机访存比较慢，近期 [LLVM 也在做相关的优化](https://maskray.me/blog/2026-06-07-recent-llvm-hash-table-improvements)。
 
 其他有很多小的函数，占时间比例不高，和 721.gcc_r 类似，也是时间分散得比较开。执行指令数为 572.8B，其中 Load 指令有 137.7B，Store 指令有 78.6B，分支指令有 118.7B，错误预测有 3.5B 次，MPKI 等于 `3.5B/572.8B*1000=6.11`，挺高的。
 
