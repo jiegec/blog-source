@@ -163,6 +163,7 @@ CPU_INFO = [
     ),  # Must come before AWS Graviton 3
     ("AWS Graviton 3", {None: "@ 2.6 GHz Neoverse V1"}),
     ("AWS Graviton 4", {None: "@ 2.8 GHz Neoverse V2"}),
+    ("AWS Graviton 5", {None: "@ 3.3 GHz Neoverse V3"}),
     # Server - Others
     ("Ampere Altra", {None: "@ 3.0 GHz Neoverse N1"}),
     ("Hygon C86 7390", {None: ""}),

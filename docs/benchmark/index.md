@@ -107,6 +107,7 @@ permalink: /benchmark/
 - AWS Gravition 3(AWS c7g.large, 2C 4G): Neoverse V1
 - AWS Gravition 3E(AWS c7gn.medium, 1C 2G): Neoverse V1
 - AWS Gravition 4(AWS c8g.large, 2C 4G): Neoverse V2
+- AWS Gravition 5(AWS m9g.xlarge, 4C 16G): Neoverse V3
 - Ampere Altra(Aliyun c6r.large, 2C 4G): Neoverse N1
 - Apple M1: Firestorm + Icestorm
 - Google Axion C4A(GCP c4a-standard-4, 4C 16G): Neoverse V2
@@ -148,6 +149,8 @@ permalink: /benchmark/
 
 ## 更新历史
 
+- 2026.06.12:
+      - 在 AWS m9g.xlarge 实例上测试 AWS Graviton 5 的性能
 - 2026.05.19:
       - 添加交互式图表
       - 添加 SPEC CPU 2026 性能数据
