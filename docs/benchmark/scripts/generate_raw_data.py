@@ -753,6 +753,7 @@ def detect_launch_date(cpu_name):
         ("AWS Graviton 3", "2022"),
         ("AWS Graviton 3E", "2022"),
         ("AWS Graviton 4", "2023"),
+        ("AWS Graviton 5", "2026"),
         ("Ampere Altra", "2021"),
         ("Apple M1", "2020"),
         ("Apple M2", "2022"),
