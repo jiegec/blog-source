@@ -176,16 +176,16 @@ GCC 14 under `-march=native`: 7to11_nnue instruction count plummets to 425.9B (o
 
 Performance under different compilation options:
 
-| Workload          | Compiler + Flags         | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispredictions (M) | MPKI | 128-bit Int Vec (B) | 256-bit Int Vec (B) |
-|-------------------|--------------------------|----------|----------|----------|-----------|----------|------------------|------|--------------------|---------------------|
-| 1. 1to6_classical | GCC 14 `-O3`           | 47       | 531.8    | 135.7    | 59.7      | 56.0     | 2622.8           | 4.93 | 0.13               | 0.00                |
-| 1. 1to6_classical | GCC 14 `-O3 -mpopcnt`  | 44       | 453.9    | 124.2    | 53.1      | 46.1     | 2639.3           | 5.81 | 0.13               | 0.00                |
-| 2. 1to6_nnue      | GCC 14 `-O3`           | 77       | 1342.1   | 182.2    | 61.8      | 77.6     | 1612.9           | 1.20 | 229.1              | 0.00                |
-| 2. 1to6_nnue      | GCC 15 `-O3`           | 49       | 1015.3   | 175.0    | 57.8      | 77.4     | 1258.2           | 1.24 | 97.0               | 0.00                |
-| 2. 1to6_nnue      | GCC 14 `-march=native` | 32       | 446.8    | 119.6    | 44.4      | 48.7     | 953.8            | 2.13 | 5.1                | 36.3                |
-| 3. 7to11_nnue     | GCC 14 `-O3`           | 72       | 1253.2   | 176.1    | 61.6      | 75.4     | 1547.5           | 1.23 | 212.5              | 0.00                |
-| 3. 7to11_nnue     | GCC 15 `-O3`           | 46       | 955.3    | 169.4    | 57.8      | 75.2     | 1224.7           | 1.28 | 92.3               | 0.00                |
-| 3. 7to11_nnue     | GCC 14 `-march=native` | 31       | 425.9    | 115.1    | 43.7      | 47.1     | 922.9            | 2.17 | 4.6                | 35.0                |
+| Workload          | Compiler + Flags       | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispredictions (M) | MPKI | 128-bit Int Vec (B) | 256-bit Int Vec (B) |
+|-------------------|------------------------|----------|-----------|----------|-----------|------------|--------------------|------|---------------------|---------------------|
+| 1. 1to6_classical | GCC 14 `-O3`           | 47       | 531.8     | 135.7    | 59.7      | 56.0       | 2622.8             | 4.93 | 0.13                | 0.00                |
+| 1. 1to6_classical | GCC 14 `-O3 -mpopcnt`  | 44       | 453.9     | 124.2    | 53.1      | 46.1       | 2639.3             | 5.81 | 0.13                | 0.00                |
+| 2. 1to6_nnue      | GCC 14 `-O3`           | 77       | 1342.1    | 182.2    | 61.8      | 77.6       | 1612.9             | 1.20 | 229.1               | 0.00                |
+| 2. 1to6_nnue      | GCC 15 `-O3`           | 49       | 1015.3    | 175.0    | 57.8      | 77.4       | 1258.2             | 1.24 | 97.0                | 0.00                |
+| 2. 1to6_nnue      | GCC 14 `-march=native` | 32       | 446.8     | 119.6    | 44.4      | 48.7       | 953.8              | 2.13 | 5.1                 | 36.3                |
+| 3. 7to11_nnue     | GCC 14 `-O3`           | 72       | 1253.2    | 176.1    | 61.6      | 75.4       | 1547.5             | 1.23 | 212.5               | 0.00                |
+| 3. 7to11_nnue     | GCC 15 `-O3`           | 46       | 955.3     | 169.4    | 57.8      | 75.2       | 1224.7             | 1.28 | 92.3                | 0.00                |
+| 3. 7to11_nnue     | GCC 14 `-march=native` | 31       | 425.9     | 115.1    | 43.7      | 47.1       | 922.9              | 2.17 | 4.6                 | 35.0                |
 
 1to6_classical resembles a traditional chess engine with complex branching and memory access, so its MPKI=4.93 is similar to SPEC CPU 2017's 531.deepsjeng_r (MPKI=3.16), falling in the higher category. Meanwhile, 1to6_nnue and 7to11_nnue are mainly bottlenecked by i8 matrix operations; whether hardware acceleration instructions (here AVX-VNNI) are available has a major performance impact, with branch prediction becoming much less significant. The overall average MPKI is 1.85, not particularly high.
 
@@ -218,14 +218,14 @@ Meanwhile, GCC 15 also improves over GCC 14, from 140s to 130s. Assembly analysi
 
 GCC 15's 707.ntest_r executes 2429.3B instructions with 610.9B Loads, 206.2B Stores, 224.7B branches. Results under different compilers and flags:
 
-| Compiler + Flags             | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) |
-|------------------------------|----------|----------|----------|-----------|----------|
-| GCC 14 `-O3`               | 140      | 2688.3   | 647.8    | 255.2     | 228.2    |
-| GCC 14 `-O3 -flto`         | 134      | 2656.3   | 623.4    | 251.3     | 200.9    |
-| GCC 14 `-O3 -mpopcnt`      | 126      | 2286.9   | 586.9    | 206.7     | 187.6    |
-| GCC 14 `-O3 -march=native` | 122      | 2230.0   | 588.2    | 206.4     | 185.2    |
-| LLVM 22 `-O3`              | 126      | 2416.9   | 542.7    | 202.9     | 168.2    |
-| GCC 15 `-O3`               | 130      | 2429.3   | 610.9    | 206.2     | 224.7    |
+| Compiler + Flags           | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) |
+|----------------------------|----------|-----------|----------|-----------|------------|
+| GCC 14 `-O3`               | 140      | 2688.3    | 647.8    | 255.2     | 228.2      |
+| GCC 14 `-O3 -flto`         | 134      | 2656.3    | 623.4    | 251.3     | 200.9      |
+| GCC 14 `-O3 -mpopcnt`      | 126      | 2286.9    | 586.9    | 206.7     | 187.6      |
+| GCC 14 `-O3 -march=native` | 122      | 2230.0    | 588.2    | 206.4     | 185.2      |
+| LLVM 22 `-O3`              | 126      | 2416.9    | 542.7    | 202.9     | 168.2      |
+| GCC 15 `-O3`               | 130      | 2429.3    | 610.9    | 206.2     | 224.7      |
 
 Combining 706.stockfish_r and 707.ntest_r shows that popcnt is quite commonly used. Unfortunately, the AMD64 baseline doesn't provide this instruction, so with x86-64-v2 or higher optimization flags, such applications can use a single popcnt instruction to eliminate the libgcc `__popcountdi2` call overhead. Compared to AVX-VNNI, popcnt is far more widely available.
 
@@ -306,13 +306,13 @@ Bottleneck is mainly the interpreter, with significant time on string-to-float c
 Results under different flags:
 
 | Workload | Compiler + Flags           | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | MPKI |
-|----------|----------------------------|----------|----------|----------|-----------|----------|------|
-| 1. main  | GCC 14 `-O3`               | 69       | 896.3    | 252.4    | 105.1     | 178.0    | 1.67 |
-| 1. main  | GCC 14 `-O3 -march=native` | 73       | 905.3    | 273.7    | 109.9     | 177.2    | 1.62 |
-| 2. cte   | GCC 14 `-O3`               | 12       | 306.0    | 82.8     | 39.6      | 62.6     | 0.13 |
-| 2. cte   | GCC 14 `-O3 -march=native` | 13       | 303.6    | 88.9     | 40.0      | 62.6     | 0.13 |
-| 3. fp    | GCC 14 `-O3`               | 25       | 554.7    | 132.3    | 61.3      | 111.5    | 0.71 |
-| 3. fp    | GCC 14 `-O3 -march=native` | 27       | 555.8    | 142.7    | 62.6      | 111.6    | 0.69 |
+|----------|----------------------------|----------|-----------|----------|-----------|------------|------|
+| 1. main  | GCC 14 `-O3`               | 69       | 896.3     | 252.4    | 105.1     | 178.0      | 1.67 |
+| 1. main  | GCC 14 `-O3 -march=native` | 73       | 905.3     | 273.7    | 109.9     | 177.2      | 1.62 |
+| 2. cte   | GCC 14 `-O3`               | 12       | 306.0     | 82.8     | 39.6      | 62.6       | 0.13 |
+| 2. cte   | GCC 14 `-O3 -march=native` | 13       | 303.6     | 88.9     | 40.0      | 62.6       | 0.13 |
+| 3. fp    | GCC 14 `-O3`               | 25       | 554.7     | 132.3    | 61.3      | 111.5      | 0.71 |
+| 3. fp    | GCC 14 `-O3 -march=native` | 27       | 555.8     | 142.7    | 62.6      | 111.6      | 0.69 |
 
 As shown, sqlite_r is one of those hard-to-optimize benchmarks: heavy memory access, computation, and branching interleaved, heavy on the memory subsystem, hard to vectorize. `-O3 -march=native` actually increases runtime from 106s to 113s, a regression. Overall: 1760B instructions, 353B branches, MPKI only 1.08, mainly from main.
 
@@ -349,10 +349,10 @@ Overall, bottlenecks are spread across many locations. 306.4B instructions, 98.7
 randomMesh under different flags:
 
 | Compiler + Flags              | Insns (B) | Load (B) | Store (B) | Branch (B) |
-|-------------------------------|----------|----------|-----------|----------|
-| GCC 14 `-O3`                  | 306.4    | 98.7     | 50.2      | 62.1     |
-| GCC 14 `-O3 -flto`            | 284.6    | 91.3     | 45.4      | 55.7     |
-| GCC 14 `-O3 -flto -ljemalloc` | 279.8    | 90.3     | 44.4      | 54.3     |
+|-------------------------------|-----------|----------|-----------|------------|
+| GCC 14 `-O3`                  | 306.4     | 98.7     | 50.2      | 62.1       |
+| GCC 14 `-O3 -flto`            | 284.6     | 91.3     | 45.4      | 55.7       |
+| GCC 14 `-O3 -flto -ljemalloc` | 279.8     | 90.3     | 44.4      | 54.3       |
 
 #### Remaining 2-10: 9 queuenet workloads
 
@@ -423,13 +423,13 @@ Main hotspot remains interpretation, though `PyUnicode_Contains` is higher due t
 Results under different flags:
 
 | Workload     | Compiler + Flags   | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispredictions (M) |
-|--------------|--------------------|----------|----------|----------|-----------|----------|--------------|
-| 1. resnet    | GCC 14 `-O3`       | 31       | 651.6    | 180.4    | 104.1     | 136.6    | 7.9          |
-| 1. resnet    | GCC 14 `-O3 -flto` | 29       | 618.0    | 176.6    | 93.9      | 128.6    | 48.6         |
-| 2. mobilenet | GCC 14 `-O3`       | 20       | 438.9    | 121.4    | 70.5      | 91.6     | 9.1          |
-| 2. mobilenet | GCC 14 `-O3 -flto` | 19       | 416.4    | 119.0    | 63.8      | 86.2     | 35.0         |
-| 3. dna       | GCC 14 `-O3`       | 20       | 394.9    | 113.3    | 62.1      | 77.1     | 228.1        |
-| 3. dna       | GCC 14 `-O3 -flto` | 18       | 379.3    | 113.4    | 58.5      | 71.6     | 223.8        |
+|--------------|--------------------|----------|-----------|----------|-----------|------------|--------------------|
+| 1. resnet    | GCC 14 `-O3`       | 31       | 651.6     | 180.4    | 104.1     | 136.6      | 7.9                |
+| 1. resnet    | GCC 14 `-O3 -flto` | 29       | 618.0     | 176.6    | 93.9      | 128.6      | 48.6               |
+| 2. mobilenet | GCC 14 `-O3`       | 20       | 438.9     | 121.4    | 70.5      | 91.6       | 9.1                |
+| 2. mobilenet | GCC 14 `-O3 -flto` | 19       | 416.4     | 119.0    | 63.8      | 86.2       | 35.0               |
+| 3. dna       | GCC 14 `-O3`       | 20       | 394.9     | 113.3    | 62.1      | 77.1       | 228.1              |
+| 3. dna       | GCC 14 `-O3 -flto` | 18       | 379.3     | 113.4    | 58.5      | 71.6       | 223.8              |
 
 714.cpython_r is a typical bytecode interpreter with Loop + Switch structure. Overall MPKI is very low at 0.17; even with `-O3 -flto` (more mispredictions but fewer total instructions, higher MPKI), the absolute number is still tiny at 0.23.
 
@@ -463,13 +463,13 @@ Performance counters for the three workloads:
 Results:
 
 | Workload       | Compiler + Flags        | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (B) | MPKI |
-|----------------|-------------------------|----------|----------|----------|-----------|----------|--------------|------|
-| 1. gcc-pp      | GCC 14 `-O3`            | 44       | 470.2    | 125.6    | 58.8      | 99.9     | 2.2          | 4.68 |
-| 1. gcc-pp      | GCC 14 `-O3 -ljemalloc` | 42       | 467.2    | 125.2    | 58.7      | 98.5     | 2.2          | 4.71 |
-| 2. gcc-smaller | GCC 14 `-O3`            | 21       | 243.2    | 65.0     | 30.3      | 51.8     | 0.91         | 3.74 |
-| 2. gcc-smaller | GCC 14 `-O3 -ljemalloc` | 21       | 242.1    | 64.7     | 30.2      | 51.2     | 0.90         | 3.72 |
-| 3. ref32       | GCC 14 `-O3`            | 51       | 403.8    | 118.9    | 45.8      | 86.1     | 0.61         | 1.51 |
-| 3. ref32       | GCC 14 `-O3 -ljemalloc` | 49       | 405.2    | 119.4    | 46.2      | 85.8     | 0.61         | 1.51 |
+|----------------|-------------------------|----------|-----------|----------|-----------|------------|-------------|------|
+| 1. gcc-pp      | GCC 14 `-O3`            | 44       | 470.2     | 125.6    | 58.8      | 99.9       | 2.2         | 4.68 |
+| 1. gcc-pp      | GCC 14 `-O3 -ljemalloc` | 42       | 467.2     | 125.2    | 58.7      | 98.5       | 2.2         | 4.71 |
+| 2. gcc-smaller | GCC 14 `-O3`            | 21       | 243.2     | 65.0     | 30.3      | 51.8       | 0.91        | 3.74 |
+| 2. gcc-smaller | GCC 14 `-O3 -ljemalloc` | 21       | 242.1     | 64.7     | 30.2      | 51.2       | 0.90        | 3.72 |
+| 3. ref32       | GCC 14 `-O3`            | 51       | 403.8     | 118.9    | 45.8      | 86.1       | 0.61        | 1.51 |
+| 3. ref32       | GCC 14 `-O3 -ljemalloc` | 49       | 405.2     | 119.4    | 46.2      | 85.8       | 0.61        | 1.51 |
 
 Overall 1120B instructions, 238B branches, MPKI = 3.37, quite high for SPEC INT 2026. For comparison, SPEC INT 2017 Rate's 502.gcc_r had MPKI of 3.13, not much different.
 
@@ -517,11 +517,11 @@ Overall similar to transformsplus, with `foldIntegerTypedPHI` taking a larger sh
 Results:
 
 | Workload          | Compiler + Flags        | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (B) | MPKI |
-|-------------------|-------------------------|----------|----------|----------|-----------|----------|--------------|------|
-| 1. transformsplus | GCC 14 `-O3`            | 62       | 572.8    | 137.7    | 78.6      | 118.7    | 3.5          | 6.11 |
-| 1. transformsplus | GCC 14 `-O3 -ljemalloc` | 59       | 563.2    | 135.7    | 77.2      | 115.2    | 3.3          | 5.86 |
-| 2. codegen        | GCC 14 `-O3`            | 53       | 415.9    | 100.4    | 57.5      | 86.0     | 2.4          | 5.77 |
-| 2. codegen        | GCC 14 `-O3 -ljemalloc` | 47       | 411.0    | 99.3     | 56.6      | 84.1     | 2.3          | 5.60 |
+|-------------------|-------------------------|----------|-----------|----------|-----------|------------|-------------|------|
+| 1. transformsplus | GCC 14 `-O3`            | 62       | 572.8     | 137.7    | 78.6      | 118.7      | 3.5         | 6.11 |
+| 1. transformsplus | GCC 14 `-O3 -ljemalloc` | 59       | 563.2     | 135.7    | 77.2      | 115.2      | 3.3         | 5.86 |
+| 2. codegen        | GCC 14 `-O3`            | 53       | 415.9     | 100.4    | 57.5      | 86.0       | 2.4         | 5.77 |
+| 2. codegen        | GCC 14 `-O3 -ljemalloc` | 47       | 411.0     | 99.3     | 56.6      | 84.1       | 2.3         | 5.60 |
 
 LLVM and GCC, twin stars of the compiler world, share similar workload characteristics: heavy memory allocation/deallocation benefiting from `-ljemalloc`; time spread across many small functions with no dominant hotspot; high MPKI. 723.llvm_r becomes the highest-MPKI benchmark in SPEC INT 2026 Rate at 5.98, likely due to its many data-dependent branches. Overall 991B instructions, 205B branches. Even in SPEC INT 2017 Rate, it would follow closely behind 505.mcf_r and 541.leela_r as the third-highest MPKI.
 
@@ -585,13 +585,13 @@ Overall, 727.cppcheck_r is constantly doing string matching. A question worth po
 Results:
 
 | Workload       | Compiler + Flags        | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (M) | MPKI |
-|----------------|-------------------------|----------|----------|----------|-----------|----------|--------------|------|
-| 1. 738_diamond | GCC 14 `-O3`            | 27       | 399.9    | 81.2     | 35.5      | 108.9    | 173.2        | 0.43 |
-| 1. 738_diamond | GCC 14 `-O3 -ljemalloc` | 24       | 395.0    | 80.2     | 34.7      | 107.5    | 171.8        | 0.43 |
-| 2. 747_dealii  | GCC 14 `-O3`            | 22       | 303.9    | 67.3     | 31.5      | 82.5     | 298.9        | 0.98 |
-| 2. 747_dealii  | GCC 14 `-O3 -ljemalloc` | 18       | 291.0    | 64.5     | 29.2      | 79.0     | 287.3        | 0.99 |
-| 3. 770_7z      | GCC 14 `-O3`            | 33       | 505.2    | 111.0    | 43.8      | 137.5    | 421.0        | 0.83 |
-| 3. 770_7z      | GCC 14 `-O3 -ljemalloc` | 29       | 501.5    | 110.1    | 43.2      | 136.6    | 409.8        | 0.82 |
+|----------------|-------------------------|----------|-----------|----------|-----------|------------|-------------|------|
+| 1. 738_diamond | GCC 14 `-O3`            | 27       | 399.9     | 81.2     | 35.5      | 108.9      | 173.2       | 0.43 |
+| 1. 738_diamond | GCC 14 `-O3 -ljemalloc` | 24       | 395.0     | 80.2     | 34.7      | 107.5      | 171.8       | 0.43 |
+| 2. 747_dealii  | GCC 14 `-O3`            | 22       | 303.9     | 67.3     | 31.5      | 82.5       | 298.9       | 0.98 |
+| 2. 747_dealii  | GCC 14 `-O3 -ljemalloc` | 18       | 291.0     | 64.5     | 29.2      | 79.0       | 287.3       | 0.99 |
+| 3. 770_7z      | GCC 14 `-O3`            | 33       | 505.2     | 111.0    | 43.8      | 137.5      | 421.0       | 0.83 |
+| 3. 770_7z      | GCC 14 `-O3 -ljemalloc` | 29       | 501.5     | 110.1    | 43.2      | 136.6      | 409.8       | 0.82 |
 
 Overall 1211B instructions, 329B branches; branches account for 27%, the highest in SPEC INT 2026 Rate, all thanks to string matching (read a bit, compare a bit). Yet MPKI is only 0.71, third-lowest in SPEC INT 2026 Rate (above only 714.cpython_r's 0.17 and 750.sealcrypto_r's 0.14), meaning most string matching results are highly predictable (e.g., mismatch at the first byte).
 
@@ -681,13 +681,13 @@ Classic hash table with string matching; bottleneck in hash table queries with p
 Results:
 
 | Workload    | Compiler + Flags | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (M) | MPKI  |
-|-------------|------------------|----------|----------|----------|-----------|----------|--------------|-------|
-| 1. twoexact | GCC 14 `-O3`    | 6.3      | 53.2     | 13.8     | 3.2       | 8.4      | 606.2        | 11.39 |
-| 2. beem6    | GCC 14 `-O3`    | 10.1     | 255.5    | 57.2     | 7.3       | 40.3     | 192.0        | 0.75  |
-| 3. mem      | GCC 14 `-O3`    | 13.5     | 151.0    | 43.4     | 15.4      | 24.2     | 1213.7       | 8.03  |
-| 4. vga      | GCC 14 `-O3`    | 32.3     | 490.0    | 143.9    | 54.4      | 76.9     | 2092.8       | 4.27  |
-| 5. mcml     | GCC 14 `-O3`    | 13.6     | 208.0    | 50.1     | 15.4      | 39.8     | 534.8        | 2.57  |
-| 6. des      | GCC 14 `-O3`    | 17.0     | 135.7    | 29.7     | 11.5      | 23.3     | 372.9        | 2.75  |
+|-------------|------------------|----------|-----------|----------|-----------|------------|-------------|-------|
+| 1. twoexact | GCC 14 `-O3`     | 6.3      | 53.2      | 13.8     | 3.2       | 8.4        | 606.2       | 11.39 |
+| 2. beem6    | GCC 14 `-O3`     | 10.1     | 255.5     | 57.2     | 7.3       | 40.3       | 192.0       | 0.75  |
+| 3. mem      | GCC 14 `-O3`     | 13.5     | 151.0     | 43.4     | 15.4      | 24.2       | 1213.7      | 8.03  |
+| 4. vga      | GCC 14 `-O3`     | 32.3     | 490.0     | 143.9    | 54.4      | 76.9       | 2092.8      | 4.27  |
+| 5. mcml     | GCC 14 `-O3`     | 13.6     | 208.0     | 50.1     | 15.4      | 39.8       | 534.8       | 2.57  |
+| 6. des      | GCC 14 `-O3`     | 17.0     | 135.7     | 29.7     | 11.5      | 23.3       | 372.9       | 2.75  |
 
 The six workloads touch different abc code paths: SAT, various EDA logic, and hash table lookups with string matching. SAT dominates the weight, giving overall MPKI of 3.87, second only to 723.llvm_r in SPEC INT 2026 Rate, exceeding 721.gcc_r and 777.zstd_r.
 
@@ -744,19 +744,19 @@ Under `-O3`: jpeg_route executes 424.1B instructions (130.6B Loads, 50.6B Stores
 Results:
 
 | Workload               | Compiler + Flags        | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (M) | MPKI |
-|------------------------|-------------------------|----------|----------|----------|-----------|----------|--------------|------|
-| 1. jpeg_place          | GCC 14 `-O3`            | 21       | 273.7    | 84.5     | 26.9      | 51.9     | 781.0        | 2.85 |
-| 1. jpeg_place          | GCC 14 `-O3 -flto`      | 19       | 247.0    | 69.2     | 22.2      | 47.8     | 774.2        | 3.13 |
-| 1. jpeg_place          | GCC 14 `-O3 -ljemalloc` | 19       | 261.5    | 81.9     | 25.1      | 47.9     | 764.5        | 2.92 |
-| 2. jpeg_route          | GCC 14 `-O3`            | 29       | 424.1    | 130.6    | 50.6      | 79.0     | 1094.2       | 2.58 |
-| 2. jpeg_route          | GCC 14 `-O3 -flto`      | 26       | 356.6    | 103.2    | 33.5      | 66.3     | 1075.5       | 3.02 |
-| 2. jpeg_route          | GCC 14 `-O3 -ljemalloc` | 28       | 411.5    | 127.9    | 48.8      | 74.9     | 1080.0       | 2.62 |
-| 3. smithwaterman_place | GCC 14 `-O3`            | 18       | 245.0    | 76.4     | 24.7      | 45.4     | 661.9        | 2.70 |
-| 3. smithwaterman_place | GCC 14 `-O3 -flto`      | 17       | 222.1    | 63.1     | 20.8      | 21.8     | 662.7        | 2.98 |
-| 3. smithwaterman_place | GCC 14 `-O3 -ljemalloc` | 17       | 232.9    | 73.8     | 23.0      | 41.4     | 648.7        | 2.78 |
-| 4. smithwaterman_route | GCC 14 `-O3`            | 19       | 305.8    | 91.0     | 36.0      | 59.4     | 609.3        | 1.99 |
-| 4. smithwaterman_route | GCC 14 `-O3 -flto`      | 17       | 264.3    | 72.9     | 25.5      | 51.5     | 590.9        | 2.24 |
-| 4. smithwaterman_route | GCC 14 `-O3 -ljemalloc` | 18       | 293.6    | 88.4     | 34.2      | 55.3     | 594.7        | 2.03 |
+|------------------------|-------------------------|----------|-----------|----------|-----------|------------|-------------|------|
+| 1. jpeg_place          | GCC 14 `-O3`            | 21       | 273.7     | 84.5     | 26.9      | 51.9       | 781.0       | 2.85 |
+| 1. jpeg_place          | GCC 14 `-O3 -flto`      | 19       | 247.0     | 69.2     | 22.2      | 47.8       | 774.2       | 3.13 |
+| 1. jpeg_place          | GCC 14 `-O3 -ljemalloc` | 19       | 261.5     | 81.9     | 25.1      | 47.9       | 764.5       | 2.92 |
+| 2. jpeg_route          | GCC 14 `-O3`            | 29       | 424.1     | 130.6    | 50.6      | 79.0       | 1094.2      | 2.58 |
+| 2. jpeg_route          | GCC 14 `-O3 -flto`      | 26       | 356.6     | 103.2    | 33.5      | 66.3       | 1075.5      | 3.02 |
+| 2. jpeg_route          | GCC 14 `-O3 -ljemalloc` | 28       | 411.5     | 127.9    | 48.8      | 74.9       | 1080.0      | 2.62 |
+| 3. smithwaterman_place | GCC 14 `-O3`            | 18       | 245.0     | 76.4     | 24.7      | 45.4       | 661.9       | 2.70 |
+| 3. smithwaterman_place | GCC 14 `-O3 -flto`      | 17       | 222.1     | 63.1     | 20.8      | 21.8       | 662.7       | 2.98 |
+| 3. smithwaterman_place | GCC 14 `-O3 -ljemalloc` | 17       | 232.9     | 73.8     | 23.0      | 41.4       | 648.7       | 2.78 |
+| 4. smithwaterman_route | GCC 14 `-O3`            | 19       | 305.8     | 91.0     | 36.0      | 59.4       | 609.3       | 1.99 |
+| 4. smithwaterman_route | GCC 14 `-O3 -flto`      | 17       | 264.3     | 72.9     | 25.5      | 51.5       | 590.9       | 2.24 |
+| 4. smithwaterman_route | GCC 14 `-O3 -ljemalloc` | 18       | 293.6     | 88.4     | 34.2      | 55.3       | 594.7       | 2.03 |
 
 734.vpr_r splits into place (bounding box computation) and route (search and optimization). `-flto` and `-ljemalloc` provide significant gains via inlining hotspots and faster allocation. Overall 1254B instructions, 237B branches, MPKI = 2.51, in the upper-middle range.
 
@@ -843,19 +843,19 @@ Under `-O3`: 391.5B instructions, 103.2B Loads, 54.4B Stores, 82.1B branches, 12
 Results:
 
 | Workload           | Compiler + Flags        | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (M) | MPKI |
-|--------------------|-------------------------|----------|----------|----------|-----------|----------|--------------|------|
-| 1. o3              | GCC 14 `-O3`            | 16       | 211.1    | 69.9     | 31.7      | 43.2     | 175.5        | 0.83 |
-| 1. o3              | GCC 14 `-O3 -ljemalloc` | 15       | 189.5    | 65.0     | 28.0      | 37.0     | 204.8        | 1.08 |
-| 1. o3              | GCC 14 `-O3 -flto`      | 15       | 193.8    | 65.0     | 27.4      | 39.6     | 163.5        | 0.84 |
-| 2. timing          | GCC 14 `-O3`            | 21       | 333.9    | 113.9    | 57.8      | 69.8     | 202.9        | 0.61 |
-| 2. timing          | GCC 14 `-O3 -ljemalloc` | 19       | 301.8    | 106.9    | 51.8      | 60.5     | 202.9        | 0.67 |
-| 2. timing          | GCC 14 `-O3 -flto`      | 21       | 324.4    | 111.6    | 56.2      | 67.0     | 194.7        | 0.60 |
-| 3. traffic_21      | GCC 14 `-O3`            | 21       | 226.4    | 65.5     | 31.3      | 50.8     | 749.3        | 3.31 |
-| 3. traffic_21      | GCC 14 `-O3 -ljemalloc` | 18       | 198.0    | 59.2     | 26.1      | 42.7     | 723.3        | 3.65 |
-| 3. traffic_21      | GCC 14 `-O3 -flto`      | 20       | 216.1    | 62.8     | 29.2      | 48.1     | 745.4        | 3.45 |
-| 4. traffic_74_ruby | GCC 14 `-O3`            | 31       | 391.5    | 103.2    | 54.4      | 82.1     | 1246.0       | 3.18 |
-| 4. traffic_74_ruby | GCC 14 `-O3 -ljemalloc` | 28       | 363.6    | 97.1     | 49.5      | 74.1     | 1200.3       | 3.30 |
-| 4. traffic_74_ruby | GCC 14 `-O3 -flto`      | 29       | 361.3    | 96.7     | 48.6      | 75.5     | 1204.0       | 3.33 |
+|--------------------|-------------------------|----------|-----------|----------|-----------|------------|-------------|------|
+| 1. o3              | GCC 14 `-O3`            | 16       | 211.1     | 69.9     | 31.7      | 43.2       | 175.5       | 0.83 |
+| 1. o3              | GCC 14 `-O3 -ljemalloc` | 15       | 189.5     | 65.0     | 28.0      | 37.0       | 204.8       | 1.08 |
+| 1. o3              | GCC 14 `-O3 -flto`      | 15       | 193.8     | 65.0     | 27.4      | 39.6       | 163.5       | 0.84 |
+| 2. timing          | GCC 14 `-O3`            | 21       | 333.9     | 113.9    | 57.8      | 69.8       | 202.9       | 0.61 |
+| 2. timing          | GCC 14 `-O3 -ljemalloc` | 19       | 301.8     | 106.9    | 51.8      | 60.5       | 202.9       | 0.67 |
+| 2. timing          | GCC 14 `-O3 -flto`      | 21       | 324.4     | 111.6    | 56.2      | 67.0       | 194.7       | 0.60 |
+| 3. traffic_21      | GCC 14 `-O3`            | 21       | 226.4     | 65.5     | 31.3      | 50.8       | 749.3       | 3.31 |
+| 3. traffic_21      | GCC 14 `-O3 -ljemalloc` | 18       | 198.0     | 59.2     | 26.1      | 42.7       | 723.3       | 3.65 |
+| 3. traffic_21      | GCC 14 `-O3 -flto`      | 20       | 216.1     | 62.8     | 29.2      | 48.1       | 745.4       | 3.45 |
+| 4. traffic_74_ruby | GCC 14 `-O3`            | 31       | 391.5     | 103.2    | 54.4      | 82.1       | 1246.0      | 3.18 |
+| 4. traffic_74_ruby | GCC 14 `-O3 -ljemalloc` | 28       | 363.6     | 97.1     | 49.5      | 74.1       | 1200.3      | 3.30 |
+| 4. traffic_74_ruby | GCC 14 `-O3 -flto`      | 29       | 361.3     | 96.7     | 48.6      | 75.5       | 1204.0      | 3.33 |
 
 735.gem5_r's four tests exercise very different code paths. Due to gem5's high modularity, `-flto` helps inline functions that could benefit from it. Additionally, gem5 heavily allocates dynamic objects (e.g., Packets), making `-ljemalloc` effective. `-march=native` has limited applicability.
 
@@ -941,15 +941,15 @@ LLVM 22 with `-O3 -march=native` improves mispredictions from 1093.9M to 612.7M 
 750.sealcrypto_r under different compilers and flags:
 
 | Compiler + Flags            | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (M) | MPKI |
-|-----------------------------|----------|----------|----------|-----------|----------|--------------|------|
-| GCC 14 `-O3`                | 108      | 3113.4   | 385.7    | 161.3     | 78.5     | 450.0        | 0.14 |
-| GCC 14 `-O3 -march=native`  | 116      | 2757.7   | 370.0    | 126.7     | 76.1     | 431.0        | 0.16 |
-| GCC 15 `-O3`                | 106.4    | 3071.3   | 379.1    | 161.4     | 80.0     | 416.1        | 0.14 |
-| GCC 15 `-O3 -march=native`  | 117.7    | 2701.9   | 379.4    | 130.6     | 77.6     | 406.9        | 0.15 |
-| GCC 16 `-O3`                | 105.9    | 3020.1   | 381.1    | 158.5     | 80.7     | 430.3        | 0.14 |
-| GCC 16 `-O3 -march=native`  | 99.3     | 2492.3   | 328.0    | 123.2     | 81.8     | 433.3        | 0.17 |
-| LLVM 22 `-O3`               | 50.5     | 1213.6   | 302.8    | 109.2     | 57.2     | 1093.9       | 0.90 |
-| LLVM 22 `-O3 -march=native` | 48.2     | 1126.0   | 299.2    | 108.7     | 53.4     | 612.7        | 0.54 |
+|-----------------------------|----------|-----------|----------|-----------|------------|-------------|------|
+| GCC 14 `-O3`                | 108      | 3113.4    | 385.7    | 161.3     | 78.5       | 450.0       | 0.14 |
+| GCC 14 `-O3 -march=native`  | 116      | 2757.7    | 370.0    | 126.7     | 76.1       | 431.0       | 0.16 |
+| GCC 15 `-O3`                | 106.4    | 3071.3    | 379.1    | 161.4     | 80.0       | 416.1       | 0.14 |
+| GCC 15 `-O3 -march=native`  | 117.7    | 2701.9    | 379.4    | 130.6     | 77.6       | 406.9       | 0.15 |
+| GCC 16 `-O3`                | 105.9    | 3020.1    | 381.1    | 158.5     | 80.7       | 430.3       | 0.14 |
+| GCC 16 `-O3 -march=native`  | 99.3     | 2492.3    | 328.0    | 123.2     | 81.8       | 433.3       | 0.17 |
+| LLVM 22 `-O3`               | 50.5     | 1213.6    | 302.8    | 109.2     | 57.2       | 1093.9      | 0.90 |
+| LLVM 22 `-O3 -march=native` | 48.2     | 1126.0    | 299.2    | 108.7     | 53.4       | 612.7       | 0.54 |
 
 ### 753.ns3_r
 
@@ -1029,13 +1029,13 @@ Hotspots include `InterferenceHelper::AppendEvent` and `WifiSpectrumValueHelper:
 Results:
 
 | Workload      | Compiler + Flags | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (M) | MPKI |
-|---------------|------------------|----------|----------|----------|-----------|----------|--------------|------|
-| 1. mobile     | GCC 14 `-O3`    | 18       | 257.2    | 66.6     | 35.4      | 54.4     | 631.1        | 2.45 |
-| 2. tcp        | GCC 14 `-O3`    | 15       | 204.8    | 63.5     | 41.4      | 45.4     | 148.1        | 0.72 |
-| 3. lena       | GCC 14 `-O3`    | 3        | 46.6     | 14.2     | 9.6       | 10.4     | 53.4         | 1.15 |
-| 4. dctcp      | GCC 14 `-O3`    | 19       | 225.3    | 71.1     | 43.9      | 52.3     | 295.8        | 1.31 |
-| 5. wifi_mixed | GCC 14 `-O3`    | 23       | 291.8    | 88.8     | 52.7      | 66.5     | 201.9        | 0.69 |
-| 6. wifi_eht   | GCC 14 `-O3`    | 14       | 194.3    | 58.1     | 32.6      | 44.0     | 372.0        | 1.91 |
+|---------------|------------------|----------|-----------|----------|-----------|------------|-------------|------|
+| 1. mobile     | GCC 14 `-O3`     | 18       | 257.2     | 66.6     | 35.4      | 54.4       | 631.1       | 2.45 |
+| 2. tcp        | GCC 14 `-O3`     | 15       | 204.8     | 63.5     | 41.4      | 45.4       | 148.1       | 0.72 |
+| 3. lena       | GCC 14 `-O3`     | 3        | 46.6      | 14.2     | 9.6       | 10.4       | 53.4        | 1.15 |
+| 4. dctcp      | GCC 14 `-O3`     | 19       | 225.3     | 71.1     | 43.9      | 52.3       | 295.8       | 1.31 |
+| 5. wifi_mixed | GCC 14 `-O3`     | 23       | 291.8     | 88.8     | 52.7      | 66.5       | 201.9       | 0.69 |
+| 6. wifi_eht   | GCC 14 `-O3`     | 14       | 194.3     | 58.1     | 32.6      | 44.0       | 372.0       | 1.91 |
 
 Similar to 727.cppcheck_r, 753.ns3_r is essentially a memory allocator benchmark, with much time in malloc/free, plus std::map and libm calls. Under `-O3`: 1221B instructions, 273B branches, MPKI = 1.39.
 
@@ -1085,23 +1085,23 @@ b7/b10 are similar to b5; b18/b19 are similar to b16. zstd uses different paths 
 With `-march=native`: BMI instructions (bzhi, tzcnt) and three-operand non-flag-affecting operations (shrx) reduce instruction counts, similar to corresponding RISC-V instructions. Results before and after:
 
 | Workload | Compiler + Flags           | Time (s) | Insns (B) | Load (B) | Store (B) | Branch (B) | Mispred (M) | MPKI |
-|----------|----------------------------|----------|----------|----------|-----------|----------|--------------|------|
-| 1. b3    | GCC 14 `-O3`               | 11.0     | 181.4    | 49.9     | 17.7      | 19.1     | 543.9        | 3.00 |
-| 1. b3    | GCC 14 `-O3 -march=native` | 10.5     | 170.4    | 49.9     | 18.3      | 18.9     | 543.8        | 3.19 |
-| 2. b5    | GCC 14 `-O3`               | 14.5     | 273.6    | 61.3     | 35.1      | 28.4     | 562.4        | 2.06 |
-| 2. b5    | GCC 14 `-O3 -march=native` | 14.0     | 250.5    | 59.7     | 35.4      | 28.3     | 559.1        | 2.23 |
-| 3. b7    | GCC 14 `-O3`               | 13.0     | 228.5    | 48.9     | 25.8      | 29.8     | 599.3        | 2.62 |
-| 3. b7    | GCC 14 `-O3 -march=native` | 12.7     | 207.4    | 46.6     | 26.0      | 29.8     | 596.7        | 2.88 |
-| 4. b10   | GCC 14 `-O3`               | 11.6     | 207.2    | 41.5     | 17.6      | 32.6     | 516.3        | 2.49 |
-| 4. b10   | GCC 14 `-O3 -march=native` | 11.5     | 184.0    | 37.8     | 17.8      | 32.6     | 569.6        | 3.10 |
-| 5. b14   | GCC 14 `-O3`               | 24.5     | 197.6    | 48.8     | 16.5      | 29.1     | 1609.6       | 8.15 |
-| 5. b14   | GCC 14 `-O3 -march=native` | 23.7     | 190.1    | 46.7     | 15.9      | 27.8     | 1612.5       | 8.48 |
-| 6. b16   | GCC 14 `-O3`               | 10.9     | 129.1    | 29.9     | 11.2      | 18.0     | 652.1        | 5.05 |
-| 6. b16   | GCC 14 `-O3 -march=native` | 10.2     | 124.7    | 30.7     | 12.0      | 17.3     | 646.5        | 5.18 |
-| 7. b18   | GCC 14 `-O3`               | 20.1     | 265.8    | 57.0     | 17.0      | 32.6     | 987.7        | 3.72 |
-| 7. b18   | GCC 14 `-O3 -march=native` | 18.4     | 259.2    | 57.0     | 17.2      | 31.4     | 980.7        | 3.78 |
-| 8. b19   | GCC 14 `-O3`               | 25.5     | 342.0    | 72.9     | 19.1      | 41.8     | 1060.6       | 3.10 |
-| 8. b19   | GCC 14 `-O3 -march=native` | 23.4     | 332.8    | 72.7     | 19.1      | 40.1     | 1050.2       | 3.16 |
+|----------|----------------------------|----------|-----------|----------|-----------|------------|-------------|------|
+| 1. b3    | GCC 14 `-O3`               | 11.0     | 181.4     | 49.9     | 17.7      | 19.1       | 543.9       | 3.00 |
+| 1. b3    | GCC 14 `-O3 -march=native` | 10.5     | 170.4     | 49.9     | 18.3      | 18.9       | 543.8       | 3.19 |
+| 2. b5    | GCC 14 `-O3`               | 14.5     | 273.6     | 61.3     | 35.1      | 28.4       | 562.4       | 2.06 |
+| 2. b5    | GCC 14 `-O3 -march=native` | 14.0     | 250.5     | 59.7     | 35.4      | 28.3       | 559.1       | 2.23 |
+| 3. b7    | GCC 14 `-O3`               | 13.0     | 228.5     | 48.9     | 25.8      | 29.8       | 599.3       | 2.62 |
+| 3. b7    | GCC 14 `-O3 -march=native` | 12.7     | 207.4     | 46.6     | 26.0      | 29.8       | 596.7       | 2.88 |
+| 4. b10   | GCC 14 `-O3`               | 11.6     | 207.2     | 41.5     | 17.6      | 32.6       | 516.3       | 2.49 |
+| 4. b10   | GCC 14 `-O3 -march=native` | 11.5     | 184.0     | 37.8     | 17.8      | 32.6       | 569.6       | 3.10 |
+| 5. b14   | GCC 14 `-O3`               | 24.5     | 197.6     | 48.8     | 16.5      | 29.1       | 1609.6      | 8.15 |
+| 5. b14   | GCC 14 `-O3 -march=native` | 23.7     | 190.1     | 46.7     | 15.9      | 27.8       | 1612.5      | 8.48 |
+| 6. b16   | GCC 14 `-O3`               | 10.9     | 129.1     | 29.9     | 11.2      | 18.0       | 652.1       | 5.05 |
+| 6. b16   | GCC 14 `-O3 -march=native` | 10.2     | 124.7     | 30.7     | 12.0      | 17.3       | 646.5       | 5.18 |
+| 7. b18   | GCC 14 `-O3`               | 20.1     | 265.8     | 57.0     | 17.0      | 32.6       | 987.7       | 3.72 |
+| 7. b18   | GCC 14 `-O3 -march=native` | 18.4     | 259.2     | 57.0     | 17.2      | 31.4       | 980.7       | 3.78 |
+| 8. b19   | GCC 14 `-O3`               | 25.5     | 342.0     | 72.9     | 19.1      | 41.8       | 1060.6      | 3.10 |
+| 8. b19   | GCC 14 `-O3 -march=native` | 23.4     | 332.8     | 72.7     | 19.1      | 40.1       | 1050.2      | 3.16 |
 
 Overall under `-O3`: 1827B instructions, 232B branches, MPKI = 3.58, third-highest after 729.abc_r and 723.llvm_r.
 
