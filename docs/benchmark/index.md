@@ -110,14 +110,15 @@ permalink: /benchmark/
 - AWS Gravition 5(AWS m9g.xlarge, 4C 16G): Neoverse V3
 - Ampere Altra(Aliyun c6r.large, 2C 4G): Neoverse N1
 - Apple M1: Firestorm + Icestorm
+- Apple M2: Avalanche + Blizzard
 - Google Axion C4A(GCP c4a-standard-4, 4C 16G): Neoverse V2
 - Google Axion N4A(GCP n4a-standard-4, 4C 16G): Neoverse N3
 - Huawei Kirin 9010
 - Hygon C86 7390(Aliyun g7h.large, 2C 8G): w/o PMU
 - IBM POWER8NVL
-- IBM POWER8(SMT8)
-- IBM POWER9 3.2 GHz(SMT4, 4C16T)
-- IBM POWER9 3.8 GHz(SMT4, 44C176T)
+- IBM POWER8: SMT8
+- IBM POWER9 3.2 GHz: SMT4, 4C16T
+- IBM POWER9 3.8 GHz: SMT4, 44C176T
 - Intel Core i5-1135G7: Willow Cove, Tiger Lake
 - Intel Core i9-10980XE: Cascade Lake
 - Intel Core i9-12900KS: Golden Cove + Gracemont, Alder Lake
