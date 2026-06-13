@@ -155,6 +155,17 @@ CPI 在 1024 条分支之前能达到约 0.5 的 CPI，这代表 Neoverse V3 继
 
 Dispatch 宽度和 Decode 对齐，不过限制不少，实际很难跑满。
 
+### 物理寄存器堆
+
+为了测试物理寄存器堆的大小，一般会用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。测试结果见下图：
+
+![](./arm-neoverse-v3-register-file-size.png)
+
+- 32b int：测试 speculative 32 位整数寄存器的数量，拐点在 355 左右
+- 64b int：测试 speculative 64 位整数寄存器的数量，拐点在 192 左右，只有 32b 的一半，猜测实际的物理寄存器堆有 400 左右个 64 位整数寄存器，但是可以分成两半分别当成 32 位整数寄存器用
+- flags：测试 speculative NZCV 寄存器的数量，拐点在 82 左右
+- 32b fp：测试 speculative 32 位浮点寄存器的数量，有两次拐点，第一次和 32b int 差不多，第二次和 64b int 差不多
+
 ### Store to Load Forwarding
 
 官方信息：
