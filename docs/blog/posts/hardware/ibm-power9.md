@@ -148,3 +148,16 @@ IBM POWER9 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 ![](./ibm-power9-prefetcher-cacheline-2.png)
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/prefetcher_cacheline.cpp)。
+
+## 总结
+
+POWER9 相比 POWER8 是一次较大的架构升级，主要变化：
+
+- L1 ITLB 从 64 项大幅增加到 256 项
+- 增加了 BTAC（BTB），分支预测时延降至 1 周期
+- RAS 从 32 项增加到 64 项
+- 条件分支预测器从 LBHT+GBHT+GSEL 升级为 TAGE
+- ROB 从 GCT 的 28 Group（约 168 指令）改为 256 项 ICT，粒度从 Group 改为指令
+- L1 DTLB 从 48(ST)/96(SMT) 项增加到 256 项
+
+虽然升级了不少，但迭代速度已经赶不上竞争对手了。
