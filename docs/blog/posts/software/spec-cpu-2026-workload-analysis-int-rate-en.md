@@ -488,7 +488,7 @@ llvm-opt_r codegen.bc -S -O3 -mcpu=pwr9
 
 `-O3` runtimes: 62s and 53s, total 115s, reftime 507s, corresponding to 4.4 points. `-O3 -flto` actually regresses, but `-O3 -ljemalloc` gives significant improvement: 59s and 47s, total 106s, 4.8 points. `-march=native` has almost no impact.
 
-Interestingly, 721.gcc_r compiled with GCC 14 runs faster than with LLVM 22, though the advantage is small. Detailed analysis follows.
+Interestingly, 723.llvm_r compiled with GCC 14 runs faster than with LLVM 22, though the advantage is small. Detailed analysis follows.
 
 #### 1. transformsplus
 
