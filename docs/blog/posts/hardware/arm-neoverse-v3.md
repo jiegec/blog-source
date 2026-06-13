@@ -2,7 +2,6 @@
 layout: post
 date: 2026-06-13
 tags: [cpu,arm,neoverse,performance,uarch-review]
-draft: true
 categories:
     - hardware
 ---
