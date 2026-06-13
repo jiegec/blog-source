@@ -6,7 +6,7 @@ categories:
     - hardware
 ---
 
-# ARM Neoverse V3 (代号 Poisson) 微架构评测
+# ARM Neoverse V3 (代号 Poseidon) 微架构评测
 
 ## 背景
 
