@@ -8,6 +8,8 @@ categories:
 
 # SPEC CPU 2026 负载特性分析（FP Rate 篇）
 
+[English version](spec-cpu-2026-workload-analysis-fp-rate-en.md)
+
 ## 背景
 
 继 [INT Rate 篇](./spec-cpu-2026-workload-analysis-int-rate.md) 后，本文继续分析 SPEC FP 2026 Rate 的负载特性。

@@ -12,7 +12,7 @@ categories:
 
 ## Background
 
-I've been running some benchmarks with SPEC CPU 2026 recently, and plan to do in-depth workload analysis combined with the [test results](../../../benchmark/spec-cpu-2026-rate.md). This article focuses on SPEC INT 2026 Rate workload characteristics. For SPEC FP 2026 Rate analysis, see the [FP Rate article](./spec-cpu-2026-workload-analysis-fp-rate.md).
+I've been running some benchmarks with SPEC CPU 2026 recently, and plan to do in-depth workload analysis combined with the [test results](../../../benchmark/spec-cpu-2026-rate.md). This article focuses on SPEC INT 2026 Rate workload characteristics. For SPEC FP 2026 Rate analysis, see the [FP Rate article](./spec-cpu-2026-workload-analysis-fp-rate-en.md).
 
 <!-- more -->
 
