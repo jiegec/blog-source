@@ -104,6 +104,25 @@
 
 1. 对于除了苹果以外的 ARM64 核心，内核的 branch-misses 计数器考虑了 speculative 而不只是 retired，因此数字会偏高，此时要用 r22 计数替代。
 
+### 分支预测器比较
+
+#### Debian Trixie
+
+x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
+
+1. Golden Cove(Intel 12900KS P-Core)/Raptor Cove(Intel 13700K P-Core/Intel 14900K P-Core): MPKI=2.13
+2. Gracemont(Intel 12900KS E-Core/Intel 14900K E-Core): MPKI=2.44
+3. Cascade Lake(Intel 10980XE): MPKI=2.70
+4. Broadwell(Intel E5-2680 v4): MPKI=2.94
+5. Zen 1(AMD 7551): MPKI=3.73
+
+ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
+
+1. Neoverse V3(AWS Graviton 5): MPKI=1.83
+2. Avalanche(Apple M2 P-Core): MPKI=2.04
+3. Firestorm(Apple M1 P-Core): MPKI=2.80
+4. TSV110(Hisilicon Kunpeng 920): MPKI=4.07
+
 ### 网上的数据
 
 来自 SPEC 官网：

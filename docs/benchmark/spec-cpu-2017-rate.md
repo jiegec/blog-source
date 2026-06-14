@@ -303,10 +303,11 @@ x86 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
 ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
-1. Neoverse V2(Google Axion C4A): MPKI=4.59
-2. Avalanche(Apple M2 P-Core): MPKI=4.62
-3. Firestorm(Apple M1 P-Core): MPKI=4.89
-4. Icestorm(Apple M1 E-Core): MPKI=5.47
+1. Neoverse V3(AWS Graviton 5): MPKI=4.33
+2. Neoverse V2(Google Axion C4A): MPKI=4.59
+3. Avalanche(Apple M2 P-Core): MPKI=4.62
+4. Firestorm(Apple M1 P-Core): MPKI=4.89
+5. Icestorm(Apple M1 E-Core): MPKI=5.47
 
 LoongArch64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
