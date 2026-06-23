@@ -206,6 +206,7 @@ Ryzen Z2 系列：
 | Siena         | 8004 | 64         | Zen 4c | SP6  |
 | Bergamo       | 97X4 | 128        | Zen 4c | SP5  |
 | Grado         | 4005 | 16         | Zen 5  | AM5  |
+| Sorano        | 8005 | 84         | Zen 5  | SP6  |
 | Turin Classic | 9005 | 128        | Zen 5  | SP5  |
 | Turin Dense   | 9005 | 192        | Zen 5c | SP5  |
 
