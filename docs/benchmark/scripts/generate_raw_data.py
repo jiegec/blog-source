@@ -783,6 +783,7 @@ def detect_launch_date(cpu_name):
         ("Intel Xeon Platinum 8576C", "2023"),
         ("Intel Xeon Platinum 8581C", "2023"),
         ("Intel Xeon w9-3595X", "2024"),
+        ("Kunpeng 920 HuaweiCloud kc2", "2023"),
         ("Kunpeng 920", "2019"),
         ("Loongson 3A6000", "2023"),
         ("Loongson 3C5000", "2022"),
