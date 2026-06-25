@@ -78,6 +78,7 @@
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -march=native -flto -ljemalloc`）: [4.67](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-march=native-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -march=native -flto -ljemalloc`）: [2.17](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-march=native-flto-ljemalloc_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -march=native -flto -ljemalloc`）: [1.59](./data-trixie/int2026_rate1/Kunpeng_920_O3-march=native-flto-ljemalloc_001.txt)
+- Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -march=native -flto -ljemalloc`）: [2.68](./data-trixie/int2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-march=native-flto-ljemalloc_001.txt)
 
 服务器平台（LTO + Jemalloc）：
 
