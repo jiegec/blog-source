@@ -138,7 +138,7 @@ permalink: /benchmark/
 - Intel Xeon Platinum 8576C(TencentCloud s8.medium8, 2C 8G): Raptor Cove, Emerald Rapids, w/o PMU
 - Intel Xeon Platinum 8581C(GCP c4-standard-2, 2C 7G): Raptor Cove, Emerald Rapids
 - Intel Xeon w9-3595X: Golden Cove, Sapphire Rapids
-- Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.2, 4C 8G)
+- Kunpeng 920 HuaweiCloud kc2(HuaweiCloud kc2.xlarge.4, 4C 16G)
 - Kunpeng 920: TaiShan V110
 - Loongson 3A6000: LA664
 - Loongson 3C5000: LA464
