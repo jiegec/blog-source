@@ -29,6 +29,7 @@
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3 -march=native -flto -ljemalloc`）: [3.97](./data-trixie/int2026_rate1/AMD_Ryzen_7_5700X_O3-march=native-flto-ljemalloc_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3 -march=native -flto -ljemalloc`）: [4.31](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3 -march=native -flto -ljemalloc`）: [5.20](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3-march=native-flto-ljemalloc_001.txt)
+- Huawei Kirin X90 VM P-Core @ 2.3 GHz（`-O3 -march=native -flto -ljemalloc`）: [2.82](./data-trixie/int2026_rate1/Huawei_Kirin_X90_VM_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Intel Core i7-13700K P-Core @ 5.4 GHz Raptor Cove（`-O3 -march=native -flto -ljemalloc`）: [5.56](./data-trixie/int2026_rate1/Intel_Core_i7-13700K_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Intel Core i9-12900KS P-Core @ 5.5 GHz Golden Cove（`-O3 -march=native -flto -ljemalloc`）: [5.55](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_P-Core_O3-march=native-flto-ljemalloc_001.txt)
 - Intel Core i9-14900K P-Core @ 6.0 GHz Raptor Cove（`-O3 -march=native -flto -ljemalloc`）: [6.26](./data-trixie/int2026_rate1/Intel_Core_i9-14900K_P-Core_O3-march=native-flto-ljemalloc_001.txt)
