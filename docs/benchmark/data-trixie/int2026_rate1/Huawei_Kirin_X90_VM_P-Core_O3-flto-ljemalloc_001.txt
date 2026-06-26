@@ -1,0 +1,72 @@
+Built with GCC 14.2.0 from Debian Trixie with -O3 -flto -ljemalloc
+Running on Linux kernel 6.1.0-35-arm64
+
+                         Estimated                        Estimated
+                  Base     Base        Base        Peak     Peak        Peak
+Benchmarks        Copies  Run Time     Rate        Copies  Run Time     Rate 
+---------------- -------  ---------  ---------    -------  ---------  ---------
+706.stockfish_r        1        367       3.43  *
+706.stockfish_r        1        369       3.41  S
+706.stockfish_r        1        366       3.44  S
+707.ntest_r            1        268       2.21  *
+707.ntest_r            1        269       2.20  S
+707.ntest_r            1        268       2.21  S
+708.sqlite_r           1        260       2.03  *
+708.sqlite_r           1        261       2.02  S
+708.sqlite_r           1        259       2.04  S
+710.omnetpp_r          1        140       3.47  S
+710.omnetpp_r          1        141       3.45  *
+710.omnetpp_r          1        142       3.43  S
+714.cpython_r          1        129       3.72  *
+714.cpython_r          1        129       3.71  S
+714.cpython_r          1        129       3.72  S
+721.gcc_r              1        246       2.79  S
+721.gcc_r              1        249       2.75  S
+721.gcc_r              1        248       2.77  *
+723.llvm_r             1        207       2.45  *
+723.llvm_r             1        206       2.46  S
+723.llvm_r             1        207       2.44  S
+727.cppcheck_r         1        130       2.76  S
+727.cppcheck_r         1        128       2.81  S
+727.cppcheck_r         1        129       2.77  *
+729.abc_r              1        200       2.29  *
+729.abc_r              1        200       2.30  S
+729.abc_r              1        200       2.29  S
+734.vpr_r              1        161       2.87  S
+734.vpr_r              1        160       2.88  S
+734.vpr_r              1        161       2.87  *
+735.gem5_r             1        137       3.56  S
+735.gem5_r             1        138       3.52  S
+735.gem5_r             1        138       3.53  *
+750.sealcrypto_r       1        224       2.39  S
+750.sealcrypto_r       1        224       2.40  S
+750.sealcrypto_r       1        224       2.39  *
+753.ns3_r              1        141       4.33  *
+753.ns3_r              1        141       4.35  S
+753.ns3_r              1        142       4.33  S
+777.zstd_r             1        315       2.04  *
+777.zstd_r             1        315       2.05  S
+777.zstd_r             1        316       2.04  S
+==================================================================================
+706.stockfish_r        1        367       3.43  *
+707.ntest_r            1        268       2.21  *
+708.sqlite_r           1        260       2.03  *
+710.omnetpp_r          1        141       3.45  *
+714.cpython_r          1        129       3.72  *
+721.gcc_r              1        248       2.77  *
+723.llvm_r             1        207       2.45  *
+727.cppcheck_r         1        129       2.77  *
+729.abc_r              1        200       2.29  *
+734.vpr_r              1        161       2.87  *
+735.gem5_r             1        138       3.53  *
+750.sealcrypto_r       1        224       2.39  *
+753.ns3_r              1        141       4.33  *
+777.zstd_r             1        315       2.04  *
+ Est. SPECrate(R)2026_int_base            2.80
+ Est. SPECrate(R)2026_int_peak                                          Not Run
+
+
+System Info:
+CPU Name: Cortex-A53
+Enabled: -1 cores, -1 chips, -1 threads/core
+Memory: 1x StratoVirt Not Specified 16 GB
