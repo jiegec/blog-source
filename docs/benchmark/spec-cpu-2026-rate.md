@@ -102,7 +102,7 @@
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3`）: [4.21](./data-trixie/int2026_rate1/AWS_Graviton_5_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [2.01](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [1.46](./data-trixie/int2026_rate1/Kunpeng_920_O3_001.txt)
-- Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [2.41](./data-trixie/int2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
+- Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [2.42](./data-trixie/int2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 
 #### 备注
 
