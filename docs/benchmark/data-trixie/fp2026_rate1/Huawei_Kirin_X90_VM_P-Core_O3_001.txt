@@ -1,0 +1,64 @@
+Built with GCC 14.2.0 from Debian Trixie with -O3
+Running on Linux kernel 6.1.0-35-arm64
+
+                         Estimated                        Estimated
+                  Base     Base        Base        Peak     Peak        Peak
+Benchmarks        Copies  Run Time     Rate        Copies  Run Time     Rate 
+---------------- -------  ---------  ---------    -------  ---------  ---------
+709.cactus_r           1        236       3.64  *
+709.cactus_r           1        237       3.63  S
+709.cactus_r           1        235       3.64  S
+722.palm_r             1        295       4.47  S
+722.palm_r             1        295       4.48  *
+722.palm_r             1        294       4.49  S
+731.astcenc_r          1        300       2.80  *
+731.astcenc_r          1        300       2.80  S
+731.astcenc_r          1        300       2.80  S
+736.ocio_r             1        230       3.81  S
+736.ocio_r             1        230       3.81  *
+736.ocio_r             1        230       3.81  S
+737.gmsh_r             1        211       2.18  S
+737.gmsh_r             1        212       2.17  *
+737.gmsh_r             1        212       2.17  S
+748.flightdm_r         1        198       3.61  S
+748.flightdm_r         1        198       3.61  S
+748.flightdm_r         1        198       3.61  *
+749.fotonik3d_r        1        192       6.01  *
+749.fotonik3d_r        1        193       6.00  S
+749.fotonik3d_r        1        192       6.01  S
+765.roms_r             1        349       4.51  S
+765.roms_r             1        348       4.52  S
+765.roms_r             1        348       4.52  *
+766.femflow_r          1        341       4.31  S
+766.femflow_r          1        336       4.37  S
+766.femflow_r          1        338       4.34  *
+767.nest_r             1        200       3.96  S
+767.nest_r             1        197       4.02  *
+767.nest_r             1        197       4.03  S
+772.marian_r           1        326       4.85  S
+772.marian_r           1        326       4.85  *
+772.marian_r           1        326       4.85  S
+782.lbm_r              1        225       2.55  S
+782.lbm_r              1        223       2.57  S
+782.lbm_r              1        223       2.57  *
+==================================================================================
+709.cactus_r           1        236       3.64  *
+722.palm_r             1        295       4.48  *
+731.astcenc_r          1        300       2.80  *
+736.ocio_r             1        230       3.81  *
+737.gmsh_r             1        212       2.17  *
+748.flightdm_r         1        198       3.61  *
+749.fotonik3d_r        1        192       6.01  *
+765.roms_r             1        348       4.52  *
+766.femflow_r          1        338       4.34  *
+767.nest_r             1        197       4.02  *
+772.marian_r           1        326       4.85  *
+782.lbm_r              1        223       2.57  *
+ Est. SPECrate(R)2026_fp_base             3.76
+ Est. SPECrate(R)2026_fp_peak                                           Not Run
+
+
+System Info:
+CPU Name: Cortex-A53
+Enabled: -1 cores, -1 chips, -1 threads/core
+Memory: 1x StratoVirt Not Specified 16 GB
