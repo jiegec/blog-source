@@ -1,0 +1,68 @@
+Built with GCC 14.2.0 from Debian Trixie with -O3 -march=native
+Running on Linux kernel 6.1.0-35-arm64
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+503.bwaves_r          1        232      43.2   *
+503.bwaves_r          1        232      43.3   S
+503.bwaves_r          1        232      43.2   S
+507.cactuBSSN_r       1        225       5.63  S
+507.cactuBSSN_r       1        227       5.58  S
+507.cactuBSSN_r       1        225       5.62  *
+508.namd_r            1        176       5.39  S
+508.namd_r            1        176       5.40  *
+508.namd_r            1        176       5.40  S
+510.parest_r          1        391       6.70  S
+510.parest_r          1        392       6.67  S
+510.parest_r          1        392       6.68  *
+511.povray_r          1        324       7.20  S
+511.povray_r          1        324       7.20  *
+511.povray_r          1        325       7.19  S
+519.lbm_r             1        174       6.06  S
+519.lbm_r             1        174       6.07  *
+519.lbm_r             1        174       6.07  S
+521.wrf_r             1        238       9.40  *
+521.wrf_r             1        239       9.39  S
+521.wrf_r             1        238       9.41  S
+526.blender_r         1        266       5.73  S
+526.blender_r         1        266       5.72  *
+526.blender_r         1        266       5.72  S
+527.cam4_r            1        201       8.69  S
+527.cam4_r            1        201       8.72  S
+527.cam4_r            1        201       8.71  *
+538.imagick_r         1        319       7.80  S
+538.imagick_r         1        319       7.79  S
+538.imagick_r         1        319       7.80  *
+544.nab_r             1        269       6.25  *
+544.nab_r             1        269       6.26  S
+544.nab_r             1        270       6.24  S
+549.fotonik3d_r       1        243      16.1   S
+549.fotonik3d_r       1        242      16.1   S
+549.fotonik3d_r       1        242      16.1   *
+554.roms_r            1        242       6.55  *
+554.roms_r            1        241       6.60  S
+554.roms_r            1        244       6.51  S
+=================================================================================
+503.bwaves_r          1        232      43.2   *
+507.cactuBSSN_r       1        225       5.62  *
+508.namd_r            1        176       5.40  *
+510.parest_r          1        392       6.68  *
+511.povray_r          1        324       7.20  *
+519.lbm_r             1        174       6.07  *
+521.wrf_r             1        238       9.40  *
+526.blender_r         1        266       5.72  *
+527.cam4_r            1        201       8.71  *
+538.imagick_r         1        319       7.80  *
+544.nab_r             1        269       6.25  *
+549.fotonik3d_r       1        242      16.1   *
+554.roms_r            1        242       6.55  *
+ Est. SPECrate(R)2017_fp_base            8.32
+ Est. SPECrate(R)2017_fp_peak                                          Not Run
+
+
+System Info:
+CPU Name: Cortex-A53
+Enabled: 8 cores, 1 chip
+Memory: 1x StratoVirt Not Specified 16 GB
