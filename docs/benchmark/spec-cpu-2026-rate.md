@@ -68,6 +68,7 @@
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [4.02](./data-trixie/int2026_rate1/Apple_M1_P-Core_O3_001.txt)
 - Apple M2 P-Core @ 3.5 GHz Avalanche（`-O3`）: [4.76](./data-trixie/int2026_rate1/Apple_M2_P-Core_O3_001.txt)
 - Huawei Kirin X90 VM P-Core @ 2.3 GHz（`-O3`）: [2.54](./data-trixie/int2026_rate1/Huawei_Kirin_X90_VM_P-Core_O3_001.txt)
+- Intel Core i5-1135G7 @ 4.2 GHz Willow Cove（`-O3`）: [3.08](./data-trixie/int2026_rate1/Intel_Core_i5-1135G7_O3_001.txt)
 - Intel Core i7-13700K P-Core @ 5.4 GHz Raptor Cove（`-O3`）: [4.96](./data-trixie/int2026_rate1/Intel_Core_i7-13700K_P-Core_O3_001.txt)
 - Intel Core i9-10980XE @ 4.7 GHz Cascade Lake（`-O3`）: [2.90](./data-trixie/int2026_rate1/Intel_Core_i9-10980XE_O3_001.txt)
 - Intel Core i9-12900KS E-Core @ 4.1 GHz Gracemont（`-O3`）: [2.73](./data-trixie/int2026_rate1/Intel_Core_i9-12900KS_E-Core_O3_001.txt)
