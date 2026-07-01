@@ -10,7 +10,7 @@ permalink: /about/
 
 我是陈嘉杰，清华大学计算机系的在读博士生。
 
-- 邮箱：c at jia.je / cjj21 at tsinghua.edu.cn（曾用邮箱）/ chenjj17 at tsinghua.edu.cn（曾用邮箱）
+- 邮箱：c at jia.je / cjj21 at mails.tsinghua.edu.cn（曾用邮箱）/ chenjj17 at mails.tsinghua.edu.cn（曾用邮箱）
 - GitHub：[@jiegec](https://github.com/jiegec)
 - B 站：<https://space.bilibili.com/11372427>
 - 知乎：<https://www.zhihu.com/people/jiege-chen>
