@@ -10,16 +10,17 @@ permalink: /about/
 
 我是陈嘉杰，清华大学计算机系的在读博士生。
 
-- 邮箱：cjj21 at tsinghua.edu.cn / c at jia.je
+- 邮箱：c at jia.je / cjj21 at tsinghua.edu.cn（曾用邮箱）/ chenjj17 at tsinghua.edu.cn（曾用邮箱）
 - GitHub：[@jiegec](https://github.com/jiegec)
 - B 站：<https://space.bilibili.com/11372427>
 - 知乎：<https://www.zhihu.com/people/jiege-chen>
 - Google Scholar：<https://scholar.google.com/citations?user=ayzH8MsAAAAJ&hl=en>
+- ORCID: <https://orcid.org/0000-0001-9408-5030>
 
 ## 教育经历
 
-- 2017-2021：清华大学计算机科学与技术系，计算机科学与技术专业，工学学士
 - 2021-2026：清华大学计算机科学与技术系，计算机科学与技术专业计算机系统结构方向工学博士，导师是张悠慧研究员
+- 2017-2021：清华大学计算机科学与技术系，计算机科学与技术专业，工学学士
 
 ## 教学
 
