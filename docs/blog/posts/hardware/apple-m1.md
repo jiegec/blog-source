@@ -39,7 +39,7 @@ UPDATE: 后来苹果发布了 [Apple Silicon CPU Optimization Guide](https://dev
 
 ## Benchmark
 
-Apple Firestorm/Icestorm 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
+Apple M1 Firestorm/Icestorm 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ## 环境准备
 
@@ -84,7 +84,7 @@ hw.perflevel0.l1icachesize: 196608
 hw.perflevel1.l1icachesize: 131072
 ```
 
-根据 Apple Silicon CPU Optimization Guide，从 M1 Family 到 M4 Family，A14 Bionic 到 A18 Family，P-Core 的 L1 ICache 的配置都是 192KiB, 6-way, 64B lines；对应处理器的 E-Core 的 L1 ICache 都是 192KiB, 64B lines，其中 M1 Family 和 A14 Bionic 是 8-way，其余处理器（M2 Family 和 A15 Bionic 开始）是 4-way。
+根据 Apple Silicon CPU Optimization Guide，从 M1 Family 到 M4 Family，A14 Bionic 到 A18 Family，P-Core 的 L1 ICache 的配置都是 **192KiB**, 6-way, 64B lines；对应处理器的 E-Core 的 L1 ICache 都是 **128KiB**, 64B lines，其中 M1 Family 和 A14 Bionic 是 8-way，其余处理器（M2 Family 和 A15 Bionic 开始）是 4-way。
 
 #### Firestorm
 
@@ -116,7 +116,7 @@ hw.perflevel1.l1icachesize: 131072
 
 ![](./apple-m1-firestorm-btb-8b.png)
 
-可以看到 CPI=1 的拐点前移到 1024 个分支，同时 CPI=3 的平台的拐点也前移到了 24576。拐点的前移，意味着 BTB 采用了组相连的结构，当 B 指令的 PC 的部分低位总是为 0 时，组相连的 Index 可能无法取到所有的 Set，导致表现出来的 BTB 容量只有部分 Set，例如此处容量减半，说明只有一半的 Set 被用到了。
+可以看到 CPI=1 的拐点前移到 512 个分支，同时 CPI=3 的平台的拐点也前移到了 24576。拐点的前移，意味着 BTB 采用了组相连的结构，当 B 指令的 PC 的部分低位总是为 0 时，组相连的 Index 可能无法取到所有的 Set，导致表现出来的 BTB 容量只有部分 Set，例如此处容量减半，说明只有一半的 Set 被用到了。
 
 如果进一步降低 B 指令的密度，使得它的低若干位都等于 0，最终 CPI=1 的拐点定格在 2 条分支，此时分支的间距大于或等于 2048B；CPI=3 的拐点定格在 6 条分支，此时分支的间距大于或等于 32KB。根据这个信息，可以认为 Firestorm 的 BTB 是 512 Set 2 Way 的结构，Index 是 PC[10:2]；同时也侧面佐证了 192KB L1 ICache 是 512 Set 6 Way，Index 是 PC[14:6]。
 
@@ -162,7 +162,7 @@ Icestorm 的 BTB 测试结果并不像 Firestorm 那样有规律，根据这个�
 
 ### L1 ITLB
 
-官方信息：根据 Apple Silicon CPU Optimization Guide，从 M1 Family 到 M4 Family，A14 Bionic 到 A18 Family，其 P-Core 的 L1 ITLB 配置都是一样的：192 entries，考虑到每个页是 16 KiB，对应 3 MiB 的内存；E-Core 的话，M1 Family 和 A14 Bionic 的 L1 ITLB 是 128 entries，之后的处理器（M2 Family 和 A15 Bionic 开始）则 E-Core 也是 192 entries。
+官方信息：根据 Apple Silicon CPU Optimization Guide，从 M1 Family 到 M4 Family，A14 Bionic 到 A18 Family，其 P-Core 的 L1 ITLB 配置都是一样的：**192 entries**，考虑到每个页是 16 KiB，对应 3 MiB 的内存；E-Core 的话，M1 Family 和 A14 Bionic 的 L1 ITLB 是 **128 entries**，之后的处理器（M2 Family 和 A15 Bionic 开始）则 E-Core 也是 192 entries。
 
 因此，M1 的 P-Core L1 ITLB 是 192 entries，E-Core L1 ITLB 是 128 entries。
 
@@ -240,9 +240,9 @@ Icestorm 测试结果如下：
 
 ![](./apple-m1-icestorm-prf.png)
 
-- 32b/64b int：测试 speculative 32/64 位整数寄存器的数量，拐点在 78
-- 32b fp：测试 speculative 32 位浮点寄存器的数量，拐点在 382
-- flags：测试 speculative NZCV 寄存器的数量，拐点在 75
+- 32b/64b int：测试 speculative 32/64 位整数寄存器的数量，拐点在 77
+- 32b fp：测试 speculative 32 位浮点寄存器的数量，拐点在 74
+- flags：测试 speculative NZCV 寄存器的数量，拐点在 38
 
 注意这里测试的都是能够用于预测执行的寄存器数量，实际的物理寄存器堆还需要保存架构寄存器。但具体保存多少个架构寄存器不确定，但至少 32 个整数通用寄存器和浮点寄存器是一定有的，但可能还有一些额外的需要重命名的状态也要算进来。
 
@@ -277,7 +277,7 @@ Icestorm 上的结果：
 
 #### L1 DTLB 容量
 
-官方信息：根据 Apple Silicon CPU Optimization Guide，对于 P-Core 来说，除了 M2 Family、A14 Bionic 和 A15 Bionic 的 L1 DTLB 是 256 entries 以外，其余的 M1 Family、M3 Family 到 M4 Family，A16 Bionic 到 A18 Family 的 L1 DTLB 都是 160 entries。对于 E-Core 来说，除了 M1 Family 和 A14 Bionic 是 129 entries，其余的从 M2 Family 到 M4 Family，A15 Bionic 到 A18 Family 都是 192 entries。
+官方信息：根据 Apple Silicon CPU Optimization Guide，对于 P-Core 来说，除了 M2 Family、A14 Bionic 和 A15 Bionic 的 L1 DTLB 是 256 entries 以外，其余的 M1 Family、M3 Family 到 M4 Family，A16 Bionic 到 A18 Family 的 L1 DTLB 都是 **160 entries**。对于 E-Core 来说，除了 M1 Family 和 A14 Bionic 是 **128 entries**，其余的从 M2 Family 到 M4 Family，A15 Bionic 到 A18 Family 都是 192 entries。
 
 因此，M1 的 P-Core L1 DTLB 容量是 160，E-Core L1 DTLB 容量是 128。
 
@@ -428,7 +428,7 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 ### 执行单元
 
-想要测试有多少个执行单元，每个执行单元可以运行哪些指令，首先要测试各类指令在无依赖情况下的的 IPC，通过 IPC 来推断有多少个能够执行这类指令的执行单元；但由于一个执行单元可能可以执行多类指令，于是进一步需要观察在混合不同类的指令时的 IPC，从而推断出完整的结果。
+想要测试有多少个执行单元，每个执行单元可以运行哪些指令，首先要测试各类指令在无依赖情况下的 IPC，通过 IPC 来推断有多少个能够执行这类指令的执行单元；但由于一个执行单元可能可以执行多类指令，于是进一步需要观察在混合不同类的指令时的 IPC，从而推断出完整的结果。
 
 官方信息：根据 Apple Silicon CPU Optimization Guide，M1 Family 的 P-Core 包括如下计算单元：
 
@@ -919,7 +919,7 @@ hw.perflevel1.cpusperl2: 4
 
 ### L2 TLB
 
-官方信息：根据 Apple Silicon CPU Optimization Guide，P-Core 的 L2 TLB 容量，从 M1 Family 到 M4 Family，从 A14 Bionic 到 A18 Family，都是 3072 entries；E-Core 的 L2 TLB 容量，M1 Family 和 A14 Bionic 是 1024 entries，M2 Family 到 M4 Family 和 A15 Bionic 到 A18 Family 都是 2048 entries。
+官方信息：根据 Apple Silicon CPU Optimization Guide，P-Core 的 L2 TLB 容量，从 M1 Family 到 M4 Family，从 A14 Bionic 到 A18 Family，都是 **3072 entries**；E-Core 的 L2 TLB 容量，M1 Family 和 A14 Bionic 是 **1024 entries**，M2 Family 到 M4 Family 和 A15 Bionic 到 A18 Family 都是 2048 entries。
 
 #### Firestorm
 
