@@ -211,15 +211,19 @@ there are 2 stores, then each store should forward to either first or second hal
 
 下面是在几款处理器上实测 Store to Load Forwarding 在各种访存模式下能否转发以及转发的条件：
 
-| uArch                                       | 1 ld + 1 st | 1 ld + 2 st | 1 ld + 4 st | 1 ld + 8 st |
-|---------------------------------------------|-------------|-------------|-------------|-------------|
-| [AMD Zen5](./amd-zen5.md)                   | Yes [1]     | No          | No          | No          |
-| [ARM Neoverse V2](./arm-neoverse-v2.md)     | Yes [2]     | Yes [3]     | No          | No          |
-| [Qualcomm Oryon](./qualcomm-oryon.md)       | Yes [4]     | Yes [5]     | No          | No          |
-| [Apple Firestorm](./apple-m1.md)            | Yes         | Yes [6]     | Yes [6]     | Yes [6]     |
-| [Apple M4 P-Core](./apple-m4.md)            | Yes         | Yes         | Yes         | Yes         |
-| [Intel Golden Cove](./intel-golden-cove.md) | Yes [7]     | No          | No          | No          |
-| [Intel Gracemont](./intel-gracemont.md)     | Yes [8]     | No          | No          | No          |
+| uArch                                         | 1 ld + 1 st | 1 ld + 2 st | 1 ld + 4 st | 1 ld + 8 st |
+|-----------------------------------------------|-------------|-------------|-------------|-------------|
+| [AMD Zen5](./amd-zen5.md)                     | Yes [1]     | No          | No          | No          |
+| [Ampere Skylark](./ampere-skylark.md)         | Yes [1]     | No          | No          | No          |
+| [ARM Neoverse V2](./arm-neoverse-v2.md)       | Yes [2]     | Yes [3]     | No          | No          |
+| [ARM Neoverse V3](./arm-neoverse-v3.md)       | Yes [2]     | Yes [3]     | No          | No          |
+| [Qualcomm Oryon](./qualcomm-oryon.md)         | Yes [4]     | Yes [5]     | No          | No          |
+| [Apple M1 Firestorm](./apple-m1.md)           | Yes         | Yes [6]     | Yes [6]     | Yes [6]     |
+| [Apple M2 Avalanche](./apple-m2.md)           | Yes         | Yes [6]     | Yes [6]     | Yes [6]     |
+| [Apple M4 P-Core](./apple-m4.md)              | Yes         | Yes         | Yes         | Yes         |
+| [Intel Golden Cove](./intel-golden-cove.md)   | Yes [7]     | No          | No          | No          |
+| [Intel Redwood Cove](./intel-redwood-cove.md) | Yes [7]     | No          | No          | No          |
+| [Intel Gracemont](./intel-gracemont.md)       | Yes [8]     | No          | No          | No          |
 
 - [1]: 要求 st 完全包含 ld
 - [2]: 要求 ld 和 st 地址相同或差半个 st 宽度
