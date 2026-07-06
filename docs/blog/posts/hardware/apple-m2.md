@@ -22,10 +22,10 @@ categories:
 
 网上已经有针对 Apple M2 微架构的评测和分析，建议阅读：
 
-- [我们找到了Windows电脑续航差的原因！苹果M2深度分析](https://www.bilibili.com/video/BV18B4y1b7gj/)
-- [不为人知的角落，Apple M2的小小努力（其一）](https://zhuanlan.zhihu.com/p/662561990)
-- [Apple M2 Blizzard微架构评测(上)：阳春白雪](https://zhuanlan.zhihu.com/p/675322260)
-- [Apple M2 Blizzard微架构评测(中)：阳春白雪](https://zhuanlan.zhihu.com/p/678983061)
+- [我们找到了 Windows 电脑续航差的原因！苹果 M2 深度分析](https://www.bilibili.com/video/BV18B4y1b7gj/)
+- [不为人知的角落，Apple M2 的小小努力（其一）](https://zhuanlan.zhihu.com/p/662561990)
+- [Apple M2 Blizzard 微架构评测 (上)：阳春白雪](https://zhuanlan.zhihu.com/p/675322260)
+- [Apple M2 Blizzard 微架构评测 (中)：阳春白雪](https://zhuanlan.zhihu.com/p/678983061)
 
 下面分各个模块分别记录官方提供的信息，以及实测的结果。读者可以对照已有的第三方评测理解。官方信息与实测结果一致的数据会加粗。
 
