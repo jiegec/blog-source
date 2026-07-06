@@ -474,3 +474,7 @@ Memory Device
         Maximum Voltage: 0.856 V
         Configured Voltage: 0.8 V
 ```
+
+## 总结
+
+Oryon 由前 Apple 团队设计，微架构上继承了 Firestorm 的很多设计思路，并在此基础上做了改进。在 SPEC CPU 2017 Rate-1 上，相比 Firestorm 整数性能提升 5.9%，浮点性能提升 24.1%。希望高通未来可以持续迭代，像苹果那样每代都在微架构上做增量优化。
