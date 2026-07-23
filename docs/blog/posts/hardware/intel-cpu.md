@@ -42,8 +42,8 @@ categories:
 ### Intel® Xeon® 6
 
 - [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/240357/intel-xeon-6.html)
-- 发布时间：Q1'25, Q2'24
-- 代号：Granite Rapids/Sierra Forest
+- 发布时间：Q2'26, Q1'26, Q4'25, Q3'25, Q2'25, Q1'25, Q3'24, Q2'24
+- 代号：Granite Rapids/Granite Rapids-D/Sierra Forest
 - 微架构：Redwood Cove/Crestmont
 - 用途：Server
 - 旗舰：Xeon 6980P(128C256T，Redwood Cove, 504 MB L3), Xeon 6780E(144C144T, Crestmont, 108 MB L3)
@@ -166,15 +166,16 @@ Intel Core i 系列：
 ### Intel® Core™ Ultra Processors (Series 2)
 
 - [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/241071/intel-core-ultra-processors-series-2.html)
-- 发布时间：Q1'25
+- 发布时间：Q1'26, Q3'25, Q1'25, Q4'24, Q3'24
 - 代号：Lunar Lake/Arrow Lake，大小核
 - 用途：移动/桌面
+- 旗舰：Core Ultra 9 285K(8P+16E, 24C24T)
 
 ### Intel® Core™ processors (Series 2)
 
 - [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/238783/intel-core-processors-series-2.html)
-- 发布时间：Q1'25
-- 代号：Raptor Lake，大小核
+- 发布时间：Q1'26, Q1'25, Q4'24
+- 代号：Raptor Lake/Bartlett Lake，大小核
 - 用途：嵌入式/移动
 
 ### Intel® Core™ Ultra Processors (Series 1)
@@ -194,7 +195,7 @@ Intel Core i 系列：
 ### 14th Generation Intel® Core™ Processors
 
 - [i9 CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/236143/intel-core-i9-processors-14th-gen.html) [i7 CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/236170/intel-core-i7-processors-14th-gen.html) [i5 CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/236175/intel-core-i5-processors-14th-gen.html) [i3 CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/236176/intel-core-i3-processors-14th-gen.html)
-- 发布时间：Q1'24
+- 发布时间：Q3'24, Q1'24, Q4'23
 - 代号：Raptor Lake，大小核
 - 用途：桌面，笔记本
 - 旗舰：i9-14900K（8+16C32T）
