@@ -120,11 +120,12 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 
 ### AI
 
-| 代号          | 用途   | 核显    | 插槽 | 微架构         | 型号                            |
-|---------------|--------|---------|------|----------------|---------------------------------|
-| Strix Point   | 笔记本 | RDNA3.5 | FP8  | Zen 5 + Zen 5c | HX375/HX370/365/360             |
-| Krackan Point | 笔记本 | RDNA3.5 | FP8  | Zen 5 + Zen 5c | 350/340                         |
-| Gorgon Point  | 笔记本 | RDNA3.5 | FP8  | Zen 5 + Zen 5c | HX475/HX470/465/450/445/435/430 |
+| 代号             | 用途   | 核显    | 插槽 | 微架构         | 型号                            |
+|------------------|--------|---------|------|----------------|---------------------------------|
+| Strix Point      | 笔记本 | RDNA3.5 | FP8  | Zen 5 + Zen 5c | HX375/HX370/365/360             |
+| Krackan Point    | 笔记本 | RDNA3.5 | FP8  | Zen 5 + Zen 5c | 350/340                         |
+| Gorgon Point     | 笔记本 | RDNA3.5 | FP8  | Zen 5 + Zen 5c | HX475/HX470/465/450/445/435/430 |
+| Gorgon Point AM5 | 台式机 | RDNA3.5 | AM5  | Zen 5 + Zen 5c | 450G(E)/440G(E)/435G(E)         |
 
 ### AI Max
 
@@ -190,6 +191,7 @@ Ryzen Z2 系列：
 - Shimada Peak: [AMD Ryzen Threadripper 9000 “Zen 5” CPUs Official: Up To 96 Cores, 5.4 GHz Clocks, 384 MB L3 In DIY & Workstation Flavors](https://wccftech.com/amd-ryzen-threadripper-9000-zen-5-cpus-official-up-to-96-cores-384-mb-l3-diy-workstation/)
 - Gorgon Point: [AMD Announces Ryzen AI 400 Series "Gorgon Point" Mobile Processors](https://www.techpowerup.com/344730/amd-announces-ryzen-ai-400-series-gorgon-point-mobile-processors)
 - Gorgon Halo: [AMD Powers Next-Generation Agent Computers with New Ryzen AI Halo Developer Platform and Ryzen AI Max PRO 400 Series Processors](https://www.amd.com/en/blogs/2026/amd-powers-next-generation-agent-computers-with-new-ryzen-ai-hal.html)
+- Gorgon Point AM5: [AMD Ryzen AI 400G Series Desktop APUs Based on 4 nm "Gorgon Point" with 4P+4C Configuration](https://www.techpowerup.com/346949/amd-ryzen-ai-400g-series-desktop-apus-based-on-4-nm-gorgon-point-with-4p-4c-configuration)
 
 
 ## EPYC 系列
