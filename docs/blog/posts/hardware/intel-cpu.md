@@ -71,7 +71,7 @@ categories:
 - [CPU 型号列表](https://ark.intel.com/content/www/us/en/ark/products/series/204098/3rd-generation-intel-xeon-scalable-processors.html)
 - 发布时间：Q2'21(Ice Lake), Q2'20(Cooper Lake)
 - 代号：Cooper Lake/Ice Lake
-- 微架构：Sunny Cove
+- 微架构：Skylake/Sunny Cove
 - 用途：Server
 - 旗舰：Xeon Platinum 8380(40C80T，Sunny Cove，60 MB L3)
 - 相关阅读：[Ice Lake](https://www.anandtech.com/show/16594/intel-3rd-gen-xeon-scalable-review)
