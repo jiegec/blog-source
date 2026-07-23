@@ -30,6 +30,15 @@ categories:
 
 <!-- more -->
 
+### Intel® Xeon® 6+
+
+- [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/245944/intel-xeon-6-processors.html)
+- 发布时间：Q2'26
+- 代号：Clearwater Forest
+- 微架构：Darkmont
+- 用途：Server
+- 旗舰：Xeon 6990E+(288C288T，Darkmont, 576 MB L3)
+
 ### Intel® Xeon® 6
 
 - [CPU 型号列表](https://www.intel.com/content/www/us/en/ark/products/series/240357/intel-xeon-6.html)
