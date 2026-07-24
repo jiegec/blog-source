@@ -84,7 +84,7 @@ Cezanne 桌面：
 | Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2     | Zen 4 + Zen4c | 7545U/7440U                                                        |
 | Rembrandt R  | 笔记本 | RDNA2 | FP7/FP7r2     | Zen 3+        | 7735H(S)/7736U/7735U/7535HS/7535U/7335U                            |
 | Barcelo R    | 笔记本 | GCN5  | FP6           | Zen 3         | 7730U/7530U/7330U                                                  |
-| Mendocino    | 笔记本 | RDNA2 | FT6           | Zen 2         | 7520U/7520C/7320U/7320C                                           |
+| Mendocino    | 笔记本 | RDNA2 | FT6           | Zen 2         | 7520U/7520C/7320U/7320C                                            |
 
 AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](https://www.anandtech.com/show/18718/amd-2023-ryzen-mobile-7000-cpus-unveiled-zen-4-phoenix-takes-point)：
 
@@ -196,21 +196,23 @@ Ryzen Z2 系列：
 
 ## EPYC 系列
 
-| 代号          | 编号 | 最大核心数 | 微架构 | 插槽 |
-|---------------|------|------------|--------|------|
-| Naples        | 7001 | 32         | Zen 1  | SP3  |
-| Rome          | 7002 | 64         | Zen 2  | SP3  |
-| Milan         | 7003 | 64         | Zen 3  | SP3  |
-| Milan-X       | 7003 | 64         | Zen 3  | SP3  |
-| Genoa         | 9004 | 96         | Zen 4  | SP5  |
-| Genoa-X       | 9004 | 96         | Zen 4  | SP5  |
-| Raphael       | 4004 | 16         | Zen 4  | AM5  |
-| Siena         | 8004 | 64         | Zen 4c | SP6  |
-| Bergamo       | 97X4 | 128        | Zen 4c | SP5  |
-| Grado         | 4005 | 16         | Zen 5  | AM5  |
-| Sorano        | 8005 | 84         | Zen 5  | SP6  |
-| Turin Classic | 9005 | 128        | Zen 5  | SP5  |
-| Turin Dense   | 9005 | 192        | Zen 5c | SP5  |
+| 代号           | 编号 | 最大核心数 | 微架构 | 插槽    |
+|----------------|------|------------|--------|---------|
+| Naples         | 7001 | 32         | Zen 1  | SP3     |
+| Rome           | 7002 | 64         | Zen 2  | SP3     |
+| Milan          | 7003 | 64         | Zen 3  | SP3     |
+| Milan-X        | 7003 | 64         | Zen 3  | SP3     |
+| Genoa          | 9004 | 96         | Zen 4  | SP5     |
+| Genoa-X        | 9004 | 96         | Zen 4  | SP5     |
+| Raphael        | 4004 | 16         | Zen 4  | AM5     |
+| Siena          | 8004 | 64         | Zen 4c | SP6     |
+| Bergamo        | 97X4 | 128        | Zen 4c | SP5     |
+| Grado          | 4005 | 16         | Zen 5  | AM5     |
+| Sorano         | 8005 | 84         | Zen 5  | SP6     |
+| Turin Classic  | 9005 | 128        | Zen 5  | SP5     |
+| Turin Dense    | 9005 | 192        | Zen 5c | SP5     |
+| Venice Classic | 9006 | 96         | Zen 6  | SP7/SP8 |
+| Venice Dense   | 9006 | 256        | Zen 6c | SP7/SP8 |
 
 ### 参考资料
 
