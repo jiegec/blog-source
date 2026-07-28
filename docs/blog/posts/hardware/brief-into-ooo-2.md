@@ -174,6 +174,14 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 香山处理器也[实现](https://github.com/OpenXiangShan/XiangShan/blob/dd16cea72b92bcf8a87750b14458be82fda5cfff/src/main/scala/xiangshan/mem/mdp/StoreSet.scala)了 Store Set 算法的变种，其区别可以参考香山的[访存依赖预测](https://docs.xiangshan.cc/zh-cn/latest/memory/mdp/mdp/)文档。
 
+通过逆向，可以得知商业处理器所使用的 MDP 设计：
+
+- Intel: 见 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 和 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/system/files/sec21-ragab.pdf)，Intel CPU 用一个表来维护 Load PC 到计数器的映射，根据计数器的值判断是否有依赖关系（即在上述 Load Wait Table 基础上，用计数器来表示置信度），外加一个全局的计数器来决定是否启用预测器
+- ARM: 见 [Leaky MDU: ARM Memory Disambiguation Unit Uncovered and Vulnerabilities Exposed](https://dl.acm.org/doi/abs/10.1109/DAC56929.2023.10247985) 和 [SSBleed: Non-speculative Side-channel Attacks via Speculative Store Bypass on Armv9 CPUs](https://ieeexplore.ieee.org/document/11408465/)，与 Intel 类似，ARM CPU 也是维护了一个从 Load PC 到计数器的映射，根据计数器的值判断是否有依赖关系
+- AMD: 见 [Uncovering and Exploiting AMD Speculative Memory Access Predictors for Fun and Profit](https://ieeexplore.ieee.org/document/10476467/)，对 Store 和 Load PC 进行哈希再查表，判断是否有依赖关系
+
+有了 Memory Dependence Predictor 以后，硬件就可以预测 Load 会不会依赖之前的 Store，如果不依赖，就可以提前执行。但是，如果依赖的话，是否必须等之前的 Store 完成，再从缓存中读取？答案是不一定，这就要靠下面讲的 Store to Load Forwarding 机制。
+
 ## Store to Load Forwarding
 
 对于那些依赖之前的 Store 的 Load 指令，如果 Store 还没有写进缓存，那么 Load 在执行的时候，就需要从 Store 要写入的数据里获取数据，这就是 Store to Load Forwarding。但实际情况可能会比较复杂，例如 Load 和 Store 只有一部分的重合，不重合的部分要从缓存中获取；或者 Load 和多个 Store 重合，要从多个 Store 分别取数据合并起来；或者前后有对同一个地址的 Store，那么要选取最晚的那一个。
