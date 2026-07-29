@@ -274,7 +274,7 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 ### Memory Dependency Predictor
 
-为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之前在内存上的依赖。参考 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/conference/usenixsecurity21/presentation/ragab) 的方法，构造一对 Store-Load，通过延迟 Store 地址的计算，区分出硬件是否进行了预测，以及预测正确与否：
+为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之前在内存上的依赖。参考 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/conference/usenixsecurity21/presentation/ragab) 和 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 的方法，构造一对 Store-Load，通过延迟 Store 地址的计算，区分出硬件是否进行了预测，以及预测正确与否：
 
 ```asm
 ; Listing 4 of Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks
@@ -294,7 +294,13 @@ ret
 
 ![](./intel-golden-cove-mdp-1.png)
 
-可见当预测器被训练为 Store-Load 有依赖之后，经过 15 次 Store-Load 无依赖（横坐标 100 到 114）的训练以后，从第 16 次（横坐标 115）开始成功预测了无依赖的情况，使得 Load 可以提前执行，表现出来周期数的明显减少。而当 Store-Load 再次出现依赖（横坐标 120）时，因为错误预测，出现了周期数的明显增加，并立即下一次执行 Store-Load（横坐标 121）就能正确预测出有依赖。这与论文中的逆向结果一致：从初始状态（通过大量的有依赖来重置状态）开始，连续无依赖 15 次以后，才会被预测为无依赖，且只要有一次有依赖，就会被预测为有依赖。
+可见当预测器被训练为 Store-Load 有依赖之后，经过 15 次 Store-Load 无依赖（横坐标 100 到 114）的训练以后，从第 16 次（横坐标 115）开始成功预测了无依赖的情况，使得 Load 可以提前执行，表现出来周期数的明显减少。而当 Store-Load 再次出现依赖（横坐标 120）时，因为错误预测，出现了周期数的明显增加，并立即下一次执行 Store-Load（横坐标 121）就能正确预测出有依赖。这与论文中的逆向结果一致：从初始状态（通过大量的有依赖来重置状态）开始，连续无依赖 15 次以后，才会被预测为无依赖，且只要有一次有依赖，就会被预测为有依赖。对应的内部实现是，硬件对这个 Load 维护一个 4-bit 的饱和计数器，有依赖时清零，无依赖时加一，当累加到最大值 15 时，预测为无依赖，否则就是有依赖。
+
+上面的测试只证明了有 4-bit 的计数器，且无依赖时加一，累加到 15 时才预测为无依赖，但并没有证明它在有依赖时清零，也可能是减一等不减到零的情况。下面修改一下访存模式来证明这个选项，即累加到 15 后，一次有依赖，再来多次无依赖，就可以观察到下面的结果：
+
+![](./intel-golden-cove-mdp-2.png)
+
+可见，一次有依赖过后，又需要 15 次无依赖，才能预测为无依赖。这证明了前面的表述，即 4-bit 饱和计数器，无依赖时加一，有依赖时置零，当计数器等于 15 时，预测为无依赖。
 
 ### L1 DCache
 
