@@ -225,7 +225,7 @@ cases where the store's address is known, and the store data is available.
 
 ### Memory Dependency Predictor
 
-为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之间在内存上的依赖。这个预测器就是 Memory Dependency Predictor，负责预测是否有依赖。如果没有依赖，Load 就可以提前执行，但如果实际上有依赖，就需要回滚。
+为了让 Load 预测执行，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之间在内存上的依赖。这个预测器就是 Memory Dependency Predictor，负责预测是否有依赖。如果没有依赖，Load 就可以提前执行，但如果实际上有依赖，就需要回滚。
 
 参考 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/conference/usenixsecurity21/presentation/ragab) 和 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 的方法，构造一对 Store-Load，通过延迟 Store 地址的计算，从周期数可以区分出硬件是否进行了预测，以及预测正确与否：
 
@@ -243,29 +243,29 @@ imul eax, 1
 ret
 ```
 
-对于实际上没有依赖的 Load，如果正确预测了，就可以提前执行，那么周期数就会比较少；如果实际上有依赖的 Load，错误预测了，因为提前执行后又回滚，周期数会更多。
+对于实际上没有依赖的 Load，如果正确预测了，就可以提前执行，那么周期数就会比较少；对于实际上有依赖的 Load，如果错误预测了，因为提前执行后又回滚，周期数会更多。
 
 测试时，让这对 Store-Load 采用相同/不同的地址进行访存，具体地，首先是 100 次相同地址（有依赖），然后 20 次不同地址（无依赖），最后 10 次相同地址（有依赖），每次执行的周期数如下：
 
 ![](./intel-gracemont-mdp-1.png)
 
-可见当预测器被训练为 Store-Load 有依赖之后，经过 3 次 Store-Load 无依赖（横坐标 100 到 102）的训练以后，从第 4 次（横坐标 103）开始成功预测了无依赖的情况，使得 Load 可以提前执行，表现为周期数的明显减少。而当 Store-Load 再次出现依赖（横坐标 120）时，因为错误预测，出现了周期数的明显增加，并且下一次执行 Store-Load（横坐标 121）就能正确预测出有依赖。这与论文中针对 Skylake 的逆向结果类似：从初始状态（通过大量的有依赖来重置状态）开始，连续无依赖 3 次以后，才会被预测为无依赖，且只要有一次有依赖，就会被预测为有依赖。对应的内部实现是，硬件对这个 Load 维护一个 2-bit 的饱和计数器，有依赖时清零，无依赖时加一，当累加到最大值 3 时，预测为无依赖，否则就是有依赖。Gracemont 和 Skylake 以及 Golden Cove 的逻辑类似，不过计数器的位数更短，更容易预测出无依赖。
+可见当预测器被训练为 Store-Load 有依赖之后，经过 3 次 Store-Load 无依赖（横坐标 100 到 102）的训练以后，从第 4 次（横坐标 103）开始成功预测了无依赖的情况，使得 Load 可以提前执行，表现为周期数的明显减少。而当 Store-Load 再次出现依赖（横坐标 120）时，因为错误预测，出现了周期数的明显增加，并且下一次执行 Store-Load（横坐标 121）就能正确预测出有依赖。这与论文中针对 Skylake 的逆向结果类似：从初始状态开始（通过大量的有依赖来重置状态），连续无依赖 3 次以后，才会被预测为无依赖，且只要有一次有依赖，就会被预测为有依赖。对应的内部实现是，硬件对这个 Load 维护一个 2-bit 的饱和计数器，有依赖时清零，无依赖时加一，当累加到最大值 3 时，预测为无依赖，否则就是有依赖。Gracemont 和 Skylake 以及 Golden Cove 的逻辑类似，不过计数器的位数更少，更容易预测出无依赖。
 
-上面的测试只证明了有 2-bit 的计数器，且无依赖时加一，累加到 3 时才预测为无依赖，但并没有证明它在有依赖时清零，也可能是减一，或其他不会减到零的情况。下面修改一下访存模式来证明，即累加到 3 后，先来一次有依赖，再来多次无依赖，就可以观察到下面的结果：
+上面的测试只证明了有 2-bit 的计数器，且无依赖时加一，累加到 3 时才预测为无依赖，但并没有证明它在有依赖时清零，也可能是通过减一，或其他不会减到零的情况。下面修改一下访存模式来证明，即累加到 3 后，先来一次有依赖，再来多次无依赖，就可以观察到下面的结果：
 
 ![](./intel-gracemont-mdp-2.png)
 
 可见，一次有依赖过后，又需要 3 次无依赖，才能预测为无依赖。这证明了前面的表述，即 2-bit 饱和计数器，无依赖时加一，有依赖时置零，当计数器等于 3 时，预测为无依赖。
 
-接下来测试这些计数器是怎么维护的。方法是，设置两个 Store-Load 对，其中第一对总是有依赖，第二对总是没有依赖，调整两个 Load 指令的地址，看看什么时候会出现性能下降，就意味着这两个 Load 指令被映射到了同一个 2-bit 饱和计数器上，那么根据上面的规律，它们总是会被预测为有依赖。测试结果如下：
+接下来测试这些计数器是怎么维护的。方法是，设置两个 Store-Load 对，其中第一对总是有依赖，第二对总是没有依赖，调整两个 Load 指令的地址，看看什么时候会出现性能下降。出现性能下降就意味着这两个 Load 指令被映射到了同一个 2-bit 饱和计数器上，那么根据上面的规律，它们总是会被预测为有依赖。测试结果如下：
 
 ![](./intel-gracemont-mdp-3.png)
 
-可见当两个 Load 地址在低 16 位相同时，会被映射到同一个计数器上。不过这不代表它就有 65536 个计数器，下面来测试一下实际有多少。思路是，构造多对 Store-Load，让它们的 Load 地址的低 16 位不同，然后都让它们有依赖，观察到多少对 Store-Load 时出现性能下降。通过 [Store-to-Load Forwarding and Memory Disambiguation in x86 Processors](https://blog.stuffedcow.net/2014/01/x86-memory-disambiguation/) 的 Fast Data 测试方法，可得它的容量是 26：
+可见当两个 Load 地址在低 16 位相同时，会被映射到同一个计数器上。不过这并不代表它就有 65536 个计数器，下面来测试一下实际有多少。思路是，构造多对 Store-Load，让它们的 Load 地址的低 16 位不同，然后都让它们有依赖，观察到多少对 Store-Load 时出现性能下降。通过 [Store-to-Load Forwarding and Memory Disambiguation in x86 Processors](https://blog.stuffedcow.net/2014/01/x86-memory-disambiguation/) 的 Fast Data 测试方法，可得它的容量是 26：
 
 ![](./intel-gracemont-mdp-4.png)
 
-猜测它是一个 26 路全相连的设计，每个表项有 16 bit 的 tag，取自 Load 的 PC 低 16 位。表项中有 2 bit 的饱和计数器，如果找不到对应的表项，则预测为无依赖；如果有表项，则根据 2-bit 饱和计数器的值进行预测，无依赖时加一，有依赖时置零，当计数器等于 3 时，预测为无依赖，否则预测为有依赖。
+猜测它是一个 26 路全相联的设计，每个表项有 16-bit 的 tag，取自 Load 的 PC 低 16 位。表项中有 2-bit 的饱和计数器，如果找不到对应的表项，则预测为无依赖，如果实际有依赖，就插入表项，把值设置为零；如果有表项，则根据 2-bit 饱和计数器的值进行预测，无依赖时加一，有依赖时置零，当计数器等于 3 时，预测为无依赖，否则预测为有依赖。还有一种可能，就是计数器加到 3 的时候，表项会从表中删除，也达到了相同的效果。这两种情况到底哪种是实际的实现有待后续的研究。这种设计和 ARM Neoverse N2 比较类似。
 
 ### L1 DCache
 
