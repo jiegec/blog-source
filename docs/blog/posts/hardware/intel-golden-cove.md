@@ -306,7 +306,7 @@ ret
 
 ![](./intel-golden-cove-mdp-3.png)
 
-可见地址每增加 512 就出现一次冲突，意味着有 512 个这样的计数器，通过 Load 地址的低 9 位来选择。
+可见地址每增加 512 就出现一次冲突，意味着有 512 个这样的计数器，通过 Load 地址的低 9 位来选择。经过测试，在 Intel(R) Xeon(R) CPU E5-2680 v4 CPU Broadwell 架构和 Intel(R) Core(TM) i9-10980XE CPU Cascade Lake 架构以及 Intel(R) Xeon(R) Platinum 8358P CPU Ice Lake 架构下，有 256 个这样的计数器。直到 Golden Cove 才扩充到了 512。
 
 ### L1 DCache
 
