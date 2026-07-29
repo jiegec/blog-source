@@ -176,9 +176,9 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 通过逆向，可以得知商业处理器所使用的 MDP 设计：
 
-- Intel: 见 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 和 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/system/files/sec21-ragab.pdf)，Intel CPU 用一个表来维护 Load PC 到计数器的映射，根据计数器的值判断是否有依赖关系（即在上述 Load Wait Table 基础上，用计数器来表示置信度），外加一个全局的计数器来决定是否启用预测器
+- Intel: 见 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 和 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/system/files/sec21-ragab.pdf)，Intel CPU 用一个表来维护从 Load PC 到计数器的映射，根据计数器的值判断是否有依赖关系（即在上述 Load Wait Table 基础上，用计数器来表示置信度），外加一个全局的计数器来决定是否启用预测器
 - ARM: 见 [Leaky MDU: ARM Memory Disambiguation Unit Uncovered and Vulnerabilities Exposed](https://dl.acm.org/doi/abs/10.1109/DAC56929.2023.10247985) 和 [SSBleed: Non-speculative Side-channel Attacks via Speculative Store Bypass on Armv9 CPUs](https://ieeexplore.ieee.org/document/11408465/)，与 Intel 类似，ARM CPU 也是维护了一个从 Load PC 到计数器的映射，根据计数器的值判断是否有依赖关系
-- AMD: 见 [Uncovering and Exploiting AMD Speculative Memory Access Predictors for Fun and Profit](https://ieeexplore.ieee.org/document/10476467/)，对 Store 和 Load PC 进行哈希再查表，判断是否有依赖关系
+- AMD: 见 [Uncovering and Exploiting AMD Speculative Memory Access Predictors for Fun and Profit](https://ieeexplore.ieee.org/document/10476467/)，对 Store 和 Load PC 进行哈希，再查表，判断是否有依赖关系
 
 有了 Memory Dependence Predictor 以后，硬件就可以预测 Load 会不会依赖之前的 Store，如果不依赖，就可以提前执行。但是，如果依赖的话，是否必须等之前的 Store 完成，再从缓存中读取？答案是不一定，这就要靠下面讲的 Store to Load Forwarding 机制。
 
