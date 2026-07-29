@@ -274,7 +274,9 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 ### Memory Dependency Predictor
 
-为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之间在内存上的依赖。参考 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/conference/usenixsecurity21/presentation/ragab) 和 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 的方法，构造一对 Store-Load，通过延迟 Store 地址的计算，区分出硬件是否进行了预测，以及预测正确与否：
+为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之间在内存上的依赖。这个预测器就是 Memory Dependency Predictor，负责预测是否有依赖。如果没有依赖，Load 就可以提前执行，但如果实际上有依赖，就需要回滚。
+
+参考 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/conference/usenixsecurity21/presentation/ragab) 和 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 的方法，构造一对 Store-Load，通过延迟 Store 地址的计算，从周期数可以区分出硬件是否进行了预测，以及预测正确与否：
 
 ```asm
 ; Listing 4 of Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks
@@ -289,6 +291,8 @@ imul eax, 1
 %endrep
 ret
 ```
+
+对于实际上没有依赖的 Load，如果正确预测了，就可以提前执行，那么周期数就会比较少；如果实际上有依赖的 Load，错误预测了，因为提前执行后又回滚，周期数会更多。
 
 测试时，让这对 Store-Load 采用相同/不同的地址进行访存，具体地，首先是 100 次相同地址（有依赖），然后 20 次不同地址（无依赖），最后 10 次相同地址（有依赖），每次执行的周期数如下：
 
