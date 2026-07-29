@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-[之前](./intel-golden-cove.md) 测试了 Intel Alder Lake 的 P 核微架构，这次就来测一下 Alder Lake 的 E 核微架构 Gracemont。
+[之前](./intel-gracemont.md) 测试了 Intel Alder Lake 的 P 核微架构，这次就来测一下 Alder Lake 的 E 核微架构 Gracemont。
 
 <!-- more -->
 
@@ -87,9 +87,9 @@ Gracemont 的 Clustered Decode 架构比较特别，目前没有找到方法去�
 
 ![](./intel-gracemont-rs-size-2.png)
 
-同样的 B 版本代码在 AMD Zen3 和 Apple Firestorm 的处理器上，可以观察到在符合预期的 Return Stack 大小处出现性能拐点，和 A 版本代码得到的结论一致。而 B 版本代码在 Golden Cove 上，会观察到在 6 的附近有一个性能下降如下图，但之前用 [A 版本代码测得的拐点为 20](./intel-golden-cove.md):
+同样的 B 版本代码在 AMD Zen3 和 Apple Firestorm 的处理器上，可以观察到在符合预期的 Return Stack 大小处出现性能拐点，和 A 版本代码得到的结论一致。而 B 版本代码在 Golden Cove 上，会观察到在 6 的附近有一个性能下降如下图，但之前用 [A 版本代码测得的拐点为 20](./intel-gracemont.md):
 
-![](./intel-gracemont-rs-size-golden-cove.png)
+![](./intel-gracemont-rs-size-gracemont.png)
 
 这个区别背后的原因还需要进一步的分析。下面是两个版本的汇编代码的对比：
 
@@ -222,6 +222,40 @@ cases where the store's address is known, and the store data is available.
 - `mov 0(%rsp, %rsi, 8), %rsi`: 4 cycle
 - `mov 0(%rsi, %rdx, 8), %rsi`: 4 cycle
 - Load to ALU Latency: 4 cycle
+
+### Memory Dependency Predictor
+
+为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之间在内存上的依赖。这个预测器就是 Memory Dependency Predictor，负责预测是否有依赖。如果没有依赖，Load 就可以提前执行，但如果实际上有依赖，就需要回滚。
+
+参考 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/conference/usenixsecurity21/presentation/ragab) 和 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 的方法，构造一对 Store-Load，通过延迟 Store 地址的计算，从周期数可以区分出硬件是否进行了预测，以及预测正确与否：
+
+```asm
+; Listing 4 of Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks
+st_ld: ;rdi: store addr, rsi: load addr
+%rep 10 ;Trick to delay the store address
+imul rdi, 1
+%endrep
+mov DWORD [rdi], 0x42 ;Store
+mov eax, DWORD [rsi] ;Load
+%rep 10 ;Pronounce load timing
+imul eax, 1
+%endrep
+ret
+```
+
+对于实际上没有依赖的 Load，如果正确预测了，就可以提前执行，那么周期数就会比较少；如果实际上有依赖的 Load，错误预测了，因为提前执行后又回滚，周期数会更多。
+
+测试时，让这对 Store-Load 采用相同/不同的地址进行访存，具体地，首先是 100 次相同地址（有依赖），然后 20 次不同地址（无依赖），最后 10 次相同地址（有依赖），每次执行的周期数如下：
+
+![](./intel-gracemont-mdp-1.png)
+
+可见当预测器被训练为 Store-Load 有依赖之后，经过 3 次 Store-Load 无依赖（横坐标 100 到 102）的训练以后，从第 4 次（横坐标 103）开始成功预测了无依赖的情况，使得 Load 可以提前执行，表现为周期数的明显减少。而当 Store-Load 再次出现依赖（横坐标 120）时，因为错误预测，出现了周期数的明显增加，并且下一次执行 Store-Load（横坐标 121）就能正确预测出有依赖。这与论文中针对 Skylake 的逆向结果类似：从初始状态（通过大量的有依赖来重置状态）开始，连续无依赖 3 次以后，才会被预测为无依赖，且只要有一次有依赖，就会被预测为有依赖。对应的内部实现是，硬件对这个 Load 维护一个 2-bit 的饱和计数器，有依赖时清零，无依赖时加一，当累加到最大值 3 时，预测为无依赖，否则就是有依赖。Gracemont 和 Skylake 以及 Golden Cove 的逻辑类似，不过计数器的位数更短，更容易预测出无依赖。
+
+上面的测试只证明了有 2-bit 的计数器，且无依赖时加一，累加到 3 时才预测为无依赖，但并没有证明它在有依赖时清零，也可能是减一，或其他不会减到零的情况。下面修改一下访存模式来证明，即累加到 3 后，先来一次有依赖，再来多次无依赖，就可以观察到下面的结果：
+
+![](./intel-gracemont-mdp-2.png)
+
+可见，一次有依赖过后，又需要 3 次无依赖，才能预测为无依赖。这证明了前面的表述，即 2-bit 饱和计数器，无依赖时加一，有依赖时置零，当计数器等于 3 时，预测为无依赖。
 
 ### L1 DCache
 
