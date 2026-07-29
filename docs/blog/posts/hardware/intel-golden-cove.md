@@ -274,7 +274,7 @@ Golden Cove 架构针对循环做了优化，Loop Stream Detector（简称 LSD�
 
 ### Memory Dependency Predictor
 
-为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之前在内存上的依赖。参考 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/conference/usenixsecurity21/presentation/ragab) 和 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 的方法，构造一对 Store-Load，通过延迟 Store 地址的计算，区分出硬件是否进行了预测，以及预测正确与否：
+为了预测执行 Load，需要保证 Load 和之前的 Store 访问的内存没有 Overlap，那么就需要有一个预测器来预测 Load 和 Store 之间在内存上的依赖。参考 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/conference/usenixsecurity21/presentation/ragab) 和 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 的方法，构造一对 Store-Load，通过延迟 Store 地址的计算，区分出硬件是否进行了预测，以及预测正确与否：
 
 ```asm
 ; Listing 4 of Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks
@@ -294,7 +294,7 @@ ret
 
 ![](./intel-golden-cove-mdp-1.png)
 
-可见当预测器被训练为 Store-Load 有依赖之后，经过 15 次 Store-Load 无依赖（横坐标 100 到 114）的训练以后，从第 16 次（横坐标 115）开始成功预测了无依赖的情况，使得 Load 可以提前执行，表现出来周期数的明显减少。而当 Store-Load 再次出现依赖（横坐标 120）时，因为错误预测，出现了周期数的明显增加，并且马上下一次执行 Store-Load（横坐标 121）就能正确预测出有依赖。这与论文中的逆向结果一致：从初始状态（通过大量的有依赖来重置状态）开始，连续无依赖 15 次以后，才会被预测为无依赖，且只要有一次有依赖，就会被预测为有依赖。对应的内部实现是，硬件对这个 Load 维护一个 4-bit 的饱和计数器，有依赖时清零，无依赖时加一，当累加到最大值 15 时，预测为无依赖，否则就是有依赖。
+可见当预测器被训练为 Store-Load 有依赖之后，经过 15 次 Store-Load 无依赖（横坐标 100 到 114）的训练以后，从第 16 次（横坐标 115）开始成功预测了无依赖的情况，使得 Load 可以提前执行，表现为周期数的明显减少。而当 Store-Load 再次出现依赖（横坐标 120）时，因为错误预测，出现了周期数的明显增加，并且马上下一次执行 Store-Load（横坐标 121）就能正确预测出有依赖。这与论文中的逆向结果一致：从初始状态（通过大量的有依赖来重置状态）开始，连续无依赖 15 次以后，才会被预测为无依赖，且只要有一次有依赖，就会被预测为有依赖。对应的内部实现是，硬件对这个 Load 维护一个 4-bit 的饱和计数器，有依赖时清零，无依赖时加一，当累加到最大值 15 时，预测为无依赖，否则就是有依赖。
 
 上面的测试只证明了有 4-bit 的计数器，且无依赖时加一，累加到 15 时才预测为无依赖，但并没有证明它在有依赖时清零，也可能是减一或其他不减到零的情况。下面修改一下访存模式来证明，即累加到 15 后，先来一次有依赖，再来多次无依赖，就可以观察到下面的结果：
 
@@ -306,15 +306,20 @@ ret
 
 ![](./intel-golden-cove-mdp-3.png)
 
-可见地址每增加 512 就出现一次冲突，意味着有 512 个这样的计数器，通过 Load 地址的低 9 位来选择。经过测试，在 Intel(R) Xeon(R) CPU E5-2680 v4 CPU Broadwell 架构和 Intel(R) Core(TM) i9-10980XE CPU Cascade Lake 架构以及 Intel(R) Xeon(R) Platinum 8358P CPU Ice Lake 架构下，有 256 个这样的计数器。直到 Golden Cove 才扩充到了 512。
+可见地址每增加 512 就出现一次冲突，意味着有 512 个这样的计数器，通过 Load 地址的低 9 位来选择。经过测试，在 Intel(R) Xeon(R) CPU E5-2680 v4 (Broadwell 架构) 和 Intel(R) Core(TM) i9-10980XE CPU（Cascade Lake 架构）以及 Intel(R) Xeon(R) Platinum 8358P CPU（Ice Lake 架构）下，有 256 个这样的计数器。直到 Golden Cove 才扩充到了 512。
 
 根据论文，Intel 除了上述用 4-bit 饱和计数器实现的 Load 指令局部的预测器，还额外实现了一个全局预测器（论文里称之为 Watchdog），当局部预测器的错误率较高时，会覆盖局部预测器，强制预测所有 Load 指令为有依赖关系。
 
-接下来，参考论文中的方法，生成几次错误预测，看看多少次由错误预测导致的回滚（即预测为无依赖，但实际上有依赖，导致了回滚；另一方面，如果预测为有依赖，实际上没有，并不会导致回滚）后，全局预测器会介入，强制预测所有 Load 和先前的 Store 有依赖关系。用 10 个 Store-Load 对，先通过大量的无依赖训练，让这些 Load 都被局部预测为无依赖，再连续 10 次有依赖地按顺序执行这 10 个 Load，这样这些 Load 都会被局部预测为无依赖，但实际上有依赖，就会频繁触发回滚，结果如下：
+接下来，参考论文中的方法，生成几次错误预测，看看多少次由错误预测导致的回滚（即预测为无依赖，但实际上有依赖，导致了回滚；另一方面，如果预测为有依赖，实际上没有，并不会导致回滚）后，全局预测器会介入，强制预测所有 Load 和先前的 Store 有依赖关系。用 10 个 Store-Load 对，先通过大量的无依赖训练，让这些 Load 都被局部预测为无依赖，再连续 10 次有依赖地按顺序执行这 10 个 Load，这样这些 Load 都会被局部预测为无依赖，但实际上有依赖，就会频繁触发回滚。通过 `MACHINE_CLEARS.COUNT` 性能计数器，可以看到这 10 个 Load 触发了 4 次回滚，之后就没有回滚，意味着当全局预测器观察到 4 次回滚后，就会覆盖局部预测器，强制预测为有依赖。在 Ice Lake、Cascade Lake 和 Broadwell 微架构中，行为是一样的。
+
+最后，测试一下什么情况下可以从全局预测器覆盖预测，回到由局部预测器提供预测。思路是，首先用上面的方法，让全局预测器介入，然后再让局部预测器正确预测若干次无依赖，看看什么时候能够重新预测出无依赖。具体地，通过大量的无依赖训练，让 10 个局部预测器都预测为无依赖，然后用前四个局部预测器触发 4 次错误预测的回滚，再不断地用第 5 个局部预测器正确预测出无依赖，最后再让第 5 个局部预测器预测错误，此时如果触发回滚，意味着此时已经由局部预测器提供预测（预测无依赖，实际有依赖，导致回滚）。中间无依赖访问次数和 `MACHINE_CLEARS.COUNT` 性能计数器的关系如下：
 
 ![](./intel-golden-cove-mdp-4.png)
 
-可见当全局预测器观察到 5 次回滚后，就会覆盖局部预测器，强制预测为有依赖。在 Cascade Lake 和 Broadwell 微架构中，是 4 次回滚后覆盖。这意味着，随着局部预测器容量在 Golden Cove 中翻倍，全局预测器的阈值也做了相应的修改。
+因此经过 64 次正确预测的无依赖的 Load 后，恢复到由局部预测器提供预测。结合上述测试结果与论文，可知 Golden Cove 的 Memory Dependency Predictor 整体设计不变，在前代的基础上把容量扩大到了 512，完整逻辑如下：
+
+- 512 个局部预测器，根据 Load PC 低 9 位索引，每个局部预测器是一个 4-bit 饱和计数器（0-15），有依赖时清零，无依赖时加一，加到 15 时预测无依赖
+- 一个全局预测器，内部是一个 2-bit 饱和计数器（0-3），当连续 64 次由局部预测器预测正确时，饱和计数器加一，当出现回滚（预测为无依赖，实际有依赖）时，饱和计数器减一。当饱和计数器等于零时，覆盖局部预测器的结果，强制预测结果为有依赖；否则使用局部预测器的结果。
 
 ### L1 DCache
 
