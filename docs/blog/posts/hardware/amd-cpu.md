@@ -75,16 +75,16 @@ Cezanne 桌面：
 
 ### Ryzen 7000
 
-| 代号         | 用途   | 核显  | 插槽          | 微架构        | 型号                                                               |
-|--------------|--------|-------|---------------|---------------|--------------------------------------------------------------------|
-| Storm Peak   | 工作站 | 无    | sTR5          | Zen 4         | 7995WX/7985WX/7980X/7975WX/7970X/7965WX/7960X/7955WX/7945WX        |
-| Raphael      | 桌面   | RDNA2 | AM5           | Zen 4         | 7950X(3D)/7945/7900(X(3D))/7800X3D/7745/7700(X)/7645/7600(X)/7500F |
-| Dragon Range | 笔记本 | RDNA2 | FL1           | Zen 4         | 7945HX(3D)/7845HX/7745HX/7645HX                                    |
-| Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4         | 7940H(S)/7840H(S)/7840U/7640H(S)/7640U/7540U                       |
-| Phoenix      | 笔记本 | RDNA3 | FP7/FP7r2     | Zen 4 + Zen4c | 7545U/7440U                                                        |
-| Rembrandt R  | 笔记本 | RDNA2 | FP7/FP7r2     | Zen 3+        | 7735H(S)/7736U/7735U/7535HS/7535U/7335U                            |
-| Barcelo R    | 笔记本 | GCN5  | FP6           | Zen 3         | 7730U/7530U/7330U                                                  |
-| Mendocino    | 笔记本 | RDNA2 | FT6           | Zen 2         | 7520U/7520C/7320U/7320C                                            |
+| 代号         | 用途   | 核显         | 插槽          | 微架构        | 型号                                                               |
+|--------------|--------|--------------|---------------|---------------|--------------------------------------------------------------------|
+| Storm Peak   | 工作站 | 无           | sTR5          | Zen 4         | 7995WX/7985WX/7980X/7975WX/7970X/7965WX/7960X/7955WX/7945WX        |
+| Raphael      | 桌面   | RDNA2        | AM5           | Zen 4         | 7950X(3D)/7945/7900(X(3D))/7800X3D/7745/7700(X)/7645/7600(X)/7500F |
+| Dragon Range | 笔记本 | RDNA2 (610M) | FL1           | Zen 4         | 7945HX(3D)/7845HX/7745HX/7645HX                                    |
+| Phoenix      | 笔记本 | RDNA3        | FP7/FP7r2/FP8 | Zen 4         | 7940H(S)/7840H(S)/7840U/7640H(S)/7640U/7540U                       |
+| Phoenix      | 笔记本 | RDNA3        | FP7/FP7r2     | Zen 4 + Zen4c | 7545U/7440U                                                        |
+| Rembrandt R  | 笔记本 | RDNA2        | FP7/FP7r2     | Zen 3+        | 7735H(S)/7736U/7735U/7535HS/7535U/7335U                            |
+| Barcelo R    | 笔记本 | GCN5         | FP6           | Zen 3         | 7730U/7530U/7330U                                                  |
+| Mendocino    | 笔记本 | RDNA2        | FT6           | Zen 2         | 7520U/7520C/7320U/7320C                                            |
 
 AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](https://www.anandtech.com/show/18718/amd-2023-ryzen-mobile-7000-cpus-unveiled-zen-4-phoenix-takes-point)：
 
@@ -104,19 +104,21 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 
 ### Ryzen 8000
 
-| 代号       | 用途   | 核显  | 插槽          | 微架构 | 型号                                                         |
-|------------|--------|-------|---------------|--------|--------------------------------------------------------------|
-| Hawk Point | 笔记本 | RDNA3 | FP7/FP7r2/FP8 | Zen 4  | 8945H(S)/8845HS/8840HS/8840U/8645HS/8640HS/8640U/8540U/8440U |
-| Phoenix    | 桌面   | RDNA3 | AM5           | Zen 4  | 8700G(E)/8600G(E)/8500G(E)/8300G(E)                          |
-| Phoenix    | 桌面   | 无    | AM5           | Zen 4  | 8700F/8400F                                                  |
+| 代号         | 用途   | 核显                   | 插槽          | 微架构 | 型号                                                         |
+|--------------|--------|------------------------|---------------|--------|--------------------------------------------------------------|
+| Hawk Point   | 笔记本 | RDNA3 (780M/760M/740M) | FP7/FP7r2/FP8 | Zen 4  | 8945H(S)/8845HS/8840HS/8840U/8645HS/8640HS/8640U/8540U/8440U |
+| Phoenix      | 桌面   | RDNA3 (780M/760M/740M) | AM5           | Zen 4  | 8700G(E)/8600G(E)/8500G(E)/8300G(E)                          |
+| Phoenix      | 桌面   | 无                     | AM5           | Zen 4  | 8700F/8400F                                                  |
+| Dragon Range | 笔记本 | RDNA2 (610M)           | FL1           | Zen 4  | 8945HX/8940HX/8840HX/8745HX                                  |
 
 ### Ryzen 9000
 
-| 代号          | 用途   | 核显  | 插槽 | 微架构 | 型号                                      |
-|---------------|--------|-------|------|--------|-------------------------------------------|
-| Granite Ridge | 桌面   | RDNA2 | AM5  | Zen 5  | 9950X(3D)/9900X(3D)/9800X3D/9700X/9600(X) |
-| Fire Range    | 笔记本 | RDNA2 | FL1  | Zen 5  | 9955HX(3D)/9850HX                         |
-| Shimada Peak  | 工作站 |       | sTR5 | Zen 5  | 9995WX/9985WX/9975WX/9965WX/9955WX/9945WX |
+| 代号          | 用途   | 核显         | 插槽 | 微架构 | 型号                                                                                              |
+|---------------|--------|--------------|------|--------|---------------------------------------------------------------------------------------------------|
+| Granite Ridge | 桌面   | RDNA2        | AM5  | Zen 5  | 9965(X3D)/9955/9950X(3D(2))/9945/9900X(3D)/9850X3D/9800X3D/9755(X3D)/9745/9700X/9655/9645/9600(X) |
+| Granite Ridge | 桌面   | 无           | AM5  | Zen 5  | 9700F/9500F                                                                                       |
+| Fire Range    | 笔记本 | RDNA2 (610M) | FL1  | Zen 5  | 9955HX(3D)/9850HX                                                                                 |
+| Shimada Peak  | 工作站 | 无           | sTR5 | Zen 5  | 9995WX/9985WX/9975WX/9965WX/9955WX/9945WX/9980X/9970X/9960X                                       |
 
 ### AI
 
@@ -134,11 +136,24 @@ AMD 笔记本处理器产品从 2023 年到 2025 年采用新的[命名方式](h
 | Strix Halo  | 笔记本 | RDNA3.5 (8060S/8050S/8040S) | FP11 | Zen 5  | Max+395/Max+392/Max390/Max388/Max385/Max380 |
 | Gorgon Halo | 笔记本 | RDNA3.5 (8065S/8050S)       | FP11 | Zen 5  | Max+495/Max490/Max485                       |
 
+### Ryzen 10
+
+| 代号      | 用途   | 核显         | 插槽 | 微架构 | 型号  |
+|-----------|--------|--------------|------|--------|-------|
+| Mendocino | 笔记本 | RDNA2 (610M) | FT6  | Zen 2  | 40/30 |
+
+### Ryzen 100
+
+| 代号       | 用途   | 核显                   | 插槽      | 微架构 | 型号                |
+|------------|--------|------------------------|-----------|--------|---------------------|
+| Rembrandt  | 笔记本 | RDNA2 (680M/660M)      | FP7/FP7r2 | Zen 3+ | 170/160/150/130/110 |
+| Hawk Point | 笔记本 | RDNA3 (780M/760M/740M) | FP8       | Zen 4  | 180/165/155/125     |
+
 ### Ryzen 200
 
-| 代号       | 用途   | 核显                   | 插槽 | 微架构         | 型号                        |
-|------------|--------|------------------------|------|----------------|-----------------------------|
-| Hawk Point | 笔记本 | RDNA3 (780M/760M/740M) | FP8  | Zen 4 + Zen 4c | 270/260/250/240/230/220/210 |
+| 代号       | 用途   | 核显                   | 插槽 | 微架构         | 型号                                                    |
+|------------|--------|------------------------|------|----------------|---------------------------------------------------------|
+| Hawk Point | 笔记本 | RDNA3 (780M/760M/740M) | FP8  | Zen 4 + Zen 4c | 270/260/253/250/249/240/230/225/224/220/217/216/210/205 |
 
 ### Z
 
@@ -192,6 +207,7 @@ Ryzen Z2 系列：
 - Gorgon Point: [AMD Announces Ryzen AI 400 Series "Gorgon Point" Mobile Processors](https://www.techpowerup.com/344730/amd-announces-ryzen-ai-400-series-gorgon-point-mobile-processors)
 - Gorgon Halo: [AMD Powers Next-Generation Agent Computers with New Ryzen AI Halo Developer Platform and Ryzen AI Max PRO 400 Series Processors](https://www.amd.com/en/blogs/2026/amd-powers-next-generation-agent-computers-with-new-ryzen-ai-hal.html)
 - Gorgon Point AM5: [AMD Ryzen AI 400G Series Desktop APUs Based on 4 nm "Gorgon Point" with 4P+4C Configuration](https://www.techpowerup.com/346949/amd-ryzen-ai-400g-series-desktop-apus-based-on-4-nm-gorgon-point-with-4p-4c-configuration)
+- Hawk Point: [AMD Introduces 11 New SKUs to "Hawk Point" Lineup Across Ryzen 200 and 100 Series](https://www.techpowerup.com/350643/amd-introduces-11-new-skus-to-hawk-point-lineup-across-ryzen-200-and-100-series)
 
 
 ## EPYC 系列
