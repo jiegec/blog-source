@@ -298,6 +298,8 @@ ret
 
 ![](./intel-golden-cove-mdp-1.png)
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/memory_dependency_predictor_reverse_lib.cpp)。
+
 可见当预测器被训练为 Store-Load 有依赖之后，经过 15 次 Store-Load 无依赖（横坐标 100 到 114）的训练以后，从第 16 次（横坐标 115）开始成功预测了无依赖的情况，使得 Load 可以提前执行，表现为周期数的明显减少。而当 Store-Load 再次出现依赖（横坐标 120）时，因为错误预测，出现了周期数的明显增加，并且下一次执行 Store-Load（横坐标 121）就能正确预测出有依赖。这与论文中的逆向结果一致：从初始状态开始（通过大量的有依赖来重置状态），连续无依赖 15 次以后，才会被预测为无依赖，且只要有一次有依赖，就会被预测为有依赖。对应的内部实现是，硬件对这个 Load 维护一个 4-bit 的饱和计数器，有依赖时清零，无依赖时加一，当累加到最大值 15 时，预测为无依赖，否则就是有依赖。
 
 上面的测试只证明了有 4-bit 的计数器，且无依赖时加一，累加到 15 时才预测为无依赖，但并没有证明它在有依赖时清零，也可能是减一，或其他不会减到零的情况。下面修改一下访存模式来证明，即累加到 15 后，先来一次有依赖，再来多次无依赖，就可以观察到下面的结果：
@@ -310,6 +312,8 @@ ret
 
 ![](./intel-golden-cove-mdp-3.png)
 
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/memory_dependency_predictor_reverse_hash_lib.cpp)。
+
 可见地址每增加 512 就出现一次冲突，意味着有 512 个这样的计数器，通过 Load 地址的低 9 位来选择。经过测试，在 Intel(R) Xeon(R) CPU E5-2680 v4（Broadwell 架构）和 Intel(R) Core(TM) i9-10980XE（Cascade Lake 架构）以及 Intel(R) Xeon(R) Platinum 8358P（Ice Lake 架构）下，有 256 个这样的计数器。直到 Golden Cove 才扩充到了 512。
 
 根据论文，Intel 除了上述由 4-bit 饱和计数器实现的、针对 Load 指令的局部预测器，还额外实现了一个全局预测器（论文里称之为 Watchdog），当局部预测器的错误率较高时，会覆盖局部预测器，强制预测所有 Load 指令为有依赖关系。
@@ -319,6 +323,8 @@ ret
 最后，测试一下什么情况下可以从全局预测器覆盖预测，回到由局部预测器提供预测。思路是，首先用上面的方法，让全局预测器介入，然后再让局部预测器正确预测若干次无依赖，看看什么时候能恢复到由局部预测器提供预测。具体地，通过大量的无依赖训练，让 10 个局部预测器都预测为无依赖，然后用前四个局部预测器触发 4 次错误预测的回滚，接着用第 5 个局部预测器反复正确预测出无依赖，最后让第 5 个局部预测器预测错误，如果此时触发回滚，意味着已经由局部预测器提供预测（预测无依赖，实际有依赖，导致回滚）。期间的无依赖访问次数和 `MACHINE_CLEARS.COUNT` 性能计数器的关系如下：
 
 ![](./intel-golden-cove-mdp-4.png)
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/memory_dependency_predictor_reverse_global_lib.cpp)。
 
 因此经过 64 次正确预测为无依赖的 Load 后，恢复到由局部预测器提供预测。结合上述测试结果与论文，可知 Golden Cove 的 Memory Dependency Predictor 整体设计不变，在前代的基础上把容量扩大到了 512，完整逻辑如下：
 
