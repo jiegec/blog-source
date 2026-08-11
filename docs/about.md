@@ -10,7 +10,7 @@ permalink: /about/
 
 我是陈嘉杰。
 
-- 邮箱：c at jia.je / cjj21 at mails.tsinghua.edu.cn（曾用邮箱）/ chenjj17 at mails.tsinghua.edu.cn（曾用邮箱）
+- 邮箱：c at jia.je / drcjj at tsinghua.edu.cn / cjj21 at mails.tsinghua.edu.cn（曾用邮箱）/ chenjj17 at mails.tsinghua.edu.cn（曾用邮箱）
 - GitHub：[@jiegec](https://github.com/jiegec)
 - B 站：<https://space.bilibili.com/11372427>
 - 知乎：<https://www.zhihu.com/people/jiege-chen>
