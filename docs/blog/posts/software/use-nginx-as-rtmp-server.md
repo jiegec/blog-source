@@ -50,7 +50,7 @@ rtmp {
         }
 ```
 
-这时候，如果你用 rtmp 推一个流（比如用 OBS）到 rtmp://SERVER_IP/live/SOMETHING，那么在对应的目录下会看到 SOMETHING 开头的一系列文件；用播放器打开 http://SERVER_IP/hls/SOMETHING.m3u8 就可以看到直播的视频流了。
+这时候，如果你用 rtmp 推一个流（比如用 OBS，路径填 rtmp://SERVER_IP/live，Stream Key 填 SOMETHING）到 rtmp://SERVER_IP/live/SOMETHING，那么在对应的目录下会看到 SOMETHING 开头的一系列文件；用播放器打开 http://SERVER_IP/hls/SOMETHING.m3u8 就可以看到直播的视频流了。
 
 如果要直接在浏览器里播放 HLS，需要用 Flowplayer，直接参考官方的例子即可：
 
@@ -69,6 +69,29 @@ var player = flowplayer("#player", {
         live: true
 });
 </script>
+```
+
+或者用 video.js：
+
+```html
+<head>
+        <meta charset='UTF-8'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.24.0/video-js.min.css" integrity="sha512-uki7RYRF8BrCB9BB7r6BvPTb/HzpCFwSwRoTvdq0pMh0M7CbIMNPrDzZdIbqrx27JkGw2/h8va1X6QAZSKTRvg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.24.0/video.min.js" integrity="sha512-eiY4ozZwBDD30jKnnRPaN9CLdBun3fNIG9njH+yDSPLx/so7xab3Y+sATI566Z28CZYBb452LPwZKvzxdmYH+w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+        <center>
+                <h1>测试</h1>
+                <video
+                id="my-player"
+                class="video-js"
+                controls
+                preload="auto"
+                data-setup='{}'>
+                        <source src="https://SERVER_IP/hls/SOMETHING.m3u8" type="application/x-mpegurl"></source>
+                </video>
+        </center>
+</body>
 ```
 
 上面的各个路径可以按照实际需求改动。
