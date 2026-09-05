@@ -44,6 +44,23 @@ permalink: /about/
 - [2020 年华为毕昇杯计算机编译系统设计赛一等奖](https://www.cnur.com/xueshu/255.html)，2020 年 9 月
 - [2019 第三届“龙芯杯”全国大学生计算机系统能力培养大赛特等奖](https://www.cs.tsinghua.edu.cn/info/1058/1066.htm)，2019 年 8 月
 
+### 课程改革
+
+在多年的教学经历中，我参与了这些课程的教学或实验的演进：
+
+- [计算机文化基础](https://edu.cs.tsinghua.edu.cn/cca/)
+- [程序设计训练（Rust 课堂）](https://lab.cs.tsinghua.edu.cn/rust/)
+- [实验物理的大数据方法](https://git.tsinghua.edu.cn/physics-data/)
+- 汇编语言程序设计
+- 计算机系统概论
+- 数据库技术及应用
+- [数字逻辑实验](https://lab.cs.tsinghua.edu.cn/digital-logic-lab/doc/)
+- [数字逻辑设计](https://lab.cs.tsinghua.edu.cn/digital-design/doc/)
+- [操作系统](https://github.com/rcore-os/)
+- [计算机组成原理](https://lab.cs.tsinghua.edu.cn/cod-lab-docs/)
+- [计算机网络原理](https://lab.cs.tsinghua.edu.cn/router/doc/)
+- [计算机网络专题训练](https://lab.cs.tsinghua.edu.cn/tcp/doc/)
+
 ## 科研
 
 ### 发表
