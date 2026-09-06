@@ -1,181 +1,181 @@
 Built with GCC 14.2.0 from Debian Trixie with -O3 -march=native -flto -ljemalloc
-Running on Linux kernel 6.18.21-x64v3-xanmod1
+Running on Linux kernel 6.18.47-x64v3-xanmod1
 
                          Estimated                        Estimated
                   Base     Base        Base        Peak     Peak        Peak
 Benchmarks        Copies  Run Time     Rate        Copies  Run Time     Rate 
 ---------------- -------  ---------  ---------    -------  ---------  ---------
-706.stockfish_r        1      158         8.00  S
-706.stockfish_r        1      155         8.11  S
-706.stockfish_r        1      158         8.00  *
-707.ntest_r            1      129         4.60  S
-707.ntest_r            1      128         4.63  S
+706.stockfish_r        1      156         8.08  *
+706.stockfish_r        1      156         8.09  S
+706.stockfish_r        1      156         8.08  S
+707.ntest_r            1      128         4.61  S
 707.ntest_r            1      128         4.61  *
-708.sqlite_r           1      121         4.36  *
-708.sqlite_r           1      121         4.37  S
-708.sqlite_r           1      121         4.36  S
-710.omnetpp_r          1       74.4       6.53  *
-710.omnetpp_r          1       74.2       6.55  S
-710.omnetpp_r          1       74.5       6.52  S
-714.cpython_r          1       73.8       6.49  S
-714.cpython_r          1       73.9       6.48  *
-714.cpython_r          1       74.2       6.46  S
-721.gcc_r              1      120         5.72  S
-721.gcc_r              1      120         5.72  S
-721.gcc_r              1      120         5.72  *
-723.llvm_r             1      112         4.54  S
-723.llvm_r             1      112         4.53  S
-723.llvm_r             1      112         4.53  *
-727.cppcheck_r         1       77.0       4.66  S
-727.cppcheck_r         1       77.0       4.66  *
-727.cppcheck_r         1       76.9       4.67  S
-729.abc_r              1      100         4.59  S
-729.abc_r              1      100         4.58  S
-729.abc_r              1      100         4.59  *
-734.vpr_r              1       76.7       6.01  S
-734.vpr_r              1       76.5       6.03  *
-734.vpr_r              1       76.5       6.03  S
+707.ntest_r            1      128         4.62  S
+708.sqlite_r           1      119         4.45  *
+708.sqlite_r           1      118         4.46  S
+708.sqlite_r           1      119         4.45  S
+710.omnetpp_r          1       73.7       6.59  S
+710.omnetpp_r          1       74.6       6.52  S
+710.omnetpp_r          1       73.8       6.58  *
+714.cpython_r          1       72.5       6.61  S
+714.cpython_r          1       72.6       6.60  *
+714.cpython_r          1       72.7       6.59  S
+721.gcc_r              1      117         5.85  S
+721.gcc_r              1      118         5.84  S
+721.gcc_r              1      117         5.84  *
+723.llvm_r             1      110         4.60  S
+723.llvm_r             1      110         4.60  S
+723.llvm_r             1      110         4.60  *
+727.cppcheck_r         1       77.2       4.65  *
+727.cppcheck_r         1       77.2       4.65  S
+727.cppcheck_r         1       77.3       4.65  S
+729.abc_r              1       99.3       4.62  S
+729.abc_r              1       99.5       4.61  *
+729.abc_r              1       99.5       4.61  S
+734.vpr_r              1       75.7       6.09  *
+734.vpr_r              1       75.6       6.10  S
+734.vpr_r              1       76.0       6.07  S
 735.gem5_r             1       74.1       6.57  S
-735.gem5_r             1       73.9       6.59  *
-735.gem5_r             1       73.8       6.60  S
-750.sealcrypto_r       1      119         4.49  *
-750.sealcrypto_r       1      119         4.49  S
-750.sealcrypto_r       1      119         4.49  S
-753.ns3_r              1       73.2       8.37  *
-753.ns3_r              1       73.2       8.37  S
+735.gem5_r             1       74.2       6.56  S
+735.gem5_r             1       74.2       6.56  *
+750.sealcrypto_r       1      119         4.50  S
+750.sealcrypto_r       1      119         4.50  S
+750.sealcrypto_r       1      119         4.50  *
+753.ns3_r              1       73.5       8.34  S
 753.ns3_r              1       73.3       8.37  S
-777.zstd_r             1      138         4.67  S
-777.zstd_r             1      139         4.64  S
-777.zstd_r             1      138         4.65  *
+753.ns3_r              1       73.3       8.36  *
+777.zstd_r             1      136         4.75  *
+777.zstd_r             1      139         4.65  S
+777.zstd_r             1      136         4.75  S
 ==================================================================================
-706.stockfish_r        1      158         8.00  *
+706.stockfish_r        1      156         8.08  *
 707.ntest_r            1      128         4.61  *
-708.sqlite_r           1      121         4.36  *
-710.omnetpp_r          1       74.4       6.53  *
-714.cpython_r          1       73.9       6.48  *
-721.gcc_r              1      120         5.72  *
-723.llvm_r             1      112         4.53  *
-727.cppcheck_r         1       77.0       4.66  *
-729.abc_r              1      100         4.59  *
-734.vpr_r              1       76.5       6.03  *
-735.gem5_r             1       73.9       6.59  *
-750.sealcrypto_r       1      119         4.49  *
-753.ns3_r              1       73.2       8.37  *
-777.zstd_r             1      138         4.65  *
- Est. SPECrate(R)2026_int_base            5.55
+708.sqlite_r           1      119         4.45  *
+710.omnetpp_r          1       73.8       6.58  *
+714.cpython_r          1       72.6       6.60  *
+721.gcc_r              1      117         5.84  *
+723.llvm_r             1      110         4.60  *
+727.cppcheck_r         1       77.2       4.65  *
+729.abc_r              1       99.5       4.61  *
+734.vpr_r              1       75.7       6.09  *
+735.gem5_r             1       74.2       6.56  *
+750.sealcrypto_r       1      119         4.50  *
+753.ns3_r              1       73.3       8.36  *
+777.zstd_r             1      136         4.75  *
+ Est. SPECrate(R)2026_int_base            5.60
  Est. SPECrate(R)2026_int_peak                                          Not Run
 
-706.stockfish_r: time (ms) = 156745
-706.stockfish_r: clock freq (MHz) = 5399.8409
-706.stockfish_r: instructions = 2.53524e+12
-706.stockfish_r: branch instructions = 2.46018e+11
-706.stockfish_r: ipc = 2.9953
-706.stockfish_r: misprediction rate (%) = 1.9041
-706.stockfish_r: mpki = 1.8477
-707.ntest_r: time (ms) = 128311
-707.ntest_r: clock freq (MHz) = 5469.6972
-707.ntest_r: instructions = 2.21149e+12
-707.ntest_r: branch instructions = 1.71813e+11
-707.ntest_r: ipc = 3.1511
-707.ntest_r: misprediction rate (%) = 3.4284
-707.ntest_r: mpki = 2.6635
-708.sqlite_r: time (ms) = 120957
-708.sqlite_r: clock freq (MHz) = 5496.4159
+706.stockfish_r: time (ms) = 155766
+706.stockfish_r: clock freq (MHz) = 5366.6192
+706.stockfish_r: instructions = 2.53649e+12
+706.stockfish_r: branch instructions = 2.46154e+11
+706.stockfish_r: ipc = 3.0343
+706.stockfish_r: misprediction rate (%) = 1.8988
+706.stockfish_r: mpki = 1.8427
+707.ntest_r: time (ms) = 128287
+707.ntest_r: clock freq (MHz) = 5465.4627
+707.ntest_r: instructions = 2.21157e+12
+707.ntest_r: branch instructions = 1.71822e+11
+707.ntest_r: ipc = 3.1542
+707.ntest_r: misprediction rate (%) = 3.4263
+707.ntest_r: mpki = 2.6620
+708.sqlite_r: time (ms) = 118549
+708.sqlite_r: clock freq (MHz) = 5498.6743
 708.sqlite_r: instructions = 1.76317e+12
-708.sqlite_r: branch instructions = 3.47555e+11
-708.sqlite_r: ipc = 2.6521
-708.sqlite_r: misprediction rate (%) = 0.5463
-708.sqlite_r: mpki = 1.0769
-710.omnetpp_r: time (ms) = 74274.8
-710.omnetpp_r: clock freq (MHz) = 5426.4626
-710.omnetpp_r: instructions = 1.2552e+12
-710.omnetpp_r: branch instructions = 2.3345e+11
-710.omnetpp_r: ipc = 3.1143
-710.omnetpp_r: misprediction rate (%) = 0.4559
-710.omnetpp_r: mpki = 0.8478
-714.cpython_r: time (ms) = 73899.1
-714.cpython_r: clock freq (MHz) = 5384.4469
-714.cpython_r: instructions = 1.47791e+12
-714.cpython_r: branch instructions = 2.87706e+11
-714.cpython_r: ipc = 3.7142
-714.cpython_r: misprediction rate (%) = 0.1046
-714.cpython_r: mpki = 0.2036
-721.gcc_r: time (ms) = 119867
-721.gcc_r: clock freq (MHz) = 5546.1756
-721.gcc_r: instructions = 1.09678e+12
-721.gcc_r: branch instructions = 2.25475e+11
-721.gcc_r: ipc = 1.6498
-721.gcc_r: misprediction rate (%) = 1.6528
-721.gcc_r: mpki = 3.3979
-723.llvm_r: time (ms) = 111782
-723.llvm_r: clock freq (MHz) = 5554.6870
-723.llvm_r: instructions = 1.00454e+12
-723.llvm_r: branch instructions = 2.01532e+11
-723.llvm_r: ipc = 1.6178
-723.llvm_r: misprediction rate (%) = 2.7974
-723.llvm_r: mpki = 5.6122
-727.cppcheck_r: time (ms) = 76934.5
-727.cppcheck_r: clock freq (MHz) = 5530.3658
-727.cppcheck_r: instructions = 1.19107e+12
-727.cppcheck_r: branch instructions = 3.25381e+11
-727.cppcheck_r: ipc = 2.7994
-727.cppcheck_r: misprediction rate (%) = 0.2723
-727.cppcheck_r: mpki = 0.7439
-729.abc_r: time (ms) = 100020
-729.abc_r: clock freq (MHz) = 5505.8930
-729.abc_r: instructions = 1.26816e+12
-729.abc_r: branch instructions = 2.08874e+11
-729.abc_r: ipc = 2.3028
-729.abc_r: misprediction rate (%) = 2.4012
-729.abc_r: mpki = 3.9549
-734.vpr_r: time (ms) = 76460.8
-734.vpr_r: clock freq (MHz) = 5529.3802
-734.vpr_r: instructions = 1.00504e+12
-734.vpr_r: branch instructions = 1.90341e+11
-734.vpr_r: ipc = 2.3772
-734.vpr_r: misprediction rate (%) = 1.5993
-734.vpr_r: mpki = 3.0289
-735.gem5_r: time (ms) = 73856.5
-735.gem5_r: clock freq (MHz) = 5497.5781
-735.gem5_r: instructions = 9.71051e+11
-735.gem5_r: branch instructions = 1.98496e+11
-735.gem5_r: ipc = 2.3916
-735.gem5_r: misprediction rate (%) = 1.1416
-735.gem5_r: mpki = 2.3336
-750.sealcrypto_r: time (ms) = 119318
-750.sealcrypto_r: clock freq (MHz) = 5551.4334
+708.sqlite_r: branch instructions = 3.47557e+11
+708.sqlite_r: ipc = 2.7048
+708.sqlite_r: misprediction rate (%) = 0.5471
+708.sqlite_r: mpki = 1.0784
+710.omnetpp_r: time (ms) = 73939.2
+710.omnetpp_r: clock freq (MHz) = 5426.9121
+710.omnetpp_r: instructions = 1.25425e+12
+710.omnetpp_r: branch instructions = 2.33363e+11
+710.omnetpp_r: ipc = 3.1258
+710.omnetpp_r: misprediction rate (%) = 0.4566
+710.omnetpp_r: mpki = 0.8495
+714.cpython_r: time (ms) = 72522.3
+714.cpython_r: clock freq (MHz) = 5387.0447
+714.cpython_r: instructions = 1.47637e+12
+714.cpython_r: branch instructions = 2.87443e+11
+714.cpython_r: ipc = 3.7790
+714.cpython_r: misprediction rate (%) = 0.1113
+714.cpython_r: mpki = 0.2167
+721.gcc_r: time (ms) = 117393
+721.gcc_r: clock freq (MHz) = 5552.2075
+721.gcc_r: instructions = 1.09739e+12
+721.gcc_r: branch instructions = 2.25633e+11
+721.gcc_r: ipc = 1.6837
+721.gcc_r: misprediction rate (%) = 1.6607
+721.gcc_r: mpki = 3.4146
+723.llvm_r: time (ms) = 110192
+723.llvm_r: clock freq (MHz) = 5559.2897
+723.llvm_r: instructions = 1.00399e+12
+723.llvm_r: branch instructions = 2.01333e+11
+723.llvm_r: ipc = 1.6389
+723.llvm_r: misprediction rate (%) = 2.8001
+723.llvm_r: mpki = 5.6151
+727.cppcheck_r: time (ms) = 77179.3
+727.cppcheck_r: clock freq (MHz) = 5533.0305
+727.cppcheck_r: instructions = 1.19105e+12
+727.cppcheck_r: branch instructions = 3.25407e+11
+727.cppcheck_r: ipc = 2.7891
+727.cppcheck_r: misprediction rate (%) = 0.2740
+727.cppcheck_r: mpki = 0.7487
+729.abc_r: time (ms) = 99332.4
+729.abc_r: clock freq (MHz) = 5493.8586
+729.abc_r: instructions = 1.26846e+12
+729.abc_r: branch instructions = 2.08941e+11
+729.abc_r: ipc = 2.3244
+729.abc_r: misprediction rate (%) = 2.4310
+729.abc_r: mpki = 4.0043
+734.vpr_r: time (ms) = 75675.8
+734.vpr_r: clock freq (MHz) = 5521.8743
+734.vpr_r: instructions = 1.00577e+12
+734.vpr_r: branch instructions = 1.90483e+11
+734.vpr_r: ipc = 2.4069
+734.vpr_r: misprediction rate (%) = 1.6031
+734.vpr_r: mpki = 3.0360
+735.gem5_r: time (ms) = 74110.1
+735.gem5_r: clock freq (MHz) = 5494.1539
+735.gem5_r: instructions = 9.73051e+11
+735.gem5_r: branch instructions = 1.98782e+11
+735.gem5_r: ipc = 2.3898
+735.gem5_r: misprediction rate (%) = 1.1580
+735.gem5_r: mpki = 2.3657
+750.sealcrypto_r: time (ms) = 119074
+750.sealcrypto_r: clock freq (MHz) = 5559.6544
 750.sealcrypto_r: instructions = 2.8645e+12
-750.sealcrypto_r: branch instructions = 8.60005e+10
-750.sealcrypto_r: ipc = 4.3245
-750.sealcrypto_r: misprediction rate (%) = 0.4773
-750.sealcrypto_r: mpki = 0.1433
-753.ns3_r: time (ms) = 73179
-753.ns3_r: clock freq (MHz) = 5512.5244
-753.ns3_r: instructions = 9.49731e+11
-753.ns3_r: branch instructions = 1.98244e+11
-753.ns3_r: ipc = 2.3543
-753.ns3_r: misprediction rate (%) = 0.7049
-753.ns3_r: mpki = 1.4715
-777.zstd_r: time (ms) = 138261
-777.zstd_r: clock freq (MHz) = 5529.1145
-777.zstd_r: instructions = 1.75845e+12
-777.zstd_r: branch instructions = 2.27236e+11
-777.zstd_r: ipc = 2.3002
-777.zstd_r: misprediction rate (%) = 2.8653
-777.zstd_r: mpki = 3.7027
-999.specrand_r: time (ms) = 1014.49
-999.specrand_r: clock freq (MHz) = 5553.6304
-999.specrand_r: instructions = 2.86862e+10
-999.specrand_r: branch instructions = 3.68993e+09
-999.specrand_r: ipc = 5.0916
-999.specrand_r: misprediction rate (%) = 0.0955
-999.specrand_r: mpki = 0.1228
-all: time (ms) = 1.44488e+06
-all: clock freq (MHz) = 5495.6758
-all: instructions = 2.1381e+13
-all: branch instructions = 3.15181e+12
+750.sealcrypto_r: branch instructions = 8.60006e+10
+750.sealcrypto_r: ipc = 4.3270
+750.sealcrypto_r: misprediction rate (%) = 0.5026
+750.sealcrypto_r: mpki = 0.1509
+753.ns3_r: time (ms) = 73291.7
+753.ns3_r: clock freq (MHz) = 5510.3586
+753.ns3_r: instructions = 9.50232e+11
+753.ns3_r: branch instructions = 1.98921e+11
+753.ns3_r: ipc = 2.3529
+753.ns3_r: misprediction rate (%) = 0.6997
+753.ns3_r: mpki = 1.4648
+777.zstd_r: time (ms) = 136463
+777.zstd_r: clock freq (MHz) = 5527.0904
+777.zstd_r: instructions = 1.7602e+12
+777.zstd_r: branch instructions = 2.2747e+11
+777.zstd_r: ipc = 2.3337
+777.zstd_r: misprediction rate (%) = 2.8601
+777.zstd_r: mpki = 3.6962
+999.specrand_r: time (ms) = 1014.13
+999.specrand_r: clock freq (MHz) = 5562.0105
+999.specrand_r: instructions = 2.86865e+10
+999.specrand_r: branch instructions = 3.68996e+09
+999.specrand_r: ipc = 5.0857
+999.specrand_r: misprediction rate (%) = 0.0956
+999.specrand_r: mpki = 0.1230
+all: time (ms) = 1.43279e+06
+all: clock freq (MHz) = 5491.9637
+all: instructions = 2.13852e+13
+all: branch instructions = 3.153e+12
 
 System Info:
 CPU Name: 12th Gen Intel(R) Core(TM) i9-12900KS
 Enabled: -1 cores, -1 chips, -1 threads/core
-Memory: 4x Crucial Technology CT32G48C40U5.M16A1 32 GB 2 rank 4400
+Memory: 4x Crucial Technology CT32G48C40U5.M16A1 32 GB 2 rank 4800
