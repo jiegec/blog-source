@@ -27,6 +27,31 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Faster load availability
     - More memory operations in flight
     - Smarter prefetching
+- [Arm® C2-Ultra Core Technical Reference Manual](https://support.arm.com/documentation/109736/0001/?lang=en)
+    - 128-entry L1 ITLB
+    - 96-entry L1 DTLB
+    - 2048-entry L2 TLB
+    - 64KB 4-way L1 ICache
+    - 128KB 4-way L1 DCache
+    - 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks L2 cache
+    - The C2-Ultra core implements a scalable vector length of 128 bits
+- [Arm® C2-Ultra Core Software Optimization Guide](https://support.arm.com/documentation/112421/3-0/?lang=en)
+    - 3x Branch, 6x Integer Single Cycle, 2x Integer Single/Multi-Ccyle, 6x FP/SIMD, 2x Load/Store, 2x Load, 2x Store data
+    - The dispatch stage can process up to 10 MOPs per cycle and dispatch up to 20 µOPs per cycle, with the following limitations on the number of µOPs of each type that may be simultaneously dispatched.
+    - Up to 9 µOPs utilizing the S or B pipelines
+    - Up to 3 µOPs utilizing the M pipelines
+    - Up to 9 µOPs utilizing the V pipelines
+    - Up to 8 µOPs utilizing the L pipelines
+    - Dispatch of CME M OPs staying in-order are directly sent to the C pipeline. The C pipeline can receive up to 4 MOPs directly from the rename stage.
+    - The C2 - Ultra core allows data to be forwarded from store instructions to a load instruction with the restrictions mentioned below:
+    - Load start address should align with the start or middle address of the older store supported from a wider range of offsets. For 1B loads, forwarding is
+    - Loads of size greater than 8 bytes can get the data forwarded from a maximum of 2 stores. If there are 2 stores, then each store should forward to either first or second half of the load
+    - Loads of size less than or equal to 4 bytes can get their data forwarded from only 1 store
+
+### C2-Pro
+
+- [Arm C2 CPU cluster](https://www.arm.com/products/silicon-ip-cpu/c2-cpu-cluster)
+    - The C2-Pro CPU leverages the same power-efficient microarchitecture as C1-Pro while implemented with the latest process technologies available on the market. 
 
 ### Neoverse N4
 
