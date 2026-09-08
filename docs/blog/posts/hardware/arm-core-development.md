@@ -14,6 +14,26 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 <!-- more -->
 
+## 2026 年
+
+### C2-Ultra
+
+- [Arm’s C2-Ultra, G2-Ultra NX, and CSS N4 IP](https://chipsandcheese.com/p/arms-c2-ultra-g2-ultra-nx-and-css)
+    - More accurate prediction
+    - Stronger instruction delivery
+    - Faster recovery
+    - Larger execution window
+    - Smart speculation
+    - Faster load availability
+    - More memory operations in flight
+    - Smarter prefetching
+
+### Neoverse N4
+
+- [Arm’s C2-Ultra, G2-Ultra NX, and CSS N4 IP](https://chipsandcheese.com/p/arms-c2-ultra-g2-ultra-nx-and-css)
+    - 64KB L1 I/D cache
+    - 2MB L2 cache
+
 ## 2025 年
 
 ### C1-Ultra
