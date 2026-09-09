@@ -74,8 +74,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - C1-Pro: 48 条
 - L1 dTLB:
     - A78/A710: 32 条
-    - A715/A720: 48 条
-    - C1-Pro: 48 条
+    - A715/A720/C1-Pro: 48 条
 - L2 TLB:
     - A78/A710: 1024 条（4-way）
     - A715/A720/C1-Pro: Small 6-way 1536 + Medium 4-way 256
@@ -270,6 +269,13 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 - **对应 Cortex：** Arm Cortex-X4
 - [Arm® Neoverse™ V3 Core Technical Reference Manual](https://documentation-service.arm.com/static/65d62242c8cb3a42117cb7ba)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, RRIP replacement policy
+    - L2 cache, 2MB or 3MB, 8-way/12-way set associative with 4 banks, PIPT, Dynamic biased cache replacement policy, CHI Issue E with DSU-120 (256-bit read and write DAT channel widths)
+    - L1 instruction TLB, Fully associative, 48 entries
+    - L1 data TLB, Fully associative, 96 entries
+    - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
 - [Arm AGI Hot Chips 2026 Neoverse IP Blocks](https://www.servethehome.com/arms-agi-data-center-cpu-at-hot-chips-2026/arm-agi-hot-chips-2026-neoverse-ip-blocks/)
     - 64KB ICache
     - 10-wide front end
@@ -331,6 +337,14 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Lower latency for L2 cache hits, 9-cycle latency to access L2, vs 10 (Cortex-A715)
     - Up to 2x memset(0) bandwidth in L2
     - New L2 spatial-prefetch engine
+- [Arm® Cortex-A720 Core Technical Reference Manual](https://developer.arm.com/documentation/102530/latest/)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - L1 instruction cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 32KB or 64KB, 4-way set associative, 16 banks, 64-byte cache lines, VIPT behaving as PIPT, LRU cache replacement policy
+    - L2 cache, 128KB-512KB, 8-way set associative, 2 banks, PIPT, Dynamic biased cache replacement policy, CHI Issue E with DSU-120 (256-bit)
+    - L1 instruction TLB, Fully associative, 32 entries
+    - L1 data TLB, Fully associative, 48 entries
+    - L2 TLB, Made of two translation caches: a Small page TLB (6-way, 1536 entries) and a Medium page TLB (4-way, 256 entries)
 - [Arm® Cortex-A720 Core Software Optimization Guide](https://developer.arm.com/documentation/109720/latest/)
     - Executes SVE2/SVE with a 128-bit vector length
     - 13 issue pipelines: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD/Vector Store data, 2x Load/Store, 1x Load, 2x Integer Store data
@@ -438,6 +452,14 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 - [Cortex X2: Arm Aims High](https://chipsandcheese.com/2023/10/27/cortex-x2-arm-aims-high/)
 - [Arm® Cortex®‑X2 Core Technical Reference Manual](https://developer.arm.com/documentation/101803/0200)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - L0 MOP cache, 3072 macro-operations, 4-way skewed associative, VIVT behaving as PIPT
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L2 cache, 512KB or 1MB, 8-way set associative, PIPT, Dynamic biased cache replacement policy
+    - L1 instruction TLB, Fully associative, 48 entries
+    - L1 data TLB, Fully associative, 48 entries
+    - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
 - [Arm Announces Mobile Armv9 CPU Microarchitectures: Cortex-X2, Cortex-A710 & Cortex-A510](https://www.anandtech.com/show/16693/arm-announces-mobile-armv9-cpu-microarchitectures-cortexx2-cortexa710-cortexa510/2)
 
 ### Neoverse N2
@@ -475,6 +497,15 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L2 transactions: 64, 1.3x improvement
     - Data Prefetch Engines: Stride, spatial/region, stream, temporal
     - Correlated Miss Caching (CMC) prefetching
+- [Arm® Neoverse™ N2 Core Technical Reference Manual](https://developer.arm.com/documentation/102099/latest/)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - L0 MOP cache, 1536 macro-operations, 4-way skewed associative, VIVT behaving as PIPT
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L2 cache, 512KB or 1MB, 8-way set associative, PIPT, Dynamic biased cache replacement policy
+    - L1 instruction TLB, Fully associative, 48 entries
+    - L1 data TLB, Fully associative, 44 entries
+    - L2 TLB, Shared by instructions and data, 5-way set associative, 1280 entries
 - **Category A errata：**
     - 2001293：LDP 64-bit 变体出错时，写入 FAR/ESR 的 fault 信息可能错误。（r0p1 修复）
 
