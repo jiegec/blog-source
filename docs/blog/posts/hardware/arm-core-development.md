@@ -446,6 +446,18 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle
     - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 
+### Cortex A715
+
+- [Arm® Cortex-A715 Core Technical Reference Manual](https://developer.arm.com/documentation/101590/latest/)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - L1 instruction cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, PIPT, PLRU cache replacement policy
+    - L1 data cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, LRU cache replacement policy
+    - L2 cache, 128KB-512KB, 8-way set associative, 2 banks, PIPT, Dynamic biased cache replacement policy
+    - L1 instruction TLB, Fully associative, 32 entries
+    - L1 data TLB, Fully associative, 48 entries
+    - L2 TLB, Made of two translation caches: a Small page TLB (6-way, 1536 entries) and a Medium page TLB (4-way, 256 entries)
+    - **13 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+
 ## 2021 年
 
 ### Cortex X2
@@ -508,6 +520,18 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L2 TLB, Shared by instructions and data, 5-way set associative, 1280 entries
 - **Category A errata：**
     - 2001293：LDP 64-bit 变体出错时，写入 FAR/ESR 的 fault 信息可能错误。（r0p1 修复）
+
+### Cortex A710
+
+- [Arm® Cortex-A710 Core Technical Reference Manual](https://developer.arm.com/documentation/101800/latest/)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - L1 instruction cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L2 cache, 256KB or 512KB, 8-way set associative, PIPT, Dynamic biased cache replacement policy
+    - L1 instruction TLB, Fully associative, 48 entries
+    - L1 data TLB, Fully associative, 32 entries
+    - L2 TLB, 4-way set associative, 1024 entries
+    - **13 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
 
 ## 2020 年
 
