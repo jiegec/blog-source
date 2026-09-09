@@ -456,7 +456,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Fully associative, 32 entries
     - L1 data TLB, Fully associative, 48 entries
     - L2 TLB, Made of two translation caches: a Small page TLB (6-way, 1536 entries) and a Medium page TLB (4-way, 256 entries)
+- [Arm® Cortex-A715 Core Software Optimization Guide](https://documentation-service.arm.com/static/62bc010a31ea212bb66256b4)
     - **13 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 5 MOPs per cycle and dispatch up to 10 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 
 ## 2021 年
 
@@ -531,7 +534,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Fully associative, 48 entries
     - L1 data TLB, Fully associative, 32 entries
     - L2 TLB, 4-way set associative, 1024 entries
+- [Arm® Cortex-A710 Core Software Optimization Guide](https://documentation-service.arm.com/static/61ba21e676bb7f0e683c2d42)
     - **13 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 5 MOPs per cycle and dispatch up to 10 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 
 ## 2020 年
 
