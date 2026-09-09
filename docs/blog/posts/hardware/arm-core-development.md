@@ -28,15 +28,18 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - More memory operations in flight
     - Smarter prefetching
 - [Arm® C2-Ultra Core Technical Reference Manual](https://support.arm.com/documentation/109736/0001/?lang=en)
-    - 128-entry L1 ITLB
-    - 96-entry L1 DTLB
-    - 2048-entry L2 TLB
-    - 64KB 4-way L1 ICache
-    - 128KB 4-way L1 DCache
-    - 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks L2 cache
-    - The C2-Ultra core implements a scalable vector length of 128 bits
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - Implementation of the Scalable Matrix Extension (SME) and Scalable Matrix Extension 2 (SME2), and support for the C1-SME2 unit
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 128KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
+    - L2 cache, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, PIPT, Dynamic biased cache replacement policy, One CHI Issue E compliant interface with the C1-DynamIQ Shared Unit (DSU) with 256-bit read and write DAT channel widths
+    - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 128 entries
+    - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, 2MB, or 512MB granularity only, Fully associative, 96 entries
+    - L1 Statistical Profiling Extension (SPE) TLB, located in the SPE block, VA to PA translations of any page and block size, 1 entry
+    - L1 Trace Buffer Extension (TRBE) TLB, VA to PA translations of any page and block size, 1 entry
+    - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
 - [Arm® C2-Ultra Core Software Optimization Guide](https://support.arm.com/documentation/112421/3-0/?lang=en)
-    - 3x Branch, 6x Integer Single Cycle, 2x Integer Single/Multi-Ccyle, 6x FP/SIMD, 2x Load/Store, 2x Load, 2x Store data
+    - 3x Branch, 6x Integer Single Cycle, 2x Integer Single/Multi-Cycle, 6x FP/SIMD, 2x Load/Store, 2x Load, 2x Store data
     - The dispatch stage can process up to 10 MOPs per cycle and dispatch up to 20 µOPs per cycle, with the following limitations on the number of µOPs of each type that may be simultaneously dispatched.
     - Up to 9 µOPs utilizing the S or B pipelines
     - Up to 3 µOPs utilizing the M pipelines
