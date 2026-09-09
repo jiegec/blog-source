@@ -89,6 +89,8 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 data cache, 128KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT), Re-Reference Interval Prediction (RRIP) replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
     - L2 cache, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, Physically Indexed, Physically Tagged (PIPT), Dynamic biased cache replacement policy, One CHI Issue E compliant interfaces with 256-bit read and write DAT channel widths
 
+### C1-Premium
+
 ### C1-Pro
 
 - [Arm Lumex C1-Pro CPU Core: What You Need to Know](https://www.youtube.com/watch?v=yUqEhahvAVE)
@@ -100,6 +102,8 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Increase effective L1D cache bandwidth
     - Lower latency L2 TLB hit
     - New indirect prefetcher
+
+### C1-Nano
 
 ## 2024 年
 
@@ -152,6 +156,8 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Dual 128-bit low-latency datapath
     - 10-cycle load-to-use, 12B/cycle 2MB private L2
     - 32B DAT AMBA CHI
+
+### Neoverse N3
 
 ## 2023 年
 
@@ -268,8 +274,6 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 - [Arm® Cortex®‑X2 Core Technical Reference Manual](https://developer.arm.com/documentation/101803/0200)
 - [Arm Announces Mobile Armv9 CPU Microarchitectures: Cortex-X2, Cortex-A710 & Cortex-A510](https://www.anandtech.com/show/16693/arm-announces-mobile-armv9-cpu-microarchitectures-cortexx2-cortexa710-cortexa510/2)
 
-## 2020 年
-
 ### Neoverse N2
 
 - [Arm Neoverse N2: Arm’s 2nd generation high performance infrastructure CPUs and system IPs](https://hc33.hotchips.org/assets/program/conference/day1/20210818_Hotchips_NeoverseN2.pdf)
@@ -304,6 +308,8 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L2 transactions: 64, 1.3x improvement
     - Data Prefetch Engines: Stride, spatial/region, stream, temporal
     - Correlated Miss Caching (CMC) prefetching
+
+## 2020 年
 
 ### Neoverse V1
 
@@ -358,7 +364,6 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - 50% increase in load bandwidth over Cortex-A77, additional load AGU / result
     - Double store-data bandwidth, 32B per cycle
     - Double L2 interface bandwidth
-
 
 ## 2019 年
 
