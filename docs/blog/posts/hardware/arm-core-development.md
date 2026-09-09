@@ -305,7 +305,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 ### Neoverse N3
 
 - **对应 Cortex：** Arm Cortex-A720
-- [Arm® Neoverse™ N3 Core Technical Reference Manual](https://documentation-service.arm.com/static/65d62242c8cb3a42117cb7ba)
+- [Arm® Neoverse™ N3 Core Technical Reference Manual](https://support.arm.com/documentation/107997/0001/)
     - L1 instruction cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, PIPT, PLRU cache replacement policy, 32 bytes per cycle interface with L2
     - L1 data cache, 32KB or 64KB, 4-way set associative, 16 banks, 64-byte cache lines, VIPT behaving as PIPT, LRU cache replacement policy, 3×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 3×128-bit read paths and 2×128-bit write paths for the vector execute pipeline
     - L2 cache, 128KB-2048KB, 8-way set associative, 2 banks, PIPT, Dynamic biased cache replacement policy, One CHI Issue E compliant interface with the DSU-120 (256-bit read and write channel widths)
