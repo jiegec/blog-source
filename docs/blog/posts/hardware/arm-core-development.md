@@ -136,6 +136,22 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L2 cache, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, Physically Indexed, Physically Tagged (PIPT)
 - [Arm® Cortex-X925 Core Software Optimization Guide](https://developer.arm.com/documentation/109842/latest/)
 
+### Neoverse V3
+
+- [Arm AGI Hot Chips 2026 Neoverse IP Blocks](https://www.servethehome.com/arms-agi-data-center-cpu-at-hot-chips-2026/arm-agi-hot-chips-2026-neoverse-ip-blocks/)
+    - 64KB ICache
+    - 10-wide front end
+    - 10-way decode
+    - 384+ OoO window
+    - 10-wide dispatch
+    - 8-wide retire
+    - 1LS + 2LD + 1ST per cycle
+    - 64KB DCache
+    - 8-ALU + 3-branch
+    - Dual 128-bit load-latency datapath
+    - 10-cycle load-to-use, 12B/cycle 2MB private L2
+    - 32B DAT AMBA CHI
+
 ## 2023 年
 
 ### Cortex X4
