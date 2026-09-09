@@ -148,7 +148,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - 1LS + 2LD + 1ST per cycle
     - 64KB DCache
     - 8-ALU + 3-branch
-    - Dual 128-bit load-latency datapath
+    - Dual 128-bit low-latency datapath
     - 10-cycle load-to-use, 12B/cycle 2MB private L2
     - 32B DAT AMBA CHI
 
