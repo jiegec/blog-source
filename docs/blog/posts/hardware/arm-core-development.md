@@ -78,19 +78,14 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
     - Implementation of the Scalable Matrix Extension (SME) and Scalable Matrix Extension 2 (SME2), and support for the C1-SME2 unit
     - configure the L2 cache to be 2048KB or 3072KB
-    - A 64KB, 4-way set associative L1 instruction cache with 64-byte cache lines
-    - A fully associative L1 instruction Translation Lookaside Buﬀer (TLB) with native support for 4KB, 16KB, 64KB, and 2MB page sizes
-    - A 128KB, 4-way set associative cache with 64-byte cache lines
-    - A fully associative L1 data TLB with native support for 4KB, 16KB, and 64KB page sizes and 2MB and 512MB block sizes
-    - L2 cache is private to the core and can be configured to be 2MB 8-way set associative or 3MB 12-way set associative
-    - L1 instruction TLB, Fully associative, 128 entries
-    - L1 data TLB, Fully associative, 96 entries
-    - L1 Statistical Profiling Extension (SPE) TLB, Located in the SPE block, VA to PA translations of any page and block size, 1 entry
-    - L1 TRace Buﬀer Extension (TRBE) TLB, VA to PA translations of any page and block size, 1 entry
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy, 32 bytes per cycle interface with L2
+    - L1 data cache, 128KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
+    - L2 cache, private to the core, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, PIPT, Dynamic biased cache replacement policy, One CHI Issue E compliant interface with 256-bit read and write DAT channel widths
+    - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 128 entries
+    - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, 2MB, or 512MB granularity only, Fully associative, 96 entries
+    - L1 Statistical Profiling Extension (SPE) TLB, located in the SPE block, VA to PA translations of any page and block size, 1 entry
+    - L1 Trace Buffer Extension (TRBE) TLB, VA to PA translations of any page and block size, 1 entry
     - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
-    - L1 instruction cache, 64KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT), Pseudo-Least Recently Used (LRU) cache replacement policy for L1, 32 bytes per cycle interface with L2
-    - L1 data cache, 128KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT), Re-Reference Interval Prediction (RRIP) replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
-    - L2 cache, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, Physically Indexed, Physically Tagged (PIPT), Dynamic biased cache replacement policy, One CHI Issue E compliant interfaces with 256-bit read and write DAT channel widths
 - [Arm® C1-Ultra Core Software Optimization Guide](https://developer.arm.com/documentation/111027/latest/)
     - 23 issue pipelines: 3x Branch, 6x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 6x FP/ASIMD, 2x Load/Store, 2x Load, 2x Store data
     - The dispatch stage can process up to 10 MOPs per cycle and dispatch up to 20 µOPs per cycle, with the following limitations on the number of µOPs of each type that may be simultaneously dispatched.
@@ -166,18 +161,13 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 - [Arm® Cortex-X925 Core Technical Reference Manual](https://developer.arm.com/documentation/102807/0001)
     - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
     - configure the L2 cache to be 2048KB or 3072KB
-    - A 64KB, 4-way set associative L1 instruction cache with 64-byte cache lines
-    - A fully associative L1 instruction Translation Lookaside Buﬀer (TLB) with native support for 4KB, 16KB, 64KB, and 2MB page sizes
-    - A 64KB, 4-way set associative cache with 64-byte cache lines
-    - A fully associative L1 data TLB with native support for 4KB, 16KB and 64KB page sizes and 2MB and 512MB block sizes
-    - L2 cache is private to the core and can be configured to be 2MB 8-way set associative or 3MB 12-way set associative
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
+    - L2 cache, private to the core, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, PIPT, Dynamic biased cache replacement policy, One CHI Issue E compliant interface with 256-bit read and write DAT channel widths
     - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity of Virtual Address (VA) to Physical Address (PA) mapping only, Fully associative, 128 entries
     - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, 2MB, or 512MB granularity of VA to PA mappings only, Fully associative, 96 entries
     - L2 TLB, Shared by instructions and data, VA to PA mappings for 4KB, 16KB, 64KB, 2MB, 32MB, 512MB, and 1GB block sizes, Intermediate Physical Address (IPA) to PA mappings for: 2MB and 1GB block sizes in a 4KB translation granule, 32MB block size in a 16KB translation granule, 512MB block size in a 64KB granule; Intermediate PAs (descriptor PAs) obtained during a translation table walk, 8-way set associative, 2048 entries
-    - L1 instruction cache, 64KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT)
     - The Cortex®-X925 core supports the AArch64 prefetch memory instructions, PRFM PLI, into the L1 instruction cache or L2 cache
-    - L1 data cache, 64KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT), Re-Reference Interval Prediction (RRIP) replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
-    - L2 cache, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, Physically Indexed, Physically Tagged (PIPT)
 - [Arm® Cortex-X925 Core Software Optimization Guide](https://developer.arm.com/documentation/109842/latest/)
 
 ### Neoverse V3
