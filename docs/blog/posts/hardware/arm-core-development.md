@@ -99,7 +99,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 大核：
 
 - X1/X2/X3: 2 LS + 1 LD + 2 SD
-- X4: 1 LS + 2 LD + 2 SD
+- X4: 1 LS + 2 LD + 1 ST + 2 SD
 - X925/C1-Ultra/C1-Premium/C2-Ultra: 2 LS + 2 LD + 2 SD
 
 中核：
