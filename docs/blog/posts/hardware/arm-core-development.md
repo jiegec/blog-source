@@ -14,6 +14,98 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 <!-- more -->
 
+## 微架构演进分析
+
+### L1 指令缓存（ICache）
+
+大核：
+
+- X1/X2/X3/X4/X925/C1-Ultra/C2-Ultra/C1-Premium: 64KB
+
+中核：
+
+- A78/A710/A715/A720/C1-Pro: 32KB/64KB
+
+### L1 数据缓存（DCache）
+
+大核：
+
+- X1/X2/X3/X4/X925/C1-Premium: 64KB
+- C1-Ultra/C2-Ultra: 128KB
+
+中核：
+
+- A78/A710/A715/A720/C1-Pro: 32KB/64KB
+
+### L2 缓存
+
+大核：
+
+- X1/X2/X3: 512KB-1MB
+- X4: 512KB-2MB
+- X925/C1-Ultra/C2-Ultra: 2MB-3MB
+- C1-Premium: 1MB-2MB
+
+中核：
+
+- A78/A710: 256KB-512KB
+- A715/A720: 128KB-512KB
+- C1-Pro: 128KB-1MB
+
+### TLB
+
+大核：
+
+- L1 iTLB:
+    - X1/X2/X3/X4: 48 条
+    - X925/C1-Ultra/C2-Ultra/C1-Premium: 128 条
+- L1 dTLB:
+    - X1: 40 条
+    - X2/X3: 48 条
+    - X4/X925/C1-Ultra/C2-Ultra/C1-Premium: 96 条
+- L2 TLB: 统一 2048 条（8-way）
+
+中核：
+
+- L1 iTLB:
+    - A78: 32 条
+    - A710: 48 条
+    - A715/A720: 32 条
+    - C1-Pro: 48 条
+- L1 dTLB:
+    - A78/A710: 32 条
+    - A715/A720: 48 条
+    - C1-Pro: 48 条
+- L2 TLB:
+    - A78/A710: 1024 条（4-way）
+    - A715/A720/C1-Pro: Small 6-way 1536 + Medium 4-way 256
+
+### 执行单元（ALU / 分支 / 向量）
+
+大核：
+
+- X1/X2: 4 ALU + 2 branch + 4 FP/SIMD
+- X3: 6 ALU + 2 branch + 4 FP/SIMD
+- X4: 8 ALU + 3 branch + 4 FP/SIMD
+- X925/C1-Ultra/C2-Ultra: 8 ALU + 3 branch + 6 FP/SIMD
+- C1-Premium: 8 ALU + 3 branch + 2 FP/SIMD
+
+中核：
+
+- A78/A710/A715/A720/C1-Pro: 4 ALU + 2 branch + 2 FP/ASIMD
+
+### Load/Store 单元（LSU）
+
+大核：
+
+- X1/X2/X3: 2 LS + 1 LD + 2 SD
+- X4: 1 LS + 2 LD + 2 SD
+- X925/C1-Ultra/C1-Premium/C2-Ultra: 2 LS + 2 LD + 2 SD
+
+中核：
+
+- A78/A710/A715/A720/C1-Pro: 2 LS + 1 LD + 2 SD
+
 ## 2026 年
 
 ### C2-Ultra
