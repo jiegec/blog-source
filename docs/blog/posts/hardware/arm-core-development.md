@@ -221,6 +221,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 48 entries
     - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 48 entries
     - L2 TLB, Made of two translation caches: a Small page TLB (6-way, 1536 entries, or 4-way with reduced area, 1024 entries) and a Medium page TLB (4-way, 256 entries)
+- [Arm® C1-Pro Core Software Optimization Guide](https://documentation-service.arm.com/static/68c2ee168a337a2bc6645d3e)
+    - **13 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 5 MOPs per cycle and dispatch up to 10 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 4 by L01
 
 ### C1-Nano
 
@@ -300,6 +304,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 32 entries
     - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 48 entries
     - L2 TLB, Made of two translation caches: a Small page TLB (6-way, 1536 entries, or 4-way with reduced area, 1024 entries) and a Medium page TLB (4-way, 256 entries)
+- [Arm® Neoverse™ N3 Core Software Optimization Guide](https://documentation-service.arm.com/static/668b9dab69e89f01e39c4634)
+    - **13 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 5 MOPs per cycle and dispatch up to 10 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 5 by L
 
 ## 2023 年
 
@@ -521,6 +529,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Fully associative, 48 entries
     - L1 data TLB, Fully associative, 44 entries
     - L2 TLB, Shared by instructions and data, 5-way set associative, 1280 entries
+- [Arm® Neoverse™ N2 Core Software Optimization Guide](https://documentation-service.arm.com/static/66880cb69082ad344b14c33d)
+    - **13 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 5 MOPs per cycle and dispatch up to 10 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 - **Category A errata：**
     - 2001293：LDP 64-bit 变体出错时，写入 FAR/ESR 的 fault 信息可能错误。（r0p1 修复）
 
@@ -579,6 +591,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Fully associative, 48 entries
     - L1 data TLB, Fully associative, 40 entries
     - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
+- [Arm® Neoverse™ V1 Core Software Optimization Guide](https://documentation-service.arm.com/static/69c30b41351d0c3476bddb16)
+    - **15 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 4x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 
 ### Cortex X1
 
