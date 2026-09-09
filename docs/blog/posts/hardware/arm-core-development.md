@@ -257,6 +257,14 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Integer load bandwdith: 24B -> 32B
     - Additional data prefetch engines: Spatial, Pointer/Indirect
 - [Arm® Cortex‑X3 Core Technical Reference Manual](https://developer.arm.com/documentation/101593/latest/)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - L0 MOP cache, 1536 macro-operations, 4-way skewed associative, VIVT behaving as PIPT
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for integer, 3×128-bit read paths and 2×128-bit write paths for vector
+    - L2 cache, 512KB or 1MB, 8-way set associative with 4 banks, PIPT, Dynamic biased cache replacement policy, CHI Issue E with DSU-110 (256-bit)
+    - L1 instruction TLB, 4KB/16KB/64KB/2MB granularity, Fully associative, 48 entries
+    - L1 data TLB, 4KB/16KB/64KB/2MB/512MB granularity, Fully associative, 48 entries
+    - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
 
 ### Neoverse V2
 
@@ -315,7 +323,18 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Replacement policy 6-state RRIP (up from 4)
 - [Hot Chips 2023: Arm’s Neoverse V2](https://chipsandcheese.com/p/hot-chips-2023-arms-neoverse-v2)
 - [Arm® Neoverse™ V2 Core Technical Reference Manual](https://developer.arm.com/documentation/102375/latest/)
+    - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
+    - L0 MOP cache, 1536 macro-operations, 4-way skewed associative, VIVT behaving as PIPT
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for integer, 3×128-bit read paths and 2×128-bit write paths for vector
+    - L2 cache, 1MB or 2MB, 8-way set associative with 4 banks, PIPT, Dynamic biased cache replacement policy, CHI Issue E with DSU-110 (256-bit)
+    - L1 instruction TLB, Fully associative, 48 entries
+    - L1 data TLB, Fully associative, 48 entries
+    - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
 - [Arm Neoverse V2 Software Optimization Guide](https://developer.arm.com/documentation/109898/latest/)
+    - 17 issue pipelines: 2x Branch, 4x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 4x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 
 ## 2021 年
 
