@@ -260,6 +260,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 ### Neoverse V2
 
+- **对应 Cortex：** Arm Cortex-X3
 - [Arm Neoverse V2 platform: Leadership Performance and Power Efficiency for Next-Generation Cloud Computing, ML and HPC Workloads](https://hc2023.hotchips.org/assets/program/conference/day1/CPU1/HC2023.Arm.MagnusBruce.v04.FINAL.pdf)
     - 6-wide/8-wide front-end
     - 64KB ICache
@@ -359,6 +360,8 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L2 transactions: 64, 1.3x improvement
     - Data Prefetch Engines: Stride, spatial/region, stream, temporal
     - Correlated Miss Caching (CMC) prefetching
+- **Category A errata：**
+    - 2001293：LDP 64-bit 变体出错时，写入 FAR/ESR 的 fault 信息可能错误。（r0p1 修复）
 
 ## 2020 年
 
