@@ -661,7 +661,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Fully associative, 32 entries
     - L1 data TLB, Fully associative, 32 entries
     - L2 TLB, 4-way set associative, 1024 entries
-- [Arm® Cortex-A78 Core Software Optimization Guide](https://developer.arm.com/documentation/109842/latest/)
+- [Arm® Cortex-A78 Core Software Optimization Guide](https://documentation-service.arm.com/static/6238b1b98804d00769e9deec)
     - 13 issue pipelines: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
 
 ## 2019 年
