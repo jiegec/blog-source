@@ -96,6 +96,8 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 ### Load/Store 单元（LSU）
 
+约定：LS 代表 Load/Store，LD 代表 Load，ST 代表 Store，SD 代表 Store Data
+
 大核：
 
 - X1/X2/X3: 2 LS + 1 LD + 2 SD
