@@ -202,6 +202,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 128 entries
     - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, 2MB, or 512MB granularity only, Fully associative, 96 entries
     - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
+- [Arm® C1-Premium Core Software Optimization Guide](https://support.arm.com/documentation/111054/4-0/?lang=en)
+    - **19 issue pipelines**: 3x Branch, 6x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD, 2x Load/Store, 2x Load, 2x Store data
+    - The dispatch stage can process up to 10 MOPs per cycle and dispatch up to 20 µOPs per cycle
+    - Up to 9 µOPs by the S or B pipelines, 3 by M, 6 by V, 8 by L
 
 ### C1-Pro
 
@@ -280,6 +284,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Fully associative, 48 entries
     - L1 data TLB, Fully associative, 96 entries
     - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
+- [Arm® Neoverse™ V3 Core Software Optimization Guide](https://documentation-service.arm.com/static/6734eb2627eda361ad4da4f4)
+    - **21 issue pipelines**: 3x Branch, 6x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 4x FP/ASIMD, 1x Load/Store, 1x Store(addr), 2x Load, 2x Store data
+    - The dispatch stage can process up to 10 MOPs per cycle and dispatch up to 20 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 - [Arm AGI Hot Chips 2026 Neoverse IP Blocks](https://www.servethehome.com/arms-agi-data-center-cpu-at-hot-chips-2026/arm-agi-hot-chips-2026-neoverse-ip-blocks/)
     - 64KB ICache
     - 10-wide front end
@@ -333,6 +341,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 48 entries
     - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, 2MB, or 512MB granularity only, Fully associative, 96 entries
     - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
+- [Arm® Cortex-X4 Core Software Optimization Guide](https://support.arm.com/documentation/PJDOC1505342170538636/r0p1/?lang=en)
+    - **21 issue pipelines**: 3x Branch, 6x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 4x FP/ASIMD, 1x Load/Store, 1x Store(addr), 2x Load, 2x Store data
+    - The dispatch stage can process up to 10 MOPs per cycle and dispatch up to 20 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 
 ### Cortex A720
 
@@ -383,6 +395,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, 4KB/16KB/64KB/2MB granularity, Fully associative, 48 entries
     - L1 data TLB, 4KB/16KB/64KB/2MB/512MB granularity, Fully associative, 48 entries
     - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
+- [Arm® Cortex-X3 Core Software Optimization Guide](https://developer.arm.com/documentation/PJDOC-466751330-590747/r1p2)
+    - **17 issue pipelines**: 2x Branch, 4x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 4x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 
 ### Neoverse V2
 
@@ -483,6 +499,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Fully associative, 48 entries
     - L1 data TLB, Fully associative, 48 entries
     - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
+- [Arm® Cortex-X2 Core Software Optimization Guide](https://documentation-service.arm.com/static/60d346c7677cf7536a55bae6)
+    - **15 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 4x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 - [Arm Announces Mobile Armv9 CPU Microarchitectures: Cortex-X2, Cortex-A710 & Cortex-A510](https://www.anandtech.com/show/16693/arm-announces-mobile-armv9-cpu-microarchitectures-cortexx2-cortexa710-cortexa510/2)
 
 ### Neoverse N2
@@ -618,6 +638,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction TLB, Fully associative, 48 entries
     - L1 data TLB, Fully associative, 40 entries
     - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
+- [Arm® Cortex-X1 Core Software Optimization Guide](https://documentation-service.arm.com/static/6238b0f88804d00769e9dee6)
+    - **15 issue pipelines**: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 4x FP/ASIMD, 2x Load/Store, 1x Load, 2x Store data
+    - The dispatch stage can process up to 8 MOPs per cycle and dispatch up to 16 µOPs per cycle
+    - Up to 4 µOPs by the S or B pipelines, 4 by M, 2 by M0, 2 by V0, 2 by V1, 6 by L
 - **Category A errata：**
     - 1468769：Vector 指令在特定微架构条件下可能死锁。（r1p0 修复）
     - 1609991：指令取指命中 L0 MOP cache、miss L1 I-TLB 并触发 tablewalk 时，PC/ELR 内容可能被破坏。（r1p0 修复）
@@ -646,13 +670,6 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 - **对应 Cortex：** Arm Cortex-A76
 - [The Arm Neoverse N1 Platform: Building Blocks for the Next-Gen Cloud-to-Edge Infrastructure SoC](https://www.arm.com/-/media/global/solutions/infrastructure/arm-neoverse-n1-platform.pdf)
-- [Arm® Neoverse™ N1 Core Technical Reference Manual](https://developer.arm.com/documentation/100616/latest/)
-    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
-    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
-    - L2 cache, 256KB or 512KB or 1MB, 8-way set associative, PIPT, Dynamic biased cache replacement policy
-    - L1 instruction TLB, Fully associative, 48 entries
-    - L1 data TLB, Fully associative, 48 entries
-    - L2 TLB, Shared by instructions and data, 5-way set associative, 1280 entries
     - 4-wide front-end
     - dispatching/committing up to 8 instructions per cycle
     - three ALUs, a branch execution unit, two Advanced SIMD units, and two load/store execution units
@@ -678,6 +695,16 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L2 cache connects to the system via an AMBA 5 CHI interface with 16-byte data channels
     - L3 cluster cache can be up to 2MB, with a load-to-use latency ranging between 28 and 33 cycles
     - up to 256MB of shared system-level cache
+- [Arm® Neoverse™ N1 Core Technical Reference Manual](https://developer.arm.com/documentation/100616/latest/)
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L2 cache, 256KB or 512KB or 1MB, 8-way set associative, PIPT, Dynamic biased cache replacement policy
+    - L1 instruction TLB, Fully associative, 48 entries
+    - L1 data TLB, Fully associative, 48 entries
+    - L2 TLB, Shared by instructions and data, 5-way set associative, 1280 entries
+- [Arm® Neoverse™ N1 Core Software Optimization Guide](https://support.arm.com/documentation/109896/0400/)
+    - The dispatch stage can process up to 4 MOPs per cycle and dispatch up to 8 µOPs per cycle
+    - Up to 2 µOPs by the B pipeline, 4 by S, 2 by M, 2 by each V, 2 by each L
 
 
 
