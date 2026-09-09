@@ -88,8 +88,27 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - L1 instruction cache, 64KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT), Pseudo-Least Recently Used (LRU) cache replacement policy for L1, 32 bytes per cycle interface with L2
     - L1 data cache, 128KB, 4-way set associative, Virtually Indexed, Physically Tagged (VIPT) behaving as Physically Indexed, Physically Tagged (PIPT), Re-Reference Interval Prediction (RRIP) replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
     - L2 cache, 2MB 8-way set associative with 4 banks or 3MB 12-way set associative with 4 banks, Physically Indexed, Physically Tagged (PIPT), Dynamic biased cache replacement policy, One CHI Issue E compliant interfaces with 256-bit read and write DAT channel widths
+- [Arm® C1-Ultra Core Software Optimization Guide](https://developer.arm.com/documentation/111027/latest/)
+    - 23 issue pipelines: 3x Branch, 6x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 6x FP/ASIMD, 2x Load/Store, 2x Load, 2x Store data
+    - The dispatch stage can process up to 10 MOPs per cycle and dispatch up to 20 µOPs per cycle, with the following limitations on the number of µOPs of each type that may be simultaneously dispatched.
+    - Up to 9 µOPs utilizing the S or B pipelines
+    - Up to 3 µOPs utilizing the M pipelines
+    - Up to 9 µOPs utilizing the V pipelines
+    - Up to 8 µOPs utilizing the L pipelines
+    - Dispatch of CME MOPs staying in-order are directly sent to the C pipeline. The C pipeline can receive up to 4 MOPs directly from the rename stage.
+    - Implements FEAT_MOPS: memory copying (CPY*) up to 32 bytes/cycle, memset to 0 (SET*) up to 64 bytes/cycle, memset to non-zero up to 32 bytes/cycle
 
 ### C1-Premium
+
+- [Arm® C1-Premium Core Technical Reference Manual](https://support.arm.com/documentation/109416/0001/?lang=en)
+    - 128-bit SVE/SVE2 vector length
+    - Implementation of the SME/SME2 and support for the C1-SME2 unit
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy, 32 bytes per cycle interface with L2
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 4×128-bit read paths and 4×128-bit write paths for the vector execute pipeline
+    - L2 cache, 1MB or 2MB 8-way set associative with 4 banks, PIPT, Dynamic biased cache replacement policy, One CHI Issue E compliant interface with 256-bit read and write DAT channel widths
+    - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 128 entries
+    - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, 2MB, or 512MB granularity only, Fully associative, 96 entries
+    - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
 
 ### C1-Pro
 
@@ -102,8 +121,26 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Increase effective L1D cache bandwidth
     - Lower latency L2 TLB hit
     - New indirect prefetcher
+- [Arm® C1-Pro Core Technical Reference Manual](https://support.arm.com/documentation/107771/0102/?lang=en)
+    - L1 instruction cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, PIPT, PLRU cache replacement policy, 32 bytes per cycle interface with L2
+    - L1 data cache, 32KB or 64KB, 4-way set associative, 16 banks, 64-byte cache lines, VIPT behaving as PIPT, PLRU cache replacement policy, 3×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 3×128-bit read paths and 2×128-bit write paths for the vector execute pipeline
+    - L2 cache, 128KB-1024KB, 8-way set associative, 2 banks, PIPT, Dynamic biased cache replacement policy, One CHI Issue E compliant interface with 256-bit read and write channel widths
+    - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 48 entries
+    - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 48 entries
+    - L2 TLB, Made of two translation caches: a Small page TLB (6-way, 1536 entries, or 4-way with reduced area, 1024 entries) and a Medium page TLB (4-way, 256 entries)
 
 ### C1-Nano
+
+- [Arm® C1-Nano Core Technical Reference Manual](https://support.arm.com/documentation/107753/0002/?lang=en)
+    - In-order pipeline with direct and indirect branch prediction
+    - 128-bit SVE/SVE2 SIMD (optional 2×64-bit or 2×128-bit vector datapaths)
+    - Optional SME/SME2 via the C1-SME2 unit
+    - L1 instruction cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-random cache replacement policy
+    - L1 data cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-random cache replacement policy, Dual 128-bit read path, 128-bit write path
+    - L1 instruction TLB, Fully associative, 16 entries
+    - L1 data TLB, Fully associative, 16 entries
+    - L2 TLB, 8-way set associative, shared between cores of a dual-core complex
+    - Optional unified L2 cache, 128KB, 192KB, 256KB, 384KB, or 512KB, 8-way set associative, PIPT, Dynamic biased cache replacement policy, weakly-exclusive with L1 data caches, weakly-inclusive with L1 instruction caches
 
 ## 2024 年
 
@@ -159,6 +196,14 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
 
 ### Neoverse N3
 
+- [Arm® Neoverse™ N3 Core Technical Reference Manual](https://documentation-service.arm.com/static/65d62242c8cb3a42117cb7ba)
+    - L1 instruction cache, 32KB or 64KB, 4-way set associative, 64-byte cache lines, PIPT, PLRU cache replacement policy, 32 bytes per cycle interface with L2
+    - L1 data cache, 32KB or 64KB, 4-way set associative, 16 banks, 64-byte cache lines, VIPT behaving as PIPT, LRU cache replacement policy, 3×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 3×128-bit read paths and 2×128-bit write paths for the vector execute pipeline
+    - L2 cache, 128KB-2048KB, 8-way set associative, 2 banks, PIPT, Dynamic biased cache replacement policy, One CHI Issue E compliant interface with the DSU-120 (256-bit read and write channel widths)
+    - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 32 entries
+    - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 48 entries
+    - L2 TLB, Made of two translation caches: a Small page TLB (6-way, 1536 entries, or 4-way with reduced area, 1024 entries) and a Medium page TLB (4-way, 256 entries)
+
 ## 2023 年
 
 ### Cortex X4
@@ -177,6 +222,12 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Reduced L1 data bank conflicts
     - Larger L1 data TLB: 48 -> 96
 - [Arm® Cortex-X4 Core Technical Reference Manual](https://developer.arm.com/documentation/102484/latest/)
+    - L1 instruction cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, Pseudo-LRU cache replacement policy
+    - L1 data cache, 64KB, 4-way set associative, 64-byte cache lines, VIPT behaving as PIPT, RRIP replacement policy, 4×64-bit read paths and 4×64-bit write paths for the integer execute pipeline, 3×128-bit read paths and 2×128-bit write paths for the vector execute pipeline
+    - L2 cache, 512KB-2048KB, 8-way set associative with 4 banks, PIPT, Dynamic biased cache replacement policy, One CHI Issue E compliant interface with the DynamIQ Shared Unit-120 (256-bit read and write channel widths)
+    - L1 instruction TLB, Caches entries at the 4KB, 16KB, 64KB, or 2MB granularity only, Fully associative, 48 entries
+    - L1 data TLB, Caches entries at the 4KB, 16KB, 64KB, 2MB, or 512MB granularity only, Fully associative, 96 entries
+    - L2 TLB, Shared by instructions and data, 8-way set associative, 2048 entries
 
 ### Cortex A720
 
@@ -189,6 +240,10 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Lower latency for L2 cache hits, 9-cycle latency to access L2, vs 10 (Cortex-A715)
     - Up to 2x memset(0) bandwidth in L2
     - New L2 spatial-prefetch engine
+- [Arm® Cortex-A720 Core Software Optimization Guide](https://developer.arm.com/documentation/109720/latest/)
+    - Executes SVE2/SVE with a 128-bit vector length
+    - 13 issue pipelines: 2x Branch, 2x Integer Single-Cycle, 2x Integer Single/Multi-Cycle, 2x FP/ASIMD/Vector Store data, 2x Load/Store, 1x Load, 2x Integer Store data
+    - Each issue pipeline can accept one µOP per cycle
 
 ## 2022 年
 
