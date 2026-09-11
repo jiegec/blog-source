@@ -47,7 +47,7 @@ flowchart TD
 
 其次是音频：
 
-```
+```mermaid
 flowchart TD
     笔记本音频输出 -->|HDMI| 讲台
     一体机音频输出 --> 讲台
@@ -79,7 +79,7 @@ flowchart TD
 
 音频：
 
-```
+```mermaid
 flowchart TD
     鸿蒙电脑 -->|HDMI| 采集卡
     采集卡 -->|Type-C| Mac电脑
