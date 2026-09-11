@@ -70,6 +70,7 @@ flowchart TD
     采集卡 -->|Type-C| Mac电脑
     便携摄像头 -->|USB| Mac电脑
     Mac电脑 -->|HDMI| 讲台
+    Mac电脑 --> OBS直播或录像
     教室摄像头 --> 讲台
     讲台 --> 投影
     讲台 --> 返显
@@ -84,6 +85,7 @@ flowchart TD
     鸿蒙电脑 -->|HDMI| 采集卡
     采集卡 -->|Type-C| Mac电脑
     Mac电脑 -->|HDMI| 讲台
+    Mac电脑 --> OBS直播或录像
     话筒 --> 讲台
     讲台 --> 音响
     讲台 -->|USB| Mac电脑
