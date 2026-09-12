@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-[上文](../misc/classroom-routing.md) 提到，我打算用采集卡来录制鸿蒙电脑的输出，作为 OBS 的输入来做软件导播，用的采集卡型号是[绿联 UG307-95348](https://www.lulian.cn/product/1537.html)。在使用过程中，遇到了清晰度和颜色的问题，下面介绍我是怎么研究和解决的。
+[上文](../misc/classroom-routing.md) 提到，我打算用采集卡来录制鸿蒙电脑的输出，作为 OBS 的输入来做软件导播，用的采集卡型号是[采用了 MS2130S 芯片的绿联 UG307-95348 采集卡](https://www.lulian.cn/product/1537.html)。在使用过程中，遇到了清晰度和颜色的问题，下面介绍我是怎么研究和解决的。
 
 <!-- more -->
 
@@ -259,3 +259,15 @@ c275: 0287c7 LJMP 87c7h
 核心就是把上面我通过 hidapi 从 host 端写入寄存器的操作，换成了直接在固件里写入：固件本来是 clear，改成了 set，这样就禁用了 luma processing，持久化了这个改动。
 
 这部分代码以及固件已经开源到 [jiegec/ugreen-95348-patcher](http://github.com/jiegec/ugreen-95348-patcher)，感兴趣的读者可以尝试一下，尝试之前记得备份固件，而且有变砖的风险。
+
+## 总结
+
+其实 MS2130S 这款芯片在网络上已经有很多现成的研究，从寄存器用法、hidapi 访问到固件补丁，都能找到前人的成果。这次能比较顺利地定位并解决问题，很大程度上是站在这些探索的肩膀上，在此对这些作者表示感谢。
+
+相关项目链接整理如下：
+
+- [steve-m/hsdaoh](https://github.com/steve-m/hsdaoh)：通过 hidapi 访问 MS2130S 寄存器的库，本文从 host 端修改 `0xfc8e` 的思路就来自这里。
+- [steve-m/ms2130_patcher](https://github.com/steve-m/ms2130_patcher)：直接给固件打补丁、持久化寄存器配置的工具，是本文固件补丁的重要参考。
+- [steve-m/ms213x_flash](https://github.com/steve-m/ms213x_flash)：用来导出/烧写 MS213x 固件的工具，本文用它导出了绿联 95348 的原始固件。
+
+这些项目大多出自 [steve-m](https://github.com/steve-m) 之手，感谢他的开源工作。
