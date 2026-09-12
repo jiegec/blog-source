@@ -96,3 +96,69 @@ flowchart TD
 采集卡用的是绿联的 [UG307-95348 4K60Hz MS2130S 视频采集卡](https://www.lulian.cn/product/1537.html)，USB 名称是 UGREEN 95348，VID 0x2b89，PID 0x5348。便携摄像头用的是绿联 [CM717-25442 2K USB 400W 像素摄像头](https://www.lulian.cn/product/1815.html)，USB 名称是 UGREEN Camera 2K，VID 0x0c45，PID 0x636f。仅供参考，不构成购买建议。
 
 用 macOS 上 OBS 设置采集卡输入的时候，需要关闭 Use Preset 选项，选择 `3840x2160 (16:9) - 30, 60 FPS - CS 709 - NV12 (420v)`，而不是 `3840x2160 (16:9) - 30 FPS - CS 709 - NV12 (420v)`，后者明显会更糊，即使从名字看起来好像只有帧率的区别。如果勾选了 Use Preset，分辨率用的是 `3820x2160`，就会和上面第二种 4K 选项一样，有一些糊。
+
+## 如何调试
+
+ffmpeg 查看设备列表：
+
+```shell
+ffmpeg -f avfoundation -list_devices true -i ""
+```
+
+用 swift 代码打印采集卡的各种信息：
+
+```shell
+$ swift list_formats.swift
+  3840x2160  420v  fps=30.0..30.0  dur=33333..33333us
+      ext CVImageBufferColorPrimaries = ITU_R_709_2
+      ext CVImageBufferTransferFunction = SMPTE_240M_1995
+      ext CVImageBufferYCbCrMatrix = ITU_R_709_2
+  3840x2160  420v  fps=60.0..60.0  dur=16667..16667us  fps=30.0..30.0  dur=33333..33333us
+      ext CVImageBufferColorPrimaries = ITU_R_709_2
+      ext CVImageBufferTransferFunction = SMPTE_240M_1995
+      ext CVImageBufferYCbCrMatrix = ITU_R_709_2
+      ext com.apple.cmio.format_extension.decompressed_from_format_type = 1684890161
+$ cat list_formats.swift
+import AVFoundation
+import CoreMedia
+
+func fourcc(_ v: FourCharCode) -> String {
+  let b: [UInt8] = [
+    UInt8((v >> 24) & 255), UInt8((v >> 16) & 255),
+    UInt8((v >> 8) & 255), UInt8(v & 255),
+  ]
+  let s = String(bytes: b, encoding: .ascii) ?? "?"
+  return s.allSatisfy { $0.isLetter || $0.isNumber } ? s : String(format: "0x%08x", v)
+}
+
+let session = AVCaptureDevice.DiscoverySession(
+  deviceTypes: [.external],
+  mediaType: .video,
+  position: .unspecified)
+
+for d in session.devices {
+  print("DEVICE \(d.localizedName) [\(d.uniqueID)]")
+  print("  model=\(d.modelID)  manufacturer=\(d.manufacturer)")
+
+  for f in d.formats {
+    let dim = CMVideoFormatDescriptionGetDimensions(f.formatDescription)
+    let sub = CMFormatDescriptionGetMediaSubType(f.formatDescription)
+
+    var line = "  \(dim.width)x\(dim.height)  \(fourcc(sub))"
+    for r in f.videoSupportedFrameRateRanges {
+      line += String(
+        format: "  fps=%.1f..%.1f  dur=%.0f..%.0fus",
+        r.minFrameRate, r.maxFrameRate,
+        CMTimeGetSeconds(r.minFrameDuration) * 1e6,
+        CMTimeGetSeconds(r.maxFrameDuration) * 1e6)
+    }
+    print(line)
+
+    if let ext = CMFormatDescriptionGetExtensions(f.formatDescription) as? [String: Any] {
+      for k in ext.keys.sorted() {
+        print("      ext \(k) = \(ext[k]!)")
+      }
+    }
+  }
+}
+```
