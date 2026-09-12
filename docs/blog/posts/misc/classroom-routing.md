@@ -95,4 +95,4 @@ flowchart TD
 
 采集卡用的是绿联的 [UG307-95348 4K60Hz MS2130S 视频采集卡](https://www.lulian.cn/product/1537.html)，USB 名称是 UGREEN 95348，VID 0x2b89，PID 0x5348。便携摄像头用的是绿联 [CM717-25442 2K USB 400W 像素摄像头](https://www.lulian.cn/product/1815.html)，USB 名称是 UGREEN Camera 2K，VID 0x0c45，PID 0x636f。仅供参考，不构成购买建议。
 
-在使用绿联 UG307-95348 采集卡的过程中，还遇到并修复了一些清晰度和颜色的问题，具体的修复方法见 [修复绿联 UG307-95348 HDMI 采集卡清晰度与颜色问题](./fix-ugreen-95348.md)。
+在使用绿联 UG307-95348 采集卡的过程中，还遇到并修复了一些清晰度和颜色的问题，具体的修复方法见 [修复绿联 UG307-95348 HDMI 采集卡清晰度与颜色问题](../hardware/fix-ugreen-95348.md)。

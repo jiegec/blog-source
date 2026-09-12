@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-[上文](./classroom-routing.md) 提到，我打算用采集卡来录制鸿蒙电脑的输出，作为 OBS 的输入来做软件导播，用的采集卡型号是[绿联 UG307-95348](https://www.lulian.cn/product/1537.html)。在使用过程中，遇到了清晰度和颜色的问题，下面介绍我是怎么研究和解决的。
+[上文](../misc/classroom-routing.md) 提到，我打算用采集卡来录制鸿蒙电脑的输出，作为 OBS 的输入来做软件导播，用的采集卡型号是[绿联 UG307-95348](https://www.lulian.cn/product/1537.html)。在使用过程中，遇到了清晰度和颜色的问题，下面介绍我是怎么研究和解决的。
 
 <!-- more -->
 
