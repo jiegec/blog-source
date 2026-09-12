@@ -3,7 +3,7 @@ layout: post
 date: 2026-09-12
 tags: [ugreen,hdmi,capture]
 categories:
-    - misc
+    - hardware
 ---
 
 # 修复绿联 UG307-95348 HDMI 采集卡清晰度与颜色问题
