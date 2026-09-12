@@ -97,15 +97,7 @@ flowchart TD
 
 用 macOS 上 OBS 设置采集卡输入的时候，需要关闭 Use Preset 选项，选择 `3840x2160 (16:9) - 30, 60 FPS - CS 709 - NV12 (420v)`，而不是 `3840x2160 (16:9) - 30 FPS - CS 709 - NV12 (420v)`，后者明显会更糊，即使从名字看起来好像只有帧率的区别。如果勾选了 Use Preset，分辨率用的是 `3820x2160`，就会和上面第二种 4K 选项一样，有一些糊。
 
-## 如何调试
-
-ffmpeg 查看设备列表：
-
-```shell
-ffmpeg -f avfoundation -list_devices true -i ""
-```
-
-用 swift 代码打印采集卡的各种信息：
+通过下面 swift 脚本的测试，打印采集卡的各种信息，发现这个有 60 FPS 的版本是经过 MJPEG 压缩的，从 dmb1 可以看出：
 
 ```shell
 $ swift list_formats.swift
@@ -117,7 +109,7 @@ $ swift list_formats.swift
       ext CVImageBufferColorPrimaries = ITU_R_709_2
       ext CVImageBufferTransferFunction = SMPTE_240M_1995
       ext CVImageBufferYCbCrMatrix = ITU_R_709_2
-      ext com.apple.cmio.format_extension.decompressed_from_format_type = 1684890161
+      ext com.apple.cmio.format_extension.decompressed_from_format_type = 1684890161 (dmb1)
 $ cat list_formats.swift
 import AVFoundation
 import CoreMedia
@@ -156,7 +148,14 @@ for d in session.devices {
 
     if let ext = CMFormatDescriptionGetExtensions(f.formatDescription) as? [String: Any] {
       for k in ext.keys.sorted() {
-        print("      ext \(k) = \(ext[k]!)")
+        var v = "\(ext[k]!)"
+        // decode fourcc-valued extensions such as
+        //   com.apple.cmio.format_extension.decompressed_from_format_type
+        if k.contains("format_type"), let n = ext[k] as? NSNumber {
+          v = "\(n.uint32Value) (\(fourcc(n.uint32Value)))"
+        }
+        print("      ext \(k) = \(v)")
+
       }
     }
   }
