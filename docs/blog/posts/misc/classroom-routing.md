@@ -162,11 +162,132 @@ for d in session.devices {
 }
 ```
 
-## 遗留问题
+## 颜色问题
 
 但还有一个遗留问题：采集卡采集出来的鸿蒙电脑的颜色不对：在鸿蒙电脑上打开 [Lagom 白饱和测试图](http://www.lagom.nl/lcd-test/zhs_white.php)，采集出来的 RGB 和预期对不上，大概是这样的关系：
 
 - 原来 200 -> 显示 219
 - 原来 244 -> 显示 255
 
-用 ffmpeg 观察了一下，实际采集卡给出的是 204，然后因为它是 limited range（16-235）里的 204，转换为 full range 以后，就是 `(204 - 16) / 219 * 255 = 219`。到底问题出在了哪里，还需要进一步的研究。
+用 ffmpeg 观察了一下，实际采集卡给出的是 204，然后因为它是 limited range（16-235）里的 204，转换为 full range 以后，就是 `(204 - 16) / 219 * 255 = 219`。如果把鸿蒙电脑接到显示器上，显示则是正常的。
+
+经过深入研究，发现了一些可以设置 MS2130S 寄存器来修改它的行为的方法，参考 [steve-m/hsdaoh](https://github.com/steve-m/hsdaoh/blob/master/src/libhsdaoh.c)，在 AI 的帮助下，找到了问题：如果关掉 MS2130S 自带的 luma processing 功能，即修改寄存器 0xfc8e，从原来 0x00 变成 0x11，颜色就会变得正常。下面是一个小工具，在 OBS 开始录制以后，运行一下这个小工具，就会 toggle luma processing，就能看到颜色也跟着变化了：
+
+```c++
+/*
+ * ugreen_fix_toggle - minimal hidapi-only tool for the UGREEN 95348
+ *                     (MS2130S, 2b89:5348).
+ *
+ * Reads a video-processing register and toggles it:
+ *   0x00 -> 0x11   (disable the chip's luma processing / fix the 200->219 lift)
+ *   0x11 -> 0x00   (re-enable it / reproduce the bug)
+ *
+ * Default register is 0xfc8e (confirmed to be the luma-processing register).
+ * Pass another address as the first argument if needed, e.g.
+ *   ./ugreen_fix_toggle 0xfc80
+ *
+ * build (macOS/homebrew, hidapi only):
+ *   cc -O2 -I/opt/homebrew/include/hidapi ugreen_fix_toggle.c \
+ *      -L/opt/homebrew/lib -lhidapi -o ugreen_fix_toggle
+ */
+#include <hidapi.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define VID 0x2b89
+#define PID 0x5348
+#define DEFAULT_REG 0xfc8e
+
+static hid_device *h;
+
+/* MS2130S vendor HID feature report:
+ *   [0x01, 0xb6, addrH, addrL, val, 0, 0, 0, 0]  write
+ *   [0x01, 0xb5, addrH, addrL, 0, 0, 0, 0, 0]    read request
+ * GET_REPORT returns 64 bytes; the value is byte 4. */
+static int reg_write(uint16_t addr, uint8_t val) {
+  unsigned char buf[9] = {0x01, 0xb6, addr >> 8, addr & 0xff, val, 0, 0, 0, 0};
+  return hid_send_feature_report(h, buf, sizeof(buf));
+}
+
+static int reg_read(uint16_t addr, uint8_t *val) {
+  unsigned char cmd[9] = {0x01, 0xb5, addr >> 8, addr & 0xff, 0, 0, 0, 0, 0};
+  unsigned char rsp[64];
+
+  if (hid_send_feature_report(h, cmd, sizeof(cmd)) < 0)
+    return -1;
+  memset(rsp, 0, sizeof(rsp));
+  rsp[0] = 0x01;
+  if (hid_get_feature_report(h, rsp, sizeof(rsp)) < 0)
+    return -1;
+  *val = rsp[4];
+  return 0;
+}
+
+int main(int argc, char **argv) {
+  uint16_t addr = DEFAULT_REG;
+  uint8_t cur, next;
+
+  if (argc > 1)
+    addr = (uint16_t)strtoul(argv[1], NULL, 0);
+
+  if (hid_init() < 0) {
+    fprintf(stderr, "hid_init failed\n");
+    return 1;
+  }
+  h = hid_open(VID, PID, NULL);
+  if (!h) {
+    fprintf(stderr, "UGREEN %04x:%04x not found (is it plugged in?)\n", VID,
+            PID);
+    return 1;
+  }
+
+  if (reg_read(addr, &cur) < 0) {
+    fprintf(stderr, "register read failed: %ls\n", hid_error(h));
+    hid_close(h);
+    return 1;
+  }
+
+  if (cur == 0x00) {
+    next = 0x11;
+  } else if (cur == 0x11) {
+    next = 0x00;
+  } else {
+    fprintf(stderr, "%04x = 0x%02x (unexpected, not touching)\n", addr, cur);
+    hid_close(h);
+    return 2;
+  }
+
+  if (reg_write(addr, next) < 0) {
+    fprintf(stderr, "register write failed: %ls\n", hid_error(h));
+    hid_close(h);
+    return 1;
+  }
+
+  printf("%04x: 0x%02x -> 0x%02x\n", addr, cur, next);
+  printf("(0x11 = luma processing disabled = fix on; 0x00 = default/bug)\n");
+
+  hid_close(h);
+  hid_exit();
+  return 0;
+}
+```
+
+编译和运行：
+
+```shell
+$ brew install hidapi
+$ cc -O2 -I/opt/homebrew/include/hidapi ugreen_fix_toggle.c -L/opt/homebrew/lib -lhidapi -o ugreen_fix_toggle
+# 此时是有问题的状态
+$ ./ugreen_fix_toggle
+fc8e: 0x00 -> 0x11
+(0x11 = luma processing disabled = fix on; 0x00 = default/bug)
+# toggle 以后，颜色问题修复
+$ ./ugreen_fix_toggle
+fc8e: 0x11 -> 0x00
+(0x11 = luma processing disabled = fix on; 0x00 = default/bug)
+# 再次 toggle，颜色问题重新出现
+```
+
+修复以后，200 变成 199，244 变成 243。颜色虽然还有一些小偏差，可以认为是修复了。
