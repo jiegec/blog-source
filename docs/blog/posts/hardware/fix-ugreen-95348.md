@@ -31,7 +31,11 @@ $ swift list_formats.swift
       ext CVImageBufferTransferFunction = SMPTE_240M_1995
       ext CVImageBufferYCbCrMatrix = ITU_R_709_2
       ext com.apple.cmio.format_extension.decompressed_from_format_type = 1684890161 (dmb1)
-$ cat list_formats.swift
+```
+
+对应的 Swift 源码：
+
+```swift
 import AVFoundation
 import CoreMedia
 
