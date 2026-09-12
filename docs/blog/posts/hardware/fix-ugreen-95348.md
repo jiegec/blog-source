@@ -217,58 +217,45 @@ fc8e: 0x11 -> 0x00
 
 不过每次开始采集后都要重新跑一次这个工具，还是有点麻烦。一个一劳永逸的办法是参考 [steve-m/ms2130_patcher](https://github.com/steve-m/ms2130_patcher/blob/master/ms2130_patch.c)，给固件打补丁，让硬件往 0xfc8e 寄存器写入 0x11 而不是 0x00。
 
-首先用 [steve-m/ms213x_flash](https://github.com/steve-m/ms213x_flash) 导出绿联 95348 自带的固件，然后让 AI 进行逆向，这个固件就是一个 8051 代码，有很多成熟的工具。具体的补丁方法和上面类似，下面直接给出 AI 的分析：
+首先用 [steve-m/ms213x_flash](https://github.com/steve-m/ms213x_flash) 导出绿联 95348 自带的固件，然后让 AI 进行逆向，这个固件就是一个 8051 代码，有很多成熟的工具。具体的补丁方法和上面类似，下面直接给出 AI 对固件代码以及如何修复的分析：
 
-## How the patch works
+### 补丁的原理
 
-### The reset routine
+#### 复位流程
 
-`0xfc8e` has two relevant bits: bit 0 (mask `0x01`) and bit 4 (mask `0x10`).
-The stream-reinit routine `FUN_CODE_c220()` clears both through the bit-mask
-helper `FUN_CODE_87c7(mask, addrH, addrL, value)`. The value is passed in
-`R3`: non-zero sets the masked bits, zero clears them.
+`0xfc8e` 有两个相关的位：bit 0（掩码 `0x01`）和 bit 4（掩码 `0x10`）。流重初始化流程 `FUN_CODE_c220()` 会通过位掩码辅助函数 `FUN_CODE_87c7(mask, addrH, addrL, value)` 把这两位都清零。要写入的值通过 `R3` 传入：非零表示置位被掩码选中的位，零表示清零。
 
-| CPU addr (bank 1) | code | effect |
+| CPU 地址（bank 1） | 代码 | 作用 |
 |---|---|---|
-| `c268` | `MOV R3,#01h ; JNB bit05,c26f ; MOV R3,#00h`<br>`MOV R5,#01h ; MOV R7,#8eh ; MOV R6,#fch ; LJMP 87c7h` | clear bit 0 of `0xfc8e` |
-| `c27e` | `MOV R3,#01h ; JNB bit05,c285 ; MOV R3,#00h`<br>`MOV R5,#10h ; MOV R7,#8eh ; MOV R6,#fch ; LJMP 87c7h` | clear bit 4 of `0xfc8e` |
+| `c268` | `MOV R3,#01h ; JNB bit05,c26f ; MOV R3,#00h`<br>`MOV R5,#01h ; MOV R7,#8eh ; MOV R6,#fch ; LJMP 87c7h` | 清除 `0xfc8e` 的 bit 0 |
+| `c27e` | `MOV R3,#01h ; JNB bit05,c285 ; MOV R3,#00h`<br>`MOV R5,#10h ; MOV R7,#8eh ; MOV R6,#fch ; LJMP 87c7h` | 清除 `0xfc8e` 的 bit 4 |
 
-After both calls `0xfc8e = 0x00`. The companion `0xfc8f` (chroma) writes at
-`c294`/`c2a4` are **not** touched; the grey-level fix only needs `0xfc8e`.
+两次调用之后 `0xfc8e = 0x00`。与之配套的 `0xfc8f`（色度）在 `c294`/`c2a4` 处的写入**不**受影响；修复灰度只需要改 `0xfc8e`。
 
-### The change
+#### 具体改动
 
-Both `MOV R3,#00h` (`7b 00`) instructions are changed to `MOV R3,#01h`
-(`7b 01`), so each mask update always takes the *set* path and the register
-ends up `0x11`.
+把两处 `MOV R3,#00h`（`7b 00`）指令改成 `MOV R3,#01h`（`7b 01`），这样每次掩码更新都会走*置位*分支，寄存器最终变成 `0x11`。
 
-| file offset | original | patched | meaning |
+| 文件偏移 | 原始值 | 补丁值 | 含义 |
 |---:|---:|---:|---|
-| `0x1429e` (bank1 `c26e`) | `00` | `01` | value operand for bit 0 of `0xfc8e` |
-| `0x142b4` (bank1 `c284`) | `00` | `01` | value operand for bit 4 of `0xfc8e` |
-| `0x18033` | `7c` | `7e` | code checksum `0x797c` → `0x797e` |
+| `0x1429e`（bank1 `c26e`） | `00` | `01` | `0xfc8e` bit 0 的取值操作数 |
+| `0x142b4`（bank1 `c284`） | `00` | `01` | `0xfc8e` bit 4 的取值操作数 |
+| `0x18033` | `7c` | `7e` | 代码校验和 `0x797c` → `0x797e` |
 
-## Verify
-
-The header checksum is unchanged and the code checksum is recomputed by the
-patcher:
-
-```console
-$ ./ms2130s_patch            # prints the checksums before/after
-```
-
-Disassembling the patched bytes shows both immediates now load `0x01`:
+反汇编打过补丁的字节，可以看到两处立即数现在都加载 `0x01`：
 
 ```console
 c268: 7b01  MOV R3, #01h
 c26a: 300502 JNB bit05, c26fh
-c26d: 7b01  MOV R3, #01h      <- was #00h
+c26d: 7b01  MOV R3, #01h      <- 原来是 #00h
 c26f: 7d01  MOV R5, #01h
 c271: 7f8e  MOV R7, #8eh
 c273: 7efc  MOV R6, #fch
 c275: 0287c7 LJMP 87c7h
 ```
 
+### 小结
+
 核心就是把上面我通过 hidapi 从 host 端写入寄存器的操作，换成了直接在固件里写入：固件本来是 clear，改成了 set，这样就禁用了 luma processing，持久化了这个改动。
 
-这部分代码已经开源到 [jiegec/ugreen-95348-patcher](http://github.com/jiegec/ugreen-95348-patcher)，感兴趣的读者可以尝试一下，尝试之前记得备份固件，而且有变砖的风险。
+这部分代码以及固件已经开源到 [jiegec/ugreen-95348-patcher](http://github.com/jiegec/ugreen-95348-patcher)，感兴趣的读者可以尝试一下，尝试之前记得备份固件，而且有变砖的风险。
