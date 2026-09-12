@@ -230,7 +230,7 @@ fc8e: 0x11 -> 0x00
 | `c268` | `MOV R3,#01h ; JNB bit05,c26f ; MOV R3,#00h`<br>`MOV R5,#01h ; MOV R7,#8eh ; MOV R6,#fch ; LJMP 87c7h` | 清除 `0xfc8e` 的 bit 0 |
 | `c27e` | `MOV R3,#01h ; JNB bit05,c285 ; MOV R3,#00h`<br>`MOV R5,#10h ; MOV R7,#8eh ; MOV R6,#fch ; LJMP 87c7h` | 清除 `0xfc8e` 的 bit 4 |
 
-两次调用之后 `0xfc8e = 0x00`。与之配套的 `0xfc8f`（色度）在 `c294`/`c2a4` 处的写入**不**受影响；修复灰度只需要改 `0xfc8e`。
+两次调用之后 `0xfc8e = 0x00`。
 
 #### 具体改动
 
