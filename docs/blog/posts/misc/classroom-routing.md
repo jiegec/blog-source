@@ -93,6 +93,6 @@ flowchart TD
 
 这样，Mac 上的 OBS 就能获得来自鸿蒙电脑、Mac 自身屏幕、教室摄像头和话筒的音视频输入；再通过 OBS 的 Projector 把画面输出到扩展屏，经由讲台投到教室的各种投影和显示器上，音频也从音响放出来。之后要录像或直播，直接使用 OBS 自带的功能即可。
 
-采集卡用的是绿联的 [UG307-95348 4K60Hz MS2130S 视频采集卡](https://www.lulian.cn/product/1537.html)，USB 名称是 UGREEN 95348，VID 0x2b89，PID 0x5348。便携摄像头用的是绿联 [CM717-25442 2K USB 400W 像素摄像头](https://www.lulian.cn/product/1815.html)，USB 名称是 UGREEN Camera 2K，VID 0x0c45，PID 0x636f。仅供参考，不构成购买建议。
+采集卡用的是绿联的 [UG307-95348 4K60Hz MS2130S 视频采集卡](https://www.lulian.cn/product/1537.html)，USB 名称是 UGREEN 95348，VID 0x2b89，PID 0x5348。便携摄像头用的是绿联 [CM717-25442 2K USB 400W 像素摄像头](https://www.lulian.cn/product/1815.html)，USB 名称是 UGREEN Camera 2K，VID 0x0c45，PID 0x636f；以及绿联 CM831-65381 4K USB 800W 像素摄像头，USB 名称是 UGREEN Camera 4K，VID 0xeba4，PID 0x6579。仅供参考，不构成购买建议。
 
 在使用绿联 UG307-95348 采集卡的过程中，还遇到并修复了一些清晰度和颜色的问题，具体的修复方法见 [修复绿联 UG307-95348 HDMI 采集卡清晰度与颜色问题](../hardware/fix-ugreen-95348.md)。
