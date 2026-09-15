@@ -46,20 +46,22 @@ permalink: /about/
 
 ### 课程改革
 
-在多年的教学经历中，我参与了这些课程的教学或实验的演进：
+在多年的教学经历中，我参与了这些课程的教学或实验，主导或参与了部分课程的教学或实验改革：
 
-- [计算机文化基础](https://edu.cs.tsinghua.edu.cn/cca/)
+- [计算机文化基础](https://edu.cs.tsinghua.edu.cn/cca/)：设计面向零基础的数字电路实操
+- 计算机程序设计基础
+- Python 程序设计进阶
 - [程序设计训练（Rust 课堂）](https://lab.cs.tsinghua.edu.cn/rust/)
-- [实验物理的大数据方法](https://git.tsinghua.edu.cn/physics-data/)
+- [实验物理的大数据方法](https://git.tsinghua.edu.cn/physics-data/)：设计课程小作业
 - 汇编语言程序设计
 - 计算机系统概论
 - 数据库技术及应用
-- [数字逻辑实验](https://lab.cs.tsinghua.edu.cn/digital-logic-lab/doc/)
+- [数字逻辑实验](https://lab.cs.tsinghua.edu.cn/digital-logic-lab/doc/)：针对疫情期间实验需求，设计在线实验平台
 - [数字逻辑设计](https://lab.cs.tsinghua.edu.cn/digital-design/doc/)
-- [操作系统](https://github.com/rcore-os/)
-- [计算机组成原理](https://lab.cs.tsinghua.edu.cn/cod-lab-docs/)
-- [计算机网络原理](https://lab.cs.tsinghua.edu.cn/router/doc/)
-- [计算机网络专题训练](https://lab.cs.tsinghua.edu.cn/tcp/doc/)
+- [操作系统](https://github.com/rcore-os/)：使用 Rust 语言编写操作系统
+- [计算机组成原理](https://lab.cs.tsinghua.edu.cn/cod-lab-docs/)：设计 Wishbone 总线实验、计算机组成原理-计算机网络原理联合硬件路由器实验、NPU 实验
+- [计算机网络原理](https://lab.cs.tsinghua.edu.cn/router/doc/)：设计路由器软件实验、计算机组成原理-计算机网络原理联合硬件路由器实验
+- [计算机网络专题训练](https://lab.cs.tsinghua.edu.cn/tcp/doc/)：设计 TCP 实验
 
 ## 科研
 
