@@ -186,7 +186,7 @@ def setup_cjk_font() -> bool:
 
 
 def envelope(x: np.ndarray, sr: float, bins: int = 2000):
-    """把长波形压缩成 bins 个 (最小值, 最大值) 包络点。"""
+    """把长波形压缩成 bins 个 (最小值，最大值) 包络点。"""
     n = x.size
     if n <= bins:
         return np.arange(n) / sr, x, x
@@ -361,7 +361,7 @@ def main():
     print(f"文件    : {path.name}")
     print(f"容器/流 : {info['format']} / {info['codec']}   "
           f"源声道数 {src_ch}  分析声道数 {ch}")
-    print(f"采样率  : {sr} Hz   时长: {dur:.2f} s   采样点: {n:,}")
+    print(f"采样率  : {sr} Hz   时长：{dur:.2f} s   采样点：{n:,}")
     print("-" * 62)
     print(f"{'通道':<10}{'峰值 dBFS':>12}{'RMS dBFS':>12}{'波峰因数':>12}{'直流偏移':>12}")
     for i, name in enumerate(["左 L", "右 R"][:ch]):

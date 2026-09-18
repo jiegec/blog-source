@@ -59,8 +59,8 @@ permalink: /about/
 - [数字逻辑实验](https://lab.cs.tsinghua.edu.cn/digital-logic-lab/doc/)：针对疫情期间实验需求，设计在线实验平台
 - [数字逻辑设计](https://lab.cs.tsinghua.edu.cn/digital-design/doc/)
 - [操作系统](https://github.com/rcore-os/)：使用 Rust 语言编写操作系统
-- [计算机组成原理](https://lab.cs.tsinghua.edu.cn/cod-lab-docs/)：设计 Wishbone 总线实验、计算机组成原理-计算机网络原理联合硬件路由器实验、NPU 实验
-- [计算机网络原理](https://lab.cs.tsinghua.edu.cn/router/doc/)：设计路由器软件实验、计算机组成原理-计算机网络原理联合硬件路由器实验
+- [计算机组成原理](https://lab.cs.tsinghua.edu.cn/cod-lab-docs/)：设计 Wishbone 总线实验、计算机组成原理与计算机网络原理联合（简称计网联合）硬件路由器实验、NPU 实验
+- [计算机网络原理](https://lab.cs.tsinghua.edu.cn/router/doc/)：设计路由器软件实验、计算机组成原理与计算机网络原理联合硬件路由器实验
 - [计算机网络专题训练](https://lab.cs.tsinghua.edu.cn/tcp/doc/)：设计 TCP 实验
 
 ## 科研

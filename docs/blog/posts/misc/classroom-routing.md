@@ -130,10 +130,10 @@ flowchart TD
 
 HDMI 分配器用的是绿联的 [AP502-55493 4K60Hz 一进二出 HDMI 分配器](https://www.lulian.cn/product/1527.html)。输入 5V1A，支持一路 HDMI 输入，两路 HDMI 输出。从 EDID 来看，采用的是 [IT6664](https://www.ite.com.tw/tw/product/cate1/IT6664) 方案，可以通过拨码切换不同的模式：
 
-- 1上2上（默认）：根据视频输出，决定输入看到的 EDID，设备显示 ITE-6664
-- 1上2下：强制 1080P60Hz，设备显示 UGREEN-FHD
-- 1下2上：强制 4K60Hz，设备显示 UGREEN-UHD
-- 1下2下：复制 OUT1 设备的 EDID，如果没有 OUT1，则 fallback 到 1080P60Hz
+- 1 上 2 上（默认）：根据视频输出，决定输入看到的 EDID，设备显示 ITE-6664
+- 1 上 2 下：强制 1080P60Hz，设备显示 UGREEN-FHD
+- 1 下 2 上：强制 4K60Hz，设备显示 UGREEN-UHD
+- 1 下 2 下：复制 OUT1 设备的 EDID，如果没有 OUT1，则 fallback 到 1080P60Hz
 
 仅供参考，不构成购买建议。
 
