@@ -91,4 +91,11 @@ mount -o ro /dev/vda /mnt
 - /etc/ozonec.json：能看到容器的配置，挂载了哪些路径，给了哪些 cap
 - /usr/sbin/HSLd：init 程序
 
-容器的 rootfs 是一个 overlayfs，lower 是 /var/lib/OzoneC/overlay2/rgm_openEuler/lower，但是在容器外的 rootfs 里找不到这个路径。
+除了 vda，还可以挂载 vdb：
+
+```shell
+umount /dev/vdb
+mount -o rw /dev/vdb /mnt
+```
+
+容器的 rootfs 是一个 overlayfs，lower 是 /var/lib/OzoneC/overlay2/rgm_openEuler/lower，它在这个 vdb 下面。这里面还能看到 HSLd 以及 ozonec 的一些日志，overlay 的相关配置等等。
