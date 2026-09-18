@@ -98,4 +98,4 @@ umount /dev/vdb
 mount -o rw /dev/vdb /mnt
 ```
 
-容器的 rootfs 是一个 overlayfs，lower 是 /var/lib/OzoneC/overlay2/rgm_openEuler/lower，它在这个 vdb 下面。这里面还能看到 HSLd 以及 ozonec 的一些日志，overlay 的相关配置等等。
+容器的 rootfs 是一个 overlayfs，lower 是 /var/lib/OzoneC/overlay2/rgm_openEuler/lower，它在这个 vdb 下面，虽然是空目录，但应该是把 /var/lib/OzoneC/image/openEuler.img 通过 loop device 挂载上去，也就是说 lower 就是 openeuler，upper 是容器的 rootfs，重置系统，只需要把 work 清空。这里面 /var/log 下还能看到 HSLd 以及 ozonec 的一些日志，overlay 的相关配置等等。
