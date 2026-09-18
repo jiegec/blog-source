@@ -77,4 +77,4 @@ blacklist vmwgfx 后用的是 efifb：
 
 2026/04/01 更新：《融合开发引擎》App 在应用市场的应用尝鲜上架，可以获得一个 Linux 环境，Linux 6.6.0 内核的 openeuler。使用可见网络上的视频 [鸿蒙电脑官方欧拉虚拟机上线](https://www.bilibili.com/video/BV13z95BhEox/)。想用 Debian 的话，也可以按照 [HarmonyOS 6 Linux 容器替换成 debian trixie](https://www.bilibili.com/opus/1186292133496094724) 换成 Debian。
 
-2026/09/18 更新：《融合开发引擎》7.0.0.6 版本修改了启动流程，会导致用之前的方法把 openeuler 替换为 debian trixie 后的 Linux 环境无法启动。需要重置系统后，用[更新后的脚本](./linux-vm-on-harmonyos-computer-debian.sh)。
+2026/09/18 更新：《融合开发引擎》7.0.0.6 版本修改了启动流程，会导致用之前的方法把 openeuler 替换为 debian trixie 后的 Linux 环境无法启动。需要重置系统后，用 root 权限重新跑一次 [更新后的脚本](./linux-vm-on-harmonyos-computer-debian.sh)。跑完以后，记得修改 user 和 root 用户的密码。
