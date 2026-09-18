@@ -21,7 +21,7 @@ categories:
 - 一体机的视频和音频输出
 - 通过 HDMI 接入的笔记本视频和音频输出
 - 话筒的音频输出
-- 教室里的摄像头，通常有板书、近景、远景、学生视角
+- 教室里的摄像头，通常包括板书、近景、远景、学生视角等机位
 
 这些信号经过一个可在讲台上操控的导播台（下称「讲台」，实际设备未必位于讲台内部），可以输出到以下位置：
 
@@ -63,7 +63,7 @@ flowchart TD
 
 ## 针对上课需求的设计
 
-回到我的课程。我希望能在多个信号源之间方便地切换，包括 Mac 笔记本、鸿蒙电脑以及一台便携摄像头。讲台自带的导播功能不足以支撑这么复杂的切换，手上又没有 ATEM Mini 导播台（怀念以前学生节的日子），于是打算在 Mac 笔记本上用 OBS 做软件导播。
+回到我的课程。我希望能在多个信号源之间方便地切换，包括 Mac 笔记本、鸿蒙电脑以及一台便携摄像头。讲台自带的导播功能不足以支撑这么复杂的切换，手上又没有 ATEM Mini 导播台（怀念以前学生节的日子），于是打算在 Mac 笔记本上用 [OBS](https://obsproject.com/) 做软件导播。
 
 那么音视频路由该如何设计？下面是我最终采用的路由方式。视频部分：
 
@@ -128,9 +128,9 @@ flowchart TD
 - 绿联 [CM717-25442 2K USB 400W 像素摄像头](https://www.lulian.cn/product/1815.html)，USB 名称是 UGREEN Camera 2K，VID 0x0c45，PID 0x636f；
 - 绿联 CM831-65381 4K USB 800W 像素摄像头，USB 名称是 UGREEN Camera 4K，VID 0xeba4，PID 0x6579。
 
-HDMI 分配器用的是绿联的 [AP502-55493 4K60Hz 一进二出 HDMI 分配器](https://www.lulian.cn/product/1527.html)。输入 5V1A，支持一路 HDMI 输入，两路 HDMI 输出。从 EDID 来看，采用的是 [IT6664](https://www.ite.com.tw/tw/product/cate1/IT6664) 方案，可以通过拨码切换不同的模式：
+HDMI 分配器用的是绿联的 [AP502-55493 4K60Hz 一进二出 HDMI 分配器](https://www.lulian.cn/product/1527.html)，输入规格为 5V/1A，支持一路 HDMI 输入、两路 HDMI 输出。从 EDID 来看，采用的是 [IT6664](https://www.ite.com.tw/tw/product/cate1/IT6664) 方案，可以通过拨码开关切换不同的模式：
 
-- 1 上 2 上（默认）：根据视频输出，决定输入看到的 EDID，设备显示 ITE-6664
+- 1 上 2 上（默认）：当两路输出都接上时，输入侧看到的 EDID 由两路输出的 EDID 共同决定，设备显示 ITE-6664；只接一路输出时，输入侧直接透传该路的 EDID
 - 1 上 2 下：强制 1080P60Hz，设备显示 UGREEN-FHD
 - 1 下 2 上：强制 4K60Hz，设备显示 UGREEN-UHD
 - 1 下 2 下：复制 OUT1 设备的 EDID，如果没有 OUT1，则 fallback 到 1080P60Hz
