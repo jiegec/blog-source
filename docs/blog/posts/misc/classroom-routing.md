@@ -154,3 +154,24 @@ HDMI 分配器用的是绿联的 [AP502-55493 4K60Hz 一进二出 HDMI 分配器
 上面两张图都是用 [stereo_check.py](./stereo_check.py) 绘制的。
 
 此外，上课途中还遇到过突发情况：采集卡采集的视频出现闪屏和黑屏，不确定是采集卡的问题还是 HDMI 线的问题。下课后又无法复现，不知道是否和温度有关。
+
+## 常用工具
+
+ffmpeg 常用命令行：
+
+```shell
+# 截取视频中的一部分，以左上角为坐标原点，x 轴向右，y 轴向下，从 (x,y) 到 (x+w, y+h)
+ffmpeg -i source.mp4 -vf "crop=w:h:x:y" output.mp4
+# 原样保留视频
+ffmpeg -i source.mp4 -c:v copy output.mp4
+# 标准化视频中音频的响度
+ffmpeg -i source.mp4 -af "loudnorm=I=-16:TP=-1.5:LRA=11" output.mp4
+# 只保留双声道里的左声道
+ffmpeg -i source.mp4 -af "pan=mono|c0=c0" output.mp4
+# 原样保留音频
+ffmpeg -i source.mp4 -c:a copy output.mp4
+# 测量前 10s 的音量大小
+ffmpeg -i source.mp4 -af "volumedetect" -f null -t 10 -
+```
+
+LosslessCut：以关键帧的粒度，快速剪辑
