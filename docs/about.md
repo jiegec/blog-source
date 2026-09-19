@@ -63,6 +63,16 @@ permalink: /about/
 - [计算机网络原理](https://lab.cs.tsinghua.edu.cn/router/doc/)：设计路由器软件实验、计算机组成原理与计算机网络原理联合硬件路由器实验
 - [计算机网络专题训练](https://lab.cs.tsinghua.edu.cn/tcp/doc/)：设计 TCP 实验
 
+## 课程公开录像
+
+以下是我在课堂上讲课且公开的录像：
+
+- [2026 秋《计算机文化基础》数字原住民的认知迁移 2026.9.16](https://www.bilibili.com/video/BV1wFeg6XES3)
+- [2023 秋《计算机网络原理》软件实验及理论背景详解 2023.10.10](https://www.bilibili.com/video/BV1QEeh6cERE)
+- [2021 秋《计算机网络原理》编程作业习题课 2021.11.3](https://www.bilibili.com/video/BV1G3e46JEsg)
+- [2021 夏《汇编语言程序设计》AttackLab 实验讲解 2021.9.6](https://www.bilibili.com/video/BV1WLY26sEAH)
+- [2021 夏《汇编语言程序设计》汇编实验准备知识讲解 2021.8.18](https://www.bilibili.com/video/BV1ZxY262EuG)
+
 ## 科研
 
 ### 发表
