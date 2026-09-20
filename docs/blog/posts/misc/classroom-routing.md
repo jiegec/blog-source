@@ -160,7 +160,10 @@ HDMI 分配器用的是绿联的 [AP502-55493 4K60Hz 一进二出 HDMI 分配器
 ffmpeg 常用命令行：
 
 ```shell
+# 截取视频中的一帧
+ffmpeg -i source.mp4 -ss hh:mm:ss.xxx -frames:v 1 output.png
 # 截取视频中的一部分，以左上角为坐标原点，x 轴向右，y 轴向下，从 (x,y) 到 (x+w, y+h)
+# 用 https://ffmpeg.party/tools/cropper/ 辅助确定坐标
 ffmpeg -i source.mp4 -vf "crop=w:h:x:y" output.mp4
 # 原样保留视频
 ffmpeg -i source.mp4 -c:v copy output.mp4
