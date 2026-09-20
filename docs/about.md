@@ -68,6 +68,7 @@ permalink: /about/
 以下是我在课堂上讲课且公开的录像：
 
 - [2026 秋《计算机文化基础》数字原住民的认知迁移 2026.9.16](https://www.bilibili.com/video/BV1wFeg6XES3)
+- [2026 夏《程序设计训练（Rust 语言）》AI Agent 大作业选题点评 2026.9.1](https://www.bilibili.com/video/BV1KYeY6bEsK)
 - [2023 秋《计算机网络原理》软件实验及理论背景详解 2023.10.10](https://www.bilibili.com/video/BV1QEeh6cERE)
 - [2021 秋《计算机网络原理》编程作业习题课 2021.11.3](https://www.bilibili.com/video/BV1G3e46JEsg)
 - [2021 夏《汇编语言程序设计》AttackLab 实验讲解 2021.9.6](https://www.bilibili.com/video/BV1WLY26sEAH)
