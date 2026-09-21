@@ -208,3 +208,17 @@ qemu-nbd -f raw /dev/sda
 # -o subformat=streamOptimized: thin provisioning
 qemu-img convert -p -O vmdk -o subformat=streamOptimized nbd://$SOURCE_IP xxx.vmdk
 ```
+
+如果物理机的硬盘，插到了 ESXi 上，可以创建 RDM Disk 来直通给虚拟机：
+
+```shell
+vmkfstools -r /vmfs/devices/disks/naa.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX dest_rdm.vmdk
+```
+
+RDM Disk 还可以进一步转成 VMDK：
+
+```shell
+vmkfstools -i source_rdm.vmdk -d thin dest_thin.vmdk
+```
+
+此后物理盘就可以格式化为 VMFS。
