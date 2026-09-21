@@ -187,7 +187,7 @@ Performance under different compilation options:
 | 3. 7to11_nnue     | GCC 15 `-O3`           | 46       | 955.3     | 169.4    | 57.8      | 75.2       | 1224.7             | 1.28 | 92.3                | 0.00                |
 | 3. 7to11_nnue     | GCC 14 `-march=native` | 31       | 425.9     | 115.1    | 43.7      | 47.1       | 922.9              | 2.17 | 4.6                 | 35.0                |
 
-1to6_classical resembles a traditional chess engine with complex branching and memory access, so its MPKI=4.93 is similar to SPEC CPU 2017's 531.deepsjeng_r (MPKI=3.16), falling in the higher category. Meanwhile, 1to6_nnue and 7to11_nnue are mainly bottlenecked by i8 matrix operations; whether hardware acceleration instructions (here AVX-VNNI) are available has a major performance impact, with branch prediction becoming much less significant. The overall average MPKI is 1.85, not particularly high.
+1to6_classical resembles a traditional chess engine with complex branching and memory access, so its MPKI=4.93 is similar to SPEC CPU 2017's 531.deepsjeng_r (MPKI=4.40), falling in the higher category. Meanwhile, 1to6_nnue and 7to11_nnue are mainly bottlenecked by i8 matrix operations; whether hardware acceleration instructions (here AVX-VNNI) are available has a major performance impact, with branch prediction becoming much less significant. The overall average MPKI is 1.85, not particularly high.
 
 ### 707.ntest_r
 
