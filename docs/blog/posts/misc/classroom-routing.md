@@ -171,6 +171,8 @@ ffmpeg -i source.mp4 -c:v copy output.mp4
 ffmpeg -i source.mp4 -af "loudnorm=I=-16:TP=-1.5:LRA=11" output.mp4
 # 只保留双声道里的左声道
 ffmpeg -i source.mp4 -af "pan=mono|c0=c0" output.mp4
+# 只保留左声道的同时，标准化音频响度
+ffmpeg -i source.mp4 -af "pan=mono|c0=c0,loudnorm=I=-16:dual_mono=true:TP=-1.5:LRA=11:print_format=summary" -ar 48k output.mp4
 # 原样保留音频
 ffmpeg -i source.mp4 -c:a copy output.mp4
 # 测量前 10s 的音量大小
