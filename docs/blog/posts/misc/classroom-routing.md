@@ -98,6 +98,10 @@ flowchart TD
 
 这样，Mac 上的 OBS 就能获得来自鸿蒙电脑、Mac 自身屏幕、教室摄像头和话筒的音视频输入；再通过 OBS 的 Projector 把画面输出到扩展屏，经由讲台投到教室的各种投影和显示器上，音频则从音响放出来。之后要录像或直播，直接使用 OBS 自带的功能即可。
 
+针对上课 4K 30 FPS 但是静态为主的场景，在 OBS 设置里，Output 选择 Advanced，对于 Streaming，Vido Encoder 选 Apple VT H264 Hardware Encoder，Rate Control 选 CBR，Bitrate 选 8000 Kbps，Keyframe Interval 选 2s，Profile 选 high，勾选 Use B-Frames；对于 Recording，Recording Format 选 Matroska Video (.mkv)，Video Encoder 选 x264，Rate Control 选 CRF，Quality 选 18，Keyframe Interval 选 5s，CPU Usage Preset 选 medium，Profile 选 high，Tune 选 None。
+
+可以打开 OBS 的 View -> Stats，看看实时码率，有没有 missed or skipped frame。
+
 ### 基于 HDMI 分配器的候选方案
 
 另一个候选方案是使用 HDMI 分配器：把展示用的鸿蒙电脑信号一分为二，一份直连讲台投出，另一份经采集卡进入 Mac 电脑的 OBS。此时视频拓扑变为：
