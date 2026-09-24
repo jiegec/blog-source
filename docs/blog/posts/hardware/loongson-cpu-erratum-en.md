@@ -14,7 +14,7 @@ categories:
 
 In February 2026, [Wang Miao](github.com/shankerwangmiao) ran into something strange while packaging normaliz for Debian on a LoongArch server: the math software's built-in test kept timing out, stuck in an infinite loop that it could not escape. Following the code, the problem pointed to a very ordinary operation: OpenMP's `#pragma omp atomic` accumulating into a shared variable. The loop's exit condition required the accumulated value to equal a certain number, but the accumulated result was always less than that number, causing the infinite loop. Because the program was large and the code complex, we never managed to reduce it to a minimal example a human could understand, so the matter was shelved.
 
-Half a year later, in August, Wang Miao came to me again, wanting to pick it back up. This time we took a different approach: instead of having a human locate the problem, we let AI find a minimal reproduction, with the human directing the AI's investigation. About two days later, we had a stable reproducer, and only then discovered the root cause: the CPU's atomic add instruction occasionally fails to be atomic. This meant we had found a new CPU erratum, and after Loongson learned of it, only two weeks passed before they found a fix with almost no performance loss and provided us with test firmware. We confirmed that the test firmware resolves the issue, and Loongson told us the firmware is expected to be released before National Day, at which point readers will be able to upgrade their firmware to fix the problem.
+Half a year later, in August, Wang Miao came to me again, wanting to pick it back up. This time we took a different approach: instead of having a human locate the problem, we let AI find a minimal reproduction, with the human directing the AI's investigation. About two days later, we had a stable reproducer, and only then discovered the root cause: the CPU's atomic add instruction occasionally fails to be atomic. This meant we had found a new CPU erratum, and after Loongson learned of it, only two weeks passed before they found a fix with almost no performance loss and provided us with test firmware. We confirmed that the test firmware resolves the issue, and Loongson told us the firmware is expected to be released before National Day (October 1), at which point readers will be able to upgrade their firmware to fix the problem.
 
 <!-- more -->
 
@@ -142,7 +142,7 @@ In general, since in high-level language code developers have no control over th
 
 ## The Fix
 
-After we reported it to Loongson, the fix came quickly: we emailed the problem to Loongson on August 26, 2026, and just two weeks later, on September 9, 2026, we received test firmware; both the 3A6000 and 3C6000/S returned to normal in our tests. Loongson told us this firmware is expected to be released before National Day.
+After we reported it to Loongson, the fix came quickly: we emailed the problem to Loongson on August 26, 2026, and just two weeks later, on September 9, 2026, we received test firmware; both the 3A6000 and 3C6000/S returned to normal in our tests. Loongson told us this firmware is expected to be released before National Day (October 1).
 
 The fix is to set bit 13 of MCSR24 to 1. MCSR24 is an internal CSR whose function is not described in the manual. After setting this bit, the lost update no longer occurs. Testing showed the performance loss is very small: single-core performance is unaffected, and multi-core performance drops only slightly.
 
