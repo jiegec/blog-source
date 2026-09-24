@@ -95,7 +95,7 @@ func (std::list<std::vector<int>> LatticePoints) {
 
 ## 具体结论
 
-在介绍具体结论之前，首先介绍关于此问题的背景知识：龙芯的 3C6000/S 和 3A6000 用的是 LA664 核心，其指令集是 LoongArch64，带有 SIMD 扩展；其中，128 位的 SIMD 扩展叫 LSX，256 位的叫 LASX。LASX 中存在读取内存指令 `xvld`，一次可以读取 32 字节到向量寄存器中。龙芯的原子指令可以概括为：`am<OP>[_db].<width>`，其中 `<OP>` 表示具体的原子操作，如 `amadd`、`amcas`、`amswap`、`ammax`、`amxor`、`amand`、`amor` 等；`[_db]` 表示是否带有 data barrier（db）即数据屏障；而 `<width>` 表示操作的数据宽度，如 `.d` 表示 64 位，`.w` 表示 32 位。
+在介绍具体结论之前，首先介绍关于此问题的背景知识：龙芯的 3C6000/S 和 3A6000 用的是 LA664 核心，其指令集是 LoongArch64，带有 SIMD 扩展；其中，128 位的 SIMD 扩展叫 LSX，256 位的叫 LASX。较早的 LA464 核心（如 3A5000）没有这个问题。LASX 中存在读取内存指令 `xvld`，一次可以读取 32 字节到向量寄存器中。龙芯的原子指令可以概括为：`am<OP>[_db].<width>`，其中 `<OP>` 表示具体的原子操作，如 `amadd`、`amcas`、`amswap`、`ammax`、`amxor`、`amand`、`amor` 等；`[_db]` 表示是否带有 data barrier（db）即数据屏障；而 `<width>` 表示操作的数据宽度，如 `.d` 表示 64 位，`.w` 表示 32 位。
 
 总结实验结果，复现原子操作丢失需要同时满足以下三个条件：
 
