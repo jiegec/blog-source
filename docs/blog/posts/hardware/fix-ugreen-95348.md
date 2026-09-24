@@ -277,3 +277,188 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 - [steve-m/ms213x_flash](https://github.com/steve-m/ms213x_flash)：用来导出/烧写 MS213x 固件的工具，本文用它导出了绿联 95348 的原始固件。
 
 这些项目大多出自 [steve-m](https://github.com/steve-m) 之手，感谢他的开源工作。
+
+## 附录
+
+以下是这个采集卡的 EDID：
+
+```
+00ffffffffffff0054f248538d0135012b230103803c2278022895a7554ea3260f5054010000d1c081c0010001000100010001000100023a801871382d40582c4500c48e2100001e9c45007251d01e206e28550055502100001e000000fd0018501e641e000a202020202020000000fc0055475245454e2d39353334380a01c002032d724c1f222120133e3d3c5f64676223090707830100006d030c001000003c200060010203e50e616066656a5e00a0a0a0295030202500b0133200000019640080a3a02b50b0103510b01332000000352f00a0a0a0295030202500b001320000000000000000000000000000000000000000000000000000000000000058
+```
+
+用 [edid-decode](https://people.freedesktop.org/~imirkin/edid-decode/) 出来的结果：
+
+```
+edid-decode (hex):
+
+00 ff ff ff ff ff ff 00 54 f2 48 53 8d 01 35 01
+2b 23 01 03 80 3c 22 78 02 28 95 a7 55 4e a3 26
+0f 50 54 01 00 00 d1 c0 81 c0 01 00 01 00 01 00
+01 00 01 00 01 00 02 3a 80 18 71 38 2d 40 58 2c
+45 00 c4 8e 21 00 00 1e 9c 45 00 72 51 d0 1e 20
+6e 28 55 00 55 50 21 00 00 1e 00 00 00 fd 00 18
+50 1e 64 1e 00 0a 20 20 20 20 20 20 00 00 00 fc
+00 55 47 52 45 45 4e 2d 39 35 33 34 38 0a 01 c0
+
+02 03 2d 72 4c 1f 22 21 20 13 3e 3d 3c 5f 64 67
+62 23 09 07 07 83 01 00 00 6d 03 0c 00 10 00 00
+3c 20 00 60 01 02 03 e5 0e 61 60 66 65 6a 5e 00
+a0 a0 a0 29 50 30 20 25 00 b0 13 32 00 00 00 19
+64 00 80 a3 a0 2b 50 b0 10 35 10 b0 13 32 00 00
+00 35 2f 00 a0 a0 a0 29 50 30 20 25 00 b0 01 32
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 58
+
+----------------
+
+Block 0, Base EDID:
+  EDID Structure Version & Revision: 1.3
+  Vendor & Product Identification:
+    Manufacturer: UGR
+    Model: 21320
+    Serial Number: 20251021
+    Made in: week 43 of 2025
+  Basic Display Parameters & Features:
+    Digital display
+    Maximum image size: 60 cm x 34 cm
+    Gamma: 2.20
+    Monochrome or grayscale display
+    First detailed timing is the preferred timing
+  Color Characteristics:
+    Red  : 0.6523, 0.3339
+    Green: 0.3066, 0.6367
+    Blue : 0.1503, 0.0595
+    White: 0.3134, 0.3291
+  Established Timings I & II:
+    DMT 0x09:   800x600    60.316541 Hz   4:3     37.879 kHz     40.000000 MHz
+  Standard Timings:
+    DMT 0x52:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
+    DMT 0x55:  1280x720    60.000000 Hz  16:9     45.000 kHz     74.250000 MHz
+  Detailed Timing Descriptors:
+    DTD 1:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (708 mm x 398 mm)
+                 Hfront   88 Hsync  44 Hback  148 Hpol P
+                 Vfront    4 Vsync   5 Vback   36 Vpol P
+    DTD 2:  1280x720   144.000000 Hz  16:9    108.000 kHz    178.200000 MHz (597 mm x 336 mm)
+                 Hfront  110 Hsync  40 Hback  220 Hpol P
+                 Vfront    5 Vsync   5 Vback   20 Vpol P
+    Display Range Limits:
+      Monitor ranges (GTF): 24-80 Hz V, 30-100 kHz H, max dotclock 300 MHz
+    Display Product Name: 'UGREEN-95348'
+  Extension blocks: 1
+Checksum: 0xc0
+
+----------------
+
+Block 1, CTA-861 Extension Block:
+  Revision: 3
+  Basic audio support
+  Supports YCbCr 4:4:4
+  Supports YCbCr 4:2:2
+  Native detailed modes: 2
+  Video Data Block:
+    VIC  31:  1920x1080   50.000000 Hz  16:9     56.250 kHz    148.500000 MHz
+    VIC  34:  1920x1080   30.000000 Hz  16:9     33.750 kHz     74.250000 MHz
+    VIC  33:  1920x1080   25.000000 Hz  16:9     28.125 kHz     74.250000 MHz
+    VIC  32:  1920x1080   24.000000 Hz  16:9     27.000 kHz     74.250000 MHz
+    VIC  19:  1280x720    50.000000 Hz  16:9     37.500 kHz     74.250000 MHz
+    VIC  62:  1280x720    30.000000 Hz  16:9     22.500 kHz     74.250000 MHz
+    VIC  61:  1280x720    25.000000 Hz  16:9     18.750 kHz     74.250000 MHz
+    VIC  60:  1280x720    24.000000 Hz  16:9     18.000 kHz     59.400000 MHz
+    VIC  95:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
+    VIC 100:  4096x2160   30.000000 Hz 256:135   67.500 kHz    297.000000 MHz
+    VIC 103:  3840x2160   24.000000 Hz  64:27    54.000 kHz    297.000000 MHz
+    VIC  98:  4096x2160   24.000000 Hz 256:135   54.000 kHz    297.000000 MHz
+  Audio Data Block:
+    Linear PCM:
+      Max channels: 2
+      Supported sample rates (kHz): 48 44.1 32
+      Supported sample sizes (bits): 24 20 16
+  Speaker Allocation Data Block:
+    FL/FR - Front Left/Right
+  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
+    Source physical address: 1.0.0.0
+    Maximum TMDS clock: 300 MHz
+    Extended HDMI video details:
+      HDMI VICs:
+        HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
+        HDMI VIC 2:  3840x2160   25.000000 Hz  16:9     56.250 kHz    297.000000 MHz
+        HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
+  YCbCr 4:2:0 Video Data Block:
+    VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
+    VIC  96:  3840x2160   50.000000 Hz  16:9    112.500 kHz    594.000000 MHz
+    VIC 102:  4096x2160   60.000000 Hz 256:135  135.000 kHz    594.000000 MHz
+    VIC 101:  4096x2160   50.000000 Hz 256:135  112.500 kHz    594.000000 MHz
+  Detailed Timing Descriptors:
+    DTD 3:  2560x1440   60.000199 Hz  16:9     88.860 kHz    241.700000 MHz (analog composite, sync-on-green, 944 mm x 531 mm)
+                 Hfront   48 Hsync  32 Hback   80 Hpol N
+                 Vfront    2 Vsync   5 Vback   34 Vpol N
+    DTD 4:  2560x1440   49.997581 Hz  16:9     74.146 kHz    256.250000 MHz (analog composite, sync-on-green, 944 mm x 531 mm)
+                 Hfront  176 Hsync 272 Hback  448 Hpol N
+                 Vfront    3 Vsync   5 Vback   35 Vpol N
+    DTD 5:  2560x1440   30.000099 Hz  16:9     44.430 kHz    120.850000 MHz (analog composite, sync-on-green, 944 mm x 513 mm)
+                 Hfront   48 Hsync  32 Hback   80 Hpol N
+                 Vfront    2 Vsync   5 Vback   34 Vpol N
+Checksum: 0x58
+
+----------------
+
+Preferred Video Timing if only Block 0 is parsed:
+  DTD   1:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (708 mm x 398 mm)
+                 Hfront   88 Hsync  44 Hback  148 Hpol P
+                 Vfront    4 Vsync   5 Vback   36 Vpol P
+
+----------------
+
+Preferred Video Timings if Block 0 and CTA-861 Blocks are parsed:
+  DTD   1:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (708 mm x 398 mm)
+                 Hfront   88 Hsync  44 Hback  148 Hpol P
+                 Vfront    4 Vsync   5 Vback   36 Vpol P
+  VIC  31:  1920x1080   50.000000 Hz  16:9     56.250 kHz    148.500000 MHz
+                 Hfront  528 Hsync  44 Hback  148 Hpol P
+                 Vfront    4 Vsync   5 Vback   36 Vpol P
+
+----------------
+
+Native Video Resolution if only Block 0 is parsed:
+  1920x1080
+
+----------------
+
+Native Video Resolutions if Block 0 and CTA-861 Blocks are parsed:
+  1280x720
+  1920x1080
+
+----------------
+
+edid-decode SHA: 84ddf9155376 2021-10-03 10:37:45
+
+Warnings:
+
+Block 1, CTA-861 Extension Block:
+  IT Video Formats are overscanned by default, but normally this should be underscanned.
+
+Failures:
+
+Block 0, Base EDID:
+  Standard Timings: Use 0x0101 as the invalid Standard Timings code, not 0x0100.
+  Standard Timings: Use 0x0101 as the invalid Standard Timings code, not 0x0100.
+  Standard Timings: Use 0x0101 as the invalid Standard Timings code, not 0x0100.
+  Standard Timings: Use 0x0101 as the invalid Standard Timings code, not 0x0100.
+  Standard Timings: Use 0x0101 as the invalid Standard Timings code, not 0x0100.
+  Standard Timings: Use 0x0101 as the invalid Standard Timings code, not 0x0100.
+  Detailed Timing Descriptor #1: Mismatch of image size 708x398 mm vs display size 600x340 mm.
+Block 1, CTA-861 Extension Block:
+  Detailed Timing Descriptor #3: Mismatch of image size 944x531 mm vs display size 600x340 mm.
+  Detailed Timing Descriptor #4: Mismatch of image size 944x531 mm vs display size 600x340 mm.
+  Detailed Timing Descriptor #5: Mismatch of image size 944x513 mm vs display size 600x340 mm.
+  Required 640x480p60 timings are missing in the established timings and the SVD list (VIC 1).
+  HDMI VIC Codes must have their CTA-861 VIC equivalents in the VSB.
+  Missing VCDB, needed for Set Selectable RGB Quantization to avoid interop issues.
+EDID:
+  Base EDID: Some timings are out of range of the Monitor Ranges:
+    Vertical Freq: 24.000 - 144.000 Hz (Monitor: 24.000 - 80.000 Hz)
+    Horizontal Freq: 18.000 - 108.000 kHz (Monitor: 30.000 - 100.000 kHz)
+  CTA-861: Native progressive timings are a mix of several resolutions.
+
+EDID conformity: FAIL
+```
