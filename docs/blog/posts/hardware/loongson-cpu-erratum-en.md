@@ -152,7 +152,7 @@ If affected users cannot update the firmware for the time being, they can also c
 
 Looking back, this story began with a purely software problem: an infinite loop during packaging, a counter that occasionally miscounts. In the end it turned out to be an atomic add instruction in the CPU that is not atomic. From discovering the problem to finding the cause spanned half a year, yet the truly effective progress took only two days, with both AI and humans playing indispensable roles. The rest of the time went into confirming the problem, finding the triggering conditions, broadening the testing scope, and waiting for the firmware fix.
 
-In fact, similar errata are very common in CPUs from all vendors. Interested readers can browse ARM's Software Developer Errata Notice for its stock cores, many of which involve memory-access or atomic instructions, with a few severe ones even causing the CPU to deadlock; but those that genuinely affect the user experience are actually very few. For such problems, rather than letting one suddenly surface someday in some complex system as an unstable error report, it is better to localize the specific cause and fix it as early as possible.
+In fact, similar errata are very common in CPUs from all vendors. Interested readers can browse ARM's Software Developer Errata Notice for its cores, many of which involve memory-access or atomic instructions, with a few severe ones even causing the CPU to deadlock; but those that genuinely affect the user experience are actually very few. For such problems, rather than letting one suddenly surface someday in some complex system as an unstable error report, it is better to localize the specific cause and fix it as early as possible.
 
 ## Acknowledgements
 
