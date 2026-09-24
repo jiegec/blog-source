@@ -8,6 +8,8 @@ categories:
 
 # 一颗 CPU 的原子指令，一个打包死循环：LA664 丢失更新事件始末
 
+[English version](loongson-cpu-erratum-en.md)
+
 ## 太长不看版本
 
 2026 年 2 月，[王邈](github.com/shankerwangmiao)在龙架构服务器上给 Debian 打包 normaliz 时遇到一件怪事：这个数学软件的自带测试总是超时，现象是卡在死循环里出不来。顺着代码调查，问题指向一个很常规的操作：OpenMP 的 `#pragma omp atomic` 对共享变量进行累加。循环的退出条件要求累加后的值等于某个数，而累加的结果总是少于这个数，就导致了死循环。由于程序太大、代码又很复杂，始终没能把问题缩减成一个人类能看懂的最小例子，这件事就被搁置了。
