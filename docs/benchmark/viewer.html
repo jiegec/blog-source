@@ -184,6 +184,18 @@ td.chk input, th.chk input { cursor: pointer; }
 </div>
 
 <div class="chart-box">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+    <label style="font-size:0.78rem;font-weight:600;"><span data-i18n="metric_label">Metric</span>
+      <select id="chart-metric" style="padding:3px 8px;border:1.5px solid #e2e6ed;border-radius:6px;font-size:0.78rem;background:#fff;">
+        <option value="ratio" data-i18n="metric_ratio">Ratio</option>
+        <option value="clock" data-i18n="metric_clock">Clock (MHz)</option>
+        <option value="ipc" data-i18n="metric_ipc">IPC</option>
+        <option value="mpki" data-i18n="metric_mpki">MPKI</option>
+        <option value="misprediction_rate" data-i18n="metric_mispred">Mispred (%)</option>
+      </select>
+    </label>
+    <span id="chart-metric-note" style="font-size:0.75rem;color:#999;"></span>
+  </div>
   <div class="legend" id="legend-area"></div>
   <div id="chart"></div>
 </div>
@@ -279,6 +291,7 @@ const i18n = {
     compare_title: 'Benchmark Comparison',
     no_matching: 'No matching results',
     chart_score_axis: 'Estimated SPECrate Score',
+    chart_metric_note_avg: 'Average across benchmarks in this suite',
     isa_label: 'ISA:',
     click_bar_hint: 'Click bars for per-benchmark details',
     tbl_cpu: 'CPU', tbl_score: 'Score', tbl_os: 'OS', tbl_compiler: 'Compiler',
@@ -357,6 +370,7 @@ const i18n = {
     compare_title: '基准测试对比',
     no_matching: '没有匹配的结果',
     chart_score_axis: '估计 SPECrate 分数',
+    chart_metric_note_avg: '该套件各基准测试的平均值',
     isa_label: '指令集：',
     click_bar_hint: '点击柱状图查看各基准测试详情',
     tbl_cpu: 'CPU', tbl_score: '分数', tbl_os: '操作系统', tbl_compiler: '编译器',
@@ -518,6 +532,8 @@ function syncUrl() {
     const v = document.getElementById(id).value;
     if (v) params.set(id.replace('filter-', ''), v);
   });
+  const metric = document.getElementById('chart-metric').value;
+  if (metric && metric !== 'ratio') params.set('metric', metric);
   const q = document.getElementById('filter-search').value.trim();
   if (q) params.set('q', q);
   const url = new URL(window.location);
@@ -537,6 +553,13 @@ function loadFromUrl() {
       for (let i = 0; i < sel.options.length; i++) {
         if (sel.options[i].value === v) { sel.selectedIndex = i; break; }
       }
+    }
+  }
+  const metric = params.get('metric');
+  if (metric) {
+    const sel = document.getElementById('chart-metric');
+    for (let i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === metric) { sel.selectedIndex = i; break; }
     }
   }
   const q = params.get('q');
@@ -628,6 +651,33 @@ function refresh(chart) {
   render(chart);
 }
 
+// ── metric helpers ──
+function metricLabel(metric) {
+  const map = { ratio: 'metric_ratio', clock: 'metric_clock', ipc: 'metric_ipc',
+                mpki: 'metric_mpki', misprediction_rate: 'metric_mispred' };
+  return _t(map[metric] || 'metric_ratio');
+}
+
+// Per-CPU value for the main chart: ratio uses the aggregated SPECrate score,
+// other metrics are averaged across the benchmarks in the selected suite.
+function entryMetricValue(e, metric) {
+  if (metric === 'ratio') return e.score;
+  if (!e.benchmarks) return null;
+  const vals = Object.values(e.benchmarks)
+    .map(b => b[metric])
+    .filter(v => typeof v === 'number' && !isNaN(v));
+  if (!vals.length) return null;
+  return vals.reduce((a, b) => a + b, 0) / vals.length;
+}
+
+function fmtMetric(v, metric) {
+  if (v === null || v === undefined || (typeof v === 'number' && isNaN(v))) return '-';
+  if (metric === 'ratio') return v.toFixed(2);
+  if (metric === 'clock') return v.toFixed(0);
+  if (metric === 'ipc') return v.toFixed(3);
+  return v.toFixed(2);
+}
+
 // ── chart ──
 function render(chart) {
   let data = [...filtered];
@@ -638,12 +688,18 @@ function render(chart) {
     return;
   }
 
-  // sort by score ascending so highest is on top (last category = top)
-  data.sort((a, b) => a.score - b.score);
+  const metric = document.getElementById('chart-metric').value;
+  const noteEl = document.getElementById('chart-metric-note');
+  if (noteEl) noteEl.textContent = metric === 'ratio' ? '' : _t('chart_metric_note_avg');
+
+  // compute selected metric, then sort ascending so highest is on top (last category = top)
+  data.forEach(e => { e._metricValue = entryMetricValue(e, metric); });
+  data.sort((a, b) => (a._metricValue ?? -Infinity) - (b._metricValue ?? -Infinity));
 
   const yNames = data.map(e => `${e.cpu_name} (${e.opt_flags})`);
-  const scores = data.map(e => e.score);
+  const values = data.map(e => e._metricValue);
   const colors = data.map(e => COLORS[e.isa] || '#94a3b8');
+  const axisName = metric === 'ratio' ? _t('chart_score_axis') : metricLabel(metric);
 
   const option = {
     tooltip: {
@@ -654,20 +710,21 @@ function render(chart) {
         if (!p) return '';
         const item = data[p.dataIndex];
         if (!item) return p.name;
-        return `<strong>${item.cpu_name}</strong><br>
-                ${_t('tooltip_score')} <strong>${item.score}</strong><br>
-                ${_t('tooltip_os')} ${item.os} | ${_t('tooltip_suite')} ${item.test_type}<br>
-                ${_t('tooltip_flags')} ${item.opt_flags}<br>
-                ${_t('tooltip_compiler')} ${esc(item.compiler||'')}<br>
-                ${_t('tooltip_memory')} ${esc(item.memory||'')}<br>
-                ${_t('tooltip_vendor')} ${item.vendor} | ${_t('tooltip_uarch_vendor')} ${item.uarch_vendor} | ${_t('tooltip_launch')} ${item.launch_date}<br>
-                ${_t('tooltip_sector')} ${item.sector} | ${_t('tooltip_isa')} ${item.isa}`;
+        const lines = [`<strong>${item.cpu_name}</strong>`,
+                       `${metricLabel(metric)}: <strong>${fmtMetric(item._metricValue, metric)}</strong>`];
+        lines.push(`${_t('tooltip_os')} ${item.os} | ${_t('tooltip_suite')} ${item.test_type}`);
+        lines.push(`${_t('tooltip_flags')} ${item.opt_flags}`);
+        lines.push(`${_t('tooltip_compiler')} ${esc(item.compiler||'')}`);
+        lines.push(`${_t('tooltip_memory')} ${esc(item.memory||'')}`);
+        lines.push(`${_t('tooltip_vendor')} ${item.vendor} | ${_t('tooltip_uarch_vendor')} ${item.uarch_vendor} | ${_t('tooltip_launch')} ${item.launch_date}`);
+        lines.push(`${_t('tooltip_sector')} ${item.sector} | ${_t('tooltip_isa')} ${item.isa}`);
+        return lines.join('<br>');
       }
     },
     grid: { left: 200, right: '15%', top: 30, bottom: 30, containLabel: true },
     xAxis: {
       type: 'value',
-      name: _t('chart_score_axis'),
+      name: axisName,
       nameLocation: 'middle',
       nameGap: 25
     },
@@ -679,7 +736,7 @@ function render(chart) {
     },
     series: [{
       type: 'bar',
-      data: scores.map((v, i) => ({
+      data: values.map((v, i) => ({
         value: v,
         itemStyle: { color: colors[i] }
       })),
@@ -687,7 +744,7 @@ function render(chart) {
       label: {
         show: true,
         position: 'right',
-        formatter: (p) => p.value.toFixed(2),
+        formatter: (p) => fmtMetric(p.value, metric),
         fontSize: 10
       }
     }],
@@ -1186,6 +1243,11 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   onInputChange();
 });
 document.getElementById('progression-group').addEventListener('change', renderProgressionChart);
+document.getElementById('chart-metric').addEventListener('change', () => {
+  syncUrl();
+  const chart = echarts.getInstanceByDom(document.getElementById('chart'));
+  if (chart) render(chart);
+});
 
 applyLang();
 init();
