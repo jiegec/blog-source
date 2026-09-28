@@ -166,8 +166,8 @@ CPU_INFO = [
     ("AWS Graviton 5", {None: "@ 3.3 GHz Neoverse V3"}),
     # Server - Others
     ("Ampere Altra", {None: "@ 3.0 GHz Neoverse N1"}),
-    ("Hygon C86 7390", {None: ""}),
-    ("Hygon C86 4G 7447V", {None: ""}),
+    ("Hygon C86 3G 7390", {None: ""}),
+    ("Hygon C86 4G 7447V", {None: "@ 3.0 GHz Hygon-4G"}),
     ("IBM POWER8NVL", {None: "@ 4.0 GHz POWER8"}),
     ("IBM POWER8", {None: "@ 3.2 GHz POWER8"}),
     ("IBM POWER9 3.2 GHz", {None: "@ 3.2 GHz POWER9"}),
