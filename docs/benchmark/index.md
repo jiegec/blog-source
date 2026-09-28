@@ -154,6 +154,11 @@ permalink: /benchmark/
 
 - 2026.09.28:
       - 测试 Intel Xeon Platinum 8358P 的性能
+- 2026.06.30:
+      - 测试 Intel Core i5-1135G7 性能
+- 2025.06.27:
+      - 测试 Huawei Kirin X90 在虚拟机中的性能
+      - 在华为云 kc2.xlarge.4 实例上测试 HuaweiCloud Kunpeng 920 kc2 的性能
 - 2026.06.12:
       - 在 AWS m9g.xlarge 实例上测试 AWS Graviton 5 的性能
 - 2026.05.19:
