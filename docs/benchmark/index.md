@@ -116,6 +116,7 @@ permalink: /benchmark/
 - Google Axion N4A(GCP n4a-standard-4, 4C 16G): Neoverse N3
 - Huawei Kirin 9010
 - Hygon C86 7390(Aliyun g7h.large, 2C 8G): w/o PMU
+- Hygon C86-4G(Aliyun g9h.xlarge, 4C 16G)
 - IBM POWER8NVL
 - IBM POWER8: SMT8
 - IBM POWER9 3.2 GHz: SMT4, 4C16T
@@ -151,6 +152,8 @@ permalink: /benchmark/
 
 ## 更新历史
 
+- 2026.09.28:
+      - 测试 Intel Xeon Platinum 8358P 的性能
 - 2026.06.12:
       - 在 AWS m9g.xlarge 实例上测试 AWS Graviton 5 的性能
 - 2026.05.19:

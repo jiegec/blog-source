@@ -93,6 +93,7 @@
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [1.50](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto -ljemalloc`）: [4.56](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto -ljemalloc`）: [2.14](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-flto-ljemalloc_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -flto -ljemalloc`）: [2.64](./data-trixie/int2026_rate1/Intel_Xeon_Platinum_8358P_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto -ljemalloc`）: [1.59](./data-trixie/int2026_rate1/Kunpeng_920_O3-flto-ljemalloc_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto -ljemalloc`）: [2.65](./data-trixie/int2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto-ljemalloc_001.txt)
 
@@ -101,6 +102,7 @@
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [1.42](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-flto_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto`）: [4.27](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-flto_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto`）: [2.06](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-flto_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -flto`）: [2.36](./data-trixie/int2026_rate1/Intel_Xeon_Platinum_8358P_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [1.51](./data-trixie/int2026_rate1/Kunpeng_920_O3-flto_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [2.51](./data-trixie/int2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
 
@@ -109,6 +111,7 @@
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [1.37](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3`）: [4.21](./data-trixie/int2026_rate1/AWS_Graviton_5_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [2.01](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3`）: [2.32](./data-trixie/int2026_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [1.46](./data-trixie/int2026_rate1/Kunpeng_920_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [2.42](./data-trixie/int2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 
@@ -221,6 +224,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native`）: [2.04](./data-trixie/fp2026_rate1/AMD_EPYC_7551_O3-march=native_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -march=native`）: [6.10](./data-trixie/fp2026_rate1/AWS_Graviton_5_O3-march=native_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -march=native`）: [2.74](./data-trixie/fp2026_rate1/Intel_Xeon_E5-2680_v4_O3-march=native_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -march=native`）: [4.16](./data-trixie/fp2026_rate1/Intel_Xeon_Platinum_8358P_O3-march=native_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -march=native`）: [1.62](./data-trixie/fp2026_rate1/Kunpeng_920_O3-march=native_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -march=native`）: [3.69](./data-trixie/fp2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-march=native_001.txt)
 
@@ -229,6 +233,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [1.86](./data-trixie/fp2026_rate1/AMD_EPYC_7551_O3_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3`）: [5.67](./data-trixie/fp2026_rate1/AWS_Graviton_5_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [2.43](./data-trixie/fp2026_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3`）: [3.20](./data-trixie/fp2026_rate1/Intel_Xeon_Platinum_8358P_O3_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3`）: [1.54](./data-trixie/fp2026_rate1/Kunpeng_920_O3_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3`）: [3.78](./data-trixie/fp2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3_001.txt)
 
