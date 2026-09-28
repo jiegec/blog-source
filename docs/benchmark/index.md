@@ -116,7 +116,7 @@ permalink: /benchmark/
 - Google Axion N4A(GCP n4a-standard-4, 4C 16G): Neoverse N3
 - Huawei Kirin 9010
 - Hygon C86 7390(Aliyun g7h.large, 2C 8G): w/o PMU
-- Hygon C86-4G(Aliyun g9h.xlarge, 4C 16G)
+- Hygon C86 4G 7447V(Aliyun g9h.xlarge, 4C 16G)
 - IBM POWER8NVL
 - IBM POWER8: SMT8
 - IBM POWER9 3.2 GHz: SMT4, 4C16T
@@ -156,7 +156,7 @@ permalink: /benchmark/
       - 测试 Intel Xeon Platinum 8358P 的性能
       - 测试 Intel Xeon Gold 6430 的性能
       - 测试 AMD EPYC 7742 的性能
-      - 在阿里云 g9h.xlarge 实例上测试 Hygon C86-4G 的性能
+      - 在阿里云 g9h.xlarge 实例上测试 Hygon C86 4G 7447V 的性能
 - 2026.06.30:
       - 测试 Intel Core i5-1135G7 性能
 - 2025.06.27:

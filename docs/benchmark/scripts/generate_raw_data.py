@@ -167,6 +167,7 @@ CPU_INFO = [
     # Server - Others
     ("Ampere Altra", {None: "@ 3.0 GHz Neoverse N1"}),
     ("Hygon C86 7390", {None: ""}),
+    ("Hygon C86 4G 7447V", {None: ""}),
     ("IBM POWER8NVL", {None: "@ 4.0 GHz POWER8"}),
     ("IBM POWER8", {None: "@ 3.2 GHz POWER8"}),
     ("IBM POWER9 3.2 GHz", {None: "@ 3.2 GHz POWER9"}),
@@ -762,6 +763,7 @@ def detect_launch_date(cpu_name):
         ("Huawei Kirin 9010", "2024"),
         ("Huawei Kirin X90", "2025"),
         ("Hygon C86 7390", "2023"),
+        ("Hygon C86 4G 7447V", "2026"),
         ("IBM POWER8", "2014"),
         ("IBM POWER8NVL", "2016"),
         ("IBM POWER9", "2018"),
