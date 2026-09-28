@@ -120,3 +120,7 @@ Linux 5.15.15(5.15.0-0.bpo.3-arm64):
 ```shell
 sudo vmware-toolbox-cmd disk shrink /
 ```
+
+## UTM
+
+如果不想折腾，可以用 [UTM](https://docs.getutm.app/guides/windows/) 来安装 Windows 虚拟机。
