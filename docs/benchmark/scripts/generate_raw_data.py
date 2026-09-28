@@ -762,7 +762,7 @@ def detect_launch_date(cpu_name):
         ("Google Axion N4A", "2026"),
         ("Huawei Kirin 9010", "2024"),
         ("Huawei Kirin X90", "2025"),
-        ("Hygon C86 7390", "2023"),
+        ("Hygon C86 3G 7390", "2023"),
         ("Hygon C86 4G 7447V", "2026"),
         ("IBM POWER8", "2014"),
         ("IBM POWER8NVL", "2016"),
