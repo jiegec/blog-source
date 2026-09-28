@@ -107,7 +107,7 @@
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto`）: [4.27](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-flto_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto`）: [2.06](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-flto_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto`）: [2.37](./data-trixie/int2026_rate1/Intel_Xeon_Gold_6430_O3-flto_001.txt)
-- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -flto`）: [2.36](./data-trixie/int2026_rate1/Intel_Xeon_Platinum_8358P_O3-flto_001.txt)
+- Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -flto`）: [2.59](./data-trixie/int2026_rate1/Intel_Xeon_Platinum_8358P_O3-flto_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -flto`）: [1.51](./data-trixie/int2026_rate1/Kunpeng_920_O3-flto_001.txt)
 - Kunpeng 920 HuaweiCloud kc2 @ 2.9 GHz（`-O3 -flto`）: [2.51](./data-trixie/int2026_rate1/Kunpeng_920_HuaweiCloud_kc2_O3-flto_001.txt)
 
