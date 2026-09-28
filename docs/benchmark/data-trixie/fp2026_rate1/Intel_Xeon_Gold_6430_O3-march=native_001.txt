@@ -1,0 +1,159 @@
+Built with GCC 14.2.0 from Debian Trixie with -O3 -march=native
+Running on Linux kernel 6.12.96+deb13-amd64
+
+                         Estimated                        Estimated
+                  Base     Base        Base        Peak     Peak        Peak
+Benchmarks        Copies  Run Time     Rate        Copies  Run Time     Rate 
+---------------- -------  ---------  ---------    -------  ---------  ---------
+709.cactus_r           1        231       3.71  *
+709.cactus_r           1        231       3.72  S
+709.cactus_r           1        232       3.70  S
+722.palm_r             1        356       3.71  S
+722.palm_r             1        354       3.73  S
+722.palm_r             1        355       3.72  *
+731.astcenc_r          1        341       2.46  S
+731.astcenc_r          1        342       2.46  *
+731.astcenc_r          1        342       2.46  S
+736.ocio_r             1        233       3.75  *
+736.ocio_r             1        232       3.77  S
+736.ocio_r             1        233       3.75  S
+737.gmsh_r             1        216       2.12  S
+737.gmsh_r             1        215       2.14  S
+737.gmsh_r             1        215       2.14  *
+748.flightdm_r         1        207       3.46  S
+748.flightdm_r         1        208       3.45  S
+748.flightdm_r         1        207       3.45  *
+749.fotonik3d_r        1        237       4.88  *
+749.fotonik3d_r        1        237       4.88  S
+749.fotonik3d_r        1        238       4.86  S
+765.roms_r             1        374       4.22  *
+765.roms_r             1        373       4.22  S
+765.roms_r             1        374       4.21  S
+766.femflow_r          1        225       6.52  *
+766.femflow_r          1        225       6.52  S
+766.femflow_r          1        225       6.51  S
+767.nest_r             1        197       4.02  S
+767.nest_r             1        198       4.01  *
+767.nest_r             1        198       4.00  S
+772.marian_r           1        177       8.94  S
+772.marian_r           1        177       8.90  S
+772.marian_r           1        177       8.90  *
+782.lbm_r              1        235       2.43  *
+782.lbm_r              1        236       2.43  S
+782.lbm_r              1        235       2.43  S
+==================================================================================
+709.cactus_r           1        231       3.71  *
+722.palm_r             1        355       3.72  *
+731.astcenc_r          1        342       2.46  *
+736.ocio_r             1        233       3.75  *
+737.gmsh_r             1        215       2.14  *
+748.flightdm_r         1        207       3.45  *
+749.fotonik3d_r        1        237       4.88  *
+765.roms_r             1        374       4.22  *
+766.femflow_r          1        225       6.52  *
+767.nest_r             1        198       4.01  *
+772.marian_r           1        177       8.90  *
+782.lbm_r              1        235       2.43  *
+ Est. SPECrate(R)2026_fp_base             3.86
+ Est. SPECrate(R)2026_fp_peak                                           Not Run
+
+709.cactus_r: time (ms) = 230138
+709.cactus_r: clock freq (MHz) = 2572.2057
+709.cactus_r: instructions = 9.30024e+11
+709.cactus_r: branch instructions = 9.27179e+09
+709.cactus_r: ipc = 1.5711
+709.cactus_r: misprediction rate (%) = 0.0842
+709.cactus_r: mpki = 0.0084
+722.palm_r: time (ms) = 353269
+722.palm_r: clock freq (MHz) = 2420.8021
+722.palm_r: instructions = 2.59526e+12
+722.palm_r: branch instructions = 1.24131e+11
+722.palm_r: ipc = 3.0347
+722.palm_r: misprediction rate (%) = 0.2508
+722.palm_r: mpki = 0.1199
+731.astcenc_r: time (ms) = 340242
+731.astcenc_r: clock freq (MHz) = 2578.7171
+731.astcenc_r: instructions = 2.01595e+12
+731.astcenc_r: branch instructions = 1.84494e+11
+731.astcenc_r: ipc = 2.2977
+731.astcenc_r: misprediction rate (%) = 6.9156
+731.astcenc_r: mpki = 6.3290
+736.ocio_r: time (ms) = 231723
+736.ocio_r: clock freq (MHz) = 2467.8093
+736.ocio_r: instructions = 1.82531e+12
+736.ocio_r: branch instructions = 1.65089e+11
+736.ocio_r: ipc = 3.1920
+736.ocio_r: misprediction rate (%) = 0.1144
+736.ocio_r: mpki = 0.1035
+737.gmsh_r: time (ms) = 213999
+737.gmsh_r: clock freq (MHz) = 2574.3729
+737.gmsh_r: instructions = 9.04592e+11
+737.gmsh_r: branch instructions = 1.62569e+11
+737.gmsh_r: ipc = 1.6420
+737.gmsh_r: misprediction rate (%) = 2.0732
+737.gmsh_r: mpki = 3.7258
+748.flightdm_r: time (ms) = 206403
+748.flightdm_r: clock freq (MHz) = 2574.3801
+748.flightdm_r: instructions = 1.62005e+12
+748.flightdm_r: branch instructions = 3.14696e+11
+748.flightdm_r: ipc = 3.0489
+748.flightdm_r: misprediction rate (%) = 0.0688
+748.flightdm_r: mpki = 0.1337
+749.fotonik3d_r: time (ms) = 236215
+749.fotonik3d_r: clock freq (MHz) = 2560.0078
+749.fotonik3d_r: instructions = 5.97778e+11
+749.fotonik3d_r: branch instructions = 2.71571e+10
+749.fotonik3d_r: ipc = 0.9885
+749.fotonik3d_r: misprediction rate (%) = 0.0542
+749.fotonik3d_r: mpki = 0.0246
+765.roms_r: time (ms) = 372215
+765.roms_r: clock freq (MHz) = 2411.2644
+765.roms_r: instructions = 1.30938e+12
+765.roms_r: branch instructions = 1.26632e+11
+765.roms_r: ipc = 1.4589
+765.roms_r: misprediction rate (%) = 0.0645
+765.roms_r: mpki = 0.0623
+766.femflow_r: time (ms) = 224037
+766.femflow_r: clock freq (MHz) = 2401.8893
+766.femflow_r: instructions = 1.57179e+12
+766.femflow_r: branch instructions = 5.58101e+10
+766.femflow_r: ipc = 2.9209
+766.femflow_r: misprediction rate (%) = 0.2405
+766.femflow_r: mpki = 0.0854
+767.nest_r: time (ms) = 196813
+767.nest_r: clock freq (MHz) = 2489.5638
+767.nest_r: instructions = 1.62913e+12
+767.nest_r: branch instructions = 2.30022e+11
+767.nest_r: ipc = 3.3249
+767.nest_r: misprediction rate (%) = 0.3946
+767.nest_r: mpki = 0.5571
+772.marian_r: time (ms) = 176323
+772.marian_r: clock freq (MHz) = 2571.3248
+772.marian_r: instructions = 1.21473e+12
+772.marian_r: branch instructions = 1.35454e+11
+772.marian_r: ipc = 2.6793
+772.marian_r: misprediction rate (%) = 0.1440
+772.marian_r: mpki = 0.1606
+782.lbm_r: time (ms) = 234622
+782.lbm_r: clock freq (MHz) = 2573.1234
+782.lbm_r: instructions = 1.63707e+12
+782.lbm_r: branch instructions = 1.89753e+10
+782.lbm_r: ipc = 2.7117
+782.lbm_r: misprediction rate (%) = 0.1711
+782.lbm_r: mpki = 0.0198
+999.specrand_r: time (ms) = 1826.94
+999.specrand_r: clock freq (MHz) = 2282.7264
+999.specrand_r: instructions = 2.26755e+10
+999.specrand_r: branch instructions = 2.14306e+09
+999.specrand_r: ipc = 5.4372
+999.specrand_r: misprediction rate (%) = 0.1557
+999.specrand_r: mpki = 0.1472
+all: time (ms) = 3.01783e+06
+all: clock freq (MHz) = 2508.5087
+all: instructions = 1.78737e+13
+all: branch instructions = 1.55644e+12
+
+System Info:
+CPU Name: Intel(R) Xeon(R) Gold 6430
+Enabled: -1 cores, -1 chips, -1 threads/core
+Memory: 3x Not Specified Not Specified 16 GB
