@@ -172,7 +172,7 @@ CPU_INFO = [
     ("IBM POWER8", {None: "@ 3.2 GHz POWER8"}),
     ("IBM POWER9 3.2 GHz", {None: "@ 3.2 GHz POWER9"}),
     ("IBM POWER9 3.8 GHz", {None: "@ 3.8 GHz POWER9"}),
-    ("Google Axion C4A", {None: "@ Neoverse V2"}),
+    ("Google Axion C4A", {None: "@ 3.0 GHz Neoverse V2"}),
     ("Google Axion N4A", {None: "@ Neoverse N3"}),
     (
         "Kunpeng 920 HuaweiCloud kc2",
