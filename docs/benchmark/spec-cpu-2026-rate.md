@@ -83,6 +83,7 @@
 服务器平台（`-march=native` + LTO + Jemalloc）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native -flto -ljemalloc`）: [1.52](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-march=native-flto-ljemalloc_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -march=native -flto -ljemalloc`）: [2.50](./data-trixie/int2026_rate1/AMD_EPYC_7742_O3-march=native-flto-ljemalloc_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -march=native -flto -ljemalloc`）: [4.67](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-march=native-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -march=native -flto -ljemalloc`）: [2.17](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-march=native-flto-ljemalloc_001.txt)
 - Kunpeng 920 @ 2.6 GHz TaiShan V110（`-O3 -march=native -flto -ljemalloc`）: [1.59](./data-trixie/int2026_rate1/Kunpeng_920_O3-march=native-flto-ljemalloc_001.txt)
@@ -91,6 +92,7 @@
 服务器平台（LTO + Jemalloc）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [1.50](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto -ljemalloc`）: [2.41](./data-trixie/int2026_rate1/AMD_EPYC_7742_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto -ljemalloc`）: [4.56](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto -ljemalloc`）: [2.14](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-flto-ljemalloc_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [2.50](./data-trixie/int2026_rate1/Intel_Xeon_Gold_6430_O3-flto-ljemalloc_001.txt)
@@ -101,6 +103,7 @@
 服务器平台（LTO）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [1.42](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-flto_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [2.28](./data-trixie/int2026_rate1/AMD_EPYC_7742_O3-flto_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto`）: [4.27](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-flto_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto`）: [2.06](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-flto_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto`）: [2.37](./data-trixie/int2026_rate1/Intel_Xeon_Gold_6430_O3-flto_001.txt)
@@ -111,6 +114,7 @@
 服务器平台：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [1.37](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [2.19](./data-trixie/int2026_rate1/AMD_EPYC_7742_O3_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3`）: [4.21](./data-trixie/int2026_rate1/AWS_Graviton_5_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [2.01](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [2.32](./data-trixie/int2026_rate1/Intel_Xeon_Gold_6430_O3_001.txt)
@@ -225,6 +229,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 服务器平台（`-march=native`）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native`）: [2.04](./data-trixie/fp2026_rate1/AMD_EPYC_7551_O3-march=native_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -march=native`）: [3.88](./data-trixie/fp2026_rate1/AMD_EPYC_7742_O3-march=native_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -march=native`）: [6.10](./data-trixie/fp2026_rate1/AWS_Graviton_5_O3-march=native_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -march=native`）: [2.74](./data-trixie/fp2026_rate1/Intel_Xeon_E5-2680_v4_O3-march=native_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -march=native`）: [3.86](./data-trixie/fp2026_rate1/Intel_Xeon_Gold_6430_O3-march=native_001.txt)
@@ -235,6 +240,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 服务器平台：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [1.86](./data-trixie/fp2026_rate1/AMD_EPYC_7551_O3_001.txt)
+- AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [3.25](./data-trixie/fp2026_rate1/AMD_EPYC_7742_O3_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3`）: [5.67](./data-trixie/fp2026_rate1/AWS_Graviton_5_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [2.43](./data-trixie/fp2026_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [3.01](./data-trixie/fp2026_rate1/Intel_Xeon_Gold_6430_O3_001.txt)
