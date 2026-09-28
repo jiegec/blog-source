@@ -115,7 +115,7 @@ permalink: /benchmark/
 - Google Axion C4A(GCP c4a-standard-4, 4C 16G): Neoverse V2
 - Google Axion N4A(GCP n4a-standard-4, 4C 16G): Neoverse N3
 - Huawei Kirin 9010
-- Hygon C86 7390(Aliyun g7h.large, 2C 8G): w/o PMU
+- Hygon C86 3G 7390(Aliyun g7h.large, 2C 8G): w/o PMU
 - Hygon C86 4G 7447V(Aliyun g9h.xlarge, 4C 16G)
 - IBM POWER8NVL
 - IBM POWER8: SMT8
