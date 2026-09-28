@@ -160,7 +160,7 @@
 
 - AMD Ryzen 5 7500F @ 5.0 GHz Zen 4（`-O3`）: [9.51](./data-bookworm/int2017_rate1/AMD_Ryzen_5_7500F_O3_001.txt)
 - AMD Ryzen 7 5700X @ 4.65 GHz Zen 3（`-O3`）: [7.87](./data-bookworm/int2017_rate1/AMD_Ryzen_7_5700X_O3_001.txt)
-- AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.2](./data-bookworm/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt) [11.3](./data-bookworm/int2017_rate1/AMD_Ryzen_9_9950X_O3_002.txt)
+- AMD Ryzen 9 9950X @ 5.7 GHz Zen 5（`-O3`）: [11.3](./data-bookworm/int2017_rate1/AMD_Ryzen_9_9950X_O3_001.txt)
 - Apple M1 E-Core @ 2.1 GHz Icestorm（`-O3`）: [3.15](./data-bookworm/int2017_rate1/Apple_M1_E-Core_O3_001.txt)
 - Apple M1 P-Core @ 3.2 GHz Firestorm（`-O3`）: [7.85](./data-bookworm/int2017_rate1/Apple_M1_P-Core_O3_001.txt)
 - Huawei Kirin X90 VM P-Core @ 2.3 GHz（`-O3`）: [4.07](./data-bookworm/int2017_rate1/Huawei_Kirin_X90_VM_P-Core_O3_001.txt)
