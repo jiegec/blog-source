@@ -748,6 +748,7 @@ def detect_launch_date(cpu_name):
         ("AMD EPYC 9R14", "2023"),
         ("AMD EPYC 9R45", "2024"),
         ("AMD EPYC 9T24", "2023"),
+        ("AMD EPYC 9T25", "2024"),
         ("AMD EPYC 9T95", "2024"),
         ("AMD Ryzen 5 7500F", "2023"),
         ("AMD Ryzen 7 5700X", "2022"),
