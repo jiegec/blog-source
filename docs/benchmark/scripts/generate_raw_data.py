@@ -155,6 +155,7 @@ CPU_INFO = [
     ("AMD EPYC 9R14", {None: "@ 3.7 GHz Zen 4"}),
     ("AMD EPYC 9R45", {None: "@ 4.5 GHz Zen 5"}),
     ("AMD EPYC 9T24", {None: "@ 3.7 GHz Zen 4"}),
+    ("AMD EPYC 9T25", {None: "@ 4.1 GHz Zen 5"}),
     ("AMD EPYC 9T95", {None: "@ 3.7 GHz Zen 5c"}),
     # Server - AWS
     (
