@@ -590,6 +590,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3`）: [12.4](./data-trixie/fp2017_rate1/AWS_Graviton_5_O3_001.txt)
 - Google Axion C4A @ 3.0 GHz Neoverse V2（`-O3`）: [10.8](./data-trixie/fp2017_rate1/Google_Axion_C4A_O3_001.txt)
 - Google Axion N4A @ Neoverse N3（`-O3`）: [9.18](./data-trixie/fp2017_rate1/Google_Axion_N4A_O3_001.txt)
+- Hygon C86 4G 7447V @ 3.0 GHz Hygon-4G（`-O3`）: [4.67](./data-trixie/fp2017_rate1/Hygon_C86_4G_7447V_O3_001.txt)
 - IBM POWER8 @ 3.2 GHz POWER8（`-O3`）: [3.47](./data-trixie/fp2017_rate1/IBM_POWER8_O3_001.txt)
 - IBM POWER9 3.2 GHz @ 3.2 GHz POWER9（`-O3`）: [3.84](./data-trixie/fp2017_rate1/IBM_POWER9_3.2_GHz_O3_001.txt)
 - IBM POWER9 3.8 GHz @ 3.8 GHz POWER9（`-O3`）: [4.75](./data-trixie/fp2017_rate1/IBM_POWER9_3.8_GHz_O3_001.txt)
