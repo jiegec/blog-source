@@ -93,6 +93,7 @@
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto`）: [3.28](./data-trixie/int2017_rate1/AMD_EPYC_7551_O3-flto_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto`）: [5.05](./data-trixie/int2017_rate1/AMD_EPYC_7742_O3-flto_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -flto`）: [9.49](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3-flto_001.txt)
+- AMD EPYC 9T25 @ 4.1 GHz Zen 5（`-O3 -flto`）: [8.83](./data-trixie/int2017_rate1/AMD_EPYC_9T25_O3-flto_001.txt)
 - AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3 -flto`）: [8.18](./data-trixie/int2017_rate1/AMD_EPYC_9T95_O3-flto_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto`）: [9.38](./data-trixie/int2017_rate1/AWS_Graviton_5_O3-flto_001.txt)
 - Google Axion C4A @ 3.0 GHz Neoverse V2（`-O3 -flto`）: [7.68](./data-trixie/int2017_rate1/Google_Axion_C4A_O3-flto_001.txt)
