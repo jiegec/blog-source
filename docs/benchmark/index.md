@@ -101,6 +101,7 @@ permalink: /benchmark/
 - AMD EPYC 9R14(AWS c7a.xlarge, 4C 8G): Zen 4, Genoa
 - AMD EPYC 9R45(AWS m8a.xlarge, 4C 16G): Zen 5, Turin
 - AMD EPYC 9T24(Aliyun g8a.xlarge, 4C 16G): Zen 4, Genoa
+- AMD EPYC 9T25(Aliyun g9a.xlarge, 4C 16G): Zen 5, Turin
 - AMD EPYC 9T95(Aliyun g9ae.xlarge, 4C 16G): Zen 5c, Turin Dense
 - AMD Ryzen 5 7500F: Zen 4, Raphael
 - AMD Ryzen 7 5700X: Zen 3, Vermeer
@@ -157,6 +158,7 @@ permalink: /benchmark/
       - 测试 Intel Xeon Gold 6430 的性能
       - 测试 AMD EPYC 7742 的性能
       - 在阿里云 g9h.xlarge 实例上测试 Hygon C86 4G 7447V 的性能
+      - 在阿里云 g9a.xlarge 实例上测试 AMD EPYC 9T25 的性能
 - 2026.06.30:
       - 测试 Intel Core i5-1135G7 性能
 - 2025.06.27:
