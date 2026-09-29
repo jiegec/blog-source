@@ -120,7 +120,7 @@
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3`）: [9.10](./data-trixie/int2017_rate1/AWS_Graviton_5_O3_001.txt)
 - Google Axion C4A @ 3.0 GHz Neoverse V2（`-O3`）: [7.25](./data-trixie/int2017_rate1/Google_Axion_C4A_O3_001.txt)
 - Google Axion N4A @ Neoverse N3（`-O3`）: [7.16](./data-trixie/int2017_rate1/Google_Axion_N4A_O3_001.txt)
-- Hygon C86 4G 7447V @ 3.0 GHz Hygon-4G（`-O3`）: [4.03](./data-trixie/int2017_rate1/Hygon_C86_4G_7447V_O3_001.txt)
+- Hygon C86 4G 7447V @ 3.0 GHz Hygon-4G（`-O3`）: [4.42](./data-trixie/int2017_rate1/Hygon_C86_4G_7447V_O3_001.txt)
 - IBM POWER8 @ 3.2 GHz POWER8（`-O3`）: [3.24](./data-trixie/int2017_rate1/IBM_POWER8_O3_001.txt)
 - IBM POWER9 3.2 GHz @ 3.2 GHz POWER9（`-O3`）: [3.01](./data-trixie/int2017_rate1/IBM_POWER9_3.2_GHz_O3_001.txt)
 - IBM POWER9 3.8 GHz @ 3.8 GHz POWER9（`-O3`）: [4.14](./data-trixie/int2017_rate1/IBM_POWER9_3.8_GHz_O3_001.txt)
