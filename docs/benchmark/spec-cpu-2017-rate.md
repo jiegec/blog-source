@@ -574,6 +574,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -march=native`）: [4.42](./data-trixie/fp2017_rate1/AMD_EPYC_7551_O3-march=native_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -march=native`）: [7.96](./data-trixie/fp2017_rate1/AMD_EPYC_7742_O3-march=native_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -march=native`）: [16.2](./data-trixie/fp2017_rate1/AMD_EPYC_9R45_O3-march=native_001.txt)
+- AMD EPYC 9T25 @ 4.1 GHz Zen 5（`-O3 -march=native`）: [14.8](./data-trixie/fp2017_rate1/AMD_EPYC_9T25_O3-march=native_001.txt)
 - AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3 -march=native`）: [13.9](./data-trixie/fp2017_rate1/AMD_EPYC_9T95_O3-march=native_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -march=native`）: [12.6](./data-trixie/fp2017_rate1/AWS_Graviton_5_O3-march=native_001.txt)
 - Google Axion C4A @ 3.0 GHz Neoverse V2（`-O3 -march=native`）: [10.8](./data-trixie/fp2017_rate1/Google_Axion_C4A_O3-march=native_001.txt)
