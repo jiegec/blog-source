@@ -73,6 +73,7 @@
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto -ljemalloc`）: [5.48](./data-trixie/int2017_rate1/AMD_EPYC_7742_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 9R45 @ 4.5 GHz Zen 5（`-O3 -flto -ljemalloc`）: [10.3](./data-trixie/int2017_rate1/AMD_EPYC_9R45_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 9T95 @ 3.7 GHz Zen 5c（`-O3 -flto -ljemalloc`）: [8.80](./data-trixie/int2017_rate1/AMD_EPYC_9T95_O3-flto-ljemalloc_001.txt)
+- AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [7.36](./data-trixie/int2017_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto -ljemalloc`）: [9.89](./data-trixie/int2017_rate1/AWS_Graviton_5_O3-flto-ljemalloc_001.txt)
 - Google Axion C4A @ 3.0 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [8.23](./data-trixie/int2017_rate1/Google_Axion_C4A_O3-flto-ljemalloc_001.txt)
 - Google Axion N4A @ Neoverse N3（`-O3 -flto -ljemalloc`）: [7.97](./data-trixie/int2017_rate1/Google_Axion_N4A_O3-flto-ljemalloc_001.txt)
