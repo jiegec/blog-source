@@ -106,10 +106,10 @@ permalink: /benchmark/
 - AMD Ryzen 5 7500F: Zen 4, Raphael
 - AMD Ryzen 7 5700X: Zen 3, Vermeer
 - AMD Ryzen 9 9950X: Zen 5, Granite Ridge
-- AWS Gravition 3(AWS c7g.large, 2C 4G): Neoverse V1
-- AWS Gravition 3E(AWS c7gn.medium, 1C 2G): Neoverse V1
-- AWS Gravition 4(AWS c8g.large, 2C 4G): Neoverse V2
-- AWS Gravition 5(AWS m9g.xlarge, 4C 16G): Neoverse V3
+- AWS Graviton 3(AWS c7g.large, 2C 4G): Neoverse V1
+- AWS Graviton 3E(AWS c7gn.medium, 1C 2G): Neoverse V1
+- AWS Graviton 4(AWS m8g.xlarge, 4C 16G): Neoverse V2
+- AWS Graviton 5(AWS m9g.xlarge, 4C 16G): Neoverse V3
 - Ampere Altra(Aliyun c6r.large, 2C 4G): Neoverse N1
 - Apple M1: Firestorm + Icestorm
 - Apple M2: Avalanche + Blizzard
@@ -159,6 +159,7 @@ permalink: /benchmark/
       - 测试 AMD EPYC 7742 的性能
       - 在阿里云 g9h.xlarge 实例上测试 Hygon C86 4G 7447V 的性能
       - 在阿里云 g9a.xlarge 实例上测试 AMD EPYC 9T25 的性能
+      - 在 AWS m8g.xlarge 实例上测试 AWS Graviton 4 的性能
 - 2026.06.30:
       - 测试 Intel Core i5-1135G7 性能
 - 2025.06.27:
