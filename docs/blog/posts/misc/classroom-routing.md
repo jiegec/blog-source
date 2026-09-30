@@ -179,6 +179,8 @@ ffmpeg -i source.mp4 -af "loudnorm=I=-16:TP=-1.5:LRA=11" output.mp4
 ffmpeg -i source.mp4 -af "pan=mono|c0=c0" output.mp4
 # 只保留左声道的同时，标准化音频响度
 ffmpeg -i source.mp4 -af "pan=mono|c0=c0,loudnorm=I=-16:dual_mono=true:TP=-1.5:LRA=11:print_format=summary" -ar 48k output.mp4
+# 拼接两个输入视频，只保留左声道，标准化音频响度，重新用 libx264 CRF 22 编码
+ffmpeg -i source1.mp4 -i source4.mp4 -filter_complex "[0:v:0][0:a:0][1:v:0][1:a:0]concat=n=2:v=1:a=1[outv][outa]; [outa]pan=mono|c0=c0,loudnorm=I=-16:dual_mono=true:TP=-1.5:LRA=11:print_format=summary[outa_final]" -map "[outv]" -map "[outa_final]" -c:v libx264 -preset slow -crf 22 -ar 48000 output.mp4
 # 原样保留音频
 ffmpeg -i source.mp4 -c:a copy output.mp4
 # 测量前 10s 的音量大小
