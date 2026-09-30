@@ -109,6 +109,7 @@
 - AMD EPYC 9T25 @ 4.1 GHz Zen 5（`-O3 -flto`）: [4.13](./data-trixie/int2026_rate1/AMD_EPYC_9T25_O3-flto_001.txt)
 - AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto`）: [3.22](./data-trixie/int2026_rate1/AWS_Graviton_4_O3-flto_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto`）: [4.27](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-flto_001.txt)
+- Hygon C86 4G 7447V @ 3.0 GHz Hygon-4G（`-O3 -flto`）: [1.99](./data-trixie/int2026_rate1/Hygon_C86_4G_7447V_O3-flto_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto`）: [2.06](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-flto_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto`）: [2.37](./data-trixie/int2026_rate1/Intel_Xeon_Gold_6430_O3-flto_001.txt)
 - Intel Xeon Platinum 8358P @ 3.4 GHz Sunny Cove（`-O3 -flto`）: [2.59](./data-trixie/int2026_rate1/Intel_Xeon_Platinum_8358P_O3-flto_001.txt)
