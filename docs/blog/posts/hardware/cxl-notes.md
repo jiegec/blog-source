@@ -148,7 +148,7 @@ Device 收到 SnpData 后，如果发现缓存行不在缓存中（状态是 I�
 
 #### 和其他协议的对比
 
-之前在 [TileLink 总线协议分析](tilelink.md/#tilelink-cached) 分析过 TileLink 的缓存一致性实现方法，如果某一个缓存（Master A）出现了缺失，需要经过如下的过程：
+之前在 [TileLink 总线协议分析](./tilelink.md) 分析过 TileLink 的缓存一致性实现方法，如果某一个缓存（Master A）出现了缺失，需要经过如下的过程：
 
 - Master A -> Slave: Acquire
 - Slave -> Master B: Probe
