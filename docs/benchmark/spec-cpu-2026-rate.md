@@ -246,6 +246,7 @@ ARM64 平台的分支预测准确率（Average）由高到低（`-O3`）：
 
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3`）: [1.86](./data-trixie/fp2026_rate1/AMD_EPYC_7551_O3_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3`）: [3.25](./data-trixie/fp2026_rate1/AMD_EPYC_7742_O3_001.txt)
+- AMD EPYC 9T25 @ 4.1 GHz Zen 5（`-O3`）: [5.63](./data-trixie/fp2026_rate1/AMD_EPYC_9T25_O3_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3`）: [5.67](./data-trixie/fp2026_rate1/AWS_Graviton_5_O3_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3`）: [2.43](./data-trixie/fp2026_rate1/Intel_Xeon_E5-2680_v4_O3_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3`）: [3.01](./data-trixie/fp2026_rate1/Intel_Xeon_Gold_6430_O3_001.txt)

@@ -580,6 +580,7 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -march=native`）: [12.6](./data-trixie/fp2017_rate1/AWS_Graviton_5_O3-march=native_001.txt)
 - Google Axion C4A @ 3.0 GHz Neoverse V2（`-O3 -march=native`）: [10.8](./data-trixie/fp2017_rate1/Google_Axion_C4A_O3-march=native_001.txt)
 - Google Axion N4A @ Neoverse N3（`-O3 -march=native`）: [8.94](./data-trixie/fp2017_rate1/Google_Axion_N4A_O3-march=native_001.txt)
+- Hygon C86 4G 7447V @ 3.0 GHz Hygon-4G（`-O3 -march=native`）: [5.42](./data-trixie/fp2017_rate1/Hygon_C86_4G_7447V_O3-march=native_001.txt)
 - Intel Xeon 6975P-C @ 3.9 GHz Redwood Cove（`-O3 -march=native`）: [11.0](./data-trixie/fp2017_rate1/Intel_Xeon_6975P-C_O3-march=native_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -march=native`）: [5.58](./data-trixie/fp2017_rate1/Intel_Xeon_E5-2680_v4_O3-march=native_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -march=native`）: [7.64](./data-trixie/fp2017_rate1/Intel_Xeon_Gold_6430_O3-march=native_001.txt)
