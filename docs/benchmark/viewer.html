@@ -63,6 +63,11 @@ h1 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
   background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 16px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.03); overflow: hidden;
 }
+#chart-scroll { max-height: 78vh; overflow-y: auto; overflow-x: hidden; }
+#chart-scroll::-webkit-scrollbar { width: 6px; }
+#chart-scroll::-webkit-scrollbar-track { background: transparent; }
+#chart-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+#chart-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 #chart { width: 100%; height: 600px; }
 
 /* ── Legend ── */
@@ -197,7 +202,7 @@ td.chk input, th.chk input { cursor: pointer; }
     <span id="chart-metric-note" style="font-size:0.75rem;color:#999;"></span>
   </div>
   <div class="legend" id="legend-area"></div>
-  <div id="chart"></div>
+  <div id="chart-scroll"><div id="chart"></div></div>
 </div>
 
 <div class="compare-controls">
@@ -701,6 +706,13 @@ function render(chart) {
   const colors = data.map(e => COLORS[e.isa] || '#94a3b8');
   const axisName = metric === 'ratio' ? _t('chart_score_axis') : metricLabel(metric);
 
+  // Grow the chart with the number of categories and show every y-axis label,
+  // otherwise ECharts auto-hides labels and they no longer line up with the bars.
+  const chartEl = document.getElementById('chart');
+  const rowHeight = 26;
+  chartEl.style.height = Math.max(600, data.length * rowHeight + 80) + 'px';
+  chart.resize();
+
   const option = {
     tooltip: {
       trigger: 'axis',
@@ -731,7 +743,7 @@ function render(chart) {
     yAxis: {
       type: 'category',
       data: yNames,
-      axisLabel: { fontSize: 11 },
+      axisLabel: { fontSize: 11, interval: 0 },
       splitLine: { show: false }
     },
     series: [{
