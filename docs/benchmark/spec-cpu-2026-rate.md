@@ -94,6 +94,7 @@
 - AMD EPYC 7551 @ 2.5 GHz Zen 1（`-O3 -flto -ljemalloc`）: [1.50](./data-trixie/int2026_rate1/AMD_EPYC_7551_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 7742 @ 3.4 GHz Zen 2（`-O3 -flto -ljemalloc`）: [2.41](./data-trixie/int2026_rate1/AMD_EPYC_7742_O3-flto-ljemalloc_001.txt)
 - AMD EPYC 9T25 @ 4.1 GHz Zen 5（`-O3 -flto -ljemalloc`）: [4.34](./data-trixie/int2026_rate1/AMD_EPYC_9T25_O3-flto-ljemalloc_001.txt)
+- AWS Graviton 4 @ 2.8 GHz Neoverse V2（`-O3 -flto -ljemalloc`）: [3.48](./data-trixie/int2026_rate1/AWS_Graviton_4_O3-flto-ljemalloc_001.txt)
 - AWS Graviton 5 @ 3.3 GHz Neoverse V3（`-O3 -flto -ljemalloc`）: [4.56](./data-trixie/int2026_rate1/AWS_Graviton_5_O3-flto-ljemalloc_001.txt)
 - Intel Xeon E5-2680 v4 @ 3.3 GHz Broadwell（`-O3 -flto -ljemalloc`）: [2.14](./data-trixie/int2026_rate1/Intel_Xeon_E5-2680_v4_O3-flto-ljemalloc_001.txt)
 - Intel Xeon Gold 6430 @ 2.6 GHz Golden Cove（`-O3 -flto -ljemalloc`）: [2.50](./data-trixie/int2026_rate1/Intel_Xeon_Gold_6430_O3-flto-ljemalloc_001.txt)
