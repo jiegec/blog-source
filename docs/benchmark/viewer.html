@@ -63,10 +63,10 @@ h1 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
   background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 16px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.03); overflow: hidden;
 }
-#chart-scroll { max-height: 78vh; overflow-y: auto; overflow-x: hidden; }
-#chart-scroll::-webkit-scrollbar { width: 6px; }
+#chart-scroll { max-height: 78vh; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+#chart-scroll::-webkit-scrollbar { width: 8px; }
 #chart-scroll::-webkit-scrollbar-track { background: transparent; }
-#chart-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+#chart-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 #chart-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 #chart { width: 100%; height: 600px; }
 
@@ -708,6 +708,10 @@ function render(chart) {
 
   // Grow the chart with the number of categories and show every y-axis label,
   // otherwise ECharts auto-hides labels and they no longer line up with the bars.
+  // The chart lives in #chart-scroll (bounded to 78vh), so when it grows taller
+  // than the viewport the container gets a native scrollbar and every row stays
+  // reachable. Do NOT add an ECharts dataZoom here: its wheel handler would
+  // swallow the scroll wheel over the chart and hide the bottom rows.
   const chartEl = document.getElementById('chart');
   const rowHeight = 26;
   chartEl.style.height = Math.max(600, data.length * rowHeight + 80) + 'px';
@@ -762,12 +766,7 @@ function render(chart) {
     }],
     animationDuration: 500,
     animationDurationUpdate: 500,
-    animationEasing: 'cubicOut',
-    dataZoom: [
-      { type: 'inside', orient: 'vertical', minValueSpan: 10 },
-      { type: 'slider', orient: 'vertical', right: 10, top: 30, bottom: 30,
-        minSpan: 10 }
-    ]
+    animationEasing: 'cubicOut'
   };
 
   chart.setOption(option, { notMerge: true });
