@@ -176,7 +176,7 @@ flowchart LR
 - HDMI: 4K 30Hz, 1080P 120Hz
 - PD 3.0 100W
 
-分析了一下 USB 拓扑，发现它的 USB 3.0 设备是直接通到电脑上的，没有经过 Hub；而它有一个 Genesys Logic 05e3:0608 的 4 口 USB 2.0 Hub，下面连了四个设备：
+分析了一下 USB 拓扑，发现它的 USB 3.0 设备是直接通到电脑上的，没有经过 Hub；而它有一个 Genesys Logic 05e3:0608 的 4 口 USB 2.0 Hub（根据网上信息，猜测是 [GL850G](https://www.mouser.com/datasheet/2/306/Olimex_GL850G-3198672.pdf)），下面连了四个设备：
 
 - DP Alt-mode 的 Billboard Device 343c:0000
 - USB 2.0 端口 #1
