@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-最近在高强度使用 HDMI 和 DP 做视频输出，但在使用的时候遇到了各种细节问题，所以就研究整个链路上到底发生了哪些事情，在这个过程中，研究了一下手上的 Biaze KZ11 这款 Type-C 拓展库，看看它内部有哪些芯片，又是怎样实现拓展坞的功能的。
+最近在高强度使用 HDMI 和 DP 做视频输出，但在使用的时候遇到了各种细节问题，所以就研究整个链路上到底发生了哪些事情，在这个过程中，研究了一下手上的 Biaze KZ11 这款 Type-C 拓展坞，看看它内部有哪些芯片，又是怎样实现拓展坞的功能的。
 
 <!-- more -->
 
@@ -18,7 +18,7 @@ categories:
 
 首先介绍一下这款拓展坞的基本信息，从购买页面可以看到：
 
-- 接口上，有三个 USB 3.0，一个 TF/SD 卡读卡卡槽，一个 HDMI，一个 VGA，一个 3.5mm TRS 音频输出，一个千兆以太网网口，还有一个 Type-C PD 供电
+- 接口上，有三个 USB 3.0，一个 TF/SD 读卡槽，一个 HDMI，一个 VGA，一个 3.5mm TRS 音频输出，一个千兆以太网口，还有一个 Type-C PD 供电
 - 采用了 RTL8153、GL3224、VL103、VL817、AG6320 芯片
 - HDMI 最高支持 4K 30Hz，VGA 最高支持 1080P 60Hz
 
@@ -34,7 +34,7 @@ categories:
 - [VL817](https://datasheet.lcsc.com/datasheet/pdf/2c50386e71e0024e256f1a4e608872ad.pdf?productCode=C29780427)：USB 3.1 Gen 1 的 Hub，最多接四个下游设备
 - [AG6320](https://img.jdzj.com/UserDocument/mallpic/QQ1659747718/dn/zl8535.pdf)：把 DP 转化为 HDMI 或者 VGA 信号，同时音频通过 I2S 接口输出
 
-于是我就想，既然 Type-C 拓展库连电脑只有一个 Type-C，这个 Type-C 只能连一个设备，而下游有这么多设备：RTL8153，GL3224、VL103，都需要接到 USB 总线上，需要 VL817 来拓展，此外还有三个额外的 USB 口，那就至少有六个设备了，一个 VL817 不够，那就得级联一下：
+于是我就想，既然 Type-C 拓展坞连电脑只有一个 Type-C，这个 Type-C 只能连一个设备，而下游有这么多设备：RTL8153，GL3224、VL103，都需要接到 USB 总线上，需要 VL817 来拓展，此外还有三个额外的 USB 口，那就至少有六个设备了，一个 VL817 不够，那就得级联一下：
 
 ```mermaid
 flowchart LR
@@ -139,7 +139,7 @@ VL817 只有四个端口，那么，它 USB 3.0 Hub 下四个设备、USB 2.0 Hu
 
 答案是：最后一个 Port，把 3.0 部分和 2.0 部分分开：3.0 接 RTL8153，2.0 接 Terminus USB 2.0 Hub。实际上，从 USB 总线枚举上来看，这两个设备对应的 Port ID 是一样的。而那个 2109:8888 Billboard 设备，只是 VL817 自己虚拟出来的设备，并没有实体。
 
-至于 USB C Video Adaptor 9636:9300 是怎么来的，其实就是 DP Alt-mode 的要求：VL103 同时也是一个 USB 2.0 Device，这个 Device 就是这个 USB C Video Adaptor，给 Host 汇报 Alt-mode 的一些信息。因为有这个 USB C Video Adaptor 和 GL3224 都需要接到 VL817 最后一个 USB 2.0 端口上，放不下，才又引入了一个 Terminus 2.0 USB Hub。
+至于 USB C Video Adaptor 9636:9300 是怎么来的，其实就是 DP Alt-mode 的要求：VL103 同时也是一个 USB 2.0 Device，这个 Device 就是这个 USB C Video Adaptor，给 Host 汇报 Alt-mode 的一些信息。因为有这个 USB C Video Adaptor 和 GL3224 都需要接到 VL817 最后一个 USB 2.0 端口上，放不下，才又引入了一个 Terminus USB 2.0 Hub。
 
 至此，完整的硬件拓扑就比较清楚了：
 
