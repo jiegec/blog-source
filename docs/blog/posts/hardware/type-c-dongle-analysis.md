@@ -18,7 +18,7 @@ categories:
 
 首先介绍一下这款拓展坞的基本信息，从购买页面可以看到：
 
-- 接口上，有三个 USB 3.0，一个 TF/SD 读卡槽，一个 HDMI，一个 VGA，一个 3.5mm TRS 音频输出，一个千兆以太网口，还有一个 Type-C PD 供电
+- 接口上，有三个 USB 3.0（5 Gbps），一个 TF/SD 读卡槽，一个 HDMI，一个 VGA，一个 3.5mm TRS 音频输出，一个千兆以太网口，还有一个 Type-C PD 供电
 - 采用了 RTL8153、GL3224、VL103、VL817、AG6320 芯片
 - HDMI 最高支持 4K 30Hz，VGA 最高支持 1080P 60Hz
 
@@ -183,9 +183,7 @@ flowchart LR
 - USB 2.0 端口 #2
 - USB 3.0 端口的 USB 2.0
 
-那么 DP 则又是直接从 Type-C 拿走了两个差分对，然后 USB 3.0 端口是接了另外两个差分对。可见这又是一个物尽其用的例子。
-
-一种可能的拓扑：
+那么 DP 则又是直接从 Type-C 拿走了两个差分对，然后 USB 3.0 端口是接了另外两个差分对。可见这又是一个物尽其用的例子。推测 CM478-15495 一种可能的拓扑：
 
 ```mermaid
 flowchart LR
@@ -198,3 +196,5 @@ flowchart LR
     Host --> USB3[USB 3.0 2 lanes] -->|USB 3.0| Port1[USB 3.0 Port]
     Host --> DP[DP 2 lanes] --> Unknown --> HDMI
 ```
+
+实际上，因为 CM478-15495 的 USB 3.0 端口是直接接到了电脑上，没有像 KZ11 那样过了一个 USB 3.1 Gen 1 的 VL817 Hub，实际速率可以达到 10 Gbps，也就是 USB 3.1 Gen 2。同一个设备，插到 KZ11 的 USB 3.0 口上，就只有 5 Gbps 的速率了。
