@@ -184,3 +184,17 @@ flowchart LR
 - USB 3.0 端口的 USB 2.0
 
 那么 DP 则又是直接从 Type-C 拿走了两个差分对，然后 USB 3.0 端口是接了另外两个差分对。可见这又是一个物尽其用的例子。
+
+一种可能的拓扑：
+
+```mermaid
+flowchart LR
+    Host --> PD --> Unknown
+    Host --> USB2[USB 2.0] --> GL805G[GL805G USB 2.0 Hub 05e3:0608]
+    GL805G --> Port2[USB 2.0 Port #1]
+    GL805G --> Port3[USB 2.0 Port #2]
+    GL805G -->|USB 2.0| Port1
+    GL805G --> Port5[USB Billboard Device 343c:0000]
+    Host --> USB3[USB 3.0 2 lanes] -->|USB 3.0| Port1[USB 3.0 Port]
+    Host --> DP[DP 2 lanes] --> Unknown --> HDMI
+```
