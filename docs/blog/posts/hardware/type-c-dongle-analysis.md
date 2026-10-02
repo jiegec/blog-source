@@ -167,3 +167,20 @@ flowchart LR
 ```
 
 这样，VL817 的四个端口，无论是 USB 3.0 还是 USB 2.0，都物尽其用了，刚好把三个 USB 3.0 端口都用满了。多出来的 Terminus USB 2.0 Hub 的用途也解释清楚了。
+
+## 附录：分析绿联 CM478-15495
+
+顺带也分析了一下 [绿联 CM478-15495](https://www.lulian.cn/product/1432.html) 拓展坞的配置，它的参数如下：
+
+- 接口上，支持 USB3.0+USB2.0*2+PD+HDMI
+- HDMI: 4K 30Hz, 1080P 120Hz
+- PD 3.0 100W
+
+分析了一下 USB 拓扑，发现它的 USB 3.0 设备是直接通到电脑上的，没有经过 Hub；而它有一个 Genesys Logic 05e3:0608 的 4 口 USB 2.0 Hub，下面连了四个设备：
+
+- DP Alt-mode 的 Billboard Device 343c:0000
+- USB 2.0 端口 #1
+- USB 2.0 端口 #2
+- USB 3.0 端口的 USB 2.0
+
+那么 DP 则又是直接从 Type-C 拿走了两个差分对，然后 USB 3.0 端口是接了另外两个差分对。可见这又是一个物尽其用的例子。
