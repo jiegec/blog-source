@@ -89,7 +89,7 @@ flowchart LR
 
 这意味着，RTL8153 网卡是和三个 USB 3.0 端口挂在同一个 Hub 下的，猜测就是 VL817。此外，还有一个 USB 2.0 的 Hub（2109:2817），下面出现的设备是：
 
-- 另一个 USB 2.0 的 Hub（Terminus，1a40:0801）
+- 另一个 USB 2.0 的 Hub（Terminus，1a40:0801，推测是 [FE8.1 芯片](https://www.terminus.com.tw/en/product/series_one/fe_8_1.html)）
 - USB Billboard Device（2109:8888）
 - USB 3.0 端口 #1 的 USB 2.0
 - USB 3.0 端口 #2 的 USB 2.0
