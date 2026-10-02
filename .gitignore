@@ -5,3 +5,5 @@
 /site/
 
 __pycache__
+
+.venv/

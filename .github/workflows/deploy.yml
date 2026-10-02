@@ -26,13 +26,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
-      - uses: Gr1N/setup-poetry@v9
-      - run: poetry install
-      - run: cd docs/benchmark/data-bookworm && poetry run python3 ../scripts/plot.py
-      - run: cd docs/benchmark/data-trixie && poetry run python3 ../scripts/plot.py
-      - run: cd docs/benchmark/data-harmonyos && poetry run python3 ../scripts/plot.py
-      - run: poetry run python3 docs/benchmark/scripts/generate_raw_data.py --json
-      - run: DEPLOY=true poetry run zensical build
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - run: cd docs/benchmark/data-bookworm && uv run python3 ../scripts/plot.py
+      - run: cd docs/benchmark/data-trixie && uv run python3 ../scripts/plot.py
+      - run: cd docs/benchmark/data-harmonyos && uv run python3 ../scripts/plot.py
+      - run: uv run python3 docs/benchmark/scripts/generate_raw_data.py --json
+      - run: DEPLOY=true uv run zensical build
       - run: cd site && ln -s feed_rss_updated.xml feed.xml
       - name: Deploy to external repository
         uses: cpina/github-action-push-to-another-repository@main

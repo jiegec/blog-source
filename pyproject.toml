@@ -1,22 +1,24 @@
-[tool.poetry]
+[project]
 name = "blog-source"
 version = "0.1.0"
 description = ""
-authors = ["Jiajie Chen <c@jia.je>"]
-package-mode = false
-
-[tool.poetry.dependencies]
-python = "^3.11"
-mkdocs = "^1.5.2"
-mkdocs-material = {extras = ["imaging"], version = "^9.6.15"}
-mkdocs-rss-plugin = "^1.8.0"
-mkdocs-git-revision-date-localized-plugin = "^1.2.0"
-matplotlib = "^3.10.0"
-lxml = "^6.0.2"
-mkdocs-llmstxt = "^0.5.0"
-zensical-wavedrom-plugin = "^0.1.1"
-zensical = "^0.0.67"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+authors = [{ name = "Jiajie Chen", email = "c@jia.je" }]
+requires-python = ">=3.11,<4"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "mkdocs>=1.5.2,<2",
+    "mkdocs-material[imaging]>=9.6.15,<10",
+    "mkdocs-rss-plugin>=1.8.0,<2",
+    "mkdocs-git-revision-date-localized-plugin>=1.2.0,<2",
+    "matplotlib>=3.10.0,<4",
+    "lxml>=6.0.2,<7",
+    "mkdocs-llmstxt>=0.5.0,<0.6",
+    "zensical-wavedrom-plugin>=0.1.1,<0.2",
+    "zensical>=0.0.67,<0.0.68",
+]
