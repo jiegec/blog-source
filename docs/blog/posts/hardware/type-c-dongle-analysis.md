@@ -128,9 +128,10 @@ flowchart LR
 
 - USB 2.0 的 D+/D-，用于 USB 2.0 总线
 - USB 3.0 的四个差分对，可以两个差分对用于 USB 3.0 总线，另外两个差分对用于 DP
+- SBU 信号用于 DP 的 AUX
 - 电源和 CC，用于 USB PD
 
-也就是说，实际上，Host 通过一个 Type-C 端口，同时接到了 VL103、VL817 和 AG6320 上！也就是说，AG6320 并不是接到 VL103，而是直接从 Type-C 取走了两个差分对，来做 DP 输入；VL103 也不负责 USB 3.0，它只是负责电源和 CC 协商，同时还透传了 USB 2.0；VL817 虽然是 USB 3.0 Hub，但它其实就是一个 USB 3.0 Hub 和一个 USB 2.0 Hub，输出是四个 USB 3.0 和四个 USB 2.0。这已经基本解释了大部分问题，还差最后一点：
+也就是说，实际上，Host 通过一个 Type-C 端口，同时接到了 VL103、VL817 和 AG6320 上！也就是说，AG6320 并不是接到 VL103，而是直接从 Type-C 取走了两个差分对，来做 DP 输入，只是 SBU(AUX) 信号是先进入 VL103，再接到 AG6320；VL103 也不负责 USB 3.0，它只是负责电源、CC 协商和 DP Alt-mode，同时还透传了 USB 2.0；VL817 虽然是 USB 3.0 Hub，但它其实就是一个 USB 3.0 Hub 和一个 USB 2.0 Hub，输出是四个 USB 3.0 和四个 USB 2.0。这已经基本解释了大部分问题，还差最后一点：
 
 VL817 只有四个端口，那么，它 USB 3.0 Hub 下四个设备、USB 2.0 Hub 下五个设备都是怎么来的呢？
 
@@ -145,8 +146,9 @@ VL817 只有四个端口，那么，它 USB 3.0 Hub 下四个设备、USB 2.0 Hu
 ```mermaid
 flowchart LR
     Host --> PD --> VL103
-    Host --> USB2 --> VL103 --> VL817
-    Host --> USB3[USB3 2 lanes] --> VL817
+    Host --> SBU --> VL103 -->|AUX| AG6320
+    Host --> USB2[USB 2.0] --> VL103 -->|USB 2.0| VL817
+    Host --> USB3[USB 3.0 2 lanes] --> VL817
     Host --> DP[DP 2 lanes] --> AG6320 --> HDMI
     AG6320 --> VGA
     AG6320 --> I2S
