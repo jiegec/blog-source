@@ -31,7 +31,7 @@ categories:
 - [RTL8153](https://www.olimex.com/Products/USB-Modules/Ethernet/USB-GIGABIT/resources/rtl8153.pdf)：USB 3.0 的千兆以太网控制器
 - [GL3224](https://datasheet.lcsc.com/datasheet/pdf/5c4f88684f5251afc47f0c71b7afbb47.pdf?productCode=C157357)：USB 3.2 Gen 1 的读卡器，用于 TF/SD 卡读取
 - [VL103](http://www.usbtech.net/upload/portal/20210128/5fd1d287e44435e7296e05398fa0210c.pdf)：Type-C DP Alt-Mode 和 PD 3.0 控制器
-- [VL817](https://datasheet.lcsc.com/datasheet/pdf/2c50386e71e0024e256f1a4e608872ad.pdf?productCode=C29780427)：USB 3.1 Gen 1 的 Hub，最多接四个下游设备
+- [VL817](https://datasheet.lcsc.com/datasheet/pdf/2c50386e71e0024e256f1a4e608872ad.pdf?productCode=C29780427)：USB 3.1 Gen 1 (5Gbps) 的 Hub，最多接四个下游设备
 - [AG6320](https://img.jdzj.com/UserDocument/mallpic/QQ1659747718/dn/zl8535.pdf)：把 DP 转化为 HDMI 或者 VGA 信号，同时音频通过 I2S 接口输出
 
 于是我就想，既然 Type-C 拓展坞连电脑只有一个 Type-C，这个 Type-C 只能连一个设备，而下游有这么多设备：RTL8153，GL3224、VL103，都需要接到 USB 总线上，需要 VL817 来拓展，此外还有三个额外的 USB 口，那就至少有六个设备了，一个 VL817 不够，那就得级联一下：
@@ -198,3 +198,9 @@ flowchart LR
 ```
 
 实际上，因为 CM478-15495 的 USB 3.0 端口是直接接到了电脑上，没有像 KZ11 那样过了一个 USB 3.1 Gen 1 的 VL817 Hub，实际速率可以达到 10 Gbps，也就是 USB 3.1 Gen 2。同一个设备，插到 KZ11 的 USB 3.0 口上，就只有 5 Gbps 的速率了。
+
+## 附录：其他常用拓展坞芯片
+
+- [AX88179](https://static.chipdip.ru/lib/923/DOC000923116.pdf): USB 3.0 to 1000M Ethernet Controller
+- [VL822](http://www.usbtech.net/upload/portal/20210129/273a4e5ddf8b65a319765aa6eb529a1d.pdf): USB 3.1 Gen 2 10Gbps 4-Port Hub Controller
+- [SW2505](https://www.tctek.cn/wp-content/uploads/2025/10/SW2505_Brief_V0.2-%E8%A7%84%E6%A0%BC%E4%B9%A6_compressed.pdf): USB PD Controller
