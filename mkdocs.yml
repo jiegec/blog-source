@@ -15,6 +15,7 @@ theme:
     - navigation.tabs.sticky
     - navigation.sections
     - navigation.footer
+    - content.action.copy
     - content.code.copy
     - toc.follow
     - toc.integrate
