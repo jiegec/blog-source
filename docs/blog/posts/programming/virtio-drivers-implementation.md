@@ -80,7 +80,7 @@ name "virtio-rng-device", bus virtio-bus
 
 这是我第一次看到这种抽象，而且也没有特别明确的文档表示，这个 Token 代表什么，我应该提供什么。我直接按照一些已有的例子，照着实现了一把。过程中遇到了 ownership 的问题，通过 Arc 和 Mutex 解决了，然后又出现了死锁的问题，调了半天才调出来。
 
-接着按照 somltcp 的样例写一个简单的 udp echo server 和（假的）tcp 服务器：
+接着按照 smoltcp 的样例写一个简单的 udp echo server 和（假的）tcp 服务器：
 
 ```rust
 // simple http server
@@ -110,7 +110,7 @@ if socket.can_send() {
 
 至于块设备，遇到的则是别的坑。看标准的时候，本以为就一个结构体 virtio_blk_req 就搞完了，但仔细读了读，标准似乎没讲清楚，读的时候是怎么传，写的时候又是怎么传。于是在这里卡了很久，从 Tracing 信息可以看出，QEMU 一直认为我提供的 buffer 大小不正确，多次实验之后发现，给 device 写入的 buffer 大小为 block size 的整数倍加一，这个一存放的是状态，其他则是数据，真的太坑了。
 
-有了块设备以后，就可以替换掉原来的内嵌 SFS 的方案，转为直接从块设备读 SFS 文件。这里我没想明白 lazy_static 和 ownership 的一些问题，最后也则是@wangrunji0408 的帮助我解决了。
+有了块设备以后，就可以替换掉原来的内嵌 SFS 的方案，转为直接从块设备读 SFS 文件。这里我没想明白 lazy_static 和 ownership 的一些问题，最后也是在 @wangrunji0408 的帮助下解决了。
 
 ## 总结
 

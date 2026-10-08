@@ -20,7 +20,7 @@ categories:
 
 第一篇论文是 2004 年发表的 [MapReduce: Simplified Data Processing on Large Clusters](http://nil.csail.mit.edu/6.824/2022/papers/mapreduce.pdf)，论文的作者是耳熟能详的 Jeffrey Dean 和 Sanjay Ghemawat，这个思想到现在依然在广泛使用，目前比较常见的开源 MapReduce 实现是 Apache Hadoop。
 
-论文要解决的问题是，随着数据量增大，需要在集群上并行完成任务，那么如何在集群上并行计算，分发数据，并且在机器出问题的时候继续工作，就成了很大的问题。所以如果有一个框架，负责完成并行、容错和复杂均衡这些底层细节，向上层应用提供一个简单的抽象，这样就可以减轻开发者的负担。MapReduce 就是这样的一个框架。
+论文要解决的问题是，随着数据量增大，需要在集群上并行完成任务，那么如何在集群上并行计算，分发数据，并且在机器出问题的时候继续工作，就成了很大的问题。所以如果有一个框架，负责完成并行、容错和负载均衡这些底层细节，向上层应用提供一个简单的抽象，这样就可以减轻开发者的负担。MapReduce 就是这样的一个框架。
 
 ### 编程抽象
 
@@ -220,7 +220,7 @@ GFS 的解决办法是 lease，也就是说 primary 不是永久的，而是有�
 1. 客户端要写入文件的某个 chunk，询问服务端，哪个 chunkserver 持有 lease，以及其他的 replica 所在的 chunkserver；如果服务器还没有分配 lease，则分配给某一个 replica 所在的 chunkserver。
 2. 客户端缓存下 lease 和 replica 信息，之后的写入不需要联系 master，直接联系 primary 即可
 3. 客户端把要写入的数据发送给所有的 replica，当所有的 replica 都收到数据的时候，向 primary 发起写入请求；primary 按请求顺序给每个请求分配一个唯一的编号，然后按照编号顺序来写入数据
-4. primary 把写入请求转发到其他 replica（secondary replica），其他 replica 也按照编号顺序来学日数据
+4. primary 把写入请求转发到其他 replica（secondary replica），其他 replica 也按照编号顺序来写数据
 5. secondary replica 完成写入后，通知 primary replica；所有 replica 完成写入后，primary 通知客户端写入完成
 
 可以看到，primary 节点给并发请求分配了串行的编号，这样在所有的 replica 上都会按照同样的顺序进行写入，保证了数据的一致性。只有在所有 replica 完成写入以后才会通知客户端，所以客户端后续从任何一个 replica 读取，都会得到新的数据。

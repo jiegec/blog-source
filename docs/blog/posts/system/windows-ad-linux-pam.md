@@ -41,7 +41,7 @@ pacman -S samba
 
 ```
 
-这样，域上的用户 user 会拿到 home 目录为 /home/YOUR-DOMAIN-HERE/user，uid 在 10000-2000 范围内的用户。在一会经过配置之后，可以通过 `getent passwd` 验证。
+这样，域上的用户 user 会拿到 home 目录为 /home/YOUR-DOMAIN-HERE/user，uid 在 10000-20000 范围内的用户。在一会经过配置之后，可以通过 `getent passwd` 验证。
 
 接下来，需要把本机的 samba 登入到域的管理员，并且启动服务。
 
@@ -128,7 +128,7 @@ Hi %u, please go to xxxxxxx to change your Active Directory password!
 
 第四部分：session
 
-```int
+```ini
 session   required                      pam_limits.so
 session   required                      pam_mkhomedir.so skel=/etc/skel/ umask=0022
 session   required                      pam_unix.so

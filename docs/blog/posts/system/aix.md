@@ -82,7 +82,7 @@ dnf 如果提示缺少 `libssl.a`，参考 <https://www.ibm.com/support/pages/re
 
 1. 访问 <https://www.ibm.com/resources/mrs/assets?source=aixbp&S_PKG=openssl> 下载安装包，例如 `openssl-1.1.2.2000.tar.Z`。
 
-2. scp 到 AXI 上安装：
+2. scp 到 AIX 上安装：
 
 ```shell
 uncompress openssl-1.1.2.2000.tar.Z

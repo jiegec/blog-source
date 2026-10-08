@@ -34,7 +34,7 @@ jupyter kernelspec install cling-cpp1z
 jupyter notebook
 ```
 
-然后创建一个 C++14 的 Notebook，结果发现一直 Kernel rebooting，错误信息是说找不到`../Cellar/cling/0.5/lib/libclingJupyter.dylib`。这一看就是路径处理的问题，当前目录肯定不是`/usr/local`，肯定出现了什么问题，然后研究发现`cling-kernel.py`中对`cling`判断是否是个连接，如果是连接则按照连接去找`cling`的安装目录，但是！没有考虑到这个连接是个相对路径的问题（Homebrew 你背锅吗）。于是我愉快地改了代码并提交了[PR](https://github.com/root-project/cling/pull/198)。修复了以后就可以用了。
+然后创建一个 C++14 的 Notebook，结果发现一直 Kernel rebooting，错误信息是说找不到`../Cellar/cling/0.5/lib/libclingJupyter.dylib`。这一看就是路径处理的问题，当前目录肯定不是`/usr/local`，肯定出现了什么问题，然后研究发现`cling-kernel.py`中对`cling`判断是否是个链接，如果是链接则按照链接去找`cling`的安装目录，但是！没有考虑到这个连接是个相对路径的问题（Homebrew 你背锅吗）。于是我愉快地改了代码并提交了[PR](https://github.com/root-project/cling/pull/198)。修复了以后就可以用了。
 
 以下是一个小小的例子：
 ```shell

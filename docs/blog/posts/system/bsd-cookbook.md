@@ -42,7 +42,7 @@ qemu-system-x86_64 -accel kvm -m 8G -smp 4 -drive file=FreeBSD-14.3-RELEASE-amd6
 
 ### root 权限
 
-FreeBSD 的 su 默认只有 wheel 组可以 su 到 root，所以安装的时候，建议给创建的帐号加上 wheel 组。也可以通过 pw 命令：
+FreeBSD 的 su 默认只有 wheel 组可以 su 到 root，所以安装的时候，建议给创建的账号加上 wheel 组。也可以通过 pw 命令：
 
 ```shell
 pw groupmod wheel -m freebsd
@@ -111,7 +111,7 @@ ifconfig
 # ip link set dev abc up
 ifconfig abc up
 # ip a add 1.2.3.4/24 dev abc
-iconfig abc inet 1.2.3.4/24
+ifconfig abc inet 1.2.3.4/24
 ```
 
 网路配置在 `/etc/rc.conf`：
@@ -220,7 +220,7 @@ pkgin upgrade
 
 pkgin 的配置文件路径是 `/usr/pkg/etc/pkgin/repositories.conf`。
 
-和 FreeBSD 一样，NetBSD 的 su 默认只有 wheel 组可以 su 到 root，建议在安装创建新用户的时候就把自己的帐号加入到 wheel 组中。sudo 使用之前需要 visudo 修改配置。
+和 FreeBSD 一样，NetBSD 的 su 默认只有 wheel 组可以 su 到 root，建议在安装创建新用户的时候就把自己的账号加入到 wheel 组中。sudo 使用之前需要 visudo 修改配置。
 
 也可以从源码 pkgsrc 进行编译，在 /usr/pkgsrc 路径下，编译好的程序会安装到 /usr/pkg/bin。
 

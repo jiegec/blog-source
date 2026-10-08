@@ -16,9 +16,9 @@ categories:
 
 ## 实现
 
-LSP 服务端一般是一个命令行程序，通过 JSONRPC 进行消息通讯，然后就上午找有没有现成的框架。比较重要的是 [lsp-types](https://crates.io/crates/lsp-types) 和 [tower-lsp](https://crates.io/crates/tower-lsp) ，前者封装了 LSP 协议的各个结构体，后者提供了服务端的大概实现。不过由于后者做的不大全，所以我自己 fork 了一份添加了一些。
+LSP 服务端一般是一个命令行程序，通过 JSONRPC 进行消息通讯，然后就上网找有没有现成的框架。比较重要的是 [lsp-types](https://crates.io/crates/lsp-types) 和 [tower-lsp](https://crates.io/crates/tower-lsp) ，前者封装了 LSP 协议的各个结构体，后者提供了服务端的大概实现。不过由于后者做的不大全，所以我自己 fork 了一份添加了一些。
 
-实际实现的时候，需要实现几个函数，分别相应客户端的请求，比如在 initialize 的时候告诉客户端我都实现了哪些东西，然后相应地提供各种信息，如 symbol，hover，folding，definition 等等。为了实现简单，我要求客户端每次修改的时候都把完整的文件传过来，虽然不是很高效，但是很简单，目前也没有啥很长的 Decaf 程序嘛。
+实际实现的时候，需要实现几个函数，分别响应客户端的请求，比如在 initialize 的时候告诉客户端我都实现了哪些东西，然后相应地提供各种信息，如 symbol，hover，folding，definition 等等。为了实现简单，我要求客户端每次修改的时候都把完整的文件传过来，虽然不是很高效，但是很简单，目前也没有啥很长的 Decaf 程序嘛。
 
 每次拿到 Decaf 程序之后，就按照 decaf-rs 的方法，Lex 然后 Parse，然后遍历 AST，分别把需要的各个信息都存下来，当客户端在请求的时候，直接返回即可。然后就会在 VSCode 中出现，比如实现了 document symbol，在左边的 Outline 中就会出现相应的结构；实现了 hover，当移动到一些地方的时候，客户端发出请求，服务端就把相应的 hover 信息返回给客户端。整个协议并不复杂，后面实际实现其实才是比较复杂的地方。
 

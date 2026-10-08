@@ -13,6 +13,6 @@ Unix系统的每个进程，都有一个nice值。这个值越大，优先级越
 
 From [here](https://twitter.com/ruanyf/status/702382281990791172)by [@ruanyf](https://twitter.com/ruanyf).
 
-And i didn't known that until now. Cool! The name 'nice' is nice, too.
+And I didn't know that until now. Cool! The name 'nice' is nice, too.
 
 Don't worry if you can't read Chinese. See also [here](http://www.thegeekstuff.com/2013/08/nice-renice-command-examples/) and [here](https://en.wikipedia.org/wiki/Nice_(Unix)). 

@@ -18,7 +18,7 @@ categories:
 
 第一种就是按照论文里第一段实现直接抄过来，每个可能性作为一个 Continuation 存下来，它有自己的栈和执行位置（Label）。这样 Work 以后呢，我又想到了 async/await，用类似的方法又写了一遍，相对要简洁一些，也是很平常的递归下降的写法，而不是 Loop + Label 的形式。但这些都不能做到合并栈的目的，所以遇到十分有歧义的文法的时候会很糟糕。
 
-然后开始按照论文中的 GSS 进行编写，基本还是按照论文进行翻译，然后一步一步做，做好以后把 GSS 画出来，和论文的图可以对的上；然后照着 GLL parse-tree generation 的论文把 SPPF 实现了，这时候就可以从 recongizer 变成一个 parser 了。
+然后开始按照论文中的 GSS 进行编写，基本还是按照论文进行翻译，然后一步一步做，做好以后把 GSS 画出来，和论文的图可以对的上；然后照着 GLL parse-tree generation 的论文把 SPPF 实现了，这时候就可以从 recognizer 变成一个 parser 了。
 
 ## 宏
 

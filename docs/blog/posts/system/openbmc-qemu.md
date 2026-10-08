@@ -89,7 +89,7 @@ qemu-system-arm -m 1024 -M ast2600-evb -nographic -drive file=./obmc-phosphor-im
 CORE_IMAGE_EXTRA_INSTALL  += "webui-vue"
 ```
 
-编辑 `meta-phosphor/recipes-phosphor/images/obmc-phosphor-image.bbapend`，添加一行：
+编辑 `meta-phosphor/recipes-phosphor/images/obmc-phosphor-image.bbappend`，添加一行：
 
 ```
 OBMC_IMAGE_EXTRA_INSTALL_${MACHINE} += "webui-vue"

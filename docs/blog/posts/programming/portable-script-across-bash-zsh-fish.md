@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-bash 和 zsh 都实现了 POSIX shell 标准，因此写脚本的时候，比较容易兼容这两种常见的 shell。但现在 fish 也很流行，而 fish 不符合 POSIX shell 标准，很多地方语法多不兼容，能否写一个脚本，可以用 bash，zsh 和 fish 跑？
+bash 和 zsh 都实现了 POSIX shell 标准，因此写脚本的时候，比较容易兼容这两种常见的 shell。但现在 fish 也很流行，而 fish 不符合 POSIX shell 标准，很多地方语法都不兼容，能否写一个脚本，可以用 bash，zsh 和 fish 跑？
 
 ```shell
 # The following commands should work
