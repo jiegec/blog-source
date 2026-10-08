@@ -216,7 +216,7 @@ flowchart LR
 
 考虑到它只有 5Gbps，那么应该又是 Type-C 的两个 lane 通过 4 口 Hub 接出了三个 USB 3.0，剩下一个本来怀疑是留给 DP Alt-mode 的 Billboard Device，但实际上无论是否插 HDMI，都没有这个设备出现。Hub 的Port 4 对应 USB 3.0 Type-C 口，Port 3 对应 Type-C 旁边的 USB 3.0 Type-A 口，Port 2 则是最后一个离 Type-C 口最远的 USB 3.0 Type-C 口。
 
-另外两个 lane 则是给了 DP Alt-mode，这里的 HDMI 能跑到 4K60Hz，说明它的 DP 跑在了更高的速率：在 macOS 里看，它的 DP 运行在 8.1 Gbps (HBR3) 速率上，这样两个 lane 的总带宽就是 16.2 Gbps，足够 4K 60Hz 4:4:4 的 `3840*2160*60*24=11.9` Gbps 带宽。有意思的是，如果我直接用 Type-C 连显示器，那么它就可以用四个 lane 传 5.4 Gbps (HBR2) 速率，这样总速率达到了 21.6，甚至可以 4K 75 Hz 4:4:4 的 `3840*2160*75*24=14.9` Gbps 带宽。
+另外两个 lane 则是给了 DP Alt-mode，这里的 HDMI 能跑到 4K60Hz，说明它的 DP 跑在了更高的速率：在 macOS 里看，它的 DP 运行在 8.10 Gbps (HBR3) 速率上，这样两个 lane 的总带宽就是 16.20 Gbps，考虑编码损失还有 `16.2*8/10=12.96` Gbps，足够 4K 60Hz 4:4:4 的 `3840*2160*60*24=11.9` Gbps 带宽。有意思的是，如果我直接用 Type-C 连显示器，那么它就可以用四个 lane 传 5.40 Gbps (HBR2) 速率，这样总速率达到了 21.60 Gbps，考虑编码损失还有 `21.60*8/10=17.29` Gbps，甚至可以 4K 75 Hz 4:4:4，毕竟它只需要 `3840*2160*75*24=14.9` Gbps 带宽。
 
 ## 附录：其他常用拓展坞芯片
 
