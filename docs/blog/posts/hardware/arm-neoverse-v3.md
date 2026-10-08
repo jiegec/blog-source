@@ -347,7 +347,7 @@ Neoverse V3 每周期最多执行 4 条 ASIMD 或 SVE 浮点 FMA 指令，浮点
 
 Neoverse V3 相比 Neoverse V2 改动不算很大，主要变化：
 
-- Decode 宽度从 8-wide 增加到 10-wide，但去掉了 MOP Cache
+- Decode 宽度从 6(8)-wide 增加到 10-wide，但去掉了 MOP Cache
 - ROB 从 320 MOP 增加到 384 MOP
 - LSU 从 2 LS + 1 LD 改为 1 LS + 2 LD + 1 ST
 - L1 DTLB 从 48 项翻倍到 96 项

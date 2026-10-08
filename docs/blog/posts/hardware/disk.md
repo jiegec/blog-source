@@ -12,7 +12,7 @@ categories:
 
 [ATA](https://en.wikipedia.org/wiki/Parallel_ATA) 定义了发送给硬盘的命令，[标准](https://people.freebsd.org/~imp/asiabsdcon2015/works/d2161r5-ATAATAPI_Command_Set_-_3.pdf)定义了命令：
 
-- ech IDENTIFY DEVICE: 获取设备信息
+- ECh IDENTIFY DEVICE: 获取设备信息
 - 25h READ DMA EXT: 读取扇区
 - 35h WRITE DMA EXT: 写入扇区
 
@@ -84,7 +84,7 @@ $ lspci -vv
 
 不同的协议的速度如下：
 
-- SATA 3.0: 6Gb/s(8b/10b, 4Gb/s uncoded)
+- SATA 3.0: 6Gb/s(8b/10b, 4.8Gb/s uncoded)
 - SAS-1: 3Gb/s
 - SAS-2: 6Gb/s
 - SAS-3: 12Gb/s

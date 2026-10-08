@@ -798,8 +798,8 @@ def bundleI(ei: EI): BI
 Rocket Chip 中用 Diplomacy 实现 TileLink 总线的连接。涉及到的相关结构如下：
 
 1. TLBundle：代表 TileLink 总线的接口，根据 TLBundleParameters 例化
-2. TLMasterPortParameters：信息 TileLink Master 的信息，从 Upstream 向 Downstream 传递
-3. TLSlavePortParameters：信息 TileLink Slave 的信息，从 Downstream 向 Upstream 传递
+2. TLMasterPortParameters：记录 TileLink Master 的信息，从 Upstream 向 Downstream 传递
+3. TLSlavePortParameters：记录 TileLink Slave 的信息，从 Downstream 向 Upstream 传递
 4. TLEdgeOut：记录 Outward 边，也就是 Master 侧的 TileLink 的信息
 5. TLEdgeIn：记录 Inward 边，也就是 Slave 侧的 TileLink 的信息
 6. TLImp: `extends NodeImp[TLMasterPortParameters, TLSlavePortParameters, TLEdgeOut, TLEdgeIn, TLBundle]`，基于这个类型来导出各种类型的 TileLink Node

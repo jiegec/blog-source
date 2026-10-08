@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-最近我们设计的 Kintex 7 FPGA 开发板在测试 DDR SDRAM 的时候遇到了一个问题，因为采用了 Internel VREF，MIG 在配置的时候限制了频率只能是 400 MHz，对应 800 MT/s，这样无法达到 DDR 的最好性能。
+最近我们设计的 Kintex 7 FPGA 开发板在测试 DDR SDRAM 的时候遇到了一个问题，因为采用了 Internal VREF，MIG 在配置的时候限制了频率只能是 400 MHz，对应 800 MT/s，这样无法达到 DDR 的最好性能。
 
 ## 原理
 
@@ -49,7 +49,7 @@ categories:
 1. 7 Series FPGA 中，Internal VREF 可以节省引脚，代价是 VREF 不会随着 VCCO 变化而变化（而是随着 VCCAUX 变化而变化），当 DRAM 频率提高的时候，可能无法满足 VREF 约等于 VDD 一半的要求
 2. UltraScale FPGA 中，Internal VREF 是随着 VCCO 变化而变化的，并且会比 External VREF 性能更好；因此 UltraScale FPGA 的 DDR4 只支持 Internal VREF。
 
-以 MA703FA-35T 开发板为例，它使用的 FPGA 是 Artix7 35T，内存是 DDR3，采用的是 External VREF。它采用了 [TPS51200 Sink and Source DDR Termination Regulator](https://www.ti.com/lit/ds/symlink/tps51200.pdf) 芯片，将芯片的 REFOUT 芯片接到 DRAM 的 VREFDQ 和 VREFCA 引脚上。
+以 MA703FA-35T 开发板为例，它使用的 FPGA 是 Artix7 35T，内存是 DDR3，采用的是 External VREF。它采用了 [TPS51200 Sink and Source DDR Termination Regulator](https://www.ti.com/lit/ds/symlink/tps51200.pdf) 芯片，将芯片的 REFOUT 接到 DRAM 的 VREFDQ 和 VREFCA 引脚上。
 
 ## 参考文档
 
