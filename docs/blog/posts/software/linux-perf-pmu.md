@@ -222,7 +222,7 @@ PEBS 可以精细地根据性能计数器来决定采样的频率，例如每 10
 
 AMD 也有类似的机制，叫做 IBS(Instruction Based Sampling)。IBS 没有和 PMU 绑定起来，而是数指令数或数周期。推荐阅读论文 [Precise Event Sampling on AMD Versus Intel: Quantitative and Qualitative Comparison](https://ieeexplore.ieee.org/document/10068807)，它深入比较了 AMD IBS 和 Intel PEBS 的差异。
 
-如果要启用 PEBS 或 IBS，在 `perf record` 指令事件时，追加 `:p`：
+如果要启用 PEBS 或 IBS，在 `perf record` 指定事件时，追加 `:p`：
 
 ```
 The p modifier can be used for specifying how precise the instruction address should be. The p modifier can be specified
@@ -268,7 +268,7 @@ SPE 和 AMD IBS 类似，也是数指令数；和 Intel PEBS 不同，它没有�
 
 ARM 除了提供性能计数单元（PMU）以外，还提供了 AMU（Activity Monitor Unit）。它和 PMU 很类似，也是有一些性能计数器，但 AMU 在计数器溢出的时候不会触发中断，所以它并不是拿来观察某个程序的性能怎么样，而是观察系统整体的状态，比如时钟频率，IPC 等等。
 
-目前 AMU 的主要用途是在内核的调度器上：调度器需要估计一段时间内做了多少单位的任务，需要知道 CPU 的频率，比如频率高，就认为它做了更多的任务。之前的做法是让调度器通过 cpufreq 读取当前的 CPU 频率，但由于 CPU 的频率会不断变化，这样读取到的频率是一个瞬时功率，不能代表一段时间的平均值，就会带来误差。
+目前 AMU 的主要用途是在内核的调度器上：调度器需要估计一段时间内做了多少单位的任务，需要知道 CPU 的频率，比如频率高，就认为它做了更多的任务。之前的做法是让调度器通过 cpufreq 读取当前的 CPU 频率，但由于 CPU 的频率会不断变化，这样读取到的频率是一个瞬时频率，不能代表一段时间的平均值，就会带来误差。
 
 为了获取一段时间内的平均频率，[amu_scale_freq_tick](https://github.com/torvalds/linux/blob/f92f4749861b06fed908d336b4dee1326003291b/arch/arm64/kernel/topology.c#L153) 函数就使用了 AMU 的两个计数器：
 
