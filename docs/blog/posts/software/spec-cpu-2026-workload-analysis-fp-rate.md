@@ -50,7 +50,7 @@ cactus ShiftedGaugeWave.par
 - `ML_CCZ4::ML_CCZ4_EvolutionInteriorSplitBy2_Body` 来自 `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_EvolutionInteriorSplitBy2.cc`：占总时间 41.30%，下同；
 - `ML_CCZ4::ML_CCZ4_EvolutionInteriorSplitBy3_Body` 来自 `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_EvolutionInteriorSplitBy3.cc`：31.26%；
 - `ML_CCZ4::ML_CCZ4_ConstraintsInterior_Body` 来自 `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_ConstraintsInterior_Body.cc`：6.71%；
-- `ML_CCZ4::ML_CCZ4_EvolutionInteriorSplitBy1_Body` 来自 `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_EvolutionInteriorSplitBy3.cc`：6.44%。
+- `ML_CCZ4::ML_CCZ4_EvolutionInteriorSplitBy1_Body` 来自 `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_EvolutionInteriorSplitBy1.cc`：6.44%。
 
 这些热点函数的代码模式都是类似的：在三层循环里，读取对应三维空间中的点的数据，进行一系列的 Stencil 访存和浮点运算，包括大量的浮点乘法加法减法、pow 和 fabs，最后把结果写入对应数组。从指令来看，就是用大量的 SSE 指令来进行标量的双精度浮点运算，没有进行向量化。实验的时候，还观察到了编译器对 `pow` 和 `fabs` 的优化。在 `-O3` 时，`pow(a, 1)` 被编译成 `a`，`pow(a, 2)` 被编译成 `a * a`，`pow(a, -1)` 被编译成 `1.0 / a`，不过其他的例如 `pow(a, 3)` 和 `pow(a, -2)` 就只能转为 `libm` 的 `pow` 实现了。如果开了 `-O3 -ffast-math`，那么 `pow(a, 3)` 会编译成 `a * a * a`，`pow(a, -2)` 会被编译为 `1.0 / (a * a)`。两种编译选项的对比见 [Godbolt](https://godbolt.org/z/nKfGMfE49)。代码中，出现的主要就是 `pow(a, -1)`，`pow(a, 2)`、`pow(a, -2)` 和 `pow(a, runtimeVariable)`，其中 `runtimeVariable` 指一个在运行时才知道的数，在代码中对应 `shiftAlphaPower` 或 `harmonicN`。`fabs` 被编译成了位运算 `andpd` 指令，直接把符号位置零。
 
@@ -396,7 +396,7 @@ reftime 是 875s，不同编译器和编译选项的运行情况如下：
 - `OpenColorIO_v2_2dev::Lut3DTetrahedralRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/lut3d/Lut3DOpCPU.cpp`：50.74%，做的操作还挺复杂，每个元素首先进行一次乘法，然后进行一次 clamp，floor 和 ceil 后分别转化为 int，再根据 int 去进行对一个表进行间接访存，查表的结果再经过一系列的加权平均完成计算，向量化程度不高；
 - `OpenColorIO_v2_2dev::MatrixRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/matrix/MatrixOpCPU.cpp`：11.55%，进行矩阵的运算，把输入的四维向量和一个 4x4 矩阵进行乘法，得到输出的四维向量，向量化程度较高；
 - `__log2f_fma` 来自 libm：10.02%，计算浮点 log2；
-- `OpenColorIO_v2_2dev::CameraLin2LogRenderer::apply` 来自 `src/ASWF-OpenCOlorIO/src/OpenColorIO/ops/log/LogOpCPU.cpp`：9.76%，判断输入的范围，如果小于一个阈值 `m_linb`，就用线性的乘加计算结果，否则就会调用上述 log2 函数，结合一些乘加以及 max 操作来进行计算，向量化程度低。
+- `OpenColorIO_v2_2dev::CameraLin2LogRenderer::apply` 来自 `src/ASWF-OpenColorIO/src/OpenColorIO/ops/log/LogOpCPU.cpp`：9.76%，判断输入的范围，如果小于一个阈值 `m_linb`，就用线性的乘加计算结果，否则就会调用上述 log2 函数，结合一些乘加以及 max 操作来进行计算，向量化程度低。
 
 不同编译器和编译选项的对比：
 
@@ -499,7 +499,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 
 热点函数：
 
-- `laplaceSmoothing` 来自 `src/gmsh/src/mesh/meshGFaceOptimize.cpp`：11.73%，主要瓶颈是 `std::set` 的操作，，而 `std::set` 是用 `std::map` 实现的，因此会调用下面的 `std::map` 的代码；
+- `laplaceSmoothing` 来自 `src/gmsh/src/mesh/meshGFaceOptimize.cpp`：11.73%，主要瓶颈是 `std::set` 的操作，而 `std::set` 是用 `std::map` 实现的，因此会调用下面的 `std::map` 的代码；
 - `std::map::_M_get_insert_unique_pos` 来自 libstdc++：7.49%，`std::map` 的插入算法实现；
 - `__ieee754_atan2_fma` 来自 libm：7.21%；
 - `reparamMeshVertexOnFace`：6.66%，描述见上；
@@ -520,7 +520,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 
 #### 5. Torus、6.spec 和 7.p19
 
-最后三个负载，其热点函数都与 4.gadis 相同，不再赘述。
+最后三个负载，其热点函数都与 4.gasdis 相同，不再赘述。
 
 #### 小结
 
@@ -534,7 +534,7 @@ gmsh_r -option gmsh.opts -nt 0 p19.geo
 | 4. gasdis        | 16.9     | 157.8    | 46.3     | 17.8      | 27.6     | 19.6         | 0.2          | 689.9        | 4.37 |
 | 5. Torus         | 9.2      | 77.3     | 21.9     | 8.2       | 13.4     | 9.4          | 0.5          | 380.4        | 4.92 |
 | 6. spec          | 13.3     | 101.4    | 30.2     | 10.8      | 18.1     | 10.9         | 0.2          | 546.1        | 5.39 |
-| 7. p10           | 12.7     | 96.3     | 28.8     | 10.2      | 17.2     | 10.4         | 0.1          | 529.3        | 5.50 |
+| 7. p19           | 12.7     | 96.3     | 28.8     | 10.2      | 17.2     | 10.4         | 0.1          | 529.3        | 5.50 |
 
 可见整体的 MPKI 还是偏高的，并且很大程度上归功于 KD-Tree 的查询以及 `std::map` 的查询或插入，只不过这些树的 key 都是单精度浮点数。并且根据上面的分析，确实相关的代码不适合向量化，浮点乘加融合还被禁用了，否则就可能不收敛。
 
@@ -858,7 +858,7 @@ reftime 是 1579s，下面是不同编译器版本和编译选项的对比：
 - `marian::cpu::integer::affineOrDotTyped`：78.96%，描述见上；
 - `marian::cpu::ProdBatched`：14.25%，描述见上。
 
-热点函数和 1. TileMODEL 完全相同，其余的分析对 2. EuroPat 也是成立的，这里直接给出性能计数器的对比：
+热点函数和 1. TildeMODEL 完全相同，其余的分析对 2. EuroPat 也是成立的，这里直接给出性能计数器的对比：
 
 不同编译器和编译选项下的对比：
 

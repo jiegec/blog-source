@@ -48,7 +48,7 @@ Performance bottlenecks observed via `perf`:
 - `ML_CCZ4::ML_CCZ4_EvolutionInteriorSplitBy2_Body` from `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_EvolutionInteriorSplitBy2.cc`: 41.30% of total time (same format below);
 - `ML_CCZ4::ML_CCZ4_EvolutionInteriorSplitBy3_Body` from `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_EvolutionInteriorSplitBy3.cc`: 31.26%;
 - `ML_CCZ4::ML_CCZ4_ConstraintsInterior_Body` from `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_ConstraintsInterior_Body.cc`: 6.71%;
-- `ML_CCZ4::ML_CCZ4_EvolutionInteriorSplitBy1_Body` from `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_EvolutionInteriorSplitBy3.cc`: 6.44%.
+- `ML_CCZ4::ML_CCZ4_EvolutionInteriorSplitBy1_Body` from `src/repos/mclachlan/ML_CCZ4/src/ML_CCZ4_EvolutionInteriorSplitBy1.cc`: 6.44%.
 
 These hotspot functions share a similar pattern: within three nested loops, they read data from corresponding 3D grid points, perform a series of Stencil memory accesses and floating-point operations (including heavy use of floating-point multiply, add, subtract, pow, and fabs), then write results back to arrays. The generated instructions use SSE for scalar double-precision floating-point without vectorization. During testing, compiler optimizations on `pow` and `fabs` were also observed. Under `-O3`, `pow(a, 1)` compiles to `a`, `pow(a, 2)` to `a * a`, and `pow(a, -1)` to `1.0 / a`, but others like `pow(a, 3)` and `pow(a, -2)` fall back to libm's `pow` implementation. With `-O3 -ffast-math`, `pow(a, 3)` becomes `a * a * a` and `pow(a, -2)` becomes `1.0 / (a * a)`. See the comparison at [Godbolt](https://godbolt.org/z/nKfGMfE49). In the code, the main occurrences are `pow(a, -1)`, `pow(a, 2)`, `pow(a, -2)`, and `pow(a, runtimeVariable)`, where `runtimeVariable` is a value only known at runtime, corresponding to `shiftAlphaPower` or `harmonicN` in the code. `fabs` is compiled into the bitwise `andpd` instruction, directly zeroing the sign bit.
 
@@ -394,7 +394,7 @@ Hotspot functions:
 - `OpenColorIO_v2_2dev::Lut3DTetrahedralRenderer::apply` from `src/ASWF-OpenColorIO/src/OpenColorIO/ops/lut3d/Lut3DOpCPU.cpp`: 50.74%, complex operations per element: multiply, clamp, floor and ceil converted to int, then index-based table lookup with indirect memory access, followed by weighted averaging. Low vectorization;
 - `OpenColorIO_v2_2dev::MatrixRenderer::apply` from `src/ASWF-OpenColorIO/src/OpenColorIO/ops/matrix/MatrixOpCPU.cpp`: 11.55%, matrix operations multiplying input 4D vectors by a 4x4 matrix. High vectorization;
 - `__log2f_fma` from libm: 10.02%, computing float log2;
-- `OpenColorIO_v2_2dev::CameraLin2LogRenderer::apply` from `src/ASWF-OpenCOlorIO/src/OpenColorIO/ops/log/LogOpCPU.cpp`: 9.76%, checks input range; if below threshold `m_linb`, uses linear multiply-add; otherwise calls log2 combined with multiply-add and max operations. Low vectorization.
+- `OpenColorIO_v2_2dev::CameraLin2LogRenderer::apply` from `src/ASWF-OpenColorIO/src/OpenColorIO/ops/log/LogOpCPU.cpp`: 9.76%, checks input range; if below threshold `m_linb`, uses linear multiply-add; otherwise calls log2 combined with multiply-add and max operations. Low vectorization.
 
 Comparison:
 
@@ -532,7 +532,7 @@ Per-workload data:
 | 4. gasdis        | 16.9     | 157.8     | 46.3     | 17.8      | 27.6       | 19.6          | 0.2           | 689.9       | 4.37 |
 | 5. Torus         | 9.2      | 77.3      | 21.9     | 8.2       | 13.4       | 9.4           | 0.5           | 380.4       | 4.92 |
 | 6. spec          | 13.3     | 101.4     | 30.2     | 10.8      | 18.1       | 10.9          | 0.2           | 546.1       | 5.39 |
-| 7. p10           | 12.7     | 96.3      | 28.8     | 10.2      | 17.2       | 10.4          | 0.1           | 529.3       | 5.50 |
+| 7. p19           | 12.7     | 96.3      | 28.8     | 10.2      | 17.2       | 10.4          | 0.1           | 529.3       | 5.50 |
 
 Overall MPKI is high, largely attributable to KD-Tree queries and `std::map` queries/insertions, although the tree keys are single-precision floats. Based on the analysis, the code indeed isn't suitable for vectorization, and FMA contraction is disabled since it would cause non-convergence.
 
