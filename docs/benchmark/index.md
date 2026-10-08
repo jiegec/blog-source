@@ -81,7 +81,7 @@ permalink: /benchmark/
 
 可以尝试用 cpupower frequency-set 来固定频率，但是一些平台不支持，还可能有 Linux 内无法关闭的 Boost。设置频率后，用 `cpupower frequency-info` 验证：`current CPU frequency: 4.29 GHz (asserted by call to kernel)` 是否和预期频率一致并且不变。
 
-此外，还需要注意 cpufreq governor（`cuupower frequency-info`），以及 boost 是否启用（`/sys/devices/system/cpu/cpufreq/boost`）。
+此外，还需要注意 cpufreq governor（`cpupower frequency-info`），以及 boost 是否启用（`/sys/devices/system/cpu/cpufreq/boost`）。
 
 对于 AMD CPU，在 Linux 下为了固定 CPU 的频率，需要通过 MSR 进行设置：[jiegec/ZenStates-Linux](https://github.com/jiegec/ZenStates-Linux)：
 

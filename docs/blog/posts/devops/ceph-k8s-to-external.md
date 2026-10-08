@@ -45,7 +45,7 @@ cephadm bootstrap --mon-ip HOST1_IP
 
 ### 导入 OSD
 
-为了从 ceph 分区从导出 OSD 的配置文件，需要用 `ceph-volume` 工具。这个工具会生成一个 `/var/lib/ceph/osd-ID` 目录，在 cephadm 的概念里属于 legacy，因此我们首先要把路径 mount 到 shell 里面：
+为了从 ceph 分区中导出 OSD 的配置文件，需要用 `ceph-volume` 工具。这个工具会生成一个 `/var/lib/ceph/osd-ID` 目录，在 cephadm 的概念里属于 legacy，因此我们首先要把路径 mount 到 shell 里面：
 
 ```shell
 $ cephadm shell --mount /var/lib/ceph:/var/lib/ceph

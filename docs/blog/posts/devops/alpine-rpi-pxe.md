@@ -34,7 +34,7 @@ SD_BOOT_MAX_RETRIES=3
 NET_BOOT_MAX_RETRIES=5
 [none]
 FREEZE_VERSION=0
-> sed 's/BOOT_UART=0/BOOT_UART=1/;s/BOOT_ORDER=0x1/BOOR_ORDER=0x12/' config.txt > config-pxe.txt
+> sed 's/BOOT_UART=0/BOOT_UART=1/;s/BOOT_ORDER=0x1/BOOT_ORDER=0x12/' config.txt > config-pxe.txt
 > rpi-eeprom-config --out pieeprom-2021-04-29-pxe.bin --config config-pxe.txt pieeprom-2021-04-29.bin
 > rpi-eeprom-update -d -f pieeprom-2021-04-29-pxe.bin
 > reboot

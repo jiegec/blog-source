@@ -63,7 +63,7 @@ $$
 
 ### REDC
 
-首先介绍 Montogomery 的 REDC 算法，它的步骤是：
+首先介绍 Montgomery 的 REDC 算法，它的步骤是：
 
 1. 预先计算 $N'$，满足 $NN' \equiv -1 \bmod R$
 2. 计算 $T=a*b$
@@ -353,7 +353,7 @@ OpenSSL 也在函数 [bn_mul_mont](https://github.com/openssl/openssl/blob/9c8d0
 
 ## 常数时间
 
-在 Montgomery 模乘的最后一步，需要把计算结果和 $N$ 比较，然后进行减法，这一步会出现一个条件分支，可能会导致运行时间和数据相关，成为一个潜在的测信道攻击的点。因此为了解决这个问题，可以有如下的解决方法（参考论文 [Montgomery Arithmetic from a Software Perspective](https://eprint.iacr.org/2017/1057.pdf)）：
+在 Montgomery 模乘的最后一步，需要把计算结果和 $N$ 比较，然后进行减法，这一步会出现一个条件分支，可能会导致运行时间和数据相关，成为一个潜在的侧信道攻击的点。因此为了解决这个问题，可以有如下的解决方法（参考论文 [Montgomery Arithmetic from a Software Perspective](https://eprint.iacr.org/2017/1057.pdf)）：
 
 既然条件分支是为了和 $N$ 比较，那如果去掉这个限制，也就是说让结果在 $[0, 2N-1]$ 的范围而不是 $[0, N-1]$，看看能否继续把结果传给下一次的 Montgomery 模乘。首先要求 $R > 2N$，因为输入参数的范围是模 $2N$，而不是模 $N$；其次，重新考虑 $t = (T+mN) / R$ 的放缩：
 

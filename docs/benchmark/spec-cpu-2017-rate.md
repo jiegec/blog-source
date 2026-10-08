@@ -506,13 +506,13 @@ LLVM 20 的 548.exchange2_r 性能下降可以通过添加 `-fwrapv` 选项来�
 - [3C6000 GCC 15.1.0 -O3 -march=native -flto -ljemalloc: 4.82, 2.20/GHz](./data-bookworm/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-march=native-flto-ljemalloc.txt)
 - [3C6000 GCC 15.1.0 -O3 -flto: 4.67, 2.12/GHz](./data-bookworm/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-flto.txt)
 - [3A6000 GCC 14.2.0 -O3 -flto: 4.56, 1.82/GHz](./data-trixie/int2017_rate1/Loongson_3A6000_O3-flto_001.txt)
-- [3C6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.54, 2.06/GHz](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto-ljemalloc_001.txt)
+- [3C6000 GCC 14.2.0 -O3 -flto -ljemalloc: 4.54, 2.06/GHz](./data-trixie/int2017_rate1/Loongson_3C6000S_O3-flto-ljemalloc_001.txt)
 - [3C6000 GCC 15.1.0 -O3: 4.49, 2.04/GHz](./data-bookworm/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3.txt)
 - [3C6000 GCC 15.1.0 -O3 -march=la464: 4.49, 2.04/GHz](./data-bookworm/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-march=la464.txt)
 - [3C6000 GCC 15.1.0 -O3 -march=la664: 4.40, 2.04/GHz](./data-bookworm/others/SPEC_INT_2017_Loongson_3C6000_O3_GCC_15_O3-march=la664.txt)
-- [3C6000 GCC 14.2.0 -O3 -flto: 4.39, 2.00/GHz](./data-trixie/int2017_rate1/Loongson_3C6000_O3-flto_001.txt)
+- [3C6000 GCC 14.2.0 -O3 -flto: 4.39, 2.00/GHz](./data-trixie/int2017_rate1/Loongson_3C6000S_O3-flto_001.txt)
 - [3A6000 GCC 14.2.0 -O3: 4.35, 1.74/GHz](./data-trixie/int2017_rate1/Loongson_3A6000_O3_001.txt)
-- [3C6000 GCC 14.2.0 -O3: 4.19, 1.90/GHz](./data-trixie/int2017_rate1/Loongson_3C6000_O3_001.txt)
+- [3C6000 GCC 14.2.0 -O3: 4.19, 1.90/GHz](./data-trixie/int2017_rate1/Loongson_3C6000S_O3_001.txt)
 
 注：3A6000 频率是 2.5 GHz，3C6000 频率是 2.2 GHz。
 

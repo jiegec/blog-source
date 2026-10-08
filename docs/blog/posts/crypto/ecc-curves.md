@@ -22,7 +22,7 @@ $$E: y^2 \equiv x^3 + ax + b \mod{p}$$
 
 $$E: y^2+xy=x^3+ax^2+1$$
 
-称为 Kbolitz curve。不同的曲线有不同的参数 $(m,f(x),a,b,G,n,h)$，对应不同的 $GF(2^m)$ 域。
+称为 Koblitz curve。不同的曲线有不同的参数 $(m,f(x),a,b,G,n,h)$，对应不同的 $GF(2^m)$ 域。
 
 ## OpenSSL
 
@@ -247,7 +247,7 @@ ANSI 也有 [X9.62 标准](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.
 | sect163r2  | nistb163 | sect163r2 |            |
 | sect233k1  | nistk233 | sect233k1 |            |
 | sect233r1  | nistb233 | sect233r1 |            |
-| sect283k1  | nistk233 | sect283k1 |            |
+| sect283k1  | nistk283 | sect283k1 |            |
 | sect283r1  | nistb283 | sect283r1 |            |
 | sect409k1  | nistk409 | sect409k1 |            |
 | sect409r1  | nistb409 | sect409r1 |            |
