@@ -220,6 +220,8 @@ flowchart LR
 
 有意思的是，如果我直接用 Type-C 连显示器，那么它就可以用四个 lane 传 5.40 Gbps (HBR2) 速率，这样总速率达到了 21.60 Gbps，考虑编码损失还有 `21.60*8/10=17.28` Gbps，甚至可以 4K 75 Hz 4:4:4 8bpc，毕竟它只需要 `3840*2160*75*24=14.9` Gbps 带宽，算上消隐区，也就是 `4000*2205*75*24=15.88` Gbps。
 
+也做了一个小实验，如果把显示器通过 Type-C 接到飞利浦 SWR1607L/93 的 USB 3.0 Type-C 口上，显示输出就不工作了，因为这个口过了一个 Hub，这个 Hub 不支持 DP Alt-mode。
+
 ## 附录：其他常用拓展坞芯片
 
 - [AX88179](https://static.chipdip.ru/lib/923/DOC000923116.pdf): USB 3.0 to 1000M Ethernet Controller
