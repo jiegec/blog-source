@@ -35,7 +35,7 @@ categories:
 
 ### Linux/x86 Boot Protocol
 
-Linux 在 x86 下定义了一套 [Linux/x86 Boot Protocol](https://www.kernel.org/doc/html/v5.6/x86/boot.html)，它规定了 bootloader 在启动 Linux 的时候，需要做哪些事情，传递哪些参数，以什么形式传递参数，那么 Linux 就可以在这给基础上启动起来。
+Linux 在 x86 下定义了一套 [Linux/x86 Boot Protocol](https://www.kernel.org/doc/html/v5.6/x86/boot.html)，它规定了 bootloader 在启动 Linux 的时候，需要做哪些事情，传递哪些参数，以什么形式传递参数，那么 Linux 就可以在这个基础上启动起来。
 
 首先，Boot Protocol 定义了 Linux 内核的格式，使得 Bootloader 可以得到关于 Linux 内核的一些信息。这个格式定义在 [The Real-Mode Kernel Header](https://www.kernel.org/doc/html/v5.6/x86/boot.html#the-real-mode-kernel-header)，是一个巨大的结构体，对应的[代码](https://github.com/torvalds/linux/blob/e402b08634b398e9feb94902c7adcf05bb8ba47d/arch/x86/boot/header.S#L283-L584)如下：
 
@@ -336,7 +336,7 @@ RISC-V 现在通常有两套固件标准，一套是 SBI（Supervisor Binary Int
 
 ### SBI
 
-[SBI](https://github.com/riscv-non-isa/riscv-sbi-doc) 是 M 态程序提供给 S 态程序的一套接口。SBI 一个的常见实现就是 OpenSBI，当 OpenSBI 加载 Linux 的时候，做了如下[约定](https://github.com/riscv-software-src/opensbi/blob/b7e9d34edf4f728bb02d11f73a2f9f79ad4acce4/lib/sbi/sbi_hsm.c#L138-L157)：
+[SBI](https://github.com/riscv-non-isa/riscv-sbi-doc) 是 M 态程序提供给 S 态程序的一套接口。SBI 的一个常见实现就是 OpenSBI，当 OpenSBI 加载 Linux 的时候，做了如下[约定](https://github.com/riscv-software-src/opensbi/blob/b7e9d34edf4f728bb02d11f73a2f9f79ad4acce4/lib/sbi/sbi_hsm.c#L138-L157)：
 
 - a0: hart id
 - a1: dtb 地址

@@ -18,7 +18,7 @@ iptables -A PREROUTING -i external_interface -p tcp -m tcp --dport 1024:65535 -j
 ```
 
 
-有趣地是，macOS 自带的 ftp 命令（High Sierra 似乎已经删去）可以正常使用。研究发现，它用 EPSV（Extended Passive Mode）代替 PASV，这里并没有写内网地址，因而可以正常使用。
+有趣的是，macOS 自带的 ftp 命令（High Sierra 似乎已经删去）可以正常使用。研究发现，它用 EPSV（Extended Passive Mode）代替 PASV，这里并没有写内网地址，因而可以正常使用。
 
 这么做，Filezilla 可以成功访问了。但是，用其它客户端的时候，它会直连那个内网地址而不是 Router 的地址，于是还是连不上。而且，使用了 1024-65535 的所有端口，这个太浪费而且会影响我们其它的服务。
 

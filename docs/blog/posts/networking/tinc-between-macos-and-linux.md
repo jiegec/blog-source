@@ -55,7 +55,7 @@ ifconfig $INTERFACE down
 ```
 chmod +x tinc-up
 chmod +x tinc-down
-chmod +x subnet-down
+chmod +x subnet-up
 chmod +x subnet-down
 ```
 
@@ -74,11 +74,11 @@ $ mkdir -p /etc/tinc/example/hosts
 $ cat /etc/tinc/example/tinc.conf
 Name = linux
 $ cat /etc/tinc/example/tinc-up
-$!/bin/sh
+#!/bin/sh
 ip link set $INTERFACE up
 ip addr add 192.168.0.1/24 dev $INTERFACE
 $ cat /etc/tinc/example/tinc-down
-$!/bin/sh
+#!/bin/sh
 ip addr del 192.168.0.1/24 dev $INTERFACE
 ip link set $INTERFACE down
 $ cat /etc/tinc/example/hosts/linux
@@ -108,7 +108,7 @@ $ cat tinc-down
 ip addr del local_ip/24 dev $INTERFACE
 ip link set $INTERFACE down
 $ cat subnet-up
-$!/bin/bash
+#!/bin/bash
 [ "$NAME" = "$NODE" ] && exit 0
 ip route add $SUBNET dev $INTERFACE metric $WEIGHT table local
 $ cat subnet-down

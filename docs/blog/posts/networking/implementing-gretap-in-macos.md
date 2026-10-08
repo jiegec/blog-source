@@ -18,4 +18,4 @@ categories:
 
 代码放在[jiegec/gretapmac](https://github.com/jiegec/gretapmac)。写得并不高效，仅仅可用，用了一百多行。
 
-UPDATE: 之后又随手实现了一个类似的协议，L2TPv3 over UDP。代码在[jiegc/l2tpv3udptap](https://github.com/jiegec/l2tpv3udptap)。
+UPDATE: 之后又随手实现了一个类似的协议，L2TPv3 over UDP。代码在[jiegec/l2tpv3udptap](https://github.com/jiegec/l2tpv3udptap)。

@@ -29,7 +29,7 @@ qemu-system-riscv64 \
   -netdev user,id=usernet,hostfwd=tcp::10000-:22
 ```
 
-这段命令摘自 readme.txt，区别只在于把 -smp 4 去掉了。不知道为什么不能正常工作，可能和作者提到的 FPU patch 有关。然后系统就可以正常起来了（firewalld 和 systemd-logind 不止为啥起不来，但是不用管）。
+这段命令摘自 readme.txt，区别只在于把 -smp 4 去掉了。不知道为什么不能正常工作，可能和作者提到的 FPU patch 有关。然后系统就可以正常起来了（firewalld 和 systemd-logind 不知为啥起不来，但是不用管）。
 
 可以验证一下我们的系统：
 ```shell

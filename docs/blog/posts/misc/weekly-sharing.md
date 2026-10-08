@@ -18,7 +18,7 @@ categories:
 6. 造机的 baseline 就决定是 [它](https://github.com/Icenowy/ice-risc) 了
 7. 根据 AST 炼丹判相似度还行，好奇它跨语言的预测水准 [链接](https://code2vec.org/)
 8. 可视化 h264 nalu 的软件 [H264Naked](https://github.com/shi-yan/H264Naked) （做的好糙啊，想交 pr）
-9. ffprobe -show_packets 和 ffprobe -show_frame 真好用
+9. ffprobe -show_packets 和 ffprobe -show_frames 真好用
 10. 发现一个解决 ArchLinux 滚内核后无法 modprobe 的[方案](https://github.com/saber-nyan/kernel-modules-hook)
 11. 010 Editor 和 Hex Fiend 是二进制分析的神器啊... Kaitai 还有待加油
 12. [CSS-in-JS for ClojureScript](https://github.com/roman01la/cljss) 真香 有空可以试试用 ClojureScript 写前端

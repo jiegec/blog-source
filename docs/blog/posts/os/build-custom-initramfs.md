@@ -35,4 +35,4 @@ $ qemu-system-x86_64 -kernel /boot/vmlinuz-linux -initrd initrd -nographic -appe
 # Use C-a c q u i t <Enter> to exit
 ```
 
-可以看到过一会（三四秒？），可以看到满屏的 Hello world 在输出。
+可以看到过一会（三四秒？），满屏的 Hello world 在输出。

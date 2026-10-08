@@ -10,7 +10,7 @@ categories:
 
 听闻北京移动给 LTE 配置了 SLAAC，但现在需要手动打开，方法如下：
 
-Settings -> Network & Internet -> Mobile Network -> Advanced -> Access Point Names -> 中国移动 GPRS (China Mobile) -> 把 APN procotol 和 APN roaming protocol 两项都改成 IPv4/IPv6 
+Settings -> Network & Internet -> Mobile Network -> Advanced -> Access Point Names -> 中国移动 GPRS (China Mobile) -> 把 APN protocol 和 APN roaming protocol 两项都改成 IPv4/IPv6 
 
 然后在 [test-ipv6.com](https://test-ipv6.com) 上可以看到确实分配了 IPv6 地址，不过目前评分只有 1/10。也就是说可用性还不佳。
 

@@ -12,7 +12,7 @@ categories:
 
 1. Rust stackful generator 库 https://github.com/Xudong-Huang/generator-rs
 2. wireshark tui https://termshark.io/
-3. Pythonm 加 annotation 的调试 https://github.com/cool-RR/PySnooper
+3. Python 加 annotation 的调试 https://github.com/cool-RR/PySnooper
 4. Haskell 又一个教程 https://github.com/alpacaaa/zero-bullshit-haskell
 5. 直接在 Rust 中写 Python https://docs.rs/inline-python/0.2.0/inline_python/
 6. 直接把 regex 捕捉到的 group 丢到 struct 里 https://crates.io/crates/recap
