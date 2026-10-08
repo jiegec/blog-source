@@ -87,9 +87,9 @@ Gracemont 的 Clustered Decode 架构比较特别，目前没有找到方法去�
 
 ![](./intel-gracemont-rs-size-2.png)
 
-同样的 B 版本代码在 AMD Zen3 和 Apple Firestorm 的处理器上，可以观察到在符合预期的 Return Stack 大小处出现性能拐点，和 A 版本代码得到的结论一致。而 B 版本代码在 Golden Cove 上，会观察到在 6 的附近有一个性能下降如下图，但之前用 [A 版本代码测得的拐点为 20](./intel-gracemont.md):
+同样的 B 版本代码在 AMD Zen3 和 Apple Firestorm 的处理器上，可以观察到在符合预期的 Return Stack 大小处出现性能拐点，和 A 版本代码得到的结论一致。而 B 版本代码在 Golden Cove 上，会观察到在 6 的附近有一个性能下降如下图，但之前用 [A 版本代码测得的拐点为 20](./intel-golden-cove.md):
 
-![](./intel-gracemont-rs-size-gracemont.png)
+![](./intel-gracemont-rs-size-golden-cove.png)
 
 这个区别背后的原因还需要进一步的分析。下面是两个版本的汇编代码的对比：
 

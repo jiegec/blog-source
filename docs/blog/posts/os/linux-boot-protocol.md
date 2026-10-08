@@ -16,7 +16,7 @@ categories:
 - vmlinuz
 - uImage
 - bzImage
-- uImage
+- zImage
 
 即使是同样的文件名，格式可能也是不一样的，相应的启动协议也可能不一样。这篇博客尝试结合 Linux，各种 Bootloader（QEMU，EDK-II，U-Boot，OpenSBI）的代码来研究不同的 Linux 二进制格式以及启动协议。
 

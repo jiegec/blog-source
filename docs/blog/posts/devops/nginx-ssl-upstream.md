@@ -25,8 +25,8 @@ server {
         proxy_ssl_trusted_certificate /path/to/self_signed_cert.crt;
         proxy_ssl_name 1.2.3.4; // to override server name checking
         proxy_ssl_verify on;
-        proxy_ssl_depth 2;
-        proxy_ssl_reuse on;
+        proxy_ssl_verify_depth 2;
+        proxy_ssl_session_reuse on;
         proxy_pass https://subpath;
     }
 }
