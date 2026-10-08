@@ -24,7 +24,7 @@ AXI Quad SPI 是一个 SPI 的控制器，它支持 XIP（eXecute In Place）模
 
 ## Virtex UltraScale+ 时序
 
-把信号连好了只是第一步，因为外设对时序要求比较复杂，如果用一个比较高直接跑，很大可能就读取到错误的数据了。很贴心的是，AXI Quad SPI 已经在生成的文件里提供了一个样例的 xdc，在文档里也有体现。在这里，我使用的设备是 Virtex Ultrascale+ 的 FPGA，其他系列的 FPGA 会有所不一样。它内容如下：
+把信号连好了只是第一步，因为外设对时序要求比较复杂，如果用一个比较高的频率直接跑，很大可能就读取到错误的数据了。很贴心的是，AXI Quad SPI 已经在生成的文件里提供了一个样例的 xdc，在文档里也有体现。在这里，我使用的设备是 Virtex Ultrascale+ 的 FPGA，其他系列的 FPGA 会有所不一样。它内容如下：
 
 ```xdc
 #### All the delay numbers have to be provided by the user
