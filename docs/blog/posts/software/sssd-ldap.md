@@ -69,7 +69,7 @@ Password:
 
 如果用户要修改密码，SSSD 默认用的是 [RFC3062 LDAP Password Modify Extended Operation](https://tools.ietf.org/html/rfc3062) 的方式；如果服务器不支持的话，可以按照 [文档](https://sssd.io/docs/design_pages/chpass_without_exop.html) 使用 ldap modify 方式来修改密码。
 
-SSD 还可以[配置 sudo 支持](https://linux.die.net/man/5/sssd-sudo)，也是用类似的方法，添加 objectClass=sudoRole 的目录项即可。可以参考 [man sudoers.ldap](https://linux.die.net/man/5/sudoers.ldap) 编写对应的目录项。
+SSSD 还可以[配置 sudo 支持](https://linux.die.net/man/5/sssd-sudo)，也是用类似的方法，添加 objectClass=sudoRole 的目录项即可。可以参考 [man sudoers.ldap](https://linux.die.net/man/5/sudoers.ldap) 编写对应的目录项。
 
 对于 SSH 配置，可以参考 [RedHat 的文档](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/openssh-sssd)，和参考 [man sss_ssh_authorizedkeys](https://www.systutorials.com/docs/linux/man/1-sss_ssh_authorizedkeys/) 配置 authorized keys 命令。然后，给用户添加 `sshPublicKey` 属性即可，内容与 `~/.ssh/id_*.pub` 一致。
 

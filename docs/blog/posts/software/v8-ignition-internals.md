@@ -231,7 +231,7 @@ Source Position Table (size = 0)
 
 由于 Opcode 的种类是固定的，所以实际运行 V8 的时候，这些代码已经编译好了，只需要在运行时初始化对应的数据结构即可。这个代码的生成和编译过程，也不是由 C++ 编译器做的，而是有一个 `mksnapshot` 命令来完成初始化，你可以认为它把这些 Opcode 对应的汇编指令都预先生成好，运行时直接加载即可。
 
-首先来看 Ignition 的怎么实现各种 Opcode 的，以 `LdaSmi` 为例，它的作用是小的把立即数（Smi=Small integer）写入到 `accumulator` 当中，这段在 `v8/src/interpreter/interpreter-generator.cc` 的代码实现了这个逻辑：
+首先来看 Ignition 是怎么实现各种 Opcode 的，以 `LdaSmi` 为例，它的作用是把小的立即数（Smi=Small integer）写入到 `accumulator` 当中，这段在 `v8/src/interpreter/interpreter-generator.cc` 的代码实现了这个逻辑：
 
 ```cpp
 // LdaSmi <imm>

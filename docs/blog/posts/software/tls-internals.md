@@ -76,7 +76,7 @@ global_data:
 
 这里面可执行程序和启动时加载的动态库的需求是明确的，不会变的，因此可以由动态链接器在加载的时候，直接给可执行程序和动态库分配 TLS 空间：
 
-1. 比如可执行程序本身需要 0x10 字节的 TLS 空间，它启动时加载两个动态库 libc.so.6 和 libstdc++.so.6，期中 libc.so.6 需要 0x20 字节的 TLS 空间，libstdc++.so.6 需要 0x30 字节的 TLS 空间
+1. 比如可执行程序本身需要 0x10 字节的 TLS 空间，它启动时加载两个动态库 libc.so.6 和 libstdc++.so.6，其中 libc.so.6 需要 0x20 字节的 TLS 空间，libstdc++.so.6 需要 0x30 字节的 TLS 空间
 2. 加起来一共需要 0x60 字节的 TLS 空间，那么在创建线程的时候，创建好 0x60 字节的 TLS 空间，按照顺序进行分配：
     1. 0x00-0x10: 属于可执行程序
     2. 0x10-0x30: 属于 libc.so.6
@@ -625,7 +625,7 @@ Disassembly of section .got:
 
 1. 如果在编译源码的时候，没有开 `-fPIC`，那么生成的代码只出现在可执行程序中，这个时候编译器会直接使用 local exec TLS model，即生成 `movl %fs:symbol@tpoff, %rax` 的指令
 2. 如果在编译源码的时候，开了 `-fPIC`，那么生成的代码既可能出现在可执行程序中，也可能出现在动态库中，这时会首先默认为 global dynamic TLS model，即生成 `data16 leaq symbol@tlsgd(%rip), %rdi; .value 0x6666; rex64; call __tls_get_addr@PLT; movl (%rax), %eax` 指令
-3. 但如果 `__thread` 变量设置了 `static`，即使打开了 `-fPIC`，也保证了这个 TLS 变量一定是访问自己 TLS 空间中的，不会访问别人的，那么编译器会自动选择 local dynamic TLS model，即生成 `leaq symbol@tlsld(%rip), %rdi; call__tls_get_addr@PLT; movl %symbol@dtpoff(%rax), %eax` 指令
+3. 但如果 `__thread` 变量设置了 `static`，即使打开了 `-fPIC`，也保证了这个 TLS 变量一定是访问自己 TLS 空间中的，不会访问别人的，那么编译器会自动选择 local dynamic TLS model，即生成 `leaq symbol@tlsld(%rip), %rdi; call __tls_get_addr@PLT; movl %symbol@dtpoff(%rax), %eax` 指令
 
 接下来观察链接的时候，会发生什么事情：
 
@@ -691,7 +691,7 @@ Disassembly of section .got:
 
 1. global dynamic -> initial exec：编译的时候开了 -fPIC 和 `extern`，然后链接到可执行程序内，TLS 变量来自动态库
 2. global dynamic -> local exec：编译的时候开了 -fPIC，然后链接到可执行程序内，TLS 变量来自程序自己
-3. local dynamic -> local exec：编译的时候开了 -fPIC 和 `-static`，然后链接到可执行程序内，TLS 变量来自程序自己
+3. local dynamic -> local exec：编译的时候开了 -fPIC 和 -static，然后链接到可执行程序内，TLS 变量来自程序自己
 4. initial exec -> local exec：编译的时候没开 -fPIC，然后链接到可执行程序内，TLS 变量来自程序自己
 
 ## TLSDESC

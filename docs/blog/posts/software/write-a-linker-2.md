@@ -45,7 +45,7 @@ categories:
 #
 # for syscall numbers look in /usr/include/asm/unistd_64.h
 # for examples look at http://99-bottles-of-beer.net/language-assembler-(amd64)-933.html
-# for insipration look at http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html
+# for inspiration look at http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html
 
     .section .rodata
 hello:

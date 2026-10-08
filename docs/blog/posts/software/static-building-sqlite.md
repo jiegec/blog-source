@@ -11,7 +11,7 @@ categories:
 最近 rCore 支持了动态链接库，于是想着在测试 sqlite 的时候直接用动态的，不过出现了玄学的问题，它会访问一个不存在的地址，看代码也没看出个所以然来。所以研究了一下 sqlite 的静态编译。首先在 `configure` 的时候尝试了一下：
 
 ```bash
-$ ./configure CC=x86_64-linux-musl-gcc --disable-shared --enabled-static
+$ ./configure CC=x86_64-linux-musl-gcc --disable-shared --enable-static
 ```
 
 发现 `libsqlite` 确实是静态了，但是 `sqlite3` 并不是。一番研究以后，发现是 `libtool` 的原因，只要这样编译：

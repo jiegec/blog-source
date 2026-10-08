@@ -27,7 +27,7 @@ categories:
 - 图中左上角，坐标 (xMin, yMax) 对应 Bitmap 数组的下标是 `0`
 - 图中右上角，坐标 (xMax, yMax) 对应 Bitmap 数组的下标是 `width-1`
 - 图中左下角，坐标 (xMin, yMin) 对应 Bitmap 数组的下标是 `width*(height-1)`
-- 图中右下角，坐标 (xMax, yMax) 对应 Bitmap 数组的下标是 `width*(height-1)+width-1`
+- 图中右下角，坐标 (xMax, yMin) 对应 Bitmap 数组的下标是 `width*(height-1)+width-1`
 
 得到这个 Bitmap 后，如果我们不用 OpenGL，而是直接生成 PNG，那就直接进行一次 copy 甚至 blend 就可以把文字绘制上去了。但是，我们要用 OpenGL 的 shader，就需要把 bitmap 放到 texture 里面。由于目前我们用的就是单色的字体，所以它对应只有一个 channel 的 texture。
 
@@ -141,7 +141,7 @@ final.b = textColor.b * alpha + dest.b * (1 - alpha);
 
 即最终颜色，等于字体颜色和原来背景颜色，基于 bitmap 的 alpha 值的融合。
 
-解决了颜色，接下来考虑如何设置顶点的信息。前面提到，得到的 bitmap 是一个矩形，而 OpenGL 绘图的基本元素是三角形，因此我们需要拆分成两个三角形来绘图，假如说要绘制一个矩形，它个四个顶点如下：
+解决了颜色，接下来考虑如何设置顶点的信息。前面提到，得到的 bitmap 是一个矩形，而 OpenGL 绘图的基本元素是三角形，因此我们需要拆分成两个三角形来绘图，假如说要绘制一个矩形，它四个顶点如下：
 
 ```
 3-4
@@ -238,7 +238,7 @@ void main() {
 - 第一轮，先绘制出终端每个位置的背景颜色
 - 第二轮，再绘制出每个位置的字符，和背景进行融合
 
-这时候 shader 没法自己做 blend，所以这考虑怎么用 blend function 来实现这个 blend 的计算。首先，要考虑我们最终需要的结果是：
+这时候 shader 没法自己做 blend，所以这里考虑怎么用 blend function 来实现这个 blend 的计算。首先，要考虑我们最终需要的结果是：
 
 ```cpp
 final.r = textColor.r * alpha + dest.r * (1 - alpha);

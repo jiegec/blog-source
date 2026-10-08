@@ -103,7 +103,7 @@ systemctl enable --now rsyslog-remote
 }
 ```
 
-注意脚本 `/usr/lib/rsyslog/rsyslog-remote` 也需要复制一份到 `/usr/lib/rsyslog/rsyslog-remote-rotate`，然后修改一下 systemd service 名字：
+注意脚本 `/usr/lib/rsyslog/rsyslog-rotate` 也需要复制一份到 `/usr/lib/rsyslog/rsyslog-remote-rotate`，然后修改一下 systemd service 名字：
 
 ```shell
 #!/bin/sh

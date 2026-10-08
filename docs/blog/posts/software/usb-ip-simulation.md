@@ -41,10 +41,10 @@ USB/IP 只有一个简略的[文档](https://github.com/realthunder/usbip/blob/m
 
 1. Control Transfer
    1. 第一种是 Control IN，一共有三个阶段，第一个阶段是 Setup，Host 发送给 Device 一个八字节的 Setup Packet；第二个阶段是 Data，Device 发送给 Host 一段数据；第三个阶段是 Status，Host 发送给 Device 一个 Zero Length Packet。此时 Setup Packet 对应 urb 中的 setup，Data 就对应 RET_SUBMIT 里面的 URB data 了，自然 CMD_SUBMIT 中是没有 URB data 的
-   2. 第二种是 Control OUT，一共有三个阶段，第一个阶段是 Setup，Host 发送给 Device 一个吧字节的 Setup Packet；第二个阶段是 Data，Host 给 Device 发送一段数据；第三个阶段是 Status，Device 给 Host 发送一个 Zero Length Packet。此时 Setup Packet 对应 urb 中的 setup，Data 对应 CMD_SUBMIT 末尾的 URB data，长度由 transfer_buffer_length 指定。返回的 RET_SUBMIT 不带 URB data，但依然需要有 RET_SUBMIT。
+   2. 第二种是 Control OUT，一共有三个阶段，第一个阶段是 Setup，Host 发送给 Device 一个八字节的 Setup Packet；第二个阶段是 Data，Host 给 Device 发送一段数据；第三个阶段是 Status，Device 给 Host 发送一个 Zero Length Packet。此时 Setup Packet 对应 urb 中的 setup，Data 对应 CMD_SUBMIT 末尾的 URB data，长度由 transfer_buffer_length 指定。返回的 RET_SUBMIT 不带 URB data，但依然需要有 RET_SUBMIT。
 2. Interrupt/Bulk Transfer
    1. 第一种是 Interrupt/Bulk IN，由 Device 给 Host 发送一段数据，附在 RET_SUBMIT 中。
-   2. 第二种是 Interrupt/Bulk OUT，由 Host 给 Device 发送一段数据，中 CMD_SUBMIT 的 URB data 中。返回的 RET_SUBMIT 不带 URB data，但不能不发 RET_SUBMIT。
+   2. 第二种是 Interrupt/Bulk OUT，由 Host 给 Device 发送一段数据，在 CMD_SUBMIT 的 URB data 中。返回的 RET_SUBMIT 不带 URB data，但不能不发 RET_SUBMIT。
 
 
 
