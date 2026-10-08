@@ -64,7 +64,7 @@ MOP 到 uOP 的拆分需要等到 Scheduler 中才进行，Scheduler 输入 MOP�
 
 ### Op Cache
 
-官方信息：64 set, 16 way, **1024 entry**, **6 (fused) inst/entry**, 供指 **2 entry/cycle**
+官方信息：64 set, 16 way, **1024 entry**, **6 (fused) inst/entry**, 供给 **2 entry/cycle**
 
 #### 开启/关闭
 

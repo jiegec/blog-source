@@ -180,7 +180,7 @@ Icestorm 的 BTB 测试结果并不像 Firestorm 那样有规律，根据这个�
 
 ![](./apple-m1-icestorm-itlb.png)
 
-只有一个拐点，在 128 个页时，性能从 1 Cycle 下降到 8 Cycle，意味 L1 ITLB 容量是 128 项，和官方信息一致。
+只有一个拐点，在 128 个页时，性能从 1 Cycle 下降到 8 Cycle，意味着 L1 ITLB 容量是 128 项，和官方信息一致。
 
 ### Decode
 

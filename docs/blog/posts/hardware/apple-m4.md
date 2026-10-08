@@ -18,7 +18,7 @@ categories:
 
 ??? note "图片来源"
 
-    使用 [Z-Image](https://github.com/Tongyi-MAI/Z-Image) 生成，提示词： `Create a cover iamge for Apple M4 微架构评测, with a proper Apple M4 MacBookAir in the middle with M4 in the background, your text must be accurate`
+    使用 [Z-Image](https://github.com/Tongyi-MAI/Z-Image) 生成，提示词： `Create a cover image for Apple M4 微架构评测, with a proper Apple M4 MacBookAir in the middle with M4 in the background, your text must be accurate`
 
 ## 官方信息
 
@@ -496,10 +496,10 @@ M4 E-Core 没有实现 Load Address/Value Predictor。
 6. ALU, DIV
 7. ALU, MUL
 8. ALU, MUL
-10. GENERAL, MOVE2GPR, FCMPf, FCSELf, FDIV, MUL, SHA
-11. GENERAL, MOVE2GPR, FCSELf, MUL
+9. GENERAL, MOVE2GPR, FCMPf, FCSELf, FDIV, MUL, SHA
+10. GENERAL, MOVE2GPR, FCSELf, MUL
+11. GENERAL, MUL
 12. GENERAL, MUL
-13. GENERAL, MUL
 
 从 M3 开始，P-Core 整数计算单元从 6 个增加到 8 个。浮点部分没有变化。
 
@@ -509,7 +509,7 @@ P-Core 访存：
     - 即 3 load, 2 sta, 2 std
 - Sustained: 4 uops, 2 write into the cache
 
-和 M1 E-Core 相同。
+和 M1 P-Core 相同。
 
 M4 Family 的 E-Core 包括如下计算单元：
 
@@ -525,9 +525,9 @@ M4 Family 的 E-Core 包括如下计算单元：
 
 E-Core 访存：
 
-- Burst: 3 load uops, 2 store uops (address part), and 2 store uops (data part)
-    - 即 3 load, 2 sta, 2 std
-- Sustained: 4 uops, 2 write into the cache
+- Burst: 2 load uops, or 2 store uops (address part), or 1 of each, along with 2 store uops (data part)
+    - 即 2 load，或者 2 sta，或者 1 load + 1 std，或者 1 sta + 1 std
+- Sustained: 2 uops, 1 write into the cache
 
 和 M1 E-Core 相同。
 
@@ -601,9 +601,9 @@ E-Core 访存：
     1. ALU: 8
     2. CSEL: 4
     3. Mul/MAdd: 3
-    3. Br/MRS NZCV: 2
-    4. CRC/BFM/Div: 1
-    5. ALU/CSEL/Mul/MAdd 的执行单元相比 M1 P-Core 有扩充
+    4. Br/MRS NZCV: 2
+    5. CRC/BFM/Div: 1
+    6. ALU/CSEL/Mul/MAdd 的执行单元相比 M1 P-Core 有扩充
 4. 访存方面，每周期最多 3 Load 或者 2 Store；这部分和 M1 P-Core 相同
 
 首先来看浮点和 ASIMD 单元，根据上面的信息，认为至少有 4 个执行单元，每个执行单元都可以做这些操作：asimd int add/aes/fabs/fadd/fmax/fmin/fmla/fmul/fneg，下面把这些指令称为 basic fp/asimd ops + aes。接下来要判断，fmov f2i/fmov i2f/fdiv/frecpe/frecpx/frsqrte/fsqrt 由哪些执行单元负责执行，方法是把这些指令混合起来测试吞吐（此处的吞吐不代表 CPI，而是每周能够执行多少次指令组合，例如用 2 条指令的组合测试，那么吞吐等于 CPI 除以 2）：

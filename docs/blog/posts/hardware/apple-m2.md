@@ -139,7 +139,7 @@ Apple M2 Avalanche/Blizzard 的性能测试结果见 [SPEC](../../../benchmark/i
 
 ![](./apple-m2-blizzard-itlb-size.png)
 
-在 192 个页时，性能从 1 Cycle 下降到 10 Cycle，意味 L1 ITLB 容量是 192 项，和官方信息一致。
+在 192 个页时，性能从 1 Cycle 下降到 10 Cycle，意味着 L1 ITLB 容量是 192 项，和官方信息一致。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/itlb_size_lib.cpp)。
 
@@ -189,7 +189,7 @@ Blizzard 的分支预测器与 Apple M1 Icestorm 相同，采用的历史更新�
 
 #### Avalanche
 
-为了测试物理寄存器堆的大小，一般会用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。Firestorm 测试结果见下图：
+为了测试物理寄存器堆的大小，一般会用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。Avalanche 测试结果见下图：
 
 ![](./apple-m2-avalanche-prf.png)
 
@@ -241,7 +241,7 @@ Blizzard 上的结果：
 
 #### L1 DTLB 容量
 
-官方信息：根据 Apple Silicon CPU Optimization Guide，对于 P-Core 来说，除了 M2 Family、A14 Bionic 和 A15 Bionic 的 L1 DTLB 是 256 entries 以外，其余的 M1 Family、M3 Family 到 M4 Family，A16 Bionic 到 A18 Family 的 L1 DTLB 都是 160 entries。对于 E-Core 来说，除了 M1 Family 和 A14 Bionic 是 129 entries，其余的从 M2 Family 到 M4 Family，A15 Bionic 到 A18 Family 都是 192 entries。
+官方信息：根据 Apple Silicon CPU Optimization Guide，对于 P-Core 来说，除了 M2 Family、A14 Bionic 和 A15 Bionic 的 L1 DTLB 是 256 entries 以外，其余的 M1 Family、M3 Family 到 M4 Family，A16 Bionic 到 A18 Family 的 L1 DTLB 都是 160 entries。对于 E-Core 来说，除了 M1 Family 和 A14 Bionic 是 128 entries，其余的从 M2 Family 到 M4 Family，A15 Bionic 到 A18 Family 都是 192 entries。
 
 因此，Avalanche L1 DTLB 容量是 256，Blizzard L1 DTLB 容量是 192。
 
