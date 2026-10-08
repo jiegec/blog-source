@@ -623,7 +623,7 @@ Enabling `-flto`, `-march=native`, or `-ljemalloc` provides negligible improveme
 Hotspot functions:
 
 - `sat_solver_propagate(sat_solver* s)` from `src/berkeley-abc/src/sat/bsat/satSolver.c`: 75.33%, SAT Solver's Unit Propagation, finding clauses with only one undetermined variable, assigning it, then propagating;
-- `sat_solver_analyze(sat_solver* s, int h, veci* learnt)` from `src/berkeley-abc/src/sat/bsat/satSolver`: 15.85%, conflict analysis as part of CDCL (Conflict Driven Clause Learning);
+- `sat_solver_analyze(sat_solver* s, int h, veci* learnt)` from `src/berkeley-abc/src/sat/bsat/satSolver.c`: 15.85%, conflict analysis as part of CDCL (Conflict Driven Clause Learning);
 - `sat_solver_solve_internal(sat_solver* s)` from `src/berkeley-abc/src/sat/bsat/satSolver.c`: 3.80%, SAT Solver entry point.
 
 Rarely see such concentrated bottlenecks, but indeed, SAT Solvers spend most time in Unit Propagation and CDCL on conflicts. Reminds me of writing a [DPLL SAT Solver](https://github.com/jiegec/dpll) for a Software Analysis and Verification course long ago. Main bottleneck: memory accesses and data-dependent branches searching the SAT problem's solution space.

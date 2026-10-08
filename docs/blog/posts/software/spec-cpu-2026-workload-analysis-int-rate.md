@@ -437,7 +437,7 @@ cpython_r -I -B dna_bench.py 600000
 
 ### 721.gcc_r
 
-SPEC INT 2017 中的 502.gcc_r 便已存在，当时基于 GCC 4.5.0，针对 gcc-pp.c、gcc-smaller.c 和 ref32.c 进行五次编译，这次 721.gcc_r 对着三个同名文件（其中 gcc-pp.c 内容更新了，其余两个不变）分别进行一次编译，基于 GCC 11.2.0 版本，命令行参数如下，相比 502.gcc_r 有所简化：
+SPEC INT 2017 中的 502.gcc_r 便已存在，当时基于 GCC 4.5.0，针对 gcc-pp.c、gcc-smaller.c 和 ref32.c 进行五次编译，这次 721.gcc_r 对着这三个同名文件（其中 gcc-pp.c 内容更新了，其余两个不变）分别进行一次编译，基于 GCC 11.2.0 版本，命令行参数如下，相比 502.gcc_r 有所简化：
 
 ```shell
 # 1. gcc-pp
@@ -627,7 +627,7 @@ cppcheck_r --force 770-7z-SystemPage.cpp --checkers-report=770_report.txt --outp
 主要的热点函数：
 
 - `sat_solver_propagate(sat_solver* s)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：75.33%，应该是 SAT Solver 中的 Unit Propagation，寻找那些只剩下一个变量还没确定的语句，给它进行赋值，然后传播到其他语句；
-- `sat_solver_analyze(sat_solver* s, int h, veci* learnt)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver`：15.85%，应该是针对出现冲突的语句进行分析，属于 CDCL（Conflict Driven Clause Learning）的一部分；
+- `sat_solver_analyze(sat_solver* s, int h, veci* learnt)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：15.85%，应该是针对出现冲突的语句进行分析，属于 CDCL（Conflict Driven Clause Learning）的一部分；
 - `sat_solver_solve_internal(sat_solver* s)` 来自 `src/berkeley-abc/src/sat/bsat/satSolver.c`：3.80%，是 SAT Solver 的入口函数。
 
 很少能见到这种瓶颈如此高度集中的情况了，不过确实，SAT Solver 大部分时间都在做 Unit Propagation，出现冲突了就做 CDCL。唤起了很久以前在《软件分析与验证》课上写 DPLL SAT Solver 的[回忆](https://github.com/jiegec/dpll)，当然了，abc 的实现肯定比我那课程作业要更加复杂和高级。主要的瓶颈就是一堆访存以及依赖内存结果的分支，在 SAT 问题的解空间内进行搜索。

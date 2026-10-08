@@ -445,7 +445,7 @@ CT_CC_GCC_CONFIG_TLS=y
 [ERROR]    collect2: error: ld returned 1 exit status                                                                             [E
 ```
 
-把命令抄下来，添加 --verbose 参数，会发现是因为 LIBRARY_ROOT 缺少 sysroot 下面的 usr/lib 路径，而它期望的路径是 sysrooot 下面的 lib32/sf 路径，所以出现这个问题。解决方法是，打开 MULTILIB 模式：
+把命令抄下来，添加 --verbose 参数，会发现是因为 LIBRARY_ROOT 缺少 sysroot 下面的 usr/lib 路径，而它期望的路径是 sysroot 下面的 lib32/sf 路径，所以出现这个问题。解决方法是，打开 MULTILIB 模式：
 
 ```ini
 # fix gcc crt1.o not found
