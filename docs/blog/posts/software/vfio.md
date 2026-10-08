@@ -57,7 +57,7 @@ VFIO 的用户 API 在 [include/uapi/linux/vfio.h](https://github.com/torvalds/l
 1. 把 vfio-pci 设备绑定在 PCIe 设备上
 2. 根据 PCIe 设备，找到它所属的 IOMMU Group ID，例如是 26
 3. 创建一个 Container：`container = open("/dev/vfio/vfio")`
-4. 打开 IOMMU Group：`group = open("/dev/vfio/2")`
+4. 打开 IOMMU Group：`group = open("/dev/vfio/26")`
 5. 把 Group 放到 Container 中：`ioctl(group, VFIO_GROUP_SET_CONTAINER, &container)`
 6. 打开 Group 中的 Device：`device = ioctl(group, VFIO_GROUP_GET_DEVICE_FD, "0000:06:0d.0")`
 
@@ -65,7 +65,7 @@ VFIO 的用户 API 在 [include/uapi/linux/vfio.h](https://github.com/torvalds/l
 
 有了 Container，Group 和 Device 的 FD 以后，可以做以下的事情：
 
-1. 对 Container 设置 DMA 映射：`ioctl(container, VFIO_IOMMU_MAP_DMA, &dma_Map)`
+1. 对 Container 设置 DMA 映射：`ioctl(container, VFIO_IOMMU_MAP_DMA, &dma_map)`
 2. 把 Device 的 BAR 空间映射到用户态：`ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &reg)` 之后 `mmap`
 3. 读写 Device 的 Configuration 空间：`ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &reg)` 得到 Configuration 空间的偏移，把 Device FD 当成文件，用 `pread/pwrite` 在指定偏移上进行读写
 4. 设置中断：`ioctl(device, VFIO_DEVICE_SET_IRQS, irq_set)`，参数中包括了一个 eventfd，当内核收到来自设备的中断时，更新 eventfd，用户态可以通过 epoll 监测 eventfd 的更新
