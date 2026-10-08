@@ -34,7 +34,7 @@ TileLink Uncached(TL-UL 和 TL-UH) 包括了两个 channel：
 一些请求的例子：
 
 - 读：M->S 在 A channel 上发送 Get，S->M 在 D channel 上发送 AccessAckData
-- 写：M->S 在 A channel 上发送 PutFullData/PutPartialData，S->M 在 D channel 是发送 AccessAck
+- 写：M->S 在 A channel 上发送 PutFullData/PutPartialData，S->M 在 D channel 上发送 AccessAck
 - 原子操作：M->S 在 A channel 上发送 ArithmeticData/LogicalData，S->M 在 D channel 上发送 AccessAckData
 - 预取操作：M->S 在 A channel 上发送 Intent，S->M 在 D channel 上发送 AccessAck
 
@@ -209,7 +209,7 @@ when (filter.io.response.fire()) {
 - A low priority valid may not combinationally depend on a high priority valid. In other words, the decision to send a request may not be based on receiving a response in the same cycle.
 - A high priority ready may not combinationally depend on a low priority ready. In other words, acceptance of a response may not be made contingent upon a request being accepted the same cycle.
 
-这两条的意思是，同一个周期内，我设置发送的请求的 valid，不能依赖于同一个周期内接受到的响应的 valid，比如 A 的 valid 不能组合依赖于 D 的 valid。另一方面，我设置的响应的 ready 不能依赖于同一个周期内的请求，比如 D 的 ready 不能组和依赖于 A 的 ready。
+这两条的意思是，同一个周期内，我设置发送的请求的 valid，不能依赖于同一个周期内接受到的响应的 valid，比如 A 的 valid 不能组合依赖于 D 的 valid。另一方面，我设置的响应的 ready 不能依赖于同一个周期内的请求，比如 D 的 ready 不能组合依赖于 A 的 ready。
 
 那么，有这么几种用法是可以的：
 

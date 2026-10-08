@@ -114,12 +114,12 @@ bin 是内存分配器的一个常见做法，把要分配的块的大小分 bin
 1. 把空闲块强制转换为 `tcache_entry` 结构体类型
 2. 把它的 `key` 字段指向 tcache，用来表示这个空闲块当前在 `tcache` 当中，后续用它来检测 double free
 3. 以新的 `tcache_entry` 作为链表头，插入到 tcache 的对应的 bin 当中：`entries[tc_idx]`
-4. 更新这个 bin 的空闲块个数到 `count[tc_idx]` 当中
+4. 更新这个 bin 的空闲块个数到 `counts[tc_idx]` 当中
 
 反过来，`tcache_get` 则是从 tcache 中拿出一个空闲块：
 
 1. 从链表头 `entries[tc_idx]` 取出一个空闲块，把它从链表中删除：`entries[tc_idx] = e->next`
-2. 更新这个 bin 的空闲块个数到 `count[tc_idx]` 当中
+2. 更新这个 bin 的空闲块个数到 `counts[tc_idx]` 当中
 3. 把它的 `key` 字段指向 NULL，用来表示这个空闲块当前不在 `tcache` 当中
 4. 返回这个空闲块的地址
 
@@ -450,7 +450,7 @@ struct malloc_chunk {
 1. 相邻的前一个空闲块的大小 `mchunk_prev_size`，记录它是为了方便找到前一个空闲块的开头，这样合并相邻的空闲块就很简单
 2. 当前空闲块的大小 `mchunk_size`，由于块的大小是对齐的，所以它的低位被用来记录 flag
 3. `fd` 和 `bk`：small bin 和 large bin 需要用双向链表维护空闲块，指针就保存在这里
-4. `fd_nextsize` 和 `bk_next_size`：large bin 需要用双向链表维护不同大小的空闲块，方便找到合适大小的空闲块
+4. `fd_nextsize` 和 `bk_nextsize`：large bin 需要用双向链表维护不同大小的空闲块，方便找到合适大小的空闲块
 
 这是空闲块的内存布局，那么被分配的内存呢？被分配的内存，相当于是如下的结构：
 
@@ -933,7 +933,7 @@ struct malloc_state
 
 ## consolidate
 
-当要分配的块经过 fast bin 和 small bin 两段逻辑都没能分配成功，并且要分配的块比较大的时候（`!in_small_range (nb)`），会进行一次 `malloc_consolidate` 调用，这个函数会尝试对 fast bin 中的空闲块进行合并，然后把新的块插入到 unsorted bin 当中。它的实现如下：
+当要分配的块经过 fast bin 和 small bin 两段逻辑都没能分配成功，并且要分配的块比较大的时候（`!in_smallbin_range (nb)`），会进行一次 `malloc_consolidate` 调用，这个函数会尝试对 fast bin 中的空闲块进行合并，然后把新的块插入到 unsorted bin 当中。它的实现如下：
 
 ```c
 unsorted_bin = unsorted_chunks(av);
@@ -1359,7 +1359,7 @@ int main() {
 
 ### malloc
 
-接着回到 `_libc_malloc`。前面提到，unsorted bin 中空闲块已经被挪到了 small bin 或者 large bin，并在这个过程中把合适大小的空闲块直接分配。如果还是没有分配成功，接下来就要在 large bin 里寻找一个块来分配：
+接着回到 `__libc_malloc`。前面提到，unsorted bin 中空闲块已经被挪到了 small bin 或者 large bin，并在这个过程中把合适大小的空闲块直接分配。如果还是没有分配成功，接下来就要在 large bin 里寻找一个块来分配：
 
 ```c
 if (!in_smallbin_range (nb))
@@ -1970,7 +1970,7 @@ flowchart TD
 3. small bin 和 large bin 的区分，主要是考虑到了分配的块的大小分布，越大倾向于越稀疏；代价是 large bin 需要额外维护 nextsize 链表来快速地寻找不同大小的空闲块
 4. 在回收 unsorted bin 的时候，会进行一个内存局部性优化，即倾向于连续地从同一个块中切出小块用于分配，适合在循环中分配内存的场景
 5. 回收 unsorted bin 时，如果遇到了正好和要分配的块大小相同的空闲块时，先不急着分配，而是丢到 tcache 中，然后继续往前回收若干个空闲块，直到 tcache 满了或者遇到了足够多的大小不同的空闲块为止：这是利用了 unsorted bin 中空闲块大小的局部性，有机会把一系列连续的相同大小的空闲块拿到 tcache 当中，并且限制了搜索的长度，避免带来过多额外的延迟
-6. 如果尝试了 unsorted bin、small bin、large bin 和 top chunk 都无法分配，最后再检查一次 fast bin 是否为空，如果是空的，则进行一次 consolidate，把 fast bin 里的空闲块丢到 unsorted bin 中，再重新尝试分配一次：注意这整个过程 malloc 都是持有 arena 锁的，而 fast bin 在 free 中的写入是不需要持有 arena 锁的，而是直接用原子指令更新，所以这是考虑到其他线程在同时往同一个 arena free 的情况
+6. 如果尝试了 unsorted bin、small bin、large bin 和 top chunk 都无法分配，最后再检查一次 fast bin 是否为空，如果不为空，则进行一次 consolidate，把 fast bin 里的空闲块丢到 unsorted bin 中，再重新尝试分配一次：注意这整个过程 malloc 都是持有 arena 锁的，而 fast bin 在 free 中的写入是不需要持有 arena 锁的，而是直接用原子指令更新，所以这是考虑到其他线程在同时往同一个 arena free 的情况
 7. 在合并相邻空闲块的时候，被合并的空闲块可能已经在 unsorted bin、small bin 或者 large bin 当中，为了能够把空闲块从这些 bin 里删除，用双向链表来实现 O(1) 时间的删除
 
 ## 参考

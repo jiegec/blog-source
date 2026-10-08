@@ -33,7 +33,7 @@ ACPI 需要访问硬件，一般是通过 MMIO 或者 IO Port 来进行访问。
 
 `OperationRegion` 就是声明了一片地址空间，以及对应的类型，常见的类型有 SystemMemory、SystemIO、PCI_Config、SMBus 等等。当 ACPI 中的代码要访问 `OperationRegion` 中的数据的时候，内核按照类型去进行实际的访问。
 
-有了地址空间以后，还需要根据寄存器的定义，给各个字段起个名字，这就是 `Field`。`Field` 给 `OperationRegion` 中的字段起名，与硬件的定义想对应，这就像在内核中定义一个结构体，保证结构体的成员的偏移和硬件是一致的。这样就可以通过成员来访问，而不是每次都去计算一次偏移。
+有了地址空间以后，还需要根据寄存器的定义，给各个字段起个名字，这就是 `Field`。`Field` 给 `OperationRegion` 中的字段起名，与硬件的定义相对应，这就像在内核中定义一个结构体，保证结构体的成员的偏移和硬件是一致的。这样就可以通过成员来访问，而不是每次都去计算一次偏移。
 
 ## 获取当前系统的 ACPI 表
 
@@ -253,7 +253,7 @@ nct6775: Found NCT6796D or compatible chip at 0x2e:0x290
 - 芯片通过 LPC 总线与 CPU 连接，支持多种外设接口，包括 UART，PS/2，红外，GPIO，SMBus 等等
 - 偏移 0x30 的寄存器 `ACTR` 的最低位表示了 logical device 的当前状态。
 - 读取 `ACTR` 之前需要设置 LDN(Logical Device Number) 为 2，2 对应 Serial Port 1(UARTA)。这一步是在 `ENFG(CGLD(Arg0))` 中完成的。
-- `CGLD` 函数查询了 `DCAT`，可以发现，串口在 `DCAT` 的下标是 0，查表得到的是 2，也就是 Logial Device Number 为 2，和上面的发现是吻合的。`DCAT` 的下一项是 `0x3`，也就是 Logical Device Number 为 3，在 Datasheet 中可以看到是 Serial Port 2(UARTB)。
+- `CGLD` 函数查询了 `DCAT`，可以发现，串口在 `DCAT` 的下标是 0，查表得到的是 2，也就是 Logical Device Number 为 2，和上面的发现是吻合的。`DCAT` 的下一项是 `0x3`，也就是 Logical Device Number 为 3，在 Datasheet 中可以看到是 Serial Port 2(UARTB)。
 - DSDT 中还可以找到 `PS2K` 的结点，就是 PS/2 键鼠，属性中标记了 `LDN=5`，和 Datasheet 也是一致的。
 
 ### ARM64
@@ -1118,7 +1118,7 @@ void acpi_pm1_evt_power_down(ACPIREGS *ar)
 
 这个函数模拟了电源按钮，如果 `PWRBTN_EN=1`，就设置 `PWRBTN_STS=1` 并发送 SCI 中断。
 
-那么，操作系统如何访问 `PWRBTN_EN` 和 `PWRBTN_STS` 呢？在 FADP(Fixed ACPI Descrption Table) 表中，可以找到 PM1A/B Event Block Address 和 PM1A/B Control Block Address：
+那么，操作系统如何访问 `PWRBTN_EN` 和 `PWRBTN_STS` 呢？在 FADT(Fixed ACPI Description Table) 表中，可以找到 PM1A/B Event Block Address 和 PM1A/B Control Block Address：
 
 ```
 [038h 0056   4]     PM1A Event Block Address : 0000B000
@@ -1130,7 +1130,7 @@ void acpi_pm1_evt_power_down(ACPIREGS *ar)
 [059h 0089   1]     PM1 Control Block Length : 02
 ```
 
-那么就可以通过 IO Port 来访问这些寄存器了。`PWNBTN_STS` 属于 PM1 Status Registers，地址是 `PM1A/B Event Block Address=0xB000`；`PWNBTN_EN` 属于 PM1 Enable Registers，地址是 `PM1A/B Event Block Register + PM1 Event Block Length / 2=0xB002`。
+那么就可以通过 IO Port 来访问这些寄存器了。`PWRBTN_STS` 属于 PM1 Status Registers，地址是 `PM1A/B Event Block Address=0xB000`；`PWRBTN_EN` 属于 PM1 Enable Registers，地址是 `PM1A/B Event Block Register + PM1 Event Block Length / 2=0xB002`。
 
 这里的 PM1A/B 是 Register Grouping，使得硬件上可以把寄存器实现在两个不同的芯片上，分别实现一部分功能。操作系统读取的时候，要读取 A 和 B 然后 OR 起来，写入的时候则是 A 和 B 都要写。像上面的情况，就是只有 A 没有 B，那就直接读写 A 就可以了。
 
