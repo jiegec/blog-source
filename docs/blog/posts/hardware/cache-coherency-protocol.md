@@ -62,7 +62,7 @@ MSI 协议比较简单，它定义了三个状态：
 
 当 Read hit 的时候，状态不变。
 
-当 Read miss 的时候，检查其他缓存的状态，如果都是 Invalid，就从内存里读取，然后进入 Shared 状态。如果有 Shared，就从其他缓存处读取。如果有 Dirty，那就要把其他缓存的数据写入内存和本地缓存，然后进入 Shared 状态。
+当 Read miss 的时候，检查其他缓存的状态，如果都是 Invalid，就从内存里读取，然后进入 Shared 状态。如果有 Shared，就从其他缓存处读取。如果有 Modified，那就要把其他缓存的数据写入内存和本地缓存，然后进入 Shared 状态。
 
 当 Write hit 的时候，如果现在是 Shared 状态，则要让其他的 Shared 缓存进入 Invalid 状态，然后更新数据，进入 Modified 状态。如果是 Modified 状态，那就修改数据，状态保持不变。
 
@@ -117,7 +117,7 @@ Dragon 协议是一个基于更新的协议，意味着写入缓存的时候，�
 
 1. Exclusive clean(E)：独占，并且数据和内存一致
 2. Shared clean(Sc)：数据同时存在多个缓存中，并且自己不是最后一个写入该缓存数据的
-3. Shared modified(Sm)：数据同时存在多个缓存中，并且自己设最后一个写入该缓存数据的，类似于前面 MOESI 协议的 Owner 状态
+3. Shared modified(Sm)：数据同时存在多个缓存中，并且自己是最后一个写入该缓存数据的，类似于前面 MOESI 协议的 Owner 状态
 4. Modify(M)：独占，并且数据和内存不一致
 
 可以看到，E 和 M 都是独占的，如果出现了多个缓存有同一个缓存行，那就是若干个 Sc 和一个 Sm。

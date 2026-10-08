@@ -93,7 +93,7 @@ A 核心上的程序要进行 Read a（表示读取 a 地址的数据，下面�
 接下来证明：在 SC 内存模型下，这种可能性不存在：
 
 1. 在 SC 内存模型下，program order 得到保持，也就是 A 和 B 线程各自的执行顺序是保证的，可知 Wx1 必须出现在 Wy1 之前，Ry1 必须出现在 Rx0 之前，记作 Wx1 -> Wy1，Ry1 -> Rx0
-2. 对于 x 地址来说，Wx1 写入了 1，Rx0 读出了 0，说明 Rx0 必须在 Wx1 之前执行，才可能读到 0，即 Rx0 -> Wx1；对于 y 地址来说，Wy1 写入了 1，Ry1 读出了 1，由于 y 地址的初始值是 0，说明 Ry1 必须在 Wy1 之后执行，才可能读到 0，即 Wy1 -> Ry1
+2. 对于 x 地址来说，Wx1 写入了 1，Rx0 读出了 0，说明 Rx0 必须在 Wx1 之前执行，才可能读到 0，即 Rx0 -> Wx1；对于 y 地址来说，Wy1 写入了 1，Ry1 读出了 1，由于 y 地址的初始值是 0，说明 Ry1 必须在 Wy1 之后执行，才可能读到 1，即 Wy1 -> Ry1
 
 这样我们就得到了四组顺序关系：
 
@@ -143,7 +143,7 @@ exists (1:EAX=1 /\ 1:EBX=0)
     - MOV [y], $1：往 y 地址写入 1，也就是前面说的 `*y = 1`, Wy1
 - P1 上运行：
     - MOV EAX, [y]：从 y 地址读取数据，保存在 EAX 寄存器，也就是前面说的 `r1 = *y`
-    - MOV EBX, [x]：从 x 地址读取数据，保存在 EAX 寄存器，也就是前面说的 `r2 = *x`
+    - MOV EBX, [x]：从 x 地址读取数据，保存在 EBX 寄存器，也就是前面说的 `r2 = *x`
 
 正好就是 Message Passing 测试的内容，只不过用汇编完成了实现。最后，它提问：`exists (1:EAX=1 /\ 1:EBX=0)`，即是否存在一种可能，P1 的 EAX 寄存器（`1:EAX`）等于 1，同时（`/\` 表示逻辑与）P1 的 EBX 寄存器（`1:EBX`）等于 0？这就是上面提到的错误情况，y 等于 1 但是 x 等于 0。
 
@@ -156,7 +156,7 @@ Histogram (3 states)
 498632:>1:EAX=1; 1:EBX=1;
 ```
 
-运行了 1000000 次，观察到 500087 次 y=1, x=0；1281 次 y=0, x=1；498632 次 y=1, x=1；没有观察到 y=1 && x=0。也就是没有找到反例。
+运行了 1000000 次，观察到 500087 次 y=0, x=0；1281 次 y=0, x=1；498632 次 y=1, x=1；没有观察到 y=1 && x=0。也就是没有找到反例。
 
 那么 diycross7 命令是怎么生成这段汇编的呢？答案就在 `PodWW Rfe PodRR Fre` 参数当中。它描述的就是我们前面提到的四组顺序关系：
 
@@ -349,7 +349,7 @@ Histogram (4 states)
 
 - DMB：相当于 x86 的 mfence，保证 DMB 后的 Load 和 Store 不会重排到 DMB 之前，DMB 前的 Load 和 Store 也不会重排到 DMB 之后
 - Load Acquire：对 Load 指令添加 Acquire 语义，保证 Load Acquire 之后的 Load/Store 不会被重排到 Load  Acquire 之前
-- Store Release：对 Release 指令添加 Release 语义，保证 Store Release 之前的 Load/Store 不会被重排到 Store Release 之后
+- Store Release：对 Store 指令添加 Release 语义，保证 Store Release 之前的 Load/Store 不会被重排到 Store Release 之后
 
 看到 Acquire 和 Release，你可能会觉得这个说法有点熟悉：在锁里面，获得锁可以说 Lock 或者说 Acquire；释放锁可以说 Unlock 或者说 Release。事实上，Load Acquire 和 Store Release 正好就可以用在 Lock 和 Unlock 的场合：
 
