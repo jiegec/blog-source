@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2017-12-02
-tag: [nginx,source code,tuna]
+tags: [nginx,source code,tuna]
 categories:
     - programming
 ---
@@ -56,7 +56,7 @@ ngx_create_pool(size_t size, ngx_log_t *log)
     p->d.failed = 0;
 ```
 
-这里通过调用 `ngx_memalign` 分配一段（能对齐就对齐，不能对齐就放弃的）以 size 为大小的内存，做为这个内存池第一个块的内存，这个块的头是完整的，其中 `p->d.last` 和 `p->d.end` 分别表示可用于分配对象的内存段的开始和结束，在用 `p->d.next` 连接起来的链表中，每个链表实际上只有 `d` 是存储了数据，后面的各个域都不再使用。这里的 `p->d.failed` 涉及到链表的优化，在以后会接触到。
+这里通过调用 `ngx_memalign` 分配一段（能对齐就对齐，不能对齐就放弃的）以 size 为大小的内存，作为这个内存池第一个块的内存，这个块的头是完整的，其中 `p->d.last` 和 `p->d.end` 分别表示可用于分配对象的内存段的开始和结束，在用 `p->d.next` 连接起来的链表中，每个链表实际上只有 `d` 是存储了数据，后面的各个域都不再使用。这里的 `p->d.failed` 涉及到链表的优化，在以后会接触到。
 
 ``` c
     size = size - sizeof(ngx_pool_t);

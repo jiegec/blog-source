@@ -8,14 +8,14 @@ categories:
 
 # 在脚本中寻找 X11 的 DISPLAY 和 XAUTHORITY
 
-之前在搞一个小工具，在里面需要访问 X11 server，但是访问 X11 server 我们需要两个东西：DISPLAY 和 XAUTHORITY 两个环境变量。但是，由于它们在不同的发型版和 Display Manager 下都有些不同，所以花了不少功夫才写了一些。
+之前在搞一个小工具，在里面需要访问 X11 server，但是访问 X11 server 我们需要两个东西：DISPLAY 和 XAUTHORITY 两个环境变量。但是，由于它们在不同的发行版和 Display Manager 下都有些不同，所以花了不少功夫才写了一些。
 
 为了验证我们是否可以连上 X11 server，我们使用这一句：
 ```bash
 DIMENSIONS=$(xdpyinfo | grep 'dimensions:' | awk '{print $2;exit}')
 ```
 
-它尝试打开当前的 DISPLAY，并且输出它的分辨率。接下来，我对不同的一些发型版，综合网上的方法，尝试去找到正确的环境变量。
+它尝试打开当前的 DISPLAY，并且输出它的分辨率。接下来，我对不同的一些发行版，综合网上的方法，尝试去找到正确的环境变量。
 
 对于 Debian:
 ```bash
