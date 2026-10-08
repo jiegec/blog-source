@@ -120,9 +120,9 @@ spec:
       - name: fluentd
         image: fluent/fluentd-kubernetes-daemonset:v1-debian-forward
         env:
-          - name: FLUENT_FOWARD_HOST
+          - name: FLUENT_FORWARD_HOST
             value: "x.x.x.x"
-          - name: FLUENT_FOWARD_PORT
+          - name: FLUENT_FORWARD_PORT
             value: "24224"
           - name: FLUENTD_SYSTEMD_CONF
             value: "disable"

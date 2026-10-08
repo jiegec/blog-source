@@ -20,7 +20,7 @@ Ceph 有这些组成部分：
 2. mgr：manager
 3. osd：storage
 4. mds(optional)：用于 CephFS
-5. radosgw(optional：用于 Ceph Object Storage
+5. radosgw(optional)：用于 Ceph Object Storage
 
 ## 配置
 
@@ -48,7 +48,7 @@ kubectl apply -f rook/cluster/examples/kubernetes/ceph/csi/cephfs/storageclass.y
 
 前面三个 yaml 是必须的，toolbox 是用来查看 ceph 状态的，direct mount 是用来 mount cephfs 的，后两个是为了用 cephfs 的。
 
-接着，按照自己的需求编辑 `rook/cluster/exmaples/kuberenetes/ceph/cluster.yaml` 然后应用。此时你的集群应该就已经起来了。
+接着，按照自己的需求编辑 `rook/cluster/examples/kubernetes/ceph/cluster.yaml` 然后应用。此时你的集群应该就已经起来了。
 
 然后，可以[进 toolbox 查看 ceph 状态](https://rook.github.io/docs/rook/v1.5/ceph-toolbox.html)：
 
@@ -60,7 +60,7 @@ $ kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- bash
 
 ```shell
 # get volume path of pvc
-kubectl get pv -o custom-columns=NAME:.metadata.name,NAMSEPACE:.spec.claimRef.namespace,CLAIM:.spec.claimRef.name,PATH:.spec.csi.volumeAttributes.subvolumeName
+kubectl get pv -o custom-columns=NAME:.metadata.name,NAMESPACE:.spec.claimRef.namespace,CLAIM:.spec.claimRef.name,PATH:.spec.csi.volumeAttributes.subvolumeName
 
 kubectl -n rook-ceph exec -it deploy/rook-direct-mount -- bash
 # in the pod

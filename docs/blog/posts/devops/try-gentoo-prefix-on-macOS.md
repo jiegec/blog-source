@@ -12,7 +12,7 @@ categories:
 
 首先还是祭出官网：[Project:Prefix](https://wiki.gentoo.org/wiki/Project:Prefix)。
 
-首先设定好环境变量 `$EPREFIX` ，之后所有的东西都会安装到这个目录下，把 `bootstrap-prefix.sh` 下载到 `$EPREFIX` ，然后 `./bootstrap-prefix.sh` ，会进行一系列的问题，一一回答即可。建议在运行前设置好 `GENTOO_MIRRORS=http://mirrors.tuna.tsinghua.edu.cn/gentoo` 由于 TUNA 没有对 gentoo_prefix 做镜像，只能把 distfiles 切换到 TUNA 的镜像上。
+首先设定好环境变量 `$EPREFIX` ，之后所有的东西都会安装到这个目录下，把 `bootstrap-prefix.sh` 下载到 `$EPREFIX` ，然后 `./bootstrap-prefix.sh` ，会进行一系列的提问，一一回答即可。建议在运行前设置好 `GENTOO_MIRRORS=http://mirrors.tuna.tsinghua.edu.cn/gentoo` 由于 TUNA 没有对 gentoo_prefix 做镜像，只能把 distfiles 切换到 TUNA 的镜像上。
 
 然后。。。
 
@@ -28,7 +28,7 @@ stage3.
 `emerge -e @world` BOOM
 
 
-经过 n 次跑挂以后，终于搞完了 stage3，然后 `SHELL=bash ./bootstrap-prefix.sh $EPREFIX startscript` 生成 `startprefix` ，在外面的 SHELL 中向切进来的时候运行这个即可。
+经过 n 次跑挂以后，终于搞完了 stage3，然后 `SHELL=bash ./bootstrap-prefix.sh $EPREFIX startscript` 生成 `startprefix` ，在外面的 SHELL 中想切进来的时候运行这个即可。
 
 然后就可以使用 Gentoo/Prefix 了。注意！此时的 `$PATH` 仅限于 `$EPREFIX` 下几个目录和 `/usr/bin` `/bin` 所以很多东西都会出问题（Emacs, Vim, Fish etc）。小心不要把自己的目录什么的搞挂了。
 

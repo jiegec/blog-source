@@ -16,6 +16,6 @@ categories:
 
 确保 Cisco WLC 的 SNMP 的 Public Community 已经配置好，然后就可以拿到数据了。
 
-目前可以拿到 WLC 自身的一些运行˙状态信息、AP 的信息、SSID 的信息和 Client 的信息，基本满足了我们的需求。
+目前可以拿到 WLC 自身的一些运行状态信息、AP 的信息、SSID 的信息和 Client 的信息，基本满足了我们的需求。
 
 参考：https://www.neteye-blog.com/2019/08/monitoring-a-cisco-wireless-controller/

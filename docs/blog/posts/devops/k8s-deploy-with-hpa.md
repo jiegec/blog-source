@@ -35,7 +35,7 @@ $ docker run -d -p 5000:5000 \
         registry:2
 ```
 
-简单起见没有配 tls。然后吧本地的 image push 上去：
+简单起见没有配 tls。然后把本地的 image push 上去：
 
 ```bash
 $ docker tag $image localhost:5000/$image

@@ -8,7 +8,7 @@ categories:
 
 # 在 k8s 中部署 Drone 用于 CI
 
-实验了一下在 k8s 中部署 CI，在 drone gitlab-ci 和 jenkins 三者中选择了 drone，因为它比较轻量，并且基于 docker，可以用 GitHub 上的仓库，比较方便。
+实验了一下在 k8s 中部署 CI，在 drone、gitlab-ci 和 jenkins 三者中选择了 drone，因为它比较轻量，并且基于 docker，可以用 GitHub 上的仓库，比较方便。
 
 首先，配置 helm：
 
@@ -53,7 +53,7 @@ helm upgrade --namespace drone drone drone/drone --values drone-values.yml
 
 然后就可以访问上面配好的域名了。遇到了 cert manager 最近的一个 bug，来回折腾几次就好了。
 
-接着配 drone 的 k8s runnner，也是参考 drone 的文档，编写 drone-runner-kube-values.yml：
+接着配 drone 的 k8s runner，也是参考 drone 的文档，编写 drone-runner-kube-values.yml：
 
 ```yml
 rbac:
@@ -109,6 +109,6 @@ steps:
 
 [Drone helm chart](https://github.com/drone/charts/blob/master/charts/drone/docs/install.md)
 
-[Drone runner kube helm chat](https://github.com/drone/charts/blob/master/charts/drone-runner-kube/docs/install.md)
+[Drone runner kube helm chart](https://github.com/drone/charts/blob/master/charts/drone-runner-kube/docs/install.md)
 
 [Building a CD pipeline with drone CI and kubernetes](https://www.magalix.com/blog/building-a-cd-pipeline-with-drone-ci-and-kubernetes)

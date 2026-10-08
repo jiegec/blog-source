@@ -6,7 +6,7 @@ categories:
     - devops
 ---
 
-# 在 Kubernetes 集群上部署 gitlab—runner
+# 在 Kubernetes 集群上部署 gitlab-runner
 
 按照 GitLab 上的教程试着把 gitlab-runner 部署到 k8s 集群上，发现异常地简单，所以简单做个笔记：
 

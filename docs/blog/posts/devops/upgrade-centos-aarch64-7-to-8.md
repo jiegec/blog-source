@@ -33,7 +33,7 @@ categories:
 2. centos-linux-repos
 3. centos-gpg-keys
 
-然后用 `rpm` 安装。安装完以后，按照 TUNA 镜像文档环源。
+然后用 `rpm` 安装。安装完以后，按照 TUNA 镜像文档换源。
 
 这里介绍几个常用的 rpm 命令，因为后面会经常用：
 

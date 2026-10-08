@@ -31,7 +31,7 @@ $ wget https://mirrors.tuna.tsinghua.edu.cn/debian/dists/jessie/main/installer-m
 ```shell
 # ln -s these files to /private/tftpboot:
 # initrd.gz
-# vmlinux-4.16.0-6-loongson-2f
+# vmlinux-3.16.0-6-loongson-2f
 $ sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist
 # set addr manually to 192.168.2.1
 ```

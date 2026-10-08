@@ -22,9 +22,9 @@ vim /path/to/jail/etc/jailkit/jk_lsh.ini
 # Add following lines
 [jailed_user]
 paths = /usr/bin, /usr/lib
-exectuables = /usr/bin/scp
+executables = /usr/bin/scp
 ```
 
-之后可以发现该用户的 shell 已经更改 jk_chrootsh，并且只能用 scp。
+之后可以发现该用户的 shell 已经更改为 jk_chrootsh，并且只能用 scp。
 
 参考：https://blog.tinned-software.net/restrict-linux-user-to-scp-to-his-home-directory/
