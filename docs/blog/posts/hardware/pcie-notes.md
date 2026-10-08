@@ -65,7 +65,7 @@ TLP 路由有三个方法，决定了这个 TLP 目的地是哪里：
     - Routed by ID
     - Broadcast from Root Complex
     - Local - Terminate at Receiver
-    - Gathered and router to Root Complex
+    - Gathered and routed to Root Complex
 
 
 ### Data Link Layer
@@ -400,7 +400,7 @@ PCIe 6.0 引入了 PAM4 来替代原来的 NRZ，实现了波特率不变的情�
 总结 FLIT 的要点：
 
 1. 每个 FLIT 固定长度 256 字节，其中 236 字节传输 TLP，6 字节传输 DLLP，8 字节传输 CRC，6 字节传输 FEC。
-2. 接受方接受到 FLIT 后，会尝试进行 FEC 解码，并且尝试修复错误，再进行 CRC 校验。如果中途出现了错误，则会发送一个 NAK 给发送方。
+2. 接受方接收到 FLIT 后，会尝试进行 FEC 解码，并且尝试修复错误，再进行 CRC 校验。如果中途出现了错误，则会发送一个 NAK 给发送方。
 2. 一个 TLP 可能跨越多个 FLIT，一个 FLIT 可能包括多个 TLP，根据 TLP 大小而定。TLP 不需要对齐到 FLIT 的开头或者结尾。
 
 可以发现，FLIT 的 CRC 用了 8 个字节，不再需要原来 TLP 和 DLLP 中的 ECRC 和 LCRC。在之前的 PCIe 版本，TLP 的可选 Digest 是 4 个字节的 ECRC，TLP+DLLP 的 LCRC 是 4 字节。具体采用多少字节的 CRC，和目标的错误率，以及传输的字节数相关。

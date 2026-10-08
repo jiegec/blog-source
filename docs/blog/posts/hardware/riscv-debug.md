@@ -83,7 +83,7 @@ categories:
 2. dmstatus 0x11: Debug Module Status
 3. hartinfo 0x12: Hart Info
 4. hartsum 0x13: Hart Summary
-5. command 0x16: Abstract Control and Status
+5. abstractcs 0x16: Abstract Control and Status
 6. data0 0x04: Abstract Data 0
 7. progbuf0 0x20: Program Buffer 0
 8. sbcs 0x38: System Bus Access Control and Status
