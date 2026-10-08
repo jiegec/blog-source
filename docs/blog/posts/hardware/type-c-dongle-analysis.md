@@ -127,7 +127,7 @@ flowchart LR
 这说明一开始认为的“Type-C 只能连到一个芯片上，再分到不同的芯片”的假设是错误的。实际上，Type-C 是可以同时连到多个芯片上的：
 
 - USB 2.0 的 D+/D-，用于 USB 2.0 总线
-- USB 3.0 的四个差分对，可以两个差分对用于 USB 3.0 总线，另外两个差分对用于 DP
+- USB 3.0 Type-C 的四个差分对，可以两个差分对用于 USB 3.0 总线，另外两个差分对用于 DP
 - SBU 信号用于 DP 的 AUX
 - 电源和 CC，用于 USB PD
 
@@ -137,7 +137,7 @@ VL817 只有四个端口，那么，它 USB 3.0 Hub 下四个设备、USB 2.0 Hu
 
 注意到外接的 USB 3.0 端口，它也是 3.0 和 2.0 兼具的，而且得是同一个 Port，所以 VL817 前三个 Port 就是 USB 3.0 和 2.0 同时连到外接 USB 端口上。那只剩下一个 Port 了，这个 Port 上又需要接 RTL8153，又需要接 Terminus USB 2.0 Hub，此外还有一个 USB 2.0 的 Billboard 2109:8888 设备，这哪接的下来？
 
-答案是：最后一个 Port，把 3.0 部分和 2.0 部分分开：3.0 接 RTL8153，2.0 接 Terminus USB 2.0 Hub。实际上，从 USB 总线枚举上来看，这两个设备对应的 Port ID 是一样的。而那个 2109:8888 Billboard 设备，只是 VL817 自己虚拟出来的设备，并没有实体。
+答案是：最后一个 Port，把 3.0 部分和 2.0 部分分开：3.0 接 RTL8153，2.0 接 Terminus USB 2.0 Hub。实际上，从 USB 总线枚举上来看，这两个设备对应的 Port ID 是一样的。而那个 2109:8888 Billboard 设备，只是 VL817 自己枚举出来的设备，并没有实体。
 
 至于 USB C Video Adaptor 9636:9300 是怎么来的，其实就是 DP Alt-mode 的要求：VL103 同时也是一个 USB 2.0 Device，这个 Device 就是这个 USB C Video Adaptor，给 Host 汇报 Alt-mode 的一些信息。因为有这个 USB C Video Adaptor 和 GL3224 都需要接到 VL817 最后一个 USB 2.0 端口上，放不下，才又引入了一个 Terminus USB 2.0 Hub。
 
@@ -188,16 +188,16 @@ flowchart LR
 ```mermaid
 flowchart LR
     Host --> PD --> Unknown
-    Host --> USB2[USB 2.0] --> GL805G[GL805G USB 2.0 Hub 05e3:0608]
-    GL805G --> Port2[USB 2.0 Port #1]
-    GL805G --> Port3[USB 2.0 Port #2]
-    GL805G -->|USB 2.0| Port1
-    GL805G --> Port5[USB Billboard Device 343c:0000]
+    Host --> USB2[USB 2.0] --> GL850G[GL850G USB 2.0 Hub 05e3:0608]
+    GL850G --> Port2[USB 2.0 Port #1]
+    GL850G --> Port3[USB 2.0 Port #2]
+    GL850G -->|USB 2.0| Port1
+    GL850G --> Port5[USB Billboard Device 343c:0000]
     Host --> USB3[USB 3.0 2 lanes] -->|USB 3.0| Port1[USB 3.0 Port]
     Host --> DP[DP 2 lanes] --> Unknown --> HDMI
 ```
 
-实际上，因为 CM478-15495 的 USB 3.0 端口是直接接到了电脑上，没有像 KZ11 那样过了一个 USB 3.1 Gen 1 的 VL817 Hub，实际速率可以达到 10 Gbps，也就是 USB 3.1 Gen 2。同一个设备，插到 KZ11 的 USB 3.0 口上，就只有 5 Gbps 的速率了。
+实际上，因为 CM478-15495 的 USB 3.0 端口是直接接到了电脑上，没有像 KZ11 那样过了一个 USB 3.1 Gen 1 的 VL817 Hub，在 macOS 实测速率可以协商到 10 Gbps，也就是 USB 3.1 Gen 2。同一个设备，插到 KZ11 的 USB 3.0 口上，就只有 5 Gbps 的速率了。
 
 ## 附录：分析飞利浦 SWR1607L/93
 
@@ -220,7 +220,7 @@ flowchart LR
 
 有意思的是，如果我直接用 Type-C 连显示器，那么它就可以用四个 lane 传 5.40 Gbps (HBR2) 速率，这样总速率达到了 21.60 Gbps，考虑编码损失还有 `21.60*8/10=17.28` Gbps，甚至可以 4K 75 Hz 4:4:4 8bpc，毕竟它只需要 `3840*2160*75*24=14.9` Gbps 带宽，算上消隐区，也就是 `4000*2205*75*24=15.88` Gbps。
 
-所以对于各种 Type-C 拓展坞来说，因为要保留 Type-C Hub 功能，所以最多有两个 lane 用于 DP，此时能跑到 4K 30Hz，还是 4K 60Hz，就取决于能跑到 HBR2 还是 HBR3 上。HBR2 就对应 4K 30Hz 4:4:4 8bpc 或者 4K 60Hz 4:2:0 8bpc，HBR3 就对应 4K 60Hz 4:4:4 8bpc。如果不走拓展坞，直连显示器，四个 lane 都可以用于 DP，此时即使是 HBR2，也能跑到 4K 75Hz 4:4:4 8bpc 上。
+所以对于各种 Type-C 拓展坞来说，因为要保留 Type-C Hub 功能，所以最多有两个 lane 用于 DP，此时能跑到 4K 30Hz，还是 4K 60Hz，就取决于能跑到 HBR2 还是 HBR3 上。HBR2 就对应 4K 30Hz 4:4:4 8bpc 或者 4K 60Hz 4:2:0 8bpc，HBR3 就对应 4K 60Hz 4:4:4 8bpc（但需要消隐区比较少的时序，带宽特别紧张）。如果不走拓展坞，直连显示器，四个 lane 都可以用于 DP，此时即使是 HBR2，也能跑到 4K 75Hz 4:4:4 8bpc 上。
 
 也做了一个小实验，如果把显示器通过 Type-C 接到飞利浦 SWR1607L/93 的 USB 3.0 Type-C 口上，显示输出就不工作了，因为这个口过了一个 Hub，这个 Hub 不支持 DP Alt-mode。
 
