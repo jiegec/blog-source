@@ -59,7 +59,7 @@ categories:
 - QQ（在应用尝鲜内）
 - CodeArts IDE（在应用尝鲜内，需要开发者模式）
 
-暂时还没有微信，可以通过操控手机来发微信，但是在消息栏里按回车是换行，没找到发送按钮对应的电脑按键，需要手动操。但是居然有企业微信。
+暂时还没有微信，可以通过操控手机来发微信，但是在消息栏里按回车是换行，没找到发送按钮对应的电脑按键，需要手动操作。但是居然有企业微信。
 
 UPDATE: 2025-06-26 微信正式上架。
 
@@ -122,14 +122,14 @@ $ pwd
 $ python3 main.py
 Hello World!
 $ which python3
-/storage/Users/currentUser/IDEProjects/pythonProject/venv/bin/python3o
+/storage/Users/currentUser/IDEProjects/pythonProject/venv/bin/python3
 $ /data/app/bin/python --version
 Python 3.12.5
 ```
 
 这里的 `/storage/Users/currentUser/` 就是 HOME 目录，对应文件管理器的个人目录。
 
-看了看 `/data/app/bin` 目录，下面有 git，python，unzip, vi，rg，java（bisheng jdk 8/17），ssh，electron（用来跑 LSP！）等等。
+看了看 `/data/app/bin` 目录，下面有 git，python，unzip，vi，rg，java（bisheng jdk 8/17），ssh，electron（用来跑 LSP！）等等。
 
 试了试 pip，也是工作的：
 
@@ -249,7 +249,7 @@ UPDATE: 2025-12-11 经 @w12101111 群友提醒，在设置->隐私和安全->高
 
 在 6 核 Oseasy 虚拟机里运行 ARM64 Geekbench 6：[Single-Core 1436, Multi-Core 5296](https://browser.geekbench.com/v6/cpu/12309313)。Oseasy 8 核：[Single-Core 1462, Multi-Core 7043](https://browser.geekbench.com/v6/cpu/12309427)。算上剩下的 12 个逻辑核，考虑虚拟化的开销，多核分数达到网传的 11640 分，感觉是可能的。
 
-Oseasy 虚拟机只允许开到 8 个核心，实测下来，会优先调度到 0xD03 的八个逻辑核中其中四个逻辑核（不同时用一个物理核的两个逻辑核），之后再调度到 0xD43 的八个逻辑核中的四个逻辑核（也不同时用同一个物理核的两个逻辑核）。在 Oseasy 虚拟机里看到的 CPU 信息是 Cortex-A53，没有正确暴露外面的处理器信息，从 cpuinfo 来看，也没有暴露 SVE。
+Oseasy 虚拟机只允许开到 8 个核心，实测下来，会优先调度到 0xD03 的八个逻辑核中的四个逻辑核（不同时用一个物理核的两个逻辑核），之后再调度到 0xD43 的八个逻辑核中的四个逻辑核（也不同时用同一个物理核的两个逻辑核）。在 Oseasy 虚拟机里看到的 CPU 信息是 Cortex-A53，没有正确暴露外面的处理器信息，从 cpuinfo 来看，也没有暴露 SVE。
 
 UPDATE: 能跑 Linux 了，见 [在鸿蒙电脑上的虚拟机内启动 Linux](../software/linux-vm-on-harmonyos-computer.md)。
 
@@ -315,7 +315,7 @@ index 7b8532f..76c009c 100644
 
 ## 卓易通
 
-2025-12-15：在应用市场的应用尝鲜里看到了卓易通，目前只能全屏打开 Android 应用。试了一下 Duolinguo，是左右分屏的显示方式，有点类似双折叠手机，左右各一个竖屏。
+2025-12-15：在应用市场的应用尝鲜里看到了卓易通，目前只能全屏打开 Android 应用。试了一下 Duolingo，是左右分屏的显示方式，有点类似双折叠手机，左右各一个竖屏。
 
 ## 移植问题
 
