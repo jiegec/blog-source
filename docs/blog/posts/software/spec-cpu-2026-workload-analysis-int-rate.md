@@ -895,7 +895,7 @@ sealcrypto_r refrate ecuador_province_capitals_refrate.csv Galapagos
 首先还是对 `-O3` 的 GCC 14 进行热点分析：
 
 - `seal::util::DWTHandler::transform_to_rev(ValueType *values, int log_n, const RootType *roots, const ScalarType *scalar = nullptr)` 来自 `src/seal/util/dwthandler.h`：25.65%，这里 DWT 是离散小波变换 Discrete Wavelet Transform，上一次看到小波变换还是 Ghost Hunter，没想到在这里又遇到了，具体到指令上，就是一堆 imul/add/shr/shl 的运算指令；
-- `seal::util::DWTHandler::transform_from_rev(ValueType *values, int log_n, const RootType *roots, const ScalarType *scalar = nullptr)` 来自 `src/seal/util/DWTHandler.h`：16.58%，应该是 DWT 的逆过程，计算模式基本一样；
+- `seal::util::DWTHandler::transform_from_rev(ValueType *values, int log_n, const RootType *roots, const ScalarType *scalar = nullptr)` 来自 `src/seal/util/dwthandler.h`：16.58%，应该是 DWT 的逆过程，计算模式基本一样；
 - `seal::util::multiply_uint64_generic(T operand1, S operand2, unsigned long long *result128)` 来自 `src/seal/util/uintarith.h`：11.60%，实现了 64 位乘以 64 位得到 128 位结果的乘法，也是一堆乘法、加法和位运算；
 - `seal::util::dot_product_mod(const uint64_t *operand1, const uint64_t *operand2, size_t count, const Modulus &modulus)` 来自 `src/seal/util/uintarithsmallmod.cpp`：11.48%，实现的是点乘后取模的操作，调用 `multiply_accumulate_uint64` 函数进行乘法和累加，最后用 `barrett_reduce_128` 进行取模；
 - `seal::util::dyadic_product_coeffmod(ConstCoeffIter operand1, ConstCoeffIter operand2, size_t coeff_count, const Modulus &modulus, CoeffIter result)` 来自 `src/seal/util/polyarithsmallmod.cpp`：9.08%，实现的是 element wise 的模乘；

@@ -113,7 +113,7 @@ ARM Neoverse N1 是 2019 年发布的比较早的一代 ARM 服务器的处理�
 
 - 第一个台阶到 16 条分支，CPI=1，对应了 16-entry 的 Nano BTB，和之前一样
 - 第二个台阶到 1024 条分支，CPI=2，此时遇到了 64KB ICache 的瓶颈：`1024*64B=64KB`，和之前一样
-- 第三个台阶到 3122 条分支，CPI=6，比 Main BTB 的 3 cycle latency 大，是因为 64KB ICache 出现了缺失，此时 Main BTB 的容量砍半
+- 第三个台阶到 3072 条分支，CPI=6，比 Main BTB 的 3 cycle latency 大，是因为 64KB ICache 出现了缺失，此时 Main BTB 的容量砍半
 
 stride=64B 相比 stride=32B 的 Main BTB 容量砍半，这是组相连的表现：如果 PC[5] 在组相连的 index 当中，那么当 stride=64B 时，PC[5] 恒等于 0，意味着只有一半的 set 可以被用到，那也就只有一半的容量了。
 
@@ -133,7 +133,7 @@ Nano BTB 和 Micro BTB 容量没有变小，意味着它们大概率是全相连
 - 第二个台阶到 512 条分支，CPI=2，此时遇到了 64KB ICache 的瓶颈：`512*128B=64KB`，和之前一样
 - 第三个台阶到 1536 条分支，CPI=6.x，比 Main BTB 的 3 cycle latency 大，是因为 64KB ICache 出现了缺失，此时 Main BTB 的容量进一步砍半
 
-stride=128B 相比 stride=64B 的 Main BTB 容量进一步砍半，也是组相连的表现，意味着 PC[6] 也在组相连的 idnex 当中，只有四分之一的 set 可以被用到。
+stride=128B 相比 stride=64B 的 Main BTB 容量进一步砍半，也是组相连的表现，意味着 PC[6] 也在组相连的 index 当中，只有四分之一的 set 可以被用到。
 
 那么 stride=128B 的情况下遗留的问题和 stride=32B 一样：为什么在 Main BTB 的范围内出现了 CPI=2 的平台？
 

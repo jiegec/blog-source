@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-之前我们测试了 Intel 的微架构 [Redwood Cove](./intel-golden-cove.md)，这次就来测一下 Redwood Cove，它被用到了 Meteor Lake 以及 Granite Rapids 上。这次就以阿里云 [g9i](https://help.aliyun.com/zh/ecs/user-guide/overview-of-instance-families#g9i) 实例的 Granite Rapids 机器来测试一下 Redwood Cove 微架构的各项指标。
+之前我们测试了 Intel 的微架构 [Golden Cove](./intel-golden-cove.md)，这次就来测一下 Redwood Cove，它被用到了 Meteor Lake 以及 Granite Rapids 上。这次就以阿里云 [g9i](https://help.aliyun.com/zh/ecs/user-guide/overview-of-instance-families#g9i) 实例的 Granite Rapids 机器来测试一下 Redwood Cove 微架构的各项指标。
 
 <!-- more -->
 
