@@ -224,6 +224,26 @@ flowchart LR
 
 也做了一个小实验，如果把显示器通过 Type-C 接到飞利浦 SWR1607L/93 的 USB 3.0 Type-C 口上，显示输出就不工作了，因为这个口过了一个 Hub，这个 Hub 不支持 DP Alt-mode。
 
+## 附录：分析绿联 CM136-70495
+
+也分析一下 绿联 CM136-70495 拓展坞的配置，它的参数如下：
+
+- 接口上，支持 USB3.0*3+PD+HDMI
+- USB 3.0 5Gbps
+- HDMI: 4K 60Hz
+- PD 3.0 100W
+
+它的接口和上面的 飞利浦 SWR1607L/93 是一模一样，唯一的不同就是，绿联 CM136-70495 三个 USB 3.0 都是 Type-A，而飞利浦 SWR1607L/93 把其中一个换成了 Type-C。
+
+在系统里看到的是两个 Hub：
+
+- USB 3.0 Hub 2109:0817 5Gbps
+- USB 2.0 Hub 2109:2817 480Mbps
+
+看到这个熟悉的 VID/PID，不出意外，它用的和 Biaze KZ11 一样，也是 VL817，USB 3.1 Gen 1 5Gbps 的四口 Hub。然后三个 USB 3.0 Type-A 口都是挂在这个 VL817 四口 Hub 下。离 HDMI 最近的口是 Port 4，次近的是 Port 1，最远的是 Port 2。
+
+与飞利浦 SWR1607L/93 一样，它也能跑到 4K 60Hz 4:4:4 8bpc，在 macOS 里看，果然是 2 lane 的 HBR3。这次也没有 Billboard Device 出现。
+
 ## 附录：其他常用拓展坞芯片
 
 - [AX88179](https://static.chipdip.ru/lib/923/DOC000923116.pdf): USB 3.0 to 1000M Ethernet Controller
