@@ -18,7 +18,7 @@ categories:
 
 编译中会找不到一些库，比如可能需要安装这些依赖：`liblemon-dev libeigen3-dev libreadline-dev swig`，此外运行的时候还需要 `klayout` 依赖。
 
-如果遇到解决 cmake 找不到 LEMON 的问题，这是一个 [BUG](https://lemon.cs.elte.hu/trac/lemon/ticket/628)，可以运行下面的命令解决：
+如果遇到 cmake 找不到 LEMON 的问题，这是一个 [BUG](https://lemon.cs.elte.hu/trac/lemon/ticket/628)，可以运行下面的命令解决：
 
 ```shell
 cd /usr/lib/x86_64-linux-gnu/cmake/lemon
@@ -119,7 +119,7 @@ ARM 的文档 [Choosing the physical IP libraries](https://developer.arm.com/doc
 
 ## CCS v.s. NLDM
 
-由于物理的特性比较复杂，工艺库里描述的也只是一个大致的模型，刻画了这些 cell 的特性，那么自然可以选取不同的模型。NLDM（上面举的例子就是 NLDM），CCS 就是常见的两个模型，相比之下，CCS 更精确，同时参数更多。更精确的还有直接用 SPICE 描述的电路。详细的对比可以看下面的参考文档。
+由于物理的特性比较复杂，工艺库里描述的也只是一个大致的模型，刻画了这些 cell 的特性，那么自然可以选取不同的模型。NLDM（上面举的例子就是 NLDM）和 CCS 就是常见的两个模型，相比之下，CCS 更精确，同时参数更多。更精确的还有直接用 SPICE 描述的电路。详细的对比可以看下面的参考文档。
 
 ## 参考文档
 

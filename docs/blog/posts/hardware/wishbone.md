@@ -72,9 +72,9 @@ categories:
 - `c` 周期：此时 `valid_o=1 && ready_i=0` 说明 master 想要从地址 0x02（`addr_o=0x02`）读取数据（`we_o=0`），但是 slave 没有接受（`ready_i=0`）
 - `d` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 从地址 0x02（`addr_o=0x02`）读取数据（`we_o=0`），读取的数据为 0x34（`data_i=0x34`）
 - `e` 周期：此时 `valid_o=0 && ready_i=0` 说明无事发生
-- `f` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 向地址 0x03（`addr_o=0x03`）写入数据（`we_o=1`），写入的数据为 0x56（`data_i=0x56`）
+- `f` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 向地址 0x03（`addr_o=0x03`）写入数据（`we_o=1`），写入的数据为 0x56（`data_o=0x56`）
 - `g` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 从地址 0x01（`addr_o=0x01`）读取数据（`we_o=0`），读取的数据为 0x12（`data_i=0x12`）
-- `h` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 向地址 0x02（`addr_o=0x02`）写入数据（`we_o=1`），写入的数据为 0x9a（`data_i=0x9a`）
+- `h` 周期：此时 `valid_o=1 && ready_i=1` 说明有请求发生，master 向地址 0x02（`addr_o=0x02`）写入数据（`we_o=1`），写入的数据为 0x9a（`data_o=0x9a`）
 
 从上面的波形中，可以有几点观察：
 
@@ -174,8 +174,8 @@ categories:
 }
 ```
 
-- `a` 周期：master 请求读地址 0x01，slave 接收读请求（`STALL_O=0`）
-- `b` 周期：slave 返回读请求结果 0x12，并设置 `ACK_I=1`；同时 master 请求读地址 0x02，slave 接收读请求（`STALL_O=0`）
+- `a` 周期：master 请求读地址 0x01，slave 接收读请求（`STALL_I=0`）
+- `b` 周期：slave 返回读请求结果 0x12，并设置 `ACK_I=1`；同时 master 请求读地址 0x02，slave 接收读请求（`STALL_I=0`）
 - `c` 周期：slave 返回读请求结果 0x34，并设置 `ACK_I=1`；master 不再发起请求，设置 `STB_O=0`
 - `d` 周期：所有请求完成，master 设置 `CYC_O=0`
 
