@@ -32,7 +32,7 @@ categories:
 - [GL3224](https://datasheet.lcsc.com/datasheet/pdf/5c4f88684f5251afc47f0c71b7afbb47.pdf?productCode=C157357)：USB 3.2 Gen 1 的读卡器，用于 TF/SD 卡读取
 - [VL103](http://www.usbtech.net/upload/portal/20210128/5fd1d287e44435e7296e05398fa0210c.pdf)：Type-C DP Alt-Mode 和 PD 3.0 控制器
 - [VL817](https://datasheet.lcsc.com/datasheet/pdf/2c50386e71e0024e256f1a4e608872ad.pdf?productCode=C29780427)：USB 3.1 Gen 1 (5Gbps) 的 Hub，最多接四个下游设备
-- [AG6320](https://img.jdzj.com/UserDocument/mallpic/QQ1659747718/dn/zl8535.pdf)：把 DP 转化为 HDMI 或者 VGA 信号，同时音频通过 I2S 接口输出，DP 运行在 5.40 Gbps HBR2 速率下，两个 lane 带宽一共是 10.80 Gbps，考虑编码损失还有 `10.80*8/10=8.64` Gbps，所以最高 4K 30Hz 4:4:4，它需要的带宽是 `3840*2160*30*24=5.97` Gbps，算上消隐区就是 `4400*2250*30*24=7.13` Gbps
+- [AG6320](https://img.jdzj.com/UserDocument/mallpic/QQ1659747718/dn/zl8535.pdf)：把 DP 转化为 HDMI 或者 VGA 信号，同时音频通过 I2S 接口输出，DP 运行在 5.40 Gbps HBR2 速率下，两个 lane 带宽一共是 10.80 Gbps，考虑编码损失还有 `10.80*8/10=8.64` Gbps，所以最高 4K 30Hz 4:4:4 8bpc，它需要的带宽是 `3840*2160*30*24=5.97` Gbps，算上消隐区就是 `4400*2250*30*24=7.13` Gbps
 
 于是我就想，既然 Type-C 拓展坞连电脑只有一个 Type-C，这个 Type-C 只能连一个设备，而下游有这么多设备：RTL8153，GL3224、VL103，都需要接到 USB 总线上，需要 VL817 来拓展，此外还有三个额外的 USB 口，那就至少有六个设备了，一个 VL817 不够，那就得级联一下：
 
@@ -214,11 +214,11 @@ flowchart LR
 
 目测又是 Genesys Logic 的 4 口 Hub，根据网上信息，猜测是 [GL3523](https://file.elecfans.com/web2/M00/70/41/poYBAGNKskWAA6yCABIBqv_sYz0403.pdf)，四口 USB 3.1 Gen 1 的 Hub。
 
-考虑到它只有 5Gbps，那么应该又是 Type-C 的两个 lane 通过 4 口 Hub 接出了三个 USB 3.0，剩下一个本来怀疑是留给 DP Alt-mode 的 Billboard Device，但实际上无论是否插 HDMI，都没有这个设备出现。Hub 的Port 4 对应 USB 3.0 Type-C 口，Port 3 对应 Type-C 旁边的 USB 3.0 Type-A 口，Port 2 则是最后一个离 Type-C 口最远的 USB 3.0 Type-C 口。
+考虑到它只有 5Gbps，那么应该又是 Type-C 的两个 lane 通过 4 口 Hub 接出了三个 USB 3.0，剩下一个本来怀疑是留给 DP Alt-mode 的 Billboard Device，但实际上无论是否插 HDMI，都没有这个设备出现。Hub 的 Port 4 对应 USB 3.0 Type-C 口，Port 3 对应 Type-C 旁边的 USB 3.0 Type-A 口，Port 2 则是最后一个离 Type-C 口最远的 USB 3.0 Type-C 口。
 
-另外两个 lane 则是给了 DP Alt-mode，这里的 HDMI 能跑到 4K60Hz，说明它的 DP 跑在了更高的速率：在 macOS 里看，它的 DP 运行在 8.10 Gbps (HBR3) 速率上，这样两个 lane 的总带宽就是 16.20 Gbps，考虑编码损失还有 `16.2*8/10=12.96` Gbps，足够 4K 60Hz 4:4:4 的 `3840*2160*60*24=11.94` Gbps 带宽，算上消隐区（需要消隐区比较少的时序），也就是 `4000*2205*60*24=12.70` Gbps。
+另外两个 lane 则是给了 DP Alt-mode，这里的 HDMI 能跑到 4K 60Hz 4:4:4 8bpc，说明它的 DP 跑在了更高的速率：在 macOS 里看，它的 DP 运行在 8.10 Gbps (HBR3) 速率上，这样两个 lane 的总带宽就是 16.20 Gbps，考虑编码损失还有 `16.2*8/10=12.96` Gbps，足够 4K 60Hz 4:4:4 的 `3840*2160*60*24=11.94` Gbps 带宽，算上消隐区（需要消隐区比较少的时序），也就是 `4000*2205*60*24=12.70` Gbps。
 
-有意思的是，如果我直接用 Type-C 连显示器，那么它就可以用四个 lane 传 5.40 Gbps (HBR2) 速率，这样总速率达到了 21.60 Gbps，考虑编码损失还有 `21.60*8/10=17.28` Gbps，甚至可以 4K 75 Hz 4:4:4，毕竟它只需要 `3840*2160*75*24=14.9` Gbps 带宽，算上消隐区，也就是 `4000*2205*75*24=15.88` Gbps。
+有意思的是，如果我直接用 Type-C 连显示器，那么它就可以用四个 lane 传 5.40 Gbps (HBR2) 速率，这样总速率达到了 21.60 Gbps，考虑编码损失还有 `21.60*8/10=17.28` Gbps，甚至可以 4K 75 Hz 4:4:4 8bpc，毕竟它只需要 `3840*2160*75*24=14.9` Gbps 带宽，算上消隐区，也就是 `4000*2205*75*24=15.88` Gbps。
 
 ## 附录：其他常用拓展坞芯片
 
