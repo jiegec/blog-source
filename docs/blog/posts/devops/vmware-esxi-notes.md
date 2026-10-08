@@ -109,7 +109,7 @@ $ esxcli network firewall ruleset set --enabled=false --ruleset-id=sshClient
 
 - https://kb.vmware.com/s/article/85468 vCSA 日志分区 `/storage/log` 满，原因是访问 vmware 网站失败打印的日志太大：`/storage/log/vmware/analytics/analytics-runtime.log*`；解决方法：`vmon-cli -r analytics` 重启服务，然后删掉旧的日志。
 - https://kb.vmware.com/s/article/83070 vCSA 日志分区 `/storage/log` 满，原因是 tomcat 日志太大。
-- `XXX Service Health Alarm`：尝试重启对应服务，比如 `vmon-cli -r perfcharts` 对应 `Performance Charts`，`vmon-cli -r vapi-endpoint` 对应 `VMWare vAPI Endpoint`
+- `XXX Service Health Alarm`：尝试重启对应服务，比如 `vmon-cli -r perfcharts` 对应 `Performance Charts`，`vmon-cli -r vapi-endpoint` 对应 `VMware vAPI Endpoint`
 
 查看更新状态：`cat /storage/core/software-update/stage_operation`；更新文件下载路径：`/storage/updatemgr/software-update*/stage`。有一个包特别大：`wcpovf` 需要两个多 G。
 
@@ -117,10 +117,10 @@ CLI 更新方法：https://earlruby.org/2021/01/upgrading-vcenter-7-via-the-comm
 
 ## 迁移虚拟机到不同 VM
 
-首先，unregister 原来的 VM，然后把文件移动到新的路径下。对于 Thin Provisioned Disk，需要特殊处理，否则直接复制的话，会变成 Thick Provisioned Disk，正确方法是采用 `vmkfstool`：
+首先，unregister 原来的 VM，然后把文件移动到新的路径下。对于 Thin Provisioned Disk，需要特殊处理，否则直接复制的话，会变成 Thick Provisioned Disk，正确方法是采用 `vmkfstools`：
 
 ```shell
-vmkfstool -i "old.vmdk" -d thin "new.vmdk"
+vmkfstools -i "old.vmdk" -d thin "new.vmdk"
 ```
 
 需要注意的是，这里的路径用的是不带 `-flat` 的 vmdk，因为这个文件记录了 metadata，而 `-flat.vmdk` 保存了实际的数据。可以用 `du` 命令看实际的硬盘占用，从而确认它确实是 Thin Provisioned。

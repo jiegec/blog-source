@@ -17,7 +17,7 @@ categories:
 
 迁移的时候有很多细节上的不同，不过基本靠 VSCode 的正则表达式替换解决了。
 
-不过，Mkdocs 又出现了 Jekyll 的老问题，就是性能比较差。当然了，不一定是 Mkdocs 本身的问题，也可能是 Mkdocs-Material 加各种插件的问题，目前还有待观察。无论如何，Python 调起来总归是比 Ruby 要容易。希望不要在未来的某一天，由从 Mkdocs 迁移回 Hugo。
+不过，Mkdocs 又出现了 Jekyll 的老问题，就是性能比较差。当然了，不一定是 Mkdocs 本身的问题，也可能是 Mkdocs-Material 加各种插件的问题，目前还有待观察。无论如何，Python 调起来总归是比 Ruby 要容易。希望不要在未来的某一天，又从 Mkdocs 迁移回 Hugo。
 
 <!-- more -->
 

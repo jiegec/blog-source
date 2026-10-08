@@ -52,7 +52,7 @@ DG Arr Row EID:Slot DID Type  State BT       Size PDC  PI SED DS3  FSpace TR
  1 0   2   32:3     3   DRIVE Onln   N    3.637 TB dflt N  N   dflt -      N
 ```
 
-可以看到 DG1 处于 Degraded 状态，然后 E32S4 处于 Failed 状态。参考了一下 [PERCCli 文档](https://dl.dell.com/topicspdf/cli_guide_en-us.pdf)，它告诉我们要这么做：
+可以看到 DG1 处于 Degraded 状态，然后 E32S2 处于 Failed 状态。参考了一下 [PERCCli 文档](https://dl.dell.com/topicspdf/cli_guide_en-us.pdf)，它告诉我们要这么做：
 
 ```shell
 perccli /cx[/ex]/sx set offline

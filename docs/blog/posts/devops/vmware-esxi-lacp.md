@@ -30,7 +30,7 @@ categories:
 
 第五步，如果要把 VMKernel 连到链路聚合的网络上，找到虚拟机，添加一个 VMKernel adapter，端口组为 Distributed Port Group，如默认创建的第一个 Distributed Port Group。类似地，此时 VMKernel 配置的 IP 地址还不能从外面访问，但是可以从同一个 Distributed Switch 的虚拟机中访问。
 
-第六步，修改 Failover 配置，找到 Distributed Switch，点击 ACTIONS，在 Distributed Port Group 里点击 Manager Distributed Port Groups，勾选 Teaming and failover，勾上所有的 Distributed Port Group，修改下面的 Failover Order，默认状态是 Active uplinks 只有 Uplink，没有 LAG，需要修改为 Active uplinks 只有 LAG，而 Uplink 都在 Unused Uplinks 中。这样才可以让虚拟机和 VMKernel 出去的流量走链路聚合。
+第六步，修改 Failover 配置，找到 Distributed Switch，点击 ACTIONS，在 Distributed Port Group 里点击 Manage Distributed Port Groups，勾选 Teaming and failover，勾上所有的 Distributed Port Group，修改下面的 Failover Order，默认状态是 Active uplinks 只有 Uplink，没有 LAG，需要修改为 Active uplinks 只有 LAG，而 Uplink 都在 Unused Uplinks 中。这样才可以让虚拟机和 VMKernel 出去的流量走链路聚合。
 
 参考文档：[LACP Teaming and Failover Configuration for Distributed Port Groups](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.networking.doc/GUID-9454ED41-6CFC-49F1-9982-34C1276F775A.html) 和 [Configure a Link Aggregation Group to Handle the Traffic for Distributed Port Groups](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.networking.doc/GUID-45DF45A6-DBDB-4386-85BF-400797683D05.html)
 

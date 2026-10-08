@@ -19,7 +19,7 @@ categories:
 
 首先，安装相关的包：
 ``` shell
-$ sudo apt install gpm fcitx-fronend-fbterm dbus-x11 fbterm fonts-wqy-zenhei
+$ sudo apt install gpm fcitx-frontend-fbterm dbus-x11 fbterm fonts-wqy-zenhei
 ```
 
 接着，基于以上参考网站第一个，编写 zhterm 文件：

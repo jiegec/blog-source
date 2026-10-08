@@ -17,7 +17,7 @@ categories:
 5. 中科大老运维的笔记 [ITTS](https://github.com/bg6cq/ITTS)
 6. Go 源码研究电子书 目测还在编写，不过读来挺有收获的 [go-under-the-hood](https://github.com/changkun/go-under-the-hood)
 7. 第一次了解到 ELF Aux Vectors [auxv](http://articles.manugarg.com/aboutelfauxiliaryvectors.html)
-8. 发现了 C99 的参数列表里 static 数组大小语法 [static array indicies](https://hamberg.no/erlend/posts/2013-02-18-static-array-indices.html)
+8. 发现了 C99 的参数列表里 static 数组大小语法 [static array indices](https://hamberg.no/erlend/posts/2013-02-18-static-array-indices.html)
 9. 发现一个有趣的包装了 socket 的消息库 支持一些消息分发方法 [nanomsg](https://nanomsg.org/index.html)
 10. 找到一个可视化 YUV 和视频解码的一些内部信息的工具 [YUVView](https://github.com/IENT/YUView)
 11. 通过动态 QRCode 传输数据 [txqr](https://github.com/divan/txqr) [qr-transfer](https://github.com/dangfan/qr-transfer)
@@ -25,7 +25,7 @@ categories:
 13. Android runtime 中动态获取权限的库 [Dexter](https://github.com/Karumi/Dexter)
 14. 来自 Berrysoft 的 Stream operators in C++ [CppLinq](https://github.com/Berrysoft/CppLinq)
 15. Squirrel (Rime for macOS) 在两年以后终于出了 0.10.0 新版本 有了好看的新皮肤
-16. 神奇的 v8 漏洞利用 实在是太复杂了 [exploting math expm1 in v8](https://abiondo.me/2019/01/02/exploiting-math-expm1-v8/)
+16. 神奇的 v8 漏洞利用 实在是太复杂了 [exploiting math expm1 in v8](https://abiondo.me/2019/01/02/exploiting-math-expm1-v8/)
 17. JWT How-to 发现 Koa 和 Flask 的 session 默认实现也是同样的原理 [learn-json-web-tokens](https://github.com/dwyl/learn-json-web-tokens)
 18. 配置 DNS CAA 的在线工具 限制 CA 签证书的方案 [sslmate caa](https://sslmate.com/caa/)
 19. 又一个 Python 的 Parser 库 配合有趣的 decorator 语法 [sly](https://github.com/dabeaz/sly)

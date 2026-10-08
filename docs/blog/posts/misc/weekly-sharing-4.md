@@ -19,7 +19,7 @@ categories:
 7. 边看 youtube tutorial 边写代码 https://yourepl.tumblr.com/post/180936303347/announcing-yourepl
 8. 又一个 PostgreSQL 网页版客户端 https://github.com/sosedoff/pgweb
 9. 有趣的 CSS Layout 学习方法 http://cssgridgarden.com/#en http://flexboxfroggy.com/
-10. pipenv 也有过 easter egg https://github.com/pypa/pipenv/issues/786 不过影比 antd 这个事情好多了
+10. pipenv 也有过 easter egg https://github.com/pypa/pipenv/issues/786 不过比起 antd 这个事情好多了
 11. Web 太强了 啥都能做 https://whatwebcando.today/
 12. 来自娄晨耀的清真 DNS 解决方案 https://github.com/Chenyao2333/freedns-go
 13. 快速的 tldr 实现 https://github.com/dbrgn/tealdeer

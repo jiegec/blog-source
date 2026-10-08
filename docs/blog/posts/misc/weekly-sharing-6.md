@@ -15,7 +15,7 @@ categories:
 3. Endianness MATTERS! -- Harry Chen
 4. 各数据库的带补全的 CLI https://www.dbcli.com/
 5. 边开发边测试 k8s 部署 [tilt](https://github.com/windmilleng/tilt)
-6. Github unlimited free private repos 于是称为了 PRO 用户 https://blog.github.com/2019-01-07-new-year-new-github/
+6. Github unlimited free private repos 于是成为了 PRO 用户 https://blog.github.com/2019-01-07-new-year-new-github/
 7. Github 美食博主还行 https://github.com/hendricius/pizza-dough
 8. 一个用于本地化的库 https://github.com/dustin/go-humanize
 9. Vim Verilog 补全 https://github.com/vhda/verilog_systemverilog.vim

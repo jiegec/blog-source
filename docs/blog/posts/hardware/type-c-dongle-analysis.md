@@ -213,7 +213,7 @@ flowchart LR
 
 目测又是 Genesys Logic 的 4 口 Hub，根据网上信息，猜测是 [GL3523](https://file.elecfans.com/web2/M00/70/41/poYBAGNKskWAA6yCABIBqv_sYz0403.pdf)，四口 USB 3.1 Gen 1 的 Hub。
 
-考虑到它只有 5Gbps，那么应该又是 Type-C 的两个 lane 通过 4 口 Hub 接出了三个 USB 3.0，剩下一个口有两种可能：一是是留给 DP Alt-mode 的 Billboard Device，但实际上无论是否插 HDMI，都没有这个设备出现，或许是因为 DP Alt-mode 协商正常工作，所以 Billboard Device 没有出现，但实际上还是占用了一个口；二是它就是没有接任何设备。Hub 的 Port 4 对应 USB 3.0 Type-C 口，Port 3 对应 Type-C 旁边的 USB 3.0 Type-A 口，Port 2 则是最后一个离 Type-C 口最远的 USB 3.0 Type-C 口。
+考虑到它只有 5Gbps，那么应该又是 Type-C 的两个 lane 通过 4 口 Hub 接出了三个 USB 3.0，剩下一个口有两种可能：一是留给 DP Alt-mode 的 Billboard Device，但实际上无论是否插 HDMI，都没有这个设备出现，或许是因为 DP Alt-mode 协商正常工作，所以 Billboard Device 没有出现，但实际上还是占用了一个口；二是它就是没有接任何设备。Hub 的 Port 4 对应 USB 3.0 Type-C 口，Port 3 对应 Type-C 旁边的 USB 3.0 Type-A 口，Port 2 则是最后一个离 Type-C 口最远的 USB 3.0 Type-C 口。
 
 另外两个 lane 则是给了 DP Alt-mode，这里的 HDMI 能跑到 4K 60Hz 4:4:4 8bpc，说明它的 DP 跑在了更高的速率：在 macOS 里看，它的 DP 运行在 8.10 Gbps (HBR3) 速率上，这样两个 lane 的总带宽就是 16.20 Gbps，考虑编码损失还有 `16.2*8/10=12.96` Gbps，足够 4K 60Hz 4:4:4 的 `3840*2160*60*24=11.94` Gbps 带宽，算上消隐区（需要消隐区比较少的时序），也就是 `4000*2205*60*24=12.70` Gbps。
 
