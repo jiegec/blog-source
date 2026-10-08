@@ -67,4 +67,4 @@ spec:
           servicePort: 80
 ```
 
-应用以后，用 `kubectl describe certificate` 查看证书获取进度。成功后，访问改域名的 HTTP，就会自动跳转到 HTTPS，并且提供了正确的证书。
+应用以后，用 `kubectl describe certificate` 查看证书获取进度。成功后，访问该域名的 HTTP，就会自动跳转到 HTTPS，并且提供了正确的证书。

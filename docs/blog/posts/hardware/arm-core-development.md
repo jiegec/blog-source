@@ -384,7 +384,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Increase decode bandwidth: 5->6
     - Integer ALUs increase 4->6: 2->4 single-cycle (SX), 2 single-/multi-cycle (MX)
     - ROB/MCQ: 288x2 -> 320x2
-    - Integer load bandwdith: 24B -> 32B
+    - Integer load bandwidth: 24B -> 32B
     - Additional data prefetch engines: Spatial, Pointer/Indirect
 - [Arm® Cortex‑X3 Core Technical Reference Manual](https://developer.arm.com/documentation/101593/latest/)
     - Implementation of the Scalable Vector Extension (SVE) with a 128-bit vector length and Scalable Vector Extension 2 (SVE2)
@@ -447,7 +447,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Larger Queues: Store Buffer, ReadAfterRead, ReadAfterWrite
     - Efficiency: VA hash based store to load forwarding
     - Multiple prefetching engines training on L1 and L2 accesses: Spatial Memory Streaming, Best Offset, Stride, Correlated Miss Cache, Page
-    - New PF engines: Global SMS – larger offsets than SMS, Sampling Indirect Prefetch – pointer dereference, TableWalk – Page Table Entrie
+    - New PF engines: Global SMS – larger offsets than SMS, Sampling Indirect Prefetch – pointer dereference, TableWalk – Page Table Entries
     - Private unified Level 2 cache, 8-way SA, 4 independent banks
     - 64B read or write per 2 cycles per bank = 128B/cycle total
     - 96-entry Transaction Queue
@@ -522,7 +522,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - Decode width: 4 (I-cache) or 5 (Mop cache), Up to 1.25x improvement
     - Branch predict up to 16-inst/cycle, 2-taken/cycle
     - New Macro-op (MOP) cache with 1.5k entries
-    - 50% larger branch direction predicton
+    - 50% larger branch direction prediction
     - 33% larger BTB with shorter average latency
     - Early re-steering for conditional branches that miss the BTB
     - Rename width: 5 instrs, 1.2x improvement
@@ -626,7 +626,7 @@ ARM 公版核微架构的演进频繁，型号又比较多，相关信息散落�
     - 40% increase in out-of-order window size, 224 entry instruction window
     - 2x FP/ASIMD execution bandwidth, 4x128b total bandwidth
     - Doubling available L1-D, L2 bandwidth
-    - Doubleing of maximum L2 capacity
+    - Doubling of maximum L2 capacity
     - Up to 33% increase in window growth for in-flight loads and stores
     - 66% larger L2-TLB capacity, 2K entries
 - [Arm Cortex-X1: The First From The Cortex-X Custom Program](https://fuse.wikichip.org/news/3543/arm-cortex-x1-the-first-from-the-cortex-x-custom-program/)

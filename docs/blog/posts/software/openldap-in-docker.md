@@ -195,8 +195,8 @@ Enter LDAP Password:
 
 ```shell
 $ ldapsearch -x -b dc=example,dc=com -H ldap://localhost:1389/
-# user01, users, craft.cn
-dn: cn=user01,ou=users,dc=craft,dc=cn
+# user01, users, example.com
+dn: cn=user01,ou=users,dc=example,dc=com
 cn: User1
 cn: user01
 sn: Bar1
@@ -283,10 +283,10 @@ olcAccess: {1}to *
 
 LDAP 很重要的一个用途是用于其他软件的认证，一般来说有两种用法：
 
-1. LDAP 自身带了认证的功能（Simple Auth），那么就需要把用户名（user01）映射到 LDAP 的 Bind DN 上（cn=user01,ou=users,cn=example,cn=com），Bind DN 和密码会传输到 LDAP Server；在 LDAP Server 上密码会与用户的 userPassword 进行匹配，如果 Bind 成功，就认为用户登录成功
+1. LDAP 自身带了认证的功能（Simple Auth），那么就需要把用户名（user01）映射到 LDAP 的 Bind DN 上（cn=user01,ou=users,dc=example,dc=com），Bind DN 和密码会传输到 LDAP Server；在 LDAP Server 上密码会与用户的 userPassword 进行匹配，如果 Bind 成功，就认为用户登录成功
 2. LDAP 附带了列用户的功能（Search），那么这个时候，一般是要创建一个用于搜索的 DN 来控制权限；然后其他软件 Bind 到用于搜索的 DN 上，搜索用户，把用户信息同步到本地
 
-第一种使用方法要求用户和 DN 有直接映射关系，例如上面的 `cn=%s,ou=users,cn=example=com`，好处是比较简单，缺点是要把所有用户放在同一个 DN 下面，不适合比较复杂的组织结构。
+第一种使用方法要求用户和 DN 有直接映射关系，例如上面的 `cn=%s,ou=users,dc=example,dc=com`，好处是比较简单，缺点是要把所有用户放在同一个 DN 下面，不适合比较复杂的组织结构。
 
 第二种使用方法，则是其他软件先进行搜索（搜索本身可能需要 Bind 到用于搜索的 DN 上），找到匹配用户名或者邮箱的用户，再进行 Simple Auth。这样的好处是灵活性更好，用户不需要放在同一个 DN 下面，可以有更多层级。
 

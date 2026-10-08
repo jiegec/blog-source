@@ -10,7 +10,7 @@ categories:
 
 由于 MongoDB 只支持当前版本和上一个版本的数据库格式，然后刚刚滚系统升级的时候升级到了 3.6.x，而数据库格式仍然是 3.2.x 的，于是需要先安装回 3.4.x 版本的 MongoDB，输入命令把数据库升级到 3.4.x 版本后，再用 3.6.x 的数据库进行升级。
 
-以 从 Ubuntu 14.04 LTS 升级到 Ubuntu 18.04.1 LTS 为例，方法如下：
+以从 Ubuntu 14.04 LTS 升级到 Ubuntu 18.04.1 LTS 为例，方法如下：
 
 ```shell
 $ wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.4.17.tgz

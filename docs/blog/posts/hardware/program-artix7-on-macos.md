@@ -10,7 +10,7 @@ categories:
 
 首先安装好 openocd：
 
-```brew install openocd --HEAD```
+`brew install openocd --HEAD`
 
 测试所用版本为 `0.10.0+dev-01052-g09580964 (2020-02-08-15:09)`。
 

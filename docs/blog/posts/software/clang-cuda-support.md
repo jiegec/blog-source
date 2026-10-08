@@ -37,7 +37,7 @@ clang++ axpy.cu -o axpy -L /usr/local/cuda/lib64 -lcudart
 1. `clang -triple nvptx64-nvidia-cuda -S -target-cpu sm_70 axpy.cu -o axpy-sm_70.s`：以 NVPTX 为 target，编译源代码，生成 PTX 汇编
 2. `ptxas --gpu-name sm_70 --output-file axpy-sm_70.o axpy-sm_70.s`：使用 CUDA 提供的 `ptxas` 程序，把 PTX 汇编翻译成 SM 70 的 SASS 指令，打包到一个 ELF object 中
 3. `fatbinary --create axpy.fatbin --image=profile=sm_70,file=axpy-sm_70.o --image=profile=compute_70,file=axpy-sm_70.s`: 使用 CUDA 提供的 `fatbinary` 程序，把 ptxas 生成的 ELF object 和 clang 生成的 PTX 汇编内容打包成一个 fatbin 文件
-4. `clang -triple x86_64-pc-linux-gnu -emit-obj axpy.cu -fcuda-include-gpubinary axpy.fatbin -o axpy.o`：编译 Host 代码，把 fatbin 的内容嵌入到一个 `.nv_fatbin` section 中，生成一个 ELF object 中
+4. `clang -triple x86_64-pc-linux-gnu -emit-obj axpy.cu -fcuda-include-gpubinary axpy.fatbin -o axpy.o`：编译 Host 代码，把 fatbin 的内容嵌入到一个 `.nv_fatbin` section 中，生成一个 ELF object
 5. `ld -o axpy axpy.o -lcudart`：最后一步就是常规的链接，得到最终的可执行文件
 
 实际上还有一步预处理，这里省略了。对比通常 C++ 程序的编译流程，这里不同的点在于：

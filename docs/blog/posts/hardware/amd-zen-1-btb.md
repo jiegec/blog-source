@@ -137,7 +137,7 @@ Zen 1 的第三级 BTB 可以保存 4096 个 entry，但不确定这个 entry �
 - L1 BTB 是 256-entry，2 cycle latency，容量随着 stride 变化，大概率是 PC[n:3] 这一段被用于 index，使得 stride=16B 开始容量不断减半
 - L2 BTB 是 2048-entry，5 cycle latency，容量随着 stride 变化，大概率是 PC[n:6] 这一段被用于 index，使得 stride=128B 开始容量不断减半；每个 entry 最多保存两条分支，前提是这两条分支在同一个 cacheline 当中，并且第一条是 cond，第二条是 uncond；因此最多保存 4096 个分支
 
-也总结一下前面发现了各种没有解释的遗留问题：
+也总结一下前面发现的各种没有解释的遗留问题：
 
 - stride=4B/8B/16B 且为 mix (uncond + cond) 模式时，L2 BTB 体现出 3072/3072/2560 的容量，而非 4096：解析见后
 - L2 BTB 对应的 CPI=5 的台阶出现比较明显的，在 4-5 之间的波动：暂无解释

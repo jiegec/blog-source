@@ -462,7 +462,7 @@ Nixpkgs 开发分支主要有三个：
 
 CI 会自动把 master 合并到 staging-next，也会把 staging-next 合并到 staging。这样 master 上的改动也会同步到 staging 上。
 
-维护者会定义把 staging 手动合并到 staging-next，然后手动合并 staging-next 到 staging。这个的周期一般是一周多，可以在 pr 里搜索 staging-next。
+维护者会定期把 staging 手动合并到 staging-next，然后手动合并 staging-next 到 staging。这个的周期一般是一周多，可以在 pr 里搜索 staging-next。
 
 Hydra 会编译 master 分支和 staging-next 分支上的包，不会编译 staging 分支上的包。同理，binary cache 上前两个分支上有的，而 staging 上没有的。
 

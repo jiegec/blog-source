@@ -17,7 +17,7 @@ categories:
 1. 在临时目录创建一个文件，把文件大小设为 16M（暂不考虑扩容）
 2. 需要映射一个虚拟地址到物理地址的时候，就对这个文件的物理地址偏移进行 FIXED 映射，虚拟地址就是期望的虚拟地址。
 
-这样的方案在 Linux 下运行地很好，但在 macOS 下总是以一定概率在第二部出现 EPERM。网上搜了很多，但也没搜到相关的信息，于是自己断断续续地研究了一下，现在有一个比较初步的结果。
+这样的方案在 Linux 下运行地很好，但在 macOS 下总是以一定概率在第二步出现 EPERM。网上搜了很多，但也没搜到相关的信息，于是自己断断续续地研究了一下，现在有一个比较初步的结果。
 
 ## TL；DR
 
@@ -52,7 +52,7 @@ Library load (/path/to/temp/file) rejected: library load denied by system policy
 
 ### 回到 Console
 
-今天刚好看到一个 [post](https://georgegarside.com/blog/macos/sierra-console-private/)，内容是如何在 macOS Catalina 中查看 log 中标记为 private 的内容。如果你注意到的话，上面的 log 中出现了几处 private，这并不是我改的，而是 macOS 自带的隐私机制（当然这种机制似乎并没有采用的很完全，一些消息源没有打上 private 的标签）。
+今天刚好看到一个 [post](https://georgegarside.com/blog/macos/sierra-console-private/)，内容是如何在 macOS Catalina 中查看 log 中标记为 private 的内容。如果你注意到的话，上面的 log 中出现了几处 private，这并不是我改的，而是 macOS 自带的隐私机制（当然这种机制似乎并没有采用得很完全，一些消息源没有打上 private 的标签）。
 
 然后按照上面的 post 的方法（[另一个 post](https://saagarjha.com/blog/2019/09/29/making-os-log-public-on-macos-catalina/)）开启了一下标记为 private 的内容，正好我的系统没有升级到 10.15.3 所以还能用。此时上面的第二条和第三条就出现了具体内容：
 
@@ -63,7 +63,7 @@ Disallowing load of /path/to/temp/file in 61254, /path/to/executable
 
 这个时候问题就很明显了：读取不到文件。这时候回想起 tmpfile 的工作原理，它会删除生成的文件，在删除文件之后，macOS 进行扫描，发现找不到文件，于是 disallow 了，mmap 就会返回 EPERM。
 
-解决方案也很显然了：把删除目录延后，或者放在 /tmp 下等待清理等待。
+解决方案也很显然了：把删除目录延后，或者放在 /tmp 下等待清理。
 
 我也写了一段 C 代码来验证这个现象：
 

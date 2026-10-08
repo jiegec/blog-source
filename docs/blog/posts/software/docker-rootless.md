@@ -8,7 +8,7 @@ categories:
 
 # Podman 和 Docker Rootless 实践
 
-最近在配置公用机器的环境，需求是很多用户需要使用 docker，但是众所周知，有 docker 权限就等于有了 root 权限，因此正好想尝试一下现在的 Rootless 容器化方案，例如 docket rootless 和 podman。
+最近在配置公用机器的环境，需求是很多用户需要使用 docker，但是众所周知，有 docker 权限就等于有了 root 权限，因此正好想尝试一下现在的 Rootless 容器化方案，例如 docker rootless 和 podman。
 
 <!-- more -->
 
@@ -70,7 +70,7 @@ nvidia-ctk cdi list
 podman run --device nvidia.com/gpu=all -it --rm debian nvidia-smi
 ```
 
-如果 Podman 版本不够新，可能会遇到 `nvidia-smi not found` 的问题。这是因为，虽然 Podman 从 [3.2.0](https://github.com/containers/podman/blob/main/RELEASE_NOTES.md#320) 版本开始支持 Container Device Interface。但是如果 nvidia container 版本比较新，生成了 0.5.0 版本的 CDI Spec，就需要比较新的 Podman 版本（大概 4.1.0 以后）。实际测试了一下，Ubuntu 22.04 打包的 Podman 3.4.4 版本不够新，可以按照 [Podman Installation Instrucions](https://podman.io/docs/installation#ubuntu) 文档安装最新的 Podman 4.6.2：
+如果 Podman 版本不够新，可能会遇到 `nvidia-smi not found` 的问题。这是因为，虽然 Podman 从 [3.2.0](https://github.com/containers/podman/blob/main/RELEASE_NOTES.md#320) 版本开始支持 Container Device Interface。但是如果 nvidia container 版本比较新，生成了 0.5.0 版本的 CDI Spec，就需要比较新的 Podman 版本（大概 4.1.0 以后）。实际测试了一下，Ubuntu 22.04 打包的 Podman 3.4.4 版本不够新，可以按照 [Podman Installation Instructions](https://podman.io/docs/installation#ubuntu) 文档安装最新的 Podman 4.6.2：
 
 ```shell
 sudo mkdir -p /etc/apt/keyrings

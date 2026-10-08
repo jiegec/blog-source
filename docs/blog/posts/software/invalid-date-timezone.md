@@ -28,7 +28,7 @@ Sun Apr 13 00:00:00 UTC 1919
 这个数据，实际上保存在 tzdata 中，可以用 zdump 工具查看：
 
 ```shell
-$ tzdata -v Asia/Shanghai
+$ zdump -v Asia/Shanghai
 Asia/Shanghai  Fri Dec 13 20:45:52 1901 UTC = Sat Dec 14 04:45:52 1901 CST isdst=0
 Asia/Shanghai  Sat Dec 14 20:45:52 1901 UTC = Sun Dec 15 04:45:52 1901 CST isdst=0
 Asia/Shanghai  Sat Apr 12 15:59:59 1919 UTC = Sat Apr 12 23:59:59 1919 CST isdst=0

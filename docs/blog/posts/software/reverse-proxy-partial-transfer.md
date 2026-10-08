@@ -35,7 +35,7 @@ directives.
 
 翻译成中文，意思就是 Nginx 打开 buffering 机制后，会尽量快地从后端服务器读取响应。这很合理，因为一般后端服务器的资源比较宝贵，如果有很多个链接堵塞了，TCP 发送窗口满了，发不了新的数据，一直在等待客户端回复 ACK，这样就会维持很多 TCP 连接，影响服务器处理新连接的能力，这种累活应该还是由 Nginx 来干。但是问题来了：Nginx 从后端尽量快地读取响应，但浏览器并不一定能够很快地从 Nginx 读取响应，因为浏览器到 Nginx 的网络可能很慢。速率不匹配，那么 Nginx 肯定要实现一定的缓存，这就是 buffering 机制。
 
-具体地，为了实现高效的 buffering 机制，很自然地回想到用内存做 buffer。但是内存容量也是相对有限的，内存放不下，自然就只能写到硬盘里面。那么问题来了，要是硬盘也满了，或者写入硬盘失败了，怎么办？一方面，还得赶紧从后端读取响应，让后端去做别的事情；另一方面，客户端在慢吞吞地收数据，硬盘又写不进去。这时候 Nginx 只能放弃挣扎，把连接断掉。于是客户端就看到了 HTTP 响应传了一半的情况。
+具体地，为了实现高效的 buffering 机制，很自然地会想到用内存做 buffer。但是内存容量也是相对有限的，内存放不下，自然就只能写到硬盘里面。那么问题来了，要是硬盘也满了，或者写入硬盘失败了，怎么办？一方面，还得赶紧从后端读取响应，让后端去做别的事情；另一方面，客户端在慢吞吞地收数据，硬盘又写不进去。这时候 Nginx 只能放弃挣扎，把连接断掉。于是客户端就看到了 HTTP 响应传了一半的情况。
 
 这也就能解释之前观察到的一个现象：有的网页，走有线网能够完整打开，走无线网打开是不完整的。从 buffering 机制来解释，就是有线网能够在 buffer 满之前把数据都传完，而无线网来不及。
 
@@ -118,13 +118,13 @@ Failed requests:        9999
 
 这印证了之前的猜想：`proxy_temp` 目录写不进去，就有概率出现 Partial Transfer 的情况。但是，此时下载的文件大小比较随机，不像之前那样集中在 130 KB。这时候就要思考 Partial Transfer 的原理了：客户端发起 HTTP 请求，proxy 容器收到请求，转发给 backend；backend 收到 HTTP 请求后，就给 proxy 发送 HTTP 响应。然后 proxy 容器一边从 backend 接收 HTTP 响应，另一边还要发给客户端。什么情况下会断开呢？就是内存里的 buffer 都用完了，backend 给 proxy 发送得快，proxy 给客户端发送得慢，速度的差，决定了内存里的 buffer 可以撑多久。
 
-为了验证这个理论，手动给客户端到 proxy 容器的链路上添加一个延迟，这样就拖慢了 proxy 给客户端发送的速录。在 Linux 上，可以用 [tc 给网络接口人为地添加延迟](https://medium.com/@kazushi/simulate-high-latency-network-using-docker-containerand-tc-commands-a3e503ea4307)：
+为了验证这个理论，手动给客户端到 proxy 容器的链路上添加一个延迟，这样就拖慢了 proxy 给客户端发送的速率。在 Linux 上，可以用 [tc 给网络接口人为地添加延迟](https://medium.com/@kazushi/simulate-high-latency-network-using-docker-containerand-tc-commands-a3e503ea4307)：
 
 ```shell
 tc qdisc add dev [bridge_name] root netem delay 100ms
 ```
 
-`bridge_name`` 是以 br- 开头的 bridge 网络接口名。此时用 ping 测量，从 proxy 容器访问 host 要 100 ms，proxy 容器访问 backend 容器要 0.02 ms。这就达成了不对称的目的。添加了延迟后，发现 curl 下载的文件大小稳定在 109312 字节附近，也就是 109 KB。虽然和前面的 130 KB 不相等，但是也足以证明了是类似的情况。这个大小，应该和 nginx 在内存中给每个链接维护的 buffer 大小有关，也和网络上传输的过程有关。
+`bridge_name` 是以 br- 开头的 bridge 网络接口名。此时用 ping 测量，从 proxy 容器访问 host 要 100 ms，proxy 容器访问 backend 容器要 0.02 ms。这就达成了不对称的目的。添加了延迟后，发现 curl 下载的文件大小稳定在 109312 字节附近，也就是 109 KB。虽然和前面的 130 KB 不相等，但是也足以证明了是类似的情况。这个大小，应该和 nginx 在内存中给每个链接维护的 buffer 大小有关，也和网络上传输的过程有关。
 
 小结：
 

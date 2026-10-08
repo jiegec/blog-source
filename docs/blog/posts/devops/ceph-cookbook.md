@@ -441,7 +441,7 @@ mount -t ceph abc@.xxx=/ -o mon_addr=x.x.x.x:6789/y.y.y.y:6789,secretfile=/etc/c
 mount -t ceph -o name=abc,secret=REDACTED,mds_namespace=xxx MON_IP:/ MOUNTPOINT
 ```
 
-以用户 `client.abc` 的身份登录，挂载 CephFS `xxx` 下面的 `/` 目录到 `MOUNTPOINT`。它会读取 `/etc/ceph` 下面的配置，如果已经 `ceph.conf` 写了，命令行里就可以不写。
+以用户 `client.abc` 的身份登录，挂载 CephFS `xxx` 下面的 `/` 目录到 `MOUNTPOINT`。它会读取 `/etc/ceph` 下面的配置，如果已经在 `ceph.conf` 里写了，命令行里就可以不写。
 
 fsid 指的不是 CephFS 的 ID，实际上是集群的 ID：`ceph fsid`。
 

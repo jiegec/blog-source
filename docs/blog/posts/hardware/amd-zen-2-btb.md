@@ -146,7 +146,7 @@ Zen 2 的 L2 BTB 依然是带有压缩的，只有在 mix (cond + uncond) 模式
 
 ## AMD Zen 2 和 ARM Neoverse N1 的 BTB 的对比
 
-AMD Zen 2 和 ARM Neoverse N1 都是在 2019 发布的处理器，下面对它们进行一个对比：
+AMD Zen 2 和 ARM Neoverse N1 都是在 2019 年发布的处理器，下面对它们进行一个对比：
 
 | uArch                        | AMD Zen 2    | ARM Neoverse N1 |
 |------------------------------|--------------|-----------------|
