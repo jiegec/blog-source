@@ -243,6 +243,11 @@ flowchart LR
 
 与飞利浦 SWR1607L/93 一样，它也能跑到 4K 60Hz 4:4:4 8bpc，在 macOS 里看，果然是 2 lane 的 HBR3。这次也没有 Billboard Device 出现。
 
+不过在实践中，也遇到过特殊的情况：同一个 Crestron 420 显示器，连上述两个拓展坞出现了不同的现象：
+
+- 通过飞利浦 SWR1607L/93 接 Crestron 420，只能输出 4K 30Hz，没有 4K 60Hz 的选项
+- 通过绿联 CM136-70495 接 Crestron 420，默认输出也是 4K 30Hz，但是有 60Hz 的选项，切换过去以后也可以正常工作
+
 ## 附录：其他常用拓展坞芯片
 
 - [AX88179](https://static.chipdip.ru/lib/923/DOC000923116.pdf): USB 3.0 to 1000M Ethernet Controller
