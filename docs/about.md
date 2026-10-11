@@ -53,6 +53,7 @@ permalink: /about/
 - [计算机文化基础](https://edu.cs.tsinghua.edu.cn/cca/)：设计面向零基础的数字电路实操
 - 计算机程序设计基础
 - Python 程序设计进阶
+- [AI 编程进阶：方法与实践](https://edu.cs.tsinghua.edu.cn/ai-prog/)：设计课程教学内容
 - [程序设计训练（Rust 课堂）](https://lab.cs.tsinghua.edu.cn/rust/)：设计课程大小作业
 - [实验物理的大数据方法](https://git.tsinghua.edu.cn/physics-data/)：设计课程小作业
 - 汇编语言程序设计
