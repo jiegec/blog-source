@@ -306,7 +306,7 @@ The file name is invalid(does not end with .cfg).
 ```
 [switch] public-key local create rsa
 [switch] public-key local create dsa
-[switch] public-key local create ecdsa
+[switch] public-key local create ecdsa secp384r1
 ```
 
 ### 显示 SSH Host Key
