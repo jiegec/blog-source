@@ -285,6 +285,15 @@ flowchart LR
 
 实测 DP 能跑到 2 lane HBR3，因此可以轻松 4K 60Hz 4:4:4。USB 方面，有一个 USB 3.2 Hub GenesysLogic 05e3:0625 和一个 USB 2.1 Hub GenesysLogic 05e3:0610。这里的 USB 3.2 代表的其实是 USB 3.2 Gen 2，所以每个口都是 10Gbps。
 
+## 附录：同一个显示器，不同拓展坞显示的频率选项不同
+
+同一个 HKC 2755U 显示器，连上述拓展坞出现了不同的现象：
+
+- 通过飞利浦 SWR1607L/93 接 HKC T2755U，可以输出 4K 60Hz，无 50Hz 选项，同时还有 HDR 选项
+- 通过绿联 CM136-70495 接 HKC T2755U，可以输出 4K 60Hz/50Hz，同时还有 HDR 选项
+- 通过 Biaze ZH395 接 HKC T2755U，可以输出 4K 60Hz，无 50Hz 选项，同时还有 HDR 选项，但界面比较模糊，疑似 4:2:2 或 4:2:0，macOS 设置里显示的是分辨率列表，而不是像其他几个拓展坞那样，显示几种文字大小
+- 通过绿联 CM511-45031 接 HKC T2755U，可以输出 4K 60Hz/50Hz，同时还有 HDR 选项
+
 ## 附录：其他常用拓展坞芯片
 
 - [AX88179](https://static.chipdip.ru/lib/923/DOC000923116.pdf): USB 3.0 to 1000M Ethernet Controller
