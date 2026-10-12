@@ -274,6 +274,17 @@ flowchart LR
 
 看过前面这么多分析，基本可以推断出，它又是 Type-C 的两个 lane 直通 USB 3.0 Type-A 口，另外两个 lane 用于 DP Alt-mode，再来个 USB 2.0 的 Hub 214b:7260。虽然宣传的是 HDMI 4K 30Hz，但实际上能跑到 4K 60Hz，由于是 2 lane 的 HBR2，应该是 4:2:2 或者 4:2:0 而非 4:4:4，看起来有略微的模糊感。
 
+## 附录：分析绿联 CM511-45031
+
+[CM511-45031 参数](https://www.lulian.cn/product/1441.html):
+
+- PD 3.0 100W
+- HDMI 2.0 4K 60Hz
+- 3x USB 3.2 10 Gbps Type-A 口
+- 1x USB 3.2 10 Gbps Type-C 口
+
+实测 DP 能跑到 2 lane HBR3，因此可以轻松 4K 60Hz 4:4:4。USB 方面，有一个 USB 3.2 Hub GenesysLogic 05e3:0625 和一个 USB 2.1 Hub GenesysLogic 05e3:0610。这里的 USB 3.2 代表的其实是 USB 3.2 Gen 2，所以每个口都是 10Gbps。
+
 ## 附录：其他常用拓展坞芯片
 
 - [AX88179](https://static.chipdip.ru/lib/923/DOC000923116.pdf): USB 3.0 to 1000M Ethernet Controller
