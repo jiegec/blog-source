@@ -18,7 +18,7 @@ permalink: /tools/
 1. [tcpdump101](https://tcpdump101.com/)：tcpdump 命令生成器
 1. [Regexper](https://regexper.com/)：正则表达式可视化
 1. [crontab.guru](https://crontab.guru/)：crontab 表达式解释
-1. [Visual](https://salmanarif.bitbucket.io/visual/index.html)：处理器/电路可视化仿真
+1. [Visual](https://salmanarif.bitbucket.io/visual/index.html)：ARM 处理器可视化模拟器
 1. [Mathpix](https://mathpix.com/)：公式 OCR
 1. [Falstad Circuit Simulator](https://www.falstad.com/circuit/circuitjs.html)：在线电路仿真
 1. [QRazyBox](https://merricx.github.io/qrazybox/)：二维码分析与恢复
