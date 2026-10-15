@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>显示器色彩测试</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --sw: 72px;
+      --radius: 3px;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px 20px 60px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.5;
+      transition: background-color .2s ease, color .2s ease;
+    }
+
+    /* 背景主题：方便在深/浅背景下观察色块 */
+    body[data-bg="dark"] {
+      --bg: #000;
+      --fg: #ececec;
+      --muted: #9a9a9a;
+      --card: #1b1b1b;
+      --card-bd: #2e2e2e;
+      --panel: #161616;
+      --panel-bd: #333;
+      --accent: #6c8cff;
+      --seg-fg: #000;
+      --swatch-bd: rgba(255, 255, 255, .3);
+    }
+
+    body[data-bg="gray"] {
+      --bg: #808080;
+      --fg: #fff;
+      --muted: #e0e0e0;
+      --card: #757575;
+      --card-bd: #8f8f8f;
+      --panel: #6e6e6e;
+      --panel-bd: #909090;
+      --accent: #fff;
+      --seg-fg: #222;
+      --swatch-bd: rgba(255, 255, 255, .45);
+    }
+
+    body[data-bg="light"] {
+      --bg: #fff;
+      --fg: #17181c;
+      --muted: #6b7280;
+      --card: #f5f6f8;
+      --card-bd: #e2e5ea;
+      --panel: #f5f6f8;
+      --panel-bd: #e2e5ea;
+      --accent: #2f4fd8;
+      --seg-fg: #fff;
+      --swatch-bd: rgba(0, 0, 0, .28);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+    }
+
+    .wrap {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0 0 6px;
+      letter-spacing: -.01em;
+    }
+
+    header p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: .9rem;
+      max-width: 70ch;
+    }
+
+    /* ── 控制面板 ── */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 22px;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--panel-bd);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .controls label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .controls select,
+    .controls input[type="range"] {
+      font: inherit;
+      color: var(--fg);
+      background: var(--bg);
+      border: 1px solid var(--panel-bd);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: .82rem;
+    }
+
+    .controls input[type="range"] {
+      padding: 0;
+      width: 120px;
+    }
+
+    .seg {
+      display: inline-flex;
+      border: 1px solid var(--panel-bd);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .seg button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: .78rem;
+      padding: 4px 11px;
+      cursor: pointer;
+    }
+
+    .seg button.on {
+      background: var(--accent);
+      color: var(--seg-fg);
+      font-weight: 600;
+    }
+
+    .val {
+      font-variant-numeric: tabular-nums;
+      color: var(--fg);
+      font-weight: 500;
+    }
+
+    /* ── 分组 ── */
+    section {
+      margin: 0 0 34px;
+    }
+
+    section h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 3px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    section h2 .cnt {
+      font-size: .74rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    section .hint {
+      margin: 0 0 12px;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    /* ── 方块网格 ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--sw) + 200px)), 1fr));
+      gap: 10px;
+    }
+
+    .cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--card-bd);
+      border-radius: 8px;
+      padding: 8px;
+    }
+
+    .swatch {
+      width: var(--sw);
+      height: var(--sw);
+      flex: 0 0 auto;
+      border: 1px solid var(--swatch-bd);
+      border-radius: var(--radius);
+    }
+
+    .meta {
+      min-width: 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .78rem;
+      line-height: 1.45;
+      white-space: nowrap;
+    }
+
+    .meta .hex {
+      font-weight: 600;
+      letter-spacing: .01em;
+    }
+
+    .meta .rgb {
+      color: var(--muted);
+      font-size: .74rem;
+    }
+
+    body.hide-labels .cell {
+      justify-content: center;
+      padding: 8px;
+    }
+
+    body.hide-labels .meta {
+      display: none;
+    }
+
+    body.hide-labels .grid {
+      grid-template-columns: repeat(auto-fill, minmax(calc(var(--sw) + 18px), 1fr));
+    }
+    footer {
+      color: var(--muted);
+      font-size: .78rem;
+      border-top: 1px solid var(--panel-bd);
+      padding-top: 14px;
+    }
+
+    footer a {
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body data-bg="dark">
+  <div class="wrap">
+    <header>
+      <h1>显示器色彩测试</h1>
+      <p>
+        参考 <a href="https://www.lagom.nl/lcd-test/" target="_blank" rel="noopener">Lagom LCD test</a> 制作的显示器色彩测试页。
+        每个方块旁标注了它的 RGB 值（十六进制与十进制），可用于检查显示器的灰阶、单通道渐变、近白/近黑饱和度表现。
+        建议在 100% 缩放、关闭系统夜览 / 色彩滤镜的条件下观察。
+      </p>
+    </header>
+
+    <div class="controls">
+      <label>测试项
+        <select id="mode">
+          <option value="all">全部</option>
+          <option value="gray" selected>灰阶 Grayscale</option>
+          <option value="red">红色通道 Red</option>
+          <option value="green">绿色通道 Green</option>
+          <option value="blue">蓝色通道 Blue</option>
+          <option value="white">近白饱和度 White</option>
+          <option value="black">近黑饱和度 Black</option>
+        </select>
+      </label>
+
+      <label>步长
+        <select id="step">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="4">4</option>
+          <option value="8">8</option>
+          <option value="16" selected>16</option>
+          <option value="32">32</option>
+          <option value="64">64</option>
+        </select>
+      </label>
+
+      <label>方块大小 <span class="val" id="size-out">72</span> px
+        <input type="range" id="size" min="24" max="160" step="4" value="72">
+      </label>
+
+      <label>背景
+        <span class="seg" id="bg-seg">
+          <button data-bg="dark" class="on">黑</button>
+          <button data-bg="gray">中灰</button>
+          <button data-bg="light">白</button>
+        </span>
+      </label>
+
+      <label><input type="checkbox" id="labels" checked> 显示 RGB 数值</label>
+    </div>
+
+    <main id="output"></main>
+
+    <footer>
+      色调由 sRGB 原色直接输出，未做任何色彩管理；方块颜色即浏览器实际送出的 RGB 值。
+    </footer>
+  </div>
+
+  <script>
+    const hex2 = v => v.toString(16).padStart(2, '0');
+    const hexOf = (r, g, b) => '#' + hex2(r) + hex2(g) + hex2(b);
+
+    // 生成一段通道渐变，保证 0 和 255 都在
+    function ramp(step, make) {
+      const out = [];
+      let last = 0;
+      for (let v = 0; v <= 255; v += step) { out.push(make(v)); last = v; }
+      if (last !== 255) out.push(make(255));
+      return out;
+    }
+
+    const grayRamp = step => ramp(step, v => [v, v, v]);
+    const chan = (idx, step) =>
+      ramp(step, v => { const c = [0, 0, 0]; c[idx] = v; return c; });
+
+    // 近白 / 近黑：步长固定为 1
+    const nearWhite = () => {
+      const out = [];
+      for (let v = 255; v >= 240; v--) out.push([v, v, v]);
+      return out;
+    };
+    const nearBlack = () => {
+      const out = [];
+      for (let v = 0; v <= 15; v++) out.push([v, v, v]);
+      return out;
+    };
+
+    function sectionsFor(mode, step) {
+      const S = {
+        gray: {
+          title: '灰阶 Grayscale', hint: 'R=G=B 由 0 递增到 255，检查灰阶是否平滑、有无偏色。',
+          items: grayRamp(step)
+        },
+        red: { title: '红色通道 Red', hint: '仅红色通道变化，检查暗部/亮部是否出现红色色阶断层。', items: chan(0, step) },
+        green: { title: '绿色通道 Green', hint: '仅绿色通道变化。', items: chan(1, step) },
+        blue: { title: '蓝色通道 Blue', hint: '仅蓝色通道变化。', items: chan(2, step) },
+        white: { title: '近白饱和度 White', hint: '255 递减到 240，检查高亮处能否分辨相邻的一级。', items: nearWhite() },
+        black: { title: '近黑饱和度 Black', hint: '0 递增到 15，检查暗部能否分辨相邻的一级。', items: nearBlack() }
+      };
+      if (mode === 'all') return [S.gray, S.red, S.green, S.blue, S.white, S.black];
+      return [S[mode]];
+    }
+
+    function render() {
+      const mode = modeSel.value;
+      const step = parseInt(stepSel.value, 10);
+      const frag = document.createDocumentFragment();
+
+      for (const sec of sectionsFor(mode, step)) {
+        const s = document.createElement('section');
+
+        const h = document.createElement('h2');
+        h.textContent = sec.title;
+        const cnt = document.createElement('span');
+        cnt.className = 'cnt';
+        cnt.textContent = sec.items.length + ' 个';
+        h.appendChild(cnt);
+
+        const p = document.createElement('p');
+        p.className = 'hint';
+        p.textContent = sec.hint;
+
+        const grid = document.createElement('div');
+        grid.className = 'grid';
+
+        for (const [r, g, b] of sec.items) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+
+          const sw = document.createElement('div');
+          sw.className = 'swatch';
+          sw.style.background = `rgb(${r}, ${g}, ${b})`;
+
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          meta.innerHTML =
+            `<div class="hex">${hexOf(r, g, b)}</div>` +
+            `<div class="rgb">rgb(${r}, ${g}, ${b})</div>`;
+
+          cell.append(sw, meta);
+          grid.appendChild(cell);
+        }
+
+        s.append(h, p, grid);
+        frag.appendChild(s);
+      }
+
+      document.getElementById('output').replaceChildren(frag);
+    }
+
+    const modeSel = document.getElementById('mode');
+    const stepSel = document.getElementById('step');
+    const sizeEl = document.getElementById('size');
+    const sizeOut = document.getElementById('size-out');
+    const bgSeg = document.getElementById('bg-seg');
+    const labelsEl = document.getElementById('labels');
+
+    modeSel.addEventListener('change', render);
+    stepSel.addEventListener('change', render);
+
+    sizeEl.addEventListener('input', () => {
+      document.documentElement.style.setProperty('--sw', sizeEl.value + 'px');
+      sizeOut.textContent = sizeEl.value;
+    });
+
+    bgSeg.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-bg]');
+      if (!btn) return;
+      document.body.dataset.bg = btn.dataset.bg;
+      bgSeg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+    });
+
+    labelsEl.addEventListener('change', () => {
+      document.body.classList.toggle('hide-labels', !labelsEl.checked);
+    });
+
+    render();
+  </script>
+</body>
+
+</html>
