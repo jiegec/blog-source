@@ -127,8 +127,10 @@ def grab_ffmpeg(device, size, rate, frames, matrix="bt709"):
     ffmpeg otherwise defaults to BT.601 and shifts saturated colours
     (e.g. green 0,255,0 comes out as 19,255,6) which looks like cross-talk.
     """
-    scale = (f"scale=in_range=limited:in_color_matrix={matrix}:"
-             f"out_range=pc:out_color_matrix={matrix}")
+    scale = (
+        f"scale=in_range=limited:in_color_matrix={matrix}:"
+        f"out_range=pc:out_color_matrix={matrix}"
+    )
     tmp = tempfile.mkdtemp(prefix="calibrate-")
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-f", "avfoundation"]
     if rate:
@@ -141,32 +143,48 @@ def grab_ffmpeg(device, size, rate, frames, matrix="bt709"):
     if known_size:
         w, h = (int(x) for x in str(size).lower().split("x"))
         raw = os.path.join(tmp, "f.raw")
-        cmd += ["-i", device, "-frames:v", str(frames), "-vf", scale,
-                "-pix_fmt", "rgb24", "-f", "rawvideo", raw]
+        cmd += [
+            "-i",
+            device,
+            "-frames:v",
+            str(frames),
+            "-vf",
+            scale,
+            "-pix_fmt",
+            "rgb24",
+            "-f",
+            "rawvideo",
+            raw,
+        ]
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError:
-            raise SystemExit("ffmpeg failed to grab; is OBS (or another app) "
-                             "holding the capture device?  Close it and retry.")
+            raise SystemExit(
+                "ffmpeg failed to grab; is OBS (or another app) "
+                "holding the capture device?  Close it and retry."
+            )
         data = np.fromfile(raw, dtype=np.uint8)
         per = w * h * 3
         n = len(data) // per
         if n == 0:
             raise SystemExit("ffmpeg produced no frames")
-        arrs = data[:n * per].reshape(n, h, w, 3).astype(np.float64)
+        arrs = data[: n * per].reshape(n, h, w, 3).astype(np.float64)
     else:
         pattern = os.path.join(tmp, "f%04d.png")
         cmd += ["-i", device, "-frames:v", str(frames), "-vf", scale, pattern]
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError:
-            raise SystemExit("ffmpeg failed to grab; is OBS (or another app) "
-                             "holding the capture device?  Close it and retry.")
+            raise SystemExit(
+                "ffmpeg failed to grab; is OBS (or another app) "
+                "holding the capture device?  Close it and retry."
+            )
         files = sorted(glob.glob(os.path.join(tmp, "f*.png")))
         if not files:
             raise SystemExit("ffmpeg produced no frames")
-        arrs = [np.asarray(Image.open(f).convert("RGB"), dtype=np.float64)
-                for f in files]
+        arrs = [
+            np.asarray(Image.open(f).convert("RGB"), dtype=np.float64) for f in files
+        ]
 
     arrs = list(arrs) if not isinstance(arrs, np.ndarray) else list(arrs)
     bright = np.array([a.mean() for a in arrs])
@@ -319,7 +337,7 @@ def _poly_features(rgb, deg):
         for i in range(d + 1):
             for j in range(d - i + 1):
                 k = d - i - j
-                cols.append(r ** i * g ** j * b ** k)
+                cols.append(r**i * g**j * b**k)
     return np.stack(cols, axis=1)
 
 
@@ -332,8 +350,9 @@ def fit_poly(cap, intended, deg=3):
 
 def correct_poly(params, rgb):
     coef, deg = params
-    return np.clip(_poly_features(np.asarray(rgb, dtype=np.float64), deg) @ coef,
-                   0, 255)
+    return np.clip(
+        _poly_features(np.asarray(rgb, dtype=np.float64), deg) @ coef, 0, 255
+    )
 
 
 def build_lut(correct, n):
@@ -356,9 +375,11 @@ def correct_lut(lut, rgb):
     for dz in (0, 1):
         for dy in (0, 1):
             for dx in (0, 1):
-                w = ((f[:, 0] if dx else 1 - f[:, 0])
-                     * (f[:, 1] if dy else 1 - f[:, 1])
-                     * (f[:, 2] if dz else 1 - f[:, 2]))
+                w = (
+                    (f[:, 0] if dx else 1 - f[:, 0])
+                    * (f[:, 1] if dy else 1 - f[:, 1])
+                    * (f[:, 2] if dz else 1 - f[:, 2])
+                )
                 out += w[:, None] * lut[i0[:, 2] + dz, i0[:, 1] + dy, i0[:, 0] + dx]
     return np.clip(out, 0, 255)
 
@@ -565,12 +586,23 @@ def main():
         default=None,
         help="force a framerate (29.97 is usually rejected)",
     )
-    src.add_argument("--ffmpeg-frames", type=int, default=120,
-                     help="frames to grab (default 120; the first ones can be dark)")
-    src.add_argument("--retries", type=int, default=3,
-                     help="re-grab if the capture is still dark (default 3)")
-    src.add_argument("--colorspace", default="bt709",
-                     help="YUV matrix reported by the card (default bt709)")
+    src.add_argument(
+        "--ffmpeg-frames",
+        type=int,
+        default=120,
+        help="frames to grab (default 120; the first ones can be dark)",
+    )
+    src.add_argument(
+        "--retries",
+        type=int,
+        default=3,
+        help="re-grab if the capture is still dark (default 3)",
+    )
+    src.add_argument(
+        "--colorspace",
+        default="bt709",
+        help="YUV matrix reported by the card (default bt709)",
+    )
     src.add_argument(
         "--list-devices",
         action="store_true",
@@ -585,11 +617,18 @@ def main():
 
     fit = ap.add_argument_group("fit / output")
     fit.add_argument("--bins", type=int, default=33)
-    fit.add_argument("--model", default="auto",
-                     choices=["auto", "perchannel", "matrix", "poly"],
-                     help="auto = whichever model fits best")
-    fit.add_argument("--poly-deg", type=int, default=3,
-                     help="degree of the 3D polynomial model (default 3)")
+    fit.add_argument(
+        "--model",
+        default="auto",
+        choices=["auto", "perchannel", "matrix", "poly"],
+        help="auto = whichever model fits best",
+    )
+    fit.add_argument(
+        "--poly-deg",
+        type=int,
+        default=3,
+        help="degree of the 3D polynomial model (default 3)",
+    )
     fit.add_argument("--size3d", type=int, default=33, help="LUT_3D_SIZE")
     fit.add_argument("--out", default="capture-fix.cube")
     fit.add_argument(
@@ -625,18 +664,25 @@ def main():
             modes = [(args.ffmpeg_size or "auto", args.ffmpeg_framerate or "60")]
         else:
             # some modes come out black on this firmware, so try them in turn
-            modes = [("3840x2160", "30"), ("1920x1080", "60"),
-                     ("2560x1440", "60"), ("1280x720", "60")]
+            modes = [
+                ("3840x2160", "30"),
+                ("1920x1080", "60"),
+                ("2560x1440", "60"),
+                ("1280x720", "60"),
+            ]
         img = None
         size = rate = None
         for size, rate in modes:
             for attempt in range(1, max(1, args.retries) + 1):
-                img = grab_ffmpeg(device, size, rate, args.ffmpeg_frames,
-                                  args.colorspace)
+                img = grab_ffmpeg(
+                    device, size, rate, args.ffmpeg_frames, args.colorspace
+                )
                 if img.mean() >= 20:
                     break
-                print(f"{size}@{rate} came out dark (mean {img.mean():.0f}), "
-                      f"retry {attempt}/{args.retries} ...")
+                print(
+                    f"{size}@{rate} came out dark (mean {img.mean():.0f}), "
+                    f"retry {attempt}/{args.retries} ..."
+                )
             if img.mean() >= 20:
                 break
             print(f"mode {size}@{rate} stays dark, trying another mode ...")
@@ -666,16 +712,20 @@ def main():
     models = {
         "perchannel": (lambda rgb: apply_diag(funcs, rgb), "per-channel curves"),
         "matrix": (lambda rgb: correct_matrix(coef_m, rgb), "3x3 matrix"),
-        "poly": (lambda rgb: correct_poly((coef_p, pdeg), rgb),
-                 f"3D polynomial deg {pdeg}"),
+        "poly": (
+            lambda rgb: correct_poly((coef_p, pdeg), rgb),
+            f"3D polynomial deg {pdeg}",
+        ),
     }
     resid = {k: np.abs(f(cap) - intended) for k, (f, _) in models.items()}
     model = args.model
     if model == "auto":
         model = min(models, key=lambda k: resid[k].mean())
     correct_model, desc = models[model]
-    print("  model residuals (RGB mean): " + "  ".join(
-        f"{k}={resid[k].mean():.2f}" for k in models))
+    print(
+        "  model residuals (RGB mean): "
+        + "  ".join(f"{k}={resid[k].mean():.2f}" for k in models)
+    )
     print(f"  using: {desc}")
 
     # everything below uses the sampled LUT, so the preview and the report
@@ -685,14 +735,16 @@ def main():
     r = np.abs(correct(cap) - intended)
     print(f"  LUT ({args.size3d}^3) residual (RGB mean): {r.mean():.2f}")
     for c, name in enumerate("RGB"):
-        print(f"  {name}: fit residual mean={r[:, c].mean():.2f} "
-              f"max={r[:, c].max():.2f}")
+        print(
+            f"  {name}: fit residual mean={r[:, c].mean():.2f} "
+            f"max={r[:, c].max():.2f}"
+        )
 
     # sanity: the LUT must map captured black/white to black/white
     dark = np.argmin(intended.sum(axis=1))
     bright = np.argmax(intended.sum(axis=1))
-    blk = tuple(round(v) for v in correct(cap[dark:dark + 1])[0])
-    wht = tuple(round(v) for v in correct(cap[bright:bright + 1])[0])
+    blk = tuple(round(v) for v in correct(cap[dark : dark + 1])[0])
+    wht = tuple(round(v) for v in correct(cap[bright : bright + 1])[0])
     print(f"  check: captured black -> {blk}, captured white -> {wht}")
 
     table = report(cap, intended, correct)
@@ -705,7 +757,9 @@ def main():
     print(f"wrote {args.out}  (LUT_3D_SIZE {args.size3d}, model {model})")
 
     if not args.no_images:
-        paths, combo = save_images(args.out, img, correct, patches, args.cols, args.rows)
+        paths, combo = save_images(
+            args.out, img, correct, patches, args.cols, args.rows
+        )
         print(f"wrote {combo}")
         print(f"      {paths['expected']} / {paths['captured']} / {paths['corrected']}")
 
