@@ -187,7 +187,7 @@
     /* ── 方块网格 ── */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--sw) + 200px)), 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--sw) + 320px)), 1fr));
       gap: 10px;
     }
 
@@ -212,8 +212,8 @@
     .meta {
       min-width: 0;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: .78rem;
-      line-height: 1.45;
+      font-size: 1.3rem;
+      line-height: 1.5;
       white-space: nowrap;
     }
 
@@ -224,7 +224,7 @@
 
     .meta .rgb {
       color: var(--muted);
-      font-size: .74rem;
+      font-size: 1.2rem;
     }
 
     body.hide-labels .cell {
