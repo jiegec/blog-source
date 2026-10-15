@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MS2130S luma / chroma processing 可视化</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #17181c;
+      --muted: #6b7280;
+      --card: #f5f6f8;
+      --card-bd: #e2e5ea;
+      --accent: #2f4fd8;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #131418;
+        --fg: #e8e9ee;
+        --muted: #9aa0ac;
+        --card: #1c1e24;
+        --card-bd: #2c2f37;
+        --accent: #7e97ff;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+      padding: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    h1 {
+      font-size: 1.05rem;
+      margin: 0 0 2px;
+    }
+
+    .sub {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--card-bd);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .sliders label {
+      display: grid;
+      grid-template-columns: 18px 1fr 46px;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .sliders output {
+      font-family: var(--mono);
+      text-align: right;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .toggles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--card-bd);
+    }
+
+    .toggles label {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .toggles code {
+      font-family: var(--mono);
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .presets button {
+      border: 1px solid var(--card-bd);
+      background: var(--card);
+      color: var(--fg);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font: inherit;
+      font-size: .78rem;
+      cursor: pointer;
+    }
+
+    .presets button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .stage {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .swatchbox {
+      flex: 0 0 auto;
+      text-align: center;
+    }
+
+    .sw {
+      width: 96px;
+      height: 96px;
+      border-radius: 8px;
+      border: 1px solid var(--card-bd);
+    }
+
+    .swatchbox .cap {
+      font-family: var(--mono);
+      font-size: .78rem;
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    .arrow {
+      font-size: 1.6rem;
+      color: var(--muted);
+    }
+
+    .four {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .four .cell {
+      border: 1px solid var(--card-bd);
+      border-radius: 8px;
+      padding: 6px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--card);
+    }
+
+    .four .cell.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .four .mini {
+      height: 44px;
+      border-radius: 5px;
+      border: 1px solid var(--card-bd);
+      margin-bottom: 4px;
+    }
+
+    .four .lbl {
+      font-size: .72rem;
+      color: var(--muted);
+    }
+
+    .four .val {
+      font-family: var(--mono);
+      font-size: .74rem;
+      overflow-wrap: anywhere;
+    }
+
+    h2 {
+      font-size: .9rem;
+      margin: 0 0 8px;
+    }
+
+    .steps {
+      font-family: var(--mono);
+      font-size: .79rem;
+    }
+
+    .steps .line {
+      display: flex;
+      gap: 8px;
+      padding: 3px 6px;
+      border-radius: 5px;
+      min-width: 0;
+    }
+
+    .steps .line:nth-child(odd) {
+      background: var(--card);
+    }
+
+    .steps .tag {
+      flex: 0 0 auto;
+      color: var(--muted);
+      min-width: 74px;
+    }
+
+    .steps .expr {
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .steps .off {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .steps .hi {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .76rem;
+    }
+
+    @media (max-width: 560px) {
+      .four {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stage {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>MS2130S luma / chroma processing 可视化</h1>
+  <p class="sub">
+    拖动 R/G/B，打开或关闭两个 processing，看看每个像素经过哪些计算、最终变成什么。
+    （常量来自 UG307-95348 实测拟合：luma <code>×1.1533 −11.55</code>，chroma <code>×1.38</code>。）
+  </p>
+
+  <div class="panel sliders">
+    <label>R <input type="range" id="r" min="0" max="255" value="64"><output id="ro">64</output></label>
+    <label>G <input type="range" id="g" min="0" max="255" value="0"><output id="go">0</output></label>
+    <label>B <input type="range" id="b" min="0" max="255" value="0"><output id="bo">0</output></label>
+    <div class="toggles">
+      <label><input type="checkbox" id="luma" checked> luma processing <code>0xfc8e</code></label>
+      <label><input type="checkbox" id="chroma" checked> chroma processing <code>0xfc8f</code></label>
+    </div>
+  </div>
+
+  <div class="presets" id="presets"></div>
+
+  <div class="panel">
+    <div class="stage">
+      <div class="swatchbox">
+        <div class="sw" id="srcSw"></div>
+        <div class="cap">源 <span id="srcTxt"></span></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="swatchbox">
+        <div class="sw" id="outSw"></div>
+        <div class="cap">采集 <span id="outTxt"></span></div>
+      </div>
+    </div>
+    <div class="four" id="four"></div>
+  </div>
+
+  <div class="panel">
+    <h2>计算过程</h2>
+    <div class="steps" id="steps"></div>
+    <div class="note">
+      <code>Yf</code> 是 full-range 的亮度 Y（USB 实际输出的是 limited：<code>Y = 16 + (219/255)·Yf</code>）；
+      <code>ΔR = R−Yf</code>、<code>ΔB = B−Yf</code> 是色差，等于 <code>1.5748·(Cr−128)</code> 和 <code>1.8556·(Cb−128)</code>，也就是把标准 Cb/Cr 去掉 128 偏移、去掉归一化后回到 R/B 单位。
+      limited range 的裁剪等价于 <code>Yf∈[0,255]</code>、<code>ΔR∈[−200.8,200.8]</code>、<code>ΔB∈[−236.6,236.6]</code>，
+      所以高饱和颜色会“顶住”而不再线性增长。这里只建模 luma / chroma 两步，不含 4:2:0 色度二次采样与 8-bit 量化的残差（实测约 ±1~4）。
+    </div>
+  </div>
+
+  <script>
+    const KR = 0.2126, KG = 0.7152, KB = 0.0722;
+    const A = 1.1533, B0 = -11.55, S = 1.38;
+    const KRMAX = 200.8, KBMAX = 236.6;
+
+    const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+    const f2 = v => (Math.round(v * 100) / 100).toFixed(2);
+    const f0 = v => Math.round(v);
+
+    function compute(R, G, B, luma, chroma) {
+      const Yf = KR * R + KG * G + KB * B;
+      const Kr = R - Yf, Kb = B - Yf;
+
+      const yPre = luma ? A * Yf + B0 : Yf;
+      const krPre = chroma ? S * Kr : Kr;
+      const kbPre = chroma ? S * Kb : Kb;
+
+      const yC = clamp(yPre, 0, 255);
+      const krC = clamp(krPre, -KRMAX, KRMAX);
+      const kbC = clamp(kbPre, -KBMAX, KBMAX);
+
+      const Rp = clamp(yC + krC, 0, 255);
+      const Gp = clamp(yC - 0.10094 * kbC - 0.29725 * krC, 0, 255);
+      const Bp = clamp(yC + kbC, 0, 255);
+
+      return {
+        Yf, Kr, Kb, yPre, krPre, kbPre, yC, krC, kbC,
+        out: { R: Math.round(Rp), G: Math.round(Gp), B: Math.round(Bp) }
+      };
+    }
+
+    const els = {
+      r: document.getElementById('r'), g: document.getElementById('g'), b: document.getElementById('b'),
+      ro: document.getElementById('ro'), go: document.getElementById('go'), bo: document.getElementById('bo'),
+      luma: document.getElementById('luma'), chroma: document.getElementById('chroma'),
+      srcSw: document.getElementById('srcSw'), outSw: document.getElementById('outSw'),
+      srcTxt: document.getElementById('srcTxt'), outTxt: document.getElementById('outTxt'),
+      four: document.getElementById('four'), steps: document.getElementById('steps'),
+      presets: document.getElementById('presets')
+    };
+
+    const rgba = (c) => `rgb(${c.R}, ${c.G}, ${c.B})`;
+
+    const PRESETS = [
+      ['黑', 0, 0, 0], ['灰64', 64, 64, 64], ['灰128', 128, 128, 128], ['灰192', 192, 192, 192], ['白', 255, 255, 255],
+      ['红', 255, 0, 0], ['红128', 128, 0, 0], ['红64', 64, 0, 0],
+      ['绿', 0, 255, 0], ['蓝', 0, 0, 255], ['蓝128', 0, 0, 128]
+    ];
+
+    function render() {
+      const R = +els.r.value, G = +els.g.value, B = +els.b.value;
+      els.ro.textContent = R; els.go.textContent = G; els.bo.textContent = B;
+      const luma = els.luma.checked, chroma = els.chroma.checked;
+
+      const src = { R, G, B };
+      const res = compute(R, G, B, luma, chroma);
+
+      els.srcSw.style.background = rgba(src);
+      els.srcTxt.textContent = `${R},${G},${B}`;
+      els.outSw.style.background = rgba(res.out);
+      els.outTxt.textContent = `${res.out.R},${res.out.G},${res.out.B}`;
+
+      // four-state comparison
+      const states = [
+        [false, false, '都关'], [true, false, 'luma'], [false, true, 'chroma'], [true, true, '都开']
+      ];
+      els.four.innerHTML = '';
+      for (const [l, c, name] of states) {
+        const o = compute(R, G, B, l, c).out;
+        const active = (l === luma && c === chroma) ? ' active' : '';
+        els.four.insertAdjacentHTML('beforeend',
+          `<div class="cell${active}" data-l="${l}" data-c="${c}">
+             <div class="mini" style="background:${rgba(o)}"></div>
+             <div class="lbl">${name}</div>
+             <div class="val">${o.R},${o.G},${o.B}</div>
+           </div>`);
+      }
+
+      // step by step
+      const lines = [];
+      lines.push(['输入', `R,G,B = ${R}, ${G}, ${B}`]);
+      lines.push(['亮度', `Yf = 0.2126·${R} + 0.7152·${G} + 0.0722·${B} = ${f2(res.Yf)}`]);
+      lines.push(['色差', `ΔR = R − Yf = ${f2(res.Kr)} , ΔB = B − Yf = ${f2(res.Kb)}`]);
+      if (luma) {
+        lines.push(['luma', `Yf' = 1.1533·${f2(res.Yf)} − 11.55 = ${f2(res.yPre)}`]);
+      } else {
+        lines.push(['luma', `<span class="off">Yf' = 1.1533·Yf − 11.55（已关闭）</span>`]);
+      }
+      if (chroma) {
+        lines.push(['chroma', `ΔR' = 1.38·${f2(res.Kr)} = ${f2(res.krPre)} , ΔB' = 1.38·${f2(res.Kb)} = ${f2(res.kbPre)}`]);
+      } else {
+        lines.push(['chroma', `<span class="off">ΔR' = 1.38·ΔR , ΔB' = 1.38·ΔB（已关闭）</span>`]);
+      }
+      lines.push(['截断', `Yf'∈[0,255] → ${f2(res.yC)} , ΔR' → ${f2(res.krC)} , ΔB' → ${f2(res.kbC)}`]);
+      lines.push(['解码', `R' = Yf' + ΔR' = ${f2(res.yC + res.krC)} → <span class="hi">${res.out.R}</span>`]);
+      lines.push(['', `G' = Yf' − 0.1009·ΔB' − 0.2973·ΔR' = ${f2(res.yC - 0.10094 * res.kbC - 0.29725 * res.krC)} → <span class="hi">${res.out.G}</span>`]);
+      lines.push(['', `B' = Yf' + ΔB' = ${f2(res.yC + res.kbC)} → <span class="hi">${res.out.B}</span>`]);
+
+      els.steps.innerHTML = lines.map(([tag, expr]) =>
+        `<div class="line"><span class="tag">${tag}</span><span class="expr">${expr}</span></div>`).join('');
+    }
+
+    function addPresets() {
+      for (const [name, r, g, b] of PRESETS) {
+        const btn = document.createElement('button');
+        btn.textContent = name;
+        btn.addEventListener('click', () => {
+          els.r.value = r; els.g.value = g; els.b.value = b; render();
+        });
+        els.presets.appendChild(btn);
+      }
+    }
+
+    ['r', 'g', 'b', 'luma', 'chroma'].forEach(id =>
+      els[id].addEventListener('input', render));
+
+    els.four.addEventListener('click', (e) => {
+      const cell = e.target.closest('.cell');
+      if (!cell) return;
+      els.luma.checked = cell.dataset.l === 'true';
+      els.chroma.checked = cell.dataset.c === 'true';
+      render();
+    });
+
+    addPresets();
+    render();
+
+    // tell the embedding page how tall we are, so the iframe can fit exactly
+    function notifyHeight() {
+      const h = Math.ceil(document.body.getBoundingClientRect().height);
+      try { parent.postMessage({ type: 'ms2130s-color-calc-height', height: h }, '*'); } catch (e) { }
+    }
+    window.addEventListener('load', notifyHeight);
+    window.addEventListener('resize', notifyHeight);
+    notifyHeight();
+  </script>
+</body>
+
+</html>

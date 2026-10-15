@@ -349,6 +349,42 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 - 原来 0,0,192 -> 显示 0,0,190
 - 原来 0,0,255 -> 显示 0,0,254
 
+### 交互式计算器
+
+下面这个计算器可以拖动 R/G/B，打开或关闭 luma（`0xfc8e`）/ chroma（`0xfc8f`）processing，实时看到每个像素经过哪些计算、最终变成什么。用的就是上面拟合出来的 `Yf' = 1.1533·Yf − 11.55` 和 `s = 1.38`：
+
+<iframe id="ms2130s-color-calc" src="/ms2130s-color-processing.html" title="MS2130S luma / chroma processing 可视化" loading="lazy" style="width:100%;height:960px;border:0;border-radius:10px"></iframe>
+
+<script>
+  (function () {
+    function fit() {
+      var f = document.getElementById('ms2130s-color-calc');
+      if (!f) return;
+      try {
+        var d = f.contentDocument;
+        if (d && d.body) {
+          var h = Math.ceil(d.body.getBoundingClientRect().height);
+          if (h > 100) f.style.height = (h + 4) + 'px';
+        }
+      } catch (e) { }
+    }
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'ms2130s-color-calc-height') {
+        var f = document.getElementById('ms2130s-color-calc');
+        if (f) f.style.height = (e.data.height + 4) + 'px';
+      }
+    });
+    window.addEventListener('resize', function () { setTimeout(fit, 50); });
+    var f = document.getElementById('ms2130s-color-calc');
+    if (f) {
+      f.addEventListener('load', fit);
+      fit();
+      setTimeout(fit, 300);
+      setTimeout(fit, 1200);
+    }
+  })();
+</script>
+
 ## 附录
 
 以下是这个采集卡的 EDID：
