@@ -280,7 +280,7 @@ c275: 0287c7 LJMP 87c7h
 
 核心就是把上面我通过 hidapi 从 host 端写入寄存器的操作，换成了直接在固件里写入：固件本来是 clear，改成了 set，这样就禁用了 luma processing，持久化了这个改动。
 
-这部分代码以及固件已经开源到 [jiegec/ugreen-95348-patcher](http://github.com/jiegec/ugreen-95348-patcher)，感兴趣的读者可以尝试一下，尝试之前记得备份固件，而且有变砖的风险。
+这部分代码以及固件已经开源到 [jiegec/ugreen-95348-patcher](http://github.com/jiegec/ugreen-95348-patcher)，感兴趣的读者可以尝试一下，尝试之前记得备份固件，而且有变砖的风险。目前这个仓库不仅禁用了 luma processing（0xfc8e），还禁用了 chroma processing（0xfc8f）。
 
 P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60 FPS - CS 709 - NV12 (420v)` 模式生效；对 `3840x2160 (16:9) - 30 FPS - CS 709 - NV12 (420v)` 模式则无效：前者画面清晰、颜色正确，后者画面模糊、颜色也不对。具体原因尚未深入分析。
 

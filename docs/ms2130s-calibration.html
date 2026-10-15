@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MS2130S 标定图</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #grid {
+      display: grid;
+      width: 100vw;
+      height: 100vh;
+      grid-auto-flow: row;
+    }
+
+    #grid>div {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #hint {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px 14px;
+      text-align: center;
+      color: #fff;
+      background: rgba(0, 0, 0, .72);
+      font: 13px/1.5 system-ui, "PingFang SC", sans-serif;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="grid"></div>
+  <div id="hint">
+    MS2130S 标定图：6×6×6 色块（18×12 阵列）。请全屏显示在「要被采集」的那台机器/显示器上，然后运行
+    <code>calibrate.py</code>。3 秒后本提示消失；按 F 进入全屏，点击可立刻隐藏提示。
+  </div>
+  <script>
+    const q = new URLSearchParams(location.search);
+    const N = +(q.get('n') || 6);
+    const COLS = +(q.get('cols') || 18);
+    const ROWS = +(q.get('rows') || 12);
+    const mode = q.get('mode') || 'cube';
+
+    const levels = [];
+    for (let i = 0; i < N; i++) levels.push(Math.round(i * 255 / (N - 1)));
+
+    const patches = [];
+    if (mode === 'cube') {
+      for (const b of levels) for (const g of levels) for (const r of levels) patches.push([r, g, b]);
+    } else if (mode === 'gray') {
+      for (const v of levels) patches.push([v, v, v]);
+    } else if (mode === 'ramp') {
+      for (const v of levels) patches.push([v, 0, 0]);
+      for (const v of levels) patches.push([0, v, 0]);
+      for (const v of levels) patches.push([0, 0, v]);
+    }
+
+    const grid = document.getElementById('grid');
+    grid.style.gridTemplateColumns = `repeat(${COLS}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${ROWS}, 1fr)`;
+    for (const [r, g, b] of patches) {
+      const d = document.createElement('div');
+      d.style.background = `rgb(${r}, ${g}, ${b})`;
+      grid.appendChild(d);
+    }
+
+    const hide = () => { const h = document.getElementById('hint'); if (h) h.remove(); };
+    setTimeout(hide, 3000);
+    document.body.addEventListener('click', hide);
+    document.addEventListener('keydown', (e) => { hide(); if (e.key.toLowerCase() === 'f') document.documentElement.requestFullscreen?.(); });
+  </script>
+</body>
+
+</html>
