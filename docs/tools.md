@@ -12,33 +12,33 @@ permalink: /tools/
 
 别人编写的：
 
-1. https://gchq.github.io/CyberChef/
-1. https://godbolt.org/
-1. https://hpd.gasmi.net/
-1. https://tcpdump101.com/
-1. https://regexper.com/
-1. https://crontab.guru/
-1. https://salmanarif.bitbucket.io/visual/index.html
-1. https://mathpix.com/
-1. https://www.falstad.com/circuit/circuitjs.html
-1. https://merricx.github.io/qrazybox/
-1. https://www.epochconverter.com/
-1. https://www.vultr.com/resources/mac-converter/
-1. http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
-1. https://www.easyunitconverter.com/
-1. https://gregstoll.com/~gregstoll/floattohex/
+1. [CyberChef](https://gchq.github.io/CyberChef/)：编码、加密、数据处理瑞士军刀
+1. [Compiler Explorer / godbolt](https://godbolt.org/)：在线看汇编
+1. [Hex Packet Decoder](https://hpd.gasmi.net/)：网络报文解析
+1. [tcpdump101](https://tcpdump101.com/)：tcpdump 命令生成器
+1. [Regexper](https://regexper.com/)：正则表达式可视化
+1. [crontab.guru](https://crontab.guru/)：crontab 表达式解释
+1. [Visual](https://salmanarif.bitbucket.io/visual/index.html)：处理器/电路可视化仿真
+1. [Mathpix](https://mathpix.com/)：公式 OCR
+1. [Falstad Circuit Simulator](https://www.falstad.com/circuit/circuitjs.html)：在线电路仿真
+1. [QRazyBox](https://merricx.github.io/qrazybox/)：二维码分析与恢复
+1. [Epoch Converter](https://www.epochconverter.com/)：Unix 时间戳转换
+1. [Vultr MAC Converter](https://www.vultr.com/resources/mac-converter/)：MAC 地址转换
+1. [CRC Calculator](http://www.sunshine2k.de/coding/javascript/crc/crc_js.html)：CRC 计算
+1. [Easy Unit Converter](https://www.easyunitconverter.com/)：单位换算
+1. [Float to Hex](https://gregstoll.com/~gregstoll/floattohex/)：IEEE 754 浮点与十六进制互转
 
 
 自己编写的：
 
-1. S-DES 可视化 https://jia.je/sdes-visualization/
-1. Booth 乘法可视化 https://jia.je/booth-visualization/
-1. 整数除法可视化 https://jia.je/integer-divide-visualization/
-1. 在线运行 TAC 代码 https://jia.je/online_tac_vm/
-1. 在线编译 Decaf https://jia.je/online_decaf/
-1. 在线解码登机牌信息 BCBP https://jia.je/decode-bcbp/
-1. IEEE 754 等浮点格式转换 https://jia.je/floating/
-1. 显示器色彩测试 https://jia.je/display-color-test.html
+1. [S-DES 可视化](https://jia.je/sdes-visualization/)
+1. [Booth 乘法可视化](https://jia.je/booth-visualization/)
+1. [整数除法可视化](https://jia.je/integer-divide-visualization/)
+1. [在线运行 TAC 代码](https://jia.je/online_tac_vm/)
+1. [在线编译 Decaf](https://jia.je/online_decaf/)
+1. [在线解码登机牌信息 BCBP](https://jia.je/decode-bcbp/)
+1. [IEEE 754 等浮点格式转换](https://jia.je/floating/)
+1. [显示器色彩测试](https://jia.je/display-color-test.html)
 
 ## 调试工具
 
