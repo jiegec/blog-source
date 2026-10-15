@@ -94,6 +94,9 @@ for d in session.devices {
 除了清晰度问题，采集卡采到的鸿蒙电脑画面颜色不对。在鸿蒙电脑上打开 [Lagom 白饱和测试图](http://www.lagom.nl/lcd-test/zhs_white.php) 或 [显示器色彩测试](https://jia.je/display-color-test.html)，采集到的 RGB 与预期对不上，大致关系如下：
 
 - 原来 15,15,15 -> 显示 6,6,6
+- 原来 64,64,64 -> 显示 62,62,62
+- 原来 128,128,128 -> 显示 136,136,136
+- 原来 160,160,160 -> 显示 173,173,173
 - 原来 200,200,200 -> 显示 219,219,219
 - 原来 224,224,224 -> 显示 247,247,247
 - 原来 244,244,244 -> 显示 255,255,255
@@ -103,6 +106,8 @@ for d in session.devices {
 - 原来 255,0,0 -> 显示 250,0,0
 
 用 ffmpeg 观察后发现，原来 200,200,200 的像素，到采集卡实际给出的是 204；由于这是 limited range（16-235）下的 204，转换到 full range 后就是 `(204 - 16) / 219 * 255 = 219`。若把鸿蒙电脑直接接到显示器上，显示则正常。
+
+先考虑纯色，即 RGB 三个分量都等于同一个 x 的情况，它对应的 YUV，如果不考虑 limited range，都按 full range 算，那就是 Y 分量就等于 x。经过 MS2130S 的 luma processing 处理后，拟合出来的情况就是，Y 分量变成了 $1.1533 x - 11.55$ 再 clamp 到 [0,255]。
 
 深入研究后，我找到了一些通过设置 MS2130S 寄存器来改变其行为的方法（参考 [steve-m/hsdaoh](https://github.com/steve-m/hsdaoh/blob/master/src/libhsdaoh.c)）。在 AI 的帮助下定位到了问题：只要关闭 MS2130S 自带的 luma processing（即把寄存器 0xfc8e 从原来的 0x00 改为 0x11），颜色就会恢复正常。下面这个小工具可以在 OBS 开始录制后运行，用来 toggle luma processing，从而实时看到颜色变化：
 
