@@ -295,7 +295,7 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 
 这些项目大多出自 [steve-m](https://github.com/steve-m) 之手，感谢他的开源工作。
 
-## 附录：chroma processing
+## 附录：采集卡对颜色做了哪些变化
 
 上面只关了 luma processing，主要是对亮度也就是 Y 分量做了处理。实际上，硬件还有 chroma processing。
 
@@ -322,7 +322,7 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 
 ### 交互式计算器
 
-下面这个计算器可以拖动 R/G/B，打开或关闭 luma（`0xfc8e`）/ chroma（`0xfc8f`）processing，实时看到每个像素经过哪些计算、最终变成什么：
+下面这个计算器可以实时看到 MS2130S 内部每个像素经过哪些计算、最终变成什么：
 
 <iframe id="ms2130s-color-calc" src="/ms2130s-color-processing.html" title="MS2130S luma / chroma processing 可视化" loading="lazy" style="width:100%;height:960px;border:0;border-radius:10px"></iframe>
 

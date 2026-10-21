@@ -13,6 +13,7 @@
       --card: #f5f6f8;
       --card-bd: #e2e5ea;
       --accent: #2f4fd8;
+      --orange: #d97706;
       --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
@@ -24,6 +25,7 @@
         --card: #1c1e24;
         --card-bd: #2c2f37;
         --accent: #7e97ff;
+        --orange: #f0a43a;
       }
     }
 
@@ -53,6 +55,11 @@
       margin: 0 0 2px;
     }
 
+    h2 {
+      font-size: .9rem;
+      margin: 0 0 8px;
+    }
+
     .sub {
       margin: 0 0 12px;
       color: var(--muted);
@@ -67,13 +74,121 @@
       margin-bottom: 12px;
     }
 
+    /* ---------- main left-to-right pipeline ---------- */
+
+    .flow-panel {
+      overflow-x: auto;
+      padding: 10px;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      gap: 5px;
+      min-width: 1040px;
+    }
+
+    .flow-stage {
+      flex: 1 1 0;
+      min-width: 132px;
+      background: var(--bg);
+      border: 1px solid var(--card-bd);
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .flow-stage.input {
+      flex: 1.55 1 220px;
+      min-width: 220px;
+    }
+
+    .flow-stage.output {
+      flex: 1 1 140px;
+      min-width: 140px;
+    }
+
+    .flow-h {
+      font-size: .8rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .flow-h code {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .flow-stage .sw {
+      width: 100%;
+      height: 70px;
+      border-radius: 7px;
+      border: 1px solid var(--card-bd);
+    }
+
+    .flow-stage .sw.small {
+      height: 54px;
+    }
+
+    .flow-stage .cap {
+      font-family: var(--mono);
+      font-size: .73rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .flow-stage .kv {
+      font-family: var(--mono);
+      font-size: .71rem;
+      color: var(--muted);
+      line-height: 1.55;
+      min-width: 0;
+    }
+
+    .flow-stage .kv b {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    .flow-stage .kv code {
+      color: var(--accent);
+      font-family: var(--mono);
+    }
+
+    .flow-arrow {
+      align-self: center;
+      color: var(--muted);
+      font-size: 1.15rem;
+      flex: 0 0 auto;
+    }
+
+    .flow-stage .inline {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .74rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .flow-stage input[type=range] {
+      width: 100%;
+      margin: 0;
+    }
+
     .sliders label {
       display: grid;
-      grid-template-columns: 18px 1fr 46px;
+      grid-template-columns: 16px 1fr 40px;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
+      gap: 6px;
+      margin-bottom: 3px;
       font-weight: 600;
+      font-size: .78rem;
     }
 
     .sliders output {
@@ -81,6 +196,7 @@
       text-align: right;
       color: var(--muted);
       font-weight: 500;
+      font-size: .72rem;
     }
 
     input[type=range] {
@@ -88,37 +204,10 @@
       accent-color: var(--accent);
     }
 
-    .toggles {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed var(--card-bd);
-    }
-
-    .toggles label {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      min-width: 0;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .toggles code {
-      font-family: var(--mono);
-      font-size: .78rem;
-      color: var(--muted);
-      font-weight: 400;
-    }
-
     .presets {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
+      gap: 5px;
     }
 
     .presets button {
@@ -126,9 +215,9 @@
       background: var(--card);
       color: var(--fg);
       border-radius: 6px;
-      padding: 3px 9px;
+      padding: 2px 7px;
       font: inherit;
-      font-size: .78rem;
+      font-size: .72rem;
       cursor: pointer;
     }
 
@@ -137,79 +226,47 @@
       color: var(--accent);
     }
 
-    .stage {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    /* ---------- vector plot ---------- */
 
-    .swatchbox {
-      flex: 0 0 auto;
-      text-align: center;
-    }
-
-    .sw {
-      width: 96px;
-      height: 96px;
-      border-radius: 8px;
-      border: 1px solid var(--card-bd);
-    }
-
-    .swatchbox .cap {
-      font-family: var(--mono);
-      font-size: .78rem;
-      margin-top: 4px;
-      color: var(--muted);
-    }
-
-    .arrow {
-      font-size: 1.6rem;
-      color: var(--muted);
-    }
-
-    .four {
+    .vector-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
+      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
     }
 
-    .four .cell {
+    .vector-wrap {
+      background: var(--bg);
       border: 1px solid var(--card-bd);
       border-radius: 8px;
       padding: 6px;
-      text-align: center;
-      cursor: pointer;
-      background: var(--card);
     }
 
-    .four .cell.active {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent);
+    #vec {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
-    .four .mini {
-      height: 44px;
-      border-radius: 5px;
-      border: 1px solid var(--card-bd);
-      margin-bottom: 4px;
-    }
-
-    .four .lbl {
-      font-size: .72rem;
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: .76rem;
       color: var(--muted);
+      margin-bottom: 6px;
     }
 
-    .four .val {
-      font-family: var(--mono);
-      font-size: .74rem;
-      overflow-wrap: anywhere;
+    .legend i {
+      display: inline-block;
+      width: 12px;
+      height: 3px;
+      border-radius: 2px;
+      margin-right: 5px;
+      vertical-align: middle;
     }
 
-    h2 {
-      font-size: .9rem;
-      margin: 0 0 8px;
-    }
+    /* ---------- calculation steps ---------- */
 
     .steps {
       font-family: var(--mono);
@@ -231,7 +288,7 @@
     .steps .tag {
       flex: 0 0 auto;
       color: var(--muted);
-      min-width: 74px;
+      min-width: 58px;
     }
 
     .steps .expr {
@@ -257,13 +314,9 @@
       font-size: .76rem;
     }
 
-    @media (max-width: 560px) {
-      .four {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .stage {
-        flex-wrap: wrap;
+    @media (max-width: 700px) {
+      .vector-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -272,76 +325,152 @@
 <body>
   <h1>MS2130S luma / chroma processing 可视化</h1>
   <p class="sub">
-    拖动 R/G/B，打开或关闭两个 processing，看看每个像素经过哪些计算、最终变成什么。
-    （常量来自 UG307-95348 实测拟合：luma <code>×1.1533 −11.55</code>，chroma <code>×1.38</code>。）
+    从左到右：输入颜色 → luma processing → chroma gain → chroma hue → 输出颜色。
+    luma 寄存器：<code>0xfc8e[0,4] / 0xfc90 / 0xfc91</code>；
+    chroma 寄存器：<code>0xfc8f[0,4] / 0xfc92 / 0xfc93</code>。
   </p>
 
-  <div class="panel sliders">
-    <label>R <input type="range" id="r" min="0" max="255" value="64"><output id="ro">64</output></label>
-    <label>G <input type="range" id="g" min="0" max="255" value="0"><output id="go">0</output></label>
-    <label>B <input type="range" id="b" min="0" max="255" value="0"><output id="bo">0</output></label>
-    <div class="toggles">
-      <label><input type="checkbox" id="luma" checked> luma processing <code>0xfc8e</code></label>
-      <label><input type="checkbox" id="chroma" checked> chroma processing <code>0xfc8f</code></label>
-    </div>
-  </div>
-
-  <div class="presets" id="presets"></div>
-
-  <div class="panel">
-    <div class="stage">
-      <div class="swatchbox">
+  <div class="panel flow-panel">
+    <div class="flow">
+      <!-- 1. input -->
+      <div class="flow-stage input">
+        <div class="flow-h">① 输入颜色</div>
         <div class="sw" id="srcSw"></div>
-        <div class="cap">源 <span id="srcTxt"></span></div>
+        <div class="cap" id="srcTxt"></div>
+        <div class="sliders">
+          <label>R <input type="range" id="r" min="0" max="255" value="64"><output id="ro">64</output></label>
+          <label>G <input type="range" id="g" min="0" max="255" value="0"><output id="go">0</output></label>
+          <label>B <input type="range" id="b" min="0" max="255" value="0"><output id="bo">0</output></label>
+        </div>
+        <div class="kv" id="decomp"></div>
       </div>
-      <div class="arrow">→</div>
-      <div class="swatchbox">
+
+      <div class="flow-arrow">→</div>
+
+      <!-- 2. luma -->
+      <div class="flow-stage">
+        <div class="flow-h">② luma processing<br><code>0xfc8e[0,4] / 0xfc90 / 0xfc91</code></div>
+        <div class="sw small" id="lumaSw"></div>
+        <label class="inline"><input type="checkbox" id="luma" checked> enable</label>
+        <div class="kv" id="lumaVal"></div>
+      </div>
+
+      <div class="flow-arrow">→</div>
+
+      <!-- 3. chroma gain -->
+      <div class="flow-stage">
+        <div class="flow-h">③ chroma: gain<br><code>0xfc92 / 0xfc8f[0,4]</code></div>
+        <div class="sw small" id="gainSw"></div>
+        <label class="inline"><input type="checkbox" id="chroma" checked> <code>0xfc8f</code>[0,4] enable</label>
+        <input type="range" id="fc92" min="0" max="255" value="180">
+        <div class="kv" id="gainVal"></div>
+      </div>
+
+      <div class="flow-arrow">→</div>
+
+      <!-- 4. chroma hue -->
+      <div class="flow-stage">
+        <div class="flow-h">④ chroma: hue<br><code>0xfc93</code></div>
+        <div class="sw small" id="hueSw"></div>
+        <input type="range" id="fc93" min="0" max="255" value="0">
+        <div class="kv" id="hueVal"></div>
+      </div>
+
+      <div class="flow-arrow">→</div>
+
+      <!-- 5. output -->
+      <div class="flow-stage output">
+        <div class="flow-h">⑤ 输出颜色</div>
         <div class="sw" id="outSw"></div>
-        <div class="cap">采集 <span id="outTxt"></span></div>
+        <div class="cap" id="outTxt"></div>
+        <div class="kv" id="outVal"></div>
       </div>
     </div>
-    <div class="four" id="four"></div>
+  </div>
+
+  <div class="presets" id="presets" style="margin: 0 0 8px;"></div>
+  <div class="presets" id="chromaPresets" style="margin: 0 0 12px;"></div>
+
+  <div class="panel">
+    <h2>Chroma 向量图（ΔR/ΔB 平面）</h2>
+    <div class="vector-grid">
+      <div class="vector-wrap"><canvas id="vec"></canvas></div>
+      <div>
+        <div class="legend">
+          <span><i style="background:var(--muted)"></i>源 ΔR/ΔB</span>
+          <span><i style="background:var(--orange)"></i>gain ×0xfc92/128</span>
+          <span><i style="background:var(--accent)"></i>hue −0xfc93·360/256°</span>
+          <span><i style="border-top:1px dashed var(--muted);height:0;background:transparent"></i>clamp 边界</span>
+        </div>
+        <div class="steps" id="vecInfo"></div>
+        <div class="note">
+          纵轴是 ΔR（Cr），横轴是 ΔB（Cb）。gain 只改变向量长度（饱和度），hue 改变向量方向（色相）。
+          灰色（ΔR=ΔB=0）在原点，gain/hue 都不移动它。虚线是 limited-range 裁剪边界
+          <code>ΔR∈[−200.8, 200.8]</code>、<code>ΔB∈[−236.6, 236.6]</code>。
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="panel">
-    <h2>计算过程</h2>
-    <div class="steps" id="steps"></div>
-    <div class="note">
-      <code>Yf</code> 是 full-range 的亮度 Y（USB 实际输出的是 limited：<code>Y = 16 + (219/255)·Yf</code>）；
-      <code>ΔR = R−Yf</code>、<code>ΔB = B−Yf</code> 是色差，等于 <code>1.5748·(Cr−128)</code> 和 <code>1.8556·(Cb−128)</code>，也就是把标准 Cb/Cr 去掉 128 偏移、去掉归一化后回到 R/B 单位。
-      limited range 的裁剪等价于 <code>Yf∈[0,255]</code>、<code>ΔR∈[−200.8,200.8]</code>、<code>ΔB∈[−236.6,236.6]</code>，
-      所以高饱和颜色会“顶住”而不再线性增长。这里只建模 luma / chroma 两步，不含 4:2:0 色度二次采样与 8-bit 量化的残差（实测约 ±1~4）。
+    <div class="note" style="margin-top:0">
+      luma 的 <code>1.1533/−11.55</code> 是默认系数
+      <code>0xfc8e[0,4]=0x00</code>、<code>0xfc90=0xf5</code>、<code>0xfc91=0x94</code>
+      下的 proc-amp 级等效规律；正常 YUV 路径前面还有 baseline（full-RGB 输入时 38/97/157/216），
+      组合曲线是 33/102/171/239。本页只建模 luma/chroma 两步，不含 4:2:0 二次采样与 8-bit 量化残差。
     </div>
   </div>
 
   <script>
     const KR = 0.2126, KG = 0.7152, KB = 0.0722;
-    const A = 1.1533, B0 = -11.55, S = 1.38;
+    const LUMA_A = 1.1533, LUMA_B = -11.55;
     const KRMAX = 200.8, KBMAX = 236.6;
 
     const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
     const f2 = v => (Math.round(v * 100) / 100).toFixed(2);
-    const f0 = v => Math.round(v);
+    const f1 = v => (Math.round(v * 10) / 10).toFixed(1);
+    const hex2 = v => '0x' + v.toString(16).toUpperCase().padStart(2, '0');
 
-    function compute(R, G, B, luma, chroma) {
-      const Yf = KR * R + KG * G + KB * B;
-      const Kr = R - Yf, Kb = B - Yf;
+    function reconstruct(y, kr, kb) {
+      return {
+        R: Math.round(clamp(y + kr, 0, 255)),
+        G: Math.round(clamp(y - 0.10094 * kb - 0.29725 * kr, 0, 255)),
+        B: Math.round(clamp(y + kb, 0, 255))
+      };
+    }
 
-      const yPre = luma ? A * Yf + B0 : Yf;
-      const krPre = chroma ? S * Kr : Kr;
-      const kbPre = chroma ? S * Kb : Kb;
+    function compute(R, G, B, luma, chroma, fc92, fc93) {
+      const Y = KR * R + KG * G + KB * B;
+      const Kr = R - Y;
+      const Kb = B - Y;
 
+      const g = fc92 / 128;
+      const thetaDeg = fc93 * 360 / 256;
+      const theta = thetaDeg * Math.PI / 180;
+      const c = Math.cos(theta), s = Math.sin(theta);
+
+      // luma branch
+      const yPre = luma ? LUMA_A * Y + LUMA_B : Y;
       const yC = clamp(yPre, 0, 255);
-      const krC = clamp(krPre, -KRMAX, KRMAX);
-      const kbC = clamp(kbPre, -KBMAX, KBMAX);
 
-      const Rp = clamp(yC + krC, 0, 255);
-      const Gp = clamp(yC - 0.10094 * kbC - 0.29725 * krC, 0, 255);
-      const Bp = clamp(yC + kbC, 0, 255);
+      // chroma branch: gain-only, then gain+rotation
+      const krGain = chroma ? g * Kr : Kr;
+      const kbGain = chroma ? g * Kb : Kb;
+      const krRot = chroma ? g * (c * Kr - s * Kb) : Kr;
+      const kbRot = chroma ? g * (s * Kr + c * Kb) : Kb;
+
+      const krC = clamp(krRot, -KRMAX, KRMAX);
+      const kbC = clamp(kbRot, -KBMAX, KBMAX);
 
       return {
-        Yf, Kr, Kb, yPre, krPre, kbPre, yC, krC, kbC,
-        out: { R: Math.round(Rp), G: Math.round(Gp), B: Math.round(Bp) }
+        Y, Kr, Kb, g, thetaDeg,
+        yPre, yC,
+        krGain, kbGain, krRot, kbRot, krC, kbC,
+        lumaColor: reconstruct(yC, Kr, Kb),
+        gainColor: reconstruct(yC, clamp(krGain, -KRMAX, KRMAX), clamp(kbGain, -KBMAX, KBMAX)),
+        rotColor: reconstruct(yC, krC, kbC),
+        out: reconstruct(yC, krC, kbC),
+        src: { R, G, B }
       };
     }
 
@@ -349,75 +478,222 @@
       r: document.getElementById('r'), g: document.getElementById('g'), b: document.getElementById('b'),
       ro: document.getElementById('ro'), go: document.getElementById('go'), bo: document.getElementById('bo'),
       luma: document.getElementById('luma'), chroma: document.getElementById('chroma'),
+      fc92: document.getElementById('fc92'), fc93: document.getElementById('fc93'),
       srcSw: document.getElementById('srcSw'), outSw: document.getElementById('outSw'),
       srcTxt: document.getElementById('srcTxt'), outTxt: document.getElementById('outTxt'),
-      four: document.getElementById('four'), steps: document.getElementById('steps'),
-      presets: document.getElementById('presets')
+      lumaSw: document.getElementById('lumaSw'), gainSw: document.getElementById('gainSw'),
+      hueSw: document.getElementById('hueSw'),
+      decomp: document.getElementById('decomp'), lumaVal: document.getElementById('lumaVal'),
+      gainVal: document.getElementById('gainVal'), hueVal: document.getElementById('hueVal'),
+      outVal: document.getElementById('outVal'),
+      presets: document.getElementById('presets'), chromaPresets: document.getElementById('chromaPresets'),
+      vec: document.getElementById('vec'), vecInfo: document.getElementById('vecInfo')
     };
 
-    const rgba = (c) => `rgb(${c.R}, ${c.G}, ${c.B})`;
+    const rgba = c => `rgb(${c.R}, ${c.G}, ${c.B})`;
 
-    const PRESETS = [
+    const RGB_PRESETS = [
       ['黑', 0, 0, 0], ['灰64', 64, 64, 64], ['灰128', 128, 128, 128], ['灰192', 192, 192, 192], ['白', 255, 255, 255],
       ['红', 255, 0, 0], ['红128', 128, 0, 0], ['红64', 64, 0, 0],
-      ['绿', 0, 255, 0], ['蓝', 0, 0, 255], ['蓝128', 0, 0, 128]
+      ['绿', 0, 255, 0], ['绿128', 0, 128, 0], ['蓝', 0, 0, 255], ['蓝128', 0, 0, 128]
+    ];
+
+    const CHROMA_PRESETS = [
+      ['0xfc92=00 灰度', { fc92: 0x00 }],
+      ['0xfc92=40 0.5×', { fc92: 0x40 }],
+      ['0xfc92=80 1.0×', { fc92: 0x80 }],
+      ['0xfc92=b4 默认', { fc92: 0xb4 }],
+      ['0xfc93=40 红→蓝', { fc93: 0x40 }],
+      ['0xfc93=80 红→青', { fc93: 0x80 }],
+      ['0xfc93=C0 红→绿', { fc93: 0xc0 }],
+      ['重置', 'reset']
     ];
 
     function render() {
       const R = +els.r.value, G = +els.g.value, B = +els.b.value;
-      els.ro.textContent = R; els.go.textContent = G; els.bo.textContent = B;
       const luma = els.luma.checked, chroma = els.chroma.checked;
+      const fc92 = +els.fc92.value, fc93 = +els.fc93.value;
 
+      els.ro.textContent = R; els.go.textContent = G; els.bo.textContent = B;
+
+      const res = compute(R, G, B, luma, chroma, fc92, fc93);
       const src = { R, G, B };
-      const res = compute(R, G, B, luma, chroma);
 
+      // input / output
       els.srcSw.style.background = rgba(src);
       els.srcTxt.textContent = `${R},${G},${B}`;
       els.outSw.style.background = rgba(res.out);
       els.outTxt.textContent = `${res.out.R},${res.out.G},${res.out.B}`;
+      els.outVal.innerHTML = `ΔR' = ${f1(res.krC)} (clamp ±${KRMAX})<br>
+        ΔB' = ${f1(res.kbC)} (clamp ±${KBMAX})<br>
+        R' = clip(Y' + ΔR') = <b>${res.out.R}</b><br>
+        G' = clip(Y' − 0.10094·ΔB' − 0.29725·ΔR') = <b>${res.out.G}</b><br>
+        B' = clip(Y' + ΔB') = <b>${res.out.B}</b>`;
 
-      // four-state comparison
-      const states = [
-        [false, false, '都关'], [true, false, 'luma'], [false, true, 'chroma'], [true, true, '都开']
-      ];
-      els.four.innerHTML = '';
-      for (const [l, c, name] of states) {
-        const o = compute(R, G, B, l, c).out;
-        const active = (l === luma && c === chroma) ? ' active' : '';
-        els.four.insertAdjacentHTML('beforeend',
-          `<div class="cell${active}" data-l="${l}" data-c="${c}">
-             <div class="mini" style="background:${rgba(o)}"></div>
-             <div class="lbl">${name}</div>
-             <div class="val">${o.R},${o.G},${o.B}</div>
-           </div>`);
-      }
+      // input decomposition
+      els.decomp.innerHTML =
+        `Y = 0.2126·${R} + 0.7152·${G} + 0.0722·${B} = <b>${f1(res.Y)}</b><br>
+         ΔR = R − Y = <b>${f1(res.Kr)}</b><br>
+         ΔB = B − Y = <b>${f1(res.Kb)}</b>`;
 
-      // step by step
-      const lines = [];
-      lines.push(['输入', `R,G,B = ${R}, ${G}, ${B}`]);
-      lines.push(['亮度', `Yf = 0.2126·${R} + 0.7152·${G} + 0.0722·${B} = ${f2(res.Yf)}`]);
-      lines.push(['色差', `ΔR = R − Yf = ${f2(res.Kr)} , ΔB = B − Yf = ${f2(res.Kb)}`]);
-      if (luma) {
-        lines.push(['luma', `Yf' = 1.1533·${f2(res.Yf)} − 11.55 = ${f2(res.yPre)}`]);
-      } else {
-        lines.push(['luma', `<span class="off">Yf' = 1.1533·Yf − 11.55（已关闭）</span>`]);
-      }
-      if (chroma) {
-        lines.push(['chroma', `ΔR' = 1.38·${f2(res.Kr)} = ${f2(res.krPre)} , ΔB' = 1.38·${f2(res.Kb)} = ${f2(res.kbPre)}`]);
-      } else {
-        lines.push(['chroma', `<span class="off">ΔR' = 1.38·ΔR , ΔB' = 1.38·ΔB（已关闭）</span>`]);
-      }
-      lines.push(['截断', `Yf'∈[0,255] → ${f2(res.yC)} , ΔR' → ${f2(res.krC)} , ΔB' → ${f2(res.kbC)}`]);
-      lines.push(['解码', `R' = Yf' + ΔR' = ${f2(res.yC + res.krC)} → <span class="hi">${res.out.R}</span>`]);
-      lines.push(['', `G' = Yf' − 0.1009·ΔB' − 0.2973·ΔR' = ${f2(res.yC - 0.10094 * res.kbC - 0.29725 * res.krC)} → <span class="hi">${res.out.G}</span>`]);
-      lines.push(['', `B' = Yf' + ΔB' = ${f2(res.yC + res.kbC)} → <span class="hi">${res.out.B}</span>`]);
+      // luma stage
+      els.lumaSw.style.background = rgba(res.lumaColor);
+      els.lumaVal.innerHTML = luma
+        ? `Y' = clip(1.1533·Y − 11.55)<br>
+           Y = ${f1(res.Y)} → <b>${f1(res.yC)}</b><br>
+           <code>0xfc8e</code>[0,4]=0x00 on<br>
+           <code>0xfc90</code> brightness=0xf5<br>
+           <code>0xfc91</code> contrast=0x94`
+        : `Y' = Y<br>Y = <b>${f1(res.Y)}</b><br><code>0xfc8e</code>[0,4]=0x11 bypass`;
 
-      els.steps.innerHTML = lines.map(([tag, expr]) =>
+      // gain stage
+      els.gainSw.style.background = rgba(res.gainColor);
+      els.gainVal.innerHTML = chroma
+        ? `g = <code>0xfc92</code>/128<br>
+           <code>0xfc92</code> saturation=<b>${hex2(fc92)}</b> (${fc92})<br>
+           g = <b>${res.g.toFixed(3)}</b><br>
+           ΔR₁ = g·ΔR = <b>${f1(res.krGain)}</b><br>
+           ΔB₁ = g·ΔB = <b>${f1(res.kbGain)}</b><br>
+           <code>0xfc8f</code>[0,4]=0x00 on`
+        : `bypass<br><code>0xfc8f</code>[0,4]=0x11`;
+
+      // hue stage
+      els.hueSw.style.background = rgba(res.rotColor);
+      els.hueVal.innerHTML = chroma
+        ? `θ = <code>0xfc93</code>·360/256<br>
+           <code>0xfc93</code> hue=<b>${hex2(fc93)}</b> (${fc93})<br>
+           θ = <b>${res.thetaDeg.toFixed(1)}°</b><br>
+           视觉 −θ = <b>${(-res.thetaDeg).toFixed(1)}°</b><br>
+           ΔR' = g·(cosθ·ΔR − sinθ·ΔB)<br>
+           = <b>${f1(res.krRot)}</b><br>
+           ΔB' = g·(sinθ·ΔR + cosθ·ΔB)<br>
+           = <b>${f1(res.kbRot)}</b>`
+        : `bypass<br><code>0xfc8f</code>[0,4]=0x11`;
+
+      // vector plot
+      drawVector(res);
+
+      els.vecInfo.innerHTML = [
+        ['源', `ΔR=${f1(res.Kr)}  ΔB=${f1(res.Kb)}  |C|=${f1(Math.hypot(res.Kr, res.Kb))}`],
+        ['gain', chroma ? `×${res.g.toFixed(3)} → ΔR=${f1(res.krGain)}  ΔB=${f1(res.kbGain)}  |C|=${f1(Math.hypot(res.krGain, res.kbGain))}` : 'bypass'],
+        ['hue', chroma ? `Δhue=${(-res.thetaDeg).toFixed(1)}° → ΔR'=${f1(res.krRot)}  ΔB'=${f1(res.kbRot)}  |C|=${f1(Math.hypot(res.krRot, res.kbRot))}` : 'bypass'],
+        ['clamp', `ΔR∈[−${KRMAX}, ${KRMAX}]  ΔB∈[−${KBMAX}, ${KBMAX}] → ΔR=${f1(res.krC)}  ΔB=${f1(res.kbC)}`]
+      ].map(([tag, expr]) =>
         `<div class="line"><span class="tag">${tag}</span><span class="expr">${expr}</span></div>`).join('');
     }
 
+    function drawVector(res) {
+      const cv = els.vec;
+      const wrap = cv.parentElement;
+      const cssW = Math.max(260, Math.floor(wrap.clientWidth - 12));
+      const cssH = cssW;
+      const dpr = window.devicePixelRatio || 1;
+      cv.width = Math.round(cssW * dpr);
+      cv.height = Math.round(cssH * dpr);
+      cv.style.width = cssW + 'px';
+      cv.style.height = cssH + 'px';
+
+      const ctx = cv.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cssW, cssH);
+
+      const cs = getComputedStyle(document.documentElement);
+      const colMuted = cs.getPropertyValue('--muted').trim() || '#888';
+      const colAccent = cs.getPropertyValue('--accent').trim() || '#2f4fd8';
+      const colOrange = cs.getPropertyValue('--orange').trim() || '#d97706';
+      const colGrid = cs.getPropertyValue('--card-bd').trim() || '#ddd';
+
+      const cx = cssW / 2, cy = cssH / 2;
+      const RANGE = 340;
+      const scale = Math.min(cssW, cssH) / (2 * RANGE) * 0.94;
+      const X = v => cx + v * scale;
+      const Y = v => cy - v * scale;
+
+      // grid
+      ctx.strokeStyle = colGrid;
+      ctx.lineWidth = 1;
+      for (let v = -300; v <= 300; v += 100) {
+        if (v === 0) continue;
+        ctx.beginPath(); ctx.moveTo(X(v), 0); ctx.lineTo(X(v), cssH); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, Y(v)); ctx.lineTo(cssW, Y(v)); ctx.stroke();
+      }
+
+      // axes
+      ctx.strokeStyle = colMuted;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(cssW, cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, cssH); ctx.stroke();
+
+      // axis labels
+      ctx.fillStyle = colMuted;
+      ctx.font = '11px ui-monospace, Menlo, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('ΔR (Cr) →', cssW - 76, cy - 7);
+      ctx.textAlign = 'center';
+      ctx.fillText('ΔB (Cb)', cx + 34, 13);
+      ctx.fillText('0', cx + 9, cy + 13);
+
+      // clamp box
+      ctx.setLineDash([4, 3]);
+      ctx.strokeStyle = colMuted;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(X(-KRMAX), Y(KBMAX), 2 * KRMAX * scale, 2 * KBMAX * scale);
+      ctx.setLineDash([]);
+      ctx.fillStyle = colMuted;
+      ctx.textAlign = 'left';
+      ctx.fillText('clamp', X(-KRMAX) + 4, Y(KBMAX) + 13);
+
+      // vectors
+      const ox = cx, oy = cy;
+      const drawArrow = (vR, vB, color, width) => {
+        const x = X(vR), y = Y(vB);
+        if (Math.hypot(x - ox, y - oy) < 1) return;
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(x, y); ctx.stroke();
+        const a = Math.atan2(y - oy, x - ox);
+        const h = 7;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - h * Math.cos(a - 0.42), y - h * Math.sin(a - 0.42));
+        ctx.lineTo(x - h * Math.cos(a + 0.42), y - h * Math.sin(a + 0.42));
+        ctx.closePath(); ctx.fill();
+      };
+      drawArrow(res.Kr, res.Kb, colMuted, 1.8);
+      drawArrow(res.krGain, res.kbGain, colOrange, 2);
+      drawArrow(res.krRot, res.kbRot, colAccent, 2.6);
+
+      // rotation arc (visual = -theta, same sign as HSV hue)
+      const a1 = Math.atan2(-res.kbGain, res.krGain);
+      const a2 = Math.atan2(-res.kbRot, res.krRot);
+      const norm = a => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
+      const delta = norm(a2 - a1);
+      const len = Math.min(Math.hypot(res.krGain, res.kbGain), Math.hypot(res.krRot, res.kbRot)) * scale;
+      const r = Math.min(70, len * 0.55);
+      if (r > 12 && Math.abs(delta) > 0.02) {
+        ctx.beginPath();
+        const N = 40;
+        for (let i = 0; i <= N; i++) {
+          const a = a1 + delta * i / N;
+          const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+          i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.strokeStyle = colAccent;
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+
+        const mid = a1 + delta / 2;
+        ctx.fillStyle = colAccent;
+        ctx.font = '12px ui-monospace, Menlo, monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${(-res.thetaDeg).toFixed(1)}°`,
+          cx + (r + 24) * Math.cos(mid), cy + (r + 24) * Math.sin(mid) + 4);
+      }
+    }
+
     function addPresets() {
-      for (const [name, r, g, b] of PRESETS) {
+      for (const [name, r, g, b] of RGB_PRESETS) {
         const btn = document.createElement('button');
         btn.textContent = name;
         btn.addEventListener('click', () => {
@@ -425,18 +701,28 @@
         });
         els.presets.appendChild(btn);
       }
+
+      for (const [name, spec] of CHROMA_PRESETS) {
+        const btn = document.createElement('button');
+        btn.textContent = name;
+        btn.addEventListener('click', () => {
+          if (spec === 'reset') {
+            els.fc92.value = 0xb4;
+            els.fc93.value = 0x00;
+            els.luma.checked = true;
+            els.chroma.checked = true;
+          } else {
+            if (spec.fc92 !== undefined) els.fc92.value = spec.fc92;
+            if (spec.fc93 !== undefined) els.fc93.value = spec.fc93;
+          }
+          render();
+        });
+        els.chromaPresets.appendChild(btn);
+      }
     }
 
-    ['r', 'g', 'b', 'luma', 'chroma'].forEach(id =>
+    ['r', 'g', 'b', 'fc92', 'fc93', 'luma', 'chroma'].forEach(id =>
       els[id].addEventListener('input', render));
-
-    els.four.addEventListener('click', (e) => {
-      const cell = e.target.closest('.cell');
-      if (!cell) return;
-      els.luma.checked = cell.dataset.l === 'true';
-      els.chroma.checked = cell.dataset.c === 'true';
-      render();
-    });
 
     addPresets();
     render();
@@ -447,7 +733,7 @@
       try { parent.postMessage({ type: 'ms2130s-color-calc-height', height: h }, '*'); } catch (e) { }
     }
     window.addEventListener('load', notifyHeight);
-    window.addEventListener('resize', notifyHeight);
+    window.addEventListener('resize', () => { render(); notifyHeight(); });
     notifyHeight();
   </script>
 </body>
