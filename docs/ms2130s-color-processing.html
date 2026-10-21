@@ -424,7 +424,8 @@
       <div class="flow-stage">
         <div class="flow-h">② luma processing<br><code>0xfc8e[0,4] / 0xfc90 / 0xfc91</code></div>
         <div class="sw small" id="lumaSw"></div>
-        <label class="inline"><input type="checkbox" id="luma" checked> enable</label>
+        <label class="inline"><input type="checkbox" id="lumaB0" checked> <code>0xfc8e[0]</code> contrast</label>
+        <label class="inline"><input type="checkbox" id="lumaB4" checked> <code>0xfc8e[4]</code> brightness</label>
         <div class="kv">0xfc90 <b id="fc90o">0xF5</b></div>
         <input type="range" id="fc90" min="0" max="255" value="245">
         <div class="kv">0xfc91 <b id="fc91o">0x94</b></div>
@@ -438,7 +439,8 @@
       <div class="flow-stage">
         <div class="flow-h">③ chroma: gain<br><code>0xfc92 / 0xfc8f[0,4]</code></div>
         <div class="sw small" id="gainSw"></div>
-        <label class="inline"><input type="checkbox" id="gainOn" checked> gain enable</label>
+        <label class="inline"><input type="checkbox" id="chromaB0" checked> <code>0xfc8f[0]</code> chroma (gain+hue)</label>
+        <label class="inline"><input type="checkbox" id="chromaB4" checked> <code>0xfc8f[4]</code> chroma stage 2</label>
         <input type="range" id="fc92" min="0" max="255" value="180">
         <div class="presets" id="fc92Presets"></div>
         <div class="kv" id="gainVal"></div>
@@ -450,7 +452,6 @@
       <div class="flow-stage">
         <div class="flow-h">④ chroma: hue<br><code>0xfc93</code></div>
         <div class="sw small" id="hueSw"></div>
-        <label class="inline"><input type="checkbox" id="hueOn" checked> hue enable</label>
         <input type="range" id="fc93" min="0" max="255" value="0">
         <div class="presets" id="fc93Presets"></div>
         <div class="kv" id="hueVal"></div>
@@ -560,34 +561,39 @@
       return clamp(fc91Contrast(y1, fc91), 0, 255);
     }
 
-    function compute(R, G, B, luma, gainOn, hueOn, fc90, fc91, fc92, fc93) {
+    function compute(R, G, B, lumaB0, lumaB4, chromaB0, chromaB4, fc90, fc91, fc92, fc93) {
       const Y = KR * R + KG * G + KB * B;
       const Kr = R - Y;
       const Kb = B - Y;
 
-      // gain and hue can be enabled independently; disabling gain is
-      // equivalent to 0xfc92=0x80, disabling hue is equivalent to 0xfc93=0x00.
-      const g = gainOn ? fc92 / 128 : 1;
-      const thetaDeg = hueOn ? fc93 * 360 / 256 : 0;
+      // luma: bit0 = contrast/darken, bit4 = brightness/lift (0=on, 1=off)
+      let yC;
+      const base = lumaRegs(Y, fc90, fc91);
+      if (lumaB0 && lumaB4) yC = base;
+      else if (!lumaB0 && lumaB4) yC = clamp(base + 13, 0, 255);
+      else if (lumaB0 && !lumaB4) yC = clamp(base - (0.17 * Y - 0.5), 0, 255);
+      else yC = Y;
+
+      // chroma: bit0 is the main enable, bit4 is a secondary stage
+      const chromaOn = chromaB0;
+      const g = chromaOn ? fc92 / 128 : 1;
+      const thetaDeg = chromaOn ? fc93 * 360 / 256 : 0;
       const theta = thetaDeg * Math.PI / 180;
       const c = Math.cos(theta), s = Math.sin(theta);
-
-      // luma branch: fc90 signed offset -> fc91 contrast
-      const yPre = luma ? lumaRegs(Y, fc90, fc91) : Y;
-      const yC = clamp(yPre, 0, 255);
+      const gFinal = (chromaOn && !chromaB4) ? g * 1.01 : g;
 
       // chroma branch: gain-only, then gain+rotation
-      const krGain = g * Kr;
-      const kbGain = g * Kb;
-      const krRot = g * (c * Kr - s * Kb);
-      const kbRot = g * (s * Kr + c * Kb);
+      const krGain = gFinal * Kr;
+      const kbGain = gFinal * Kb;
+      const krRot = gFinal * (c * Kr - s * Kb);
+      const kbRot = gFinal * (s * Kr + c * Kb);
 
       const krC = clamp(krRot, -KRMAX, KRMAX);
       const kbC = clamp(kbRot, -KBMAX, KBMAX);
 
       return {
-        Y, Kr, Kb, g, thetaDeg,
-        yPre, yC,
+        Y, Kr, Kb, g: gFinal, thetaDeg,
+        yPre: yC, yC,
         krGain, kbGain, krRot, kbRot, krC, kbC,
         lumaColor: reconstruct(yC, Kr, Kb),
         gainColor: reconstruct(yC, clamp(krGain, -KRMAX, KRMAX), clamp(kbGain, -KBMAX, KBMAX)),
@@ -600,10 +606,10 @@
     const els = {
       r: document.getElementById('r'), g: document.getElementById('g'), b: document.getElementById('b'),
       rNum: document.getElementById('rNum'), gNum: document.getElementById('gNum'), bNum: document.getElementById('bNum'),
-      luma: document.getElementById('luma'),
+      lumaB0: document.getElementById('lumaB0'), lumaB4: document.getElementById('lumaB4'),
       fc90: document.getElementById('fc90'), fc91: document.getElementById('fc91'),
       fc90o: document.getElementById('fc90o'), fc91o: document.getElementById('fc91o'),
-      gainOn: document.getElementById('gainOn'), hueOn: document.getElementById('hueOn'),
+      chromaB0: document.getElementById('chromaB0'), chromaB4: document.getElementById('chromaB4'),
       fc92: document.getElementById('fc92'), fc93: document.getElementById('fc93'),
       srcSw: document.getElementById('srcSw'), outSw: document.getElementById('outSw'),
       srcTxt: document.getElementById('srcTxt'), outTxt: document.getElementById('outTxt'),
@@ -644,7 +650,8 @@
 
     function render() {
       const R = +els.r.value, G = +els.g.value, B = +els.b.value;
-      const luma = els.luma.checked, gainOn = els.gainOn.checked, hueOn = els.hueOn.checked;
+      const lumaB0 = els.lumaB0.checked, lumaB4 = els.lumaB4.checked;
+      const chromaB0 = els.chromaB0.checked, chromaB4 = els.chromaB4.checked;
       const fc90 = +els.fc90.value, fc91 = +els.fc91.value;
       const fc92 = +els.fc92.value, fc93 = +els.fc93.value;
       els.fc90o.textContent = hex2(fc90);
@@ -654,7 +661,7 @@
       if (document.activeElement !== els.gNum) els.gNum.value = G;
       if (document.activeElement !== els.bNum) els.bNum.value = B;
 
-      const res = compute(R, G, B, luma, gainOn, hueOn, fc90, fc91, fc92, fc93);
+      const res = compute(R, G, B, lumaB0, lumaB4, chromaB0, chromaB4, fc90, fc91, fc92, fc93);
       const src = { R, G, B };
 
       // input / output
@@ -683,38 +690,43 @@
       const yIn = res.Y;
       const y1 = yIn <= 0 ? Math.max(0, (7 / 6) * s90 - 20) : yIn + (7 / 6) * s90;
       const d91 = fc91 - 0x80;
+      const fc8eVal = (lumaB0 ? 0 : 1) | (lumaB4 ? 0 : 0x10);
+      const lumaOn = lumaB0 || lumaB4;
       els.lumaSw.style.background = rgba(res.lumaColor);
-      els.lumaVal.innerHTML = luma
+      els.lumaVal.innerHTML = lumaOn
         ? `Y = <b>${f1(yIn)}</b><br>
            signed90 = <b>${s90 >= 0 ? '+' : ''}${s90}</b><br>
            Y1 = <b>${f1(y1)}</b><br>
            d91 = <b>${d91 >= 0 ? '+' : ''}${d91}</b><br>
            Y' = <b>${f1(res.yC)}</b><br>
-           <code>0xfc8e</code>[0,4]=0x00 on`
-        : `Y' = Y<br><b>${f1(yIn)}</b><br><code>0xfc8e</code>[0,4]=0x11 bypass`;
+           <code>0xfc8e</code>=<b>${hex2(fc8eVal)}</b>`
+        : `Y' = Y<br><b>${f1(yIn)}</b><br><code>0xfc8e</code>=0x11 bypass`;
       els.lumaVal.insertAdjacentHTML('beforeend',
-        `<div class="why">0xfc90 signed offset（7/6）→ 0xfc91 contrast；只改 Y，不动色差。</div>`);
+        `<div class="why">0xfc8e bit0=contrast/darken，bit4=brightness/lift；只改 Y，不动色差（bit 组合为近似）。</div>`);
 
       // gain stage
+      const fc8fVal = (chromaB0 ? 0 : 1) | (chromaB4 ? 0 : 0x10);
       els.gainSw.style.background = rgba(res.gainColor);
-      els.gainVal.innerHTML = gainOn
+      els.gainVal.innerHTML = chromaB0
         ? `g = <code>0xfc92</code>/128<br>
            <code>0xfc92</code> saturation=<b>${hex2(fc92)}</b> (${fc92})<br>
            g = <b>${res.g.toFixed(3)}</b><br>
            ΔR₁ = g·ΔR = <b>${f1(res.krGain)}</b><br>
-           ΔB₁ = g·ΔB = <b>${f1(res.kbGain)}</b>`
-        : `gain disabled<br>
+           ΔB₁ = g·ΔB = <b>${f1(res.kbGain)}</b><br>
+           <code>0xfc8f</code>=<b>${hex2(fc8fVal)}</b>`
+        : `chroma/gain bypass<br>
            <code>0xfc92</code>=<b>${hex2(fc92)}</b> (${fc92})<br>
            g = <b>1.000</b> (bypass)<br>
            ΔR₁ = ΔR = <b>${f1(res.krGain)}</b><br>
            ΔB₁ = ΔB = <b>${f1(res.kbGain)}</b><br>
+           <code>0xfc8f</code>=<b>${hex2(fc8fVal)}</b><br>
            等价 <code>0xfc92</code>=0x80`;
       els.gainVal.insertAdjacentHTML('beforeend',
-        `<div class="why">只改色差向量长度（饱和度），不改方向；g>1 更饱和，g<1 更淡，g=0 灰度。</div>`);
+        `<div class="why">0xfc8f[0] 是 chroma 总开关，同时 gate gain 和 hue；gain 由 0xfc92 控制（0x80=1.0×）。0xfc8f[4] 是次级 chroma stage，只在 bit0 on 时有效，约 −1% 饱和度。</div>`);
 
       // hue stage
       els.hueSw.style.background = rgba(res.rotColor);
-      els.hueVal.innerHTML = hueOn
+      els.hueVal.innerHTML = chromaB0
         ? `θ = <code>0xfc93</code>·360/256<br>
            <code>0xfc93</code> hue=<b>${hex2(fc93)}</b> (${fc93})<br>
            θ = <b>${res.thetaDeg.toFixed(1)}°</b><br>
@@ -722,23 +734,25 @@
            ΔR' = g·(cosθ·ΔR − sinθ·ΔB)<br>
            = <b>${f1(res.krRot)}</b><br>
            ΔB' = g·(sinθ·ΔR + cosθ·ΔB)<br>
-           = <b>${f1(res.kbRot)}</b>`
-        : `hue disabled<br>
+           = <b>${f1(res.kbRot)}</b><br>
+           <code>0xfc8f</code>=<b>${hex2(fc8fVal)}</b>`
+        : `chroma/hue bypass<br>
+           <code>0xfc8f</code>=<b>${hex2(fc8fVal)}</b><br>
            <code>0xfc93</code>=<b>${hex2(fc93)}</b> (${fc93})<br>
            θ = <b>0.0°</b> (bypass)<br>
            ΔR' = ΔR₁ = <b>${f1(res.krRot)}</b><br>
            ΔB' = ΔB₁ = <b>${f1(res.kbRot)}</b><br>
            等价 <code>0xfc93</code>=0x00`;
       els.hueVal.insertAdjacentHTML('beforeend',
-        `<div class="why">只改色差向量方向（色相），不改长度；灰色 ΔR=ΔB=0 不动。</div>`);
+        `<div class="why">0xfc8f[0] 是 chroma 总开关（同时 gate gain 和 hue）；hue 由 0xfc93 控制（0x00=0°）。灰色 ΔR=ΔB=0 不动。</div>`);
 
       // vector plot
       drawVector(res);
 
       els.vecInfo.innerHTML = [
         ['源', `ΔR=${f1(res.Kr)}  ΔB=${f1(res.Kb)}  |C|=${f1(Math.hypot(res.Kr, res.Kb))}`],
-        ['gain', `${gainOn ? '×' + res.g.toFixed(3) : '×1.000 (bypass)'} → ΔR=${f1(res.krGain)}  ΔB=${f1(res.kbGain)}  |C|=${f1(Math.hypot(res.krGain, res.kbGain))}`],
-        ['hue', `${hueOn ? 'Δhue=' + (-res.thetaDeg).toFixed(1) + '°' : 'Δhue=0.0° (bypass)'} → ΔR'=${f1(res.krRot)}  ΔB'=${f1(res.kbRot)}  |C|=${f1(Math.hypot(res.krRot, res.kbRot))}`],
+        ['gain', `${chromaB0 ? '×' + res.g.toFixed(3) : '×1.000 (bypass)'} → ΔR=${f1(res.krGain)}  ΔB=${f1(res.kbGain)}  |C|=${f1(Math.hypot(res.krGain, res.kbGain))}`],
+        ['hue', `${chromaB0 ? 'Δhue=' + (-res.thetaDeg).toFixed(1) + '°' : 'Δhue=0.0° (bypass)'} → ΔR'=${f1(res.krRot)}  ΔB'=${f1(res.kbRot)}  |C|=${f1(Math.hypot(res.krRot, res.kbRot))}`],
         ['clamp', `ΔR∈[−${KRMAX}, ${KRMAX}]  ΔB∈[−${KBMAX}, ${KBMAX}] → ΔR=${f1(res.krC)}  ΔB=${f1(res.kbC)}`]
       ].map(([tag, expr]) =>
         `<div class="line"><span class="tag">${tag}</span><span class="expr">${expr}</span></div>`).join('');
@@ -881,14 +895,14 @@
     function renderValidation() {
       const state = els.valState.value;
       const flags = {
-        on: [true, true, true],
-        chroma: [false, true, true],
-        off: [false, false, false],
-        luma: [true, false, false]
+        on: [true, true, true, true],
+        chroma: [false, false, true, true],
+        off: [false, false, false, false],
+        luma: [true, true, false, false]
       }[state];
       const rows = [];
       for (const rec of MERGED) {
-        const p = compute(rec.in[0], rec.in[1], rec.in[2], flags[0], flags[1], flags[2], 0xf5, 0x94, 0xb4, 0).out;
+        const p = compute(rec.in[0], rec.in[1], rec.in[2], flags[0], flags[1], flags[2], flags[3], 0xf5, 0x94, 0xb4, 0).out;
         rows.push({ in: rec.in, obs: rec[state], p });
       }
 
@@ -927,9 +941,10 @@
         els.fc91.value = 0x94;
         els.fc92.value = 0xb4;
         els.fc93.value = 0x00;
-        els.luma.checked = true;
-        els.gainOn.checked = true;
-        els.hueOn.checked = true;
+        els.lumaB0.checked = true;
+        els.lumaB4.checked = true;
+        els.chromaB0.checked = true;
+        els.chromaB4.checked = true;
         render();
       });
       els.presets.appendChild(reset);
@@ -953,7 +968,7 @@
       }
     }
 
-    ['r', 'g', 'b', 'fc90', 'fc91', 'fc92', 'fc93', 'luma', 'gainOn', 'hueOn'].forEach(id =>
+    ['r', 'g', 'b', 'fc90', 'fc91', 'fc92', 'fc93', 'lumaB0', 'lumaB4', 'chromaB0', 'chromaB4'].forEach(id =>
       els[id].addEventListener('input', render));
 
     ['r', 'g', 'b'].forEach(id => {
