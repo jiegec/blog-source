@@ -162,7 +162,7 @@ flowchart LR
     Port4 -->|USB 2.0| Terminus[Terminus USB 2.0 Hub]
     VL817 --> Billboard[Virtual Billboard Device 2109:8888]
     Terminus --> GL3224[GL3224 Card Reader 05e3:0749] --> TFSD[TF/SD Card]
-    Terminus --> Adaptor[USB C Video Adaptor 9636:9300 (Billboard Device of VL103)]
+    Terminus --> Adaptor[USB C Video Adaptor 9636:9300 Billboard Device of VL103]
 ```
 
 这样，VL817 的四个端口，无论是 USB 3.0 还是 USB 2.0，都物尽其用了，刚好把三个 USB 3.0 端口都用满了。多出来的 Terminus USB 2.0 Hub 的用途也解释清楚了。
