@@ -669,15 +669,16 @@
       const lumaOn = lumaB0 || lumaB4;
       els.lumaSw.style.background = rgba(res.lumaColor);
       els.lumaVal.innerHTML = lumaOn
-        ? `Y = <b>${f1(yIn)}</b><br>
-           signed90 = <b>${s90 >= 0 ? '+' : ''}${s90}</b><br>
-           Y1 = <b>${f1(y1)}</b><br>
-           gain91 = <b>${gain91.toFixed(3)}</b><br>
-           Y' = <b>${f1(res.yC)}</b><br>
+        ? `signed90 = (0xfc90 ≤ 0x7F) ? 0xfc90 : 0xfc90 − 0x100<br>
+           <code>0xfc90</code> = <b>${hex2(fc90)}</b> (${s90 >= 0 ? '+' : '−'}${Math.abs(s90)})<br>
+           Y1 = clip(Y + signed90) = clip(${f1(yIn)} ${s90 >= 0 ? '+' : '−'} ${Math.abs(s90)}) = <b>${f1(y1)}</b><br>
+           gain91 = <code>0xfc91</code>/128<br>
+           <code>0xfc91</code> = <b>${hex2(fc91)}</b> (${gain91.toFixed(3)}×)<br>
+           Y' = clip(Y1 · gain91) = clip(${f1(y1)} · ${gain91.toFixed(3)}) = <b>${f1(res.yC)}</b><br>
            <code>0xfc8e</code>=<b>${hex2(fc8eVal)}</b>`
         : `Y' = Y<br><b>${f1(yIn)}</b><br><code>0xfc8e</code>=0x11 bypass`;
       els.lumaVal.insertAdjacentHTML('beforeend',
-        `<div class="why">0xfc8e bit0=offset stage，bit4=gain stage；Y1 = Y + signed8(fc90)，Y' = Y1·fc91/128；只改 Y（bit 组合为近似）。</div>`);
+        `<div class="why">0xfc8e bit0=offset stage，bit4=gain stage（0=on，1=off）；0xfc8e=0x11 时直接 Y'=Y。bit 组合为近似。</div>`);
 
       // gain stage
       const fc8fVal = (chromaB0 ? 0 : 1) | (chromaB4 ? 0 : 0x10);
