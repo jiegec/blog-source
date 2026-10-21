@@ -14,6 +14,7 @@
       --card-bd: #e2e5ea;
       --accent: #2f4fd8;
       --orange: #d97706;
+      --bad: #c62828;
       --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
@@ -26,6 +27,7 @@
         --card-bd: #2c2f37;
         --accent: #7e97ff;
         --orange: #f0a43a;
+        --bad: #ff8a80;
       }
     }
 
@@ -267,6 +269,56 @@
       height: auto;
     }
 
+    .compare-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .compare-controls label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+
+    .compare-controls select {
+      font: inherit;
+      font-size: .76rem;
+      padding: 1px 4px;
+      color: var(--fg);
+      background: var(--bg);
+      border: 1px solid var(--card-bd);
+      border-radius: 4px;
+    }
+
+    .cmp {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: .72rem;
+    }
+
+    .cmp th,
+    .cmp td {
+      padding: 2px 5px;
+      border-bottom: 1px solid var(--card-bd);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .cmp th:first-child,
+    .cmp td:first-child {
+      text-align: left;
+    }
+
+    .cmp td.bad {
+      color: var(--bad);
+      font-weight: 700;
+    }
+
     .legend {
       display: flex;
       flex-wrap: wrap;
@@ -432,6 +484,32 @@
     </div>
   </div>
 
+  <div class="panel">
+    <h2>实测 vs 模型</h2>
+    <div class="compare-controls">
+      <label>数据集
+        <select id="cmpDataset">
+          <option value="four">四状态表（博客附录）</option>
+          <option value="mb">MateBook 默认灰阶</option>
+          <option value="mboff">MateBook 关 luma 灰阶</option>
+        </select>
+      </label>
+      <label>状态
+        <select id="cmpState">
+          <option value="on">都开</option>
+          <option value="chroma">只 chroma</option>
+          <option value="off">都关</option>
+          <option value="luma">只 luma</option>
+        </select>
+      </label>
+    </div>
+    <div id="cmpTableWrap"></div>
+    <div class="steps" id="cmpSummary" style="margin-top:8px"></div>
+    <div class="note">
+      实测值来自博客正文与附录；模型使用本页同一套公式，对比使用 <code>0xfc92=0xB4</code>（寄存器默认）。
+    </div>
+  </div>
+
   <script>
     const KR = 0.2126, KG = 0.7152, KB = 0.0722;
     const LUMA_A = 1.1533, LUMA_B = -11.55;
@@ -503,6 +581,10 @@
       presets: document.getElementById('presets'),
       fc92Presets: document.getElementById('fc92Presets'),
       fc93Presets: document.getElementById('fc93Presets'),
+      cmpDataset: document.getElementById('cmpDataset'),
+      cmpState: document.getElementById('cmpState'),
+      cmpTableWrap: document.getElementById('cmpTableWrap'),
+      cmpSummary: document.getElementById('cmpSummary'),
       vec: document.getElementById('vec'), vecInfo: document.getElementById('vecInfo')
     };
 
@@ -731,6 +813,73 @@
       }
     }
 
+    const BLOG_FOUR = [
+      { in: [64, 64, 64], on: [62, 62, 62], chroma: [63, 63, 63], off: [63, 63, 63], luma: [62, 62, 62] },
+      { in: [128, 128, 128], on: [136, 136, 136], chroma: [127, 127, 127], off: [127, 127, 127], luma: [136, 136, 136] },
+      { in: [192, 192, 192], on: [210, 210, 210], chroma: [191, 191, 191], off: [191, 191, 191], luma: [210, 210, 210] },
+      { in: [255, 255, 255], on: [255, 255, 255], chroma: [254, 254, 254], off: [254, 254, 254], luma: [255, 255, 255] },
+      { in: [64, 0, 0], on: [72, 0, 0], chroma: [81, 0, 0], off: [61, 0, 0], luma: [52, 0, 0] },
+      { in: [128, 0, 0], on: [156, 0, 0], chroma: [163, 0, 0], off: [125, 0, 0], luma: [118, 0, 0] },
+      { in: [192, 0, 0], on: [235, 0, 0], chroma: [239, 0, 0], off: [188, 0, 0], luma: [185, 0, 0] },
+      { in: [255, 0, 0], on: [250, 0, 0], chroma: [253, 2, 0], off: [254, 0, 0], luma: [252, 0, 0] },
+      { in: [0, 64, 0], on: [0, 67, 0], chroma: [0, 72, 0], off: [0, 64, 0], luma: [0, 59, 0] },
+      { in: [0, 128, 0], on: [0, 146, 0], chroma: [0, 143, 0], off: [0, 128, 0], luma: [1, 131, 1] },
+      { in: [0, 192, 0], on: [1, 224, 0], chroma: [0, 215, 0], off: [0, 193, 0], luma: [8, 202, 7] },
+      { in: [0, 255, 0], on: [0, 255, 0], chroma: [0, 255, 0], off: [0, 255, 0], luma: [15, 255, 15] },
+      { in: [0, 0, 64], on: [0, 0, 82], chroma: [0, 0, 86], off: [0, 0, 63], luma: [0, 0, 59] },
+      { in: [0, 0, 128], on: [0, 0, 165], chroma: [0, 0, 174], off: [0, 0, 128], luma: [0, 0, 118] },
+      { in: [0, 0, 192], on: [0, 0, 238], chroma: [0, 0, 247], off: [0, 0, 190], luma: [0, 0, 181] },
+      { in: [0, 0, 255], on: [0, 0, 245], chroma: [0, 3, 251], off: [0, 0, 254], luma: [0, 0, 247] }
+    ];
+    const BLOG_MB = [[15, 6], [64, 62], [128, 136], [160, 173], [200, 219], [224, 247], [244, 255]];
+    const BLOG_MBOFF = [[15, 15], [64, 65], [128, 127], [160, 160], [200, 199], [224, 224], [244, 243]];
+
+    function renderCompare() {
+      const ds = els.cmpDataset.value;
+      const state = els.cmpState.value;
+      const fc92 = 0xb4;
+      const flags = {
+        on: [true, true, true],
+        chroma: [false, true, true],
+        off: [false, false, false],
+        luma: [true, false, false]
+      }[state];
+
+      const rows = [];
+      if (ds === 'four') {
+        els.cmpState.disabled = false;
+        for (const rec of BLOG_FOUR) {
+          const p = compute(rec.in[0], rec.in[1], rec.in[2], flags[0], flags[1], flags[2], fc92, 0).out;
+          rows.push({ in: rec.in, obs: rec[state], p });
+        }
+      } else {
+        els.cmpState.disabled = true;
+        const list = ds === 'mb' ? BLOG_MB : BLOG_MBOFF;
+        const luma = ds === 'mb';
+        for (const [x, obs] of list) {
+          const p = compute(x, x, x, luma, true, true, fc92, 0).out;
+          rows.push({ in: [x, x, x], obs: [obs, obs, obs], p });
+        }
+      }
+
+      let sum = 0, n = 0, max = 0;
+      let html = '<div style="overflow-x:auto"><table class="cmp"><thead><tr>' +
+        '<th>输入</th><th>实测</th><th>模型</th><th>Δ（模型−实测）</th></tr></thead><tbody>';
+      for (const r of rows) {
+        const d = [r.p.R - r.obs[0], r.p.G - r.obs[1], r.p.B - r.obs[2]];
+        for (const v of d) {
+          sum += Math.abs(v); n++;
+          if (Math.abs(v) > max) max = Math.abs(v);
+        }
+        const bad = Math.max(...d.map(Math.abs)) > 2 ? ' class="bad"' : '';
+        html += `<tr><td>${r.in.join(',')}</td><td>${r.obs.join(',')}</td><td>${r.p.R},${r.p.G},${r.p.B}</td><td${bad}>${d.join(',')}</td></tr>`;
+      }
+      html += '</tbody></table></div>';
+      els.cmpTableWrap.innerHTML = html;
+      els.cmpSummary.innerHTML =
+        `<div class="line"><span class="tag">误差</span><span class="expr">平均 |Δ| = <b>${(sum / n).toFixed(2)}</b>，最大 |Δ| = <b>${max}</b>（${rows.length} 行 × 3 通道）</span></div>`;
+    }
+
     function addPresets() {
       for (const [name, r, g, b] of RGB_PRESETS) {
         const btn = document.createElement('button');
@@ -794,8 +943,12 @@
       });
     });
 
+    ['cmpDataset', 'cmpState'].forEach(id =>
+      els[id].addEventListener('change', renderCompare));
+
     addPresets();
     render();
+    renderCompare();
 
     // tell the embedding page how tall we are, so the iframe can fit exactly
     function notifyHeight() {
