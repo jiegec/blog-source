@@ -555,7 +555,7 @@
       const thetaDeg = chromaOn ? fc93 * 360 / 256 : 0;
       const theta = thetaDeg * Math.PI / 180;
       const c = Math.cos(theta), s = Math.sin(theta);
-      const gFinal = (chromaOn && !chromaB4) ? g * 1.01 : g;
+      const gFinal = (chromaOn && !chromaB4) ? g * 1.008 : g;
 
       // chroma branch: gain-only, then gain+rotation
       const krGain = gFinal * Kr;
@@ -698,7 +698,7 @@
            <code>0xfc8f</code>=<b>${hex2(fc8fVal)}</b><br>
            等价 <code>0xfc92</code>=0x80`;
       els.gainVal.insertAdjacentHTML('beforeend',
-        `<div class="why">0xfc8f[0] 是 chroma 总开关，同时 gate gain 和 hue；gain 由 0xfc92 控制（0x80=1.0×）。0xfc8f[4] 是次级 chroma stage，只在 bit0 on 时有效，约 −1% 饱和度。</div>`);
+        `<div class="why">0xfc8f[0] 是 chroma 总开关，同时 gate gain 和 hue；gain 由 0xfc92 控制（0x80=1.0×）。0xfc8f[4] 是次级 chroma stage，只在 bit0 on 时有效，约 −0.8% 饱和度（8-bit RGB 上通常只差 1 个码值）。</div>`);
 
       // hue stage
       els.hueSw.style.background = rgba(res.rotColor);
