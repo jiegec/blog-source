@@ -160,6 +160,16 @@
       font-family: var(--mono);
     }
 
+    .flow-stage .why {
+      display: block;
+      margin-top: 5px;
+      padding-top: 4px;
+      border-top: 1px dotted var(--card-bd);
+      font-size: .68rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
     .flow-arrow {
       align-self: center;
       color: var(--muted);
@@ -327,7 +337,7 @@
   <p class="sub">
     从左到右：输入颜色 → luma processing → chroma gain → chroma hue → 输出颜色。
     luma 寄存器：<code>0xfc8e[0,4] / 0xfc90 / 0xfc91</code>；
-    chroma 寄存器：<code>0xfc8f[0,4] / 0xfc92 / 0xfc93</code>。
+    chroma 寄存器：<code>0xfc8f[0,4] / 0xfc92 / 0xfc93</code>（gain / hue 可分别 enable）。
   </p>
 
   <div class="panel flow-panel">
@@ -342,6 +352,7 @@
           <label>G <input type="range" id="g" min="0" max="255" value="0"><output id="go">0</output></label>
           <label>B <input type="range" id="b" min="0" max="255" value="0"><output id="bo">0</output></label>
         </div>
+        <div class="presets" id="presets"></div>
         <div class="kv" id="decomp"></div>
       </div>
 
@@ -361,8 +372,9 @@
       <div class="flow-stage">
         <div class="flow-h">③ chroma: gain<br><code>0xfc92 / 0xfc8f[0,4]</code></div>
         <div class="sw small" id="gainSw"></div>
-        <label class="inline"><input type="checkbox" id="chroma" checked> <code>0xfc8f</code>[0,4] enable</label>
+        <label class="inline"><input type="checkbox" id="gainOn" checked> gain enable</label>
         <input type="range" id="fc92" min="0" max="255" value="180">
+        <div class="presets" id="fc92Presets"></div>
         <div class="kv" id="gainVal"></div>
       </div>
 
@@ -372,7 +384,9 @@
       <div class="flow-stage">
         <div class="flow-h">④ chroma: hue<br><code>0xfc93</code></div>
         <div class="sw small" id="hueSw"></div>
+        <label class="inline"><input type="checkbox" id="hueOn" checked> hue enable</label>
         <input type="range" id="fc93" min="0" max="255" value="0">
+        <div class="presets" id="fc93Presets"></div>
         <div class="kv" id="hueVal"></div>
       </div>
 
@@ -387,9 +401,6 @@
       </div>
     </div>
   </div>
-
-  <div class="presets" id="presets" style="margin: 0 0 8px;"></div>
-  <div class="presets" id="chromaPresets" style="margin: 0 0 12px;"></div>
 
   <div class="panel">
     <h2>Chroma 向量图（ΔR/ΔB 平面）</h2>
@@ -412,15 +423,6 @@
     </div>
   </div>
 
-  <div class="panel">
-    <div class="note" style="margin-top:0">
-      luma 的 <code>1.1533/−11.55</code> 是默认系数
-      <code>0xfc8e[0,4]=0x00</code>、<code>0xfc90=0xf5</code>、<code>0xfc91=0x94</code>
-      下的 proc-amp 级等效规律；正常 YUV 路径前面还有 baseline（full-RGB 输入时 38/97/157/216），
-      组合曲线是 33/102/171/239。本页只建模 luma/chroma 两步，不含 4:2:0 二次采样与 8-bit 量化残差。
-    </div>
-  </div>
-
   <script>
     const KR = 0.2126, KG = 0.7152, KB = 0.0722;
     const LUMA_A = 1.1533, LUMA_B = -11.55;
@@ -439,13 +441,15 @@
       };
     }
 
-    function compute(R, G, B, luma, chroma, fc92, fc93) {
+    function compute(R, G, B, luma, gainOn, hueOn, fc92, fc93) {
       const Y = KR * R + KG * G + KB * B;
       const Kr = R - Y;
       const Kb = B - Y;
 
-      const g = fc92 / 128;
-      const thetaDeg = fc93 * 360 / 256;
+      // gain and hue can be enabled independently; disabling gain is
+      // equivalent to 0xfc92=0x80, disabling hue is equivalent to 0xfc93=0x00.
+      const g = gainOn ? fc92 / 128 : 1;
+      const thetaDeg = hueOn ? fc93 * 360 / 256 : 0;
       const theta = thetaDeg * Math.PI / 180;
       const c = Math.cos(theta), s = Math.sin(theta);
 
@@ -454,10 +458,10 @@
       const yC = clamp(yPre, 0, 255);
 
       // chroma branch: gain-only, then gain+rotation
-      const krGain = chroma ? g * Kr : Kr;
-      const kbGain = chroma ? g * Kb : Kb;
-      const krRot = chroma ? g * (c * Kr - s * Kb) : Kr;
-      const kbRot = chroma ? g * (s * Kr + c * Kb) : Kb;
+      const krGain = g * Kr;
+      const kbGain = g * Kb;
+      const krRot = g * (c * Kr - s * Kb);
+      const kbRot = g * (s * Kr + c * Kb);
 
       const krC = clamp(krRot, -KRMAX, KRMAX);
       const kbC = clamp(kbRot, -KBMAX, KBMAX);
@@ -477,7 +481,8 @@
     const els = {
       r: document.getElementById('r'), g: document.getElementById('g'), b: document.getElementById('b'),
       ro: document.getElementById('ro'), go: document.getElementById('go'), bo: document.getElementById('bo'),
-      luma: document.getElementById('luma'), chroma: document.getElementById('chroma'),
+      luma: document.getElementById('luma'),
+      gainOn: document.getElementById('gainOn'), hueOn: document.getElementById('hueOn'),
       fc92: document.getElementById('fc92'), fc93: document.getElementById('fc93'),
       srcSw: document.getElementById('srcSw'), outSw: document.getElementById('outSw'),
       srcTxt: document.getElementById('srcTxt'), outTxt: document.getElementById('outTxt'),
@@ -486,7 +491,9 @@
       decomp: document.getElementById('decomp'), lumaVal: document.getElementById('lumaVal'),
       gainVal: document.getElementById('gainVal'), hueVal: document.getElementById('hueVal'),
       outVal: document.getElementById('outVal'),
-      presets: document.getElementById('presets'), chromaPresets: document.getElementById('chromaPresets'),
+      presets: document.getElementById('presets'),
+      fc92Presets: document.getElementById('fc92Presets'),
+      fc93Presets: document.getElementById('fc93Presets'),
       vec: document.getElementById('vec'), vecInfo: document.getElementById('vecInfo')
     };
 
@@ -498,25 +505,27 @@
       ['绿', 0, 255, 0], ['绿128', 0, 128, 0], ['蓝', 0, 0, 255], ['蓝128', 0, 0, 128]
     ];
 
-    const CHROMA_PRESETS = [
-      ['0xfc92=00 灰度', { fc92: 0x00 }],
-      ['0xfc92=40 0.5×', { fc92: 0x40 }],
-      ['0xfc92=80 1.0×', { fc92: 0x80 }],
-      ['0xfc92=b4 默认', { fc92: 0xb4 }],
-      ['0xfc93=40 红→蓝', { fc93: 0x40 }],
-      ['0xfc93=80 红→青', { fc93: 0x80 }],
-      ['0xfc93=C0 红→绿', { fc93: 0xc0 }],
-      ['重置', 'reset']
+    const GAIN_PRESETS = [
+      ['0xfc92=00 灰度', 0x00],
+      ['0xfc92=40 0.5×', 0x40],
+      ['0xfc92=80 1.0×', 0x80],
+      ['0xfc92=b4 默认', 0xb4]
+    ];
+
+    const HUE_PRESETS = [
+      ['0xfc93=40 红→蓝', 0x40],
+      ['0xfc93=80 红→青', 0x80],
+      ['0xfc93=C0 红→绿', 0xc0]
     ];
 
     function render() {
       const R = +els.r.value, G = +els.g.value, B = +els.b.value;
-      const luma = els.luma.checked, chroma = els.chroma.checked;
+      const luma = els.luma.checked, gainOn = els.gainOn.checked, hueOn = els.hueOn.checked;
       const fc92 = +els.fc92.value, fc93 = +els.fc93.value;
 
       els.ro.textContent = R; els.go.textContent = G; els.bo.textContent = B;
 
-      const res = compute(R, G, B, luma, chroma, fc92, fc93);
+      const res = compute(R, G, B, luma, gainOn, hueOn, fc92, fc93);
       const src = { R, G, B };
 
       // input / output
@@ -529,12 +538,16 @@
         R' = clip(Y' + ΔR') = <b>${res.out.R}</b><br>
         G' = clip(Y' − 0.10094·ΔB' − 0.29725·ΔR') = <b>${res.out.G}</b><br>
         B' = clip(Y' + ΔB') = <b>${res.out.B}</b>`;
+      els.outVal.insertAdjacentHTML('beforeend',
+        `<div class="why">先把色差 clamp 到 limited-range 边界，再用 Y'/ΔR'/ΔB' 重建 RGB，最后 clip 到 0–255。</div>`);
 
       // input decomposition
       els.decomp.innerHTML =
         `Y = 0.2126·${R} + 0.7152·${G} + 0.0722·${B} = <b>${f1(res.Y)}</b><br>
          ΔR = R − Y = <b>${f1(res.Kr)}</b><br>
          ΔB = B − Y = <b>${f1(res.Kb)}</b>`;
+      els.decomp.insertAdjacentHTML('beforeend',
+        `<div class="why">BT.709 分解：Y 是亮度，ΔR/ΔB 是色差；后面 luma 只动 Y，chroma 只动 ΔR/ΔB。</div>`);
 
       // luma stage
       els.lumaSw.style.background = rgba(res.lumaColor);
@@ -545,21 +558,29 @@
            <code>0xfc90</code> brightness=0xf5<br>
            <code>0xfc91</code> contrast=0x94`
         : `Y' = Y<br>Y = <b>${f1(res.Y)}</b><br><code>0xfc8e</code>[0,4]=0x11 bypass`;
+      els.lumaVal.insertAdjacentHTML('beforeend',
+        `<div class="why">只改 Y，不动色差；0xfc8e bit0 压暗、bit4 抬亮，默认合成 1.1533Y−11.55。</div>`);
 
       // gain stage
       els.gainSw.style.background = rgba(res.gainColor);
-      els.gainVal.innerHTML = chroma
+      els.gainVal.innerHTML = gainOn
         ? `g = <code>0xfc92</code>/128<br>
            <code>0xfc92</code> saturation=<b>${hex2(fc92)}</b> (${fc92})<br>
            g = <b>${res.g.toFixed(3)}</b><br>
            ΔR₁ = g·ΔR = <b>${f1(res.krGain)}</b><br>
-           ΔB₁ = g·ΔB = <b>${f1(res.kbGain)}</b><br>
-           <code>0xfc8f</code>[0,4]=0x00 on`
-        : `bypass<br><code>0xfc8f</code>[0,4]=0x11`;
+           ΔB₁ = g·ΔB = <b>${f1(res.kbGain)}</b>`
+        : `gain disabled<br>
+           <code>0xfc92</code>=<b>${hex2(fc92)}</b> (${fc92})<br>
+           g = <b>1.000</b> (bypass)<br>
+           ΔR₁ = ΔR = <b>${f1(res.krGain)}</b><br>
+           ΔB₁ = ΔB = <b>${f1(res.kbGain)}</b><br>
+           等价 <code>0xfc92</code>=0x80`;
+      els.gainVal.insertAdjacentHTML('beforeend',
+        `<div class="why">只改色差向量长度（饱和度），不改方向；g>1 更饱和，g<1 更淡，g=0 灰度。</div>`);
 
       // hue stage
       els.hueSw.style.background = rgba(res.rotColor);
-      els.hueVal.innerHTML = chroma
+      els.hueVal.innerHTML = hueOn
         ? `θ = <code>0xfc93</code>·360/256<br>
            <code>0xfc93</code> hue=<b>${hex2(fc93)}</b> (${fc93})<br>
            θ = <b>${res.thetaDeg.toFixed(1)}°</b><br>
@@ -568,15 +589,22 @@
            = <b>${f1(res.krRot)}</b><br>
            ΔB' = g·(sinθ·ΔR + cosθ·ΔB)<br>
            = <b>${f1(res.kbRot)}</b>`
-        : `bypass<br><code>0xfc8f</code>[0,4]=0x11`;
+        : `hue disabled<br>
+           <code>0xfc93</code>=<b>${hex2(fc93)}</b> (${fc93})<br>
+           θ = <b>0.0°</b> (bypass)<br>
+           ΔR' = ΔR₁ = <b>${f1(res.krRot)}</b><br>
+           ΔB' = ΔB₁ = <b>${f1(res.kbRot)}</b><br>
+           等价 <code>0xfc93</code>=0x00`;
+      els.hueVal.insertAdjacentHTML('beforeend',
+        `<div class="why">只改色差向量方向（色相），不改长度；灰色 ΔR=ΔB=0 不动。</div>`);
 
       // vector plot
       drawVector(res);
 
       els.vecInfo.innerHTML = [
         ['源', `ΔR=${f1(res.Kr)}  ΔB=${f1(res.Kb)}  |C|=${f1(Math.hypot(res.Kr, res.Kb))}`],
-        ['gain', chroma ? `×${res.g.toFixed(3)} → ΔR=${f1(res.krGain)}  ΔB=${f1(res.kbGain)}  |C|=${f1(Math.hypot(res.krGain, res.kbGain))}` : 'bypass'],
-        ['hue', chroma ? `Δhue=${(-res.thetaDeg).toFixed(1)}° → ΔR'=${f1(res.krRot)}  ΔB'=${f1(res.kbRot)}  |C|=${f1(Math.hypot(res.krRot, res.kbRot))}` : 'bypass'],
+        ['gain', `${gainOn ? '×' + res.g.toFixed(3) : '×1.000 (bypass)'} → ΔR=${f1(res.krGain)}  ΔB=${f1(res.kbGain)}  |C|=${f1(Math.hypot(res.krGain, res.kbGain))}`],
+        ['hue', `${hueOn ? 'Δhue=' + (-res.thetaDeg).toFixed(1) + '°' : 'Δhue=0.0° (bypass)'} → ΔR'=${f1(res.krRot)}  ΔB'=${f1(res.kbRot)}  |C|=${f1(Math.hypot(res.krRot, res.kbRot))}`],
         ['clamp', `ΔR∈[−${KRMAX}, ${KRMAX}]  ΔB∈[−${KBMAX}, ${KBMAX}] → ΔR=${f1(res.krC)}  ΔB=${f1(res.kbC)}`]
       ].map(([tag, expr]) =>
         `<div class="line"><span class="tag">${tag}</span><span class="expr">${expr}</span></div>`).join('');
@@ -702,26 +730,38 @@
         els.presets.appendChild(btn);
       }
 
-      for (const [name, spec] of CHROMA_PRESETS) {
+      const reset = document.createElement('button');
+      reset.textContent = '重置';
+      reset.addEventListener('click', () => {
+        els.fc92.value = 0xb4;
+        els.fc93.value = 0x00;
+        els.luma.checked = true;
+        els.gainOn.checked = true;
+        els.hueOn.checked = true;
+        render();
+      });
+      els.presets.appendChild(reset);
+
+      for (const [name, value] of GAIN_PRESETS) {
         const btn = document.createElement('button');
         btn.textContent = name;
         btn.addEventListener('click', () => {
-          if (spec === 'reset') {
-            els.fc92.value = 0xb4;
-            els.fc93.value = 0x00;
-            els.luma.checked = true;
-            els.chroma.checked = true;
-          } else {
-            if (spec.fc92 !== undefined) els.fc92.value = spec.fc92;
-            if (spec.fc93 !== undefined) els.fc93.value = spec.fc93;
-          }
-          render();
+          els.fc92.value = value; render();
         });
-        els.chromaPresets.appendChild(btn);
+        els.fc92Presets.appendChild(btn);
+      }
+
+      for (const [name, value] of HUE_PRESETS) {
+        const btn = document.createElement('button');
+        btn.textContent = name;
+        btn.addEventListener('click', () => {
+          els.fc93.value = value; render();
+        });
+        els.fc93Presets.appendChild(btn);
       }
     }
 
-    ['r', 'g', 'b', 'fc92', 'fc93', 'luma', 'chroma'].forEach(id =>
+    ['r', 'g', 'b', 'fc92', 'fc93', 'luma', 'gainOn', 'hueOn'].forEach(id =>
       els[id].addEventListener('input', render));
 
     addPresets();
