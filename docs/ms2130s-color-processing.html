@@ -86,7 +86,7 @@
       flex-wrap: nowrap;
       align-items: stretch;
       gap: 5px;
-      min-width: 1040px;
+      min-width: 960px;
     }
 
     .flow-stage {
@@ -102,8 +102,13 @@
     }
 
     .flow-stage.input {
-      flex: 1.55 1 220px;
-      min-width: 220px;
+      flex: 1 1 0;
+      min-width: 160px;
+    }
+
+    .flow-stage.input .presets {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .flow-stage.output {
@@ -193,7 +198,7 @@
 
     .sliders label {
       display: grid;
-      grid-template-columns: 16px 1fr 40px;
+      grid-template-columns: 16px 1fr 52px;
       align-items: center;
       gap: 6px;
       margin-bottom: 3px;
@@ -201,12 +206,16 @@
       font-size: .78rem;
     }
 
-    .sliders output {
+    .sliders input[type=number] {
+      width: 100%;
       font-family: var(--mono);
-      text-align: right;
-      color: var(--muted);
-      font-weight: 500;
       font-size: .72rem;
+      text-align: right;
+      color: var(--fg);
+      background: var(--bg);
+      border: 1px solid var(--card-bd);
+      border-radius: 4px;
+      padding: 1px 3px;
     }
 
     input[type=range] {
@@ -348,9 +357,9 @@
         <div class="sw" id="srcSw"></div>
         <div class="cap" id="srcTxt"></div>
         <div class="sliders">
-          <label>R <input type="range" id="r" min="0" max="255" value="64"><output id="ro">64</output></label>
-          <label>G <input type="range" id="g" min="0" max="255" value="0"><output id="go">0</output></label>
-          <label>B <input type="range" id="b" min="0" max="255" value="0"><output id="bo">0</output></label>
+          <label>R <input type="range" id="r" min="0" max="255" value="64"><input type="number" id="rNum" min="0" max="255" step="1" value="64" inputmode="numeric"></label>
+          <label>G <input type="range" id="g" min="0" max="255" value="0"><input type="number" id="gNum" min="0" max="255" step="1" value="0" inputmode="numeric"></label>
+          <label>B <input type="range" id="b" min="0" max="255" value="0"><input type="number" id="bNum" min="0" max="255" step="1" value="0" inputmode="numeric"></label>
         </div>
         <div class="presets" id="presets"></div>
         <div class="kv" id="decomp"></div>
@@ -480,7 +489,7 @@
 
     const els = {
       r: document.getElementById('r'), g: document.getElementById('g'), b: document.getElementById('b'),
-      ro: document.getElementById('ro'), go: document.getElementById('go'), bo: document.getElementById('bo'),
+      rNum: document.getElementById('rNum'), gNum: document.getElementById('gNum'), bNum: document.getElementById('bNum'),
       luma: document.getElementById('luma'),
       gainOn: document.getElementById('gainOn'), hueOn: document.getElementById('hueOn'),
       fc92: document.getElementById('fc92'), fc93: document.getElementById('fc93'),
@@ -523,7 +532,9 @@
       const luma = els.luma.checked, gainOn = els.gainOn.checked, hueOn = els.hueOn.checked;
       const fc92 = +els.fc92.value, fc93 = +els.fc93.value;
 
-      els.ro.textContent = R; els.go.textContent = G; els.bo.textContent = B;
+      if (document.activeElement !== els.rNum) els.rNum.value = R;
+      if (document.activeElement !== els.gNum) els.gNum.value = G;
+      if (document.activeElement !== els.bNum) els.bNum.value = B;
 
       const res = compute(R, G, B, luma, gainOn, hueOn, fc92, fc93);
       const src = { R, G, B };
@@ -763,6 +774,25 @@
 
     ['r', 'g', 'b', 'fc92', 'fc93', 'luma', 'gainOn', 'hueOn'].forEach(id =>
       els[id].addEventListener('input', render));
+
+    ['r', 'g', 'b'].forEach(id => {
+      const num = els[id + 'Num'];
+      const range = els[id];
+      num.addEventListener('input', () => {
+        const v = parseInt(num.value, 10);
+        if (!Number.isNaN(v)) {
+          range.value = clamp(v, 0, 255);
+          render();
+        }
+      });
+      num.addEventListener('change', () => {
+        const parsed = parseInt(num.value, 10);
+        const v = clamp(Number.isNaN(parsed) ? +range.value : parsed, 0, 255);
+        range.value = v;
+        num.value = v;
+        render();
+      });
+    });
 
     addPresets();
     render();
