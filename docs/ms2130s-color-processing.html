@@ -396,9 +396,10 @@
 <body>
   <h1>MS2130S luma / chroma processing 可视化</h1>
   <p class="sub">
-    从左到右：输入颜色 → luma processing → chroma gain → chroma hue → 输出颜色。
-    luma 寄存器：<code>0xfc8e[0,4] / 0xfc90 / 0xfc91</code>；
-    chroma 寄存器：<code>0xfc8f[0,4] / 0xfc92 / 0xfc93</code>（gain / hue 可分别 enable）。
+    MateBook Pro 通过 HDMI 输出 RGB（4K30 RGB，<code>0x3c47=0x00</code>，<code>0xf130=0x10</code>）。
+    芯片内部把 RGB 分解成 Y/ΔR/ΔB，先过 luma（<code>0xfc90 / 0xfc91</code>），
+    再过 chroma（<code>0xfc92 / 0xfc93</code>），最后重建 RGB。
+    下面用实测数据验证这条链路。
   </p>
 
   <div class="panel flow-panel">
@@ -424,6 +425,10 @@
         <div class="flow-h">② luma processing<br><code>0xfc8e[0,4] / 0xfc90 / 0xfc91</code></div>
         <div class="sw small" id="lumaSw"></div>
         <label class="inline"><input type="checkbox" id="luma" checked> enable</label>
+        <div class="kv">0xfc90 <b id="fc90o">0xF5</b></div>
+        <input type="range" id="fc90" min="0" max="255" value="245">
+        <div class="kv">0xfc91 <b id="fc91o">0x94</b></div>
+        <input type="range" id="fc91" min="0" max="255" value="148">
         <div class="kv" id="lumaVal"></div>
       </div>
 
@@ -464,6 +469,27 @@
   </div>
 
   <div class="panel">
+    <h2>MateBook Pro RGB → 实测验证</h2>
+    <div class="compare-controls">
+      <label>状态
+        <select id="valState">
+          <option value="on">都开</option>
+          <option value="chroma">只 chroma</option>
+          <option value="off">都关</option>
+          <option value="luma">只 luma</option>
+        </select>
+      </label>
+    </div>
+    <div id="valTable"></div>
+    <div class="steps" id="valSummary" style="margin-top:8px"></div>
+    <div class="note">
+      实测值来自博客合并表：MateBook Pro RGB 的 9 个灰阶 + 12 个彩色输入，
+      四种 <code>0xfc8e/0xfc8f</code> 组合。验证使用默认寄存器
+      <code>0xfc90=0xF5</code>、<code>0xfc91=0x94</code>、<code>0xfc92=0xB4</code>、<code>0xfc93=0x00</code>。
+    </div>
+  </div>
+
+  <div class="panel">
     <h2>Chroma 向量图（ΔR/ΔB 平面）</h2>
     <div class="vector-grid">
       <div class="vector-wrap"><canvas id="vec"></canvas></div>
@@ -484,35 +510,8 @@
     </div>
   </div>
 
-  <div class="panel">
-    <h2>实测 vs 模型</h2>
-    <div class="compare-controls">
-      <label>数据集
-        <select id="cmpDataset">
-          <option value="four">四状态表（博客附录）</option>
-          <option value="mb">MateBook 默认灰阶</option>
-          <option value="mboff">MateBook 关 luma 灰阶</option>
-        </select>
-      </label>
-      <label>状态
-        <select id="cmpState">
-          <option value="on">都开</option>
-          <option value="chroma">只 chroma</option>
-          <option value="off">都关</option>
-          <option value="luma">只 luma</option>
-        </select>
-      </label>
-    </div>
-    <div id="cmpTableWrap"></div>
-    <div class="steps" id="cmpSummary" style="margin-top:8px"></div>
-    <div class="note">
-      实测值来自博客正文与附录；模型使用本页同一套公式，对比使用 <code>0xfc92=0xB4</code>（寄存器默认）。
-    </div>
-  </div>
-
   <script>
     const KR = 0.2126, KG = 0.7152, KB = 0.0722;
-    const LUMA_A = 1.1533, LUMA_B = -11.55;
     const KRMAX = 200.8, KBMAX = 236.6;
 
     const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
@@ -528,7 +527,40 @@
       };
     }
 
-    function compute(R, G, B, luma, gainOn, hueOn, fc92, fc93) {
+    function fc90Signed(v) {
+      if (v <= 0x7f) return v;
+      if (v <= 0xe0) return 0;
+      return v - 0x100;
+    }
+
+    function fc91Contrast(y, v) {
+      const d = v - 0x80;
+      if (d > 0) return (1 + d / 128) * y + 0.14 * d;
+      if (v >= 0x68 && v < 0x80) {
+        const pts = [[0x68, 0.867, -9.5], [0x70, 0.935, -8.7],
+                     [0x78, 0.943, -2.7], [0x80, 1, 0]];
+        for (let i = 1; i < pts.length; i++) {
+          if (v <= pts[i][0]) {
+            const [x0, a0, b0] = pts[i - 1], [x1, a1, b1] = pts[i];
+            const t = (v - x0) / (x1 - x0);
+            return (a0 + (a1 - a0) * t) * y + (b0 + (b1 - b0) * t);
+          }
+        }
+      }
+      return y;
+    }
+
+    function lumaRegs(y, fc90, fc91) {
+      const s = fc90Signed(fc90);
+      if (y <= 0) {
+        const y1 = Math.max(0, (7 / 6) * s - 20);
+        return clamp((1 + Math.max(0, fc91 - 0x80) / 128) * y1, 0, 255);
+      }
+      const y1 = y + (7 / 6) * s;
+      return clamp(fc91Contrast(y1, fc91), 0, 255);
+    }
+
+    function compute(R, G, B, luma, gainOn, hueOn, fc90, fc91, fc92, fc93) {
       const Y = KR * R + KG * G + KB * B;
       const Kr = R - Y;
       const Kb = B - Y;
@@ -540,8 +572,8 @@
       const theta = thetaDeg * Math.PI / 180;
       const c = Math.cos(theta), s = Math.sin(theta);
 
-      // luma branch
-      const yPre = luma ? LUMA_A * Y + LUMA_B : Y;
+      // luma branch: fc90 signed offset -> fc91 contrast
+      const yPre = luma ? lumaRegs(Y, fc90, fc91) : Y;
       const yC = clamp(yPre, 0, 255);
 
       // chroma branch: gain-only, then gain+rotation
@@ -569,6 +601,8 @@
       r: document.getElementById('r'), g: document.getElementById('g'), b: document.getElementById('b'),
       rNum: document.getElementById('rNum'), gNum: document.getElementById('gNum'), bNum: document.getElementById('bNum'),
       luma: document.getElementById('luma'),
+      fc90: document.getElementById('fc90'), fc91: document.getElementById('fc91'),
+      fc90o: document.getElementById('fc90o'), fc91o: document.getElementById('fc91o'),
       gainOn: document.getElementById('gainOn'), hueOn: document.getElementById('hueOn'),
       fc92: document.getElementById('fc92'), fc93: document.getElementById('fc93'),
       srcSw: document.getElementById('srcSw'), outSw: document.getElementById('outSw'),
@@ -581,10 +615,9 @@
       presets: document.getElementById('presets'),
       fc92Presets: document.getElementById('fc92Presets'),
       fc93Presets: document.getElementById('fc93Presets'),
-      cmpDataset: document.getElementById('cmpDataset'),
-      cmpState: document.getElementById('cmpState'),
-      cmpTableWrap: document.getElementById('cmpTableWrap'),
-      cmpSummary: document.getElementById('cmpSummary'),
+      valState: document.getElementById('valState'),
+      valTable: document.getElementById('valTable'),
+      valSummary: document.getElementById('valSummary'),
       vec: document.getElementById('vec'), vecInfo: document.getElementById('vecInfo')
     };
 
@@ -612,13 +645,16 @@
     function render() {
       const R = +els.r.value, G = +els.g.value, B = +els.b.value;
       const luma = els.luma.checked, gainOn = els.gainOn.checked, hueOn = els.hueOn.checked;
+      const fc90 = +els.fc90.value, fc91 = +els.fc91.value;
       const fc92 = +els.fc92.value, fc93 = +els.fc93.value;
+      els.fc90o.textContent = hex2(fc90);
+      els.fc91o.textContent = hex2(fc91);
 
       if (document.activeElement !== els.rNum) els.rNum.value = R;
       if (document.activeElement !== els.gNum) els.gNum.value = G;
       if (document.activeElement !== els.bNum) els.bNum.value = B;
 
-      const res = compute(R, G, B, luma, gainOn, hueOn, fc92, fc93);
+      const res = compute(R, G, B, luma, gainOn, hueOn, fc90, fc91, fc92, fc93);
       const src = { R, G, B };
 
       // input / output
@@ -643,16 +679,21 @@
         `<div class="why">BT.709 分解：Y 是亮度，ΔR/ΔB 是色差；后面 luma 只动 Y，chroma 只动 ΔR/ΔB。</div>`);
 
       // luma stage
+      const s90 = fc90Signed(fc90);
+      const yIn = res.Y;
+      const y1 = yIn <= 0 ? Math.max(0, (7 / 6) * s90 - 20) : yIn + (7 / 6) * s90;
+      const d91 = fc91 - 0x80;
       els.lumaSw.style.background = rgba(res.lumaColor);
       els.lumaVal.innerHTML = luma
-        ? `Y' = clip(1.1533·Y − 11.55)<br>
-           Y = ${f1(res.Y)} → <b>${f1(res.yC)}</b><br>
-           <code>0xfc8e</code>[0,4]=0x00 on<br>
-           <code>0xfc90</code> brightness=0xf5<br>
-           <code>0xfc91</code> contrast=0x94`
-        : `Y' = Y<br>Y = <b>${f1(res.Y)}</b><br><code>0xfc8e</code>[0,4]=0x11 bypass`;
+        ? `Y = <b>${f1(yIn)}</b><br>
+           signed90 = <b>${s90 >= 0 ? '+' : ''}${s90}</b><br>
+           Y1 = <b>${f1(y1)}</b><br>
+           d91 = <b>${d91 >= 0 ? '+' : ''}${d91}</b><br>
+           Y' = <b>${f1(res.yC)}</b><br>
+           <code>0xfc8e</code>[0,4]=0x00 on`
+        : `Y' = Y<br><b>${f1(yIn)}</b><br><code>0xfc8e</code>[0,4]=0x11 bypass`;
       els.lumaVal.insertAdjacentHTML('beforeend',
-        `<div class="why">只改 Y，不动色差；0xfc8e bit0 压暗、bit4 抬亮，默认合成 1.1533Y−11.55。</div>`);
+        `<div class="why">0xfc90 signed offset（7/6）→ 0xfc91 contrast；只改 Y，不动色差。</div>`);
 
       // gain stage
       els.gainSw.style.background = rgba(res.gainColor);
@@ -813,10 +854,15 @@
       }
     }
 
-    const BLOG_FOUR = [
+    const MERGED = [
+      { in: [15, 15, 15], on: [6, 6, 6], chroma: [15, 15, 15], off: [15, 15, 15], luma: [6, 6, 6] },
       { in: [64, 64, 64], on: [62, 62, 62], chroma: [63, 63, 63], off: [63, 63, 63], luma: [62, 62, 62] },
       { in: [128, 128, 128], on: [136, 136, 136], chroma: [127, 127, 127], off: [127, 127, 127], luma: [136, 136, 136] },
+      { in: [160, 160, 160], on: [173, 173, 173], chroma: [160, 160, 160], off: [160, 160, 160], luma: [173, 173, 173] },
       { in: [192, 192, 192], on: [210, 210, 210], chroma: [191, 191, 191], off: [191, 191, 191], luma: [210, 210, 210] },
+      { in: [200, 200, 200], on: [219, 219, 219], chroma: [199, 199, 199], off: [199, 199, 199], luma: [219, 219, 219] },
+      { in: [224, 224, 224], on: [247, 247, 247], chroma: [224, 224, 224], off: [224, 224, 224], luma: [247, 247, 247] },
+      { in: [244, 244, 244], on: [255, 255, 255], chroma: [243, 243, 243], off: [243, 243, 243], luma: [255, 255, 255] },
       { in: [255, 255, 255], on: [255, 255, 255], chroma: [254, 254, 254], off: [254, 254, 254], luma: [255, 255, 255] },
       { in: [64, 0, 0], on: [72, 0, 0], chroma: [81, 0, 0], off: [61, 0, 0], luma: [52, 0, 0] },
       { in: [128, 0, 0], on: [156, 0, 0], chroma: [163, 0, 0], off: [125, 0, 0], luma: [118, 0, 0] },
@@ -831,35 +877,19 @@
       { in: [0, 0, 192], on: [0, 0, 238], chroma: [0, 0, 247], off: [0, 0, 190], luma: [0, 0, 181] },
       { in: [0, 0, 255], on: [0, 0, 245], chroma: [0, 3, 251], off: [0, 0, 254], luma: [0, 0, 247] }
     ];
-    const BLOG_MB = [[15, 6], [64, 62], [128, 136], [160, 173], [200, 219], [224, 247], [244, 255]];
-    const BLOG_MBOFF = [[15, 15], [64, 65], [128, 127], [160, 160], [200, 199], [224, 224], [244, 243]];
 
-    function renderCompare() {
-      const ds = els.cmpDataset.value;
-      const state = els.cmpState.value;
-      const fc92 = 0xb4;
+    function renderValidation() {
+      const state = els.valState.value;
       const flags = {
         on: [true, true, true],
         chroma: [false, true, true],
         off: [false, false, false],
         luma: [true, false, false]
       }[state];
-
       const rows = [];
-      if (ds === 'four') {
-        els.cmpState.disabled = false;
-        for (const rec of BLOG_FOUR) {
-          const p = compute(rec.in[0], rec.in[1], rec.in[2], flags[0], flags[1], flags[2], fc92, 0).out;
-          rows.push({ in: rec.in, obs: rec[state], p });
-        }
-      } else {
-        els.cmpState.disabled = true;
-        const list = ds === 'mb' ? BLOG_MB : BLOG_MBOFF;
-        const luma = ds === 'mb';
-        for (const [x, obs] of list) {
-          const p = compute(x, x, x, luma, true, true, fc92, 0).out;
-          rows.push({ in: [x, x, x], obs: [obs, obs, obs], p });
-        }
+      for (const rec of MERGED) {
+        const p = compute(rec.in[0], rec.in[1], rec.in[2], flags[0], flags[1], flags[2], 0xf5, 0x94, 0xb4, 0).out;
+        rows.push({ in: rec.in, obs: rec[state], p });
       }
 
       let sum = 0, n = 0, max = 0;
@@ -875,8 +905,8 @@
         html += `<tr><td>${r.in.join(',')}</td><td>${r.obs.join(',')}</td><td>${r.p.R},${r.p.G},${r.p.B}</td><td${bad}>${d.join(',')}</td></tr>`;
       }
       html += '</tbody></table></div>';
-      els.cmpTableWrap.innerHTML = html;
-      els.cmpSummary.innerHTML =
+      els.valTable.innerHTML = html;
+      els.valSummary.innerHTML =
         `<div class="line"><span class="tag">误差</span><span class="expr">平均 |Δ| = <b>${(sum / n).toFixed(2)}</b>，最大 |Δ| = <b>${max}</b>（${rows.length} 行 × 3 通道）</span></div>`;
     }
 
@@ -893,6 +923,8 @@
       const reset = document.createElement('button');
       reset.textContent = '重置';
       reset.addEventListener('click', () => {
+        els.fc90.value = 0xf5;
+        els.fc91.value = 0x94;
         els.fc92.value = 0xb4;
         els.fc93.value = 0x00;
         els.luma.checked = true;
@@ -921,7 +953,7 @@
       }
     }
 
-    ['r', 'g', 'b', 'fc92', 'fc93', 'luma', 'gainOn', 'hueOn'].forEach(id =>
+    ['r', 'g', 'b', 'fc90', 'fc91', 'fc92', 'fc93', 'luma', 'gainOn', 'hueOn'].forEach(id =>
       els[id].addEventListener('input', render));
 
     ['r', 'g', 'b'].forEach(id => {
@@ -943,12 +975,11 @@
       });
     });
 
-    ['cmpDataset', 'cmpState'].forEach(id =>
-      els[id].addEventListener('change', renderCompare));
+    els.valState.addEventListener('change', renderValidation);
 
     addPresets();
     render();
-    renderCompare();
+    renderValidation();
 
     // tell the embedding page how tall we are, so the iframe can fit exactly
     function notifyHeight() {
