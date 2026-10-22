@@ -334,6 +334,120 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 5. chroma hue（取决于 0xfc8f[4]）：对 ΔR 和 ΔB 进行旋转，旋转的角度等于 0xfc93 寄存器的值除以 256 乘以 360 度
 6. Y/ΔR/ΔB 再转换到最终的颜色输出
 
+### 已确认的寄存器位
+
+以下只列出有 live 写寄存器 + 采图（或固件反汇编）证据、且功能已经完全确认的位。
+
+#### `0xfc8e` — luma processing
+
+| 位 | 功能 |
+|---:|---|
+| 0 | 1 = bypass `0xfc90` offset 级 |
+| 4 | 1 = bypass `0xfc91` gain 级 |
+
+| `0xfc8e` | offset `0xfc90` | gain `0xfc91` | 公式 |
+|---:|---|---|---|
+| `0x00` | on | on | `clip(clip(Y + fc90) * fc91/128)` |
+| `0x01` | bypass | on | `clip(Y * fc91/128)` |
+| `0x10` | on | bypass | `clip(Y + fc90)` |
+| `0x11` | bypass | bypass | `Y` |
+
+#### `0xfc8f` — chroma processing
+
+| 位 | 功能 |
+|---:|---|
+| 0 | 1 = bypass `0xfc92` saturation 级 |
+| 4 | 1 = bypass `0xfc93` hue 级 |
+
+| `0xfc8f` | saturation `0xfc92` | hue `0xfc93` |
+|---:|---|---|
+| `0x00` | on | on |
+| `0x01` | bypass | on |
+| `0x10` | on | bypass |
+| `0x11` | bypass | bypass |
+
+#### `0xfc90`–`0xfc93`
+
+| 寄存器 | 功能 |
+|---|---|
+| `0xfc90` | luma offset，signed int8 |
+| `0xfc91` | luma gain，`fc91/128` |
+| `0xfc92` | saturation，`fc92/128` |
+| `0xfc93` | hue，`fc93 × 360/256°` |
+
+#### `0xf618` — chroma layout / interpolation
+
+| 位 | 功能 |
+|---:|---|
+| 0-2 | output layout：`0` = none，`1` = 4:2:2，`3` = 4:2:0 |
+| 3 | read-only 0 |
+| 4 | 1 = 关 chroma interpolation |
+| 5 | 1 = 交换 Cb/Cr（U/V） |
+| 7 | read-only 0 |
+
+| 值 | 含义 |
+|---:|---|
+| `0x03` | NV12 |
+| `0x13` | NV12 + 关插值 |
+| `0x23` | NV12 + U/V swap |
+| `0x11` | 4:2:2 + 关插值（hsdaoh 的 YUYV） |
+| `0x21` | 4:2:2 + U/V swap |
+| `0x00` | no chroma |
+
+#### `0xf130` — 输入色彩空间
+
+| 位 | 功能 |
+|---:|---|
+| 1:0 | `0` = processed RGB，`1` = unprocessed RGB，`2` = YCbCr 4:2:2 |
+| 4 | force / format enable |
+
+| 值 | 含义 |
+|---:|---|
+| `0x10` | processed RGB |
+| `0x11` | unprocessed RGB |
+| `0x12` | YCbCr 4:2:2 |
+
+#### `0xf131` — 输入格式 flags
+
+| 位 | 功能 |
+|---:|---|
+| 3 | 基础输入使能；清掉会断流 |
+
+#### `0xf135` — chroma interpolation helper
+
+| 位 | 功能 |
+|---:|---|
+| 3 | 基础使能；清掉会断流 |
+
+#### `0xf136` — raw-RGB 数据路径
+
+| 位 | 功能 |
+|---:|---|
+| 3:2 | raw-RGB 路径选择；`0x0c` = raw；`0x04/0x0c` 时 U=V，`0x08` 时 luma 坏 |
+
+#### `0xfc80` — sharpening
+
+| 位 | 功能 |
+|---:|---|
+| 0 | 1 = 开锐化；水平 luma 边出现过冲/下冲 |
+| 4-7 | read-only 0；`0xff` 读回 `0x0f` |
+
+| 值 | 含义 |
+|---:|---|
+| `0x00` | 关 |
+| `0x01` | 开 |
+
+#### EDID command mailbox
+
+| 寄存器 | 功能 |
+|---|---|
+| `0xf062` | bit7 = 1：EDID RAM mux 给 8051；0：DDC 侧 |
+| `0xf900` | command sequence |
+| `0xf901` | payload length |
+| `0xf902+` | payload |
+
+只有 `f062=0x80` 时 mailbox 可写可读。
+
 ### 交互式计算器
 
 下面这个计算器可以实时看到 MS2130S 内部每个像素经过哪些计算、最终变成什么：
