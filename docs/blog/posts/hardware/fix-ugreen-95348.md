@@ -330,8 +330,8 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 1. 把 RGB 转成 Y/ΔR/ΔB
 2. luma processing 第一步（取决于 0xfc8e[0]）：给 Y 加上一个数（offset），这个数是把 0xfc90 寄存器的值当成有符号 int8 的值
 3. luma processing 第二步（取决于 0xfc8e[4]）：给 Y 乘一个数（gain），这个数等于 0xfc91 寄存器的值除以 128
-4. chroma processing 第一步（取决于 0xfc8f[0]）：给 ΔR 和 ΔB 乘上一个数（gain），这个数等于 0xfc92 寄存器的值除以 128；再对 ΔR 和 ΔB 进行旋转（hue），旋转的角度等于 0xfc93 寄存器的值除以 256 乘以 360 度
-5. chroma processing 第二步（取决于 0xfc8f[4]）：给 ΔR 和 ΔB 乘一个 0.992
+4. chroma saturation（取决于 0xfc8f[0]）：给 ΔR 和 ΔB 乘上一个数（gain），这个数等于 0xfc92 寄存器的值除以 128
+5. chroma hue（取决于 0xfc8f[4]）：对 ΔR 和 ΔB 进行旋转，旋转的角度等于 0xfc93 寄存器的值除以 256 乘以 360 度
 6. Y/ΔR/ΔB 再转换到最终的颜色输出
 
 ### 交互式计算器

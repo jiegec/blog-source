@@ -437,10 +437,10 @@
 
       <!-- 3. chroma gain -->
       <div class="flow-stage">
-        <div class="flow-h">③ chroma: gain<br><code>0xfc92 / 0xfc8f[0,4]</code></div>
+        <div class="flow-h">③ chroma: saturation<br><code>0xfc92 / 0xfc8f[0]</code></div>
         <div class="sw small" id="gainSw"></div>
-        <label class="inline"><input type="checkbox" id="chromaB0" checked> <code>0xfc8f[0]</code> chroma (gain+hue)</label>
-        <label class="inline"><input type="checkbox" id="chromaB4" checked> <code>0xfc8f[4]</code> chroma stage 2</label>
+        <label class="inline"><input type="checkbox" id="chromaB0" checked> <code>0xfc8f[0]</code> saturation</label>
+        <label class="inline"><input type="checkbox" id="chromaB4" checked> <code>0xfc8f[4]</code> hue</label>
         <input type="range" id="fc92" min="0" max="255" value="180">
         <div class="presets" id="fc92Presets"></div>
         <div class="kv" id="gainVal"></div>
@@ -450,7 +450,7 @@
 
       <!-- 4. chroma hue -->
       <div class="flow-stage">
-        <div class="flow-h">④ chroma: hue<br><code>0xfc93</code></div>
+        <div class="flow-h">④ chroma: hue<br><code>0xfc93 / 0xfc8f[4]</code></div>
         <div class="sw small" id="hueSw"></div>
         <input type="range" id="fc93" min="0" max="255" value="0">
         <div class="presets" id="fc93Presets"></div>
@@ -549,25 +549,25 @@
       else if (lumaB0 && !lumaB4) yC = clamp(Y + fc90Signed(fc90), 0, 255);
       else yC = Y;
 
-      // chroma: bit0 is the main enable, bit4 is a secondary stage
-      const chromaOn = chromaB0;
-      const g = chromaOn ? fc92 / 128 : 1;
-      const thetaDeg = chromaOn ? fc93 * 360 / 256 : 0;
+      // chroma: bit0 gates saturation (fc92), bit4 gates hue (fc93)
+      const satOn = chromaB0;
+      const hueOn = chromaB4;
+      const g = satOn ? fc92 / 128 : 1;
+      const thetaDeg = hueOn ? fc93 * 360 / 256 : 0;
       const theta = thetaDeg * Math.PI / 180;
       const c = Math.cos(theta), s = Math.sin(theta);
-      const gFinal = (chromaOn && !chromaB4) ? g * 1.008 : g;
 
       // chroma branch: gain-only, then gain+rotation
-      const krGain = gFinal * Kr;
-      const kbGain = gFinal * Kb;
-      const krRot = gFinal * (c * Kr - s * Kb);
-      const kbRot = gFinal * (s * Kr + c * Kb);
+      const krGain = g * Kr;
+      const kbGain = g * Kb;
+      const krRot = g * (c * Kr - s * Kb);
+      const kbRot = g * (s * Kr + c * Kb);
 
       const krC = clamp(krRot, -KRMAX, KRMAX);
       const kbC = clamp(kbRot, -KBMAX, KBMAX);
 
       return {
-        Y, Kr, Kb, g: gFinal, thetaDeg,
+        Y, Kr, Kb, g, thetaDeg,
         yPre: yC, yC,
         krGain, kbGain, krRot, kbRot, krC, kbC,
         lumaColor: reconstruct(yC, Kr, Kb),
@@ -678,7 +678,7 @@
            <code>0xfc8e</code>=<b>${hex2(fc8eVal)}</b>`
         : `Y' = Y<br><b>${f1(yIn)}</b><br><code>0xfc8e</code>=0x11 bypass`;
       els.lumaVal.insertAdjacentHTML('beforeend',
-        `<div class="why">0xfc8e bit0=offset stage，bit4=gain stage（0=on，1=off）；0xfc8e=0x11 时直接 Y'=Y。bit 组合为近似。</div>`);
+        `<div class="why">0xfc8e bit0=bypass offset，bit4=bypass gain（0=on，1=off）。0x00 是 clip((Y+fc90)·fc91/128)，0x01 只保留 gain，0x10 只保留 offset，0x11 直接 Y'=Y。</div>`);
 
       // gain stage
       const fc8fVal = (chromaB0 ? 0 : 1) | (chromaB4 ? 0 : 0x10);
@@ -698,11 +698,11 @@
            <code>0xfc8f</code>=<b>${hex2(fc8fVal)}</b><br>
            等价 <code>0xfc92</code>=0x80`;
       els.gainVal.insertAdjacentHTML('beforeend',
-        `<div class="why">0xfc8f[0] 是 chroma 总开关，同时 gate gain 和 hue；gain 由 0xfc92 控制（0x80=1.0×）。0xfc8f[4] 是次级 chroma stage，只在 bit0 on 时有效，约 −0.8% 饱和度（8-bit RGB 上通常只差 1 个码值）。</div>`);
+        `<div class="why">0xfc8f[0] 只控制 saturation（0xfc92，0x80=1.0×）；hue 由 0xfc8f[4] 独立控制（0xfc93）。这两个 bit 互不 gate。</div>`);
 
       // hue stage
       els.hueSw.style.background = rgba(res.rotColor);
-      els.hueVal.innerHTML = chromaB0
+      els.hueVal.innerHTML = chromaB4
         ? `θ = <code>0xfc93</code>·360/256<br>
            <code>0xfc93</code> hue=<b>${hex2(fc93)}</b> (${fc93})<br>
            θ = <b>${res.thetaDeg.toFixed(1)}°</b><br>
@@ -712,7 +712,7 @@
            ΔB' = g·(sinθ·ΔR + cosθ·ΔB)<br>
            = <b>${f1(res.kbRot)}</b><br>
            <code>0xfc8f</code>=<b>${hex2(fc8fVal)}</b>`
-        : `chroma/hue bypass<br>
+        : `hue bypass<br>
            <code>0xfc8f</code>=<b>${hex2(fc8fVal)}</b><br>
            <code>0xfc93</code>=<b>${hex2(fc93)}</b> (${fc93})<br>
            θ = <b>0.0°</b> (bypass)<br>
@@ -720,7 +720,7 @@
            ΔB' = ΔB₁ = <b>${f1(res.kbRot)}</b><br>
            等价 <code>0xfc93</code>=0x00`;
       els.hueVal.insertAdjacentHTML('beforeend',
-        `<div class="why">0xfc8f[0] 是 chroma 总开关（同时 gate gain 和 hue）；hue 由 0xfc93 控制（0x00=0°）。灰色 ΔR=ΔB=0 不动。</div>`);
+        `<div class="why">0xfc8f[4] 只控制 hue（0xfc93，0x00=0°）；saturation 由 0xfc8f[0] 独立控制。灰色 ΔR=ΔB=0 不动。</div>`);
 
       // vector plot
       drawVector(res);
@@ -728,7 +728,7 @@
       els.vecInfo.innerHTML = [
         ['源', `ΔR=${f1(res.Kr)}  ΔB=${f1(res.Kb)}  |C|=${f1(Math.hypot(res.Kr, res.Kb))}`],
         ['gain', `${chromaB0 ? '×' + res.g.toFixed(3) : '×1.000 (bypass)'} → ΔR=${f1(res.krGain)}  ΔB=${f1(res.kbGain)}  |C|=${f1(Math.hypot(res.krGain, res.kbGain))}`],
-        ['hue', `${chromaB0 ? 'Δhue=' + (-res.thetaDeg).toFixed(1) + '°' : 'Δhue=0.0° (bypass)'} → ΔR'=${f1(res.krRot)}  ΔB'=${f1(res.kbRot)}  |C|=${f1(Math.hypot(res.krRot, res.kbRot))}`],
+        ['hue', `${chromaB4 ? 'Δhue=' + (-res.thetaDeg).toFixed(1) + '°' : 'Δhue=0.0° (bypass)'} → ΔR'=${f1(res.krRot)}  ΔB'=${f1(res.kbRot)}  |C|=${f1(Math.hypot(res.krRot, res.kbRot))}`],
         ['clamp', `ΔR∈[−${KRMAX}, ${KRMAX}]  ΔB∈[−${KBMAX}, ${KBMAX}] → ΔR=${f1(res.krC)}  ΔB=${f1(res.kbC)}`]
       ].map(([tag, expr]) =>
         `<div class="line"><span class="tag">${tag}</span><span class="expr">${expr}</span></div>`).join('');
