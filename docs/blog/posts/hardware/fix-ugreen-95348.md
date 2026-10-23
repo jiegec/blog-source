@@ -10,7 +10,7 @@ categories:
 
 ## 背景
 
-[上文](../misc/classroom-routing.md) 提到，我打算用采集卡来录制鸿蒙电脑的输出，作为 OBS 的输入来做软件导播，用的采集卡型号是[采用了 MS2130S 芯片的绿联 UG307-95348 采集卡](https://www.lulian.cn/product/1537.html)。在使用过程中，遇到了清晰度和颜色的问题，下面介绍我是怎么研究和解决的。
+[上文](../misc/classroom-routing.md) 提到，我打算用采集卡来录制鸿蒙电脑的输出，作为 OBS 的输入来做软件导播，用的采集卡型号是[采用了 MS2130S 芯片的绿联 UG307-95348 采集卡](https://www.lulian.cn/product/1537.html)，采集来自 MateBookPro 的显示输出。在使用过程中，遇到了清晰度和颜色的问题，下面介绍我是怎么研究和解决的。
 
 <!-- more -->
 
@@ -283,19 +283,7 @@ c275: 0287c7 LJMP 87c7h
 
 P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60 FPS - CS 709 - NV12 (420v)` 模式生效；对 `3840x2160 (16:9) - 30 FPS - CS 709 - NV12 (420v)` 模式则无效：前者画面清晰、颜色正确，后者画面模糊、颜色也不对。具体原因尚未深入分析。
 
-## 总结
-
-其实 MS2130S 这款芯片在网络上已经有很多现成的研究，从寄存器用法、hidapi 访问到固件补丁，都能找到前人的成果。这次能比较顺利地定位并解决问题，很大程度上是站在这些探索的肩膀上，在此对这些作者表示感谢。
-
-相关项目链接整理如下：
-
-- [steve-m/hsdaoh](https://github.com/steve-m/hsdaoh)：通过 hidapi 访问 MS2130S 寄存器的库，本文从 host 端修改 `0xfc8e` 的思路就来自这里。
-- [steve-m/ms2130_patcher](https://github.com/steve-m/ms2130_patcher)：直接给固件打补丁、持久化寄存器配置的工具，是本文固件补丁的重要参考。
-- [steve-m/ms213x_flash](https://github.com/steve-m/ms213x_flash)：用来导出/烧写 MS213x 固件的工具，本文用它导出了绿联 95348 的原始固件。
-
-这些项目大多出自 [steve-m](https://github.com/steve-m) 之手，感谢他的开源工作。
-
-## 附录：采集卡对颜色做了哪些变化
+## 采集卡对颜色做了哪些变化
 
 上面只关了 luma processing，主要是对亮度也就是 Y 分量做了处理。实际上，硬件还有 chroma processing。
 
@@ -334,9 +322,9 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 5. chroma hue（取决于 0xfc8f[4]）：对 ΔR 和 ΔB 进行旋转，旋转的角度等于 0xfc93 寄存器的值除以 256 乘以 360 度
 6. Y/ΔR/ΔB 再转换到最终的颜色输出
 
-### 已确认的寄存器位
+### 已确认的 MS2130S 寄存器位
 
-以下只列出有 live 写寄存器 + 采图（或固件反汇编）证据、且功能已经完全确认的位。
+下面列出经过逆向工程，确定的 MS2130S 芯片的一些寄存器的功能。
 
 #### `0xfc8e` — luma processing
 
@@ -375,7 +363,7 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 | `0xfc92` | saturation，`fc92/128` |
 | `0xfc93` | hue，`fc93 × 360/256°` |
 
-#### `0xf618` — chroma layout / interpolation
+#### `0xf618` — chroma layout / interpolation，决定输出格式
 
 | 位 | 功能 |
 |---:|---|
@@ -394,36 +382,19 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 | `0x21` | 4:2:2 + U/V swap |
 | `0x00` | no chroma |
 
-#### `0xf130` — 输入色彩空间
+#### `0xf130` — 输入色彩格式
 
 | 位 | 功能 |
 |---:|---|
-| 1:0 | `0` = processed RGB，`1` = unprocessed RGB，`2` = YCbCr 4:2:2 |
+| 1:0 | `0` = RGB 4:4:4，`1` = YCbCr 4:4:4，`2` = YCbCr 4:2:2, `3` = YCbCr 4:2:0 |
 | 4 | force / format enable |
 
 | 值 | 含义 |
 |---:|---|
-| `0x10` | processed RGB |
-| `0x11` | unprocessed RGB |
+| `0x10` | RGB 4:4:4 |
+| `0x11` | YCbCr 4:4:4 |
 | `0x12` | YCbCr 4:2:2 |
-
-#### `0xf131` — 输入格式 flags
-
-| 位 | 功能 |
-|---:|---|
-| 3 | 基础输入使能；清掉会断流 |
-
-#### `0xf135` — chroma interpolation helper
-
-| 位 | 功能 |
-|---:|---|
-| 3 | 基础使能；清掉会断流 |
-
-#### `0xf136` — raw-RGB 数据路径
-
-| 位 | 功能 |
-|---:|---|
-| 3:2 | raw-RGB 路径选择；`0x0c` = raw；`0x04/0x0c` 时 U=V，`0x08` 时 luma 坏 |
+| `0x13` | YCbCr 4:2:0 |
 
 #### `0xfc80` — sharpening
 
@@ -436,17 +407,6 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 |---:|---|
 | `0x00` | 关 |
 | `0x01` | 开 |
-
-#### EDID command mailbox
-
-| 寄存器 | 功能 |
-|---|---|
-| `0xf062` | bit7 = 1：EDID RAM mux 给 8051；0：DDC 侧 |
-| `0xf900` | command sequence |
-| `0xf901` | payload length |
-| `0xf902+` | payload |
-
-只有 `f062=0x80` 时 mailbox 可写可读。
 
 ### 交互式计算器
 
@@ -483,6 +443,19 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
     }
   })();
 </script>
+
+
+## 总结
+
+其实 MS2130S 这款芯片在网络上已经有很多现成的研究，从寄存器用法、hidapi 访问到固件补丁，都能找到前人的成果。这次能比较顺利地定位并解决问题，很大程度上是站在这些探索的肩膀上，在此对这些作者表示感谢。
+
+相关项目链接整理如下：
+
+- [steve-m/hsdaoh](https://github.com/steve-m/hsdaoh)：通过 hidapi 访问 MS2130S 寄存器的库，本文从 host 端修改 `0xfc8e` 的思路就来自这里。
+- [steve-m/ms2130_patcher](https://github.com/steve-m/ms2130_patcher)：直接给固件打补丁、持久化寄存器配置的工具，是本文固件补丁的重要参考。
+- [steve-m/ms213x_flash](https://github.com/steve-m/ms213x_flash)：用来导出/烧写 MS213x 固件的工具，本文用它导出了绿联 95348 的原始固件。
+
+这些项目大多出自 [steve-m](https://github.com/steve-m) 之手，感谢他的开源工作。
 
 ## 附录：MacBookAir
 
@@ -562,6 +535,24 @@ DOMAIN_MAX 1.0 1.0 1.0
 ```
 
 在另一台 Windows 机器上，现象不太一样，单纯就是把 limited 当成了 full 来解释，导致的偏色，所以这里的问题就是怎么让采集卡和 Windows 机器的显卡输出能在 limited 还是 full 的问题上达成一致。
+
+Windows 机器，YCbCr 4:4:4 1080p or YCbCr 4:2:0 4K：
+
+- 0,0,0 -> 16,16,16
+- 255,0,0 -> 237,14,15
+- 0,255,0 -> 13,236,12
+- 0,0,255 -> 15,15,238
+- 255,255,255 -> 234,234,234
+
+RGB 4:4:4 Full RGB: 正常
+
+RGB 4:4:4 Limited RGB:
+
+- 0,0,0 -> 16,16,16
+- 255,0,0 -> 232,16,16
+- 0,255,0 -> 15,234,13
+- 0,0,255 -> 15,16,234
+- 255,255,255 -> 233,233,233
 
 ## 附录
 
