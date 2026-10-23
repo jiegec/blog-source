@@ -103,7 +103,7 @@ for d in session.devices {
 
 用 ffmpeg 观察后发现，原来 200,200,200 的像素，到采集卡实际给出的是 204；由于这是 limited range（16-235）下的 204，转换到 full range 后就是 `(204 - 16) / 219 * 255 = 219`。若把鸿蒙电脑直接接到显示器上，显示则正常。
 
-先考虑纯色，即 RGB 三个分量都等于同一个 x 的情况，它对应的 YUV，如果不考虑 limited range，都按 full range 算，那就是 Y 分量就等于 x。经过 MS2130S 的 luma processing 处理后，拟合出来的情况就是，Y 分量变成了 $1.1533 x - 11.55$ 再 clamp 到 [0,255]。后来经过更加深入的研究，发现其实是两个阶段的处理，先加以一个数，clip 完再乘一个数再 clip，具体计算过程看本文后面的逆向。
+先考虑灰色，即 RGB 三个分量都等于同一个 x 的情况。它对应的 YUV，如果不考虑 limited range、都按 full range 算，Y 分量就等于 x。经过 MS2130S 的 luma processing 后，一开始拟合出来的结果是 `1.1533x − 11.55` 再 clamp 到 [0,255]。后来深入研究发现它其实是两个阶段：先给 Y 加上 0xfc90（有符号 int8，默认 0xF5，即 −11），clip 之后再乘以 `0xfc91/128`（0xfc91 寄存器默认 0x94，即 148/128 = 1.15625），再 clip 一次，即 `clip(clip(x + fc90) · fc91 / 128)`。代入默认值约为 `1.15625x − 12.71875`，而 `1.1533x − 11.55` 正是它的线性拟合。具体计算过程看本文后面的逆向。
 
 深入研究后，我找到了一些通过设置 MS2130S 寄存器来改变其行为的方法（参考 [steve-m/hsdaoh](https://github.com/steve-m/hsdaoh/blob/master/src/libhsdaoh.c)）。在 AI 的帮助下定位到了问题：只要关闭 MS2130S 自带的 luma processing（即把寄存器 0xfc8e 从原来的 0x00 改为 0x11），颜色就会恢复正常。下面这个小工具可以在 OBS 开始录制后运行，用来 toggle luma processing，从而实时看到颜色变化：
 
