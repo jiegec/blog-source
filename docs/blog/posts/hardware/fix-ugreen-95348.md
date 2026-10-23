@@ -534,7 +534,7 @@ RGB 4:4:4 Limited RGB:
 - 把 preferred DTD 设置为 4K 30Hz 的 Timing
 - 增加 VCDB，设置 QS=1，允许 Sink 指定 Full range 还是 Limited range
 
-这样再插 Windows，默认选择的就是 4K 30Hz RGB 4:4:4 Full range 了。
+这样再插 Windows，默认选择的就是 4K 30Hz RGB 4:4:4 Full range 了，没有偏色问题。
 
 具体的修改见 [commit EDID variant: RGB 4:4:4 only, 4K30 preferred, drop QY](https://github.com/jiegec/ugreen-95348-patcher/commit/120ce8480347ddd2a166c115d288356561bf4ff8)。
 
