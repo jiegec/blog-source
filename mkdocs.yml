@@ -104,6 +104,8 @@ extra_css:
 extra_javascript:
   - javascripts/mathjax.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js
+  - https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js
 
 extra:
   social:
