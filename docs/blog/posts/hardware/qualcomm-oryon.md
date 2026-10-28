@@ -400,6 +400,8 @@ Linear Address UTag/Way-Predictor 是 AMD 的叫法，但使用相同的测试�
 
 认为 Oryon 的 L2 TLB 是 8 Way，4096 Set，那就是 32768 个 entry，Index 是 VA[23:12]。但官方声称的是 `>8K`，这个表述比较耐人寻味，可能是 8K 个 entry，每个 entry 最多记录四个页的映射关系。
 
+注：[旗舰手机芯片大横评：苹果高通发哥玄戒谁最强？](https://www.bilibili.com/video/BV1kMxM6FECM/) 视频后续证明了这一点，Oryon 确实在 L2 TLB 采用了压缩，一个 entry 最多记录四个页的映射，但是有物理地址连续性的要求。
+
 命中 L2 TLB 的时间有长有短，说明它的 entry 不是等同的，随着访问范围变大，即使都命中，延迟也会上升。
 
 ### L2 Cache
