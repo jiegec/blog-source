@@ -82,6 +82,7 @@ permalink: /about/
 以下是我在课堂上讲的没有公开的录像的课：
 
 - [2026 秋《AI 编程进阶：方法与实践》客座讲座：结合 Rust 课程谈 AI 编程的经验与教训 2026.11.3](https://edu.cs.tsinghua.edu.cn/ai-prog/course/04/)
+- [2026 夏《程序设计训练（Rust 语言）》AI Agent 大作业进展点评 2026.9.8](https://lab.cs.tsinghua.edu.cn/rust/)
 
 ## 科研
 
