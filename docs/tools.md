@@ -27,6 +27,8 @@ permalink: /tools/
 1. [CRC Calculator](http://www.sunshine2k.de/coding/javascript/crc/crc_js.html)：CRC 计算
 1. [Easy Unit Converter](https://www.easyunitconverter.com/)：单位换算
 1. [Float to Hex](https://gregstoll.com/~gregstoll/floattohex/)：IEEE 754 浮点与十六进制互转
+1. [Web Tools](https://jia.je/web-tools/)：一些工具的在线版本
+1. [VibeOffice](https://vibeoffice.work/)：Office 的在线版本
 
 
 自己编写的：
