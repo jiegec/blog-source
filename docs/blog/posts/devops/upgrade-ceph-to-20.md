@@ -58,7 +58,7 @@ ceph auth rotate --key-type=aes256k client.csi-cephfs-node
 
 然后把新的 key，替换掉 rook-csi-cephfs-node Secret 里面的 adminKey。其他几个也是类似的。
 
-把所有的 key 都 rotate 成 aes256k 后（通过看 key 的长度能看出是 aes 还是 aes256k），禁用旧的 aes key 的使用：
+把所有的 key 都 rotate 成 aes256k 后（通过看 key 的长度能看出是 aes 还是 aes256k），确认旧的 key 没有继续在使用（特别注意有没有正在用旧 key 挂载的 CephFS），禁用旧的 aes key 的使用：
 
 ```shell
 ceph config set mon 'mon auth allow insecure key' false
