@@ -8,7 +8,7 @@ categories:
 
 # 浅谈乱序执行 CPU（一：乱序）
 
-本文的内容已经整合到[知识库](/kb/hardware/ooo_cpu.html)中。
+本文的部分内容已经整合到[知识库](/kb/hardware/ooo_cpu.html)中。
 
 ## 背景
 
