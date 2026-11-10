@@ -124,8 +124,8 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 以[香山南湖](https://talks-pubs.xiangshan.cc/slides/20220825-RVSC-%E5%8D%97%E6%B9%96%E6%9E%B6%E6%9E%84%E8%AE%BF%E5%AD%98%E5%AD%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0.pdf)微架构为例，它的 Load Pipeline 分为四级流水线：
 
 1. 第一级：从保留站发射，计算虚拟地址（基地址 + 立即数偏移），把虚拟地址送进 DTLB 和 L1 DCache（因为 VIPT，虚拟地址作为 index 读取 Tag Array），开始 TLB 查询
-2. 第二级：TLB 查询得到物理地址，根据物理地址计算出 Tag，和 L1 DCache 读出的 Tag 做比较，找到匹配的 Way，并开始读取 Data Array；同时用虚拟地址做 Store to Load Forwarding 的地址比较，并开始用物理地址校验转发结果
-3. 第三级：Data Array 读出数据，完成用物理地址的 Forwarding 校验
+2. 第二级：TLB 查询得到物理地址，根据物理地址计算出 Tag，和 L1 DCache 读出的 Tag 做比较，找到匹配的 Way，并开始读取 Data Array（8 路一起读）；同时用虚拟地址做 Store to Load Forwarding 的地址比较，并开始用物理地址校验转发结果
+3. 第三级：Data Array 读出 8 路的数据，再按命中的 Way 选出对应的数据，完成用物理地址的 Forwarding 校验
 4. 第四级：把 DCache 读出的数据和转发来的数据做 Merge/Select，得到最终的读取结果写回
 
 ![](./brief-into-ooo-2-nanhu-load-pipeline.png)
