@@ -12,7 +12,7 @@ categories:
 
 ## 背景
 
-之前写过一个[浅谈乱序执行 CPU](brief-into-ooo.md)，随着学习的深入，内容越来越多，页面太长，因此把后面的一部分内容独立出来，变成了这篇博客文章。
+之前写过一个[浅谈乱序执行 CPU](./brief-into-ooo.md)，随着学习的深入，内容越来越多，页面太长，因此把后面的一部分内容独立出来，变成了这篇博客文章。
 
 本文主要讨论访存的部分。
 
@@ -54,13 +54,13 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 为了解决这个问题，很重要的是让读写也乱序起来，具体怎么乱序，受到实现的影响和 Memory Order/Program Order 的要求。从性能的角度上来看，我们肯定希望 Load 可以尽快执行，因为可能有很多指令在等待 Load 的结果。那么，需要提前执行 Load，但是怎么保证正确性呢？在 Load 更早的时候，可能还有若干个 Store 指令尚未执行，一个思路是等待所有的 Store 执行完毕，但是这样性能不好；另一个思路是用地址来搜索 Store 指令，看看是否出现对同一个地址的 Store 和 Load，如果有，直接转发数据，就不需要从 Cache 获取了，不过这种方法相当于做了一个全相连的 Buffer，面积大，延迟高，不好扩展等问题接踵而至。
 
-为了解决 Store Queue 需要相连搜索的问题，[A high-bandwidth load-store unit for single-and multi-threaded processors](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1001&context=cis_reports) 的解决思路是，把 Store 指令分为两类，一类是需要转发的，一类是不需要的，那么可以设计一个小的相连存储器，只保存这些需要转发的 Store 指令；同时还有一个比较大的，保存所有 Store 指令的队列，因为不需要相连搜索，所以可以做的比较大。
+为了解决 Store Queue 需要相连搜索的问题，[A high-bandwidth load-store unit for single- and multi-threaded processors](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1001&context=cis_reports) 的解决思路是，把 Store 指令分为两类，一类是需要转发的，一类是不需要的，那么可以设计一个小的相连存储器，只保存这些需要转发的 Store 指令；同时还有一个比较大的，保存所有 Store 指令的队列，因为不需要相连搜索，所以可以做的比较大。
 
 仔细想想，这里还有一个问题：Load 在执行前，更早的 Store 的地址可能还没有就绪，这时候去搜索 Store Queue 得到的结果可能是错的，这时候要么等待所有的 Store 地址都就绪，要么就先执行，再用一些机制来修复这个问题，显然后者 IPC 要更好。
 
 修复 Load Store 指令相关性问题，一个方法是当一个 Store 提交的时候，检查是否有地址冲突的 Load 指令（那么 Load Queue 也要做成相连搜索的），是否转发了错误的 Store 数据，这也是 [Boom LSU](https://docs.boom-core.org/en/latest/sections/load-store-unit.html#memory-ordering-failures) 采用的方法。另一个办法是 Commit 的时候（或者按顺序）重新执行 Load 指令，如果 Load 结果和之前不同，要把后面依赖的刷新掉，这种方式的缺点是每条 Load 指令都要至少访问两次 Cache。[Store Vulnerability Window (SVW): Re-Execution Filtering for Enhanced Load Optimization](https://repository.upenn.edu/cgi/viewcontent.cgi?article=1228&context=cis_papers) 属于重新执行 Load 指令的方法，通过 Bloom filter 来减少一些没有必要重复执行的 Load。还有一种办法，就是预测 Load 指令和哪一条 Store 指令有依赖关系，然后直接去访问那一项，如果不匹配，就认为没有依赖。[Scalable Store-Load Forwarding via Store Queue Index Prediction](https://ieeexplore.ieee.org/document/1540957) 把 Load 指令分为三类，一类是不确定依赖哪条 Store 指令（Difficult Loads），一类是基本确定依赖哪一条 Store 指令，一类是不依赖 Store 指令。这个有点像 Cache 里面的 Way Prediction 机制。
 
-分析完了上述一些优化方法，我们也来看一些 CPU 设计采用了哪种方案。首先来分析一下 [IBM POWER8](https://ieeexplore.ieee.org/abstract/document/7029183) 的 LSU，首先，可以看到它设计了比较多项目的 virtual STAG/LTAG，然后再转换成比较少项目的 physical STAG/LTAG，这样 LSQ 可以做的比较小，原文：
+分析完了上述一些优化方法，我们也来看一些 CPU 设计采用了哪种方案。首先来分析一下 [IBM POWER8](https://ieeexplore.ieee.org/abstract/document/7029183) 的 LSU，首先，可以看到它设计了表项比较多的 virtual STAG/LTAG，然后再转换成表项比较少的 physical STAG/LTAG，这样 LSQ 可以做的比较小，原文：
 
 	A virtual STAG/LTAG scheme is used to minimize dispatch holds due to
 	running out of physical SRQ/LRQ entries. When a physical entry in the
@@ -70,7 +70,7 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 	are subsequently marked as being real in the UniQueue. The ISU can
 	assign up to 128 virtual LTAGs and 128 virtual STAGs to each thread.
 
-这个思路在 2007 年的论文 [Late-Binding: Enabling Unordered Load-Store Queues](https://people.csail.mit.edu/emer/papers/2007.06.isca.late_binding.pdf) 里也可以看到，也许 POWER8 参考了这篇论文的设计。可以看到，POWER8 没有采用那些免除 CAM 的方案：
+这个思路在 2007 年的论文 [Late-Binding: Enabling Unordered Load-Store Queues](https://dl.acm.org/doi/10.1145/1250662.1250705) 里也可以看到，也许 POWER8 参考了这篇论文的设计。可以看到，POWER8 没有采用那些免除 CAM 的方案：
 
 	The SRQ is a 40-entry, real address based CAM structure. Similar to the
 	SRQ, the LRQ is a 44-entry, real address based, CAM structure. The LRQ
@@ -113,7 +113,7 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 2. 第二级：从 DTLB 得到了物理地址，根据物理地址计算出 Tag，和 L1 DCache 读出的 Tag 做比较，找到匹配的 Way，从 L1 DCache 的 Data Array 读取对应 Way 的数据；把物理地址送到 Store Queue，查找匹配的 Store
 3. 第三级：根据从 L1 DCache 读取的数据和 Store to Load Forwarding 得到的数据，得到最终的读取结果，写回
 
-以[香山南湖](https://raw.githubusercontent.com/OpenXiangShan/XiangShan-doc/main/slides/20220825-RVSC-%E5%8D%97%E6%B9%96%E6%9E%B6%E6%9E%84%E8%AE%BF%E5%AD%98%E5%AD%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0.pdf)微架构为例，它的 Load Pipeline 分为四级流水线：
+以[香山南湖](https://talks-pubs.xiangshan.cc/slides/20220825-RVSC-%E5%8D%97%E6%B9%96%E6%9E%B6%E6%9E%84%E8%AE%BF%E5%AD%98%E5%AD%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0.pdf)微架构为例，它的 Load Pipeline 分为四级流水线：
 
 1. 第一级：计算虚拟地址（基地址 + 立即数偏移），把虚拟地址送进 DTLB 和 L1 DCache（因为 VIPT，虚拟地址作为 index 访问 L1 DCache），从 DTLB 读取物理地址，从 L1 DCache Tag Array 读取各路的 Tag
 2. 第二级：从 DTLB 得到了物理地址，根据物理地址计算出 Tag，和 L1 DCache 读出的 Tag 做比较，找到匹配的 Way，从 L1 DCache 的 Data Array 读取对应 Way 的数据；把物理地址送到 Store Queue，查找匹配的 Store
@@ -140,7 +140,7 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 在 Load 指令要执行时，在它之前的 Store 指令可能还没有执行，此时如果要提前执行 Load，可能会读取到错误的数据。但是如果要等待 Load 之前的所有 Store 指令都就绪再执行 Load，性能会受限。因此处理器可以设计一个 Memory Dependence Predictor，预测 Load 和哪些 Store 会有数据依赖，如果有依赖，那就要等待依赖的 Store 完成，再去执行 Load；如果没有依赖，那就可以大胆提前执行 Load，当然了，为了保证正确性，Store 执行的时候，也要去看是否破坏了提前执行的 Load。总之，Memory Dependency Predictor 的目的是，找到一个尽量早的时间去执行 Load 指令，同时避免回滚。
 
-[Alpha 21264](https://ieeexplore.ieee.org/document/755465) 使用了一种简单的方法 Load Wait Table 来解决这个问题：对于那些出现过顺序违例的 Load 指令，打上一个标记，那么未来这个 Load 都要等到在它之前的所有 Store 执行才能执行。这个标记的方法也很简单，维护 Load 指令的 PC 到单 bit 的映射。香山处理器有对应的[实现](https://github.com/OpenXiangShan/XiangShan/blob/dd16cea72b92bcf8a87750b14458be82fda5cfff/src/main/scala/xiangshan/mem/mdp/WaitTable.scala#L27)。
+[Alpha 21264](https://ieeexplore.ieee.org/document/755465) 使用了一种简单的方法（Load Wait Table）来解决这个问题：对于那些出现过顺序违例的 Load 指令，打上一个标记，那么未来这个 Load 都要等到在它之前的所有 Store 执行完才能执行。这个标记的方法也很简单，维护 Load 指令的 PC 到单 bit 的映射。香山处理器有对应的[实现](https://github.com/OpenXiangShan/XiangShan/blob/dd16cea72b92bcf8a87750b14458be82fda5cfff/src/main/scala/xiangshan/mem/mdp/WaitTable.scala#L27)。
 
 另一个实现方法叫做 [Store Set](https://dl.acm.org/doi/pdf/10.1145/279361.279378)。Store Set 是相对 Load 说的，指的是一个 Load 依赖过的所有的 Store 的集合。如果一个 Load 的 Store Set 内的所有的 Store 都执行完了，那么这个 Load 就可以提前执行了，不用考虑别的 Store 指令。
 
@@ -156,7 +156,7 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 前面提到，为了简化依赖的检查，同一个 Store Set 内的 Store 指令需要按照顺序执行，那么 Load 只需要依赖 Store Set 的最后一条 Store 指令。这个就是通过 LFST 来实现的：
 
 - 每个 Store 首先根据 SSIT 找到自己的 Store Set ID，再用 Store Set ID 访问 LFST，如果里面已经有更早的 Store，那就要依赖这个更早的 Store；同时也会更新 LFST，把自己写进去。
-- 同理 Load 也会根据 SSIT 找到 Store ID，用 Store Set ID 反问 LFST，去依赖最晚的 Store。
+- 同理 Load 也会根据 SSIT 找到 Store ID，用 Store Set ID 访问 LFST，去依赖最晚的 Store。
 - 如果 Store 已经被执行（准确地说，Issue），自然后续的 Load 也不用等待它了，如果 LFST 记录的还是这条 Store，它就可以从 LFST 中清除掉。
 
 下面引用论文中的一个例子。假如一开始 SSIT 和 LFST 都是空的，此时所有的 Load 指令的 Store Set 都是空的，预测为提前执行。此时一条 Load 指令和一条 Store 指令出现了执行顺序错误，这时候硬件会分配一个 Store Set ID，写入到 SSIT 中分别对应 Load 和 Store 的位置，这样就把 Load 和 Store 关联到了同一个 Store Set 当中。
@@ -211,8 +211,9 @@ Load 的起始地址等于 Store 的起始地址或者正好在中间。
 再看看更早的 ARM 核心，ARM Cortex-A78 Core Software Optimization Guide 中的描述：
 
 > Load start address should align with the start or middle address of the older store. This does not apply to LDPs that load 2 32b registers or LDRDs
-> Loads of size greater than 8 bytes can get the data forwarded from a maximum of 2 stores. If
-there are 2 stores, then each store should forward to either first or second half of the load.
+>
+> Loads of size greater than 8 bytes can get the data forwarded from a maximum of 2 stores. If there are 2 stores, then each store should forward to either first or second half of the load.
+>
 > Loads of size less than or equal to 8 bytes can get their data forwarded from only 1 store.
 
 因此 X925 相比 A78 的主要区别是，8 bytes Load 也可以从多个 Store 中转发数据了。
@@ -244,11 +245,11 @@ there are 2 stores, then each store should forward to either first or second hal
 
 ## Memory Renaming
 
-Register Renaming 把物理寄存器重命名为架构寄存器，那么 [Memory Renaming: Fast, Early and Accurate Processing of Memory Communication](https://link.springer.com/article/10.1023/A:1018734923512) 类似地把内存重命名为寄存器。具体地，如果发现某个 Load 的数据总是来自于某个 Store，按照先前的做法，要等 Store 先执行，然后 Load 从 Store Queue 中拿到 Store 的结果，更进一步，不如直接把 Load 的目的寄存器复制为 Store 的源数据寄存器，相当于把内存重命名成了寄存器，Load 变成了简单的寄存器的 Move。
+Register Renaming 把架构寄存器重命名为物理寄存器，那么 [Memory Renaming: Fast, Early and Accurate Processing of Memory Communication](https://link.springer.com/article/10.1023/A:1018734923512) 类似地把内存重命名为寄存器。具体地，如果发现某个 Load 的数据总是来自于某个 Store，按照先前的做法，要等 Store 先执行，然后 Load 从 Store Queue 中拿到 Store 的结果，更进一步，不如直接把 Load 的目的寄存器复制为 Store 的源数据寄存器，相当于把内存重命名成了寄存器，Load 变成了简单的寄存器的 Move。
 
 具体做法是，在 Memory Dependency Predictor 的基础上，还把 Store 写入的数据保存到 Value File 当中。当预测 Load 会从某个 Store 取数据时，就从 Value File 中取出对应的数据，提早执行依赖 Load 结果的指令。
 
-这个优化在苹果的专利中被称为 Zero cycle load：[Zero cycle load](https://patentimages.storage.googleapis.com/5a/65/51/67a1261bfaea1d/US9996348.pdf) 和 [Zero cycle load bypass](https://patentimages.storage.googleapis.com/a5/70/5d/34916db6fc4244/US20210173654A1.pdf):
+这个优化在苹果的专利 [Zero cycle load](https://patentimages.storage.googleapis.com/5a/65/51/67a1261bfaea1d/US9996348.pdf) 和 [Zero cycle load bypass](https://patentimages.storage.googleapis.com/a5/70/5d/34916db6fc4244/US20210173654A1.pdf) 中被称为 Zero cycle load：
 
 > a destination operand of the load is renamed with a same
 > physical register identifier used for a source operand of the
@@ -277,7 +278,7 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 
 那么，如果 Load 的地址需要比较长的时间去计算，但实际上又是可以预测的，那就可以通过 Load Address Prediction 的方法，来提升性能。
 
-根据论文 [SLAP: Data Speculation Attacks via Load Address Prediction on Apple Silicon](https://predictors.fail/files/SLAP.pdf)，苹果在 M2/M3/M4/A15/A16/A17 等处理器的 P 核上实装了 Load Address Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是访问同一个地址，或者总是以相同的跨步访问地址，那么就会预测它的下一个访问地址，从而提升性能。它的各项参数如下：
+根据论文 [SLAP: Data Speculation Attacks via Load Address Prediction on Apple Silicon](https://predictors.fail/files/SLAP.pdf)，苹果在 M2/M3/M4/A15/A16/A17 等处理器的 P 核上实装了 Load Address Prediction，它会观察 Load 指令的访存的规律，如果一条 Load 总是访问同一个地址，或者总是以相同的跨步访问地址，那么就会预测它的下一个访问地址，从而提升性能。它的各项参数如下：
 
 - 支持 Constant 和 Striding Address 两种访存模式
 - 支持 Stride 范围是正负 256B，过大的 Stride 则不会预测
@@ -338,7 +339,7 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 	6. uTag[2] = VA[14] xor VA[25]
 	7. uTag[1] = VA[13] xor VA[26]
 	8. uTag[0] = VA[12] xor VA[27]
-5. 类似地，找到更早的 AMD Bulldozer/Piledriver/Streamroller 的 uTag 哈希函数：
+5. 类似地，找到更早的 AMD Bulldozer/Piledriver/Steamroller 的 uTag 哈希函数：
 	1. uTag[7] = VA[19] xor VA[27]
 	2. uTag[6] = VA[18] xor VA[26]
 	3. uTag[5] = VA[17] xor VA[25]
@@ -356,9 +357,9 @@ Prefetch 是一个常见的优化手段，根据访存模式，提前把数据�
 
 Constant Verification Unit 类似一个小的针对 Load Value Prediction 的 L0 Cache，只记录那些预测正确率很高的 Load 的地址 - 值映射关系，可以在地址计算出来后查询，判断访存是否正确预测，如果正确，就不用访问缓存了。
 
-可见这个优化主要解决的是打破了 Load 指令带来的依赖，但缓存带宽还是要耗费的（Constant Verification Unit 可以节省一些）。
+可见这个优化打破的是 Load 指令带来的依赖，但缓存带宽还是要耗费的（Constant Verification Unit 可以节省一些）。
 
-根据论文 [FLOP: Breaking the Apple M3 CPU via False Load Output Predictions](https://predictors.fail/files/FLOP.pdf)，苹果在 M3/M4/A17 等处理器的 P 核上实装了 Load Value Prediction 预测器，它会观察 Load 指令的访存的规律，如果一条 Load 总是读出来相同的数据，那就会预测它未来读出来还是相同的数据。它的各项参数如下：
+根据论文 [FLOP: Breaking the Apple M3 CPU via False Load Output Predictions](https://predictors.fail/files/FLOP.pdf)，苹果在 M3/M4/A17 等处理器的 P 核上实装了 Load Value Prediction，它会观察 Load 指令的访存的规律，如果一条 Load 总是读出来相同的数据，那就会预测它未来读出来还是相同的数据。它的各项参数如下：
 
 - 只支持 Constant value，即 load 指令读出来的数据不变
 - 不支持 Striding value，即 load 指令读出来的数据构成等差数列
@@ -452,7 +453,7 @@ Intel 的处理器通过 MSR 1A4H 可以配置各个预取器：
 
 一种 Spatial Prefetcher 实现是 [Spatial Memory Streaming (SMS)](https://ieeexplore.ieee.org/document/1635957/)。它的做法是，把内存分成很多个相同大小的 Region（通常一个 Region 是多个连续 Cacheline），在访问缓存时，维护当前 Region 的信息，记录这次访存指令的 PC 以及访存的地址相对 Region 的偏移，然后开始跟踪这个 Region 内哪些数据被读取了，直到这个 Region 的数据被换出 Cache，就结束记录，把信息保存下来。以上面的 0、256 和 320 为例子，访问 0 时创建一个 Region，然后把 256 和 320 这两个偏移记下来。当同一条访存指令访问到了和之前一样的偏移时，根据之前保存的信息，把 Region 里曾经读过的地址预取一遍，按上面的例子，也就是 256 和 320。这里的核心是只匹配偏移而不是完整的地址，忽略了地址的高位，最后预取的时候，也是拿新的导致缓存缺失的地址去加偏移，自然而然实现了平移。从 AMD 的专利 [DATA CACHE REGION PREFETCHER](https://patentimages.storage.googleapis.com/a8/85/e2/35618e755d6ad3/US20180052779A1.pdf) 来看，AMD 的 L1 Region Prefetcher 应该采用的是 SMS 的思想，缓存缺失时，创建一个 Region，记录这个 Region 中哪些数据被访问了。
 
-具体来说，Spatial Memory Streaming 维护了一个 Active Generation Table（缩写 AGT）来记录上面所述的 Region 内哪些数据被读取的信息，当这个 Region 里的数据被换出 Cache，对应的信息就会被保存到 Pattern History Table（缩写 PHT）当中，后续会根据 PHT 来预测预取的地址。其中 Active Generation Table 又包括了 Accumulation Table 和 Filter Table，这样做是为了减少不必要的分配，只有一个 Region 出现至少两次访问才会被分配到 Accmuluation Table 当中。具体步骤：
+具体来说，Spatial Memory Streaming 维护了一个 Active Generation Table（缩写 AGT）来记录上面所述的 Region 内哪些数据被读取的信息，当这个 Region 里的数据被换出 Cache，对应的信息就会被保存到 Pattern History Table（缩写 PHT）当中，后续会根据 PHT 来预测预取的地址。其中 Active Generation Table 又包括了 Accumulation Table 和 Filter Table，这样做是为了减少不必要的分配，只有一个 Region 出现至少两次访问才会被分配到 Accumulation Table 当中。具体步骤：
 
 ![](./brief-into-ooo-2-agt.png)
 
@@ -460,13 +461,13 @@ Intel 的处理器通过 MSR 1A4H 可以配置各个预取器：
 
 （图源 [Spatial Memory Streaming](https://ieeexplore.ieee.org/document/1635957/)）
 
-1. 当一个 Region 第一次被访问的时候，此时 Accumuation Table 还没有对应的表项，把访存的 PC 和 Region 内 offset 记录到 Filter Table 当中
+1. 当一个 Region 第一次被访问的时候，此时 Accumulation Table 还没有对应的表项，把访存的 PC 和 Region 内 offset 记录到 Filter Table 当中
 2. 当一个 Region 第二次被访问的时候，此时 Filter Table 中应当有对应的表项，把表项挪到 Accumulation Table 当中，用 Bitmap 维护一个 Region 内哪些 Cacheline 被访问过的信息
 3. 当一个 Region 内第三次或更多次被访问的时候，继续更新 Region 内哪些 Cacheline 被访问过的信息
 4. 当 Region 内缓存被换出 Cache 时，认为这个 Region 已经学习完毕，把对应的信息移动到 Pattern History Table 中，注意 Region 地址信息不会被记录在 Pattern History Table 上，这样它就可以被用来预测多个 Region
 5. 与此同时，查询 Pattern History Table，如果有 PC 和 offset 匹配的 entry，就把 Region 内被访问过的 Cacheline 预取进来
 
-Gem5 实现了 [Spartial Memory Stream 预取器](https://github.com/gem5/gem5/blob/stable/src/mem/cache/prefetch/sms.cc)，基本就是按照上面的思路实现的。
+gem5 实现了 [Spatial Memory Streaming 预取器](https://github.com/gem5/gem5/blob/stable/src/mem/cache/prefetch/sms.cc)，基本就是按照上面的思路实现的。
 
 另一种 Spatial Prefetcher 实现是 Variable length delta prefetcher (VLDP)，它的思路是，对访存序列求差分，即用第 k 次访存地址减去第 k-1 次访存地址，得到 Delta 序列，然后对当前的 Delta 序列，预测下一个 Delta，那么预取的地址，就是 Delta 加上最后一次访存的地址。从 Intel 的专利 [Systems and methods for adaptive multipath probability (amp) prefetcher](https://patents.google.com/patent/US20190138451) 来看，它的 AMP Prefetcher 实现思路和 VLDP 类似，专利中给出了一个例子：
 
@@ -498,4 +499,4 @@ ARM 公版核从 Cortex-A78/Cortex-X1/Neoverse-V1 开始引入的 Correlated Mis
 - CACTI: [论文 CACTI 2.0: An Integrated Cache Timing and Power Model](https://www.hpl.hp.com/research/cacti/cacti2.pdf) [代码](https://github.com/HewlettPackard/cacti)
 - McPAT: [论文 McPAT: An integrated power, area, and timing modeling framework for multicore and manycore architectures](https://ieeexplore.ieee.org/document/5375438) [代码](https://github.com/HewlettPackard/mcpat)
 - Ramulator: [论文 Ramulator: A Fast and Extensible DRAM Simulator](https://users.ece.cmu.edu/~omutlu/pub/ramulator_dram_simulator-ieee-cal15.pdf) [代码](https://github.com/CMU-SAFARI/ramulator)
-- Ramulator: [论文 Ramulator 2.0: A Modern, Modular, and Extensible DRAM Simulator](https://people.inf.ethz.ch/omutlu/pub/Ramulator2_arxiv23.pdf) [代码](https://github.com/CMU-SAFARI/ramulator2)
+- Ramulator 2.0: [论文 Ramulator 2.0: A Modern, Modular, and Extensible DRAM Simulator](https://people.inf.ethz.ch/omutlu/pub/Ramulator2_arxiv23.pdf) [代码](https://github.com/CMU-SAFARI/ramulator2)

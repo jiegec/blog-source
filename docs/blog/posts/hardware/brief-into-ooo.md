@@ -38,7 +38,7 @@ categories:
 
 此外还有一个 mapping（Wikipedia 上叫做 RegisterStat），记录了寄存器是否会被某个保留站中的指令写入。
 
-指令分配到保留站的时候，会查询 RegisterStat，得知操作数寄存器是否 ready，如果不 ready，说明有一个先前的指令要写入这个寄存器，那就记录下对应的保留站 ID。当操作数都 ready 了，就可以进入计算单元计算。当一条指令在执行单元中完成的时候，未出现 WAW 时会把结果写入寄存器堆，并且通过 Common Data Bus 进行广播，目前在保留站中的指令如果发现，它所需要的操作数刚好计算出来了，就会把取值保存下来。
+指令被分配到保留站的时候，会查询 RegisterStat，得知操作数寄存器是否 ready，如果不 ready，说明有一个先前的指令要写入这个寄存器，那就记录下对应的保留站 ID。当操作数都 ready 了，就可以进入计算单元计算。当一条指令在执行单元中完成的时候，未出现 WAW 时会把结果写入寄存器堆，并且通过 Common Data Bus 进行广播，目前在保留站中的指令如果发现，它所需要的操作数刚好计算出来了，就会把取值保存下来。
 
 这里有一些细节：因为保留站中的指令可能要等待其他指令的完成，为了保证计算单元利用率更高，对于同一个计算类型（比如 ALU），需要有若干个同类的保留站（比如 Add1，Add2，Add3）。在 Wikipedia 的表述中，每个保留站对应了一个计算单元，这样性能比较好，但自然面积也就更大。如果节省面积，也可以减少计算单元的数量，然后每个计算单元从多个保留站中获取计算的指令。
 
@@ -64,7 +64,7 @@ ROB 实际上就是一个循环队列，队列头尾指针之间就是正在执�
 
 这种方法中，ROB 的大小成为了一个新的瓶颈，因为每条在正在执行的指令都需要在 ROB 中记录一份。不过好处是实现了精确异常。
 
-Pentium III 采用的就是这种方法，在 [The Microarchitecture of the Pentium4 Processor](https://courses.cs.washington.edu/courses/cse378/10au/lectures/Pentium4Arch.pdf) 中是这么描述的：
+Pentium III 采用的就是这种方法，[The Microarchitecture of the Pentium 4 Processor](https://courses.cs.washington.edu/courses/cse378/10au/lectures/Pentium4Arch.pdf) 中是这么描述的：
 
 > It allocates the data result registers and the ROB entries as a single, wide
 > entity with a data and a status field. The ROB data field is used to store the
@@ -77,7 +77,7 @@ Pentium III 采用的就是这种方法，在 [The Microarchitecture of the Pent
 > the architectural registers such as EAX.  This current register could be in the
 > ROB or in the RRF.
 
-这和上面描述的方法是一致的：ROB 会存指令的结果，RAT 记录每个架构寄存器对应的 ROB 或者 RRF 的表项，指令从 ROB 提交时，指令的结果会从 ROB 复制到 RRF 上，同时更新 RAT。而 Intel 在 NetBurst 微架构把实现换成了下面要讲的方法。
+这和上面描述的方法是一致的：ROB 会存指令的结果，RAT 记录每个架构寄存器对应的 ROB 或者 RRF 的表项，指令从 ROB 提交时，指令的结果会从 ROB 复制到 RRF 上，同时更新 RAT。Intel 从 P6 到 Core 2、Nehalem 都沿用这种由 ROB 保存数据的设计，直到 Sandy Bridge 才把实现换成了下面要讲的 Explicit Register Renaming，数据存放在物理寄存器堆中，ROB 只保存状态。
 
 ## Explicit Register Renaming
 
@@ -85,11 +85,11 @@ Pentium III 采用的就是这种方法，在 [The Microarchitecture of the Pent
 
 Explicit Register Renaming 和 ReOrder Buffer 这两个设计方向可以同时使用，也可以单独使用。
 
-映射的方法和前面的类似，也是维护一个 mapping，从架构寄存器到物理寄存器。当一条指令 Dispatch 的时候，操作数在 mapping 中找到实际的物理寄存器编号。如果这条指令要写入新的架构寄存器，则从未分配的物理寄存器中分配一个新的物理寄存器，并且更新 mapping，即把写入的架构寄存器映射到新的物理寄存器上。然后，放到 Issue Queue 中。
+映射的方法和前面的类似，也是维护一个 mapping，从架构寄存器到物理寄存器。当一条指令被 Dispatch 的时候，操作数在 mapping 中找到实际的物理寄存器编号。如果这条指令要写入新的架构寄存器，则从未分配的物理寄存器中分配一个新的物理寄存器，并且更新 mapping，即把写入的架构寄存器映射到新的物理寄存器上。然后，放到 Issue Queue 中。
 
 Issue Queue 可以理解为保留站的简化版，它不再保存操作数的取值，而仅仅维护操作数是否 ready。后面解释为什么不需要保存操作数的取值。在 Issue Queue 中的指令在所有操作数都 ready 的时候，则会 Issue 到不同的端口中。每个端口对应着一个执行单元，比如两个 ALU 端口分别对应两个 ALU 执行单元。指令首先通过寄存器堆，以物理寄存器为编号去读取数据，然后这个值直接传给执行单元，不会存下来。当执行单元执行完毕的时候，结果也是写到物理寄存器堆中，ROB 不保存数据。
 
-可以发现，这种设计中，值仅保存在寄存器堆中，Issue Queue 和 ROB 都只保存一些状态位，因此它们可以做的很大，典型的 Issue Queue 有几十项，ROB 则有几百项。
+可以发现，这种设计中，值仅保存在寄存器堆中，Issue Queue 和 ROB 都只保存一些状态位，因此它们可以做的很大，典型的 Issue Queue 有几十项到一百多项，ROB 则有几百项（例如 [Golden Cove](./intel-golden-cove.md) 的 ROB 有 512 项，[Zen 5](./amd-zen5.md) 的 ROB 可以保存 448 个 MOP）。
 
 接下来讨论一些细节。首先是，物理寄存器何时释放。当一条指令写入一个架构寄存器的时候，在下一次这个架构寄存器被写入之前，这个寄存器的值都有可能被读取，因此这个架构寄存器到物理寄存器的映射要保留。如果我们能保证读取这个值的指令都已经完成，我们就可以释放这个物理寄存器了。一个方法是，我在覆盖架构寄存器到物理寄存器的映射时，我还要记录原来的物理寄存器，当该指令在 ROB 中提交了（从队头出去了），说明之前可能依赖这个物理寄存器的所有指令都完成了，这时候就可以把原来的物理寄存器放到未映射的列表中。
 
@@ -100,14 +100,14 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 	graduation commits its new mapping, so the old physical register can
 	return to the free list for reuse. When an exception occurs, however,
 	subsequent instructions never graduate. Instead, the processor restores
-	old mappings from the active list. The R1OOOO unmaps four instructions
+	old mappings from the active list. The R10000 unmaps four instructions
 	per cycle--in reverse order, in case it renamed the same logical
 	register twice. Although this is slower than restoring a branch,
 	exceptions are much rarer than mispredicted branches. The processor
 	returns new physical registers to the free lists by restoring their read
 	pointers.
 
-和 @CircuitCoder 讨论并参考 [BOOM 文档](https://docs.boom-core.org/en/latest/sections/reorder-buffer.html#parameterization-rollback-versus-single-cycle-reset) 后发现，另一种办法是记录一个 Committed Map Table，也就是，只有当 ROB Head 的指令被 Commit 的时候，才更新 Committed Map Table，可以认为是顺序执行的寄存器映射表。当发生异常的时候，把 Committed Map Table 覆盖到 Register Map Table 上。这样需要的周期比较少，但是时序可能比较差。从 [The Microarchitecture of the Pentium4 Processor](https://courses.cs.washington.edu/courses/cse378/10au/lectures/Pentium4Arch.pdf) 的图 5 来看，Pentium 4 也是采用这种实现方法，分别维护 Frontend RAT 和 Retirement RAT。
+和 @CircuitCoder 讨论并参考 [BOOM 文档](https://docs.boom-core.org/en/latest/sections/reorder-buffer.html#parameterization-rollback-versus-single-cycle-reset) 后发现，另一种办法是记录一个 Committed Map Table，也就是，只有当 ROB Head 的指令被 Commit 的时候，才更新 Committed Map Table，可以认为是顺序执行的寄存器映射表。当发生异常的时候，把 Committed Map Table 覆盖到 Register Map Table 上。这样需要的周期比较少，但是时序可能比较差。从 [The Microarchitecture of the Pentium 4 Processor](https://courses.cs.washington.edu/courses/cse378/10au/lectures/Pentium4Arch.pdf) 的图 5 来看，Pentium 4 也是采用这种实现方法，分别维护 Frontend RAT 和 Retirement RAT。
 
 ## Implicit Renaming(ROB) 和 Explicit Renaming 的比较
 
@@ -146,12 +146,12 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 现在问题来了，如果实现了 Move Elimination，把 r1 直接指向了 r0 的物理寄存器，也就是 p0，此时同一个物理寄存器被两个架构寄存器所使用，如果按照上面的方法做，p0 会被错误的释放掉。那么就需要改进寄存器释放的实现方法。
 
-[Zero cycle move 专利](https://patents.google.com/patent/US20130275720A1/) 和 [Zero cycle move using free list counts 专利](https://patents.google.com/patent/US20160026463A1) 提到了一个方法，对于在 Move Elimination 被重复映射的物理寄存器，在 Duplicated Register Array 中记录它的重复次数，类似于引用计数法，Move Elimination 的时候增加引用计数，当引用计数到零的时候再释放：
+[Zero cycle move 专利](https://patents.google.com/patent/US20130275720A1/) 和 [Zero cycle move using free list counts 专利](https://patents.google.com/patent/US20160026463A1) 提到了一个方法，对于被 Move Elimination 重复映射的物理寄存器，在 Duplicated Register Array 中记录它的重复次数，类似于引用计数法，Move Elimination 的时候增加引用计数，当引用计数到零的时候再释放：
 
 1. 假如 r0 一开始映射到物理寄存器 p0
 2. 执行 Move Elimination，把 r1 也指向了 p0，在 Duplicated Register Array 中记录 p0 重复了两次
-2. 来了一条指令 A，要写入 r0，这时候分配了一个新的物理寄存器 p1，把 r0 映射到 p1
-3. 当指令 A 提交的时候，发现 Duplicated Register Array 中记录 p0 重复了两次，由于 r0 不再映射到 p0，所以计数减去一，如果后续有指令写入 r1，提交的时候才会把 p0 最终释放掉
+3. 来了一条指令 A，要写入 r0，这时候分配了一个新的物理寄存器 p1，把 r0 映射到 p1
+4. 当指令 A 提交的时候，发现 Duplicated Register Array 中记录 p0 重复了两次，由于 r0 不再映射到 p0，所以计数减去一，如果后续有指令写入 r1，提交的时候才会把 p0 最终释放掉
 
 [Last physical register reference scheme 专利](https://patents.google.com/patent/US20210064376A1) 提到了另一种办法：Rename 的时候，“遍历”一下 RAT，看看旧的物理寄存器还有多少人在用，如果只剩下一个，打标记，当指令提交的时候，释放旧的物理寄存器；如果剩下不止一个，那就不释放旧的物理寄存器。举个例子：
 
@@ -187,7 +187,7 @@ Issue Queue 可以理解为保留站的简化版，它不再保存操作数的�
 
 Linux 处理代码在 `arch/alpha/kernel/traps.c` 的 `do_entArith` 函数中。首先判断，如果是 software completion，那就要进行处理；否则直接 SIGFPE 让程序自己处理或者退出。如果是精确异常，那就对 PC-4 进行浮点模拟；如果是非精确异常，就从 trap shadow 的最后一条指令开始往前搜索，并同时记录遇到的指令写入的寄存器，如果发现指令的写入的寄存器已经覆盖了 register write mask，就说明找到了 trap shadow 的开头，则模拟这条指令，然后从下一条开始重新执行。具体代码如下：
 
-```cpp
+```c
 long
 alpha_fp_emul_imprecise (struct pt_regs *regs, unsigned long write_mask)
 {
@@ -266,9 +266,9 @@ ARM 架构也有 imprecise asynchronous external abort：
 	process that caused them, ARM recommends that implementations make
 	external aborts precise wherever possible.
 
-不过这更多是因为内存的无法预知的错误，这种时候机器直接可以拿去维修了。
+不过这更多是因为内存出现了无法预知的错误，这种时候机器直接可以拿去维修了。
 
-[文章](https://community.arm.com/developer/ip-products/processors/f/cortex-a-forum/5056/can-anyone-provide-an-example-of-asynchronous-exceptions) 提到了两个 precise/imprecise async/sync的例子：
+[文章](https://community.arm.com/developer/ip-products/processors/f/cortex-a-forum/5056/can-anyone-provide-an-example-of-asynchronous-exceptions) 提到了两个 precise/imprecise、async/sync 的例子：
 
 1. 外部中断是异步的，同时也是 precise 的。
 2. 对于一个 Write-allocate 的缓存，如果程序写入一个不存在的物理地址，那么写入缓存的时候不会出现错误，但当这个 cache line 被写入到总线上的时候，就会触发异常，这个异常是异步并且非精确的，因为之前触发这个异常的指令可能已经完成很久了。这种时候这个进程也大概率没救了，直接 SIGBUS 退出。
@@ -283,3 +283,4 @@ ARM 架构也有 imprecise asynchronous external abort：
 - Sniper: [论文 Sniper: exploring the level of abstraction for scalable and accurate parallel multi-core simulation](https://dl.acm.org/doi/abs/10.1145/2063384.2063454) [官网](https://snipersim.org/w/The_Sniper_Multi-Core_Simulator) [仓库](https://github.com/snipersim/snipersim)
 - ZSim: [论文 ZSim: fast and accurate microarchitectural simulation of thousand-core systems](https://people.csail.mit.edu/sanchez/papers/2013.zsim.isca.pdf) [代码](https://github.com/s5z/zsim)
 - PTLsim: [论文 PTLsim: A Cycle Accurate Full System x86-64 Microarchitectural Simulator](https://ieeexplore.ieee.org/document/4211019)
+- ChampSim: [代码](https://github.com/ChampSim/ChampSim)
