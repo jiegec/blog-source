@@ -148,6 +148,21 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 图中把 AGU 和 DTLB Lookup 并着画可能有一些问题，应该是先由 AGU 计算出虚拟地址，再走 DTLB Lookup。
 
+#### 香山昆明湖
+
+以[香山昆明湖](https://talks-pubs.xiangshan.cc/slides/20230824-RVSC-%E9%A6%99%E5%B1%B1%E6%98%86%E6%98%8E%E6%B9%96%E6%9E%B6%E6%9E%84%E8%AE%BF%E5%AD%98%E5%8D%95%E5%85%83%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%92%8C%E6%BC%94%E8%BF%9B.pdf)微架构为例，它的 Load Pipeline 仍然是四级，但每一级的职责和南湖相比有了不小的变化：
+
+1. load_s0：从保留站发射，计算虚拟地址，并行地查询 DTLB、读取 Tag Array，同时用路预测器（Way Predictor）预测这次访问会命中哪个 Way
+2. load_s1：只读预测出的那一路 Data Array，同时用物理地址做 Tag 比较（Compare & Match），并做 Conflict Check
+3. load_s2：判断路预测是否正确；预测失败就产生 Replay Carry，通过 Fast Replay 重新执行这条 load
+4. load_s3：把 DCache 读出的数据和 Store to Load Forwarding 的数据合并，返回数据
+
+![](./brief-into-ooo-2-kunminghu-load-pipeline.png)
+
+（图源：[香山昆明湖架构访存单元的设计和演进](https://talks-pubs.xiangshan.cc/slides/20230824-RVSC-%E9%A6%99%E5%B1%B1%E6%98%86%E6%98%8E%E6%B9%96%E6%9E%B6%E6%9E%84%E8%AE%BF%E5%AD%98%E5%8D%95%E5%85%83%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%92%8C%E6%BC%94%E8%BF%9B.pdf) 第 9 页）
+
+和南湖相比，最明显的变化是路预测：南湖虽然已经通过 Tag 比较知道了命中的 Way，但 Data SRAM 里 8 路的数据会一起读出来，命中的 Way 只在输出端用 way_en 选出来，所以读功耗还是 N 路；昆明湖在 load_s0 先猜一个 Way、load_s1 只使能这一路，省掉 N-1 路的读功耗，代价是预测失败时要 Fast Replay。
+
 ## Memory Dependence Predictor
 
 在 Load 指令要执行时，在它之前的 Store 指令可能还没有执行，此时如果要提前执行 Load，可能会读取到错误的数据。但是如果要等待 Load 之前的所有 Store 指令都就绪再执行 Load，性能会受限。因此处理器可以设计一个 Memory Dependence Predictor，预测 Load 和哪些 Store 会有数据依赖，如果有依赖，那就要等待依赖的 Store 完成，再去执行 Load；如果没有依赖，那就可以大胆提前执行 Load，当然了，为了保证正确性，Store 执行的时候，也要去看是否破坏了提前执行的 Load。总之，Memory Dependency Predictor 的目的是，找到一个尽量早的时间去执行 Load 指令，同时避免回滚。
