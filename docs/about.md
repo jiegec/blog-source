@@ -83,6 +83,10 @@ permalink: /about/
 
 - [2026 秋《AI 编程进阶：方法与实践》客座讲座：结合 Rust 课程谈 AI 编程的经验与教训 2026.11.3](https://edu.cs.tsinghua.edu.cn/ai-prog/course/04/)
 - [2026 夏《程序设计训练（Rust 语言）》AI Agent 大作业进展点评 2026.9.8](https://lab.cs.tsinghua.edu.cn/rust/)
+- [2024 夏《程序设计训练（Rust 语言）》第二次习题课 2024.7.22](https://lab.cs.tsinghua.edu.cn/rust/2024/)
+- [2024 夏《程序设计训练（Rust 语言）》第一次习题课 2024.7.16](https://lab.cs.tsinghua.edu.cn/rust/2024/)
+- [2022 夏《程序设计训练（Rust 语言）》第二次习题课 2022.9.12](https://lab.cs.tsinghua.edu.cn/rust/2022/)
+- [2022 夏《程序设计训练（Rust 语言）》第一次习题课 2022.8.29](https://lab.cs.tsinghua.edu.cn/rust/2022/)
 
 ## 科研
 
