@@ -123,20 +123,24 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 以[香山南湖](https://talks-pubs.xiangshan.cc/slides/20220825-RVSC-%E5%8D%97%E6%B9%96%E6%9E%B6%E6%9E%84%E8%AE%BF%E5%AD%98%E5%AD%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0.pdf)微架构为例，它的 Load Pipeline 分为四级流水线：
 
-1. 第一级：计算虚拟地址（基地址 + 立即数偏移），把虚拟地址送进 DTLB 和 L1 DCache（因为 VIPT，虚拟地址作为 index 访问 L1 DCache），从 DTLB 读取物理地址，从 L1 DCache Tag Array 读取各路的 Tag
-2. 第二级：从 DTLB 得到了物理地址，根据物理地址计算出 Tag，和 L1 DCache 读出的 Tag 做比较，找到匹配的 Way，从 L1 DCache 的 Data Array 读取对应 Way 的数据；把物理地址送到 Store Queue，查找匹配的 Store
-3. 第三级：由于 L1 DCache 容量较大，需要的延迟比较高，在这一级完成数据的读取和 Store to Load Forwarding
-4. 第四级：根据从 L1 DCache 读取的数据和 Store to Load Forwarding 得到的数据，得到最终的读取结果，写回
+1. 第一级：从保留站发射，计算虚拟地址（基地址 + 立即数偏移），把虚拟地址送进 DTLB 和 L1 DCache（因为 VIPT，虚拟地址作为 index 读取 Tag Array），开始 TLB 查询
+2. 第二级：TLB 查询得到物理地址，根据物理地址计算出 Tag，和 L1 DCache 读出的 Tag 做比较，找到匹配的 Way，并开始读取 Data Array；同时用虚拟地址做 Store to Load Forwarding 的地址比较，并开始用物理地址校验转发结果
+3. 第三级：Data Array 读出数据，完成用物理地址的 Forwarding 校验
+4. 第四级：把 DCache 读出的数据和转发来的数据做 Merge/Select，得到最终的读取结果写回
+
+![](./brief-into-ooo-2-nanhu-load-pipeline.png)
+
+（图源：[南湖架构访存子系统的设计与实现](https://talks-pubs.xiangshan.cc/slides/20220825-RVSC-%E5%8D%97%E6%B9%96%E6%9E%B6%E6%9E%84%E8%AE%BF%E5%AD%98%E5%AD%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0.pdf) 第 6 页）
 
 可见香山南湖相比雁栖湖的主要区别就是留给 L1 DCache 读取的时间更长了，4 周期也是一个比较常见的 Load to use latency。
 
-为了减少额外的 1 个周期对 pointer chasing 场景的性能影响，南湖架构针对 pointer chasing 做了优化：pointer chasing 场景下，读取的数据会成为后续 load 指令的地址。为了优化它，南湖架构在流水线的第四级上做了前传，直接传递到下一条 load 指令的由虚拟地址计算出的 index，这样的话可以做到 3 cycle 的 load to use latency。为了优化时序，前传的时候，假设基地址加上 imm 以后，不会影响 index，这样预测的时候就不用加上 imm，时序上会好一些，不过这也限制了优化可以生效的 imm 范围。
+为了减少额外的 1 个周期对 pointer chasing 场景的性能影响，南湖架构针对 pointer chasing 做了优化：pointer chasing 场景下，读取的数据会成为后续 load 指令的地址。为了优化它，南湖架构在第二级（load_s1）开始读取 Data Array，第三级（load_s2）读出数据后先打一拍，再前传给下一条 load 指令的第一级（load_s0），作为读 Tag 的 index；前传时假设基地址加上 imm 之后仍落在同一个 64B line 里，所以可以直接拿前传的数据当 index，省掉加法，时序会好一些。RTL 里这个假设体现为 imm[11:6] == 0，且 data[5:0] + imm[5:0] 不向 bit 6 进位，不过这也限制了优化可以生效的 imm 范围。这样可以把 load to load 延迟从 4 拍降到 3 拍；如果推测失败，延迟退化为 4 拍，需要重发这条 load。
 
-注：PPT 里绘制的是第三级前传，但是如果是这样的话，就是 2 cycle 的 load to use latency 了，和描述不符。
+#### 苹果
 
 类似的优化在商用处理器上也可以看到，正常的 load to use latency 是 4 周期，load to load 则可以 3 周期。例如苹果的专利 [Reducing latency for pointer chasing loads](https://patents.google.com/patent/US9710268B2) 提到了它的 LSU 流水线设计以及前传的做法：
 
-![](brief-into-ooo-2-apple-lsu.png)
+![](./brief-into-ooo-2-apple-lsu.png)
 
 和香山南湖类似，它的 Load Pipeline 也是四级流水线（对应图中 Stage 3-6），功能也类似。不过它的 3 周期 load to load 前传的实现方法则不同。
 
