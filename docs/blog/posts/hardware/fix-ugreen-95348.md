@@ -380,12 +380,18 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 | 0 | 1 = bypass `0xfc92` saturation 级 |
 | 4 | 1 = bypass `0xfc93` hue 级 |
 
-| `0xfc8f` | saturation `0xfc92` | hue `0xfc93` |
-|---:|---|---|
-| `0x00` | on | on |
-| `0x01` | bypass | on |
-| `0x10` | on | bypass |
-| `0x11` | bypass | bypass |
+| `0xfc8f` | saturation `0xfc92` | hue `0xfc93` | 公式 |
+|---:|---|---|---|
+| `0x00` | on | on | `clip(rotate(ΔR, ΔB) * fc92/128)` |
+| `0x01` | bypass | on | `clip(rotate(ΔR, ΔB))` |
+| `0x10` | on | bypass | `clip((ΔR, ΔB) * fc92/128)` |
+| `0x11` | bypass | bypass | `(ΔR, ΔB)` |
+
+其中 `rotate(ΔR, ΔB)` 表示把 `(ΔR, ΔB)` 旋转 `θ = fc93 * 360/256°`：
+
+`rotate(ΔR, ΔB) = (ΔR * cosθ - ΔB * sinθ, ΔR * sinθ + ΔB * cosθ)`
+
+`clip` 把 `ΔR` 限制到 `[-200.8, 200.8]`、`ΔB` 限制到 `[-236.6, 236.6]`。
 
 #### `0xfc90`–`0xfc93`
 
