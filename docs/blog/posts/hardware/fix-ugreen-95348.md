@@ -519,42 +519,6 @@ DOMAIN_MAX 1.0 1.0 1.0
 1.000000 1.000000 1.000000      # 输入 (1,1,1)
 ```
 
-## 附录：Windows
-
-在另一台 Windows 机器上，现象不太一样，单纯就是把 limited 当成了 full 来解释，导致的偏色，所以这里的问题就是怎么让采集卡和 Windows 机器的显卡输出能在 limited 还是 full 的问题上达成一致。具体现象：
-
-Windows 机器，YCbCr 4:4:4 1080p or YCbCr 4:2:0 4K：
-
-- 0,0,0 -> 16,16,16
-- 255,0,0 -> 237,14,15
-- 0,255,0 -> 13,236,12
-- 0,0,255 -> 15,15,238
-- 255,255,255 -> 234,234,234
-
-应该是把 Limited range 的 YCbCr 当 Full range 来解析了。
-
-RGB 4:4:4 Full RGB: 正常
-
-RGB 4:4:4 Limited RGB:
-
-- 0,0,0 -> 16,16,16
-- 255,0,0 -> 232,16,16
-- 0,255,0 -> 15,234,13
-- 0,0,255 -> 15,16,234
-- 255,255,255 -> 233,233,233
-
-应该是把 Limited range 的 RGB 当 Full range 来解析了。
-
-解决办法：给固件刷了一份新的 EDID：
-
-- 关闭了 YCbCr 4:4:4/4:2:2/4:2:0，只保留了 RGB 4:4:4
-- 把 preferred DTD 设置为 4K 30Hz 的 Timing
-- 增加 VCDB，设置 QS=1，允许 Sink 指定 Full range 还是 Limited range
-
-这样再插 Windows，默认选择的就是 4K 30Hz RGB 4:4:4 Full range 了，没有偏色问题。
-
-具体的修改见 [commit EDID variant: RGB 4:4:4 only, 4K30 preferred, drop QY](https://github.com/jiegec/ugreen-95348-patcher/commit/120ce8480347ddd2a166c115d288356561bf4ff8)。
-
 ## 附录
 
 以下是这个采集卡原始固件的 EDID：
