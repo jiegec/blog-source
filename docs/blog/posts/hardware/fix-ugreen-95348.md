@@ -91,6 +91,8 @@ for d in session.devices {
 
 ## 颜色问题
 
+### 现象
+
 除了清晰度问题，采集卡采到的鸿蒙电脑画面颜色不对。在鸿蒙电脑上打开 [Lagom 白饱和测试图](http://www.lagom.nl/lcd-test/zhs_white.php) 或 [显示器色彩测试](https://jia.je/display-color-test.html)，采集到的 RGB 与预期对不上，大致关系如下：
 
 - 原来 15,15,15 -> 显示 6,6,6
@@ -104,6 +106,8 @@ for d in session.devices {
 用 ffmpeg 观察后发现，原来 200,200,200 的像素，到采集卡实际给出的是 204；由于这是 limited range（16-235）下的 204，转换到 full range 后就是 `(204 - 16) / 219 * 255 = 219`。若把鸿蒙电脑直接接到显示器上，显示则正常。
 
 先考虑灰色，即 RGB 三个分量都等于同一个 x 的情况。它对应的 YUV，如果不考虑 limited range、都按 full range 算，Y 分量就等于 x。经过 MS2130S 的 luma processing 后，一开始拟合出来的结果是 `1.1533x − 11.55` 再 clamp 到 [0,255]。后来深入研究发现它其实是两个阶段：先给 Y 加上 0xfc90 寄存器的值（默认 0xF5，有符号 int8，即 −11），clip 之后再乘以 0xfc91 寄存器的值再除以 128（0xfc91 寄存器默认 0x94，即乘上 148/128 = 1.15625），再 clip 一次，即 `clip(clip(x + fc90) · fc91 / 128)`。代入默认值约为 `1.15625x − 12.71875`，与基于实测数据拟合的 `1.1533x − 11.55` 非常接近。具体计算过程看本文后面的逆向。
+
+### 临时解决方法
 
 深入研究后，我找到了一些通过设置 MS2130S 寄存器来改变其行为的方法（参考 [steve-m/hsdaoh](https://github.com/steve-m/hsdaoh/blob/master/src/libhsdaoh.c)）。在 AI 的帮助下定位到了问题：只要关闭 MS2130S 自带的 luma processing（即把寄存器 0xfc8e 从原来的 0x00 改为 0x11），颜色就会恢复正常。下面这个小工具可以在 OBS 开始录制后运行，用来 toggle luma processing，从而实时看到颜色变化：
 
@@ -236,13 +240,13 @@ fc8e: 0x11 -> 0x00
 
 虽然仍有很小的偏差，但可以认为问题已经解决。
 
-不过每次开始采集后都要重新跑一次这个工具，还是有点麻烦。一个一劳永逸的办法是参考 [steve-m/ms2130_patcher](https://github.com/steve-m/ms2130_patcher/blob/master/ms2130_patch.c)，给固件打补丁，让硬件往 0xfc8e 寄存器写入 0x11 而不是 0x00。
+### 永久解决方法
+
+不过每次开始采集后都要重新跑一次这个工具，还是有点麻烦。一劳永逸的办法是参考 [steve-m/ms2130_patcher](https://github.com/steve-m/ms2130_patcher/blob/master/ms2130_patch.c)，给固件打补丁，让硬件往 0xfc8e 寄存器写入 0x11 而不是 0x00。
 
 首先用 [steve-m/ms213x_flash](https://github.com/steve-m/ms213x_flash) 导出绿联 95348 自带的固件，然后让 AI 进行逆向，这个固件就是一个 8051 代码，有很多成熟的工具。具体的补丁方法和上面类似，下面直接给出 AI 对固件代码以及如何修复的分析：
 
-### 补丁的原理
-
-#### 复位流程
+#### 固件代码
 
 `0xfc8e` 有两个相关的位：bit 0（掩码 `0x01`）和 bit 4（掩码 `0x10`）。流重初始化流程 `FUN_CODE_c220()` 会通过位掩码辅助函数 `FUN_CODE_87c7(mask, addrH, addrL, value)` 把这两位都清零。要写入的值通过 `R3` 传入：非零表示置位被掩码选中的位，零表示清零。
 
@@ -283,35 +287,9 @@ c275: 0287c7 LJMP 87c7h
 
 P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60 FPS - CS 709 - NV12 (420v)` 模式生效；对 `3840x2160 (16:9) - 30 FPS - CS 709 - NV12 (420v)` 模式则无效：前者画面清晰、颜色正确，后者画面模糊、颜色也不对。具体原因尚未深入分析。
 
-## 采集卡对颜色做了哪些变化
+## 采集卡的行为
 
-上面只关了 luma processing，主要是对亮度也就是 Y 分量做了处理。实际上，硬件还有 chroma processing。
-
-`0xfc8e` 控制 luma processing，`0xfc8f` 控制 chroma processing。把两者各自的开关组合起来，同一个输入颜色会有四种结果：
-
-| 输入 | 都开<br>`fc8e=00` `fc8f=00` | 只 chroma<br>`fc8e=11` `fc8f=00` | 都关<br>`fc8e=11` `fc8f=11` | 只 luma<br>`fc8e=00` `fc8f=11` |
-|---|---|---|---|---|
-| 15,15,15 | 6,6,6 | 15,15,15 | 15,15,15 | 6,6,6 |
-| 64,64,64 | 62,62,62 | 63,63,63 | 63,63,63 | 62,62,62 |
-| 128,128,128 | 136,136,136 | 127,127,127 | 127,127,127 | 136,136,136 |
-| 160,160,160 | 173,173,173 | 160,160,160 | 160,160,160 | 173,173,173 |
-| 192,192,192 | 210,210,210 | 191,191,191 | 191,191,191 | 210,210,210 |
-| 200,200,200 | 219,219,219 | 199,199,199 | 199,199,199 | 219,219,219 |
-| 224,224,224 | 247,247,247 | 224,224,224 | 224,224,224 | 247,247,247 |
-| 244,244,244 | 255,255,255 | 243,243,243 | 243,243,243 | 255,255,255 |
-| 255,255,255 | 255,255,255 | 254,254,254 | 254,254,254 | 255,255,255 |
-| 64,0,0 | 72,0,0 | 81,0,0 | 61,0,0 | 52,0,0 |
-| 128,0,0 | 156,0,0 | 163,0,0 | 125,0,0 | 118,0,0 |
-| 192,0,0 | 235,0,0 | 239,0,0 | 188,0,0 | 185,0,0 |
-| 255,0,0 | 250,0,0 | 253,2,0 | 254,0,0 | 252,0,0 |
-| 0,64,0 | 0,67,0 | 0,72,0 | 0,64,0 | 0,59,0 |
-| 0,128,0 | 0,146,0 | 0,143,0 | 0,128,0 | 1,131,1 |
-| 0,192,0 | 1,224,0 | 0,215,0 | 0,193,0 | 8,202,7 |
-| 0,255,0 | 0,255,0 | 0,255,0 | 0,255,0 | 15,255,15 |
-| 0,0,64 | 0,0,82 | 0,0,86 | 0,0,63 | 0,0,59 |
-| 0,0,128 | 0,0,165 | 0,0,174 | 0,0,128 | 0,0,118 |
-| 0,0,192 | 0,0,238 | 0,0,247 | 0,0,190 | 0,0,181 |
-| 0,0,255 | 0,0,245 | 0,3,251 | 0,0,254 | 0,0,247 |
+### 颜色处理过程
 
 通过逆向，找到了采集卡对颜色处理的过程：
 
@@ -321,6 +299,53 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 4. chroma saturation（取决于 0xfc8f[0]）：给 ΔR 和 ΔB 乘上一个数（gain），这个数等于 0xfc92 寄存器的值除以 128
 5. chroma hue（取决于 0xfc8f[4]）：对 ΔR 和 ΔB 进行旋转，旋转的角度等于 0xfc93 寄存器的值除以 256 乘以 360 度
 6. Y/ΔR/ΔB 再转换到最终的颜色输出
+
+把 `0xfc8e` 的 bit0/bit4 记作 `e0`/`e4`，`0xfc8f` 的 bit0/bit4 记作 `f0`/`f4`（1 表示 bypass），则 RGB 输入下 luma/chroma 的完整处理流程是：
+
+```text
+# 输入 R, G, B ∈ [0, 255]
+e0 = fc8e & 0x01
+e4 = (fc8e >> 4) & 1
+f0 = fc8f & 0x01
+f4 = (fc8f >> 4) & 1
+
+# Rec.709 luma
+Y  = 0.2126*R + 0.7152*G + 0.0722*B
+ΔR = R - Y
+ΔB = B - Y
+
+# 0xfc90 按 signed int8 解释（fc90 为 0–255 的寄存器原值）
+o = fc90 if fc90 < 0x80 else fc90 - 0x100
+
+Y' = Y
+if e0 == 0:
+    Y' = clip(Y' + o, 0, 255)
+if e4 == 0:
+    Y' = clip(Y' * fc91/128, 0, 255)
+
+# saturation 与 hue 都是线性变换，先后顺序可交换
+if f0 == 0:
+    ΔR = ΔR * fc92/128
+    ΔB = ΔB * fc92/128
+
+θ = fc93 * 360/256        # 单位：度
+if f4 == 0:
+    ΔR, ΔB = ΔR*cosθ - ΔB*sinθ, ΔR*sinθ + ΔB*cosθ
+
+ΔR = clip(ΔR, -200.8, 200.8)
+ΔB = clip(ΔB, -236.6, 236.6)
+
+# 0.10094 = KB/KG，0.29725 = KR/KG
+R' = round(clip(Y' + ΔR, 0, 255))
+G' = round(clip(Y' - 0.10094*ΔB - 0.29725*ΔR, 0, 255))
+B' = round(clip(Y' + ΔB, 0, 255))
+```
+
+其中 `clip(x, lo, hi) = min(max(x, lo), hi)`，`round` 为四舍五入；`ΔR`/`ΔB` 的 clip 在 saturation/hue 之后，所以旋转可能把原本合法的分量转出范围。
+
+### 交互式计算器
+
+为了更好地演示这个颜色处理流程，访问[交互式计算器](../../../ms2130s-color-processing.html)以看到 MS2130S 内部每个像素经过哪些计算、最终变成什么。
 
 ### 已确认的 MS2130S 寄存器位
 
@@ -399,91 +424,11 @@ P.S. 实测发现，把 `0xfc8e` 改为 `0x11` 只对 `3840x2160 (16:9) - 30, 60
 | `0xfc92` | saturation，`fc92/128` |
 | `0xfc93` | hue，`fc93 × 360/256°` |
 
-把 `0xfc8e` 的 bit0/bit4 记作 `e0`/`e4`，`0xfc8f` 的 bit0/bit4 记作 `f0`/`f4`（1 表示 bypass），则 RGB 输入下 luma/chroma 的完整处理流程是：
-
-```text
-# 输入 R, G, B ∈ [0, 255]
-e0 = fc8e & 0x01
-e4 = (fc8e >> 4) & 1
-f0 = fc8f & 0x01
-f4 = (fc8f >> 4) & 1
-
-# Rec.709 luma
-Y  = 0.2126*R + 0.7152*G + 0.0722*B
-ΔR = R - Y
-ΔB = B - Y
-
-# 0xfc90 按 signed int8 解释（fc90 为 0–255 的寄存器原值）
-o = fc90 if fc90 < 0x80 else fc90 - 0x100
-
-Y' = Y
-if e0 == 0:
-    Y' = clip(Y' + o, 0, 255)
-if e4 == 0:
-    Y' = clip(Y' * fc91/128, 0, 255)
-
-# saturation 与 hue 都是线性变换，先后顺序可交换
-if f0 == 0:
-    ΔR = ΔR * fc92/128
-    ΔB = ΔB * fc92/128
-
-θ = fc93 * 360/256        # 单位：度
-if f4 == 0:
-    ΔR, ΔB = ΔR*cosθ - ΔB*sinθ, ΔR*sinθ + ΔB*cosθ
-
-ΔR = clip(ΔR, -200.8, 200.8)
-ΔB = clip(ΔB, -236.6, 236.6)
-
-# 0.10094 = KB/KG，0.29725 = KR/KG
-R' = round(clip(Y' + ΔR, 0, 255))
-G' = round(clip(Y' - 0.10094*ΔB - 0.29725*ΔR, 0, 255))
-B' = round(clip(Y' + ΔB, 0, 255))
-```
-
-其中 `clip(x, lo, hi) = min(max(x, lo), hi)`，`round` 为四舍五入；`ΔR`/`ΔB` 的 clip 在 saturation/hue 之后，所以旋转可能把原本合法的分量转出范围。
-
 #### `0xf130` — 视频管线实际使用的输入色彩格式选择
 
 | 位 | 功能 |
 |---:|---|
 | 1:0 | `0` = RGB 4:4:4，`1` = YCbCr 4:4:4，`2` = YCbCr 4:2:2, `3` = YCbCr 4:2:0 |
-
-### 交互式计算器
-
-下面这个计算器可以实时看到 MS2130S 内部每个像素经过哪些计算、最终变成什么：
-
-<iframe id="ms2130s-color-calc" src="/ms2130s-color-processing.html" title="MS2130S luma / chroma processing 可视化" loading="lazy" style="width:100%;height:960px;border:0;border-radius:10px"></iframe>
-
-<script>
-  (function () {
-    function fit() {
-      var f = document.getElementById('ms2130s-color-calc');
-      if (!f) return;
-      try {
-        var d = f.contentDocument;
-        if (d && d.body) {
-          var h = Math.ceil(d.body.getBoundingClientRect().height);
-          if (h > 100) f.style.height = (h + 4) + 'px';
-        }
-      } catch (e) { }
-    }
-    window.addEventListener('message', function (e) {
-      if (e.data && e.data.type === 'ms2130s-color-calc-height') {
-        var f = document.getElementById('ms2130s-color-calc');
-        if (f) f.style.height = (e.data.height + 4) + 'px';
-      }
-    });
-    window.addEventListener('resize', function () { setTimeout(fit, 50); });
-    var f = document.getElementById('ms2130s-color-calc');
-    if (f) {
-      f.addEventListener('load', fit);
-      fit();
-      setTimeout(fit, 300);
-      setTimeout(fit, 1200);
-    }
-  })();
-</script>
-
 
 ## 总结
 
