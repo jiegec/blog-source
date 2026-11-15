@@ -65,3 +65,5 @@ ConnectX-3 系列的网卡固件可以在 https://network.nvidia.com/support/fir
 如果遇到 Mellanox 网卡能识别 PCIe，但是不能使用，可以考虑降级 OFED 或者升级网卡固件。
 
 可以用 mlxfwmanager 查看 PSID 和更新固件。根据 PSID，判断是 OEM（DELL）版本还是官方版本。如果是 OEM 版本，要到对应 OEM 的固件下载地址找，例如 https://network.nvidia.com/support/firmware/dell/；如果是官方版，在 https://network.nvidia.com/support/firmware/firmware-downloads/ 找。
+
+P.S. MLNX OFED 已经改为 NVIDIA DOCA，可以从从 <https://developer.nvidia.com/doca-downloads> 下载
