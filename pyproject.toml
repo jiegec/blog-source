@@ -3,7 +3,7 @@ name = "blog-source"
 version = "0.1.0"
 description = ""
 authors = [{ name = "Jiajie Chen", email = "c@jia.je" }]
-requires-python = ">=3.11,<4"
+requires-python = ">=3.12,<4"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
