@@ -79,7 +79,7 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 为了测试实际的 Fetch 宽度，参考 [如何测量真正的取指带宽（I-fetch width） - JamesAslan](https://zhuanlan.zhihu.com/p/720136752) 构造了测试。
 
-其原理是当 Fetch 要跨页的时候，由于两个相邻页可能映射到不同的物理地址，如果要支持单周期跨页取指，需要查询两次 ITLB，或者 ITLB 需要把相邻两个页的映射存在一起。这个场景一般比较少，处理器很少会针对这种特殊情况做优化，但也不是没有。经过测试，把循环放在两个页的边界上，发现 LA464 微架构遇到跨页的取指时确实会拆成两个周期来进行。
+其原理是当 Fetch 要跨页的时候，由于两个相邻页可能映射到不同的物理地址，如果要支持单周期跨页取指，需要查询两次 ITLB，或者 ITLB 需要把相邻两个页的映射存在一起。这个场景一般比较少，处理器很少会针对这种特殊情况做优化，但也不是没有。经过测试，把循环放在两个页的边界上，发现 LA664 微架构遇到跨页的取指时确实会拆成两个周期来进行。
 
 在此基础上，构造一个循环，循环的第一条指令放在第一个页的最后四个字节，其余指令放第二个页上，那么每次循环的取指时间，就是一个周期（读取第一个页内的指令）加上第二个页内指令需要 Fetch 的周期数，多的这一个周期就足以把 Fetch 宽度从后端限制中区分开，实验结果如下：
 
@@ -99,6 +99,14 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ### L1 ITLB
 
+构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈，在 LA664 上进行测试：
+
+![](./loongson-la664-itlb-size.png)
+
+在 64 个页的时候，CPI 从 1 Cycle 快速增加，对应了 64 项的 L1 ITLB 容量。
+
+容量和 LA464 相同。超出 L1 ITLB 时，延迟相比 LA464 有所降低。
+
 ### L1 ICache
 
 官方信息：每核 **64KB**，4 路组相联。
@@ -109,7 +117,7 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 可以看到 footprint 在 64 KB 之前时可以达到 6 IPC，之后开始下降，这里的 64 KB 就对应了 L1 ICache 的容量。
 
-容量和 LA464 相同，不过 IPC 有所上升。
+容量和 LA464 相同，不过 IPC 有所上升。在超出 L1 ICache 区间里，LA664 的 IPC 也比 LA464 要高，估计 LA664 从 L2 Cache 到 L1 ICache 的 Refill 带宽要更高。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
