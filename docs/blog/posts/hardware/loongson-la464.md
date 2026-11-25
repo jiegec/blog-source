@@ -186,6 +186,14 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 
 #### Load Store 带宽
 
+实测 LA464 每个周期可以完成如下的访存操作：
+
+- 2x 32b/64b/128b/256b Load
+- 1x 32b/64b/128b/256b Store
+- 1x 64b Load + 1x 64b Store: 1 cycle
+- 1x 128b Load + 1x 128b Store: 1 cycle
+- 1x 256b Load + 1x 256b Store: 1 cycle
+
 #### Store to Load Forwarding
 
 经过实际测试，LA464 上如下的情况可以成功转发，对地址 x 的 Store 转发到对地址 y 的 Load 成功时 y-x 的取值范围：
