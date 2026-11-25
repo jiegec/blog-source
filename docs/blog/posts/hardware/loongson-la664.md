@@ -220,13 +220,27 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 官方信息：每核 64KB，4 路组相联。
 
+使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+
+![](./loongson-la664-memory-latency.png)
+
+可以观察到明显的 64KB 的拐点，命中 L1 DCache 时 load to use latency 是 3 cycle，命中 L2 时增大到了 12 cycle。命中 L1 DCache 时，pointer chasing 的 load to use latency 是 3 cycle；否则是 4 cycle。
+
+容量和 LA464 相同，但延迟有所下降。
+
 ### L1 DTLB
 
 ### L2 TLB
 
 ### L2 Cache
 
-官方信息：每核 256KB Victim Cache，作为私有二级 Cache，16 路组相联。
+使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+
+![](./loongson-la664-memory-latency.png)
+
+命中 L2 时 12 cycle，直到 320KB 才出现新的拐点，此时 320KB 是 L1 DCache 的 64KB 加 L2 Cache 的 256KB 的总容量。
+
+容量和 LA464 相同，但延迟有所下降。
 
 ### L3 Cache
 
