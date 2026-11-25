@@ -194,6 +194,14 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 #### Load/Store Queue
 
+引入一系列 load store 指令，让它被阻塞在队列里，从而测试队列深度：
+
+![](./loongson-la664-lsu-size.png)
+
+对于 Load，可以看到 80 的拐点；对于 Store，可以看到 64 的拐点。150+ 的拐点来自整数寄存器堆。
+
+相比 LA464，Load 和 Store 各多了 16 项。
+
 #### Load Store 带宽
 
 #### Store to Load Forwarding
