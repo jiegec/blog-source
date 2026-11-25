@@ -275,9 +275,9 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 ### L3 Cache
 
-官方信息：每硅片 L3 Cache 容量是 32MB。
+官方信息：3A6000 的 L3 是 16MB，3C6000 每硅片 L3 Cache 容量是 32MB。
 
-L3 Cache 相比 LA464 容量翻倍。
+L3 Cache 容量和 LA464 相同。
 
 ### ReOrder Buffer
 

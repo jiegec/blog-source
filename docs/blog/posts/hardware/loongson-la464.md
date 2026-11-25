@@ -275,7 +275,7 @@ Chips and Cheese 测出来 Store Queue 是 44 entry，区别不大。
 
 ### L3 Cache
 
-官方信息：4 个核共享 16MB 分体三级 Cache。
+官方信息：3A5000 是 16MB L3，3C5000 是 32MB L3。
 
 使用更大的不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
 
