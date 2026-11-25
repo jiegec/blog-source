@@ -143,6 +143,8 @@ Loongson LA464 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K 的 L1 ICache。意味着它的 BTB 是全相连的。
 
+Chips and Cheese 测的结果是 64，估计只测了二的幂次，看到 64 快，128 慢就下结论了，但实际上应该是 96。
+
 ## 后端
 
 ### Register File
@@ -170,6 +172,8 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 - st.d 每周期一条
 - xvfmadd.d 和 xvfmadd.s 都是每周期两条，对应每周期 8 个双精度 FMA 和 16 个单精度 FMA
 
+Chips and Cheese 对 FMA 的吞吐分析有误，每周期确实可以执行两条 256b FMA。
+
 ### Scheduler
 
 官方信息：发射队列分为访存、定点、向量三类，每类 **32** 项。
@@ -191,6 +195,8 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 ![](./loongson-la464-lsu-size.png)
 
 对于 Load，可以看到 64 的拐点；对于 Store，可以看到 48 的拐点。80+ 的拐点来自整数寄存器堆。
+
+Chips and Cheese 测出来 Store Queue 是 44 entry，区别不大。
 
 #### Load Store 带宽
 
