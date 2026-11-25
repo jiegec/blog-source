@@ -208,6 +208,8 @@ Chips and Cheese 测出来 Store Queue 是 44 entry，区别不大。
 - 1x 128b Load + 1x 128b Store: 1 cycle
 - 1x 256b Load + 1x 256b Store: 1 cycle
 
+每周期读 64 字节，或者写 32 字节，或者读和写各 32 字节。
+
 #### Store to Load Forwarding
 
 经过实际测试，LA464 上如下的情况可以成功转发，对地址 x 的 Store 转发到对地址 y 的 Load 成功时 y-x 的取值范围：
