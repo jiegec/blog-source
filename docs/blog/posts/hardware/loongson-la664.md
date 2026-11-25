@@ -204,6 +204,16 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 #### Load Store 带宽
 
+实测 LA664 每个周期可以完成如下的访存操作：
+
+- 2x 32b/64b/128b/256b Load
+- 2x 32b/64b/128b/256b Store
+- 2x 64b Load + 2x 64b Store: 1 cycle
+- 2x 128b Load + 2x 128b Store: 1 cycle
+- 1x 256b Load + 1x 256b Store: 1 cycle
+
+每周期读 64 字节，或者写 64 字节，或者读和写各 32 字节。相比 LA464 有一定的改善。
+
 #### Store to Load Forwarding
 
 ### L1 DCache
