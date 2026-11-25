@@ -217,11 +217,23 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 
 ### L1 DTLB
 
-官方信息：64 项全相联加 2048 项 8 路组相联，共 2112 项 TLB，另有 64 项指令 TLB。
+官方信息：**64** 项全相联。
+
+使用不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
+
+![](./loongson-la464-dtlb-size.png)
+
+可以观察到明显的 64 page 的拐点，命中 L1 DTLB 时 load to use latency 是 4 cycle。
 
 ### L2 TLB
 
-官方信息：手册给出的 2112 项 TLB 中，除 64 项全相联部分外，其余 2048 项为 8 路组相联，支持可变页大小。
+官方信息：2048 项为 8 路组相联，支持可变页大小。
+
+使用更大的不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
+
+![](./loongson-la464-dtlb-size-l2.png)
+
+可以观察到明显的 1024 page 的拐点，说明这个核只能用数据填满一半的 L2 TLB 容量。
 
 ### L2 Cache
 
