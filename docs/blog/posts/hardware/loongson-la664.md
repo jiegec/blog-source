@@ -127,7 +127,7 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./loongson-la664-ras-size.png)
 
-可以看到调用链深度为 16 时性能突然变差，因此 LA664 的 Return Stack 深度为 16。考虑到 LA464 时候的 Return Stack 深度就是 32，而 LA664 支持 SMT，大概率就是把 Return Stack 容量一分为二，两个逻辑核各 16 深度了。
+可以看到调用链深度为 16 时性能突然变差，因此 LA664 的 Return Stack 深度为 16。LA464 时候的 Return Stack 深度就是 32，LA664 反而变少了。
 
 ### BTB
 
