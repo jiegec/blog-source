@@ -209,6 +209,12 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 
 官方信息：64KB，4 路组相联。
 
+使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+
+![](./loongson-la464-memory-latency.png)
+
+可以观察到明显的 64KB 的拐点，命中 L1 DCache 时 load to use latency 是 4 cycle，命中 L2 时增大到了 14 cycle。
+
 ### L1 DTLB
 
 官方信息：64 项全相联加 2048 项 8 路组相联，共 2112 项 TLB，另有 64 项指令 TLB。
@@ -219,7 +225,17 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 
 ### L2 Cache
 
-官方信息：256KB Victim Cache，16 路组相联，每核私有；4 个核共享 16MB 分体三级 Cache。
+官方信息：256KB Victim Cache，16 路组相联，每核私有。
+
+使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+
+![](./loongson-la464-memory-latency.png)
+
+命中 L2 时 14 cycle，直到 320KB 才出现新的拐点，此时 320KB 是 L1 DCache 的 64KB 加 L2 Cache 的 256KB 的总容量。
+
+### L3 Cache
+
+官方信息：4 个核共享 16MB 分体三级 Cache。
 
 ### Prefetcher
 
