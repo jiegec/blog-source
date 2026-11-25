@@ -211,8 +211,6 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 
 重叠时，即使跨越了对齐的 8B，不跨越缓存行边界时，也可以成功转发。跨越缓存行的时候，转发失败，退化到 22 个周期。
 
-### Memory Dependency Predictor
-
 ### L1 DCache
 
 官方信息：64KB，4 路组相联。
@@ -256,6 +254,12 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 ### L3 Cache
 
 官方信息：4 个核共享 16MB 分体三级 Cache。
+
+使用更大的不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+
+![](./loongson-la464-memory-latency-l3.png)
+
+到 16MB 的时候，容量超出 L3 Cache。
 
 ### Prefetcher
 
