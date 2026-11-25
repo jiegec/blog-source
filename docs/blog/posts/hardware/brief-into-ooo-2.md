@@ -260,6 +260,7 @@ Load 的起始地址等于 Store 的起始地址或者正好在中间。
 | [Intel Gracemont](./intel-gracemont.md)       | Yes [8]     | No          | No          | No          |
 | [Intel Redwood Cove](./intel-redwood-cove.md) | Yes [7]     | No          | No          | No          |
 | [Loongson LA464](./loongson-la464.md)         | Yes [1]     | No          | No          | No          |
+| [Loongson LA664](./loongson-la664.md)         | Yes [1]     | No          | No          | No          |
 | [Qualcomm Oryon](./qualcomm-oryon.md)         | Yes [4]     | Yes [5]     | No          | No          |
 
 - [1]: 要求 st 完全包含 ld
