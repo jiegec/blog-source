@@ -279,10 +279,6 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 L3 Cache 相比 LA464 容量翻倍。
 
-### Prefetcher
-
-TODO
-
 ### ReOrder Buffer
 
 官方信息：ROB 256 项。
