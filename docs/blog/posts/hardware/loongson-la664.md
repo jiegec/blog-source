@@ -131,6 +131,16 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ### BTB
 
+构造大量的无条件分支指令（B 指令），BTB 需要记录这些指令的目的地址，那么如果分支数量超过了 BTB 的容量，性能会出现明显下降。当把大量 B 指令紧密放置，也就是每 4 字节一条 B 指令时：
+
+![](./loongson-la664-btb-4b.png)
+
+每 8 字节一条 B 指令：
+
+![](./loongson-la664-btb-8b.png)
+
+LA664 和 LA464 一样，也是 96 项全相连的 BTB，如果超出了 BTB，就要从 64KB 的 L1 ICache 里取指和译码。在超出 64KB 的部分，性能比 LA464 好，估计还是上面说的 L2 Cache 到 L1 ICache 的 refill 路径变快了。
+
 ## 后端
 
 ### Register File
