@@ -230,7 +230,21 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 ### L1 DTLB
 
+使用不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
+
+![](./loongson-la664-dtlb-size.png)
+
+可以观察到明显的 64 page 的拐点，命中 L1 DTLB 时 load to use latency 是 3 cycle，前提是 pointer chasing。
+
+容量和 LA464 相同。
+
 ### L2 TLB
+
+使用更大的不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
+
+![](./loongson-la664-dtlb-size-l2.png)
+
+可以观察到明显的 1024 page 的拐点，说明这个核只能用数据填满 1024 的 L2 TLB 容量，应该和 LA464 一样，一共 2048 项。
 
 ### L2 Cache
 
