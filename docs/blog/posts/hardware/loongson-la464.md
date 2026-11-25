@@ -125,7 +125,7 @@ Loongson LA464 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./loongson-la464-ras-size.png)
 
-可以看到调用链深度为 32 时性能突然变差，因此 Firestorm 的 Return Stack 深度为 32。
+可以看到调用链深度为 32 时性能突然变差，因此 LA464 的 Return Stack 深度为 32。
 
 ### BTB
 
@@ -148,6 +148,15 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 ### Register File
 
 官方信息：定点物理寄存器 128 项、向量物理寄存器 128 项。
+
+为了测试物理寄存器堆的大小，用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。测试结果见下图：
+
+![](./loongson-la464-register-file-size.png)
+
+- 32b/64b int：测试 speculative 32/64 位整数寄存器的数量，拐点在 88
+- 32b/128b/256b fp/vec：测试 speculative 32/128/256 位浮点或向量寄存器的数量，拐点在 86
+
+考虑上大约 32 个架构寄存器，还有一些其他可能需要 rename 的寄存器，基本能对的上 128 这个数字。
 
 ### Execution Units
 
