@@ -216,6 +216,8 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 #### Store to Load Forwarding
 
+TODO
+
 ### L1 DCache
 
 官方信息：每核 64KB，4 路组相联。
@@ -258,10 +260,18 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 ### L3 Cache
 
-官方信息：4 个核共享 16MB 分体三级 Cache。
+TODO
 
 ### Prefetcher
+
+TODO
 
 ### ReOrder Buffer
 
 官方信息：ROB 256 项。
+
+用两个长延迟的指令链，夹住若干条 NOP 指令，测试性能：
+
+![](./loongson-la664-rob-size.png)
+
+可见 ROB 大小就是 256 项。
