@@ -87,7 +87,17 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ### L1 ICache
 
-官方信息：每核 64KB，4 路组相联。
+官方信息：每核 **64KB**，4 路组相联。
+
+为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 4 字节 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
+
+![](./loongson-la664-fetch-bandwidth.png)
+
+可以看到 footprint 在 64 KB 之前时可以达到 6 IPC，之后开始下降，这里的 64 KB 就对应了 L1 ICache 的容量。
+
+容量和 LA464 相同，不过 IPC 有所上升。
+
+[测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
 ### Return Stack
 
