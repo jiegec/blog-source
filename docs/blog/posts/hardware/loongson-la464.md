@@ -273,11 +273,11 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 
 官方信息：结构图中 L2（VCACHE）内有一个 Prefetch engine。
 
-#### 预取延迟
+实测 LA464 确实有 Prefetcher：
 
-#### 预取距离
+![](./loongson-la464-prefetcher.png)
 
-#### 是否跨页
+顺序访问 16 个 cacheline，第 16 个 cacheline 会在 L2，然后后续的部分 cacheline 也被预取到了 L2。
 
 ### ReOrder Buffer
 
