@@ -184,6 +184,14 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 
 官方信息：访存部件支持 256 位存储访问，虚地址 64 位、物理地址 48 位；load 队列 64 项、store 队列 48 项；支持 Non-blocking 访问和 Load-Speculation。
 
+#### Load/Store Queue
+
+引入一系列 load store 指令，让它被阻塞在队列里，从而测试队列深度：
+
+![](./loongson-la464-lsu-size.png)
+
+对于 Load，可以看到 64 的拐点；对于 Store，可以看到 48 的拐点。80+ 的拐点来自整数寄存器堆。
+
 #### Load Store 带宽
 
 实测 LA464 每个周期可以完成如下的访存操作：
@@ -279,4 +287,4 @@ BTB 容量不变，还是 96；第二个拐点提前到 8K，还是对应 64K �
 
 ![](./loongson-la464-rob-size.png)
 
-可见 ROB 大小在 128 项附近。
+可见 ROB 大小就是 128 项。
