@@ -81,7 +81,7 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ### Decode
 
-官方信息：六发射；译码后的指令分别进入访存、定点、向量三个发射队列，每类 48 项。
+官方信息：译码宽度为六。
 
 ### L1 ITLB
 
@@ -91,25 +91,31 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ### Return Stack
 
+### BTB
+
 ## 后端
 
-### Rename
+### Register File
 
-官方信息：定点物理寄存器 192 项、向量物理寄存器 192 项；ROB 256 项。
+官方信息：定点物理寄存器 192 项、向量物理寄存器 192 项。
 
 ### Execution Units
 
 官方信息：4 个定点、4 个向量、4 个访存功能部件。每个向量部件 256 位宽，最多支持 8 个单精度或 4 个双精度乘加运算。
 
+### Scheduler
+
+官方信息：译码后的指令分别进入访存、定点、向量三个发射队列，每类 48 项。
+
 ### LSU
 
 官方信息：访存部件支持 256 位存储访问，虚地址 64 位、物理地址 48 位；load 队列 80 项、store 队列 64 项；支持 Non-blocking 访问和 Load-Speculation。
 
+#### Load/Store Queue
+
 #### Load Store 带宽
 
 #### Store to Load Forwarding
-
-### Memory Dependency Predictor
 
 ### L1 DCache
 
@@ -121,15 +127,13 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ### L2 Cache
 
-官方信息：每核 256KB Victim Cache，作为私有二级 Cache，16 路组相联；4 个核共享 16MB 分体三级 Cache。
+官方信息：每核 256KB Victim Cache，作为私有二级 Cache，16 路组相联。
+
+### L3 Cache
+
+官方信息：4 个核共享 16MB 分体三级 Cache。
 
 ### Prefetcher
-
-#### 预取延迟
-
-#### 预取距离
-
-#### 是否跨页
 
 ### ReOrder Buffer
 
