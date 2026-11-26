@@ -11,7 +11,7 @@ categories:
 
 ## 背景
 
-之前分析了很多国外的微架构，而龙芯的微架构一直都没怎么研究过。既然 LA864 快要来了，那就在它来之前分析一下 LA464 和 [LA664](./loongson-la664.md)。
+之前分析了很多国外的微架构，而龙芯的微架构一直都没怎么研究过。既然 LA864 快要来了，那就在它来之前分析一下 LA464 和 [LA664](./loongson-la664.md)。测试环境是 3C5000 2.2GHz。
 
 <!-- more -->
 
@@ -279,7 +279,13 @@ Chips and Cheese 测出来 Store Queue 是 44 entry，区别不大。
 
 使用更大的不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
 
+按时间计：
+
 ![](./loongson-la464-memory-latency-l3.png)
+
+按周期计：
+
+![](./loongson-la464-memory-latency-l3-cycles.png)
 
 到 16MB 的时候，容量超出 L3 Cache。
 
