@@ -10,13 +10,13 @@ categories:
 
 ## 背景
 
-之前分析了很多国外的微架构，而龙芯的微架构一直都没怎么研究过。既然 LA864 快要来了，那就在它来之前分析一下 [LA464](./loongson-la464.md) 和 LA664，也是为 [Unofficial LoongArch Software Optimization Guide](https://jia.je/unofficial-loongarch-software-optimization-guide/)。测试环境是 3C6000/S 2.2GHz。
+之前分析的大多是国外的微架构，龙芯的却一直没怎么研究过。既然 LA864 快要来了，那就赶在它之前分析一下 [LA464](./loongson-la464.md) 和 LA664，也是为 [Unofficial LoongArch Software Optimization Guide](https://jia.je/unofficial-loongarch-software-optimization-guide/) 积攒数据。测试环境是 3C6000/S @ 2.2GHz。
 
 <!-- more -->
 
 ## 官方信息
 
-Loongson 关于 LA664 微架构有这些官方的信息：
+Loongson 公开的 LA664 微架构官方信息如下：
 
 - [龙芯 3A6000 产品页](https://www.loongson.cn/product/show?id=26)：2.0GHz-2.5GHz，240GFlops，典型功耗 38W@2.5GHz
 - [龙芯 3A6000 发布报道](https://www.loongson.cn/news/show?id=638)（2023 龙芯产品发布暨用户大会，2023-11-28）
@@ -24,13 +24,13 @@ Loongson 关于 LA664 微架构有这些官方的信息：
 - [《龙芯 3A6000 处理器寄存器使用手册》V1.2](https://www.loongson.cn/uploads/images/2024072510054986439.Loongson3A6000%20user%20book_V1.2.pdf)：第 8 章为 LA664 处理器核
 - [龙芯官网下载中心](https://www.loongson.cn/download/index)：上述手册的下载页面
 
-2023 年的发布会上，胡伟武展示了 LA464 与 LA664 的微架构对比，这是目前公开的最具体的 LA664 官方参数：
+2023 年的发布会上，胡伟武展示了 LA464 与 LA664 的微架构对比，这是目前公开的最详细的 LA664 官方参数：
 
 ![2023 龙芯产品发布暨用户大会上公布的 LA464 与 LA664 微架构对比（图源：快科技现场报道）](./loongson-la664-miniarch-table.jpg)
 
-（本页及下文中的发布会幻灯片照片均出自[该报道](https://news.mydrivers.com/1/948/948522.htm)）
+（本页及下文的发布会幻灯片照片均出自[该报道](https://news.mydrivers.com/1/948/948522.htm)）
 
-官方给出的逐项参数如下：
+官方公布的逐项参数如下：
 
 | 参数 | LA464 | LA664 |
 | --- | --- | --- |
@@ -56,17 +56,17 @@ Loongson 关于 LA664 微架构有这些官方的信息：
 
 ![2023 发布会上公布的龙芯 3A6000 规格页](./loongson-3a6000-slide.jpg)
 
-数据手册给出的 3A6000 芯片结构如图 1.1 所示，4 个 LA664 核通过 L1X/L2X 两级交叉开关连接 4 块共享三级 Cache，并连接到内存控制器和 IO-Ring：
+数据手册给出的 3A6000 芯片结构如图 1.1 所示：4 个 LA664 核通过 L1X/L2X 两级交叉开关连接 4 块共享三级 Cache，再连到内存控制器和 IO-Ring。
 
 ![《龙芯 3A6000 数据手册》图 1.1 处理器结构示意图](./loongson-3a6000-chip.png)
 
 ## 现有评测
 
-网上已经有较多针对 LA664 微架构的评测和分析，建议阅读：
+网上已有不少针对 LA664 微架构的评测和分析，建议阅读：
 
 - [Loongson 3A6000: A Star among Chinese CPUs](https://old.chipsandcheese.com/2024/03/13/loongson-3a6000-a-star-among-chinese-cpus/)
 
-下面分各个模块分别记录官方提供的信息，以及实测的结果。读者可以对照已有的第三方评测理解。官方信息与实测结果一致的数据会加粗。
+下面按模块分别记录官方信息与实测结果。读者可以对照已有的第三方评测理解。官方信息与实测结果一致的数据会加粗。
 
 ## Benchmark
 
@@ -76,75 +76,75 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ### Fetch
 
-为了测试实际的 Fetch 宽度，参考 [如何测量真正的取指带宽（I-fetch width） - JamesAslan](https://zhuanlan.zhihu.com/p/720136752) 构造了测试。
+为了测出实际的取指宽度，我参考 [如何测量真正的取指带宽（I-fetch width） - JamesAslan](https://zhuanlan.zhihu.com/p/720136752) 构造了测试。
 
-其原理是当 Fetch 要跨页的时候，由于两个相邻页可能映射到不同的物理地址，如果要支持单周期跨页取指，需要查询两次 ITLB，或者 ITLB 需要把相邻两个页的映射存在一起。这个场景一般比较少，处理器很少会针对这种特殊情况做优化，但也不是没有。经过测试，把循环放在两个页的边界上，发现 LA664 微架构遇到跨页的取指时确实会拆成两个周期来进行。
+原理是：取指跨页时，相邻两个页可能映射到不同的物理地址；若要在一个周期内完成跨页取指，就得查询两次 ITLB，或者让 ITLB 把相邻两页的映射放在一起。这种场景比较少见，处理器一般不会专门优化，但也不是没有。实测把循环放在两个页的边界上，LA664 遇到跨页取指时确实会拆成两个周期。
 
-在此基础上，构造一个循环，循环的第一条指令放在第一个页的最后四个字节，其余指令放第二个页上，那么每次循环的取指时间，就是一个周期（读取第一个页内的指令）加上第二个页内指令需要 Fetch 的周期数，多的这一个周期就足以把 Fetch 宽度从后端限制中区分开，实验结果如下：
+在此基础上构造一个循环：第一条指令放在第一个页的最后四个字节，其余指令放在第二个页。这样每次循环的取指时间等于一个周期（取第一个页内的指令）加上第二个页内指令所需的取指周期数；多出来的这一个周期，正好可以把取指宽度从后端限制中分离出来。实验结果如下：
 
 ![](./loongson-la664-if-width.png)
 
-图中蓝线（cross-page）表示的就是上面所述的第一条指令放一个页，其余指令放第二个页的情况，横坐标是第二个页内的指令数，那么一次循环的指令数等于横坐标 +1。纵坐标是运行很多次循环的总 cycle 数除以循环次数，也就是平均每次循环耗费的周期数。可以看到，到 9 条指令的时候，多了一个周期，意味着第二个页里的 8 条指令只需要一个周期，每个周期取 8 条指令。
+图中蓝线（cross-page）即上述第一条指令在第一个页、其余指令在第二个页的情况；横坐标是第二个页内的指令数，因此一次循环的指令数为横坐标 +1。纵坐标是多次循环的总周期数除以循环次数，即平均每次循环耗费的周期数。当循环指令数达到 9 条时，曲线多出一个周期，说明第二个页里的 8 条指令只需一个周期，即每个周期取 8 条指令。
 
-为了确认这个瓶颈是由取指造成的，又构造了一组实验，把循环的所有指令都放到一个页中，这个时候 Fetch 不再成为瓶颈（图中 aligned），两个曲线的对比可以明确地得出上述结论。
+为了确认瓶颈确实在取指，又构造了一组把所有指令放进同一个页内的实验，此时取指不再是瓶颈（图中 aligned）。两条曲线的对比可以清楚地支持上述结论。
 
-Chips and Cheese 认为这是 24 B/cycle，但我觉得应该是 32 B/cycle。Chips and Cheese 应该没有实际测，只是用发射宽度来推测。
+Chips and Cheese 认为这是 24 B/cycle，但我认为应该是 32 B/cycle。他们应该没有实际测量，只是根据发射宽度推测。
 
-随着指令数进一步增加，最终瓶颈在每周期执行的 NOP 指令数，因此两条线重合。
+指令数继续增加后，瓶颈转移到每周期能执行的 NOP 数量上，两条线随之重合。
 
-和 LA464 相比，取指宽度没有变化。但是，因为 NOP 执行变快了，两条线之间开始出现了更明显的空隙，这意味着六发射下，八宽的取指的余量已经没那么大了，估计到 LA864 的时候，取指得做得更宽。取指宽度的 Intel Golden Cove 相同，不过 x86 是变长指令集，LoongArch 则是定长，每条指令 4 字节。
+和 LA464 相比，取指宽度没有变化。不过 NOP 执行变快后，两条曲线之间的空隙更明显了，说明在六发射下，8 宽取指的余量已经不大；估计到 LA864 时，取指需要做得更宽。取指宽度与 Intel Golden Cove 相同，但 x86 是变长指令集，LoongArch 是定长指令集，每条指令 4 字节。
 
 ### Decode
 
-官方信息：译码宽度为六。
+官方信息：译码宽度为 6。
 
-和 Intel Golden Cove 相同。
+这一点与 Intel Golden Cove 相同。
 
 ### L1 ITLB
 
-构造一系列的 B 指令，使得 B 指令分布在不同的 page 上，使得 ITLB 成为瓶颈，在 LA664 上进行测试：
+构造一系列 B 指令，让它们分布在不同的页上，使 ITLB 成为瓶颈，在 LA664 上测试：
 
 ![](./loongson-la664-itlb-size.png)
 
-在 64 个页的时候，CPI 从 1 Cycle 快速增加，对应了 64 项的 L1 ITLB 容量。
+在 64 个页时，CPI 从 1 快速上升，对应 64 项的 L1 ITLB 容量。
 
-容量和 LA464 相同。超出 L1 ITLB 时，延迟相比 LA464 有所降低。只有 Intel Golden Cove 256 项 ITLB 的四分之一。
+容量与 LA464 相同；超出 L1 ITLB 后，延迟比 LA464 有所降低。这一容量只有 Intel Golden Cove 256 项 ITLB 的四分之一。
 
 ### L1 ICache
 
 官方信息：每核 **64KB**，4 路组相联。
 
-为了测试 L1 ICache 容量，构造一个具有巨大指令 footprint 的循环，由大量的 4 字节 nop 和最后的分支指令组成。观察在不同 footprint 大小下的 IPC：
+为了测 L1 ICache 容量，构造了一个指令 footprint 很大的循环：循环体由大量 4 字节 NOP 和末尾一条分支指令组成，观察不同 footprint 下的 IPC：
 
 ![](./loongson-la664-fetch-bandwidth.png)
 
-可以看到 footprint 在 64 KB 之前时可以达到 6 IPC，之后开始下降，这里的 64 KB 就对应了 L1 ICache 的容量。
+footprint 小于 64 KB 时 IPC 可以达到 6，之后开始下降，这个 64 KB 就对应 L1 ICache 的容量。
 
-超出 L1 ICache 范围，到 L2 范围后，IPC 下降比较显著，看起来依然是没有指令预取器，或者没针对这种大量 NOP 指令的场景做适配。
+footprint 超出 L1 ICache、进入 L2 后，IPC 下降明显；看起来仍然是没有指令预取器，或者没有针对大量 NOP 的场景做适配。
 
-容量和 LA464 相同，不过 IPC 有所上升。在超出 L1 ICache 区间里，LA664 的 IPC 也比 LA464 要高（接近 2x IPC），估计 LA664 从 L2 Cache 到 L1 ICache 的 Refill 带宽要更高。这部分测试结果和 Chips and Cheese 不太一致。容量是 Intel Golden Cove 的两倍，但在超出 L1I 时，Intel Golden Cove 的 IPC 还能保持到 4 以上。
+容量与 LA464 相同，但 IPC 有所提升。超出 L1 ICache 后，LA664 的 IPC 仍明显高于 LA464（接近 2 倍），估计是 L2 Cache 到 L1 ICache 的 refill 带宽更高。这部分结果与 Chips and Cheese 不太一致。容量是 Intel Golden Cove 的两倍，但超出 L1I 后，Golden Cove 的 IPC 仍能保持在 4 以上。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
 ### Return Stack
 
-构造不同深度的调用链，测试每次调用花费的平均时间，在 LA464 上得到下面的图：
+构造不同深度的调用链，测量每次调用的平均耗时，得到下图：
 
 ![](./loongson-la664-ras-size.png)
 
-可以看到调用链深度为 16 时性能突然变差，因此 LA664 的 Return Stack 深度为 16。LA464 时候的 Return Stack 深度就是 32，LA664 反而变少了。比 Intel Golden Cove 的 20 深度略少。
+调用链深度到 16 时性能突然变差，因此 LA664 的 Return Stack 深度为 16。LA464 的 Return Stack 深度是 32，LA664 反而变小了；与 Intel Golden Cove 的 20 项相比也略少。
 
 ### BTB
 
-构造大量的无条件分支指令（B 指令），BTB 需要记录这些指令的目的地址，那么如果分支数量超过了 BTB 的容量，性能会出现明显下降。当把大量 B 指令紧密放置，也就是每 4 字节一条 B 指令时：
+构造大量无条件分支指令（B 指令）。BTB 需要记录这些分支的目的地址，因此分支数量超过 BTB 容量后，性能会明显下降。把 B 指令紧密放置、即每 4 字节一条时：
 
 ![](./loongson-la664-btb-4b.png)
 
-每 8 字节一条 B 指令：
+把间距增大到每 8 字节一条 B 指令：
 
 ![](./loongson-la664-btb-8b.png)
 
-LA664 和 LA464 一样，也是 96 项全相连的 BTB，如果超出了 BTB，就要从 64KB 的 L1 ICache 里取指和译码。在超出 64KB 的部分，性能比 LA464 好，估计还是上面说的 L2 Cache 到 L1 ICache 的 refill 路径变快了。虽然 96 项全相连的 BTB 在容量上属于尚可的水平，和 Neoverse V1 持平，但由于没有 L2 BTB，容易出现性能瓶颈。
+LA664 与 LA464 一样，也是 96 项全相联 BTB；超出 BTB 容量后，只能回到 64KB 的 L1 ICache 里取指、译码。footprint 超过 64KB 后，LA664 的性能比 LA464 好，原因估计仍是上面提到的 L2 Cache 到 L1 ICache refill 路径变快。96 项全相联 BTB 在容量上尚可，与 Neoverse V1 持平，但没有 L2 BTB，容易出现瓶颈。
 
 ## 后端
 
@@ -152,22 +152,22 @@ LA664 和 LA464 一样，也是 96 项全相连的 BTB，如果超出了 BTB，�
 
 官方信息：定点物理寄存器 192 项、向量物理寄存器 192 项。
 
-为了测试物理寄存器堆的大小，用两个依赖链很长的操作放在开头和结尾，中间填入若干个无关的指令，并且用这些指令来耗费物理寄存器堆。测试结果见下图：
+为了测物理寄存器堆的大小，在开头和结尾各放一条依赖链很长的操作，中间填入若干无关指令来消耗物理寄存器条目，结果见下图：
 
 ![](./loongson-la664-register-file-size.png)
 
 - 32b/64b int：测试 speculative 32/64 位整数寄存器的数量，拐点在 155
 - 32b/128b/256b fp/vec：测试 speculative 32/128/256 位浮点或向量寄存器的数量，拐点在 153
 
-考虑上大约 32 个架构寄存器，还有一些其他可能需要 rename 的寄存器，基本能对的上 192 这个数字。相比 LA464 的 128 提升了不少。
+加上大约 32 个架构寄存器，以及其他可能需要 rename 的寄存器，基本能对上 192 这个数字，相比 LA464 的 128 提升了不少。
 
 ### Execution Units
 
 官方信息：4 个定点、4 个向量、4 个访存功能部件。每个向量部件 256 位宽，最多支持 8 个单精度或 4 个双精度乘加运算。
 
-经过测试，这些指令的吞吐：
+实测这些指令的吞吐如下：
 
-- 分支指令如 beq 每周期两条，相比 LA664 翻倍，前提是不跳转
+- 分支指令如 beq 每周期两条，相比 LA464 翻倍（前提是不跳转）
 - CRC 指令如 crc.w.b.w 每周期两条，相比 LA464 提升数倍
 - ALU 指令如 add.d 每周期四条，和 LA464 持平
 - 向量指令如 vadd.d 每周期四条，相比 LA464 翻倍
@@ -175,7 +175,7 @@ LA664 和 LA464 一样，也是 96 项全相连的 BTB，如果超出了 BTB，�
 - st.d 每周期两条，相比 LA464 翻倍
 - xvfmadd.d 和 xvfmadd.s 都是每周期两条，对应每周期 8 个双精度 FMA 和 16 个单精度 FMA，和 LA464 持平
 
-延迟：
+延迟如下：
 
 - mul: 4
 - fadd/vfadd/xvfadd: 3
@@ -185,13 +185,13 @@ LA664 和 LA464 一样，也是 96 项全相连的 BTB，如果超出了 BTB，�
 
 官方信息：译码后的指令分别进入访存、定点、向量三个发射队列，每类 48 项。
 
-使用一串长延迟的指令在开头（一串 fsqrt.d），然后用它来作为访存、定点或浮点指令的依赖，最后再来一串长延迟的指令，从而测试发射队列的深度，结果如下：
+在开头放一串长延迟指令（一串 fsqrt.d），让后面的访存、定点或浮点指令依赖它，末尾再放一串长延迟指令，以此测试发射队列深度，结果如下：
 
 - 到访存 ldx.d 指令，到 48 条 ldx.d 时队列满，和官方信息吻合
 - 到整数 add.d，到 46 条 add.d 时队列满，和官方信息基本吻合
 - 到浮点 fadd.d，是到 48 条的时候队列满
 
-LA664 相比 LA464 有 1.5x 的扩容。
+相比 LA464，发射队列容量扩大了 1.5 倍。
 
 ### LSU
 
@@ -199,17 +199,17 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 #### Load/Store Queue
 
-引入一系列 load store 指令，让它被阻塞在队列里，从而测试队列深度：
+引入一系列 load/store 指令，让它们阻塞在队列里，以此测试队列深度：
 
 ![](./loongson-la664-lsu-size.png)
 
-对于 Load，可以看到 80 的拐点；对于 Store，可以看到 64 的拐点。150+ 的拐点来自整数寄存器堆。
+Load 的拐点在 80，Store 的拐点在 64；150+ 处的拐点来自整数寄存器堆。
 
 相比 LA464，Load 和 Store 各多了 16 项。
 
 #### Load Store 带宽
 
-实测 LA664 每个周期可以完成如下的访存操作：
+实测 LA664 每周期可以完成以下访存操作：
 
 - 2x 32b/64b/128b/256b Load
 - 2x 32b/64b/128b/256b Store
@@ -217,11 +217,11 @@ LA664 相比 LA464 有 1.5x 的扩容。
 - 2x 128b Load + 2x 128b Store: 1 cycle
 - 1x 256b Load + 1x 256b Store: 1 cycle
 
-每周期读 64 字节，或者写 64 字节，或者读和写各 32 字节。相比 LA464 有一定的改善。由于没有 512 位宽的向量，并行度也不够，访存性能受限。
+即每周期可读 64 字节、写 64 字节，或读写各 32 字节，相比 LA464 有一定改善。由于没有 512 位宽的向量，并行度不够，访存性能受限。
 
 #### Store to Load Forwarding
 
-经过实际测试，LA664 上如下的情况可以成功转发，对地址 x 的 Store 转发到对地址 y 的 Load 成功时 y-x 的取值范围：
+实测 LA664 在以下情况下可以成功转发。设 Store 地址为 x、Load 地址为 y，转发成功时 y-x 的取值范围如下：
 
 | Store\Load | 8b Load | 16b Load | 32b Load | 64b Load |
 |------------|---------|----------|----------|----------|
@@ -230,59 +230,59 @@ LA664 相比 LA464 有 1.5x 的扩容。
 | 32b Store  | [0,3]   | [0,2]    | {0}      | {}       |
 | 64b Store  | [0,7]   | [0,6]    | [0,4]    | {0}      |
 
-成功转发的条件：Store 的范围是 Load 范围的超集，同时不能跨越缓存行边界。不支持一个 Load 转发来自多个 Store 的数据。这一条件与 [AMD Zen5](./amd-zen5.md) 相同。
+成功转发的条件：Store 的范围完全覆盖 Load，且不跨越缓存行边界；一个 Load 不能从多个 Store 转发数据。这一条件与 [AMD Zen5](./amd-zen5.md) 相同。
 
-当 Load 和 Store 并不重叠，且不在同一个对齐的 8B 里时，可以同时完成，每 0.5 各周期完成一个 Load+Store；如果在同一个对齐的 8B 里，但并不重叠，则串行执行，退化到平均每个周期完成一个 Load+Store；如果重叠并且可以成功转发，需要七个周期。如果重叠但没有成功转发，也没有跨越缓存行，则需要 14 个周期。
+当 Load 与 Store 不重叠、且不在同一个对齐的 8B 内时，可以同时完成，平均每 0.5 个周期完成一个 Load+Store；若在同一个对齐的 8B 内但不重叠，则退化为串行执行，平均每个周期完成一个 Load+Store；若两者重叠且转发成功，需要七个周期；若重叠但转发失败、且没有跨越缓存行，则需要 14 个周期。
 
-重叠时，即使跨越了对齐的 8B，不跨越缓存行边界时，也可以成功转发。跨越缓存行的时候，转发失败，退化到 15 个周期。
+重叠时，即使跨越了对齐的 8B，只要不跨越缓存行边界，仍然可以成功转发；一旦跨越缓存行，转发失败，退化到 15 个周期。
 
-可见，LA664 在 Store to Load Forwarding 实现上与 LA464 相同，性能区别主要来源于每周期能进行更多的 Load 和 Store。
+可见 LA664 的 Store to Load Forwarding 实现与 LA464 相同，性能差异主要来自每周期能完成更多的 Load 和 Store。
 
 ### L1 DCache
 
 官方信息：每核 64KB，4 路组相联。
 
-使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+用不同 footprint 的随机 pointer chasing load 测试性能，得到下图：
 
 ![](./loongson-la664-memory-latency.png)
 
-可以观察到明显的 64KB 的拐点，命中 L1 DCache 时 load to use latency 是 3 cycle，命中 L2 时增大到了 12 cycle。命中 L1 DCache 时，pointer chasing 的 load to use latency 是 3 cycle；否则是 4 cycle。
+64KB 处出现明显拐点：命中 L1 DCache 时，pointer chasing 的 load to use latency 为 3 cycle（其他情况为 4 cycle），命中 L2 时增大到 12 cycle。
 
-容量和 LA464 相同，但延迟有所下降。比 Intel Golden Cove 的 48KB 要大一些。针对 pointer chasing 做了三周期优化好评。
+容量与 LA464 相同，但延迟有所下降；比 Intel Golden Cove 的 48KB 大一些。针对 pointer chasing 做的三周期优化值得好评。
 
 ### L1 DTLB
 
-使用不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
+用不同 footprint 的随机 pointer chasing load，且每次 load 落在单独的页内，测试性能，得到下图：
 
 ![](./loongson-la664-dtlb-size.png)
 
-可以观察到明显的 64 page 的拐点，命中 L1 DTLB 时 load to use latency 是 3 cycle，前提是 pointer chasing。
+64 页处出现明显拐点；命中 L1 DTLB 时 load to use latency 为 3 cycle（前提是 pointer chasing）。
 
-容量和 LA464 相同。比 Intel Golden Cove 的 96 项要少。
+容量与 LA464 相同，比 Intel Golden Cove 的 96 项要少。
 
 ### L2 TLB
 
-使用更大的不同 footprint 的随机的 pointer chasing load 且每次 load 都在单独的页内，测试性能，得到如下结果：
+使用 footprint 更大的随机 pointer chasing load，每次 load 仍落在单独的页内，得到下图：
 
 ![](./loongson-la664-dtlb-size-l2.png)
 
-可以观察到明显的 1024 page 的拐点，说明这个核只能用数据填满 1024 的 L2 TLB 容量，应该和 LA464 一样，一共 2048 项。Intel Golden Cove 也是 2048 项。
+1024 页处出现明显拐点，说明用数据最多只能填满 1024 项 L2 TLB；和 LA464 一样，总数应该是 2048 项。Intel Golden Cove 也是 2048 项。
 
 ### L2 Cache
 
-使用不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+用不同 footprint 的随机 pointer chasing load 测试性能，得到下图：
 
 ![](./loongson-la664-memory-latency.png)
 
-命中 L2 时 12 cycle，直到 320KB 才出现新的拐点，此时 320KB 是 L1 DCache 的 64KB 加 L2 Cache 的 256KB 的总容量。
+命中 L2 时延迟为 12 cycle；直到 320KB 才出现新的拐点，而 320KB 正好是 L1 DCache 的 64KB 与 L2 Cache 的 256KB 之和。
 
-容量和 LA464 相同，但延迟有所下降。横向对比，L2 容量已经算比较小的了。
+容量与 LA464 相同，但延迟有所下降；横向对比，L2 容量已经算比较小的了。
 
 ### L3 Cache
 
-官方信息：3A6000 的 L3 是 16MB，3C6000 每硅片 L3 Cache 容量是 32MB。
+官方信息：3A6000 的 L3 是 16MB，3C6000 每硅片的 L3 Cache 容量是 32MB。
 
-使用更大的不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+使用 footprint 更大的随机 pointer chasing load 测试性能：
 
 按时间计：
 
@@ -292,19 +292,19 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 ![](./loongson-la664-memory-latency-l3-cycles.png)
 
-3C6000 的 L3 是 32MB，和 3C5000 相同，但实测延迟到 96MB 之后才开始上升，并且各区间的延迟都比 3C5000 要低，L1 从 4 周期降到 3，L2 从 14 周期降到 12，L3 从 65 周期降低到 48，进步明显。
+3C6000 的 L3 是 32MB，与 3C5000 相同，但实测延迟要到 96MB 之后才开始上升；并且各区间延迟都比 3C5000 低：L1 从 4 周期降到 3 周期，L2 从 14 周期降到 12 周期，L3 从 65 周期降到 48 周期，进步明显。
 
 ### 访存带宽
 
-用 LASX xvld/xvst 指令测不同大小的数组的访存带宽：
+用 LASX 的 xvld/xvst 指令测试不同大小数组的访存带宽：
 
 ![](./loongson-la664-memory-bandwidth-read.png)
 
-在 L1 范围内，Load 带宽打满 64B/cycle；到了 L2 区间，下降到 21 B/cycle；到 L3 区间进一步降低到 18 B/cycle。相比 LA464，L3 区间的带宽有 1.5x 改进。
+在 L1 范围内，Load 带宽打满 64B/cycle；到 L2 区间下降到 21B/cycle，到 L3 区间进一步降到 18B/cycle。相比 LA464，L3 区间带宽有 1.5 倍改进。
 
 ![](./loongson-la664-memory-bandwidth-write.png)
 
-在 L1 范围内，Write 带宽打满 64B/cycle；到了 L2 区间，下降到 21 B/cycle；到 L3 区间进一步降低到 12 B/cycle。相比 LA464，L1 带宽翻倍，L3 区间带宽有略微提升。
+在 L1 范围内，Write 带宽打满 64B/cycle；到 L2 区间下降到 21B/cycle，到 L3 区间进一步降到 12B/cycle。相比 LA464，L1 带宽翻倍，L3 区间带宽略有提升。
 
 ### ReOrder Buffer
 
@@ -314,4 +314,4 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 ![](./loongson-la664-rob-size.png)
 
-可见 ROB 大小就是 256 项。
+可见 ROB 大小为 256 项。
