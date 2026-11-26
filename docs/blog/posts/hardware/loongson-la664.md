@@ -89,6 +89,8 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 为了确认这个瓶颈是由取指造成的，又构造了一组实验，把循环的所有指令都放到一个页中，这个时候 Fetch 不再成为瓶颈（图中 aligned），两个曲线的对比可以明确地得出上述结论。
 
+Chips and Cheese 认为这是 24 B/cycle，但我觉得应该是 32 B/cycle。Chips and Cheese 应该没有实际测，只是用发射宽度来推测。
+
 随着指令数进一步增加，最终瓶颈在每周期执行的 NOP 指令数，因此两条线重合。
 
 和 LA464 相比，取指宽度没有变化。但是，因为 NOP 执行变快了，两条线之间开始出现了更明显的空隙，这意味着六发射下，八宽的取指的余量已经没那么大了，估计到 LA864 的时候，取指得做得更宽。
@@ -119,7 +121,7 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 超出 L1 ICache 范围，到 L2 范围后，IPC 下降比较显著，看起来依然是没有指令预取器，或者没针对这种大量 NOP 指令的场景做适配。
 
-容量和 LA464 相同，不过 IPC 有所上升。在超出 L1 ICache 区间里，LA664 的 IPC 也比 LA464 要高（接近 2x IPC），估计 LA664 从 L2 Cache 到 L1 ICache 的 Refill 带宽要更高。
+容量和 LA464 相同，不过 IPC 有所上升。在超出 L1 ICache 区间里，LA664 的 IPC 也比 LA464 要高（接近 2x IPC），估计 LA664 从 L2 Cache 到 L1 ICache 的 Refill 带宽要更高。这部分测试结果和 Chips and Cheese 不太一致。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
@@ -279,7 +281,17 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 官方信息：3A6000 的 L3 是 16MB，3C6000 每硅片 L3 Cache 容量是 32MB。
 
-L3 Cache 容量和 LA464 相同。
+使用更大的不同 footprint 的随机的 pointer chasing load，测试性能，得到如下结果：
+
+按时间计：
+
+![](./loongson-la664-memory-latency-l3.png)
+
+按周期计：
+
+![](./loongson-la664-memory-latency-l3-cycles.png)
+
+3C6000 的 L3 是 32MB，和 3C5000 相同，但实测延迟到 96MB 之后才开始上升，并且各区间的延迟都比 3C5000 要低，进步明显。
 
 ### 访存带宽
 
