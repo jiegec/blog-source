@@ -291,7 +291,7 @@ Chips and Cheese 测出来 Store Queue 是 44 entry，区别不大。
 
 ### 访存带宽
 
-用 LASX xvld 指令测不同大小的数组的访存带宽：
+用 LASX xvld/xvst 指令测不同大小的数组的访存带宽：
 
 ![](./loongson-la464-memory-bandwidth-read.png)
 

@@ -279,6 +279,18 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 L3 Cache 容量和 LA464 相同。
 
+### 访存带宽
+
+用 LASX xvld/xvst 指令测不同大小的数组的访存带宽：
+
+![](./loongson-la664-memory-bandwidth-read.png)
+
+在 L1 范围内，Load 带宽打满 64B/cycle；到了 L2 区间，下降到 21 B/cycle；到 L3 区间进一步降低到 18 B/cycle。相比 LA464，L3 区间的带宽有 1.5x 改进。
+
+![](./loongson-la664-memory-bandwidth-write.png)
+
+在 L1 范围内，Write 带宽打满 64B/cycle；到了 L2 区间，下降到 21 B/cycle；到 L3 区间进一步降低到 12 B/cycle。相比 LA464，L1 带宽翻倍，L3 区间带宽有略微提升。
+
 ### ReOrder Buffer
 
 官方信息：ROB 256 项。
