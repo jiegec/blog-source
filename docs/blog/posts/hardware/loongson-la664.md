@@ -2,7 +2,6 @@
 layout: post
 date: 2026-11-25
 tags: [cpu,loongson,loongarch,la464,performance,uarch-review]
-draft: true
 categories:
     - hardware
 ---
