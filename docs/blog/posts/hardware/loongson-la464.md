@@ -289,6 +289,18 @@ Chips and Cheese 测出来 Store Queue 是 44 entry，区别不大。
 
 3C5000 的 L3 是 32MB，但是延迟在更早的时候就开始上升。根据官方信息，它的 L3 Cache 分为四个 partition，因此可能有远近之分或者每个核只能用一部分的 L3。
 
+### 访存带宽
+
+用 LASX xvld 指令测不同大小的数组的访存带宽：
+
+![](./loongson-la464-memory-bandwidth-read.png)
+
+在 L1 范围内，Load 带宽打满 64B/cycle；到了 L2 区间，下降到 21 B/cycle；到 L3 区间进一步降低到 12 B/cycle。
+
+![](./loongson-la464-memory-bandwidth-write.png)
+
+在 L1 范围内，Write 带宽打满 32B/cycle；到了 L2 区间，下降到 21 B/cycle；到 L3 区间进一步降低到 10 B/cycle。
+
 ### Prefetcher
 
 官方信息：结构图中 L2（VCACHE）内有一个 Prefetch engine。
