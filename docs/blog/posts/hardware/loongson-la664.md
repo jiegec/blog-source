@@ -117,7 +117,9 @@ Loongson LA664 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 可以看到 footprint 在 64 KB 之前时可以达到 6 IPC，之后开始下降，这里的 64 KB 就对应了 L1 ICache 的容量。
 
-容量和 LA464 相同，不过 IPC 有所上升。在超出 L1 ICache 区间里，LA664 的 IPC 也比 LA464 要高，估计 LA664 从 L2 Cache 到 L1 ICache 的 Refill 带宽要更高。
+超出 L1 ICache 范围，到 L2 范围后，IPC 下降比较显著，看起来依然是没有指令预取器，或者没针对这种大量 NOP 指令的场景做适配。
+
+容量和 LA464 相同，不过 IPC 有所上升。在超出 L1 ICache 区间里，LA664 的 IPC 也比 LA464 要高（接近 2x IPC），估计 LA664 从 L2 Cache 到 L1 ICache 的 Refill 带宽要更高。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
