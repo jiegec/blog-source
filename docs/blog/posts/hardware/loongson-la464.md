@@ -117,6 +117,8 @@ Loongson LA464 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 可以看到 footprint 在 64 KB 之前时可以达到 4 IPC，之后开始下降，这里的 64 KB 就对应了 L1 ICache 的容量。
 
+超出 L1 ICache 范围，到 L2 范围后，IPC 下降比较显著，看起来是没有指令预取器，或者没针对这种大量 NOP 指令的场景做适配。
+
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
 ### Return Stack
@@ -125,7 +127,7 @@ Loongson LA464 的性能测试结果见 [SPEC](../../../benchmark/index.md)。
 
 ![](./loongson-la464-ras-size.png)
 
-可以看到调用链深度为 32 时性能突然变差，因此 LA464 的 Return Stack 深度为 32。
+可以看到调用链深度为 32 时性能突然变差，因此 LA464 的 Return Stack 深度为 32。测试结果和 Chips and Cheese 一致。
 
 ### BTB
 
