@@ -11,7 +11,7 @@ categories:
 
 ## 背景
 
-之前分析了很多国外的微架构，而龙芯的微架构一直都没怎么研究过。既然 LA864 快要来了，那就在它来之前分析一下 LA464 和 [LA664](./loongson-la664.md)。测试环境是 3C5000 2.2GHz。
+之前分析了很多国外的微架构，而龙芯的微架构一直都没怎么研究过。既然 LA864 快要来了，那就在它来之前分析一下 LA464 和 [LA664](./loongson-la664.md)，也是为 [Unofficial LoongArch Software Optimization Guide](https://jia.je/unofficial-loongarch-software-optimization-guide/) 积攒数据。测试环境是 3C5000 2.2GHz。
 
 <!-- more -->
 
