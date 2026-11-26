@@ -92,11 +92,13 @@ Chips and Cheese 认为这是 24 B/cycle，但我觉得应该是 32 B/cycle。Ch
 
 随着指令数进一步增加，最终瓶颈在每周期执行的 NOP 指令数，因此两条线重合。
 
-和 LA464 相比，取指宽度没有变化。但是，因为 NOP 执行变快了，两条线之间开始出现了更明显的空隙，这意味着六发射下，八宽的取指的余量已经没那么大了，估计到 LA864 的时候，取指得做得更宽。
+和 LA464 相比，取指宽度没有变化。但是，因为 NOP 执行变快了，两条线之间开始出现了更明显的空隙，这意味着六发射下，八宽的取指的余量已经没那么大了，估计到 LA864 的时候，取指得做得更宽。取指宽度的 Intel Golden Cove 相同，不过 x86 是变长指令集，LoongArch 则是定长，每条指令 4 字节。
 
 ### Decode
 
 官方信息：译码宽度为六。
+
+和 Intel Golden Cove 相同。
 
 ### L1 ITLB
 
@@ -106,7 +108,7 @@ Chips and Cheese 认为这是 24 B/cycle，但我觉得应该是 32 B/cycle。Ch
 
 在 64 个页的时候，CPI 从 1 Cycle 快速增加，对应了 64 项的 L1 ITLB 容量。
 
-容量和 LA464 相同。超出 L1 ITLB 时，延迟相比 LA464 有所降低。
+容量和 LA464 相同。超出 L1 ITLB 时，延迟相比 LA464 有所降低。只有 Intel Golden Cove 256 项 ITLB 的四分之一。
 
 ### L1 ICache
 
@@ -120,7 +122,7 @@ Chips and Cheese 认为这是 24 B/cycle，但我觉得应该是 32 B/cycle。Ch
 
 超出 L1 ICache 范围，到 L2 范围后，IPC 下降比较显著，看起来依然是没有指令预取器，或者没针对这种大量 NOP 指令的场景做适配。
 
-容量和 LA464 相同，不过 IPC 有所上升。在超出 L1 ICache 区间里，LA664 的 IPC 也比 LA464 要高（接近 2x IPC），估计 LA664 从 L2 Cache 到 L1 ICache 的 Refill 带宽要更高。这部分测试结果和 Chips and Cheese 不太一致。
+容量和 LA464 相同，不过 IPC 有所上升。在超出 L1 ICache 区间里，LA664 的 IPC 也比 LA464 要高（接近 2x IPC），估计 LA664 从 L2 Cache 到 L1 ICache 的 Refill 带宽要更高。这部分测试结果和 Chips and Cheese 不太一致。容量是 Intel Golden Cove 的两倍，但在超出 L1I 时，Intel Golden Cove 的 IPC 还能保持到 4 以上。
 
 [测试过程详见测试代码](https://github.com/jiegec/cpu-micro-benchmarks/blob/master/src/fetch_bandwidth_gen.cpp)。
 
@@ -130,7 +132,7 @@ Chips and Cheese 认为这是 24 B/cycle，但我觉得应该是 32 B/cycle。Ch
 
 ![](./loongson-la664-ras-size.png)
 
-可以看到调用链深度为 16 时性能突然变差，因此 LA664 的 Return Stack 深度为 16。LA464 时候的 Return Stack 深度就是 32，LA664 反而变少了。
+可以看到调用链深度为 16 时性能突然变差，因此 LA664 的 Return Stack 深度为 16。LA464 时候的 Return Stack 深度就是 32，LA664 反而变少了。比 Intel Golden Cove 的 20 深度略少。
 
 ### BTB
 
@@ -142,7 +144,7 @@ Chips and Cheese 认为这是 24 B/cycle，但我觉得应该是 32 B/cycle。Ch
 
 ![](./loongson-la664-btb-8b.png)
 
-LA664 和 LA464 一样，也是 96 项全相连的 BTB，如果超出了 BTB，就要从 64KB 的 L1 ICache 里取指和译码。在超出 64KB 的部分，性能比 LA464 好，估计还是上面说的 L2 Cache 到 L1 ICache 的 refill 路径变快了。
+LA664 和 LA464 一样，也是 96 项全相连的 BTB，如果超出了 BTB，就要从 64KB 的 L1 ICache 里取指和译码。在超出 64KB 的部分，性能比 LA464 好，估计还是上面说的 L2 Cache 到 L1 ICache 的 refill 路径变快了。虽然 96 项全相连的 BTB 在容量上属于尚可的水平，和 Neoverse V1 持平，但由于没有 L2 BTB，容易出现性能瓶颈。
 
 ## 后端
 
@@ -157,7 +159,7 @@ LA664 和 LA464 一样，也是 96 项全相连的 BTB，如果超出了 BTB，�
 - 32b/64b int：测试 speculative 32/64 位整数寄存器的数量，拐点在 155
 - 32b/128b/256b fp/vec：测试 speculative 32/128/256 位浮点或向量寄存器的数量，拐点在 153
 
-考虑上大约 32 个架构寄存器，还有一些其他可能需要 rename 的寄存器，基本能对的上 192 这个数字。
+考虑上大约 32 个架构寄存器，还有一些其他可能需要 rename 的寄存器，基本能对的上 192 这个数字。相比 LA464 的 128 提升了不少。
 
 ### Execution Units
 
@@ -215,7 +217,7 @@ LA664 相比 LA464 有 1.5x 的扩容。
 - 2x 128b Load + 2x 128b Store: 1 cycle
 - 1x 256b Load + 1x 256b Store: 1 cycle
 
-每周期读 64 字节，或者写 64 字节，或者读和写各 32 字节。相比 LA464 有一定的改善。
+每周期读 64 字节，或者写 64 字节，或者读和写各 32 字节。相比 LA464 有一定的改善。由于没有 512 位宽的向量，并行度也不够，访存性能受限。
 
 #### Store to Load Forwarding
 
@@ -246,7 +248,7 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 可以观察到明显的 64KB 的拐点，命中 L1 DCache 时 load to use latency 是 3 cycle，命中 L2 时增大到了 12 cycle。命中 L1 DCache 时，pointer chasing 的 load to use latency 是 3 cycle；否则是 4 cycle。
 
-容量和 LA464 相同，但延迟有所下降。
+容量和 LA464 相同，但延迟有所下降。比 Intel Golden Cove 的 48KB 要大一些。针对 pointer chasing 做了三周期优化好评。
 
 ### L1 DTLB
 
@@ -256,7 +258,7 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 可以观察到明显的 64 page 的拐点，命中 L1 DTLB 时 load to use latency 是 3 cycle，前提是 pointer chasing。
 
-容量和 LA464 相同。
+容量和 LA464 相同。比 Intel Golden Cove 的 96 项要少。
 
 ### L2 TLB
 
@@ -264,7 +266,7 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 ![](./loongson-la664-dtlb-size-l2.png)
 
-可以观察到明显的 1024 page 的拐点，说明这个核只能用数据填满 1024 的 L2 TLB 容量，应该和 LA464 一样，一共 2048 项。
+可以观察到明显的 1024 page 的拐点，说明这个核只能用数据填满 1024 的 L2 TLB 容量，应该和 LA464 一样，一共 2048 项。Intel Golden Cove 也是 2048 项。
 
 ### L2 Cache
 
@@ -274,7 +276,7 @@ LA664 相比 LA464 有 1.5x 的扩容。
 
 命中 L2 时 12 cycle，直到 320KB 才出现新的拐点，此时 320KB 是 L1 DCache 的 64KB 加 L2 Cache 的 256KB 的总容量。
 
-容量和 LA464 相同，但延迟有所下降。
+容量和 LA464 相同，但延迟有所下降。横向对比，L2 容量已经算比较小的了。
 
 ### L3 Cache
 
