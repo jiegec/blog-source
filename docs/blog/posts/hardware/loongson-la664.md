@@ -180,13 +180,17 @@ PHR 一共是 96x2=192 位，每个 taken branch 左移两位，然后异或进�
 
 实际上，在[龙芯 GS464E 处理器核架构设计](https://www.sciengine.com/doi/10.1360/N112014-00292)论文里，就提到过是局部加全局预测器的组合：
 
-> 分支指令跳转方向的预测使 用一套组合分支历史表 (BHTs), 包括 1 个 16384 项的全局转移历史表 (global branch history table,  GBHT), 1 个 16384 项的局部转移历史表 (local branch history table, LBHT) 和 1 个 16384 项的全局  选择历史表 (global branch select table, GSEL). 每个时钟周期取出的最多 8 条指令可以同时查找这套 分支历史表. 上述 3 个分支历史表中的每项都是 2 bit 饱和计数器, 其最高比特位在 GBHT 和 LBHT 中用于指明跳转方向, 而在 GSEL 中则用于决定选用 GBHT 还是 LBHT 的预测方向.
+> 分支指令跳转方向的预测使 用一套组合分支历史表 (BHTs), 包括 1 个 16384 项的全局转移历史表 (global branch history table, GBHT), 1 个 16384 项的局部转移历史表 (local branch history table, LBHT) 和 1 个 16384 项的全局选择历史表 (global branch select table, GSEL). 每个时钟周期取出的最多 8 条指令可以同时查找这套分支历史表. 上述 3 个分支历史表中的每项都是 2 bit 饱和计数器, 其最高比特位在 GBHT 和 LBHT 中用于指明跳转方向, 而在 GSEL 中则用于决定选用 GBHT 还是 LBHT 的预测方向.
 
 虽然 GS464E 是 MIPS 时代的微架构了，但大概率延续到了 LA464 和 LA664。
 
 ### IBP
 
-实测下来，LA664 的 IBP 可以记录 512-1024 个间接分支的目的地址：512 的时候不会出现 miss，1024 的时候只出现少量的 miss，到 2048 就有过半的 miss rate 了。
+实测下来，LA664 的 IBP 可以记录 512-1024 个间接分支的目的地址：512 的时候不会出现 miss，1024 的时候只出现少量的 miss，到 2048 就有过半的 miss rate 了。[龙芯 GS464E 处理器核架构设计](https://www.sciengine.com/doi/10.1360/N112014-00292) 是这么写的：
+
+> 除上述函数返回跳转指令之外的的间接跳转指令使用项数为 1024 的跳转目标缓存器 (jump branch target address cache, JBTAC) 进行预测, 该缓存器使用取指 PC 及跳转历史信息进行索引.
+
+所以大概率就是 1024 项。
 
 对于间接分支预测器，实验结果表明，它并没有用全局历史，而是完全使用了局部历史，记录了该间接分支最近 8 次跳转的历史。但具体怎么记录的，还没有分析出来，一种可能是，它在一个硬件 Buffer 里记录了间接分支的目的地址，然后历史就是最近 8 次跳转的地址在这个 Buffer 里的下标。
 
