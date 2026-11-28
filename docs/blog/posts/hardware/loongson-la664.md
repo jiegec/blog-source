@@ -186,7 +186,11 @@ PHR 一共是 96x2=192 位，每个 taken branch 左移两位，然后异或进�
 
 ### IBP
 
-实测下来，LA664 的 IBP 可以记录 512-1024 个间接分支的目的地址：512 的时候不会出现 miss，1024 的时候只出现少量的 miss，到 2048 就有过半的 miss rate 了。[龙芯 GS464E 处理器核架构设计](https://www.sciengine.com/doi/10.1360/N112014-00292) 是这么写的：
+通过测试 N 条间接分支、每条分支有 M 个不同的目的地址，LA664 的 IBP 可以记录 512-1024 个间接分支的目的地址：512 的时候不会出现 miss，1024 的时候只出现少量的 miss，到 2048 就有过半的 miss rate 了：
+
+![](./loongson-la664-ibp-size.png)
+
+而 [龙芯 GS464E 处理器核架构设计](https://www.sciengine.com/doi/10.1360/N112014-00292) 是这么写的：
 
 > 除上述函数返回跳转指令之外的的间接跳转指令使用项数为 1024 的跳转目标缓存器 (jump branch target address cache, JBTAC) 进行预测, 该缓存器使用取指 PC 及跳转历史信息进行索引.
 
