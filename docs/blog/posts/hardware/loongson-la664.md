@@ -146,6 +146,25 @@ footprint 超出 L1 ICache、进入 L2 后，IPC 下降明显；看起来仍然�
 
 LA664 与 LA464 一样，也是 96 项全相联 BTB；超出 BTB 容量后，只能回到 64KB 的 L1 ICache 里取指、译码。footprint 超过 64KB 后，LA664 的性能比 LA464 好，原因估计仍是上面提到的 L2 Cache 到 L1 ICache refill 路径变快。96 项全相联 BTB 在容量上尚可，与 Neoverse V1 持平，但没有 L2 BTB，容易出现瓶颈。
 
+### CBP
+
+为了测试 LA664 的条件分支预测器，参考 [Half&Half](https://halfandhalf.cpusec.org/) 构造了一个 gadget，首先是一个按随机数 k 跳转的条件分支，接着是若干个无条件的 dummy branch，最后又是根据同一个 k 跳转的条件分支，观察分支预测错误率。发现 LA664 的全局历史长度是 96：
+
+![](./loongson-la664-phr-size.png)
+
+接着，参考 [iEnFlow](https://dl.acm.org/doi/10.1145/3830454.3832569) 里我的做法，把随机数 k 植入到间接分支的不同目的地址位上，经过一系列 dummy branch 后，观察根据同一个 k 跳转的分支的分支预测错误率：
+
+![](./loongson-la664-phr-target-bits-location.png)
+
+再注入到间接分支的分支地址的不同位上：
+
+![](./loongson-la664-phr-branch-bits-location.png)
+
+可见 footprint 应该是：
+
+- footprint[0]: T[2] xor T[3] xor T[6] xor T[7] xor B[2] xor B[5] xor B[6] xor B[9]
+- foorprint[1]: T[4] xor T[5] xor T[8] xor T[9] xor B[3] xor B[4] xor B[7] xor B[8]
+
 ## 后端
 
 ### Register File
