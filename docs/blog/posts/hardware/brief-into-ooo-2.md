@@ -203,10 +203,26 @@ LSU 是很重要的一个执行单元，负责 Load/Store/Atomic 等指令的实
 
 通过逆向，可以得知商业处理器所使用的 MDP 设计：
 
-- Intel: 见 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 和 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/system/files/sec21-ragab.pdf)，Intel CPU 的 P-Core 用一个表来维护从 Load PC 到计数器的映射（直接映射），根据计数器的值判断是否有依赖关系（即在上述 Load Wait Table 基础上，用计数器来表示置信度），外加一个全局的计数器来决定是否启用局部预测器，详见 [Golden Cove](./intel-golden-cove.md) 的逆向结果
-- ARM: 见 [Leaky MDU: ARM Memory Disambiguation Unit Uncovered and Vulnerabilities Exposed](https://dl.acm.org/doi/abs/10.1109/DAC56929.2023.10247985) 和 [SSBleed: Non-speculative Side-channel Attacks via Speculative Store Bypass on Armv9 CPUs](https://ieeexplore.ieee.org/document/11408465/)，ARM CPU 也维护了一个从 Load PC 到计数器的映射（全相联），根据计数器的值判断是否有依赖关系，不在表中的 Load PC 会被预测为无依赖，Intel E-Core 也采用了类似的实现，详见 [Gracemont](./intel-gracemont.md) 的逆向结果
+- Intel: 见 [Memory Disambiguation on Skylake](https://github.com/travisdowns/uarch-bench/wiki/Memory-Disambiguation-on-Skylake) 和 [Rage Against the Machine Clear: A Systematic Analysis of Machine Clears and Their Implications for Transient Execution Attacks](https://www.usenix.org/system/files/sec21-ragab.pdf)，Intel CPU 的 P-Core 用一个表来维护从 Load PC 到计数器的映射（直接映射），根据计数器的值判断是否有依赖关系（即在上述 Load Wait Table 基础上，用计数器来表示置信度），外加一个全局的计数器来决定是否启用局部预测器，具体地：
+	- [Golden Cove](./intel-golden-cove.md)：
+		- 局部预测器：有 512 个局部预测器，使用 Load PC 低 9 位进行直接映射，每个局部预测器是 4-bit 饱和计数器，有依赖时清零，无依赖时加一；计数器等于 15 时预测为无依赖，否则预测为有依赖
+		- 全局预测器：内置 2-bit 饱和计数器，当局部预测器连续 64 次预测正确时，饱和计数器加一；当预测为无依赖，但实际有依赖时，饱和计数器减一
+		- 如何给出预测：全局预测器的饱和计数器等于零的时候，覆盖局部预测器的结果，强制预测为有依赖；否则使用局部预测器的结果
+	- [Gracemont](./intel-gracemont.md)：
+		- 26 路全相连，使用 Load PC 的低 16 位作为 tag 匹配，每项是 2-bit 饱和计数器
+		- Load 未命中时，预测为无依赖，如果实际有依赖，则分配表项，计数器置零
+		- Load 命中时，预测有依赖；如果实际无依赖，则计数器加一，加到 3 的时候删除表项；如果实际有依赖，则计数器置零
+- ARM: 见 [Leaky MDU: ARM Memory Disambiguation Unit Uncovered and Vulnerabilities Exposed](https://dl.acm.org/doi/abs/10.1109/DAC56929.2023.10247985) 和 [SSBleed: Non-speculative Side-channel Attacks via Speculative Store Bypass on Armv9 CPUs](https://ieeexplore.ieee.org/document/11408465/)，ARM CPU 也维护了一个从 Load PC 到计数器的映射（全相联），根据计数器的值判断是否有依赖关系，不在表中的 Load PC 会被预测为无依赖
+	- ARM Neoverse N2:
+		- 32 路全相连，使用 Load PC 的低 15 位作为 tag 匹配，每项是 4-bit 饱和计数器
+		- Load 未命中时，预测为无依赖，如果实际有依赖，则分配表项，计数器置为 1
+		- Load 命中时，预测有依赖；如果实际无依赖，则计数器加一，加到 15 的时候删除表项；如果实际有依赖，则计数器减一
 - AMD: 见 [Uncovering and Exploiting AMD Speculative Memory Access Predictors for Fun and Profit](https://ieeexplore.ieee.org/document/10476467/)，对 Store 和 Load PC 进行哈希，再查表，判断是否有依赖关系
 - Loongson: LA664 维护了一个从 Load PC 到计数器的映射，在表中的 Load 会被预测为有依赖，不在表中的 Load 会被预测为无依赖，表项在经过 64 次 Load 后会被删除，详见 [Loongson LA664 微架构评测](./loongson-la664.md)
+	- [Loongson LA664](./loongson-la664.md):
+		- 8 路全相连，使用 Load PC 的部分位作为 tag 匹配，每项是 6-bit 饱和计数器
+		- Load 未命中时，预测为无依赖，如果实际有依赖，则分配表项，计数器置为 0
+		- Load 命中时，预测有依赖；无论实际有无依赖，计数器加一，加到 63 的时候删除表项
 
 有了 Memory Dependence Predictor 以后，硬件就可以预测 Load 会不会依赖之前的 Store，如果不依赖，就可以提前执行。但是，如果依赖的话，是否必须等之前的 Store 完成，再从缓存中读取？答案是不一定，这就要靠下面讲的 Store to Load Forwarding 机制。
 
