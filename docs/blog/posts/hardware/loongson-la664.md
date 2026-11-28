@@ -176,6 +176,14 @@ LA664 与 LA464 一样，也是 96 项全相联 BTB；超出 BTB 容量后，只
 
 PHR 一共是 96x2=192 位，每个 taken branch 左移两位，然后异或进去四位的 footprint。
 
+除了 PHR 作为全局历史以外，还观察到了局部历史的存在：一条分支轮流跳和不跳，穿插了多个 taken branch，在 PHR 已经清掉历史的前提下，还能正确预测。把局部历史拉长，就会出现错误预测，说明它给分支维护了 1 bit 的局部历史，也可以用于预测。
+
+实际上，在[龙芯 GS464E 处理器核架构设计](https://www.sciengine.com/doi/10.1360/N112014-00292)论文里，就提到过是局部加全局预测器的组合：
+
+> 分支指令跳转方向的预测使 用一套组合分支历史表 (BHTs), 包括 1 个 16384 项的全局转移历史表 (global branch history table,  GBHT), 1 个 16384 项的局部转移历史表 (local branch history table, LBHT) 和 1 个 16384 项的全局  选择历史表 (global branch select table, GSEL). 每个时钟周期取出的最多 8 条指令可以同时查找这套 分支历史表. 上述 3 个分支历史表中的每项都是 2 bit 饱和计数器, 其最高比特位在 GBHT 和 LBHT 中用于指明跳转方向, 而在 GSEL 中则用于决定选用 GBHT 还是 LBHT 的预测方向.
+
+虽然 GS464E 是 MIPS 时代的微架构了，但大概率延续到了 LA464 和 LA664。
+
 ## 后端
 
 ### Register File
