@@ -170,9 +170,9 @@ LA664 与 LA464 一样，也是 96 项全相联 BTB；超出 BTB 容量后，只
 可见 footprint 应该是：
 
 - footprint[0]: T[3] xor T[7] xor B[2] xor B[6]
-- foorprint[1]: T[4] xor T[8] xor B[3] xor B[7]
+- footprint[1]: T[4] xor T[8] xor B[3] xor B[7]
 - footprint[2]: T[5] xor T[9] xor B[4] xor B[8]
-- foorprint[3]: T[2] xor T[6] xor T[5] xor T[9]
+- footprint[3]: T[2] xor T[6] xor B[5] xor B[9]
 
 PHR 一共是 96x2=192 位，每个 taken branch 左移两位，然后异或进去四位的 footprint。
 
