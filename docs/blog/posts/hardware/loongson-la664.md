@@ -160,10 +160,21 @@ LA664 与 LA464 一样，也是 96 项全相联 BTB；超出 BTB 容量后，只
 
 ![](./loongson-la664-phr-branch-bits-location.png)
 
+同时注入分支地址和目的地址，找到这些异或关系：
+
+- B[2] xor B[6] xor T[3] xor T[7]
+- B[3] xor B[7] xor T[4] xor T[8]
+- B[4] xor B[8] xor T[5] xor T[9]
+- B[5] xor B[9] xor T[2] xor T[6]
+
 可见 footprint 应该是：
 
-- footprint[0]: T[2] xor T[3] xor T[6] xor T[7] xor B[2] xor B[5] xor B[6] xor B[9]
-- foorprint[1]: T[4] xor T[5] xor T[8] xor T[9] xor B[3] xor B[4] xor B[7] xor B[8]
+- footprint[0]: T[3] xor T[7] xor B[2] xor B[6]
+- foorprint[1]: T[4] xor T[8] xor B[3] xor B[7]
+- footprint[2]: T[5] xor T[9] xor B[4] xor B[8]
+- foorprint[3]: T[2] xor T[6] xor T[5] xor T[9]
+
+PHR 一共是 96x2=192 位，每个 taken branch 左移两位，然后异或进去四位的 footprint。
 
 ## 后端
 
